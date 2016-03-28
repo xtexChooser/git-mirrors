@@ -1,0 +1,21 @@
+{
+	"@metadata": {
+		"authors": [
+			"Brian Wolff"
+		]
+	},
+	"loginnotify-desc": "Notify users about suspicious logins",
+	"echo-category-title-login-fail": "Failed login attempts",
+	"echo-pref-tooltip-login-fail": "Notify me when there have been multiple failed attempts to login to my account.",
+	"echo-category-title-login-success": "Login from new computer",
+	"echo-pref-tooltip-login-success": "Notify me whenever somebody logs into my account from a computer I have not used before.",
+	"loginnotify-login-fail": "There have been several failed attempts to login to your account",
+	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Failed attempt|Multiple failed attempts}} to login to {{SITENAME}} as $1",
+	"notification-loginnotify-login-success-email-subject": "Login to {{SITENAME}} as $1 from a computer you have not recently used",
+	"notification-header-login-fail-known": "There {{PLURAL:$3|has been '''one failed attempt'''|have been '''$3 failed attempts'''}} to login to your account since the last time you logged in.",
+	"notification-header-login-fail-new": "There {{PLURAL:$3|has been '''one failed attempt'''|have been '''$3 failed attempts'''}} to login to your account from a computer you have not edited from recently, since the last time you logged in.",
+	"notification-header-login-success": "Someone has successfully logged into your account from a computer which you have not edited from recently.",
+	"notification-loginnotify-login-fail-new-emailbatch": "There {{PLURAL:$2|has been a failed attempt|have been $2 failed attempts}} to login to your account '$1' on {{SITENAME}} from a computer you haven't used before.",
+	"notification-loginnotify-login-fail-known-emailbatch": "There {{PLURAL:$2|has been a failed attempt|have been $2 failed attempts}} to login to your account, '$1' on {{SITENAME}}.",
+	"notification-loginnotify-login-success-emailbatch": "Someone has successfully logged into your account '$1' on {{SITENAME}} from a computer which you have not edited from recently."
+}

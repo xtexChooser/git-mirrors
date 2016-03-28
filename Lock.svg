@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   width="300"
+   height="300"
+   title="Lock icon"
+   version="1.1"
+   >
+  <g
+     transform="translate(0,-752.3622)">
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:#575757;stroke-width:169;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="rect3592"
+       width="5.3447614"
+       height="3.4287148"
+       x="147.32762"
+       y="933.18579" />
+    <path
+       sodipodi:type="arc"
+       style="fill:none;stroke:#575757;stroke-width:3.46316123;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       id="path3594"
+       sodipodi:cx="156.18221"
+       sodipodi:cy="107.04989"
+       sodipodi:rx="11.713666"
+       sodipodi:ry="28.958786"
+       d="m 167.89587,107.04989 a 11.713666,28.958786 0 1 1 -23.42733,0 11.713666,28.958786 0 1 1 23.42733,0 z"
+       transform="matrix(5.4683279,0,0,3.8748291,-704.05551,467.714)" />
+  </g>
+</svg>

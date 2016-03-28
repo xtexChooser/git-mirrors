@@ -1,0 +1,68 @@
+{
+	"name": "LoginNotify",
+	"version": "0.1",
+	"author": [
+		"Brian Wolff"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:LoginNotify",
+	"descriptionmsg": "loginnotify-desc",
+	"license-name": "MIT",
+	"type": "other",
+	"DefaultUserOptions": {
+		"echo-subscriptions-web-login-fail": true,
+		"echo-subscriptions-email-login-fail": false,
+		"echo-subscriptions-web-login-success": false,
+		"echo-subscriptions-email-login-success": false
+	},
+	"MessagesDirs": {
+		"LoginNotify": [
+			"i18n"
+		]
+	},
+	"AutoloadClasses": {
+		"LoginNotify": "LoginNotify_body.php",
+		"LoginNotifyHooks": "LoginNotify.hooks.php",
+		"LoginNotifyPresentationModel": "LoginNotifyPresentationModel.php",
+		"LoginNotifyFormatter": "LoginNotifyFormatter.php"
+	},
+	"Hooks": {
+		"BeforeCreateEchoEvent": [
+			"LoginNotifyHooks::onBeforeCreateEchoEvent"
+		],
+		"LoginAuthenticateAudit": [
+			"LoginNotifyHooks::onLoginAuthenticateAudit"
+		],
+		"AddNewAccount": [
+			"LoginNotifyHooks::onAddNewAccount"
+		],
+		"UserLoadOptions": [
+			"LoginNotifyHooks::onUserLoadOptions"
+		],
+		"UserSaveOptions": [
+			"LoginNotifyHooks::onUserSaveOptions"
+		],
+		"UnitTestsList": [
+			"LoginNotifyHooks::onUnitTestList"
+		]
+	},
+	"config": {
+		"LoginNotifyAttemptsKnownIP": 15,
+		"LoginNotifyExpiryKnownIP": 604800,
+		"LoginNotifyAttemptsNewIP": 5,
+		"LoginNotifyExpiryNewIP": 1209600,
+		"LoginNotifyCheckKnownIPs": true,
+		"LoginNotifyEnableOnSuccess": true,
+		"@doc": "Enable notification for users with certain rights. To disable set to false",
+		"LoginNotifyEnableForPriv": [ "editinterface", "userrights" ],
+		"@doc": "Override this to use a different secret than $wgSecretKey",
+		"LoginNotifySecretKey": null,
+		"@doc": "Expiry in seconds. Default is 180 days",
+		"LoginNotifyCookieExpire": 15552000,
+		"@doc": "Override to allow sharing login cookies between sites on different subdomains",
+		"LoginNotifyCookieDomain": null,
+		"LoginNotifyMaxCookieRecords": 6,
+		"@doc": "Set to false to disable caching IPs in memcache. Set to 0 to cache forever. Default 60 days.",
+		"LoginNotifyCacheLoginIPExpiry": 5184000
+	},
+	"manifest_version": 1
+}
