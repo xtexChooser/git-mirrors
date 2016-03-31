@@ -1,0 +1,9 @@
+{
+	"@metadata": {
+		"authors": [
+			"Vitorvicentevalente"
+		]
+	},
+	"echo-category-title-login-success": "Início de sessão a partir de novo computador",
+	"notification-loginnotify-login-fail-known-emailbatch": "Ocorreu {{PLURAL:$2|uma tentativa falhada|$2 tentativas falhadas}} para aceder à sua conta, $1, em {{SITENAME}}."
+}

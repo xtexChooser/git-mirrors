@@ -1,0 +1,21 @@
+{
+	"@metadata": {
+		"authors": [
+			"Elisardojm"
+		]
+	},
+	"loginnotify-desc": "Notificar usuarios sobre conexións sospeitosas",
+	"echo-category-title-login-fail": "Intentos fallidos de conexión",
+	"echo-pref-tooltip-login-fail": "Avisarme cando haxa múltiples intentos fallidos de conectarse á miña conta.",
+	"echo-category-title-login-success": "Conexión desde un ordenador novo",
+	"echo-pref-tooltip-login-success": "Avisarme cando alguén se conecta á miña conta desde un ordenador que nunca usei antes.",
+	"loginnotify-login-fail": "Houbo varios intentos fallidos de conectarse á súa conta",
+	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Intento fallido|Múltiples intentos faillidos}} de conectarse a {{SITENAME}} como $1",
+	"notification-loginnotify-login-success-email-subject": "Conexión a {{SITENAME}} como $1 desde un ordenador que vostede non usou recentemente",
+	"notification-header-login-fail-known": "Houbo {{PLURAL:$3|'''un intento fallido'''|'''$3 intentos fallidos'''}} de conectarse á súa conta desde a última vez que se conectou.",
+	"notification-header-login-fail-new": "Houbo {{PLURAL:$3|'''un intento fallido'''|'''$3 intentos fallidos'''}} de conectarse á súa conta desde un ordenador desde o que non editou recentemente, desde a última vez que se conectou.",
+	"notification-header-login-success": "Alguén conectouse correctamente na súa conta desde un ordenador desde o que vostede non editou recentemente.",
+	"notification-loginnotify-login-fail-new-emailbatch": "Houbo {{PLURAL:$2|un intento fallido|$2 intentos fallidos}} de conectarse á súa conta '$1' en {{SITENAME}} desde un ordenador que non usou anteriormente.",
+	"notification-loginnotify-login-fail-known-emailbatch": "Houbo {{PLURAL:$2|un intento fallido|$2 intentos fallidos}} de conectarse á súa conta '$1' en {{SITENAME}}.",
+	"notification-loginnotify-login-success-emailbatch": "Alguén conectouse correctamente á súa conta '$1' en {{SITENAME}} desde un ordenador desde o que vostede non editou recentemente."
+}

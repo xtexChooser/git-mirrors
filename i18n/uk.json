@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": [
+			"Piramidion"
+		]
+	},
+	"loginnotify-desc": "Повідомляти користувачів про підозрілі входи в систему.",
+	"echo-category-title-login-fail": "Невдалі спроби входу в систему",
+	"echo-pref-tooltip-login-fail": "Повідомляти мене, коли відбудеться декілька невдалих спроб входу в систему з мого облікового запису.",
+	"echo-category-title-login-success": "Вхід у систему з нового комп'ютера",
+	"echo-pref-tooltip-login-success": "Повідомляти мене, коли хтось входить в мій обліковий запис із комп'ютера, яким я раніше не користувався.",
+	"loginnotify-login-fail": "Було декілька невдалих спроб входу у Ваш обліковий запис",
+	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Невдала спроба|Декілька невдалих спроб}} входу в проект {{SITENAME}} як $1",
+	"notification-loginnotify-login-success-email-subject": "Вхід у проект {{SITENAME}} як $1 із комп'ютера, яким Ви раніше не користувались"
+}

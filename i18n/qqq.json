@@ -18,5 +18,4 @@
 	"notification-loginnotify-login-fail-new-emailbatch": "Body of email notification that someone from a computer not previously used by the user has attempted and failed to log into the user's account. Subject of Message is {{msg-mw|notification-loginnotify-login-fail-email-subject}}. $1 is account name. $2 is the number of attempts",
 	"notification-loginnotify-login-fail-known-emailbatch": "Body of email notification that someone from a computer which has been previously used by the user has attempted and failed to log into the user's account. Subject of Message is {{msg-mw|notification-loginnotify-login-fail-email-subject}}. $1 is account name. $2 is the number of attempts",
 	"notification-loginnotify-login-success-emailbatch": "Body of email notification that someone from a computer not previously used by the user has succesfully logged into the user's account. Subject of Message is {{msg-mw|notification-loginnotify-login-success-email-subject}}. $1 is account name."
-
 }

@@ -1,0 +1,21 @@
+{
+	"@metadata": {
+		"authors": [
+			"Metalhead64"
+		]
+	},
+	"loginnotify-desc": "Ermöglicht die Benachrichtigung von Benutzern über verdächtige Anmeldeversuche",
+	"echo-category-title-login-fail": "Fehlgeschlagene Anmeldeversuche",
+	"echo-pref-tooltip-login-fail": "Benachrichtige mich, wenn es bei meinem Benutzerkonto mehrere fehlgeschlagene Anmeldeversuche gab.",
+	"echo-category-title-login-success": "Von einem neuen Computer anmelden",
+	"echo-pref-tooltip-login-success": "Benachrichtige mich, wenn sich jemand bei meinem Benutzerkonto von einem Computer anmeldet, den ich zuvor nicht benutzt habe.",
+	"loginnotify-login-fail": "Es gab mehrere fehlgeschlagene Anmeldeversuche bei deinem Benutzerkonto.",
+	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Fehlgeschlagener Anmeldeversuch|Mehrere fehlgeschlagene Anmeldeversuche}} bei {{SITENAME}} als $1",
+	"notification-loginnotify-login-success-email-subject": "Anmeldung bei {{SITENAME}} als $1 von einem Computer, den du nicht kürzlich verwendet hast.",
+	"notification-header-login-fail-known": "Es gab {{PLURAL:$3|'''einen fehlgeschlagenen Anmeldeversuch'''|'''$3 fehlgeschlagene Anmeldeversuche'''}} bei deinem Benutzerkonto seit deiner letzten Anmeldung.",
+	"notification-header-login-fail-new": "Es gab {{PLURAL:$3|'''einen fehlgeschlagenen Anmeldeversuch'''|'''$3 fehlgeschlagene Anmeldeversuche'''}} bei deinem Benutzerkonto von einem Computer, von dem du seit deiner letzten Anmeldung kürzlich keine Bearbeitungen ausgeführt hast.",
+	"notification-header-login-success": "Es hat sich jemand erfolgreich bei deinem Benutzerkonto von einem Computer angemeldet, von dem du kürzlich keine Bearbeitungen ausgeführt hast.",
+	"notification-loginnotify-login-fail-new-emailbatch": "Es gab {{PLURAL:$2|einen fehlgeschlagenen Anmeldeversuch|$2 fehlgeschlagene Anmeldeversuche}} bei deinem Benutzerkonto „$1“ auf {{SITENAME}} von einem Computer, den du zuvor nicht benutzt hast.",
+	"notification-loginnotify-login-fail-known-emailbatch": "Es gab {{PLURAL:$2|einen fehlgeschlagenen Anmeldeversuch|$2 fehlgeschlagene Anmeldeversuche}} bei deinem Benutzerkonto „$1“ auf {{SITENAME}}.",
+	"notification-loginnotify-login-success-emailbatch": "Es hat sich jemand erfolgreich bei deinem Benutzerkonto „$1“ auf {{SITENAME}} von einem Computer angemeldet, von dem du kürzlich keine Bearbeitungen ausgeführt hast."
+}
