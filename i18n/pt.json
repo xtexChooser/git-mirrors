@@ -4,6 +4,16 @@
 			"Vitorvicentevalente"
 		]
 	},
+	"loginnotify-desc": "Notifica utilizadores sobre suspeitas de inícios de sessão",
+	"echo-category-title-login-fail": "Tentativas de início de sessão falhadas",
+	"echo-pref-tooltip-login-fail": "Notifique-me quando forem feitas várias tentativas falhadas de início de sessão na minha conta.",
 	"echo-category-title-login-success": "Início de sessão a partir de novo computador",
-	"notification-loginnotify-login-fail-known-emailbatch": "Ocorreu {{PLURAL:$2|uma tentativa falhada|$2 tentativas falhadas}} para aceder à sua conta, $1, em {{SITENAME}}."
+	"echo-pref-tooltip-login-success": "Notificar-me sempre que alguém aceda à conta a partir de um computador que não tenha usado antes.",
+	"loginnotify-login-fail": "Ocorreram várias tentativas falhadas de início de sessão da sua conta",
+	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Tentativa falhada|Várias tentativas falhadas}} a início de sessão em {{SITENAME}} como $1",
+	"notification-loginnotify-login-success-email-subject": "Iniciar sessão em {{SITENAME}} como $1 a partir de computador não usado recentemente",
+	"notification-header-login-fail-known": "{{PLURAL:$3|Ocorreu '''uma tentativa falhada'''|Ocorreram '''$3 tentativas falhadas'''}} para aceder à sua conta desde da última vez que iniciou sessão.",
+	"notification-header-login-success": "Alguém tentou aceder à sua conta a partir de um computador com o qual não editou recentemente.",
+	"notification-loginnotify-login-fail-known-emailbatch": "{{PLURAL:$2|Ocorreu uma tentativa falhada|Ocorreram $2 tentativas falhadas}} para aceder à sua conta, $1, em {{SITENAME}}.",
+	"notification-loginnotify-login-success-emailbatch": "Alguém acedeu à sua conta, $1, em {{SITENAME}} a partir de um computador com o qual não editou recentemente."
 }

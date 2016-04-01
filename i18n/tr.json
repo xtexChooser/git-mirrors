@@ -1,0 +1,21 @@
+{
+	"@metadata": {
+		"authors": [
+			"Hbseren"
+		]
+	},
+	"loginnotify-desc": "Şüpheli oturum açma girişimleri hakkında kullanıcıları bilgilendir",
+	"echo-category-title-login-fail": "Başarısız oturum açma girişimleri",
+	"echo-pref-tooltip-login-fail": "Hesabıma birden fazla başarısız oturum açma girişimi olduğu zaman bana bildir.",
+	"echo-category-title-login-success": "Yeni bilgisayardan giriş",
+	"echo-pref-tooltip-login-success": "Birisi hesabıma daha önce kullanmadığım bir bilgisayardan giriş yaptığı zaman bana bildir.",
+	"loginnotify-login-fail": "Hesabınıza oturum açmak için birçok başarısız deneme olmuş",
+	"notification-loginnotify-login-fail-email-subject": "{{SITENAME}} sitesine $1 kullanıcısı olarak {{PLURAL:$2|başarısız giriş|birden çok başarısız giriş}} denemesi",
+	"notification-loginnotify-login-success-email-subject": "{{SITENAME}} sitesine $1 kullanıcısı olarak, daha önce kullanmadığınız bir bilgisayardan giriş",
+	"notification-header-login-fail-known": "Son giriş yaptığınızdan beri hesabınıza {{PLURAL:$3|'''bir'''|'''$3'''}} başarısız giriş denemesi oldu.",
+	"notification-header-login-fail-new": "Son giriş yaptığınızdan beri hesabınıza, yakın zamanda düzenleme yapmakta olduğunuzun dışındaki bir bilgisayardan {{PLURAL:$3|'''bir'''|'''$3'''}} başarısız giriş denemesi oldu.",
+	"notification-header-login-success": "Birisi başarılı bir şekilde hesabınıza yakın zamanda düzenleme yapmakta olduğunuzun dışındaki bir bilgisayardan giriş yapmış.",
+	"notification-loginnotify-login-fail-new-emailbatch": "{{SITENAME}} sitesine $1 kullanıcısı olarak, daha önce kullanmadığınız bir bilgisayardan {{PLURAL:$2|başarısız giriş|$2 başarısız giriş}} denemesi oldu.",
+	"notification-loginnotify-login-fail-known-emailbatch": "{{SITENAME}} sitesinde '$1' hesabınıza {{PLURAL:$2|bir|$2}} başarısız giriş denemesi oldu.",
+	"notification-loginnotify-login-success-emailbatch": "{{SITENAME}} sitesinde '$1' hesabınıza, yakın zamanda düzenleme yapmakta olduğunuzun dışındaki bir bilgisayardan, birisi başarıyla giriş yaptı."
+}

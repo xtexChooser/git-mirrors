@@ -1,0 +1,21 @@
+{
+	"@metadata": {
+		"authors": [
+			"Bjankuloski06"
+		]
+	},
+	"loginnotify-desc": "Известување на корисниците за сомнителни најави",
+	"echo-category-title-login-fail": "Неуспешни обиди за најава",
+	"echo-pref-tooltip-login-fail": "Извести ме кога има повеќе неуспешни обиди за најава со мојата сметка.",
+	"echo-category-title-login-success": "Најава од нов сметач",
+	"echo-pref-tooltip-login-success": "Извести ме кога некој ќе се најави со мојата сметка од сметач што го немам досега користено.",
+	"loginnotify-login-fail": "Направени се неколку неуспешни обиди за најава со вашата сметка",
+	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Неуспешен обид|Неуспешни обиди}} за најава на {{SITENAME}} како $1",
+	"notification-loginnotify-login-success-email-subject": "Најава на {{SITENAME}} како $1 од сметач што досега не го имате користено",
+	"notification-header-login-fail-known": "Имаше {{PLURAL:$3|'''еден неуспешен обид'''|'''$3 неуспешни обиди'''}} за најава со вашата сметка од вашето последно најавување.",
+	"notification-header-login-fail-new": "Имаше {{PLURAL:$3|'''еден неуспешен обид'''|'''$3 неуспешни обиди'''}} за најава со вашата сметка од сметач од кој немате уредувано во последно време.",
+	"notification-header-login-success": "Некој успешно се најави со вашата сметка од сметач од кој немате уредувано во последно време.",
+	"notification-loginnotify-login-fail-new-emailbatch": "Имаше {{PLURAL:$2|неуспешен обид|$2 неуспешни обиди}} за најава од вашата сметка „$1“ на {{SITENAME}} од сметач од кој немате уредувано во последно време.",
+	"notification-loginnotify-login-fail-known-emailbatch": "Имаше {{PLURAL:$2|неуспешен обид|$2 неуспешни обиди}} за најава со вашата сметка „$1“ на {{SITENAME}}.",
+	"notification-loginnotify-login-success-emailbatch": "Некој успешно се најави со вашата сметка „$1“ на {{SITENAME}} од сметач од кој немате уредувано во последно време$1."
+}

@@ -1,0 +1,21 @@
+{
+	"@metadata": {
+		"authors": [
+			"Macofe"
+		]
+	},
+	"loginnotify-desc": "Notificar a los usuarios acerca de inicios de sesión sospechosos",
+	"echo-category-title-login-fail": "Intentos de inicio de sesión incorrectos",
+	"echo-pref-tooltip-login-fail": "Notificarme cuando hayan habido múltiples intentos fallidos de inicio de sesión con mi cuenta.",
+	"echo-category-title-login-success": "Inicio de sesión en una computadora nueva",
+	"echo-pref-tooltip-login-success": "Notificarme cada vez que alguien inicie sesión con mi cuenta desde una computadora que no he usado antes.",
+	"loginnotify-login-fail": "Han habido varios intentos fallidos de inicio de sesión con tu cuenta",
+	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Intento fallido|Múltiples intentos fallidos}} de inicio de sesión en {{SITENAME}} como $1",
+	"notification-loginnotify-login-success-email-subject": "Inicio de sesión en {{SITENAME}} como $1 desde una computadora que no has usado recientemente",
+	"notification-header-login-fail-known": "{{PLURAL:$3|Ha habido '''un intento fallido'''|Han habido '''$3 intentos fallidos'''}} de inicio de sesión a tu cuenta desde la última vez que accediste.",
+	"notification-header-login-fail-new": "{{PLURAL:$3|Ha habido '''un intento fallido'''|Han habido '''$3 intentos fallidos'''}} de inicio de sesión a tu cuenta desde una computadora desde la que no has editado recientemente, desde la última vez que accediste.",
+	"notification-header-login-success": "Alguien ha iniciado sesión correctamente con tu cuenta desde una computadora desde la que no has editado recientemente.",
+	"notification-loginnotify-login-fail-new-emailbatch": "{{PLURAL:$2|Ha habido un intento fallido|Han habido $2 intentos fallidos}} de inicio de sesión a tu cuenta '$1' en {{SITENAME}} desde una computadora que no has usado antes.",
+	"notification-loginnotify-login-fail-known-emailbatch": "{{PLURAL:$2|Ha habido un intento fallido|Han habido $2 intentos fallidos}} de inicio de sesión a tu cuenta '$1' en {{SITENAME}}.",
+	"notification-loginnotify-login-success-emailbatch": "Alguien ha iniciado sesión correctamente con tu cuenta '$1' en {{SITENAME}} desde una computadora desde la que no has editado recientemente."
+}
