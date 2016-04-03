@@ -1,0 +1,21 @@
+{
+	"@metadata": {
+		"authors": [
+			"Beta16"
+		]
+	},
+	"loginnotify-desc": "Avvisa gli utenti su accessi sospetti",
+	"echo-category-title-login-fail": "Tentativi di accesso falliti",
+	"echo-pref-tooltip-login-fail": "Avvisami quando ci sono stati diversi tentativi falliti di accesso con la tua utenza.",
+	"echo-category-title-login-success": "Accesso da un nuovo computer",
+	"echo-pref-tooltip-login-success": "Avvisami ogni volta che qualcuno accede con la mia utenza da un computer che non ho usato prima.",
+	"loginnotify-login-fail": "Ci sono stati diversi tentativi falliti di accesso con la tua utenza",
+	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Tentativo fallito|Diversi tentativi falliti}} di acceso a {{SITENAME}} come $1",
+	"notification-loginnotify-login-success-email-subject": "Accesso a {{SITENAME}} come $1 da un computer che non hai utilizzato di recente",
+	"notification-header-login-fail-known": "{{PLURAL:$3|C'è stato '''un tentativo fallito'''|Ci sono stati '''$3 tentativi falliti'''}} di accesso con la tua utenza, dall'ultima volta che hai eseguito l'accesso.",
+	"notification-header-login-fail-new": "{{PLURAL:$3|C'è stato '''un tentativo fallito'''|Ci sono stati '''$3 tentativi falliti'''}} di accesso con la tua utenza da un computer con cui non hai fatto alcuna modifica di recente, dall'ultima volta che hai eseguito l'accesso.",
+	"notification-header-login-success": "Qualcuno si è collegato con successo con la tua utenza da un computer con cui non hai fatto alcuna modifica di recente.",
+	"notification-loginnotify-login-fail-new-emailbatch": "{{PLURAL:$2|C'è stato un tentativo fallito|Ci sono stati $2 tentativi falliti}} di accesso con la tua utenza '$1' su {{SITENAME}}, da un computer che non hai usato prima.",
+	"notification-loginnotify-login-fail-known-emailbatch": "{{PLURAL:$2|C'è stato un tentativo fallito|Ci sono stati $2 tentativi falliti}} di accesso con la tua utenza, '$1' su {{SITENAME}}.",
+	"notification-loginnotify-login-success-emailbatch": "Qualcuno si è collegato con successo con la tua utenza '$1' su {{SITENAME}} da un computer con cui non hai fatto alcuna modifica di recente."
+}

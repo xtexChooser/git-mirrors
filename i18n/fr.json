@@ -1,13 +1,14 @@
 {
 	"@metadata": {
 		"authors": [
-			"Gomoko"
+			"Gomoko",
+			"Wladek92"
 		]
 	},
 	"loginnotify-desc": "Notifier les utilisateurs des connexions suspectes",
 	"echo-category-title-login-fail": "Tentatives de connexion en échec",
-	"echo-pref-tooltip-login-fail": "Me notifier quand il y a eu plusieurs tentatives échouées de se connecter à mon compte.",
-	"echo-category-title-login-success": "Connexion depuis mon ordinateur",
+	"echo-pref-tooltip-login-fail": "Me notifier quand il y a eu plusieurs tentatives échouées de connection à mon compte.",
+	"echo-category-title-login-success": "Connexion depuis un nouvel ordinateur",
 	"echo-pref-tooltip-login-success": "Me notifier quand quelqu’un se connecte sur mon compte depuis un ordinateur que je n’ai pas utilisé auparavant.",
 	"loginnotify-login-fail": "Il y a eu plusieurs tentatives de connexion en échec sur votre compte",
 	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Tentative échouée|Plusieurs tentatives échouées}} de connexion à {{SITENAME}} comme $1",
