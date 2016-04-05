@@ -1,0 +1,11 @@
+{
+	"@metadata": {
+		"authors": [
+			"Chrumps"
+		]
+	},
+	"loginnotify-desc": "Powiadamiaj użytkowników o podejrzanych próbach logowania.",
+	"echo-category-title-login-fail": "Nieudane próby logowania",
+	"echo-category-title-login-success": "Logowanie z nowego komputera",
+	"loginnotify-login-fail": "Było kilka nieudanych prób logowania na twoje konto"
+}
