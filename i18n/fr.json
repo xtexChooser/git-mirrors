@@ -7,7 +7,7 @@
 		]
 	},
 	"loginnotify-desc": "Notifier les utilisateurs des connexions suspectes",
-	"echo-category-title-login-fail": "Tentatives échouées de connexion",
+	"echo-category-title-login-fail": "Tentatives de connexion échouées",
 	"echo-pref-tooltip-login-fail": "Me notifier quand il y a eu plusieurs tentatives échouées de connection à mon compte.",
 	"echo-category-title-login-success": "Connexion depuis un nouvel ordinateur",
 	"echo-pref-tooltip-login-success": "Me notifier quand quelqu’un se connecte sur mon compte depuis un ordinateur que je n’ai pas utilisé auparavant.",
@@ -16,7 +16,7 @@
 	"notification-loginnotify-login-success-email-subject": "Connexion à {{SITENAME}} en tant que $1 depuis un ordinateur que vous n’avez pas utilisé récemment",
 	"notification-header-login-fail-known": "Il y a eu '''{{PLURAL:$3|une tentative échouée|$3 tentatives échouées}}''' de connexion à votre compte depuis la dernière fois que vous vous êtes connectés.",
 	"notification-header-login-fail-new": "Il y a eu '''{{PLURAL:$3|une tentative échouée|$3 tentatives échouées}}''' de connexion à votre compte depuis un ordinateur avec lequel vous n’avez pas fait de modification récemment, depuis votre dernière connexion.",
-	"notification-header-login-success": "Quelqu’un a réussi à se connecter à votre compte depuis un ordinateur que vous n’avez pas fait de modification récemment.",
+	"notification-header-login-success": "Quelqu’un a réussi à se connecter à votre compte depuis un ordinateur dont vous n’avez pas fait de modification récemment.",
 	"notification-loginnotify-login-fail-new-emailbatch": "Il y a eu {{PLURAL:$2|une tentative en échec|$2 tentatives en échec}} de connexion à votre compte « $1 » sur {{SITENAME}} depuis un ordinateur que vous n’avez pas utilisé auparavant.",
 	"notification-loginnotify-login-fail-known-emailbatch": "Il y a eu {{PLURAL:$2|une tentative en échec|$2 tentatives en échec}} de connexion à votre compte « $1 » sur {{SITENAME}}.",
 	"notification-loginnotify-login-success-emailbatch": "Quelqu’un a réussi à se connecter à votre compte « $1 » sur {{SITENAME}} depuis un ordinateur avec lequel vous n’avez pas fait de modification récemment."
