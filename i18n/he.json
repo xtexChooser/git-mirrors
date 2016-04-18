@@ -1,21 +1,22 @@
 {
 	"@metadata": {
 		"authors": [
-			"Guycn2"
+			"Guycn2",
+			"Amire80"
 		]
 	},
-	"loginnotify-desc": "מודיע למשתמשים על ניסיונות חשודים לכניסה לחשבון",
+	"loginnotify-desc": "שליחת הודעה למשתמשים על ניסיונות חשודים לכניסה לחשבון",
 	"echo-category-title-login-fail": "ניסיונות כניסה כושלים",
 	"echo-pref-tooltip-login-fail": "להודיע לי אם בוצעו ניסיונות כניסה כושלים רבים לחשבון שלי.",
 	"echo-category-title-login-success": "כניסה ממחשב חדש",
-	"echo-pref-tooltip-login-success": "להודיע לי בכל פעם שמישהו נכנס לחשבון שלי ממחשב שאף פעם לא השתמשתי בו.",
+	"echo-pref-tooltip-login-success": "להודיע לי בכל פעם שמישהו נכנס לחשבון שלי ממחשב שלא השתמשתי בו לפני־כן.",
 	"loginnotify-login-fail": "היו מספר ניסיונות כושלים להיכנס לחשבון שלך",
 	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|ניסיון כושל|מספר ניסיונות כושלים}} להיכנס לאתר {{SITENAME}} בתור $1",
 	"notification-loginnotify-login-success-email-subject": "כניסה לאתר {{SITENAME}} בתור $1 ממחשב שלא השתמשת בו לאחרונה",
 	"notification-header-login-fail-known": "{{PLURAL:$3|בוצע '''ניסיון כושל'''|בוצעו '''$3 ניסיונות כושלים'''}} להיכנס לחשבון שלך מאז הפעם האחרונה שנכנסת לחשבון.",
 	"notification-header-login-fail-new": "{{PLURAL:$3|בוצע '''ניסיון כושל'''|בוצעו '''$3 ניסיונות כושלים'''}} להיכנס לחשבון שלך במחשב שלא ערכת ממנו לאחרונה, מאז הפעם האחרונה שנכנסת לחשבון.",
 	"notification-header-login-success": "מישהו הצליח להיכנס לחשבון שלך במחשב שלא ערכת ממנו לאחרונה.",
-	"notification-loginnotify-login-fail-new-emailbatch": "{{PLURAL:$2|בוצע ניסיון כושל|בוצעו $2 ניסיונות כושלים}} להיכנס לחשבון שלך '$1' באתר {{SITENAME}} ממחשב שאף פעם לא השתמשת בו.",
-	"notification-loginnotify-login-fail-known-emailbatch": "{{PLURAL:$2|בוצע ניסיון כושל|בוצעו $2 ניסיונות כושלים}} להיכנס לחשבון שלך, '$1' באתר {{SITENAME}}.",
-	"notification-loginnotify-login-success-emailbatch": "מישהו הצליח להיכנס לחשבון שלך '$1' באתר {{SITENAME}} במחשב שלא ערכת ממנו לאחרונה."
+	"notification-loginnotify-login-fail-new-emailbatch": "{{PLURAL:$2|בוצע ניסיון כושל|בוצעו $2 ניסיונות כושלים}} להיכנס לחשבון שלך \"$1\" באתר {{SITENAME}} ממחשב שלא השתמשת בו בו לפני־כן.",
+	"notification-loginnotify-login-fail-known-emailbatch": "{{PLURAL:$2|בוצע ניסיון כושל|בוצעו $2 ניסיונות כושלים}} להיכנס לחשבון שלך, \"$1\" באתר {{SITENAME}}.",
+	"notification-loginnotify-login-success-emailbatch": "מישהו הצליח להיכנס לחשבון שלך \"$1\" באתר {{SITENAME}} במחשב שלא ערכת ממנו לאחרונה."
 }
