@@ -5,6 +5,7 @@
 		]
 	},
 	"loginnotify-desc": "Benotzer iwwer verdächteg Loginën informéieren",
+	"echo-category-title-login-fail": "Feelgeschloe Versich fir sech anzeloggen",
 	"echo-category-title-login-success": "Alogge vun engem neie Computer",
 	"loginnotify-login-fail": "Et gouf e puer feelgeschloe Versich fir sech op Äre Benotzerkont anzeloggen"
 }
