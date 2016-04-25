@@ -8,13 +8,14 @@
 
 use MediaWiki\Logger\LoggerFactory;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerAwareInterface;
 
 /**
  * Handle sending notifications on login from unknown source.
  *
  * @author Brian Wolff
  */
-class LoginNotify {
+class LoginNotify implements LoggerAwareInterface {
 
 	const COOKIE_NAME = 'mw_prevLogin';
 	const NO_INFO_AVAILABLE = 2;
@@ -30,10 +31,10 @@ class LoginNotify {
 	 * Constructor
 	 *
 	 * @param $cfg Config Optional. Set if you have handy.
-	 * @param $cache BagOStuff Optional. Most callers should not set this
-	 * @param $log LoggerInterface Optional. Most callers should not set this.
+	 * @param $cache BagOStuff Optional. Only set if you want to override default
+	 *   caching behaviour.
 	 */
-	function __construct( Config $cfg = null, BagOStuff $cache = null, LoggerInterface $log  = null ) {
+	public function __construct( Config $cfg = null, BagOStuff $cache = null ) {
 		if ( !$cache ) {
 			$cache = ObjectCache::getLocalClusterInstance();
 		}
@@ -50,10 +51,12 @@ class LoginNotify {
 			$this->secret = hash( 'sha256', $globalSecret + 'LoginNotify' );
 		}
 
-		if ( !$log ) {
-			$log = LoggerFactory::getInstance( 'LoginNotify' );
-		}
+		$log = LoggerFactory::getInstance( 'LoginNotify' );
 		$this->log = $log;
+	}
+
+	public function setLogger( LoggerInterface $logger ) {
+		$this->log = $logger;
 	}
 
 	/**
@@ -61,6 +64,8 @@ class LoginNotify {
 	 *
 	 * @param String $ip Either IPv4 or IPv6 address
 	 * @return string Just the network part (e.g. 127.0.0.)
+	 * @throws UnexpectedValueException If given something not an IP
+	 * @throws Exception If regex totally fails (Should never happen)
 	 */
 	private function getIPNetwork( $ip ) {
 		$ip = IP::sanitizeIP( $ip );
@@ -200,6 +205,12 @@ class LoginNotify {
 					}
 					$lb = wfGetLB( $wiki );
 					$dbrLocal = $lb->getConnection( DB_SLAVE, [], $wiki );
+
+					if ( !$this->hasCheckUserTables( $dbrLocal ) ) {
+						// Skip this wiki, no checkuser table.
+						$lb->reuseConnection( $dbrLocal );
+						continue;
+					}
 					// FIXME The case where there are no CU entries for
 					// this user.
 					$res = $this->checkUserInCheckUserQuery(
@@ -208,13 +219,14 @@ class LoginNotify {
 						$dbrLocal
 					);
 
-					$lb->reuseConnection( $dbrLocal );
 					if ( $res ) {
+						$lb->reuseConnection( $dbrLocal );
 						return true;
 					}
 					if ( !$haveAnyInfo ) {
 						$haveAnyInfo = $this->checkUserInCheckUserAnyInfo( $user->getId(), $dbr );
 					}
+					$lb->reuseConnection( $dbrLocal );
 					$count++;
 				}
 			}
@@ -240,31 +252,18 @@ class LoginNotify {
 		// cuc_ip_hex which would be ideal.
 		// user-agent might also be good to look at,
 		// but no index on that.
-		try {
-			$IPHasBeenUsedBefore = $dbr->selectField(
-				'cu_changes',
-				'1',
-				[
-					'cuc_user' => $userId,
-					'cuc_ip ' . $dbr->buildLike(
-						$ipFragment,
-						$dbr->anyString()
-					)
-				],
-				__METHOD__
-			);
-		} catch ( DBQueryError $e ) {
-			// Maybe we're doing a cross-wiki db query
-			// on a wiki which doesn't have CU installed?
-			$this->log->warning( "LoginNotify: Error getting CU "
-				. " data for user no. {user} on " . $dbr->getWikiID(), [
-				'user' => $userId,
-				'method' => __METHOD__,
-				'exception' => $e,
-				'wikiId' => $dbr->getWikiID()
-			] );
-			return false;
-		}
+		$IPHasBeenUsedBefore = $dbr->selectField(
+			'cu_changes',
+			'1',
+			[
+				'cuc_user' => $userId,
+				'cuc_ip ' . $dbr->buildLike(
+					$ipFragment,
+					$dbr->anyString()
+				)
+			],
+			__METHOD__
+		);
 		return $IPHasBeenUsedBefore;
 	}
 
@@ -285,29 +284,33 @@ class LoginNotify {
 		// a certain number of checkuser entries for this
 		// user. Or maybe it should be if we have at least
 		// 2 different IPs for this user. Or something else.
-		try {
-			$haveIPInfo = $dbr->selectField(
-				'cu_changes',
-				'1',
-				[
-					'cuc_user' => $userId
-				],
-				__METHOD__
-			);
-		} catch ( DBQueryError $e ) {
-			// Maybe we're doing a cross-wiki db query
-			// on a wiki which doesn't have CU installed?
-			$this->log->warning( "LoginNotify: Error getting CU "
-				. "data for user no. {user} on " . $dbr->getWikiID(), [
-				'user' => $userId,
+		$haveIPInfo = $dbr->selectField(
+			'cu_changes',
+			'1',
+			[
+				'cuc_user' => $userId
+			],
+			__METHOD__
+		);
+
+		return $haveIPInfo;
+	}
+
+	/**
+	 * Does this wiki have a checkuser table?
+	 *
+	 * @param DatabaseBase $dbr Database to check
+	 * @return boolean
+	 */
+	private function hasCheckUserTables( DatabaseBase $dbr ) {
+		if ( !$dbr->tableExists( 'cu_changes' ) ) {
+			$this->log->warning( "LoginNotify: No checkuser table on {wikiId}", [
 				'method' => __METHOD__,
-				'exception' => $e,
 				'wikiId' => $dbr->getWikiID()
 			] );
 			return false;
 		}
-
-		return $haveIPInfo;
+		return true;
 	}
 
 	/**
@@ -493,7 +496,7 @@ class LoginNotify {
 		}
 
 		if ( $salt === false ) {
-			$salt = wfBaseConvert( MWCryptRand::generateHex( 8 ), 16, 36 );
+			$salt = Wikimedia\base_convert( MWCryptRand::generateHex( 8 ), 16, 36 );
 		}
 
 		// FIXME Maybe shorten, e.g. User only half the hash?
@@ -543,7 +546,7 @@ class LoginNotify {
 	 *
 	 * If a sufficient number of hits have accumulated, send an echo notice.
 	 *
- 	 * @param User $user
+	 * @param User $user
 	 */
 	private function incKnownIP( User $user ) {
 		$key = $this->getKey( $user, 'known' );

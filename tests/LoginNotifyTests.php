@@ -25,10 +25,10 @@ class LoginNotifyTests extends MediaWikiTestCase {
 		$this->inst = TestingAccessWrapper::newFromObject(
 			new LoginNotify(
 				$config,
-				new HashBagOStuff,
-				new NullLogger
+				new HashBagOStuff
 			)
 		);
+		$this->inst->setLogger( new NullLogger );
 	}
 
 	public function setUp() {
