@@ -39,6 +39,6 @@ class LoginNotifyPresentationModel extends EchoEventPresentationModel {
 	 * @todo FIXME Unclear if this is a good idea
 	 */
 	public function getSecondaryLinks() {
-		return array( $this->getAgentLink() );
+		return [ $this->getAgentLink() ];
 	}
 }

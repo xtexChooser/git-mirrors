@@ -19,17 +19,21 @@ class LoginNotifyHooks {
 	 * @param $icons array of icon details
 	 * @return bool
 	 */
-	public static function onBeforeCreateEchoEvent( &$notifications, &$notificationCategories, &$icons ) {
+	public static function onBeforeCreateEchoEvent(
+		&$notifications,
+		&$notificationCategories,
+		&$icons
+	) {
 		global $wgLoginNotifyEnableOnSuccess;
 
 		$icons['LoginNotify-lock'] = [
 			'path' => 'LoginNotify/Lock.svg'
 		];
 
-		$notificationCategories['login-fail'] = array(
+		$notificationCategories['login-fail'] = [
 			'priority' => 7,
 			'tooltip' => 'echo-pref-tooltip-login-fail',
-		);
+		];
 
 		$loginBase = [
 			EchoAttributeManager::ATTR_LOCATORS => [
@@ -42,7 +46,7 @@ class LoginNotifyHooks {
 			'title-message' => 'loginnotify-login-fail',
 			'title-params' => [],
 			'email-subject-message' => 'notification-loginnotify-login-fail-email-subject',
-//FIXME Should count be a parameter
+			// FIXME Should count be a parameter
 			'email-subject-params' => [ 'agent', 'count' ],
 			'email-body-batch-params' => [ 'agent', 'count' ],
 			// FIXME is it ok not to set batch email messages, since
@@ -58,10 +62,10 @@ class LoginNotifyHooks {
 			'email-body-batch-message' => 'notification-loginnotify-login-fail-known-emailbatch'
 		] + $loginBase;
 		if ( $wgLoginNotifyEnableOnSuccess ) {
-			$notificationCategories['login-success'] = array(
+			$notificationCategories['login-success'] = [
 				'priority' => 7,
 				'tooltip' => 'echo-pref-tooltip-login-success',
-			);
+			];
 			$notifications['login-success'] = [
 				'category' => 'login-success',
 				'email-subject-message' => 'notification-loginnotify-login-success-email-subject',
@@ -136,7 +140,7 @@ class LoginNotifyHooks {
 		$defaultOpts = User::getDefaultOptions();
 		$optionsToCheck = self::getOverridenOptions();
 
-		foreach( $optionsToCheck as $opt ) {
+		foreach ( $optionsToCheck as $opt ) {
 			if ( $options[$opt] === self::OPTIONS_FAKE_FALSE ) {
 				$options[$opt] = '0';
 			}
@@ -172,7 +176,7 @@ class LoginNotifyHooks {
 		if ( !self::isUserOptionOverriden( $user, $wgLoginNotifyEnableForPriv ) ) {
 			return true;
 		}
-		foreach( $optionsToCheck as $opt ) {
+		foreach ( $optionsToCheck as $opt ) {
 			if ( $defaultOpts[$opt] !== false ) {
 				continue;
 			}

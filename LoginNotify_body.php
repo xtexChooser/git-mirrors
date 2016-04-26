@@ -56,7 +56,6 @@ class LoginNotify {
 		$this->log = $log;
 	}
 
-
 	/**
 	 * Get just network part of an IP (assuming /24 or /64)
 	 *
@@ -65,7 +64,7 @@ class LoginNotify {
 	 */
 	private function getIPNetwork( $ip ) {
 		$ip = IP::sanitizeIP( $ip );
-		if ( IP::isIPv6( $ip )  ) {
+		if ( IP::isIPv6( $ip ) ) {
 			// Match against the /64
 			$subnetRegex = '/[0-9A-F]+:[0-9A-F]+:[0-9A-F]+:[0-9A-F]+$/i';
 		} elseif ( IP::isIPv4( $ip ) ) {
@@ -188,13 +187,14 @@ class LoginNotify {
 				$info = $globalUser->queryAttached();
 				// already checked the local wiki.
 				unset( $info[wfWikiId()] );
-				usort( $info, function( $a, $b ) {
+				usort( $info,
+					function( $a, $b ) {
 						// descending order
 						return $b['editCount'] - $a['editCount'];
 					}
 				);
 				$count = 0;
-				foreach( $info as $wiki => $localInfo ) {
+				foreach ( $info as $wiki => $localInfo ) {
 					if ( $count > 10 || $localInfo['editCount'] < 1 ) {
 						break;
 					}
@@ -256,7 +256,8 @@ class LoginNotify {
 		} catch ( DBQueryError $e ) {
 			// Maybe we're doing a cross-wiki db query
 			// on a wiki which doesn't have CU installed?
-			$this->log->warning( "LoginNotify: Error getting CU data for user no. {user} on " . $dbr->getWikiID(), [
+			$this->log->warning( "LoginNotify: Error getting CU "
+				. " data for user no. {user} on " . $dbr->getWikiID(), [
 				'user' => $userId,
 				'method' => __METHOD__,
 				'exception' => $e,
@@ -296,7 +297,8 @@ class LoginNotify {
 		} catch ( DBQueryError $e ) {
 			// Maybe we're doing a cross-wiki db query
 			// on a wiki which doesn't have CU installed?
-			$this->log->warning( "LoginNotify: Error getting CU data for user no. {user} on " . $dbr->getWikiID(), [
+			$this->log->warning( "LoginNotify: Error getting CU "
+				. "data for user no. {user} on " . $dbr->getWikiID(), [
 				'user' => $userId,
 				'method' => __METHOD__,
 				'exception' => $e,
@@ -403,10 +405,11 @@ class LoginNotify {
 		} else {
 			$cookieRecords = explode( '.', $cookie );
 		}
-		$newCookie = $this->generateUserCookieRecord( $user->getName() ); 
+		$newCookie = $this->generateUserCookieRecord( $user->getName() );
 		$maxCookieRecords = $this->config->get( 'LoginNotifyMaxCookieRecords' );
 
-		for( $i = 0; $i < count( $cookieRecords ); $i++ ) {
+		$totalCookieRecord = count( $cookieRecords );
+		for ( $i = 0; $i < $totalCookieRecord; $i++ ) {
 			if ( !$this->validateCookieRecord( $cookieRecords[$i] ) ) {
 				// Skip invalid or old cookie records.
 				continue;
@@ -465,7 +468,7 @@ class LoginNotify {
 			// computer in two years, should probably not consider it trusted.
 			return false;
 		}
-		return true;	
+		return true;
 	}
 
 	/**
@@ -521,7 +524,7 @@ class LoginNotify {
 	 *
 	 * If a sufficient number of hits have accumulated, send an echo notice.
 	 *
- 	 * @param User $user
+	 * @param User $user
 	 */
 	private function incNewIP( User $user ) {
 		$key = $this->getKey( $user, 'new' );
@@ -566,9 +569,9 @@ class LoginNotify {
 		if ( $count !== null ) {
 			$extra['count'] = $count;
 		}
-                EchoEvent::create( [
-                        'type' => $type,
-                        'extra' => $extra,
+		EchoEvent::create( [
+			'type' => $type,
+			'extra' => $extra,
 			'agent' => $user,
 		] );
 	}

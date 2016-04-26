@@ -1,6 +1,7 @@
 <?php
 use \Psr\Log\NullLogger;
 
+// @codingStandardsIgnoreStart Generic.Files.LineLength.TooLong
 class LoginNotifyTests extends MediaWikiTestCase {
 
 	/** @var LoginNotify */
@@ -124,7 +125,7 @@ class LoginNotifyTests extends MediaWikiTestCase {
 		// Make sure proper normalization happens.
 		$user2 = User::newFromName( 'Foo__bar' );
 		$user3 = User::newFromName( 'Somebody' );
-	
+
 		$this->assertEquals(
 			'global:loginnotify:new:ok2qitd5efi25tzjy2l3el4n57g6l3l',
 			$this->inst->getKey( $user1, 'new' )
@@ -197,9 +198,12 @@ class LoginNotifyTests extends MediaWikiTestCase {
 		$expectedNewCookie,
 		$desc
 	) {
-		list( $actualSeenBefore, $actualNewCookie ) = $this->inst->checkAndGenerateCookie( $user, $cookie );
+		list( $actualSeenBefore, $actualNewCookie ) =
+			$this->inst->checkAndGenerateCookie( $user, $cookie );
 
-		$this->assertEquals( $expectedSeenBefore, $actualSeenBefore, "[Seen before] $desc" );
+		$this->assertEquals( $expectedSeenBefore, $actualSeenBefore,
+			"[Seen before] $desc"
+		);
 		$newCookieParts = explode( '.', $actualNewCookie, 2 );
 		if ( !isset( $newCookieParts[1] ) ) {
 			$newCookieParts[1] = '';
@@ -281,7 +285,7 @@ class LoginNotifyTests extends MediaWikiTestCase {
 	 * @dataProvider provideValidateCookieRecord
 	 */
 	public function testValidateCookieRecord( $cookie, $expected ) {
-		$this->assertEquals($expected,  $this->inst->validateCookieRecord( $cookie ) );
+		$this->assertEquals( $expected, $this->inst->validateCookieRecord( $cookie ) );
 	}
 
 	public function provideValidateCookieRecord() {
@@ -310,3 +314,4 @@ class LoginNotifyTests extends MediaWikiTestCase {
 		$this->assertFalse( $this->inst->checkUserInCache( $u ) );
 	}
 }
+// @codingStandardsIgnoreEnd
