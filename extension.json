@@ -46,9 +46,9 @@
 		]
 	},
 	"config": {
-		"LoginNotifyAttemptsKnownIP": 15,
+		"LoginNotifyAttemptsKnownIP": 10,
 		"LoginNotifyExpiryKnownIP": 604800,
-		"LoginNotifyAttemptsNewIP": 5,
+		"LoginNotifyAttemptsNewIP": 3,
 		"LoginNotifyExpiryNewIP": 1209600,
 		"LoginNotifyCheckKnownIPs": true,
 		"LoginNotifyEnableOnSuccess": true,
