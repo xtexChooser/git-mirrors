@@ -6,6 +6,8 @@
  * @ingroup Extensions
  */
 
+use MediaWiki\Auth\AuthenticationResponse;
+
 class LoginNotifyHooks {
 
 	const OPTIONS_FAKE_TRUTH = 2;
@@ -79,7 +81,7 @@ class LoginNotifyHooks {
 	}
 
 	/**
-	 * Hook to check login result
+	 * Old hook for pre 1.27 or wikis with auth manager disabled.
 	 *
 	 * @todo Doesn't catcha captcha or throttle failures
 	 * @param $user User User in question
@@ -91,16 +93,54 @@ class LoginNotifyHooks {
 		if ( !class_exists( 'EchoEvent' ) ) {
 			throw new FatalError( "LoginNotify extension requires the Echo extension to be installed" );
 		}
-		$loginNotify = new LoginNotify();
-
 		if ( $retval === LoginForm::WRONG_PASS ) {
-			$loginNotify->recordFailure( $user );
+			self::doFailedLogin( $user );
 		} elseif ( $retval === LoginForm::SUCCESS ) {
-			$loginNotify->clearCounters( $user );
-			$loginNotify->sendSuccessNotice( $user );
-			$loginNotify->setCurrentAddressAsKnown( $user );
+			self::doSuccessfulLogin( $user );
 		}
-		// We ignore things like RESET_PASS for now
+	}
+
+	/**
+	 * Hook for login auditing post 1.27
+	 *
+	 * @param $ret AuthenticationResponse Is login succesful?
+	 * @param $user User|null User object on successful auth
+	 * @param $username String Username for failed attempts.
+	 */
+	public static function onAuthManagerLoginAuthenticateAudit(
+		AuthenticationResponse $ret, $user, $username
+	) {
+		if ( !class_exists( 'EchoEvent' ) ) {
+			throw new FatalError( "LoginNotify extension requires the Echo extension to be installed" );
+		}
+		if ( $user ) {
+			$userObj = $user;
+		} else {
+			$userObj = User::newFromName( $username, 'usable' );
+		}
+		if ( !$userObj ) {
+			return;
+		}
+
+		if ( $ret->status === AuthenticationResponse::PASS ) {
+			self::doSuccessfulLogin( $userObj );
+		} elseif ( $ret->status === AuthenticationResponse::FAIL ) {
+			self::doFailedLogin( $userObj );
+		}
+		// Other statuses include Abstain, Redirect, or UI. We ignore such
+		// statuses.
+	}
+
+	public static function doSuccessfulLogin( User $user ) {
+		$loginNotify = new LoginNotify();
+		$loginNotify->clearCounters( $user );
+		$loginNotify->sendSuccessNotice( $user );
+		$loginNotify->setCurrentAddressAsKnown( $user );
+	}
+
+	public static function doFailedLogin( User $user ) {
+		$loginNotify = new LoginNotify();
+		$loginNotify->recordFailure( $user );
 	}
 
 	/**

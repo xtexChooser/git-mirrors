@@ -32,6 +32,9 @@
 		"LoginAuthenticateAudit": [
 			"LoginNotifyHooks::onLoginAuthenticateAudit"
 		],
+		"AuthManagerLoginAuthenticateAudit": [
+			"LoginNotifyHooks::onAuthManagerLoginAuthenticateAudit"
+		],
 		"AddNewAccount": [
 			"LoginNotifyHooks::onAddNewAccount"
 		],
