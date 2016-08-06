@@ -43,9 +43,6 @@
 		],
 		"UserSaveOptions": [
 			"LoginNotifyHooks::onUserSaveOptions"
-		],
-		"UnitTestsList": [
-			"LoginNotifyHooks::onUnitTestList"
 		]
 	},
 	"config": {

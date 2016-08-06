@@ -32,8 +32,8 @@ class LoginNotifyTests extends MediaWikiTestCase {
 	}
 
 	public function setUp() {
+		parent::setUp();
 		$this->setUpLoginNotify();
-		return parent::setUp();
 	}
 
 	/**

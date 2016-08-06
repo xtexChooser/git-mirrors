@@ -265,15 +265,4 @@ class LoginNotifyHooks {
 		}
 		return true;
 	}
-
-	/**
-	 * Register phpunit tests
-	 *
-	 * @param Array &$files List of directories with unit tests.
-	 * @return bool
-	 */
-	public static function onUnitTestList( array &$files ) {
-		$files[] = __DIR__ . '/tests/';
-		return true;
-	}
 }
