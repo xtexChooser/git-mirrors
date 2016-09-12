@@ -584,7 +584,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 *
 	 * @param $key string cache key
 	 * @param $max int interval of one to send notice
-	 * @param $expiry When to expire cache key.
+	 * @param $expiry int When to expire cache key.
 	 * @return Bool|int false to not send notice, or number of hits
 	 */
 	private function checkAndIncKey( $key, $interval, $expiry ) {

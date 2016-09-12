@@ -204,7 +204,7 @@ class LoginNotifyHooks {
 	 *
 	 * @todo This is a bit icky. Need to decide if we really want to do this.
 	 * @todo If someone explicitly enables, gets admin rights, gets de-admined,
-	 *   this will then disable the preference, which is defnitely non-ideal.
+	 *   this will then disable the preference, which is definitely non-ideal.
 	 * @param $user User
 	 * @param &$options array
 	 * @return bool
@@ -241,7 +241,7 @@ class LoginNotifyHooks {
 	/**
 	 * Helper for onUser(Load|Save)Options
 	 *
-	 * @return Array Which option keys to check
+	 * @return array Which option keys to check
 	 */
 	private static function getOverridenOptions() {
 		// For login-success, it makes most sense to email
