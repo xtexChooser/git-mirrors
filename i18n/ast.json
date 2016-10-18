@@ -1,0 +1,16 @@
+{
+	"@metadata": {
+		"authors": [
+			"Xuacu"
+		]
+	},
+	"loginnotify-desc": "Avisar a los usuarios sobro anicios de sesión sospechosos",
+	"echo-category-title-login-fail": "Intentos d'aniciu de sesión incorreutos",
+	"echo-pref-tooltip-login-fail": "Avisame de cuando hubieren múltiples intentos fallíos d'aniciu de sesión cola mio cuenta.",
+	"echo-category-title-login-success": "Aniciu de sesión dende un ordenador nuevu",
+	"echo-pref-tooltip-login-success": "avisame cada vez que dalguién anicie sesión cola mio cuenta dende un ordenador que nun usé antes.",
+	"loginnotify-login-fail": "Hebo dellos intentos fallíos d'aniciu de sesión cola to cuenta",
+	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Intentu fallíu|Múltiples intentos fallíos}} d'aniciu de sesión en {{SITENAME}} como $1",
+	"notification-loginnotify-login-success-email-subject": "Aniciu de sesión en {{SITENAME}} como $1 dende un ordenador que nun usasti apocayá",
+	"notification-header-login-fail-known": "{{PLURAL:$3|Hebo '''un intentu fallíu'''|Hubieron '''$3 intentos fallíos'''}} d'aniciu de sesión na to cuenta dende la última vegada qu'aportasti."
+}
