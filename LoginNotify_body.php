@@ -48,7 +48,7 @@ class LoginNotify implements LoggerAwareInterface {
 			$this->secret = $this->config->get( 'LoginNotifySecretKey' );
 		} else {
 			$globalSecret = $this->config->get( 'SecretKey' );
-			$this->secret = hash( 'sha256', $globalSecret + 'LoginNotify' );
+			$this->secret = hash( 'sha256', $globalSecret . 'LoginNotify' );
 		}
 
 		$log = LoggerFactory::getInstance( 'LoginNotify' );
