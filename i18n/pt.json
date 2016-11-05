@@ -1,19 +1,22 @@
 {
 	"@metadata": {
 		"authors": [
-			"Vitorvicentevalente"
+			"Vitorvicentevalente",
+			"Hamilton Abreu"
 		]
 	},
-	"loginnotify-desc": "Notifica utilizadores sobre suspeitas de inícios de sessão",
-	"echo-category-title-login-fail": "Tentativas de início de sessão falhadas",
-	"echo-pref-tooltip-login-fail": "Notifique-me quando forem feitas várias tentativas falhadas de início de sessão na minha conta.",
+	"loginnotify-desc": "Notificar os utilizadores sobre tentativas suspeitas de entrar na wiki",
+	"echo-category-title-login-fail": "Tentativas falhadas de iniciar sessão",
+	"echo-pref-tooltip-login-fail": "Notificar-me quando forem feitas várias tentativas falhadas de iniciar sessão com a minha conta.",
 	"echo-category-title-login-success": "Início de sessão a partir de novo computador",
-	"echo-pref-tooltip-login-success": "Notificar-me sempre que alguém aceda à conta a partir de um computador que não tenha usado antes.",
-	"loginnotify-login-fail": "Ocorreram várias tentativas falhadas de início de sessão da sua conta",
-	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Tentativa falhada|Várias tentativas falhadas}} a início de sessão em {{SITENAME}} como $1",
-	"notification-loginnotify-login-success-email-subject": "Iniciar sessão em {{SITENAME}} como $1 a partir de computador não usado recentemente",
-	"notification-header-login-fail-known": "{{PLURAL:$3|Ocorreu '''uma tentativa falhada'''|Ocorreram '''$3 tentativas falhadas'''}} para aceder à sua conta desde da última vez que iniciou sessão.",
-	"notification-header-login-success": "Alguém tentou aceder à sua conta a partir de um computador com o qual não editou recentemente.",
-	"notification-loginnotify-login-fail-known-emailbatch": "{{PLURAL:$2|Ocorreu uma tentativa falhada|Ocorreram $2 tentativas falhadas}} para aceder à sua conta, $1, em {{SITENAME}}.",
-	"notification-loginnotify-login-success-emailbatch": "Alguém acedeu à sua conta, $1, em {{SITENAME}} a partir de um computador com o qual não editou recentemente."
+	"echo-pref-tooltip-login-success": "Notificar-me sempre que alguém inicie sessão com a minha conta a partir de um computador que eu não tenha usado antes.",
+	"loginnotify-login-fail": "Ocorreram várias tentativas falhadas de iniciar sessão com a sua conta",
+	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Tentativa falhada|Várias tentativas falhadas}} de iniciar sessão na wiki {{SITENAME}} como $1",
+	"notification-loginnotify-login-success-email-subject": "Inicio de sessão na wiki {{SITENAME}} como $1 a partir de um computador não usado por si recentemente",
+	"notification-header-login-fail-known": "{{PLURAL:$3|Ocorreu '''uma tentativa falhada'''|Ocorreram '''$3 tentativas falhadas'''}} de iniciar sessão com a sua conta desde a última vez que entrou na wiki.",
+	"notification-header-login-fail-new": "{{PLURAL:$3|Ocorreu '''uma tentativa falhada'''|Ocorreram '''$3 tentativas falhadas'''}} de iniciar sessão com a sua conta a partir de um computador com o qual não editou recentemente, desde a última vez que entrou na wiki.",
+	"notification-header-login-success": "Alguém entrou na wiki com a sua conta a partir de um computador com o qual não editou recentemente.",
+	"notification-loginnotify-login-fail-new-emailbatch": "{{PLURAL:$2|Ocorreu uma tentativa falhada|Ocorreram $2 tentativas falhadas}} de iniciar sessão com a sua conta '$1' na wiki {{SITENAME}} a partir de um computador que nunca utilizou.",
+	"notification-loginnotify-login-fail-known-emailbatch": "{{PLURAL:$2|Ocorreu uma tentativa falhada|Ocorreram $2 tentativas falhadas}} de iniciar sessão com a sua conta, '$1', na wiki {{SITENAME}}.",
+	"notification-loginnotify-login-success-emailbatch": "Alguém entrou na wiki com a sua conta, '$1', na wiki {{SITENAME}} a partir de um computador com o qual não editou recentemente."
 }
