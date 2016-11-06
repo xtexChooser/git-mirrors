@@ -12,5 +12,10 @@
 	"loginnotify-login-fail": "Hebo dellos intentos fallíos d'aniciu de sesión cola to cuenta",
 	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Intentu fallíu|Múltiples intentos fallíos}} d'aniciu de sesión en {{SITENAME}} como $1",
 	"notification-loginnotify-login-success-email-subject": "Aniciu de sesión en {{SITENAME}} como $1 dende un ordenador que nun usasti apocayá",
-	"notification-header-login-fail-known": "{{PLURAL:$3|Hebo '''un intentu fallíu'''|Hubieron '''$3 intentos fallíos'''}} d'aniciu de sesión na to cuenta dende la última vegada qu'aportasti."
+	"notification-header-login-fail-known": "{{PLURAL:$3|Hebo '''un intentu fallíu'''|Hubieron '''$3 intentos fallíos'''}} d'aniciu de sesión na to cuenta dende la última vegada qu'aportasti.",
+	"notification-header-login-fail-new": "Dende la última vegada qu'aniciasti sesión hebo {{PLURAL:$3|'''un intentu fallíu'''|'''$3 intentos fallíos'''}} d'aniciu de sesión na la to cuenta dende un ordenador del que nun editasti apocayá.",
+	"notification-header-login-success": "Daquién anició sesión correutamente na to cuenta dende un ordenador del que nun editasti apocayá.",
+	"notification-loginnotify-login-fail-new-emailbatch": "Hebo {{PLURAL:$2|un intentu fallíu|$2 intentos fallíos}} d'aniciu de sesión na to cuenta '$1' en {{SITENAME}} dende un ordenador que nun usasti antes.",
+	"notification-loginnotify-login-fail-known-emailbatch": "Hebo {{PLURAL:$2|un intentu fallíu|$2 intentos fallíos}} d'aniciu de sesión na to cuenta '$1' en {{SITENAME}}.",
+	"notification-loginnotify-login-success-emailbatch": "Dalguién anició sesión correutamente na to cuenta '$1' en {{SITENAME}} dende un ordenador del que nun editasti apocayá."
 }
