@@ -504,7 +504,7 @@ class LoginNotify implements LoggerAwareInterface {
 		if ( !is_string( $res ) ) {
 			throw new UnexpectedValueException( "Hash failed" );
 		}
-		$encoded = $year . '-' . $salt . '-' . wfBaseConvert( $res, 16, 36 );
+		$encoded = $year . '-' . $salt . '-' . Wikimedia\base_convert( $res, 16, 36 );
 		return $encoded;
 	}
 
