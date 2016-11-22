@@ -243,10 +243,10 @@ class LoginNotify implements LoggerAwareInterface {
 	 * @note This catches and ignores database errors.
 	 * @param $userId int User id number (Not neccesarily for the local wiki)
 	 * @param $ipFragment string Prefix to match against cuc_ip (from $this->getIPNetwork())
-	 * @param $dbr DatabaseBase A database connection (possibly foreign)
+	 * @param $dbr Database A database connection (possibly foreign)
 	 * @return boolean If $ipFragment is in check user db
 	 */
-	private function checkUserInCheckUserQuery( $userId, $ipFragment, DatabaseBase $dbr ) {
+	private function checkUserInCheckUserQuery( $userId, $ipFragment, Database $dbr ) {
 		// For some unknown reason, the index is on
 		// (cuc_user, cuc_ip, cuc_timestamp), instead of
 		// cuc_ip_hex which would be ideal.
@@ -275,9 +275,9 @@ class LoginNotify implements LoggerAwareInterface {
 	 *
 	 * @todo FIXME Does this behaviour make sense, esp. with cookie check?
 	 * @param $userId int User id number (possibly on foreign wiki)
-	 * @param $dbr DatabaseBase DB connection (possibly to foreign wiki)
+	 * @param $dbr Database DB connection (possibly to foreign wiki)
 	 */
-	private function checkUserInCheckUserAnyInfo( $userId, DatabaseBase $dbr ) {
+	private function checkUserInCheckUserAnyInfo( $userId, Database $dbr ) {
 		// Verify that we actually have IP info for
 		// this user.
 		// @todo: Should this instead be if we have a
@@ -299,10 +299,10 @@ class LoginNotify implements LoggerAwareInterface {
 	/**
 	 * Does this wiki have a checkuser table?
 	 *
-	 * @param DatabaseBase $dbr Database to check
+	 * @param Database $dbr Database to check
 	 * @return boolean
 	 */
-	private function hasCheckUserTables( DatabaseBase $dbr ) {
+	private function hasCheckUserTables( Database $dbr ) {
 		if ( !$dbr->tableExists( 'cu_changes' ) ) {
 			$this->log->warning( "LoginNotify: No checkuser table on {wikiId}", [
 				'method' => __METHOD__,
