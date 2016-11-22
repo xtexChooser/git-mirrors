@@ -80,7 +80,7 @@ class LoginNotify implements LoggerAwareInterface {
 		}
 		$prefix = preg_replace( $subnetRegex, '', $ip );
 		if ( !is_string( $prefix ) ) {
-			throw new Exception( __METHOD__ . " Regex failed!?" );
+			throw new Exception( __METHOD__ . " Regex failed on '$ip'!?" );
 		}
 		return $prefix;
 	}
