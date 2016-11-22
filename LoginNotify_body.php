@@ -452,7 +452,7 @@ class LoginNotify implements LoggerAwareInterface {
 	/**
 	 * Check if cookie is valid (Is not too old, has 3 fields)
 	 *
-	 * @param $cookieRecord Cookie record
+	 * @param string $cookieRecord Cookie record
 	 * @return boolean True if valid
 	 */
 	private function validateCookieRecord( $cookieRecord ) {
@@ -461,7 +461,7 @@ class LoginNotify implements LoggerAwareInterface {
 			$this->log->warning( "Got cookie with invalid format",
 				[
 					'method' => __METHOD__,
-					'cookieRecord' => $cookie
+					'cookieRecord' => $cookieRecord
 				]
 			);
 			return false;
