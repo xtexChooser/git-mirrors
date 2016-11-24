@@ -1,0 +1,9 @@
+{
+	"@metadata": {
+		"authors": [
+			"Janezdrilc"
+		]
+	},
+	"echo-category-title-login-fail": "Neuspeli poskusi prijave",
+	"echo-category-title-login-success": "Prijava iz drugega računalnika"
+}
