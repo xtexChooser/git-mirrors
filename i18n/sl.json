@@ -5,5 +5,7 @@
 		]
 	},
 	"echo-category-title-login-fail": "Neuspeli poskusi prijave",
-	"echo-category-title-login-success": "Prijava iz drugega računalnika"
+	"echo-pref-tooltip-login-fail": "Obvesti me v primeru več neuspešnih poskusov prijave.",
+	"echo-category-title-login-success": "Prijava iz drugega računalnika",
+	"echo-pref-tooltip-login-success": "Obvesti me ob prijavi iz računalnika, ki ga do sedaj še nisem nikoli uporabljal."
 }
