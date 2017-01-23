@@ -136,6 +136,8 @@ class LoginNotifyHooks {
 	}
 
 	/**
+	 * Deprecated since v1.27
+	 *
 	 * Set a cookie saying this is a known computer when creating an account.
 	 *
 	 * @todo This still sets cookies if user creates account well logged in as someone else.
@@ -144,6 +146,22 @@ class LoginNotifyHooks {
 	 */
 	public static function onAddNewAccount( User $user, $byMail ) {
 		if ( !$byMail ) {
+			$loginNotify = new LoginNotify();
+			$loginNotify->setCurrentAddressAsKnown( $user );
+		}
+	}
+
+	/**
+	 * Hook for new account creation since v1.27
+	 *
+	 * Called immediately after a local user has been created and saved to the database
+	 *
+	 * @todo This still sets cookies if user creates account well logged in as someone else.
+	 * @param User $user User created
+	 * @param boolean $autocreated Whether this was an auto-created account
+	 */
+	public static function onLocalUserCreated( $user, $autocreated ) {
+		if ( !$autocreated ) {
 			$loginNotify = new LoginNotify();
 			$loginNotify->setCurrentAddressAsKnown( $user );
 		}

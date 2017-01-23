@@ -47,6 +47,9 @@
 		],
 		"UserSaveOptions": [
 			"LoginNotifyHooks::onUserSaveOptions"
+		],
+		"LocalUserCreated": [
+			"LoginNotifyHooks::onLocalUserCreated"
 		]
 	},
 	"config": {

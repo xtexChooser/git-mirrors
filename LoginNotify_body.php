@@ -26,6 +26,8 @@ class LoginNotify implements LoggerAwareInterface {
 	private $config;
 	/** @var LoggerInterface Usually instance of LoginNotify log */
 	private $log;
+	/** @var Salt for cookie hash */
+	private $gSalt;
 
 	/**
 	 * Constructor
@@ -43,6 +45,8 @@ class LoginNotify implements LoggerAwareInterface {
 		}
 		$this->cache = $cache;
 		$this->config = $cfg;
+		// Generate salt just once to avoid duplicate cookies
+		$this->gSalt = Wikimedia\base_convert( MWCryptRand::generateHex( 8 ), 16, 36 );
 
 		if ( $this->config->get( 'LoginNotifySecretKey' ) !== null ) {
 			$this->secret = $this->config->get( 'LoginNotifySecretKey' );
@@ -496,7 +500,7 @@ class LoginNotify implements LoggerAwareInterface {
 		}
 
 		if ( $salt === false ) {
-			$salt = Wikimedia\base_convert( MWCryptRand::generateHex( 8 ), 16, 36 );
+			$salt = $this->gSalt;
 		}
 
 		// FIXME Maybe shorten, e.g. User only half the hash?
