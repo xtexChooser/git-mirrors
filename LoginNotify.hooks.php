@@ -55,7 +55,6 @@ class LoginNotifyHooks {
 			// we have immediate flag?
 			'icon' => 'LoginNotify-lock',
 			'immediate' => true,
-			'formatter-class' => 'LoginNotifyFormatter',
 		];
 		$notifications['login-fail-new'] = [
 			'email-body-batch-message' => 'notification-loginnotify-login-fail-new-emailbatch'
@@ -87,7 +86,6 @@ class LoginNotifyHooks {
 	 * @param $user User User in question
 	 * @param $pass String password
 	 * @param $retval int LoginForm constant (e.g. LoginForm::SUCCESS)
-	 * @return bool Standard hook return
 	 */
 	public static function onLoginAuthenticateAudit( User $user, $pass, $retval ) {
 		if ( !class_exists( 'EchoEvent' ) ) {
@@ -173,7 +171,7 @@ class LoginNotifyHooks {
 			return true;
 		}
 
-		if ( !self::isUserOptionOverriden( $user, $wgLoginNotifyEnableForPriv ) ) {
+		if ( !self::isUserOptionOverriden( $user ) ) {
 			return true;
 		}
 
@@ -210,10 +208,9 @@ class LoginNotifyHooks {
 	 * @return bool
 	 */
 	public function onUserSaveOptions( User $user, array &$options ) {
-		global $wgLoginNotifyEnableForPriv;
 		$optionsToCheck = self::getOverridenOptions();
 		$defaultOpts = User::getDefaultOptions();
-		if ( !self::isUserOptionOverriden( $user, $wgLoginNotifyEnableForPriv ) ) {
+		if ( !self::isUserOptionOverriden( $user ) ) {
 			return true;
 		}
 		foreach ( $optionsToCheck as $opt ) {
