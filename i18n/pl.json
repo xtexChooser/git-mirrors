@@ -1,11 +1,14 @@
 {
 	"@metadata": {
 		"authors": [
-			"Chrumps"
+			"Chrumps",
+			"Sp5uhe"
 		]
 	},
 	"loginnotify-desc": "Powiadamiaj użytkowników o podejrzanych próbach logowania.",
 	"echo-category-title-login-fail": "Nieudane próby logowania",
+	"echo-pref-tooltip-login-fail": "Powiadom mnie jeśli będzie kilka nieudanych prób logowania na moje konto.",
 	"echo-category-title-login-success": "Logowanie z nowego komputera",
+	"echo-pref-tooltip-login-success": "Powiadom mnie, gdy ktoś zaloguje się na moje konto z komputera, którego nigdy wcześniej nie używałem.",
 	"loginnotify-login-fail": "Było kilka nieudanych prób logowania na twoje konto"
 }
