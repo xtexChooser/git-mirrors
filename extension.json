@@ -22,8 +22,7 @@
 	"AutoloadClasses": {
 		"LoginNotify": "LoginNotify_body.php",
 		"LoginNotifyHooks": "LoginNotify.hooks.php",
-		"LoginNotifyPresentationModel": "LoginNotifyPresentationModel.php",
-		"LoginNotifyFormatter": "LoginNotifyFormatter.php"
+		"LoginNotifyPresentationModel": "LoginNotifyPresentationModel.php"
 	},
 	"Hooks": {
 		"BeforeCreateEchoEvent": [
