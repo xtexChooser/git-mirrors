@@ -88,9 +88,6 @@ class LoginNotifyHooks {
 	 * @param $retval int LoginForm constant (e.g. LoginForm::SUCCESS)
 	 */
 	public static function onLoginAuthenticateAudit( User $user, $pass, $retval ) {
-		if ( !class_exists( 'EchoEvent' ) ) {
-			throw new FatalError( "LoginNotify extension requires the Echo extension to be installed" );
-		}
 		if ( $retval === LoginForm::WRONG_PASS ) {
 			self::doFailedLogin( $user );
 		} elseif ( $retval === LoginForm::SUCCESS ) {
@@ -108,9 +105,6 @@ class LoginNotifyHooks {
 	public static function onAuthManagerLoginAuthenticateAudit(
 		AuthenticationResponse $ret, $user, $username
 	) {
-		if ( !class_exists( 'EchoEvent' ) ) {
-			throw new FatalError( "LoginNotify extension requires the Echo extension to be installed" );
-		}
 		if ( $user ) {
 			$userObj = $user;
 		} else {

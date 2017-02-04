@@ -8,6 +8,11 @@
 	"descriptionmsg": "loginnotify-desc",
 	"license-name": "MIT",
 	"type": "other",
+	"requires": {
+		"extensions": {
+			"Echo": "*"
+		}
+	},
 	"DefaultUserOptions": {
 		"echo-subscriptions-web-login-fail": true,
 		"echo-subscriptions-email-login-fail": false,
