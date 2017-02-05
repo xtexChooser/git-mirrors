@@ -207,7 +207,7 @@ class LoginNotifyHooks {
 	 * @param &$options array
 	 * @return bool
 	 */
-	public function onUserSaveOptions( User $user, array &$options ) {
+	public static function onUserSaveOptions( User $user, array &$options ) {
 		$optionsToCheck = self::getOverridenOptions();
 		$defaultOpts = User::getDefaultOptions();
 		if ( !self::isUserOptionOverriden( $user ) ) {
