@@ -248,7 +248,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 * Actually do the query of the check user table.
 	 *
 	 * @note This catches and ignores database errors.
-	 * @param $userId int User id number (Not neccesarily for the local wiki)
+	 * @param $userId int User id number (Not necessarily for the local wiki)
 	 * @param $ipFragment string Prefix to match against cuc_ip (from $this->getIPNetwork())
 	 * @param $dbr Database A database connection (possibly foreign)
 	 * @return boolean If $ipFragment is in check user db

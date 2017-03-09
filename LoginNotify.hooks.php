@@ -193,7 +193,7 @@ class LoginNotifyHooks {
 	 * Hook for loading options.
 	 *
 	 * This is a bit hacky. Used to be able to set a different
-	 * default for admins then other users
+	 * default for admins than other users
 	 *
 	 * @param User $user The user in question.
 	 * @param mixed[] &$options The options.
@@ -205,12 +205,12 @@ class LoginNotifyHooks {
 			return true;
 		}
 
-		if ( !self::isUserOptionOverriden( $user ) ) {
+		if ( !self::isUserOptionOverridden( $user ) ) {
 			return true;
 		}
 
 		$defaultOpts = User::getDefaultOptions();
-		$optionsToCheck = self::getOverridenOptions();
+		$optionsToCheck = self::getOverriddenOptions();
 
 		foreach ( $optionsToCheck as $opt ) {
 			if ( $options[$opt] === self::OPTIONS_FAKE_FALSE ) {
@@ -230,7 +230,7 @@ class LoginNotifyHooks {
 	 * Hook for saving options.
 	 *
 	 * This is a bit hacky. Used to be able to set a different
-	 * default for admins then other users. Since admins are higher value
+	 * default for admins than other users. Since admins are higher value
 	 * targets, it may make sense to have notices enabled by default for
 	 * them, but disabled for normal users.
 	 *
@@ -242,9 +242,9 @@ class LoginNotifyHooks {
 	 * @return bool
 	 */
 	public static function onUserSaveOptions( User $user, array &$options ) {
-		$optionsToCheck = self::getOverridenOptions();
+		$optionsToCheck = self::getOverriddenOptions();
 		$defaultOpts = User::getDefaultOptions();
-		if ( !self::isUserOptionOverriden( $user ) ) {
+		if ( !self::isUserOptionOverridden( $user ) ) {
 			return true;
 		}
 		foreach ( $optionsToCheck as $opt ) {
@@ -274,7 +274,7 @@ class LoginNotifyHooks {
 	 *
 	 * @return array Which option keys to check
 	 */
-	private static function getOverridenOptions() {
+	private static function getOverriddenOptions() {
 		// For login-success, it makes most sense to email
 		// people about it, but auto-subscribing people to email
 		// is a bit icky as nobody likes to be spammed.
@@ -284,7 +284,7 @@ class LoginNotifyHooks {
 		];
 	}
 
-	private static function isUserOptionOverriden( User $user ) {
+	private static function isUserOptionOverridden( User $user ) {
 		global $wgLoginNotifyEnableForPriv;
 		// Note: isAllowedAny calls into session for per-session restrictions,
 		// which we do not want to take into account, and more importantly
