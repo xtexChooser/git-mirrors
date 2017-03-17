@@ -2,12 +2,12 @@
 class LoginNotifyPresentationModel extends EchoEventPresentationModel {
 
 	/**
-	 * Show a lock icon, for account security.
+	 * Show an user avatar.
 	 *
 	 * @return String Name of icon
 	 */
 	public function getIconType() {
-		return 'LoginNotify-lock';
+		return 'LoginNotify-user-avatar';
 	}
 
 	/**
@@ -36,9 +36,19 @@ class LoginNotifyPresentationModel extends EchoEventPresentationModel {
 	}
 
 	/**
-	 * @todo FIXME Unclear if this is a good idea
+	 * Get links to be used in the notification
+	 *
+	 * @return array Link to Special:ChangePassword
 	 */
 	public function getSecondaryLinks() {
-		return [ $this->getAgentLink() ];
+		$changePasswordLink = [
+			'url' => SpecialPage::getTitleFor( 'ChangePassword' )->getFullURL(),
+			'label' => $this->msg( 'changepassword' )->text(),
+			'description' => '',
+			'icon' => 'lock',
+			'prioritized' => true,
+		];
+
+		return [ $changePasswordLink ];
 	}
 }

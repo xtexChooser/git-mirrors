@@ -28,8 +28,8 @@ class LoginNotifyHooks {
 	) {
 		global $wgLoginNotifyEnableOnSuccess;
 
-		$icons['LoginNotify-lock'] = [
-			'path' => 'LoginNotify/Lock.svg'
+		$icons['LoginNotify-user-avatar'] = [
+			'path' => 'LoginNotify/UserAvatar.svg'
 		];
 
 		$notificationCategories['login-fail'] = [
@@ -53,7 +53,7 @@ class LoginNotifyHooks {
 			'email-body-batch-params' => [ 'agent', 'count' ],
 			// FIXME is it ok not to set batch email messages, since
 			// we have immediate flag?
-			'icon' => 'LoginNotify-lock',
+			'icon' => 'LoginNotify-user-avatar',
 			'immediate' => true,
 		];
 		$notifications['login-fail-new'] = [
