@@ -16,9 +16,9 @@ class LoginNotifyHooks {
 	/**
 	 * Add LoginNotify events to Echo
 	 *
-	 * @param $notifications array of Echo notifications
-	 * @param $notificationCategories array of Echo notification categories
-	 * @param $icons array of icon details
+	 * @param string[] &$notifications Array of Echo notifications
+	 * @param string[] &$notificationCategories Array of Echo notification categories
+	 * @param string[] &$icons Array of icon details
 	 * @return bool
 	 */
 	public static function onBeforeCreateEchoEvent(
@@ -83,9 +83,9 @@ class LoginNotifyHooks {
 	 * Old hook for pre 1.27 or wikis with auth manager disabled.
 	 *
 	 * @todo Doesn't catcha captcha or throttle failures
-	 * @param $user User User in question
-	 * @param $pass String password
-	 * @param $retval int LoginForm constant (e.g. LoginForm::SUCCESS)
+	 * @param User $user User in question.
+	 * @param string $pass The password (parameter not used).
+	 * @param integer $retval A LoginForm constant (e.g. LoginForm::SUCCESS).
 	 */
 	public static function onLoginAuthenticateAudit( User $user, $pass, $retval ) {
 		if ( $retval === LoginForm::WRONG_PASS ) {
@@ -98,9 +98,9 @@ class LoginNotifyHooks {
 	/**
 	 * Hook for login auditing post 1.27
 	 *
-	 * @param $ret AuthenticationResponse Is login succesful?
-	 * @param $user User|null User object on successful auth
-	 * @param $username String Username for failed attempts.
+	 * @param AuthenticationResponse $ret Is login successful?
+	 * @param User|null $user User object on successful auth
+	 * @param string $username Username for failed attempts.
 	 */
 	public static function onAuthManagerLoginAuthenticateAudit(
 		AuthenticationResponse $ret, $user, $username
@@ -123,6 +123,12 @@ class LoginNotifyHooks {
 		// statuses.
 	}
 
+	/**
+	 * Handle a successful login (clear the attempt counter, send a notice, and record the
+	 * current IP address as known).
+	 *
+	 * @param User $user The user who logged in.
+	 */
 	public static function doSuccessfulLogin( User $user ) {
 		$loginNotify = new LoginNotify();
 		$loginNotify->clearCounters( $user );
@@ -130,6 +136,11 @@ class LoginNotifyHooks {
 		$loginNotify->setCurrentAddressAsKnown( $user );
 	}
 
+	/**
+	 * Handle a failed login (record the failure).
+	 *
+	 * @param User $user The user that failed to log in.
+	 */
 	public static function doFailedLogin( User $user ) {
 		$loginNotify = new LoginNotify();
 		$loginNotify->recordFailure( $user );
@@ -140,8 +151,8 @@ class LoginNotifyHooks {
 	 *
 	 * Set a cookie saying this is a known computer when creating an account.
 	 *
-	 * @todo This still sets cookies if user creates account well logged in as someone else.
-	 * @param User $user
+	 * @todo This still sets cookies if user creates an account while logged in as someone else.
+	 * @param User $user The user that has been created.
 	 * @param boolean $byMail Account created by email
 	 */
 	public static function onAddNewAccount( User $user, $byMail ) {
@@ -173,8 +184,8 @@ class LoginNotifyHooks {
 	 * This is a bit hacky. Used to be able to set a different
 	 * default for admins then other users
 	 *
-	 * @param $user User
-	 * @param &$options array
+	 * @param User $user The user in question.
+	 * @param mixed[] &$options The options.
 	 * @return bool
 	 */
 	public static function onUserLoadOptions( User $user, array &$options ) {
@@ -215,8 +226,8 @@ class LoginNotifyHooks {
 	 * @todo This is a bit icky. Need to decide if we really want to do this.
 	 * @todo If someone explicitly enables, gets admin rights, gets de-admined,
 	 *   this will then disable the preference, which is definitely non-ideal.
-	 * @param $user User
-	 * @param &$options array
+	 * @param User $user The user that is being saved.
+	 * @param mixed[] &$options The options.
 	 * @return bool
 	 */
 	public static function onUserSaveOptions( User $user, array &$options ) {
