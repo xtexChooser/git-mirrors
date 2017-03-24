@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Ykhwong"
+		]
+	},
+	"loginnotify-login-fail": "당신의 계정에 대한 로그인 시도 실패가 여러 번 있었습니다"
+}

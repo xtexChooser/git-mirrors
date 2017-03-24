@@ -9,5 +9,6 @@
 	"echo-pref-tooltip-login-fail": "Mech informéiere wa méi dacks ouni Succès probéiert gouf sech a mäi Benotzerkont anzeloggen.",
 	"echo-category-title-login-success": "Alogge vun engem neie Computer",
 	"echo-pref-tooltip-login-success": "Mech all Kéier informéiere wann een sech a mäi Benotzerkont aloggt vun engem Computer deen ech virdrun net benotzt hunn.",
-	"loginnotify-login-fail": "Et gouf e puer feelgeschloe Versich fir sech op Äre Benotzerkont anzeloggen"
+	"loginnotify-login-fail": "Et gouf e puer feelgeschloe Versich fir sech op Äre Benotzerkont anzeloggen",
+	"notification-header-login-fail-new": "Et gouf {{PLURAL:$3|'''ee feelgeschloene Versuch'''|'''$3 feelgeschloe Versich'''}} fir sech an Äre Benotzerkont anzeloggen zanter Dir Iech fir d'lescht ageloggt hutt. Wann Dir dat waart, da kënnt Dir dëse Message ignoréieren. Wann net, da vergewëssert Iech w.e.g. datt Äre Benotzerkont e staarkt Passwuert huet."
 }
