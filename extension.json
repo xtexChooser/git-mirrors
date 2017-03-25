@@ -53,11 +53,17 @@
 		]
 	},
 	"config": {
+		"@docLoginNotifyAttemptsKnownIP": "The number of failed login attempts to permit from a known IP before a notification is triggered.",
 		"LoginNotifyAttemptsKnownIP": 10,
+		"@docLoginNotifyExpiryKnownIP": "The time-to-live of the count of failed login attempts from a known IP (from the time of the first failed attempt).",
 		"LoginNotifyExpiryKnownIP": 604800,
+		"@docLoginNotifyAttemptsNewIP": "The number of failed login attempts to permit from a new IP before a notification is triggered.",
 		"LoginNotifyAttemptsNewIP": 3,
+		"@docLoginNotifyExpiryNewIP": "The time-to-live of the count of failed login attempts from a new IP (from the time of the first failed attempt).",
 		"LoginNotifyExpiryNewIP": 1209600,
+		"@docLoginNotifyCheckKnownIPs": "Whether to trigger a notification after failed logins from known IPs.",
 		"LoginNotifyCheckKnownIPs": true,
+		"@docLoginNotifyEnableOnSuccess": "Whether to trigger a notification after successful logins from unknown IPs.",
 		"LoginNotifyEnableOnSuccess": true,
 		"@docLoginNotifyEnableForPriv": "Enable notification for users with certain rights. To disable set to false",
 		"LoginNotifyEnableForPriv": [ "editinterface", "userrights" ],
@@ -67,6 +73,7 @@
 		"LoginNotifyCookieExpire": 15552000,
 		"@docLoginNotifyCookieDomain": "Override to allow sharing login cookies between sites on different subdomains",
 		"LoginNotifyCookieDomain": null,
+		"@docLoginNotifyMaxCookieRecords": "Maximum number of users (records) to track as having successfully logged in on a particular device.",
 		"LoginNotifyMaxCookieRecords": 6,
 		"@docLoginNotifyCacheLoginIPExpiry": "Set to false to disable caching IPs in memcache. Set to 0 to cache forever. Default 60 days.",
 		"LoginNotifyCacheLoginIPExpiry": 5184000
