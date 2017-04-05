@@ -26,15 +26,14 @@ class LoginNotify implements LoggerAwareInterface {
 	private $config;
 	/** @var LoggerInterface Usually instance of LoginNotify log */
 	private $log;
-	/** @var Salt for cookie hash */
+	/** @var string|boolean Salt for cookie hash */
 	private $gSalt;
 
 	/**
 	 * Constructor
 	 *
-	 * @param $cfg Config Optional. Set if you have handy.
-	 * @param $cache BagOStuff Optional. Only set if you want to override default
-	 *   caching behaviour.
+	 * @param Config $cfg Optional. Set if you have handy.
+	 * @param BagOStuff $cache Optional. Only set if you want to override default caching behaviour.
 	 */
 	public function __construct( Config $cfg = null, BagOStuff $cache = null ) {
 		if ( !$cache ) {
@@ -59,6 +58,10 @@ class LoginNotify implements LoggerAwareInterface {
 		$this->log = $log;
 	}
 
+	/**
+	 * Set the logger.
+	 * @param LoggerInterface $logger The logger object.
+	 */
 	public function setLogger( LoggerInterface $logger ) {
 		$this->log = $logger;
 	}
@@ -345,7 +348,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 *
 	 * It is expected this be called upon successful log in.
 	 *
-	 * @param $user User The user in question.
+	 * @param User $user The user in question.
 	 */
 	public function setCurrentAddressAsKnown( User $user ) {
 		$this->cacheLoginIP( $user );
@@ -353,9 +356,9 @@ class LoginNotify implements LoggerAwareInterface {
 	}
 
 	/**
-	 * Cache the current IP subnet as being known location for user
+	 * Cache the current IP subnet as being a known location for the given user.
 	 *
-	 * @param $user User
+	 * @param User $user The user.
 	 */
 	private function cacheLoginIP( User $user ) {
 		// For simplicity, this only stores the last IP subnet used.
@@ -365,15 +368,15 @@ class LoginNotify implements LoggerAwareInterface {
 		if ( $expiry !== false ) {
 			$ipPrefix = $this->getIPNetwork( $user->getRequest()->getIP() );
 			$key = $this->getKey( $user, 'prevSubnet' );
-			$res = $this->cache->set( $key, $ipPrefix, $expiry );
+			$this->cache->set( $key, $ipPrefix, $expiry );
 		}
 	}
 
 	/**
 	 * Check if a certain user is in the cookie.
 	 *
-	 * @param $user User User in question
-	 * @return Mixed true, false or self::NO_INFO_AVAILABLE.
+	 * @param User $user User in question
+	 * @return boolean|integer Either true, false, or self::NO_INFO_AVAILABLE.
 	 */
 	private function checkUserInCookie( User $user ) {
 		$cookie = $this->getPrevLoginCookie( $user->getRequest() );
@@ -400,10 +403,11 @@ class LoginNotify implements LoggerAwareInterface {
 	 *
 	 * When generating a new cookie, it will add the current user to the top,
 	 * remove any previous instances of the current user, and remove older user
-	 * references, if there is too many records.
+	 * references, if there are too many records.
 	 *
-	 * @param $user User User that person is attempting to log in as
-	 * @param $cookie String A cookie, which has records separated by '!'
+	 * @param user $user User that person is attempting to log in as.
+	 * @param string $cookie A cookie, which has records separated by '.'.
+	 * @return array Element 0 is boolean (user seen before?), 1 is the new cookie value.
 	 */
 	private function checkAndGenerateCookie( User $user, $cookie ) {
 		$userSeenBefore = false;
@@ -607,10 +611,10 @@ class LoginNotify implements LoggerAwareInterface {
 	/**
 	 * Clear attempt counter for user.
 	 *
-	 * When a user succesfully logs in, we start back from 0, as
+	 * When a user successfully logs in, we start back from 0, as
 	 * otherwise a mistake here and there will trigger the warning.
 	 *
-	 * @param $user User
+	 * @param user $user The user for whom to clear the attempt counter.
 	 */
 	public function clearCounters( User $user ) {
 		$cache = $this->cache;
@@ -624,7 +628,7 @@ class LoginNotify implements LoggerAwareInterface {
 	/**
 	 * On login failure, record failure and maybe send notice
 	 *
-	 * @param $user User The user whose account was attempted to log into
+	 * @param User $user The user whose account was attempted to log into.
 	 */
 	public function recordFailure( User $user ) {
 		$fromKnownIP = $this->isFromKnownIP( $user );
@@ -636,9 +640,9 @@ class LoginNotify implements LoggerAwareInterface {
 	}
 
 	/**
-	 * Send a notice on successful login if not known ip
+	 * Send a notice on successful login from an unknown IP.
 	 *
-	 * @param $user User Account in question
+	 * @param User $user User account in question.
 	 */
 	public function sendSuccessNotice( User $user ) {
 		if ( $this->config->get( 'LoginNotifyEnableOnSuccess' )
