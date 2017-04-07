@@ -1,8 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
-			"Okras"
+			"Okras",
+			"Alexey zakharenkov"
 		]
 	},
-	"echo-category-title-login-success": "Вход с нового компьютера"
+	"echo-pref-tooltip-login-fail": "Уведомлять меня, если было предпринято несколько неудачных попыток войти под моей учётной записью.",
+	"echo-category-title-login-success": "Вход с нового компьютера",
+	"loginnotify-login-fail": "Было предпринято несколько неудачных попыток войти под Вашей учётной записью."
 }
