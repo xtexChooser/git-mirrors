@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Brian Wolff",
-			"MusikAnimal"
+			"MusikAnimal",
+			"Niharika"
 		]
 	},
 	"loginnotify-desc": "Notify users about suspicious logins",
@@ -13,10 +14,10 @@
 	"loginnotify-login-fail": "There have been several failed attempts to log in to your account",
 	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Failed attempt|Multiple failed attempts}} to log in to {{SITENAME}} as $1",
 	"notification-loginnotify-login-success-email-subject": "Login to {{SITENAME}} as $1 from a computer you have not recently used",
-	"notification-header-login-fail-known": "There {{PLURAL:$3|has been '''one failed attempt'''|have been '''$3 failed attempts'''}} to log in to your account since the last time you logged in. If this was you, then you can disregard this message. If it wasn't, please make sure your account has a strong password.",
-	"notification-header-login-fail-new": "There {{PLURAL:$3|has been '''one failed attempt'''|have been '''$3 failed attempts'''}} to log in to your account since the last time you logged in. If this was you, then you can disregard this message. If it wasn't, please make sure your account has a strong password.",
 	"notification-header-login-success": "Someone has successfully logged into your account from a computer which you have not edited from recently.",
 	"notification-loginnotify-login-fail-new-emailbatch": "There {{PLURAL:$2|has been a failed attempt|have been $2 failed attempts}} to log in to your account '$1' on {{SITENAME}}. If this was you, then you can disregard this message. If it wasn't, please make sure your account has a strong password.",
 	"notification-loginnotify-login-fail-known-emailbatch": "There {{PLURAL:$2|has been a failed attempt|have been $2 failed attempts}} to log in to your account, '$1' on {{SITENAME}}. If this was you, then you can disregard this message. If it wasn't, please make sure your account has a strong password.",
-	"notification-loginnotify-login-success-emailbatch": "Someone has successfully logged into your account '$1' on {{SITENAME}} from a computer which you have not edited from recently."
+	"notification-loginnotify-login-success-emailbatch": "Someone has successfully logged into your account '$1' on {{SITENAME}} from a computer which you have not edited from recently.",
+	"notification-bundled-header-login-fail": "There have been '''$1 failed attempts''' to login to your account since the last time you logged in. If this was you, then you can disregard this message. If it wasn't, please make sure your account has a strong password.",
+	"notification-unbundled-header-login-fail": "There have been multiple failed login attempts to your account. Please make sure your account has a strong password."
 }

@@ -57,10 +57,18 @@ class LoginNotifyHooks {
 			'immediate' => true,
 		];
 		$notifications['login-fail-new'] = [
-			'email-body-batch-message' => 'notification-loginnotify-login-fail-new-emailbatch'
+			'email-body-batch-message' => 'notification-loginnotify-login-fail-new-emailbatch',
+			'bundle' => [
+				'web' => true,
+				'expandable' => false
+			]
 		] + $loginBase;
 		$notifications['login-fail-known'] = [
-			'email-body-batch-message' => 'notification-loginnotify-login-fail-known-emailbatch'
+			'email-body-batch-message' => 'notification-loginnotify-login-fail-known-emailbatch',
+			'bundle' => [
+				'web' => true,
+				'expandable' => false
+			]
 		] + $loginBase;
 		if ( $wgLoginNotifyEnableOnSuccess ) {
 			$notificationCategories['login-success'] = [
@@ -76,6 +84,16 @@ class LoginNotifyHooks {
 			] + $loginBase;
 		}
 
+		return true;
+	}
+
+	public static function onEchoGetBundleRules( $event, &$bundleString ) {
+		switch ( $event->getType() ) {
+			case 'login-fail-known':
+			case 'login-fail-new':
+				$bundleString = 'login-fail';
+				break;
+		}
 		return true;
 	}
 
