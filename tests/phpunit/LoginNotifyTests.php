@@ -115,7 +115,7 @@ class LoginNotifyTests extends MediaWikiTestCase {
 		$res1 = $this->inst->getPrevLoginCookie( $req );
 		$this->assertEquals( '', $res1, "no cookie set" );
 
-		$req->setCookie( 'mw_prevLogin', 'foo', '' );
+		$req->setCookie( 'loginnotify_prevlogins', 'foo', '' );
 		$res2 = $this->inst->getPrevLoginCookie( $req );
 		$this->assertEquals( 'foo', $res2, "get dummy cookie" );
 	}

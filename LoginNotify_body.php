@@ -17,7 +17,7 @@ use Psr\Log\LoggerAwareInterface;
  */
 class LoginNotify implements LoggerAwareInterface {
 
-	const COOKIE_NAME = 'mw_prevLogin';
+	const COOKIE_NAME = 'loginnotify_prevlogins';
 	const NO_INFO_AVAILABLE = 2;
 
 	/** @var BagOStuff */
