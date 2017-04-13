@@ -22,17 +22,22 @@ class LoginNotifyPresentationModel extends EchoEventPresentationModel {
 	/**
 	 * Include the number of attempts in the message
 	 *
-	 * (For grep) This uses i18n messages:
-	 *	notification-header-login-fail-known
-	 *	notification-header-login-fail-new
-	 *	notification-header-login-success
-	 *
 	 * @return Message
 	 */
 	public function getHeaderMessage() {
-		return parent::getHeaderMessage()->numParams(
-			$this->event->getExtraParam( 'count', 0 )
-		);
+		// Check if we got a bundled notification with a 'count' param
+		// 'count' param is set when we have a failed login attempt
+		if ( $this->isBundled() && ( $this->event->getExtraParam( 'count', 0 ) > 0 ) ) {
+			$msg = $this->msg( 'notification-bundled-header-login-fail' );
+			$msg->params( $this->event->getExtraParam( 'count', 0 ) );
+			return $msg;
+		} elseif ( $this->event->getExtraParam( 'count', 0 ) > 0 ) {
+			$msg = $this->msg( 'notification-unbundled-header-login-fail' );
+			return $msg;
+		} else {
+			$msg = $this->msg( 'notification-header-login-success' );
+			return $msg;
+		}
 	}
 
 	/**

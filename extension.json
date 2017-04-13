@@ -33,6 +33,9 @@
 		"BeforeCreateEchoEvent": [
 			"LoginNotifyHooks::onBeforeCreateEchoEvent"
 		],
+		"EchoGetBundleRules": [
+			"LoginNotifyHooks::onEchoGetBundleRules"
+		],
 		"LoginAuthenticateAudit": [
 			"LoginNotifyHooks::onLoginAuthenticateAudit"
 		],
