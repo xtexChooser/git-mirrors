@@ -4,5 +4,6 @@
 			"Ykhwong"
 		]
 	},
-	"loginnotify-login-fail": "당신의 계정에 대한 로그인 시도 실패가 여러 번 있었습니다"
+	"loginnotify-login-fail": "당신의 계정에 대한 로그인 시도 실패가 여러 번 있었습니다",
+	"notification-unbundled-header-login-fail": "당신의 계정에 여러 로그인 시도 실패가 있었습니다. 당신의 계정에 강력한 비밀번호를 사용하고 있는지 확인해 주십시오."
 }
