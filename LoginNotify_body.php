@@ -99,18 +99,18 @@ class LoginNotify implements LoggerAwareInterface {
 	 * @return boolean true if the user has used this computer before
 	 */
 	private function isFromKnownIP( User $user ) {
-		$cookieResult = $this->checkUserInCookie( $user );
+		$cookieResult = $this->isUserInCookie( $user );
 		if ( $cookieResult === true ) {
 			// User has cookie
 			return true;
 		}
 
-		$cacheResult = $this->checkUserInCache( $user );
+		$cacheResult = $this->isUserInCache( $user );
 		if ( $cacheResult === true ) {
 			return true;
 		}
 
-		$cuResult = $this->checkUserInCheckUser( $user );
+		$cuResult = $this->isUserInCheckUser( $user );
 		if ( $cuResult === true ) {
 			return true;
 		}
@@ -145,7 +145,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 * @param $user User User in question.
 	 * @return Mixed true, false or self::NO_INFO_AVAILABLE.
 	 */
-	private function checkUserInCache( User $user ) {
+	private function isUserInCache( User $user ) {
 		$ipPrefix = $this->getIPNetwork( $user->getRequest()->getIP() );
 		$key = $this->getKey( $user, 'prevSubnet' );
 		$res = $this->cache->get( $key );
@@ -164,7 +164,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 * @param $user User User in question.
 	 * @return Mixed true, false or self::NO_INFO_AVAILABLE.
 	 */
-	private function checkUserInCheckUser( User $user ) {
+	private function isUserInCheckUser( User $user ) {
 		if ( !$this->config->get( 'LoginNotifyCheckKnownIPs' )
 			|| !class_exists( 'CheckUser' )
 		) {
@@ -177,13 +177,13 @@ class LoginNotify implements LoggerAwareInterface {
 		$prefix = $this->getIPNetwork( $user->getRequest()->getIP() );
 
 		$dbr = wfGetDB( DB_SLAVE );
-		$localResult = $this->checkUserInCheckUserQuery( $user->getId(), $prefix, $dbr );
+		$localResult = $this->isUserInCheckUserQuery( $user->getId(), $prefix, $dbr );
 		if ( $localResult ) {
 			return true;
 		}
 
 		if ( !$haveAnyInfo ) {
-			$haveAnyInfo = $this->checkUserInCheckUserAnyInfo( $user->getId(), $dbr );
+			$haveAnyInfo = $this->isUserInCheckUserAnyInfo( $user->getId(), $dbr );
 		}
 
 		// Also check checkuser table on the top ten wikis where this user has
@@ -220,7 +220,7 @@ class LoginNotify implements LoggerAwareInterface {
 					}
 					// FIXME The case where there are no CU entries for
 					// this user.
-					$res = $this->checkUserInCheckUserQuery(
+					$res = $this->isUserInCheckUserQuery(
 						$localInfo['id'],
 						$prefix,
 						$dbrLocal
@@ -231,7 +231,7 @@ class LoginNotify implements LoggerAwareInterface {
 						return true;
 					}
 					if ( !$haveAnyInfo ) {
-						$haveAnyInfo = $this->checkUserInCheckUserAnyInfo( $user->getId(), $dbr );
+						$haveAnyInfo = $this->isUserInCheckUserAnyInfo( $user->getId(), $dbr );
 					}
 					$lb->reuseConnection( $dbrLocal );
 					$count++;
@@ -253,7 +253,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 * @param $dbr Database A database connection (possibly foreign)
 	 * @return boolean If $ipFragment is in check user db
 	 */
-	private function checkUserInCheckUserQuery( $userId, $ipFragment, Database $dbr ) {
+	private function isUserInCheckUserQuery( $userId, $ipFragment, Database $dbr ) {
 		// For some unknown reason, the index is on
 		// (cuc_user, cuc_ip, cuc_timestamp), instead of
 		// cuc_ip_hex which would be ideal.
@@ -284,7 +284,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 * @param $userId int User id number (possibly on foreign wiki)
 	 * @param $dbr Database DB connection (possibly to foreign wiki)
 	 */
-	private function checkUserInCheckUserAnyInfo( $userId, Database $dbr ) {
+	private function isUserInCheckUserAnyInfo( $userId, Database $dbr ) {
 		// Verify that we actually have IP info for
 		// this user.
 		// @todo: Should this instead be if we have a
@@ -378,7 +378,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 * @param User $user User in question
 	 * @return boolean|integer Either true, false, or self::NO_INFO_AVAILABLE.
 	 */
-	private function checkUserInCookie( User $user ) {
+	private function isUserInCookie( User $user ) {
 		$cookie = $this->getPrevLoginCookie( $user->getRequest() );
 		if ( $cookie === '' ) {
 			// FIXME, does this really make sense?
@@ -425,7 +425,7 @@ class LoginNotify implements LoggerAwareInterface {
 				// Skip invalid or old cookie records.
 				continue;
 			}
-			$curUser = $this->checkUserRecordGivenCookie( $user, $cookieRecords[$i] );
+			$curUser = $this->isUserRecordGivenCookie( $user, $cookieRecords[$i] );
 			$userSeenBefore = $userSeenBefore || $curUser;
 			if ( $i < $maxCookieRecords && !$curUser ) {
 				$newCookie .= '.' . $cookieRecords[$i];
@@ -446,7 +446,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 * can after the fact figure out a single user has used both
 	 * machines.
 	 */
-	private function checkUserRecordGivenCookie( User $user, $cookieRecord ) {
+	private function isUserRecordGivenCookie( User $user, $cookieRecord ) {
 		if ( !$this->validateCookieRecord( $cookieRecord ) ) {
 			// Most callers will probably already check this, but
 			// doesn't hurt to be careful.

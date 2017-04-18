@@ -84,14 +84,14 @@ class LoginNotifyTests extends MediaWikiTestCase {
 	}
 
 	/**
-	 * @dataProvider provideCheckUserRecordGivenCookie
+	 * @dataProvider provideIsUserRecordGivenCookie
 	 */
-	public function testCheckUserRecordGivenCookie( User $user, $cookieRecord, $expected, $desc ) {
-		$actual = $this->inst->checkUserRecordGivenCookie( $user, $cookieRecord );
+	public function testIsUserRecordGivenCookie( User $user, $cookieRecord, $expected, $desc ) {
+		$actual = $this->inst->isUserRecordGivenCookie( $user, $cookieRecord );
 		$this->assertEquals( $expected, $actual, "For {$user->getName()} on test $desc." );
 	}
 
-	public function provideCheckUserRecordGivenCookie() {
+	public function provideIsUserRecordGivenCookie() {
 		$this->setUpLoginNotify();
 		$u = User::newFromName( 'Foo', false );
 		$cookie1 = $this->inst->generateUserCookieRecord( 'Foo2' );
@@ -208,7 +208,7 @@ class LoginNotifyTests extends MediaWikiTestCase {
 		if ( !isset( $newCookieParts[1] ) ) {
 			$newCookieParts[1] = '';
 		}
-		$this->assertTrue( $this->inst->checkUserRecordGivenCookie( $user, $newCookieParts[0] ), "[Cookie new entry] $desc" );
+		$this->assertTrue( $this->inst->isUserRecordGivenCookie( $user, $newCookieParts[0] ), "[Cookie new entry] $desc" );
 		$this->assertEquals( $expectedNewCookie, $newCookieParts[1], "[Cookie] $desc" );
 	}
 
@@ -300,18 +300,18 @@ class LoginNotifyTests extends MediaWikiTestCase {
 		];
 	}
 
-	public function testCheckUserInCache() {
+	public function testIsUserInCache() {
 		$u = User::newFromName( 'Xyzzy' );
 		$uWrap = TestingAccessWrapper::newFromObject( $u );
-		$this->assertEquals( $this->inst->checkUserInCache( $u ), LoginNotify::NO_INFO_AVAILABLE );
+		$this->assertEquals( $this->inst->IsUserInCache( $u ), LoginNotify::NO_INFO_AVAILABLE );
 
 		$this->inst->cacheLoginIP( $u );
-		$this->assertTrue( $this->inst->checkUserInCache( $u ) );
+		$this->assertTrue( $this->inst->IsUserInCache( $u ) );
 
 		$uWrap->mRequest = new FauxRequest();
 		$uWrap->mRequest->setIP( '10.1.2.3' );
 
-		$this->assertFalse( $this->inst->checkUserInCache( $u ) );
+		$this->assertFalse( $this->inst->IsUserInCache( $u ) );
 	}
 }
 // @codingStandardsIgnoreEnd
