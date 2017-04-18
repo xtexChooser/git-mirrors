@@ -100,7 +100,7 @@ class LoginNotifyHooks {
 	/**
 	 * Old hook for pre 1.27 or wikis with auth manager disabled.
 	 *
-	 * @todo Doesn't catcha captcha or throttle failures
+	 * @todo Doesn't catch CAPTCHA or throttle failures
 	 * @param User $user User in question.
 	 * @param string $pass The password (parameter not used).
 	 * @param integer $retval A LoginForm constant (e.g. LoginForm::SUCCESS).
