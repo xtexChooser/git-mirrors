@@ -1,5 +1,7 @@
 <?php
+
 use \Psr\Log\NullLogger;
+use Wikimedia\TestingAccessWrapper;
 
 // @codingStandardsIgnoreStart Generic.Files.LineLength.TooLong
 class LoginNotifyTests extends MediaWikiTestCase {
