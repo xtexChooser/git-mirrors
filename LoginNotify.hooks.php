@@ -89,7 +89,6 @@ class LoginNotifyHooks {
 
 	public static function onEchoGetBundleRules( $event, &$bundleString ) {
 		switch ( $event->getType() ) {
-			case 'login-fail-known':
 			case 'login-fail-new':
 				$bundleString = 'login-fail';
 				break;
