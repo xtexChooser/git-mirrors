@@ -57,11 +57,11 @@
 	},
 	"config": {
 		"@docLoginNotifyAttemptsKnownIP": "The number of failed login attempts to permit from a known IP before a notification is triggered.",
-		"LoginNotifyAttemptsKnownIP": 10,
+		"LoginNotifyAttemptsKnownIP": 5,
 		"@docLoginNotifyExpiryKnownIP": "The time-to-live of the count of failed login attempts from a known IP (from the time of the first failed attempt).",
 		"LoginNotifyExpiryKnownIP": 604800,
 		"@docLoginNotifyAttemptsNewIP": "The number of failed login attempts to permit from a new IP before a notification is triggered.",
-		"LoginNotifyAttemptsNewIP": 3,
+		"LoginNotifyAttemptsNewIP": 1,
 		"@docLoginNotifyExpiryNewIP": "The time-to-live of the count of failed login attempts from a new IP (from the time of the first failed attempt).",
 		"LoginNotifyExpiryNewIP": 1209600,
 		"@docLoginNotifyCheckKnownIPs": "Whether to trigger a notification after failed logins from known IPs.",
