@@ -20,5 +20,5 @@
 	"notification-loginnotify-login-success-emailbatch": "Someone has successfully logged into your account '$1' on {{SITENAME}} from a computer which you have not edited from recently.",
 	"notification-new-bundled-header-login-fail": "There {{PLURAL:$1|has been '''a failed attempt'''|have been '''$1 failed attempts'''}} to log in to your account from a new device since the last time you logged in. If it wasn't you, please make sure your account has a strong password.",
 	"notification-known-header-login-fail": "There have been {{PLURAL:$1|has been '''a failed attempt'''|have been '''$1 failed attempts'''}} to log in to your account since the last time you logged in. If it wasn't you, please make sure your account has a strong password.",
-	"notification-new-unbundled-header-login-fail": "There have been multiple failed attempts to log in to your account from a new device. Please make sure your account has a strong password."
+	"notification-new-unbundled-header-login-fail": "There {{PLURAL:$1|has been '''a failed attempt'''|have been '''multiple failed attempts'''}} to log in to your account from a new device. Please make sure your account has a strong password."
 }
