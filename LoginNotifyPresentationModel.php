@@ -20,39 +20,27 @@ class LoginNotifyPresentationModel extends EchoEventPresentationModel {
 	}
 
 	/**
-	 * Include the number of attempts in the message
+	 * Include the number of attempts in the message if needed
 	 *
 	 * @return Message
 	 */
 	public function getHeaderMessage() {
-		// Check if we got a bundled notification with a 'count' param
-		// 'count' param is set when we have a failed login attempt
-		$msg = '';
 		switch ( $this->event->getType() ) {
 			case 'login-fail-known':
-				if ( $this->event->getExtraParam( 'count', 0 ) > 0 ) {
-					$msg = $this->msg( 'notification-known-header-login-fail' );
-					$msg->params( $this->event->getExtraParam( 'count', 0 ) );
-					return $msg;
-				} else {
-					$msg = $this->msg( 'notification-header-login-success' );
-					$msg->params( $this->event->getExtraParam( 'count', 0 ) );
-					return $msg;
-				}
+				$msg = $this->msg( 'notification-known-header-login-fail' );
+				$msg->params( $this->event->getExtraParam( 'count', 0 ) );
 				break;
 			case 'login-fail-new':
-				if ( $this->isBundled() && ( $this->event->getExtraParam( 'count', 0 ) > 0 ) ) {
+				if ( $this->isBundled() ) {
 					$msg = $this->msg( 'notification-new-bundled-header-login-fail' );
 					$msg->params( $this->event->getExtraParam( 'count', 0 ) );
-					return $msg;
-				} elseif ( $this->event->getExtraParam( 'count', 0 ) > 0 ) {
-					$msg = $this->msg( 'notification-new-unbundled-header-login-fail' );
-					return $msg;
 				} else {
-					$msg = $this->msg( 'notification-header-login-success' );
-					return $msg;
+					$msg = $this->msg( 'notification-new-unbundled-header-login-fail' );
+					$msg->params( $this->event->getExtraParam( 'count', 0 ) );
 				}
 				break;
+			default:
+				$msg = $this->msg( 'notification-header-login-success' );
 		}
 		return $msg;
 	}
