@@ -17,8 +17,30 @@ class LoginNotifyPresentationModel extends EchoEventPresentationModel {
 	 */
 	public function getPrimaryLink() {
 		return [
-			'url' =>  'https://mediawiki.org/wiki/Help:Login_notifications'
+			'url' =>  'https://mediawiki.org/wiki/Help:Login_notifications',
+			'label' => $this->msg( 'loginnotify-primary-link' )->text()
 		];
+	}
+
+	/**
+	 * Define the email subject string
+	 *
+	 * @return string Message string for email subject
+	 */
+	public function getSubjectMessage() {
+		switch ( $this->event->getType() ) {
+			case 'login-fail-known':
+			case 'login-fail-new':
+				$msg = $this->msg( 'notification-loginnotify-login-fail-email-subject' );
+				$msg->params( $this->getUser()->getName() );
+				$msg->params( $this->event->getExtraParam( 'count', 0 ) );
+				break;
+			default:
+				$msg = $this->msg( 'notification-loginnotify-login-success-email-subject' );
+				$msg->params( $this->getUser()->getName() );
+				break;
+		}
+		return $msg;
 	}
 
 	/**

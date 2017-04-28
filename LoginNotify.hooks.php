@@ -47,7 +47,6 @@ class LoginNotifyHooks {
 			// fixme, what does this actually do?
 			'title-message' => 'loginnotify-login-fail',
 			'title-params' => [],
-			'email-subject-message' => 'notification-loginnotify-login-fail-email-subject',
 			// FIXME Should count be a parameter
 			'email-subject-params' => [ 'agent', 'count' ],
 			'email-body-batch-params' => [ 'agent', 'count' ],
@@ -57,14 +56,12 @@ class LoginNotifyHooks {
 			'immediate' => true,
 		];
 		$notifications['login-fail-new'] = [
-			'email-body-batch-message' => 'notification-loginnotify-login-fail-new-emailbatch',
 			'bundle' => [
 				'web' => true,
 				'expandable' => false
 			]
 		] + $loginBase;
 		$notifications['login-fail-known'] = [
-			'email-body-batch-message' => 'notification-loginnotify-login-fail-known-emailbatch',
 			'bundle' => [
 				'web' => true,
 				'expandable' => false
@@ -77,9 +74,6 @@ class LoginNotifyHooks {
 			];
 			$notifications['login-success'] = [
 				'category' => 'login-success',
-				'email-subject-message' => 'notification-loginnotify-login-success-email-subject',
-				'email-body-batch-message' => 'notification-loginnotify-login-success-emailbatch',
-				'email-body-batch-params' => [ 'agent' ],
 				// FIXME title-message. What is its purpose??
 			] + $loginBase;
 		}
