@@ -15,5 +15,6 @@
 	"notification-header-login-success": "Qualcuno si è collegato con successo con la tua utenza da un computer con cui non hai fatto alcuna modifica di recente.",
 	"notification-loginnotify-login-fail-new-emailbatch": "{{PLURAL:$2|C'è stato un tentativo fallito|Ci sono stati $2 tentativi falliti}} di accesso con la tua utenza '$1' su {{SITENAME}}. Se non sei stato tu, assicurati che la tua utenza abbia una password complessa.",
 	"notification-loginnotify-login-fail-known-emailbatch": "{{PLURAL:$2|C'è stato un tentativo fallito|Ci sono stati $2 tentativi falliti}} di accesso con la tua utenza, '$1' su {{SITENAME}}. Se non sei stato tu, assicurati che la tua utenza abbia una password complessa.",
-	"notification-loginnotify-login-success-emailbatch": "Qualcuno si è collegato con successo con la tua utenza '$1' su {{SITENAME}} da un computer con cui non hai fatto alcuna modifica di recente."
+	"notification-loginnotify-login-success-emailbatch": "Qualcuno si è collegato con successo con la tua utenza '$1' su {{SITENAME}} da un computer con cui non hai fatto alcuna modifica di recente.",
+	"notification-new-unbundled-header-login-fail": "{{PLURAL:$1|C'è stato '''un tentativo fallito'''|Ci sono stati '''più tentativi falliti'''}} di accedere con la tua utenza da un nuovo dispositivo. Assicurati di avere una password complessa."
 }

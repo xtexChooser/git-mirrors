@@ -20,5 +20,5 @@
 	"notification-loginnotify-login-success-emailbatch": "Quelqu’un a réussi à se connecter à votre compte « $1 » sur {{SITENAME}} depuis un ordinateur avec lequel vous n’avez pas fait de modification récemment.",
 	"notification-new-bundled-header-login-fail": "Il y a eu {{PLURAL:$1|'''une tentative en échec'''|'''$1 tentatives en échec'''}} de connexion sur votre compte depuis un nouvel appareil depuis votre dernière connexion. Si ce n’était pas vous, assurez-vous que votre compte a un mot de passe fort.",
 	"notification-known-header-login-fail": "Il y a eu {{PLURAL:$1|'''une tentative en échec'''|'''$1 tentative sen échec'''}} de connexion à votre compte depuis votre dernière connexion. Si ce n’était pas vous, assurez-vous que votre compte a un mot de passe fort.",
-	"notification-new-unbundled-header-login-fail": "Il y a eu plusieurs tentatives en échec de connexion à votre compte depuis un nouvel appareil. Assurez-vous que votre compte a un mot de passe suffisamment sécurisé."
+	"notification-new-unbundled-header-login-fail": "Il y a eu {{PLURAL:$1|<strong>une tentative</strong>|<strong>plusieurs tentatives</strong>}} en échec de connexion à votre compte depuis un nouvel appareil. Assurez-vous que votre compte a un mot de passe suffisamment sécurisé."
 }

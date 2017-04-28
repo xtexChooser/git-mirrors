@@ -18,5 +18,5 @@
 	"notification-loginnotify-login-success-emailbatch": "有人在一台您最近没有进行编辑的电脑上成功地登录到了您在{{SITENAME}}上的账户“$1”。",
 	"notification-new-bundled-header-login-fail": "自从您上次登录以来，在新设备上{{PLURAL:$1|有'''$1次'''}}失败的登录您账户的尝试。如果这不是您的话，请确保您的账户拥有强密码。",
 	"notification-known-header-login-fail": "自从您上次登录以来，{{PLURAL:$1|有'''$1次'''}}失败的登录您账户的尝试。如果这不是您的话，请确保您的账户拥有强密码。",
-	"notification-new-unbundled-header-login-fail": "目前在新设备上已经有太多次失败的登录您账户的尝试。请确保您的账户拥有强密码。"
+	"notification-new-unbundled-header-login-fail": "目前在新设备上已经有{{PLURAL:$1|'''一次'''|'''太多次'''}}失败的登录您账户的尝试。请确保您的账户拥有强密码。"
 }
