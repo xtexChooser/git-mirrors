@@ -11,12 +11,14 @@ class LoginNotifyPresentationModel extends EchoEventPresentationModel {
 	}
 
 	/**
-	 * Nothing really to link to
+	 * Link to help page on mediawiki
 	 *
-	 * @return boolean false to disable link
+	 * @return array url to link to
 	 */
 	public function getPrimaryLink() {
-		return false;
+		return [
+			'url' =>  'https://mediawiki.org/wiki/Help:Login_notifications'
+		];
 	}
 
 	/**
