@@ -15,14 +15,14 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
  */
 
 # Whether or not to also send notificaton to the person who made the change
-$wgCategoryWatchNotifyEditor = true;
+//$wgCategoryWatchNotifyEditor = true;
 
 # Set this to give every user a unique category that they're automatically watching
 # - the format of the category name is defined on the "categorywatch-autocat" localisation message
-$wgCategoryWatchUseAutoCat = false;
+//$wgCategoryWatchUseAutoCat = false;
 
 # Set this to make the categorisation work by realname instead of username
-$wgCategoryWatchUseAutoCatRealName = false;
+//$wgCategoryWatchUseAutoCatRealName = false;
 
 class CategoryWatch {
 
