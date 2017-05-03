@@ -26,7 +26,7 @@ $wgCategoryWatchUseAutoCat = false;
 # Set this to make the categorisation work by realname instead of username
 $wgCategoryWatchUseAutoCatRealName = false;
 
-$wgExtensionFunctions[] = 'wfSetupCategoryWatch';
+$wgExtensionFunctions[] = 'CategoryWatch::wfSetupCategoryWatch';
 $wgExtensionCredits['other'][] = array(
 	'path'           => __FILE__,
 	'name'           => 'CategoryWatch',
@@ -39,6 +39,14 @@ $wgExtensionCredits['other'][] = array(
 $wgExtensionMessagesFiles['CategoryWatch'] =  dirname( __FILE__ ) . '/CategoryWatch.i18n.php';
 
 class CategoryWatch {
+
+        static function wfSetupCategoryWatch() {
+        	global $wgCategoryWatch;
+
+        	# Instantiate the CategoryWatch singleton now that the environment is prepared
+        	$wgCategoryWatch = new CategoryWatch();
+        }
+
 	function __construct() {
 		global $wgHooks;
 		$wgHooks['ArticleSave'][] = $this;
@@ -231,11 +239,3 @@ class CategoryWatch {
 	function __toString() { return __CLASS__; }
 }
 
-function wfSetupCategoryWatch() {
-	global $wgCategoryWatch;
-
-	
-
-	# Instantiate the CategoryWatch singleton now that the environment is prepared
-	$wgCategoryWatch = new CategoryWatch();
-}
