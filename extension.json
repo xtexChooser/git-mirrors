@@ -6,6 +6,9 @@
 	"descriptionmsg": "categorywatch-desc",
         "license-name": "GPL-2.0+",
 	"type": "other",
+        "AutoloadClasses": {
+                "CategoryWatch": "CategoryWatch.php"
+        },
 	"ExtensionFunctions": [
 		"CategoryWatch::wfSetupCategoryWatch"
 	],

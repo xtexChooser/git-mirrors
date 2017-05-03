@@ -14,8 +14,6 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
  * @licence GNU General Public Licence 2.0 or later
  */
 
-define( 'CATEGORYWATCH_VERSION', '1.2.2, 2011-12-03' );
-
 # Whether or not to also send notificaton to the person who made the change
 $wgCategoryWatchNotifyEditor = true;
 
@@ -25,18 +23,6 @@ $wgCategoryWatchUseAutoCat = false;
 
 # Set this to make the categorisation work by realname instead of username
 $wgCategoryWatchUseAutoCatRealName = false;
-
-$wgExtensionFunctions[] = 'CategoryWatch::wfSetupCategoryWatch';
-$wgExtensionCredits['other'][] = array(
-	'path'           => __FILE__,
-	'name'           => 'CategoryWatch',
-	'author'         => '[http://www.organicdesign.co.nz/User:Nad User:Nad]',
-	'descriptionmsg' => 'categorywatch-desc',
-	'url'            => 'http://www.mediawiki.org/wiki/Extension:CategoryWatch',
-	'version'        => CATEGORYWATCH_VERSION,
-);
-
-$wgExtensionMessagesFiles['CategoryWatch'] =  dirname( __FILE__ ) . '/CategoryWatch.i18n.php';
 
 class CategoryWatch {
 
