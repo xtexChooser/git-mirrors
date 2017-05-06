@@ -10,5 +10,5 @@
 	"echo-category-title-login-success": "Alogge vun engem neie Computer",
 	"echo-pref-tooltip-login-success": "Mech all Kéier informéiere wann een sech a mäi Benotzerkont aloggt vun engem Computer deen ech virdrun net benotzt hunn.",
 	"loginnotify-login-fail": "Et gouf e puer feelgeschloe Versich fir sech op Äre Benotzerkont anzeloggen",
-	"notification-loginnotify-login-fail-known-emailbatch": "Et {{PLURAL:$2|gouf ee feelgeschloene Versuch|goufe(n) $2 feelgeschloe Versich}} fir sech an Äre(n) $1-Benotzerkont anzeloggen. Wann Dir dat net waart, da vergewëssert Iech w.e.g. datt Äre Benotzerkont e staarkt Passwuert huet."
+	"loginnotify-primary-link": "Hëllef Informatioun"
 }
