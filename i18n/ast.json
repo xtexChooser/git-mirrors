@@ -10,10 +10,11 @@
 	"echo-category-title-login-success": "Aniciu de sesión dende un ordenador nuevu",
 	"echo-pref-tooltip-login-success": "avisame cada vez que dalguién anicie sesión cola mio cuenta dende un ordenador que nun usé antes.",
 	"loginnotify-login-fail": "Hebo dellos intentos fallíos d'aniciu de sesión cola to cuenta",
+	"loginnotify-primary-link": "Información d'ayuda",
 	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Intentu fallíu|Múltiples intentos fallíos}} d'aniciu de sesión en {{SITENAME}} como $1",
 	"notification-loginnotify-login-success-email-subject": "Aniciu de sesión en {{SITENAME}} como $1 dende un ordenador que nun usasti apocayá",
 	"notification-header-login-success": "Daquién anició sesión correutamente na to cuenta dende un ordenador del que nun editasti apocayá.",
 	"notification-new-bundled-header-login-fail": "Hebo {{PLURAL:$1|'''un intentu fallíu'''|'''$1 intentos fallíos'''}} d'aniciu de sesión na to cuenta dende un preséu nuevu desque aniciasti la última sesión. Si nun fuisti tu, asegúrate de tener una contraseña fuerte na cuenta.",
 	"notification-known-header-login-fail": "Hebo {{PLURAL:$1|'''un intentu fallíu'''|'''$1 intentos fallíos'''}} d'aniciu de sesión na to cuenta desque aniciasti la última sesión. Si nun fuisti tu, asegúrate de tener una contraseña fuerte na cuenta.",
-	"notification-new-unbundled-header-login-fail": "Hebo munchos intentos fallíos d'aniciu de sesión na to cuenta dende un preséu nuevu. Asegúrate de tener una contraseña fuerte na cuenta."
+	"notification-new-unbundled-header-login-fail": "Hebo {{PLURAL:$1|'''un intentu fallíu'''|'''dellos intentos fallíos'''}} d'aniciu de sesión na to cuenta dende un preséu nuevu. Asegúrate de tener una contraseña fuerte na cuenta."
 }
