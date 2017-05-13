@@ -12,7 +12,7 @@
 	"echo-category-title-login-success": "Login from new computer",
 	"echo-pref-tooltip-login-success": "Notify me whenever somebody logs into my account from a computer I have not used before.",
 	"loginnotify-login-fail": "There have been several failed attempts to log in to your account",
-	"loginnotify-primary-link": "Help information",
+	"loginnotify-primary-link": "Help",
 	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Failed attempt|Multiple failed attempts}} to log in to {{SITENAME}} as $1",
 	"notification-loginnotify-login-success-email-subject": "Login to {{SITENAME}} as $1 from a computer you have not recently used",
 	"notification-header-login-success": "Someone has successfully logged into your account from a computer which you have not edited from recently.",
