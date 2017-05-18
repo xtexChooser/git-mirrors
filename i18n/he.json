@@ -11,7 +11,7 @@
 	"echo-category-title-login-success": "כניסה ממחשב חדש",
 	"echo-pref-tooltip-login-success": "להודיע לי בכל פעם שמישהו נכנס לחשבון שלי ממחשב שלא השתמשתי בו לפני כן.",
 	"loginnotify-login-fail": "היו מספר ניסיונות כושלים להיכנס לחשבון שלך",
-	"loginnotify-primary-link": "מידע שימושי",
+	"loginnotify-primary-link": "עזרה",
 	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|ניסיון כושל|מספר ניסיונות כושלים}} להיכנס לאתר {{SITENAME}} בתור $1",
 	"notification-loginnotify-login-success-email-subject": "כניסה לאתר {{SITENAME}} בתור $1 ממחשב שלא השתמשת בו לאחרונה",
 	"notification-header-login-success": "מישהו הצליח להיכנס לחשבון שלך במחשב שלא ערכת ממנו לאחרונה.",
