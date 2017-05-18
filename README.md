@@ -17,6 +17,7 @@ wfDebugLog('CategoryWatch', 'loading extension...');
 * enable debug log for the group, bascially the extension name.
   set the log file name.
 ```php
+# in file LocalSettings.php
 $wgDebugLogGroups['CategoryWatch'] = '/path/to/log/mw-categorywatch.log';
 ```
 * tail the log file to debug...
