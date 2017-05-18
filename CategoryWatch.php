@@ -27,6 +27,7 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 class CategoryWatch {
 
         static function wfSetupCategoryWatch() {
+		wfDebugLog('CategoryWatch', 'loading extension...');
         	global $wgCategoryWatch;
 
         	# Instantiate the CategoryWatch singleton now that the environment is prepared
