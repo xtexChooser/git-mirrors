@@ -15,6 +15,14 @@
     "ExtensionMessagesFiles": {
         "CategoryWatch": "CategoryWatch.i18n.php"
     },
+    "Hooks": {
+        "PageContentSave":[
+	    "CategoryWatch::onPageContentSave"
+	],
+        "PageContentSaveComplete":[
+	    "CategoryWatch::onPageContentSaveComplete"
+	]
+    },
     "config": {
         "CategoryWatchNotifyEditor": true,
         "CategoryWatchUseAutoCat": false,

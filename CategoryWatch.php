@@ -26,32 +26,43 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 
 class CategoryWatch {
 
-        static function wfSetupCategoryWatch() {
+	/**
+	 * The extension function.
+	 * It has to be the static function in a class now.
+	 */
+	public static function wfSetupCategoryWatch() {
 		wfDebugLog('CategoryWatch', 'loading extension...');
         	global $wgCategoryWatch;
 
-        	# Instantiate the CategoryWatch singleton now that the environment is prepared
+        	# Instantiate the CategoryWatch singleton now 
+                # that the environment is prepared
         	$wgCategoryWatch = new CategoryWatch();
-        }
+	}
 
 	function __construct() {
-		global $wgHooks;
-		$wgHooks['ArticleSave'][] = $this;
-		$wgHooks['ArticleSaveComplete'][] = $this;
+		# the constructor will do nothing now.
+		# New extension register process will use the file
+		# extension.json to set hooks.
 	}
 
 	/**
 	 * Get a list of categories before article updated
+	 * Since MediaWiki version 1.25.x, we have to use static function
+	 * for hooks.
+	 * the hook has different signatures.
 	 */
-	function onArticleSave( &$article, &$user, $text ) {
-		global $wgCategoryWatchUseAutoCat, $wgCategoryWatchUseAutoCatRealName;
+	public static function onPageContentSave( &$wikiPage, &$user, &$content, &$summary,	$isMinor, $isWatch, $section, &$flags, &$status) {
 
-		$this->before = array();
+		global $wgCategoryWatchUseAutoCat, $wgCategoryWatchUseAutoCatRealName, $wgCategoryWatch;
+
+		$wgCategoryWatch->before = array();
 		$dbr  = wfGetDB( DB_SLAVE );
 		$cl   = $dbr->tableName( 'categorylinks' );
-		$id   = $article->getID();
+		wfDebugLog('CategoryWatch', "tablename = $cl");
+		$id   = $wikiPage->getID();
+		wfDebugLog('CategoryWatch', "id=$id");
 		$res  = $dbr->select( $cl, 'cl_to', "cl_from = $id", __METHOD__, array( 'ORDER BY' => 'cl_sortkey' ) );
-		while ( $row = $dbr->fetchRow( $res ) ) $this->before[] = $row[0];
+		while ( $row = $dbr->fetchRow( $res ) ) $wgCategoryWatch->before[] = $row[0];
 		$dbr->freeResult( $res );
 
 		# If using the automatically watched category feature, ensure that all users are watching it
@@ -77,24 +88,42 @@ class CategoryWatch {
 
 		return true;
 	}
-
+	
 	/**
-	 * Find changes in categorisation and send messages to watching users
-	 */
-	function onArticleSaveComplete( &$article, &$user, $text, $summary, $medit ) {
+	 * the proper hook for save page request.
+	 * @see http://www.mediawiki.org/wiki/Manual:Hooks/PageContentSaveComplete
+	 * @param $article Article edited
+	 * @param $user User who edited
+	 * @param $content Content New article text
+	 * @param $summary string Edit summary
+	 * @param $isMinor bool Minor edit or not
+	 * @param $isWatch bool Watch this article?
+	 * @param $section string Section that was edited
+	 * @param $flags int Edit flags
+	 * @param $revision Revision that was created
+	 * @param $status Status
+	 * @return bool true in all cases
+	*/
+	public static function onPageContentSaveComplete($article, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId) {
+
+		global $wgCategoryWatch;
 
 		# Get cats after update
-		$this->after = array();
+		$wgCategoryWatch->after = array();
 		$dbr  = wfGetDB( DB_SLAVE );
 		$cl   = $dbr->tableName( 'categorylinks' );
 		$id   = $article->getID();
 		$res  = $dbr->select( $cl, 'cl_to', "cl_from = $id", __METHOD__, array( 'ORDER BY' => 'cl_sortkey' ) );
-		while ( $row = $dbr->fetchRow( $res ) ) $this->after[] = $row[0];
+		while ( $row = $dbr->fetchRow( $res ) ) $wgCategoryWatch->after[] = $row[0];
 		$dbr->freeResult( $res );
+		wfDebugLog('CategoryWatch', 'before');
+		wfDebugLog('CategoryWatch', join(', ', $wgCategoryWatch->before));
+		wfDebugLog('CategoryWatch', 'after');
+		wfDebugLog('CategoryWatch', join(', ', $wgCategoryWatch->after));
 
 		# Get list of added and removed cats
-		$add = array_diff( $this->after, $this->before );
-		$sub = array_diff( $this->before, $this->after );
+		$add = array_diff( $wgCategoryWatch->after, $wgCategoryWatch->before );
+		$sub = array_diff( $wgCategoryWatch->before, $wgCategoryWatch->after );
 
 		# Notify watchers of each cat about the addition or removal of this article
 		if ( count( $add ) > 0 || count( $sub ) > 0 ) {
@@ -110,14 +139,14 @@ class CategoryWatch {
 
 				$title   = Title::newFromText( $add, NS_CATEGORY );
 				$message = wfMsg( 'categorywatch-catmovein', $page, $this->friendlyCat( $add ), $this->friendlyCat( $sub ) );
-				$this->notifyWatchers( $title, $user, $message, $summary, $medit );
+				$wgCategoryWatch->notifyWatchers( $title, $user, $message, $summary, $medit );
 
 			} else {
 
 				foreach ( $add as $cat ) {
 					$title   = Title::newFromText( $cat, NS_CATEGORY );
 					$message = wfMsg( 'categorywatch-catadd', $page, $this->friendlyCat( $cat ) );
-					$this->notifyWatchers( $title, $user, $message, $summary, $medit );
+					$wgCategoryWatch->notifyWatchers( $title, $user, $message, $summary, $medit );
 				}
 
 			}
