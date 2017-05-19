@@ -71,6 +71,8 @@ class CategoryWatch {
 		$res  = $dbr->select( $cl, 'cl_to', "cl_from = $id", __METHOD__, array( 'ORDER BY' => 'cl_sortkey' ) );
 		while ( $row = $dbr->fetchRow( $res ) ) $wgCategoryWatch->before[] = $row[0];
 		$dbr->freeResult( $res );
+		wfDebugLog('CategoryWatch', 'Categories before page saved');
+		wfDebugLog('CategoryWatch', join(', ', $wgCategoryWatch->before));
 
 		# If using the automatically watched category feature, ensure that all users are watching it
 		if ( $wgCategoryWatchUseAutoCat ) {
@@ -117,15 +119,15 @@ class CategoryWatch {
 
 		# Get cats after update
 		$wgCategoryWatch->after = array();
-		$dbr  = wfGetDB( DB_SLAVE );
-		$cl   = $dbr->tableName( 'categorylinks' );
-		$id   = $article->getID();
-		$res  = $dbr->select( $cl, 'cl_to', "cl_from = $id", __METHOD__, array( 'ORDER BY' => 'cl_sortkey' ) );
-		while ( $row = $dbr->fetchRow( $res ) ) $wgCategoryWatch->after[] = $row[0];
-		$dbr->freeResult( $res );
-		wfDebugLog('CategoryWatch', 'before');
-		wfDebugLog('CategoryWatch', join(', ', $wgCategoryWatch->before));
-		wfDebugLog('CategoryWatch', 'after');
+
+		$parseTimestamp = $revision->getTimestamp();
+		$content = $revision->getContent();
+		$title = $article->getTitle();
+		$options = $content->getContentHandler()->makeParserOptions('canonical');
+		$options->setTimestamp($parseTimestamp);
+		$output = $content->getParserOutput( $title, $revision->getId(), $options);
+		$wgCategoryWatch->after = array_map('strval', array_keys($output->getCategories()));
+		wfDebugLog('CategoryWatch', 'Categories after page saved');
 		wfDebugLog('CategoryWatch', join(', ', $wgCategoryWatch->after));
 
 		# Get list of added and removed cats
