@@ -14,14 +14,21 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
  * @licence GNU General Public Licence 2.0 or later
  */
 
-# Whether or not to also send notificaton to the person who made the change
+# Whether or not to also send notificaton to the person 
+# who made the change
+# The default value is set in file extension.json
 //$wgCategoryWatchNotifyEditor = true;
 
-# Set this to give every user a unique category that they're automatically watching
-# - the format of the category name is defined on the "categorywatch-autocat" localisation message
+# Set this to give every user a unique category that 
+# they're automatically watching
+# - the format of the category name is defined on the 
+# "categorywatch-autocat" localisation message
+# The default value is set in file extension.json
 //$wgCategoryWatchUseAutoCat = false;
 
-# Set this to make the categorisation work by realname instead of username
+# Set this to make the categorisation work by realname 
+# instead of username
+# The default value is set in file extension.json
 //$wgCategoryWatchUseAutoCatRealName = false;
 
 class CategoryWatch {
