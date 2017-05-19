@@ -152,7 +152,7 @@ class CategoryWatch {
 
 				$title   = Title::newFromText( $sub, NS_CATEGORY );
 				$message = wfMessage( 'categorywatch-catmoveout', $page, $wgCategoryWatch->friendlyCat( $sub ), $wgCategoryWatch->friendlyCat( $add ) )->text();
-				$wgCategoryWatch->notifyWatchers( $title, $user, $message );
+				$wgCategoryWatch->notifyWatchers( $title, $user, $message, $summary, $medit );
 			} else {
 
 				foreach ( $add as $cat ) {
@@ -164,7 +164,7 @@ class CategoryWatch {
 				foreach ( $sub as $cat ) {
 					$title   = Title::newFromText( $cat, NS_CATEGORY );
 					$message = wfMessage( 'categorywatch-catsub', $page, $wgCategoryWatch->friendlyCat( $cat ) )->text();
-					$wgCategoryWatch->notifyWatchers( $title, $user, $message );
+					$wgCategoryWatch->notifyWatchers( $title, $user, $message, $summary, $medit );
 				}
 			}
 		}
