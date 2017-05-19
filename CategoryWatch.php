@@ -201,7 +201,7 @@ class CategoryWatch {
 			if ( $watchingUser->getOption( 'enotifwatchlistpages' ) && $watchingUser->isEmailConfirmed() ) {
 				$to      = new MailAddress( $watchingUser );
 				$subject = wfMessage( 'categorywatch-emailsubject', $page )->text();
-				$body    = wfMsgForContent( 'enotif_body' );
+				$body    = wfMessage( 'enotif_body' )->inContentLanguage()->text();
 
 				# Reveal the page editor's address as REPLY-TO address only if
 				# the user has not opted-out and the option is enabled at the
@@ -228,7 +228,7 @@ class CategoryWatch {
 					'$NEWPAGE'          => $message,
 					'$PAGETITLE'        => $page,
 					'$PAGEEDITDATE'     => $editdate,
-					'$CHANGEDORCREATED' => wfMsgForContent( 'changed' ),
+					'$CHANGEDORCREATED' => wfMessage( 'changed' )->inContentLanguage()->text(),
 					'$PAGETITLE_URL'    => $title->getFullUrl(),
 					'$PAGEEDITOR_WIKI'  => $userPage->getFullUrl(),
 					'$PAGESUMMARY'      => $summary,
@@ -236,10 +236,10 @@ class CategoryWatch {
 					'$OLDID'            => ''
 				);
 				if ( $editor->isIP( $name ) ) {
-					$utext = wfMsgForContent( 'enotif_anon_editor', $name );
+					$utext = wfMessage( 'enotif_anon_editor', $name )->inContentLanguage()->text();
 					$subject = str_replace( '$PAGEEDITOR', $utext, $subject );
 					$keys['$PAGEEDITOR'] = $utext;
-					$keys['$PAGEEDITOR_EMAIL'] = wfMsgForContent( 'noemailtitle' );
+					$keys['$PAGEEDITOR_EMAIL'] = wfMmessage( 'noemailtitle' )->inContentLanguage()->text();
 				} else {
 					$subject = str_replace( '$PAGEEDITOR', $name, $subject );
 					$keys['$PAGEEDITOR'] = $name;
