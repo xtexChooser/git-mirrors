@@ -251,7 +251,9 @@ class CategoryWatch {
 				# Replace keys, wrap text and send
 				$body = strtr( $body, $keys );
 				$body = wordwrap( $body, 72 );
-				UserMailer::send( $to, $from, $subject, $body, $replyto );
+				$options = [];
+				$options['replyTo'] = $replyto;
+				UserMailer::send( $to, $from, $subject, $body, $options);
 			}
 		}
 
