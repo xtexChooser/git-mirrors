@@ -79,7 +79,7 @@ class CategoryWatch {
 			$dbr = wfGetDB( DB_SLAVE );
 
 			# Find all users not watching the autocat
-			$like = str_replace( ' ', '_', trim( wfMsg( 'categorywatch-autocat', '' ) ) );
+			$like = str_replace( ' ', '_', trim( wfMessage( 'categorywatch-autocat', '' )->text() ) );
 			$utbl = $dbr->tableName( 'user' );
 			$wtbl = $dbr->tableName( 'watchlist' );
 			$sql = "SELECT user_id FROM $utbl LEFT JOIN $wtbl ON user_id=wl_user AND wl_title LIKE '%$like%' WHERE wl_user IS NULL";
@@ -89,7 +89,7 @@ class CategoryWatch {
 			while ( $row = $dbr->fetchRow( $res ) ) {
 				$user = User::newFromId( $row[0] );
 				$name = $wgCategoryWatchUseAutoCatRealName ? $user->getRealName() : $user->getName();
-				$wl_title = str_replace( ' ', '_', wfMsg( 'categorywatch-autocat', $name ) );
+				$wl_title = str_replace( ' ', '_', wfMessage( 'categorywatch-autocat', $name )->text() );
 				$dbr->insert( $wtbl, array( 'wl_user' => $row[0], 'wl_namespace' => NS_CATEGORY, 'wl_title' => $wl_title ) );
 			}
 			$dbr->freeResult( $res );
@@ -147,14 +147,14 @@ class CategoryWatch {
 				$sub = array_shift( $sub );
 
 				$title   = Title::newFromText( $add, NS_CATEGORY );
-				$message = wfMsg( 'categorywatch-catmovein', $page, $this->friendlyCat( $add ), $this->friendlyCat( $sub ) );
+				$message = wfMessage( 'categorywatch-catmovein', $page, $wgCategoryWatch->friendlyCat( $add ), $wgCategoryWatch->friendlyCat( $sub )->text() );
 				$wgCategoryWatch->notifyWatchers( $title, $user, $message, $summary, $medit );
 
 			} else {
 
 				foreach ( $add as $cat ) {
 					$title   = Title::newFromText( $cat, NS_CATEGORY );
-					$message = wfMsg( 'categorywatch-catadd', $page, $this->friendlyCat( $cat ) );
+					$message = wfMessage( 'categorywatch-catadd', $page, $wgCategoryWatch->friendlyCat( $cat ) )->text();
 					$wgCategoryWatch->notifyWatchers( $title, $user, $message, $summary, $medit );
 				}
 
@@ -192,7 +192,7 @@ class CategoryWatch {
 			isset( $wgPasswordSenderName ) ? $wgPasswordSenderName : 'WikiAdmin' );
 		$editorAddress  = new MailAddress( $editor );
 		$summary        = $summary ? $summary : ' - ';
-		$medit          = $medit ? wfMsg( 'minoredit' ) : '';
+		$medit          = $medit ? wfMessage( 'minoredit' )->text() : '';
 		while ( $row = $dbr->fetchRow( $res ) ) {
 			$watchingUser   = User::newFromId( $row[0] );
 			$timecorrection = $watchingUser->getOption( 'timecorrection' );
@@ -200,7 +200,7 @@ class CategoryWatch {
 
 			if ( $watchingUser->getOption( 'enotifwatchlistpages' ) && $watchingUser->isEmailConfirmed() ) {
 				$to      = new MailAddress( $watchingUser );
-				$subject = wfMsg( 'categorywatch-emailsubject', $page );
+				$subject = wfMessage( 'categorywatch-emailsubject', $page )->text();
 				$body    = wfMsgForContent( 'enotif_body' );
 
 				# Reveal the page editor's address as REPLY-TO address only if
