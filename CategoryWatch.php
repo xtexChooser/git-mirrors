@@ -63,11 +63,11 @@ class CategoryWatch {
 		global $wgCategoryWatchUseAutoCat, $wgCategoryWatchUseAutoCatRealName, $wgCategoryWatch;
 
 		$wgCategoryWatch->before = array();
-		$dbr  = wfGetDB( DB_SLAVE );
+		$dbr  = wfGetDB( DB_MASTER);
 		$cl   = $dbr->tableName( 'categorylinks' );
 		wfDebugLog('CategoryWatch', "tablename = $cl");
 		$id   = $wikiPage->getID();
-		wfDebugLog('CategoryWatch', "id=$id");
+		wfDebugLog('CategoryWatch', "page id=$id");
 		$res  = $dbr->select( $cl, 'cl_to', "cl_from = $id", __METHOD__, array( 'ORDER BY' => 'cl_sortkey' ) );
 		while ( $row = $dbr->fetchRow( $res ) ) $wgCategoryWatch->before[] = $row[0];
 		$dbr->freeResult( $res );
@@ -147,9 +147,12 @@ class CategoryWatch {
 				$sub = array_shift( $sub );
 
 				$title   = Title::newFromText( $add, NS_CATEGORY );
-				$message = wfMessage( 'categorywatch-catmovein', $page, $wgCategoryWatch->friendlyCat( $add ), $wgCategoryWatch->friendlyCat( $sub )->text() );
+				$message = wfMessage( 'categorywatch-catmovein', $page, $wgCategoryWatch->friendlyCat( $add ), $wgCategoryWatch->friendlyCat( $sub ) )->text();
 				$wgCategoryWatch->notifyWatchers( $title, $user, $message, $summary, $medit );
 
+				$title   = Title::newFromText( $sub, NS_CATEGORY );
+				$message = wfMessage( 'categorywatch-catmoveout', $page, $wgCategoryWatch->friendlyCat( $sub ), $wgCategoryWatch->friendlyCat( $add ) )->text();
+				$wgCategoryWatch->notifyWatchers( $title, $user, $message );
 			} else {
 
 				foreach ( $add as $cat ) {
@@ -158,6 +161,11 @@ class CategoryWatch {
 					$wgCategoryWatch->notifyWatchers( $title, $user, $message, $summary, $medit );
 				}
 
+				foreach ( $sub as $cat ) {
+					$title   = Title::newFromText( $cat, NS_CATEGORY );
+					$message = wfMessage( 'categorywatch-catsub', $page, $wgCategoryWatch->friendlyCat( $cat ) )->text();
+					$wgCategoryWatch->notifyWatchers( $title, $user, $message );
+				}
 			}
 		}
 
