@@ -4,17 +4,5 @@
 			"Sfic"
 		]
 	},
-	"loginnotify-desc": "Notify users about suspicious logins",
-	"echo-category-title-login-fail": "Failed login attempts",
-	"echo-pref-tooltip-login-fail": "Notify me when there have been multiple failed attempts to log in to my account.",
-	"echo-category-title-login-success": "Login from new computer",
-	"echo-pref-tooltip-login-success": "Notify me whenever somebody logs into my account from a computer I have not used before.",
-	"loginnotify-login-fail": "There have been several failed attempts to log in to your account",
-	"loginnotify-primary-link": "सहायक",
-	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Failed attempt|Multiple failed attempts}} to log in to {{SITENAME}} as $1",
-	"notification-loginnotify-login-success-email-subject": "Login to {{SITENAME}} as $1 from a computer you have not recently used",
-	"notification-header-login-success": "Someone has successfully logged into your account from a computer which you have not edited from recently.",
-	"notification-new-bundled-header-login-fail": "There {{PLURAL:$1|has been '''a failed attempt'''|have been '''$1 failed attempts'''}} to log in to your account from a new device since the last time you logged in. If it wasn't you, please make sure your account has a strong password.",
-	"notification-known-header-login-fail": "There have been {{PLURAL:$1|has been '''a failed attempt'''|have been '''$1 failed attempts'''}} to log in to your account since the last time you logged in. If it wasn't you, please make sure your account has a strong password.",
-	"notification-new-unbundled-header-login-fail": "There {{PLURAL:$1|has been '''a failed attempt'''|have been '''multiple failed attempts'''}} to log in to your account from a new device. Please make sure your account has a strong password."
+	"loginnotify-primary-link": "सहायक जानकारी"
 }
