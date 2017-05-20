@@ -1,8 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
-			"Matrafox"
+			"Matrafox",
+			"XXN"
 		]
 	},
-	"loginnotify-primary-link": "Mai multe informații"
+	"loginnotify-primary-link": "Ajutor"
 }

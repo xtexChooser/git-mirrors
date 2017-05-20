@@ -10,7 +10,7 @@
 	"echo-category-title-login-success": "নতুন কম্পিউটার থেকে প্রবেশ",
 	"echo-pref-tooltip-login-success": "আমি আগে ব্যবহার করিনি এমন একটি কম্পিউটার থেকে কেউ আমার অ্যাকাউন্টে প্রবেশ করলে আমাকে বিজ্ঞতি দাও।",
 	"loginnotify-login-fail": "আপনার অ্যাকাউন্টে প্রবেশের একাধিক ব্যর্থ প্রচেষ্টা হয়েছে",
-	"loginnotify-primary-link": "সহায়ক তথ্য",
+	"loginnotify-primary-link": "সাহায্য",
 	"notification-loginnotify-login-fail-email-subject": "$1 হিসেবে {{SITENAME}}-এ প্রবেশ করার {{PLURAL:$2|ব্যর্থ প্রচেষ্টা|একাধিক ব্যর্থ প্রচেষ্টা}}",
 	"notification-loginnotify-login-success-email-subject": "আপনি সম্প্রতি ব্যবহার করেন নি এমন একটি কম্পিউটার থেকে $1 হিসেবে {{SITENAME}}-এ প্রবেশ করা হয়েছে",
 	"notification-header-login-success": "আপনি সম্প্রতি সম্পাদনা করেন নি এমন একটি কম্পিউটার থেকে কেউ সফলভাবে আপনার অ্যাকাউন্টে প্রবেশ করেছে।",
