@@ -3,12 +3,13 @@
 		"authors": [
 			"Gomoko",
 			"Wladek92",
-			"Verdy p"
+			"Verdy p",
+			"Urhixidur"
 		]
 	},
 	"loginnotify-desc": "Notifier les utilisateurs des connexions suspectes",
 	"echo-category-title-login-fail": "Tentatives de connexion échouées",
-	"echo-pref-tooltip-login-fail": "Me notifier quand il y a eu plusieurs tentatives échouées de connection à mon compte.",
+	"echo-pref-tooltip-login-fail": "Me notifier quand il y a eu plusieurs tentatives de connexion à mon compte.",
 	"echo-category-title-login-success": "Connexion depuis un nouvel ordinateur",
 	"echo-pref-tooltip-login-success": "Me notifier quand quelqu’un se connecte sur mon compte depuis un ordinateur que je n’ai pas utilisé auparavant.",
 	"loginnotify-login-fail": "Il y a eu plusieurs tentatives échouées de connexion sur votre compte.",
