@@ -6,5 +6,5 @@
 	},
 	"echo-pref-tooltip-login-fail": "Meddela mig när flera misslyckade inloggningsförsök har gjorts för mitt konto.",
 	"echo-category-title-login-success": "Logga in från en ny dator",
-	"loginnotify-primary-link": "Hjälpinformation"
+	"loginnotify-primary-link": "Hjälp"
 }
