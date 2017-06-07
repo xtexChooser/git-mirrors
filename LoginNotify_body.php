@@ -9,6 +9,7 @@
 use MediaWiki\Logger\LoggerFactory;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerAwareInterface;
+use Wikimedia\Rdbms\DBConnectionError;
 
 /**
  * Handle sending notifications on login from unknown source.
@@ -210,8 +211,15 @@ class LoginNotify implements LoggerAwareInterface {
 					if ( $count > 10 || $localInfo['editCount'] < 1 ) {
 						break;
 					}
-					$lb = wfGetLB( $wiki );
-					$dbrLocal = $lb->getConnection( DB_SLAVE, [], $wiki );
+					try {
+						$lb = wfGetLB( $wiki );
+						$dbrLocal = $lb->getConnection( DB_SLAVE, [], $wiki );
+					} catch ( DBConnectionError $ex ) {
+						// FIXME: sometimes, we get garbage wiki names (T167354)
+						wfDebugLog( 'AdHocDebug', "Couldn't connect to database $wiki, info: "
+							. json_encode( $info ) );
+						continue;
+					}
 
 					if ( !$this->hasCheckUserTables( $dbrLocal ) ) {
 						// Skip this wiki, no checkuser table.
