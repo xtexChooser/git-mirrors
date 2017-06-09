@@ -191,7 +191,6 @@ class LoginNotify implements LoggerAwareInterface {
 		// edited the most. We only do top ten, to limit the worst-case where the
 		// user has accounts on 800 wikis.
 		if ( class_exists( 'CentralAuthUser' ) ) {
-			$wikisByEditCounts = [];
 			$globalUser = CentralAuthUser::getInstance( $user );
 			if ( $globalUser->exists() ) {
 				// This is expensive. However, On WMF wikis, probably
@@ -207,17 +206,24 @@ class LoginNotify implements LoggerAwareInterface {
 					}
 				);
 				$count = 0;
-				foreach ( $info as $wiki => $localInfo ) {
+				$total = count( $info );
+				foreach ( $info as $localInfo ) {
+					if ( !isset( $localInfo['id'] ) || !isset( $localInfo['wiki'] ) ) {
+						wfDebugLog( 'AdHocDebug', "Unexpected user data [$count/$total]: "
+							. print_r( $localInfo, true ) );
+						break;
+					}
 					if ( $count > 10 || $localInfo['editCount'] < 1 ) {
 						break;
 					}
+					$wiki = $localInfo['wiki'];
 					try {
 						$lb = wfGetLB( $wiki );
 						$dbrLocal = $lb->getConnection( DB_SLAVE, [], $wiki );
 					} catch ( DBConnectionError $ex ) {
 						// FIXME: sometimes, we get garbage wiki names (T167354)
-						wfDebugLog( 'AdHocDebug', "Couldn't connect to database $wiki, info: "
-							. json_encode( $info ) );
+						wfDebugLog( 'AdHocDebug', "Couldn't connect to database $wiki [$count/$total], info: "
+							. print_r( $localInfo, true ) );
 						continue;
 					}
 
