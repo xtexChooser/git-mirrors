@@ -1,0 +1,32 @@
+{
+    "name": "CategoryWatch",
+    "version": "1.2.2, 2011-12-03",
+    "author": "[http://www.organicdesign.co.nz/User:Nad User:Nad]",
+    "url": "http://www.mediawiki.org/wiki/Extension:CategoryWatch",
+    "descriptionmsg": "categorywatch-desc",
+    "license-name": "GPL-2.0+",
+    "type": "other",
+    "AutoloadClasses": {
+        "CategoryWatch": "CategoryWatch.php"
+    },
+    "ExtensionFunctions": [
+        "CategoryWatch::wfSetupCategoryWatch"
+    ],
+    "ExtensionMessagesFiles": {
+        "CategoryWatch": "CategoryWatch.i18n.php"
+    },
+    "Hooks": {
+        "PageContentSave":[
+	    "CategoryWatch::onPageContentSave"
+	],
+        "PageContentSaveComplete":[
+	    "CategoryWatch::onPageContentSaveComplete"
+	]
+    },
+    "config": {
+        "CategoryWatchNotifyEditor": true,
+        "CategoryWatchUseAutoCat": false,
+        "CategoryWatchUseAutoCatRealName": false
+    },
+    "manifest_version": 1
+}
