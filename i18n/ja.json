@@ -1,0 +1,9 @@
+{
+	"@metadata": {
+		"authors": [
+			"Iwai.masaharu"
+		]
+	},
+	"echo-category-title-login-fail": "ログインの失敗",
+	"echo-pref-tooltip-login-fail": "私のアカウントへのログイン試行が複数回失敗したときに通知する。"
+}
