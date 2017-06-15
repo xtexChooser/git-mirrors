@@ -1,8 +1,10 @@
 # CategoryWatch
 
-Main development Git repository: https://gerrit.wikimedia.org/r/#/admin/projects/mediawiki/extensions/CategoryWatch
+Main development Git repository on Gerrit: https://gerrit.wikimedia.org/r/#/admin/projects/mediawiki/extensions/CategoryWatch
 
-Mirror in GitHub: https://github.com/seanchen/CategoryWatch
+Here is the Phabricator Diffusion: https://phabricator.wikimedia.org/diffusion/ECWA/
+
+Mirror on GitHub: https://github.com/seanchen/CategoryWatch
 
 MediaWiki extension CategoryWatch, https://www.mediawiki.org/wiki/Extension:CategoryWatch
 
