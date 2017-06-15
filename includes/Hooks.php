@@ -6,9 +6,14 @@
  * @ingroup Extensions
  */
 
-use MediaWiki\Auth\AuthenticationResponse;
+namespace LoginNotify;
 
-class LoginNotifyHooks {
+use EchoAttributeManager;
+use LoginForm;
+use MediaWiki\Auth\AuthenticationResponse;
+use User;
+
+class Hooks {
 
 	const OPTIONS_FAKE_TRUTH = 2;
 	const OPTIONS_FAKE_FALSE = 'fake-false';

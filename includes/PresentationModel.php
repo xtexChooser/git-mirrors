@@ -1,5 +1,12 @@
 <?php
-class LoginNotifyPresentationModel extends EchoEventPresentationModel {
+
+namespace LoginNotify;
+
+use EchoEventPresentationModel;
+use Message;
+use SpecialPage;
+
+class PresentationModel extends EchoEventPresentationModel {
 
 	/**
 	 * Show an user avatar.

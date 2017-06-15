@@ -25,34 +25,34 @@
 		]
 	},
 	"AutoloadClasses": {
-		"LoginNotify": "LoginNotify_body.php",
-		"LoginNotifyHooks": "LoginNotify.hooks.php",
-		"LoginNotifyPresentationModel": "LoginNotifyPresentationModel.php"
+		"LoginNotify\\LoginNotify": "includes/LoginNotify.php",
+		"LoginNotify\\Hooks": "includes/Hooks.php",
+		"LoginNotify\\PresentationModel": "includes/PresentationModel.php"
 	},
 	"Hooks": {
 		"BeforeCreateEchoEvent": [
-			"LoginNotifyHooks::onBeforeCreateEchoEvent"
+			"LoginNotify\\Hooks::onBeforeCreateEchoEvent"
 		],
 		"EchoGetBundleRules": [
-			"LoginNotifyHooks::onEchoGetBundleRules"
+			"LoginNotify\\Hooks::onEchoGetBundleRules"
 		],
 		"LoginAuthenticateAudit": [
 			"LoginNotifyHooks::onLoginAuthenticateAudit"
 		],
 		"AuthManagerLoginAuthenticateAudit": [
-			"LoginNotifyHooks::onAuthManagerLoginAuthenticateAudit"
+			"LoginNotify\\Hooks::onAuthManagerLoginAuthenticateAudit"
 		],
 		"AddNewAccount": [
-			"LoginNotifyHooks::onAddNewAccount"
+			"LoginNotify\\Hooks::onAddNewAccount"
 		],
 		"UserLoadOptions": [
-			"LoginNotifyHooks::onUserLoadOptions"
+			"LoginNotify\\Hooks::onUserLoadOptions"
 		],
 		"UserSaveOptions": [
-			"LoginNotifyHooks::onUserSaveOptions"
+			"LoginNotify\\Hooks::onUserSaveOptions"
 		],
 		"LocalUserCreated": [
-			"LoginNotifyHooks::onLocalUserCreated"
+			"LoginNotify\\Hooks::onLocalUserCreated"
 		]
 	},
 	"config": {

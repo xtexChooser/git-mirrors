@@ -6,10 +6,24 @@
  * @ingroup Extensions
  */
 
+namespace LoginNotify;
+
+use BagOStuff;
+use CentralAuthUser;
+use Config;
+use EchoEvent;
+use WebRequest;
+use Wikimedia\Rdbms\Database;
+use Exception;
+use IP;
 use MediaWiki\Logger\LoggerFactory;
+use MWCryptRand;
+use ObjectCache;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerAwareInterface;
-use Wikimedia\Rdbms\DBConnectionError;
+use RequestContext;
+use UnexpectedValueException;
+use User;
 
 /**
  * Handle sending notifications on login from unknown source.
@@ -46,7 +60,7 @@ class LoginNotify implements LoggerAwareInterface {
 		$this->cache = $cache;
 		$this->config = $cfg;
 		// Generate salt just once to avoid duplicate cookies
-		$this->gSalt = Wikimedia\base_convert( MWCryptRand::generateHex( 8 ), 16, 36 );
+		$this->gSalt = \Wikimedia\base_convert( MWCryptRand::generateHex( 8 ), 16, 36 );
 
 		if ( $this->config->get( 'LoginNotifySecretKey' ) !== null ) {
 			$this->secret = $this->config->get( 'LoginNotifySecretKey' );
@@ -517,7 +531,7 @@ class LoginNotify implements LoggerAwareInterface {
 		if ( !is_string( $res ) ) {
 			throw new UnexpectedValueException( "Hash failed" );
 		}
-		$encoded = $year . '-' . $salt . '-' . Wikimedia\base_convert( $res, 16, 36 );
+		$encoded = $year . '-' . $salt . '-' . \Wikimedia\base_convert( $res, 16, 36 );
 		return $encoded;
 	}
 
@@ -529,7 +543,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 * @return string The cache key
 	 */
 	private function getKey( User $user, $type ) {
-		$userHash = Wikimedia\base_convert( sha1( $user->getName() ), 16, 36, 31 );
+		$userHash = \Wikimedia\base_convert( sha1( $user->getName() ), 16, 36, 31 );
 		return $this->cache->makeGlobalKey(
 			'loginnotify', $type, $userHash
 		);
