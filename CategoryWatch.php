@@ -4,7 +4,7 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
  * CategoryWatch extension
  * - Extends watchlist functionality to include notification about membership changes of watched categories
  *
- * See http://www.mediawiki.org/Extension:CategoryWatch for installation and usage details
+ * See https://www.mediawiki.org/Extension:CategoryWatch for installation and usage details
  * See http://www.organicdesign.co.nz/Extension_talk:CategoryWatch for development notes and disucssion
  *
  * @file
@@ -100,7 +100,7 @@ class CategoryWatch {
 	
 	/**
 	 * the proper hook for save page request.
-	 * @see http://www.mediawiki.org/wiki/Manual:Hooks/PageContentSaveComplete
+	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/PageContentSaveComplete
 	 * @param $article Article edited
 	 * @param $user User who edited
 	 * @param $content Content New article text
