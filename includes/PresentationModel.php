@@ -32,7 +32,7 @@ class PresentationModel extends EchoEventPresentationModel {
 	/**
 	 * Define the email subject string
 	 *
-	 * @return string Message string for email subject
+	 * @return Message Email subject
 	 */
 	public function getSubjectMessage() {
 		switch ( $this->event->getType() ) {
