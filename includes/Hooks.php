@@ -9,6 +9,7 @@
 namespace LoginNotify;
 
 use EchoAttributeManager;
+use EchoEvent;
 use LoginForm;
 use MediaWiki\Auth\AuthenticationResponse;
 use User;
@@ -27,9 +28,9 @@ class Hooks {
 	 * @return bool
 	 */
 	public static function onBeforeCreateEchoEvent(
-		&$notifications,
-		&$notificationCategories,
-		&$icons
+		array &$notifications,
+		array &$notificationCategories,
+		array &$icons
 	) {
 		global $wgLoginNotifyEnableOnSuccess;
 
@@ -86,7 +87,12 @@ class Hooks {
 		return true;
 	}
 
-	public static function onEchoGetBundleRules( $event, &$bundleString ) {
+	/**
+	 * @param EchoEvent $event
+	 * @param string $bundleString
+	 * @return bool
+	 */
+	public static function onEchoGetBundleRules( EchoEvent $event, &$bundleString ) {
 		switch ( $event->getType() ) {
 			case 'login-fail-new':
 				$bundleString = 'login-fail';
@@ -99,6 +105,7 @@ class Hooks {
 	 * Old hook for pre 1.27 or wikis with auth manager disabled.
 	 *
 	 * @todo Doesn't catch CAPTCHA or throttle failures
+	 *
 	 * @param User $user User in question.
 	 * @param string $pass The password (parameter not used).
 	 * @param integer $retval A LoginForm constant (e.g. LoginForm::SUCCESS).

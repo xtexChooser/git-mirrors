@@ -12,6 +12,7 @@ use BagOStuff;
 use CentralAuthUser;
 use Config;
 use EchoEvent;
+use MediaWiki\MediaWikiServices;
 use WebRequest;
 use Wikimedia\Rdbms\Database;
 use Exception;
@@ -41,8 +42,10 @@ class LoginNotify implements LoggerAwareInterface {
 	private $config;
 	/** @var LoggerInterface Usually instance of LoginNotify log */
 	private $log;
-	/** @var string|boolean Salt for cookie hash */
+	/** @var string|bool Salt for cookie hash */
 	private $gSalt;
+	/** @var string */
+	private $secret;
 
 	/**
 	 * Constructor
@@ -84,7 +87,7 @@ class LoginNotify implements LoggerAwareInterface {
 	/**
 	 * Get just network part of an IP (assuming /24 or /64)
 	 *
-	 * @param String $ip Either IPv4 or IPv6 address
+	 * @param string $ip Either IPv4 or IPv6 address
 	 * @return string Just the network part (e.g. 127.0.0.)
 	 * @throws UnexpectedValueException If given something not an IP
 	 * @throws Exception If regex totally fails (Should never happen)
@@ -110,8 +113,8 @@ class LoginNotify implements LoggerAwareInterface {
 	/**
 	 * Is the current computer known to be used by the given user
 	 *
-	 * @param $user User User in question
-	 * @return boolean true if the user has used this computer before
+	 * @param User $user User in question
+	 * @return bool true if the user has used this computer before
 	 */
 	private function isFromKnownIP( User $user ) {
 		$cookieResult = $this->isUserInCookie( $user );
@@ -157,7 +160,7 @@ class LoginNotify implements LoggerAwareInterface {
 	/**
 	 * Check if we cached this user's ip address from last login.
 	 *
-	 * @param $user User User in question.
+	 * @param User $user User in question.
 	 * @return Mixed true, false or self::NO_INFO_AVAILABLE.
 	 */
 	private function isUserInCache( User $user ) {
@@ -176,7 +179,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 * If CentralAuth is installed, this will check not only the current wiki,
 	 * but also the ten wikis where user has most edits on.
 	 *
-	 * @param $user User User in question.
+	 * @param User $user User in question.
 	 * @return Mixed true, false or self::NO_INFO_AVAILABLE.
 	 */
 	private function isUserInCheckUser( User $user ) {
@@ -212,7 +215,7 @@ class LoginNotify implements LoggerAwareInterface {
 				// will be cached.
 				$info = $globalUser->queryAttached();
 				// already checked the local wiki.
-				unset( $info[wfWikiId()] );
+				unset( $info[wfWikiID()] );
 				usort( $info,
 					function( $a, $b ) {
 						// descending order
@@ -229,7 +232,9 @@ class LoginNotify implements LoggerAwareInterface {
 					}
 
 					$wiki = $localInfo['wiki'];
-					$lb = wfGetLB( $wiki );
+					$lb = MediaWikiServices::getInstance()
+						->getDBLoadBalancerFactory()
+						->getMainLB( $wiki );
 					$dbrLocal = $lb->getConnection( DB_SLAVE, [], $wiki );
 
 					if ( !$this->hasCheckUserTables( $dbrLocal ) ) {
@@ -267,10 +272,10 @@ class LoginNotify implements LoggerAwareInterface {
 	 * Actually do the query of the check user table.
 	 *
 	 * @note This catches and ignores database errors.
-	 * @param $userId int User id number (Not necessarily for the local wiki)
-	 * @param $ipFragment string Prefix to match against cuc_ip (from $this->getIPNetwork())
-	 * @param $dbr Database A database connection (possibly foreign)
-	 * @return boolean If $ipFragment is in check user db
+	 * @param int $userId User id number (Not necessarily for the local wiki)
+	 * @param string $ipFragment Prefix to match against cuc_ip (from $this->getIPNetwork())
+	 * @param Database $dbr A database connection (possibly foreign)
+	 * @return bool If $ipFragment is in check user db
 	 */
 	private function isUserInCheckUserQuery( $userId, $ipFragment, Database $dbr ) {
 		// For some unknown reason, the index is on
@@ -300,8 +305,9 @@ class LoginNotify implements LoggerAwareInterface {
 	 * an unknown IP, since user has no known IPs.
 	 *
 	 * @todo FIXME Does this behaviour make sense, esp. with cookie check?
-	 * @param $userId int User id number (possibly on foreign wiki)
-	 * @param $dbr Database DB connection (possibly to foreign wiki)
+	 * @param int $userId User id number (possibly on foreign wiki)
+	 * @param Database $dbr DB connection (possibly to foreign wiki)
+	 * @return bool|mixed
 	 */
 	private function isUserInCheckUserAnyInfo( $userId, Database $dbr ) {
 		// Verify that we actually have IP info for
@@ -319,14 +325,14 @@ class LoginNotify implements LoggerAwareInterface {
 			__METHOD__
 		);
 
-		return $haveIPInfo;
+		return (bool)$haveIPInfo;
 	}
 
 	/**
 	 * Does this wiki have a checkuser table?
 	 *
 	 * @param Database $dbr Database to check
-	 * @return boolean
+	 * @return bool
 	 */
 	private function hasCheckUserTables( Database $dbr ) {
 		if ( !$dbr->tableExists( 'cu_changes' ) ) {
@@ -343,7 +349,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 * Give the user a cookie saying that they've previously logged in from this computer.
 	 *
 	 * @note If user already has a cookie, this will refresh it.
-	 * @param $user User User in question who just logged in.
+	 * @param User $user User in question who just logged in.
 	 */
 	private function setLoginCookie( User $user ) {
 		$cookie = $this->getPrevLoginCookie( $user->getRequest() );
@@ -395,7 +401,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 * Check if a certain user is in the cookie.
 	 *
 	 * @param User $user User in question
-	 * @return boolean|integer Either true, false, or self::NO_INFO_AVAILABLE.
+	 * @return bool|integer Either true, false, or self::NO_INFO_AVAILABLE.
 	 */
 	private function isUserInCookie( User $user ) {
 		$cookie = $this->getPrevLoginCookie( $user->getRequest() );
@@ -410,8 +416,8 @@ class LoginNotify implements LoggerAwareInterface {
 	/**
 	 * Get the cookie with previous login names in it
 	 *
-	 * @param WebRequest
-	 * @return String The cookie. Empty string if no cookie.
+	 * @param WebRequest $req
+	 * @return string The cookie. Empty string if no cookie.
 	 */
 	private function getPrevLoginCookie( WebRequest $req ) {
 		return $req->getCookie( self::COOKIE_NAME, '', '' );
@@ -424,7 +430,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 * remove any previous instances of the current user, and remove older user
 	 * references, if there are too many records.
 	 *
-	 * @param user $user User that person is attempting to log in as.
+	 * @param User $user User that person is attempting to log in as.
 	 * @param string $cookie A cookie, which has records separated by '.'.
 	 * @return array Element 0 is boolean (user seen before?), 1 is the new cookie value.
 	 */
@@ -464,6 +470,10 @@ class LoginNotify implements LoggerAwareInterface {
 	 * different cookies on different machines, so that nobody
 	 * can after the fact figure out a single user has used both
 	 * machines.
+	 *
+	 * @param User $user
+	 * @param $cookieRecord
+	 * @return bool
 	 */
 	private function isUserRecordGivenCookie( User $user, $cookieRecord ) {
 		if ( !$this->validateCookieRecord( $cookieRecord ) ) {
@@ -480,7 +490,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 * Check if cookie is valid (Is not too old, has 3 fields)
 	 *
 	 * @param string $cookieRecord Cookie record
-	 * @return boolean True if valid
+	 * @return bool true if valid
 	 */
 	private function validateCookieRecord( $cookieRecord ) {
 		$parts = explode( "-", $cookieRecord, 3 );
@@ -512,9 +522,9 @@ class LoginNotify implements LoggerAwareInterface {
 	 * When checking if a hash is valid, provide all three arguments.
 	 * When generating a new hash, only use the first argument.
 	 *
-	 * @param $username String Username,
-	 * @param $year int [Optional] Year. Default to current year
-	 * @param $salt string [Optional] Salt (expected to be base-36 encoded)
+	 * @param string $username Username,
+	 * @param int|bool $year int [Optional] Year. Default to current year
+	 * @param string|bool $salt [Optional] Salt (expected to be base-36 encoded)
 	 * @return String A record for the cookie
 	 */
 	private function generateUserCookieRecord( $username, $year = false, $salt = false ) {
@@ -590,9 +600,9 @@ class LoginNotify implements LoggerAwareInterface {
 	/**
 	 * Send a notice about login attempts
 	 *
-	 * @param $user User The account in question
-	 * @param $type String 'login-fail-new' or 'login-fail-known'
-	 * @param $count int [Optional] How many failed attempts
+	 * @param User $user The account in question
+	 * @param string $type 'login-fail-new' or 'login-fail-known'
+	 * @param int $count [Optional] How many failed attempts
 	 */
 	private function sendNotice( User $user, $type, $count = null ) {
 		$extra = [ 'notifyAgent' => true ];
@@ -609,10 +619,10 @@ class LoginNotify implements LoggerAwareInterface {
 	/**
 	 * Check if we've reached limit, and increment cache key.
 	 *
-	 * @param $key string cache key
-	 * @param $max int interval of one to send notice
-	 * @param $expiry int When to expire cache key.
-	 * @return Bool|int false to not send notice, or number of hits
+	 * @param string $key cache key
+	 * @param int $interval The interval of one to send notice
+	 * @param int $expiry When to expire cache key.
+	 * @return bool|int false to not send notice, or number of hits
 	 */
 	private function checkAndIncKey( $key, $interval, $expiry ) {
 		$cache = $this->cache;
@@ -633,7 +643,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 * When a user successfully logs in, we start back from 0, as
 	 * otherwise a mistake here and there will trigger the warning.
 	 *
-	 * @param user $user The user for whom to clear the attempt counter.
+	 * @param User $user The user for whom to clear the attempt counter.
 	 */
 	public function clearCounters( User $user ) {
 		$cache = $this->cache;

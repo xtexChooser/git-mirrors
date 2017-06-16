@@ -11,7 +11,7 @@ class PresentationModel extends EchoEventPresentationModel {
 	/**
 	 * Show an user avatar.
 	 *
-	 * @return String Name of icon
+	 * @return string Name of icon
 	 */
 	public function getIconType() {
 		return 'LoginNotify-user-avatar';
@@ -20,7 +20,7 @@ class PresentationModel extends EchoEventPresentationModel {
 	/**
 	 * Link to help page on mediawiki
 	 *
-	 * @return array url to link to
+	 * @return array URL to link to
 	 */
 	public function getPrimaryLink() {
 		return [

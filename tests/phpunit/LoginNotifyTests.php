@@ -1,12 +1,12 @@
 <?php
 
+use LoginNotify\LoginNotify;
 use \Psr\Log\NullLogger;
 use Wikimedia\TestingAccessWrapper;
 
 // @codingStandardsIgnoreStart Generic.Files.LineLength.TooLong
 class LoginNotifyTests extends MediaWikiTestCase {
 
-	/** @var LoginNotify */
 	private $inst;
 
 	public function setUpLoginNotify() {
