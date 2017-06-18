@@ -1,8 +1,14 @@
 {
 	"@metadata": {
 		"authors": [
-			"Nike"
+			"Nike",
+			"Stryn"
 		]
 	},
+	"loginnotify-desc": "Ilmoittaa käyttäjille epäilyttävistä kirjautumisista",
+	"echo-category-title-login-fail": "Epäonnistuneet kirjautumisyritykset",
+	"echo-pref-tooltip-login-fail": "Ilmoita minulle, kun tunnuksellani on yritetty epäonnistuneesti kirjautua useaan otteeseen.",
+	"echo-category-title-login-success": "Kirjautuminen uudelta tietokoneelta",
+	"echo-pref-tooltip-login-success": "Ilmoita minulle, kun tunnukselleni kirjaudutaan tietokoneelta, jota en ole aiemmin käyttänyt.",
 	"loginnotify-primary-link": "Ohje"
 }

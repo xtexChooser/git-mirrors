@@ -1,8 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"Sfic"
+			"Sfic",
+			"Jayprakash12345"
 		]
 	},
+	"echo-category-title-login-fail": "लॉगिन प्रयास विफल",
 	"loginnotify-primary-link": "सहायक"
 }
