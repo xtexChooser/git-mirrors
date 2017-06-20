@@ -217,7 +217,7 @@ class LoginNotify implements LoggerAwareInterface {
 				// already checked the local wiki.
 				unset( $info[wfWikiID()] );
 				usort( $info,
-					function( $a, $b ) {
+					function ( $a, $b ) {
 						// descending order
 						return $b['editCount'] - $a['editCount'];
 					}
