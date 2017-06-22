@@ -25,8 +25,9 @@
 		]
 	},
 	"AutoloadClasses": {
-		"LoginNotify\\LoginNotify": "includes/LoginNotify.php",
+		"LoginNotify\\DeferredChecksJob": "includes/DeferredChecksJob.php",
 		"LoginNotify\\Hooks": "includes/Hooks.php",
+		"LoginNotify\\LoginNotify": "includes/LoginNotify.php",
 		"LoginNotify\\PresentationModel": "includes/PresentationModel.php"
 	},
 	"Hooks": {
@@ -37,7 +38,7 @@
 			"LoginNotify\\Hooks::onEchoGetBundleRules"
 		],
 		"LoginAuthenticateAudit": [
-			"LoginNotifyHooks::onLoginAuthenticateAudit"
+			"LoginNotify\\Hooks::onLoginAuthenticateAudit"
 		],
 		"AuthManagerLoginAuthenticateAudit": [
 			"LoginNotify\\Hooks::onAuthManagerLoginAuthenticateAudit"
@@ -54,6 +55,9 @@
 		"LocalUserCreated": [
 			"LoginNotify\\Hooks::onLocalUserCreated"
 		]
+	},
+	"JobClasses": {
+		"LoginNotifyChecks": "LoginNotify\\DeferredChecksJob"
 	},
 	"config": {
 		"@docLoginNotifyAttemptsKnownIP": "The number of failed login attempts to permit from a known IP before a notification is triggered.",
