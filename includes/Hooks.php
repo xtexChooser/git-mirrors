@@ -49,7 +49,7 @@ class Hooks {
 			],
 			'category' => 'login-fail',
 			'group' => 'negative',
-			'presentation-model' => 'LoginNotifyPresentationModel',
+			'presentation-model' => PresentationModel::class,
 			// fixme, what does this actually do?
 			'title-message' => 'loginnotify-login-fail',
 			'title-params' => [],
