@@ -11,7 +11,6 @@
 	"echo-pref-tooltip-login-fail": "Help tooltip for {{msg-mw|echo-category-title-login-fail}}",
 	"echo-category-title-login-success": "Label for 2 checkboxes in the Notifications section of [[Special:Preferences]]. The checkbox controls if the user receives notification on someone logging in to this account from a computer that has not previously been used to log in by this user.",
 	"echo-pref-tooltip-login-success": "Help tooltip for {{msg-mw|echo-category-title-login-success}}",
-	"loginnotify-login-fail": "FIXME I have no idea where this message is used.\n{{notranslate}}",
 	"loginnotify-primary-link": "Label for link to a help page about the feature\n{{Identical|Help}}",
 	"notification-loginnotify-login-fail-email-subject": "Email subject line for email notice that there have been failed login attempts for the user's account. $1 is the user in question.",
 	"notification-loginnotify-login-success-email-subject": "Email subject line for email notice that someone has logged in to the user's account from a computer that has not previously been used. $1 is the user in question.",
