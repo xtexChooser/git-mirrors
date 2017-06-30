@@ -10,7 +10,7 @@
 	"echo-category-title-login-success": "Aniciu de sesión dende un ordenador nuevu",
 	"echo-pref-tooltip-login-success": "avisame cada vez que dalguién anicie sesión cola mio cuenta dende un ordenador que nun usé antes.",
 	"loginnotify-login-fail": "Hebo dellos intentos fallíos d'aniciu de sesión cola to cuenta",
-	"loginnotify-primary-link": "Información d'ayuda",
+	"loginnotify-primary-link": "Ayuda",
 	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Intentu fallíu|Múltiples intentos fallíos}} d'aniciu de sesión en {{SITENAME}} como $1",
 	"notification-loginnotify-login-success-email-subject": "Aniciu de sesión en {{SITENAME}} como $1 dende un ordenador que nun usasti apocayá",
 	"notification-header-login-success": "Daquién anició sesión correutamente na to cuenta dende un ordenador del que nun editasti apocayá.",
