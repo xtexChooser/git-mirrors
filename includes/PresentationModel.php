@@ -71,7 +71,7 @@ class PresentationModel extends EchoEventPresentationModel {
 				}
 				break;
 			default:
-				$msg = $this->msg( 'notification-header-login-success' );
+				$msg = $this->msg( 'notification-header-login-success', $this->getUser()->getName() );
 		}
 		return $msg;
 	}
