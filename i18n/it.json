@@ -9,10 +9,9 @@
 	"echo-pref-tooltip-login-fail": "Avvisami quando ci sono stati diversi tentativi falliti di accesso con la tua utenza.",
 	"echo-category-title-login-success": "Accesso da un nuovo computer",
 	"echo-pref-tooltip-login-success": "Avvisami ogni volta che qualcuno accede con la mia utenza da un computer che non ho usato prima.",
-	"loginnotify-login-fail": "Ci sono stati diversi tentativi falliti di accesso con la tua utenza",
 	"loginnotify-primary-link": "Aiuto",
 	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Tentativo fallito|Diversi tentativi falliti}} di acceso a {{SITENAME}} come $1",
 	"notification-loginnotify-login-success-email-subject": "Accesso a {{SITENAME}} come $1 da un computer che non hai utilizzato di recente",
-	"notification-header-login-success": "Qualcuno si è collegato con successo con la tua utenza da un computer con cui non hai fatto alcuna modifica di recente.",
+	"notification-header-login-success": "Qualcuno (probabilmente tu) ha recentemente eseguito l'accesso con la tua utenza da un nuovo dispositivo. nel caso fossi stato tu, puoi ignorare questo messaggio. Se invece non sei stato tu, allora è consigliabile cambiare la tua password e verificare l'attività della tua utenza.",
 	"notification-new-unbundled-header-login-fail": "{{PLURAL:$1|C'è stato '''un tentativo fallito'''|Ci sono stati '''più tentativi falliti'''}} di accedere con la tua utenza da un nuovo dispositivo. Assicurati di avere una password complessa."
 }

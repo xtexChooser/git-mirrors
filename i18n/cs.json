@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Meliganai"
+		]
+	},
+	"notification-header-login-success": "Někdo (pravděpodobně Vy) se nedávno přihlásil na Váš účet z nového zařízení. Pokud jste to byl(a) Vy, můžete tuto zprávu ignorovat. Pokud jste to nebyl(a) Vy, doporučujeme, abyste si změnil(a) heslo a zkontroloval(a) aktivitu na svém účtu."
+}
