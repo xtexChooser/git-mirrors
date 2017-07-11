@@ -57,15 +57,20 @@ class PresentationModel extends EchoEventPresentationModel {
 	 */
 	public function getHeaderMessage() {
 		switch ( $this->event->getType() ) {
+			// Known IP? Don't bundle because we issue notifications after every 5 attempts anyway
 			case 'login-fail-known':
 				$msg = $this->msg( 'notification-known-header-login-fail' );
 				$msg->params( $this->event->getExtraParam( 'count', 0 ) );
 				break;
+			// New IP?
 			case 'login-fail-new':
+				// If it's a bundle, pass it the bundle count as param
 				if ( $this->isBundled() ) {
 					$msg = $this->msg( 'notification-new-bundled-header-login-fail' );
-					$msg->params( $this->event->getExtraParam( 'count', 0 ) );
+					$msg->params( $this->getBundleCount() );
 				} else {
+					// If the bundle is read or user goes to Special:Notifications, show
+					// one notification per attempt (aligned with how unbundled bundles work)
 					$msg = $this->msg( 'notification-new-unbundled-header-login-fail' );
 					$msg->params( $this->event->getExtraParam( 'count', 0 ) );
 				}
