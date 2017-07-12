@@ -12,6 +12,6 @@
 	"loginnotify-primary-link": "Aiuto",
 	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Tentativo fallito|Diversi tentativi falliti}} di acceso a {{SITENAME}} come $1",
 	"notification-loginnotify-login-success-email-subject": "Accesso a {{SITENAME}} come $1 da un computer che non hai utilizzato di recente",
-	"notification-header-login-success": "Qualcuno (probabilmente tu) ha recentemente eseguito l'accesso con la tua utenza da un nuovo dispositivo. nel caso fossi stato tu, puoi ignorare questo messaggio. Se invece non sei stato tu, allora è consigliabile cambiare la tua password e verificare l'attività della tua utenza.",
+	"notification-header-login-success": "Qualcuno (probabilmente {{GENDER:$1|tu}}) ha recentemente eseguito l'accesso con la tua utenza da un nuovo dispositivo. nel caso fossi stato tu, puoi ignorare questo messaggio. Se invece non sei stato tu, allora è consigliabile cambiare la tua password e verificare l'attività della tua utenza.",
 	"notification-new-unbundled-header-login-fail": "{{PLURAL:$1|C'è stato '''un tentativo fallito'''|Ci sono stati '''più tentativi falliti'''}} di accedere con la tua utenza da un nuovo dispositivo. Assicurati di avere una password complessa."
 }
