@@ -1,8 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"Sjoerddebruin"
+			"Sjoerddebruin",
+			"Festina90"
 		]
 	},
-	"loginnotify-primary-link": "Hulp"
+	"loginnotify-primary-link": "Hulp",
+	"notification-header-login-success": "Iemand (Waarschijnijk {{GENDER:$1|u}}) heeft zich aangemeld onder uw account vanaf een nieuw apparaat. Als dit u weldadelijk was, kunt u dit bericht negeren . Als dit u niet was, dan is het aangeraden om een nieuw wachtwoord te kiezen, en uw account geschiedenis na te kijken."
 }
