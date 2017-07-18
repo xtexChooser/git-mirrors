@@ -6,11 +6,11 @@
 			"Niharika"
 		]
 	},
-	"loginnotify-desc": "Notify users about suspicious logins",
+	"loginnotify-desc": "Notify users about suspicious logins from unfamiliar devices and/or IP addresses.",
 	"echo-category-title-login-fail": "Failed login attempts",
-	"echo-pref-tooltip-login-fail": "Notify me when there have been multiple failed attempts to log in to my account.",
-	"echo-category-title-login-success": "Login from new computer",
-	"echo-pref-tooltip-login-success": "Notify me whenever somebody logs into my account from a computer I have not used before.",
+	"echo-pref-tooltip-login-fail": "Notify me when there have been failed attempts to log in to my account.",
+	"echo-category-title-login-success": "Login from an unfamiliar device",
+	"echo-pref-tooltip-login-success": "Notify me whenever somebody logs into my account from an unfamiliar device and IP address.",
 	"loginnotify-primary-link": "Help",
 	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Failed attempt|Multiple failed attempts}} to log in to {{SITENAME}} as $1",
 	"notification-loginnotify-login-success-email-subject": "Login to {{SITENAME}} as $1 from a computer you have not recently used",
