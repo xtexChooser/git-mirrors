@@ -777,6 +777,6 @@ class LoginNotify implements LoggerAwareInterface {
 				'resultSoFar' => $resultSoFar,
 			]
 		);
-		JobQueueGroup::singleton()->push( $job );
+		JobQueueGroup::singleton()->lazyPush( $job );
 	}
 }
