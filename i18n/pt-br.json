@@ -4,5 +4,7 @@
 			"Felipe L. Ewald"
 		]
 	},
+	"echo-category-title-login-fail": "Tentativas de login falhadas",
+	"echo-category-title-login-success": "Login de um computador novo",
 	"loginnotify-primary-link": "Ajuda"
 }
