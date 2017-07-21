@@ -1,8 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"Subi"
+			"Subi",
+			"Mikel Ibaiba"
 		]
 	},
-	"loginnotify-primary-link": "Laguntza"
+	"loginnotify-primary-link": "Laguntza",
+	"notification-header-login-success": "Norbait (seguruenik {{GENEROA:$1|zu}}) beste gailu batetik sartu zarela zure kontuan. Zu izan bazara, ez iezaiozu kasurik egin mezu honi. Zu ez bazinen, pasahitza aldatzea gomendatzen dizugu, eta kontuaren aktibitatea konprobatzea."
 }
