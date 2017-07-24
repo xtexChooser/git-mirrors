@@ -6,5 +6,11 @@
 	},
 	"echo-category-title-login-fail": "Tentativas de login falhadas",
 	"echo-category-title-login-success": "Login de um computador novo",
-	"loginnotify-primary-link": "Ajuda"
+	"loginnotify-primary-link": "Ajuda",
+	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Falha na tentativa|Múltiplas tentativas falhadas}} para fazer logon em {{SITENAME}} como $1",
+	"notification-loginnotify-login-success-email-subject": "Faça login no {{SITENAME}} como $1 de um computador que você não usou recentemente",
+	"notification-header-login-success": "Alguém (provavelmente {{GENDER:$1|você}}) efetuou login recentemente em sua conta a partir de um novo dispositivo. Se foi você, pode desconsiderar esta mensagem. Se não foi você, é recomendável que você altere sua senha e verifique a atividade da sua conta.",
+	"notification-new-bundled-header-login-fail": "Há {{PLURAL:$1|foi '''uma tentativa falhada'''|'''' $1 tentativas falhadas '''}} para fazer login na sua conta a partir de um novo dispositivo desde a última vez que você entrou. Se não foi você, certifique-se de que sua conta possui uma senha forte.",
+	"notification-known-header-login-fail": "Houve {{PLURAL:$1|uma '''tentativa falhada de'''|have been '''múltiplas tentativas falhadas de'''}} fazer login em sua conta desde a última vez que você entrou. Se não foi você, por favor, certifique-se de que sua conta tenha uma senha forte.",
+	"notification-new-unbundled-header-login-fail": "Houve {{PLURAL:$1|uma '''tentativa falhada de'''|have been '''múltiplas tentativas falhadas de'''}} fazer login em sua conta a partir de um novo dispositivo. Certifique-se de que sua conta tenha uma senha forte."
 }
