@@ -4,11 +4,11 @@
 			"Metalhead64"
 		]
 	},
-	"loginnotify-desc": "Ermöglicht die Benachrichtigung von Benutzern über verdächtige Anmeldeversuche",
+	"loginnotify-desc": "Ermöglicht die Benachrichtigung von Benutzern über verdächtige Anmeldeversuche von unbekannten Geräten und/oder IP-Adressen.",
 	"echo-category-title-login-fail": "Fehlgeschlagene Anmeldeversuche",
-	"echo-pref-tooltip-login-fail": "Benachrichtige mich, wenn es bei meinem Benutzerkonto mehrere fehlgeschlagene Anmeldeversuche gab.",
-	"echo-category-title-login-success": "Von einem neuen Computer anmelden",
-	"echo-pref-tooltip-login-success": "Benachrichtige mich, wenn sich jemand bei meinem Benutzerkonto von einem Computer anmeldet, den ich zuvor nicht benutzt habe.",
+	"echo-pref-tooltip-login-fail": "Benachrichtige mich, wenn es bei meinem Benutzerkonto fehlgeschlagene Anmeldeversuche gab.",
+	"echo-category-title-login-success": "Anmeldung von einem unbekannten Gerät",
+	"echo-pref-tooltip-login-success": "Benachrichtige mich, wenn sich jemand bei meinem Benutzerkonto von einem unbekannten Gerät und einer unbekannten IP-Adresse anmeldet.",
 	"loginnotify-primary-link": "Hilfe",
 	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Fehlgeschlagener Anmeldeversuch|Mehrere fehlgeschlagene Anmeldeversuche}} bei {{SITENAME}} als $1",
 	"notification-loginnotify-login-success-email-subject": "Anmeldung bei {{SITENAME}} als $1 von einem Computer, den du nicht kürzlich verwendet hast.",
