@@ -4,8 +4,11 @@
 			"Felipe L. Ewald"
 		]
 	},
+	"loginnotify-desc": "Notificar usuários sobre logins  suspeitos de dispositivos desconhecidos e/ou endereços IP.",
 	"echo-category-title-login-fail": "Tentativas de login falhadas",
+	"echo-pref-tooltip-login-fail": "Notifique-me quando houve várias tentativas falhadas de iniciar sessão na minha conta.",
 	"echo-category-title-login-success": "Login de um computador novo",
+	"echo-pref-tooltip-login-success": "Notifique-me sempre que alguém entrar na minha conta a partir de um computador que não usei antes.",
 	"loginnotify-primary-link": "Ajuda",
 	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Falha na tentativa|Múltiplas tentativas falhadas}} para fazer logon em {{SITENAME}} como $1",
 	"notification-loginnotify-login-success-email-subject": "Faça login no {{SITENAME}} como $1 de um computador que você não usou recentemente",

@@ -7,11 +7,11 @@
 			"Urhixidur"
 		]
 	},
-	"loginnotify-desc": "Notifier les utilisateurs des connexions suspectes",
+	"loginnotify-desc": "Notifier les utilisateurs des connexions suspectes d’appareils ou d’adresses IP inhabituels.",
 	"echo-category-title-login-fail": "Tentatives de connexion échouées",
-	"echo-pref-tooltip-login-fail": "Me notifier quand il y a eu plusieurs tentatives de connexion en échec sur mon compte.",
-	"echo-category-title-login-success": "Connexion depuis un nouvel ordinateur",
-	"echo-pref-tooltip-login-success": "Me notifier quand quelqu’un se connecte sur mon compte depuis un ordinateur que je n’ai pas utilisé auparavant.",
+	"echo-pref-tooltip-login-fail": "Me notifier quand il y a eu des tentatives de connexion en échec sur mon compte.",
+	"echo-category-title-login-success": "Connexion depuis un appareil inhabituel",
+	"echo-pref-tooltip-login-success": "Me notifier quand quelqu’un se connecte sur mon compte depuis un appareil ou une adresse IP inhabituel.",
 	"loginnotify-primary-link": "Aide",
 	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Tentative échouée|Plusieurs tentatives échouées}} de connexion à {{SITENAME}} en tant que $1",
 	"notification-loginnotify-login-success-email-subject": "Connexion à {{SITENAME}} en tant que $1 depuis un ordinateur que vous n’avez pas utilisé récemment",

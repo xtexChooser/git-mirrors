@@ -5,11 +5,11 @@
 			"Amire80"
 		]
 	},
-	"loginnotify-desc": "שליחת הודעה למשתמשים על ניסיונות חשודים לכניסה לחשבון",
+	"loginnotify-desc": "שליחת הודעה למשתמשים על ניסיונות חשודים לכניסה לחשבון ממכשירים או מכתובות IP שאינם מוכרים.",
 	"echo-category-title-login-fail": "ניסיונות כניסה כושלים",
 	"echo-pref-tooltip-login-fail": "להודיע לי אם בוצעו ניסיונות כניסה כושלים רבים לחשבון שלי.",
-	"echo-category-title-login-success": "כניסה ממחשב חדש",
-	"echo-pref-tooltip-login-success": "להודיע לי בכל פעם שמישהו נכנס לחשבון שלי ממחשב שלא השתמשתי בו לפני כן.",
+	"echo-category-title-login-success": "כניסה ממכשיר לא מוכר",
+	"echo-pref-tooltip-login-success": "להודיע לי בכל פעם שמישהו נכנס לחשבון שלי ממכשיר או מכתובת IP שאינם מוכרים.",
 	"loginnotify-primary-link": "עזרה",
 	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|ניסיון כושל|מספר ניסיונות כושלים}} להיכנס לאתר {{SITENAME}} בתור $1",
 	"notification-loginnotify-login-success-email-subject": "כניסה לאתר {{SITENAME}} בתור $1 ממחשב שלא השתמשת בו לאחרונה",

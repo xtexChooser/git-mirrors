@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Abe No Yasuaki"
+		]
+	},
+	"echo-pref-tooltip-login-success": "Thông báo cho tôi khi ai đó đăng nhập vào tài khoản của tôi từ thiết bị không xác định và địa chỉ IP"
+}
