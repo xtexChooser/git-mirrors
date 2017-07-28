@@ -7,7 +7,7 @@
 	"loginnotify-desc": "Benotzer iwwer verdächteg Loginën informéieren",
 	"echo-category-title-login-fail": "Feelgeschloe Versich fir sech anzeloggen",
 	"echo-pref-tooltip-login-fail": "Mech informéiere wa méi dacks ouni Succès probéiert gouf sech a mäi Benotzerkont anzeloggen.",
-	"echo-category-title-login-success": "Alogge vun engem neie Computer",
+	"echo-category-title-login-success": "Alogge vun engem onbekannten Apparat",
 	"echo-pref-tooltip-login-success": "Mech all Kéier informéiere wann een sech a mäi Benotzerkont aloggt vun engem Computer deen ech virdrun net benotzt hunn.",
 	"loginnotify-primary-link": "Hëllef",
 	"notification-header-login-success": "Iergendeen (wahrscheinlech {{GENDER:$1|Dir}}) huet sech rezent vun engem neien Apparat mat Ärem Benotzerkont ageloggt. Wann dir dat waart da kënnt Dir dëse Message ignoréieren. Wann Dir dat net waart, dann ass et ugeroden datt Dir Äert Passwuert ännert an d'Aktivitéit vun Ärem Benotzerkont nokuckt."
