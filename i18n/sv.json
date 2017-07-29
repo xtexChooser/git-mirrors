@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": [
+			"Boivie",
+			"Najami"
+		]
+	},
+	"categorywatch-desc": "Utökar bevakningslistans funktion för att även meddela om ändringar av innehållet i bevakade kategorier",
+	"categorywatch-emailsubject": "Aktivitet i bevakad kategori \"$1\"",
+	"categorywatch-catmovein": "flyttade $1 till kategori $2 från $3",
+	"categorywatch-catmoveout": "flyttade $1 från kategori $2 till $3",
+	"categorywatch-catadd": "la till $1 i kategori $2",
+	"categorywatch-catsub": "tog bort $1 från kategori $2",
+	"categorywatch-autocat": "Automatiskt bevakad av $1"
+}

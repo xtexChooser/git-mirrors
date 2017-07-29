@@ -12,8 +12,8 @@
 	"ExtensionFunctions": [
 		"CategoryWatch::wfSetupCategoryWatch"
 	],
-	"ExtensionMessagesFiles": {
-		"CategoryWatch": "CategoryWatch.i18n.php"
+	"MessagesDirs": {
+		"CategoryWatch": "i18n"
 	},
 	"Hooks": {
 		"PageContentSave": [

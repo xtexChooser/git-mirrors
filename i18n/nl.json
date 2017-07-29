@@ -1,0 +1,14 @@
+{
+	"@metadata": {
+		"authors": [
+			"Siebrand"
+		]
+	},
+	"categorywatch-desc": "Breidt de functie van de volglijst uit met meldingen over wijzigingen in categorielidmaatschap van categorieën op de volglijst",
+	"categorywatch-emailsubject": "Activiteit met betrekking tot categorie \"$1\" op volglijst",
+	"categorywatch-catmovein": "$1 van categorie $3 naar $2 heeft verplaatst",
+	"categorywatch-catmoveout": "$1 van categorie $2 naar $3 heeft verplaatst",
+	"categorywatch-catadd": "$1 aan categorie $2 heeft toegevoegd",
+	"categorywatch-catsub": "$1 uit categorie $2 heeft verwijderd.",
+	"categorywatch-autocat": "Automatisch gevolgd door $1"
+}

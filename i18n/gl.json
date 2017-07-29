@@ -1,0 +1,14 @@
+{
+	"@metadata": {
+		"authors": [
+			"Toliño"
+		]
+	},
+	"categorywatch-desc": "Extende unha función da lista de vixilancia para incluír notificación acerca dos cambios no número de membros e as categorías vixiadas",
+	"categorywatch-emailsubject": "Actividade que envolve a categoría vixiada chamada \"$1\"",
+	"categorywatch-catmovein": "moveu $1 á categoría $2 desde $3",
+	"categorywatch-catmoveout": "moveu $1 desde a categoría $2 á $3",
+	"categorywatch-catadd": "engadiu $1 á categoría $2",
+	"categorywatch-catsub": "eliminou $1 da categoría $2",
+	"categorywatch-autocat": "Vixiado automaticamente por $1"
+}

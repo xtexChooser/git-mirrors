@@ -1,0 +1,14 @@
+{
+	"@metadata": {
+		"authors": [
+			"Robby"
+		]
+	},
+	"categorywatch-desc": "Erweidert d'Fonctionalitéite vun der Iwwerwwaachungslëscht op d'Notifikatioun iwwer déi Säiten, déi an der iwwerwaachter Kategorie dra sinn.",
+	"categorywatch-emailsubject": "Aktivitéit an der iwwerwaachter Kategorie \"$1\"",
+	"categorywatch-catmovein": "$1 aus der Kategorie $3 an d'Kategorie $2 geréckelt huet",
+	"categorywatch-catmoveout": "$1 aus der Kategorie $2 an d'Kategorie $3 geréckelt huet",
+	"categorywatch-catadd": "$1 an d'Kategorie $2 derbäigesat huet",
+	"categorywatch-catsub": "$1 aus der Kategorie $2 erausgeholl huet",
+	"categorywatch-autocat": "Automatesch iwwerwaacht vum $1"
+}

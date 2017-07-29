@@ -1,0 +1,14 @@
+{
+	"@metadata": {
+		"authors": [
+			"Fryed-peach"
+		]
+	},
+	"categorywatch-desc": "ウォッチリスト機能を拡張し、ウォッチしているカテゴリにおける所属構成の変更を通知するようにする",
+	"categorywatch-emailsubject": "ウォッチしているカテゴリ「$1」に関する変更",
+	"categorywatch-catmovein": "$1をカテゴリ$2へ$3から移した",
+	"categorywatch-catmoveout": "$1をカテゴリ$2から$3へ移した",
+	"categorywatch-catadd": "$1をカテゴリ$2に加えた",
+	"categorywatch-catsub": "$1をカテゴリ$2から外した",
+	"categorywatch-autocat": "$1 により自動的にウォッチされました"
+}

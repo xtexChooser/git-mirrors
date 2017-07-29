@@ -1,0 +1,17 @@
+{
+	"@metadata": {
+		"authors": [
+			"Grondin",
+			"IAlex",
+			"Verdy p",
+			"Zetud"
+		]
+	},
+	"categorywatch-desc": "Étend la fonctionnalité de la liste de suivi afin d’y inclure la notification des modifications de la liste des membres des catégories suivies.",
+	"categorywatch-emailsubject": "Activité concernant la catégorie suivie « $1 »",
+	"categorywatch-catmovein": "a inclu la page $1 dans la catégorie $2 en la retirant de $3",
+	"categorywatch-catmoveout": "a retiré la page $1 de la catégorie $2 en l’incluant dans $3",
+	"categorywatch-catadd": "a inclu la page $1 dans la catégorie $2",
+	"categorywatch-catsub": "a retiré la page $1 de la catégorie $2",
+	"categorywatch-autocat": "Suivie automatiquement par $1"
+}

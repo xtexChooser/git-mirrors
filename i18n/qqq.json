@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": [
+			"Fryed-peach",
+			"Purodha",
+			"Siebrand",
+			"The Evil IP address"
+		]
+	},
+	"categorywatch-desc": "{{desc}}",
+	"categorywatch-catmovein": "Substituted as $5 in {{msg-mw|categorywatch-emailbody}}.\n* $1 is a page name\n* $2 is the target category name\n* $3 is the source category name",
+	"categorywatch-catmoveout": "Substituted as $5 in {{msg-mw|categorywatch-emailbody}}.\n* $1 is a page name\n* $2 is the source category name\n* $3 is the target category name",
+	"categorywatch-catadd": "Substituted as $5 in {{msg-mw|categorywatch-emailbody}}.\n* $1 is a page name\n* $2 is a category name",
+	"categorywatch-catsub": "Substituted as $5 in {{msg-mw|categorywatch-emailbody}}.\n* $1 is a page name\n* $2 is a category name"
+}

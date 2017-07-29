@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": [
+			"BrokenArrow",
+			"Darth Kule"
+		]
+	},
+	"categorywatch-desc": "Estende le funzioni degli osservati speciali includendo notifiche dei cambiamenti alle pagine appartenenti alle categorie osservate",
+	"categorywatch-emailsubject": "Attività che coinvolge la categoria seguita \"$1\"",
+	"categorywatch-catmovein": "ha spostato $1 nella categoria $2 da $3",
+	"categorywatch-catmoveout": "ha spostato $1 dalla categoria $2 a $3",
+	"categorywatch-catadd": "ha aggiunto $1 alla categoria $2",
+	"categorywatch-catsub": "ha rimosso $1 dalla categoria $2",
+	"categorywatch-autocat": "Osservata automaticamente da $1"
+}
