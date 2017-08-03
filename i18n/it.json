@@ -4,11 +4,11 @@
 			"Beta16"
 		]
 	},
-	"loginnotify-desc": "Avvisa gli utenti su accessi sospetti",
+	"loginnotify-desc": "Avvisa gli utenti su accessi sospetti da un dispositivo e/o un indirizzo IP sconosciuto.",
 	"echo-category-title-login-fail": "Tentativi di accesso falliti",
-	"echo-pref-tooltip-login-fail": "Avvisami quando ci sono stati diversi tentativi falliti di accesso con la tua utenza.",
-	"echo-category-title-login-success": "Accesso da un nuovo computer",
-	"echo-pref-tooltip-login-success": "Avvisami ogni volta che qualcuno accede con la mia utenza da un computer che non ho usato prima.",
+	"echo-pref-tooltip-login-fail": "Avvisami quando ci sono stati tentativi falliti di accesso con la tua utenza.",
+	"echo-category-title-login-success": "Accesso da un dispositivo sconosciuto",
+	"echo-pref-tooltip-login-success": "Avvisami ogni volta che qualcuno accede con la mia utenza da un dispositivo e un indirizzo IP sconosciuto.",
 	"loginnotify-primary-link": "Aiuto",
 	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Tentativo fallito|Diversi tentativi falliti}} di acceso a {{SITENAME}} come $1",
 	"notification-loginnotify-login-success-email-subject": "Accesso a {{SITENAME}} come $1 da un computer che non hai utilizzato di recente",
