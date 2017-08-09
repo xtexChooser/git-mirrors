@@ -88,7 +88,7 @@ class Hooks {
 
 	/**
 	 * @param EchoEvent $event
-	 * @param string $bundleString
+	 * @param string &$bundleString
 	 * @return bool
 	 */
 	public static function onEchoGetBundleRules( EchoEvent $event, &$bundleString ) {
@@ -107,7 +107,7 @@ class Hooks {
 	 *
 	 * @param User $user User in question.
 	 * @param string $pass The password (parameter not used).
-	 * @param integer $retval A LoginForm constant (e.g. LoginForm::SUCCESS).
+	 * @param int $retval A LoginForm constant (e.g. LoginForm::SUCCESS).
 	 */
 	public static function onLoginAuthenticateAudit( User $user, $pass, $retval ) {
 		if ( $retval === LoginForm::WRONG_PASS ) {
@@ -175,7 +175,7 @@ class Hooks {
 	 *
 	 * @todo This still sets cookies if user creates an account while logged in as someone else.
 	 * @param User $user The user that has been created.
-	 * @param boolean $byMail Account created by email
+	 * @param bool $byMail Account created by email
 	 */
 	public static function onAddNewAccount( User $user, $byMail ) {
 		if ( !$byMail ) {
@@ -191,7 +191,7 @@ class Hooks {
 	 *
 	 * @todo This still sets cookies if user creates account well logged in as someone else.
 	 * @param User $user User created
-	 * @param boolean $autocreated Whether this was an auto-created account
+	 * @param bool $autocreated Whether this was an auto-created account
 	 */
 	public static function onLocalUserCreated( $user, $autocreated ) {
 		if ( !$autocreated ) {
