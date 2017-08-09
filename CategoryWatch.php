@@ -223,6 +223,97 @@ class CategoryWatch {
 				}
 			}
 		}
+
+		global $wgCategoryWatchNotifyParentWatchers;
+		if ( $wgCategoryWatchNotifyParentWatchers ) {
+			self::notifyParentWatchers();
+		}
+	}
+
+	/**
+	 * Notify the watchers of parent categories
+	 */
+	protected static function notifyParentWatchers() {
+		self::$watcher->allparents = [];
+		self::$watcher->i = 0;
+		self::$watcher->findCategoryParents( self::$watcher->after );
+		## For each active parent category, send the mail
+		if ( self::$watcher->allparents ) {
+			$page     = $article->getTitle();
+			$pageurl  = $page->getFullUrl();
+			foreach ( self::$watcher->allparents as $cat ) {
+				$title   = Title::newFromText( $cat, NS_CATEGORY );
+				$message = wfMessage(
+					'categorywatch-catchange', $page,
+					self::$watcher->friendlyCat( $cat )
+				);
+				self::$watcher->notifyWatchers(
+					$title, $user, $message, $summary, $medit, $pageurl
+				);
+			}
+		}
+	}
+
+	/**
+	 * Recursively find all parents of the given categories
+	 *
+	 * @param array $catarray the categories
+	 */
+	protected function findCategoryParents( array $catarray ) {
+		$this->i++;
+		if ( $this->i == 200 ) {
+			return;
+		}
+
+		if ( $catarray ) {
+			foreach ( $catarray as $catname ) {
+				self::$watcher->allparents[] = $catname;
+				$id = self::$watcher->getCategoryArticleId( $catname );
+				if ( is_numeric( $id ) ) {
+					$parentCat = self::$watcher->getParentCategories( $id );
+					if ( $parentCat ) {
+						self::$watcher->allparents[] = $parentCat;
+						self::$watcher->findCategoryParents( [ $parentCat ] );
+					}
+				}
+			}
+			self::$watcher->allparents = array_unique( self::$watcher->allparents );
+		}
+	}
+
+	/**
+	 * Return the parent categories
+	 * @param int $id Category Article id
+	 * @return parents
+	 */
+	protected function getParentCategories( $id ) {
+		$dbr  = wfGetDB( DB_SLAVE );
+		$cl   = $dbr->tableName( 'categorylinks' );
+		$res  = $dbr->select(
+			$cl, 'cl_to', "cl_from = $id", __METHOD__,
+			[ 'ORDER BY' => 'cl_sortkey' ]
+		);
+		$row = $dbr->fetchRow( $res );
+		$dbr->freeResult( $res );
+		if ( empty( $row[0] ) ) {
+			return false;
+		}
+		return $row[0];
+	}
+
+	/**
+	 * Load page ID of one category
+	 *
+	 * @param string $catname name of category
+	 * @return int
+	 */
+	protected function getCategoryArticleId( $catname ) {
+		$dbr = wfGetDB( DB_SLAVE );
+		$cl  = $dbr->tableName( 'page' );
+		$res = $dbr->select( $cl, 'page_id', "page_title = '$catname'", __METHOD__ );
+		$row = $dbr->fetchRow( $res );
+		$dbr->freeResult( $res );
+		return $row[0];
 	}
 
 	/**
