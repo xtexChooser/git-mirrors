@@ -7,7 +7,7 @@
 			"Urhixidur"
 		]
 	},
-	"loginnotify-desc": "Notifier les utilisateurs des connexions suspectes d’appareils ou d’adresses IP inhabituels.",
+	"loginnotify-desc": "Notifier les utilisateurs des connexions suspectes à partir d’appareils ou d’adresses IP inhabituels.",
 	"echo-category-title-login-fail": "Tentatives de connexion échouées",
 	"echo-pref-tooltip-login-fail": "Me notifier quand il y a eu des tentatives de connexion en échec sur mon compte.",
 	"echo-category-title-login-success": "Connexion depuis un appareil inhabituel",
