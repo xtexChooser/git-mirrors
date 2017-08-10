@@ -59,8 +59,8 @@ class LoginNotify implements LoggerAwareInterface {
 	/**
 	 * Constructor
 	 *
-	 * @param Config $cfg Optional. Set if you have handy.
-	 * @param BagOStuff $cache Optional. Only set if you want to override default caching behaviour.
+	 * @param Config|null $cfg Optional. Set if you have handy.
+	 * @param BagOStuff|null $cache Optional. Set if you want to override default caching behaviour.
 	 */
 	public function __construct( Config $cfg = null, BagOStuff $cache = null ) {
 		if ( !$cache ) {
