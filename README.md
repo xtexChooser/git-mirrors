@@ -18,14 +18,19 @@ Whether or not to also send notificaton to the person who made the change.
 $wgCategoryWatchNotifyEditor = true;
 ```
 
-Set this to give every user a unique category that they're automatically watching. The format of the category name is defined on the "categorywatch-autocat" localisation message (i.e. [[MediaWiki:categorywatch-autocat]])
+Give every user a unique category that they're automatically watching. The format of the category name is defined on the "categorywatch-autocat" localisation message (i.e. [[MediaWiki:categorywatch-autocat]])
 ```php
-$wgCategoryWatchUseAutoCat = false;
+$wgCategoryWatchUseAutoCat = true;
 ```
 
-Set this to make the categorisation work by realname instead of username
+Make the categorisation work by realname instead of username
 ```php
-$wgCategoryWatchUseAutoCatRealName = false;
+$wgCategoryWatchUseAutoCatRealName = true;
+```
+
+Notify watchers of parent categories as well
+```php
+$wgCategoryWatchNotifyParentWatchers = true;
 ```
 
 ## How to debug
