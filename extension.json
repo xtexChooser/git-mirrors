@@ -1,7 +1,11 @@
 {
 	"name": "CategoryWatch",
 	"version": "1.2.2, 2011-12-03",
-	"author": "[http://www.organicdesign.co.nz/User:Nad User:Nad]",
+	"author": [
+		"[http://www.organicdesign.co.nz/User:Nad User:Nad]",
+		"Sean Chen",
+		"[http://mwstake.org/ Mark A. Hershberger]"
+	],
 	"url": "https://www.mediawiki.org/wiki/Extension:CategoryWatch",
 	"descriptionmsg": "categorywatch-desc",
 	"license-name": "GPL-2.0+",
@@ -10,7 +14,7 @@
 		"CategoryWatch": "CategoryWatch.php"
 	},
 	"ExtensionFunctions": [
-		"CategoryWatch::wfSetupCategoryWatch"
+		"CategoryWatch::setupCategoryWatch"
 	],
 	"MessagesDirs": {
 		"CategoryWatch": "i18n"
@@ -24,9 +28,11 @@
 		]
 	},
 	"config": {
-		"CategoryWatchNotifyEditor": true,
-		"CategoryWatchUseAutoCat": false,
-		"CategoryWatchUseAutoCatRealName": false
+		"_prefix": "wgCategoryWatch",
+		"NotifyEditor": true,
+		"NotifyParentWatchers": false,
+		"UseAutoCat": false,
+		"UseAutoCatRealName": false
 	},
 	"manifest_version": 1
 }

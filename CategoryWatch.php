@@ -1,11 +1,32 @@
 <?php
-if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
 /**
  * CategoryWatch extension
- * - Extends watchlist functionality to include notification about membership changes of watched categories
+ * - Extends watchlist functionality to include notification about membership
+ *   changes of watched categories
  *
- * See https://www.mediawiki.org/Extension:CategoryWatch for installation and usage details
- * See http://www.organicdesign.co.nz/Extension_talk:CategoryWatch for development notes and disucssion
+ * Copyright (C) 2008  Aran Dunkley
+ * Copyright (C) 2017  Sean Chen
+ * Copyright (C) 2017  Mark A. Hershberger
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301, USA.
+ *
+ * See https://www.mediawiki.org/Extension:CategoryWatch
+ *     for installation and usage details
+ * See http://www.organicdesign.co.nz/Extension_talk:CategoryWatch
+ *     for development notes and disucssion
  *
  * @file
  * @ingroup Extensions
@@ -14,125 +35,138 @@ if ( !defined( 'MEDIAWIKI' ) ) die( 'Not an entry point.' );
  * @licence GNU General Public Licence 2.0 or later
  */
 
-# Whether or not to also send notificaton to the person 
-# who made the change
-# The default value is set in file extension.json
-//$wgCategoryWatchNotifyEditor = true;
-
-# Set this to give every user a unique category that 
-# they're automatically watching
-# - the format of the category name is defined on the 
-# "categorywatch-autocat" localisation message
-# The default value is set in file extension.json
-//$wgCategoryWatchUseAutoCat = false;
-
-# Set this to make the categorisation work by realname 
-# instead of username
-# The default value is set in file extension.json
-//$wgCategoryWatchUseAutoCatRealName = false;
-
 class CategoryWatch {
+	// Instance
+	protected static $watcher;
 
 	/**
 	 * The extension function.
 	 * It has to be the static function in a class now.
 	 */
-	public static function wfSetupCategoryWatch() {
-		wfDebugLog('CategoryWatch', 'loading extension...');
-        	global $wgCategoryWatch;
+	public static function setupCategoryWatch() {
+		wfDebugLog( 'CategoryWatch', 'loading extension...' );
 
-        	# Instantiate the CategoryWatch singleton now 
-                # that the environment is prepared
-        	$wgCategoryWatch = new CategoryWatch();
-	}
-
-	function __construct() {
-		# the constructor will do nothing now.
-		# New extension register process will use the file
-		# extension.json to set hooks.
+		# Instantiate the CategoryWatch singleton now
+		# that the environment is prepared
+		self::$watcher = new CategoryWatch();
 	}
 
 	/**
-	 * Get a list of categories before article updated
-	 * Since MediaWiki version 1.25.x, we have to use static function
-	 * for hooks.
-	 * the hook has different signatures.
+	 * Get a list of categories before article updated Since MediaWiki
+	 * version 1.25.x, we have to use static function for hooks.  the
+	 * hook has different signatures.
+	 * @param WikiPage $wikiPage the page
+	 * @param User $user who is modifying
+	 * @param Content $content the new article content
+	 * @param string $summary the article summary (comment)
+	 * @param bool $isMinor minor flag
+	 * @param bool $isWatch watch flag (not used, aka always null)
+	 * @param int $section section number (not used, aka always null)
+	 * @param int $flags see WikiPage::doEditContent documentation for flags' definition
+	 * @param Status $status Status (object)
 	 */
-	public static function onPageContentSave( &$wikiPage, &$user, &$content, &$summary,	$isMinor, $isWatch, $section, &$flags, &$status) {
+	public static function onPageContentSave(
+		$wikiPage, $user, $content, $summary, $isMinor,
+		$isWatch, $section, $flags, $status
+	) {
+		global $wgCategoryWatchUseAutoCat, $wgCategoryWatchUseAutoCatRealName,
+			$wgCategoryWatch;
 
-		global $wgCategoryWatchUseAutoCat, $wgCategoryWatchUseAutoCatRealName, $wgCategoryWatch;
-
-		$wgCategoryWatch->before = array();
-		$dbr  = wfGetDB( DB_MASTER);
+		self::$watcher->before = [];
+		$dbr  = wfGetDB( DB_MASTER );
 		$cl   = $dbr->tableName( 'categorylinks' );
-		wfDebugLog('CategoryWatch', "tablename = $cl");
 		$id   = $wikiPage->getID();
-		wfDebugLog('CategoryWatch', "page id=$id");
-		$res  = $dbr->select( $cl, 'cl_to', "cl_from = $id", __METHOD__, array( 'ORDER BY' => 'cl_sortkey' ) );
-		while ( $row = $dbr->fetchRow( $res ) ) $wgCategoryWatch->before[] = $row[0];
+		wfDebugLog( 'CategoryWatch', "tablename = $cl" );
+		wfDebugLog( 'CategoryWatch', "page id=$id" );
+		$res  = $dbr->select(
+			$cl, 'cl_to', "cl_from = $id", __METHOD__,
+			[ 'ORDER BY' => 'cl_sortkey' ]
+		);
+		$row = $dbr->fetchRow( $res );
+		while ( $row ) {
+			self::$watcher->before[] = $row[0];
+			$row = $dbr->fetchRow( $res );
+		}
 		$dbr->freeResult( $res );
-		wfDebugLog('CategoryWatch', 'Categories before page saved');
-		wfDebugLog('CategoryWatch', join(', ', $wgCategoryWatch->before));
+		wfDebugLog( 'CategoryWatch', 'Categories before page saved' );
+		wfDebugLog( 'CategoryWatch', join( ', ', self::$watcher->before ) );
 
-		# If using the automatically watched category feature, ensure that all users are watching it
+		# If using the automatically watched category feature, ensure
+		# that all users are watching it
 		if ( $wgCategoryWatchUseAutoCat ) {
 			$dbr = wfGetDB( DB_SLAVE );
 
 			# Find all users not watching the autocat
-			$like = str_replace( ' ', '_', trim( wfMessage( 'categorywatch-autocat', '' )->text() ) );
+			$like = str_replace(
+				' ', '_',
+				trim( wfMessage( 'categorywatch-autocat', '' )->text() )
+			);
 			$utbl = $dbr->tableName( 'user' );
 			$wtbl = $dbr->tableName( 'watchlist' );
-			$sql = "SELECT user_id FROM $utbl LEFT JOIN $wtbl ON user_id=wl_user AND wl_title LIKE '%$like%' WHERE wl_user IS NULL";
-			$res = $dbr->query( $sql );
+			$sql = "SELECT user_id FROM $utbl LEFT JOIN $wtbl ON "
+				 . "user_id=wl_user AND wl_title LIKE '%$like%' "
+				 . "WHERE wl_user IS NULL";
 
 			# Insert an entry into watchlist for each
-			while ( $row = $dbr->fetchRow( $res ) ) {
+			$row = $dbr->fetchRow( $res );
+			while ( $row ) {
 				$user = User::newFromId( $row[0] );
-				$name = $wgCategoryWatchUseAutoCatRealName ? $user->getRealName() : $user->getName();
-				$wl_title = str_replace( ' ', '_', wfMessage( 'categorywatch-autocat', $name )->text() );
-				$dbr->insert( $wtbl, array( 'wl_user' => $row[0], 'wl_namespace' => NS_CATEGORY, 'wl_title' => $wl_title ) );
+				$name = $wgCategoryWatchUseAutoCatRealName
+					  ? $user->getRealName()
+					  : $user->getName();
+				$wl_title = str_replace(
+					' ', '_', wfMessage( 'categorywatch-autocat', $name )->text()
+				);
+				$dbr->insert(
+					$wtbl,
+					[
+						'wl_user' => $row[0], 'wl_namespace' => NS_CATEGORY,
+						'wl_title' => $wl_title
+					]
+				);
+				$row = $dbr->fetchRow( $res );
 			}
 			$dbr->freeResult( $res );
 		}
-
-		return true;
 	}
-	
+
 	/**
 	 * the proper hook for save page request.
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/PageContentSaveComplete
-	 * @param $article Article edited
-	 * @param $user User who edited
-	 * @param $content Content New article text
-	 * @param $summary string Edit summary
-	 * @param $isMinor bool Minor edit or not
-	 * @param $isWatch bool Watch this article?
-	 * @param $section string Section that was edited
-	 * @param $flags int Edit flags
-	 * @param $revision Revision that was created
-	 * @param $status Status
-	 * @return bool true in all cases
-	*/
-	public static function onPageContentSaveComplete($article, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId) {
-
-		global $wgCategoryWatch;
-
+	 * @param WikiPage $article Article edited
+	 * @param User $user who edited
+	 * @param Content $content New article text
+	 * @param string $summary Edit summary
+	 * @param bool $isMinor Minor edit or not
+	 * @param bool $isWatch Watch this article?
+	 * @param string $section Section that was edited
+	 * @param int $flags Edit flags
+	 * @param Revision $revision that was created
+	 * @param Status $status of activities
+	 * @param int $baseRevId base revision
+	 */
+	public static function onPageContentSaveComplete(
+		$article, $user, $content, $summary, $isMinor, $isWatch, $section,
+		$flags, $revision, $status, $baseRevId
+	) {
 		# Get cats after update
-		$wgCategoryWatch->after = array();
+		self::$watcher->after = [];
 
 		$parseTimestamp = $revision->getTimestamp();
 		$content = $revision->getContent();
 		$title = $article->getTitle();
-		$options = $content->getContentHandler()->makeParserOptions('canonical');
-		$options->setTimestamp($parseTimestamp);
-		$output = $content->getParserOutput( $title, $revision->getId(), $options);
-		$wgCategoryWatch->after = array_map('strval', array_keys($output->getCategories()));
-		wfDebugLog('CategoryWatch', 'Categories after page saved');
-		wfDebugLog('CategoryWatch', join(', ', $wgCategoryWatch->after));
+		$options = $content->getContentHandler()->makeParserOptions( 'canonical' );
+		$options->setTimestamp( $parseTimestamp );
+		$output = $content->getParserOutput( $title, $revision->getId(), $options );
+		self::$watcher->after = array_map(
+			'strval', array_keys( $output->getCategories() )
+		);
+		wfDebugLog( 'CategoryWatch', 'Categories after page saved' );
+		wfDebugLog( 'CategoryWatch', join( ', ', self::$watcher->after ) );
 
 		# Get list of added and removed cats
-		$add = array_diff( $wgCategoryWatch->after, $wgCategoryWatch->before );
-		$sub = array_diff( $wgCategoryWatch->before, $wgCategoryWatch->after );
+		$add = array_diff( self::$watcher->after, self::$watcher->before );
+		$sub = array_diff( self::$watcher->before, self::$watcher->after );
 
 		# Notify watchers of each cat about the addition or removal of this article
 		if ( count( $add ) > 0 || count( $sub ) > 0 ) {
@@ -142,71 +176,118 @@ class CategoryWatch {
 			$page     = "$pagename ($pageurl)";
 
 			if ( count( $add ) == 1 && count( $sub ) == 1 ) {
-
 				$add = array_shift( $add );
 				$sub = array_shift( $sub );
 
 				$title   = Title::newFromText( $add, NS_CATEGORY );
-				$message = wfMessage( 'categorywatch-catmovein', $page, $wgCategoryWatch->friendlyCat( $add ), $wgCategoryWatch->friendlyCat( $sub ) )->text();
-				$wgCategoryWatch->notifyWatchers( $title, $user, $message, $summary, $medit );
+				$message = wfMessage(
+					'categorywatch-catmovein', $page,
+					self::$watcher->friendlyCat( $add ),
+					self::$watcher->friendlyCat( $sub )
+				)->text();
+				self::$watcher->notifyWatchers(
+					$title, $user, $message, $summary, $medit, $pageurl
+				);
 
 				$title   = Title::newFromText( $sub, NS_CATEGORY );
-				$message = wfMessage( 'categorywatch-catmoveout', $page, $wgCategoryWatch->friendlyCat( $sub ), $wgCategoryWatch->friendlyCat( $add ) )->text();
-				$wgCategoryWatch->notifyWatchers( $title, $user, $message, $summary, $medit );
+				$message = wfMessage(
+					'categorywatch-catmoveout', $page,
+					self::$watcher->friendlyCat( $sub ),
+					self::$watcher->friendlyCat( $add )
+				)->text();
+				self::$watcher->notifyWatchers(
+					$title, $user, $message, $summary, $medit, $pageurl
+				);
 			} else {
 
 				foreach ( $add as $cat ) {
 					$title   = Title::newFromText( $cat, NS_CATEGORY );
-					$message = wfMessage( 'categorywatch-catadd', $page, $wgCategoryWatch->friendlyCat( $cat ) )->text();
-					$wgCategoryWatch->notifyWatchers( $title, $user, $message, $summary, $medit );
+					$message = wfMessage(
+						'categorywatch-catadd', $page,
+						self::$watcher->friendlyCat( $cat )
+					)->text();
+					self::$watcher->notifyWatchers(
+						$title, $user, $message, $summary, $medit, $pageurl
+					);
 				}
 
 				foreach ( $sub as $cat ) {
 					$title   = Title::newFromText( $cat, NS_CATEGORY );
-					$message = wfMessage( 'categorywatch-catsub', $page, $wgCategoryWatch->friendlyCat( $cat ) )->text();
-					$wgCategoryWatch->notifyWatchers( $title, $user, $message, $summary, $medit );
+					$message = wfMessage(
+						'categorywatch-catsub', $page,
+						self::$watcher->friendlyCat( $cat )
+					)->text();
+					self::$watcher->notifyWatchers(
+						$title, $user, $message, $summary, $medit, $pageurl
+					);
 				}
 			}
 		}
-
-		return true;
 	}
 
 	/**
 	 * Return "Category:Cat (URL)" from "Cat"
+	 * @param string $cat name of category
+	 * @return string
 	 */
-	function friendlyCat( $cat ) {
+	protected function friendlyCat( $cat ) {
 		$cat     = Title::newFromText( $cat, NS_CATEGORY );
 		$catname = $cat->getPrefixedText();
 		$caturl  = $cat->getFullUrl();
 		return "$catname ($caturl)";
 	}
 
-	function notifyWatchers( &$title, &$editor, &$message, &$summary, &$medit ) {
-		global $wgLang, $wgEmergencyContact, $wgNoReplyAddress, $wgCategoryWatchNotifyEditor,
-			$wgEnotifRevealEditorAddress, $wgEnotifUseRealName, $wgPasswordSender, $wgEnotifFromEditor;
+	/**
+	 * Notify any watchers
+	 * @param Title $title of article
+	 * @param User $editor of article
+	 * @param string $message for user
+	 * @param string $summary editor gave
+	 * @param bool $medit true if minor
+	 * @param string $pageurl of page
+	 */
+	function notifyWatchers( $title, $editor, $message, $summary, $medit, $pageurl ) {
+		global $wgLang, $wgNoReplyAddress, $wgCategoryWatchNotifyEditor,
+			$wgEnotifRevealEditorAddress, $wgEnotifUseRealName, $wgPasswordSender,
+			$wgEnotifFromEditor, $wgPasswordSenderName;
 
 		# Get list of users watching this category
 		$dbr = wfGetDB( DB_SLAVE );
-		$conds = array( 'wl_title' => $title->getDBkey(), 'wl_namespace' => $title->getNamespace() );
-		if ( !$wgCategoryWatchNotifyEditor ) $conds[] = 'wl_user <> ' . intval( $editor->getId() );
-		$res = $dbr->select( 'watchlist', array( 'wl_user' ), $conds, __METHOD__ );
+		$conds = [
+			'wl_title' => $title->getDBkey(), 'wl_namespace' => $title->getNamespace()
+		];
+		if ( !$wgCategoryWatchNotifyEditor ) {
+			$conds[] = 'wl_user <> ' . intval( $editor->getId() );
+		}
+		$res = $dbr->select( 'watchlist', [ 'wl_user' ], $conds, __METHOD__ );
 
 		# Wrap message with common body and send to each watcher
-		$page           = $title->getPrefixedText();
-		# $wgPasswordSenderName was introduced only in MW 1.17
-		global $wgPasswordSenderName;
-		$adminAddress   = new MailAddress( $wgPasswordSender,
-			isset( $wgPasswordSenderName ) ? $wgPasswordSenderName : 'WikiAdmin' );
+		$page = $title->getPrefixedText();
+		$adminAddress   = new MailAddress(
+			$wgPasswordSender,
+			isset( $wgPasswordSenderName )
+			? $wgPasswordSenderName
+			: 'WikiAdmin'
+		);
 		$editorAddress  = new MailAddress( $editor );
-		$summary        = $summary ? $summary : ' - ';
-		$medit          = $medit ? wfMessage( 'minoredit' )->text() : '';
-		while ( $row = $dbr->fetchRow( $res ) ) {
+		$summary        = $summary
+						? $summary
+						: ' - ';
+		$medit          = $medit
+						? wfMessage( 'minoredit' )->text()
+						: '';
+		$row            = $dbr->fetchRow( $res );
+		while ( $row ) {
 			$watchingUser   = User::newFromId( $row[0] );
 			$timecorrection = $watchingUser->getOption( 'timecorrection' );
-			$editdate       = $wgLang->timeanddate( wfTimestampNow(), true, false, $timecorrection );
+			$editdate       = $wgLang->timeanddate(
+				wfTimestampNow(), true, false, $timecorrection
+			);
 
-			if ( $watchingUser->getOption( 'enotifwatchlistpages' ) && $watchingUser->isEmailConfirmed() ) {
+			if (
+				$watchingUser->getOption( 'enotifwatchlistpages' )
+				&& $watchingUser->isEmailConfirmed()
+			) {
 				$to      = new MailAddress( $watchingUser );
 				$subject = wfMessage( 'categorywatch-emailsubject', $page )->text();
 				$body    = wfMessage( 'enotif_body' )->inContentLanguage()->text();
@@ -214,10 +295,16 @@ class CategoryWatch {
 				# Reveal the page editor's address as REPLY-TO address only if
 				# the user has not opted-out and the option is enabled at the
 				# global configuration level.
-				$name = $wgEnotifUseRealName ? $watchingUser->getRealName() : $watchingUser->getName();
+				if ( $wgCategoryWatchNoRealName ) {
+					$name = $watchingUser->getName();
+				}
+				$name = $wgEnotifUseRealName
+					  ? $watchingUser->getRealName()
+					  : $watchingUser->getName();
 				if ( $wgEnotifRevealEditorAddress
-					&& ( $editor->getEmail() != '' )
-					&& $editor->getOption( 'enotifrevealaddr' ) ) {
+					 && ( $editor->getEmail() != '' )
+					 && $editor->getOption( 'enotifrevealaddr' )
+				) {
 					if ( $wgEnotifFromEditor ) {
 						$from = $editorAddress;
 					} else {
@@ -231,23 +318,28 @@ class CategoryWatch {
 
 				# Define keys for body message
 				$userPage = $editor->getUserPage();
-				$keys = array(
+				$keys = [
 					'$WATCHINGUSERNAME' => $name,
 					'$NEWPAGE'          => $message,
 					'$PAGETITLE'        => $page,
 					'$PAGEEDITDATE'     => $editdate,
-					'$CHANGEDORCREATED' => wfMessage( 'changed' )->inContentLanguage()->text(),
+					'$CHANGEDORCREATED' => wfMessage( 'changed' )
+					->inContentLanguage()->text(),
 					'$PAGETITLE_URL'    => $title->getFullUrl(),
 					'$PAGEEDITOR_WIKI'  => $userPage->getFullUrl(),
 					'$PAGESUMMARY'      => $summary,
 					'$PAGEMINOREDIT'    => $medit,
 					'$OLDID'            => ''
-				);
+				];
 				if ( $editor->isIP( $name ) ) {
-					$utext = wfMessage( 'enotif_anon_editor', $name )->inContentLanguage()->text();
+					$utext = wfMessage(
+						'enotif_anon_editor', $name
+					)->inContentLanguage()->text();
 					$subject = str_replace( '$PAGEEDITOR', $utext, $subject );
 					$keys['$PAGEEDITOR'] = $utext;
-					$keys['$PAGEEDITOR_EMAIL'] = wfMmessage( 'noemailtitle' )->inContentLanguage()->text();
+					$keys['$PAGEEDITOR_EMAIL'] = wfMmessage(
+						'noemailtitle'
+					)->inContentLanguage()->text();
 				} else {
 					$subject = str_replace( '$PAGEEDITOR', $name, $subject );
 					$keys['$PAGEEDITOR'] = $name;
@@ -261,16 +353,10 @@ class CategoryWatch {
 				$body = wordwrap( $body, 72 );
 				$options = [];
 				$options['replyTo'] = $replyto;
-				UserMailer::send( $to, $from, $subject, $body, $options);
+				UserMailer::send( $to, $from, $subject, $body, $options );
 			}
 		}
 
 		$dbr->freeResult( $res );
 	}
-
-	/**
-	 * Needed in some versions to prevent Special:Version from breaking
-	 */
-	function __toString() { return __CLASS__; }
 }
-
