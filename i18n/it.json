@@ -1,12 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
-			"Beta16"
+			"Beta16",
+			"Greis"
 		]
 	},
 	"loginnotify-desc": "Avvisa gli utenti su accessi sospetti da un dispositivo e/o un indirizzo IP sconosciuto.",
 	"echo-category-title-login-fail": "Tentativi di accesso falliti",
-	"echo-pref-tooltip-login-fail": "Avvisami quando ci sono stati tentativi falliti di accesso con la tua utenza.",
+	"echo-pref-tooltip-login-fail": "Avvisami quando ci sono stati tentativi falliti di accesso nel mio account.",
 	"echo-category-title-login-success": "Accesso da un dispositivo sconosciuto",
 	"echo-pref-tooltip-login-success": "Avvisami ogni volta che qualcuno accede con la mia utenza da un dispositivo e un indirizzo IP sconosciuto.",
 	"loginnotify-primary-link": "Aiuto",
