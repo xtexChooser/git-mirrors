@@ -1,2 +1,15 @@
+# -*- mode: gitignore; -*-
+
+### vi ###
 .*.swp
+
+### Emacs ###
+*~
+\#*\#
+.\#*
+
+# misc
+PHPTAGS.sqlite
+
+# misc MW
 /node_modules
