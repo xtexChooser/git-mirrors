@@ -12,6 +12,7 @@ use BagOStuff;
 use CentralAuthUser;
 use Config;
 use EchoEvent;
+use IBufferingStatsdDataFactory;
 use JobQueueGroup;
 use JobSpecification;
 use MediaWiki\MediaWikiServices;
@@ -55,6 +56,8 @@ class LoginNotify implements LoggerAwareInterface {
 	private $gSalt;
 	/** @var string */
 	private $secret;
+	/** @var IBufferingStatsdDataFactory */
+	private $stats;
 
 	/**
 	 * Constructor
@@ -83,6 +86,8 @@ class LoginNotify implements LoggerAwareInterface {
 
 		$log = LoggerFactory::getInstance( 'LoginNotify' );
 		$this->log = $log;
+
+		$this->stats = MediaWikiServices::getInstance()->getStatsdDataFactory();
 	}
 
 	/**
@@ -618,6 +623,7 @@ class LoginNotify implements LoggerAwareInterface {
 			$this->config->get( 'LoginNotifyExpiryNewIP' )
 		);
 		if ( $count ) {
+			$this->incrStats( 'fail.unknown.notifications' );
 			$this->sendNotice( $user, 'login-fail-new', $count );
 		}
 	}
@@ -637,6 +643,7 @@ class LoginNotify implements LoggerAwareInterface {
 			$this->config->get( 'LoginNotifyExpiryKnownIP' )
 		);
 		if ( $count ) {
+			$this->incrStats( 'fail.known.notifications' );
 			$this->sendNotice( $user, 'login-fail-known', $count );
 		}
 	}
@@ -704,6 +711,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 * @param User $user User in question
 	 */
 	public function recordFailure( User $user ) {
+		$this->incrStats( 'fail.total' );
 		$known = $this->isKnownSystemFast( $user, $user->getRequest() );
 		if ( $known === self::USER_KNOWN ) {
 			$this->recordLoginFailureFromKnownSystem( $user );
@@ -737,6 +745,7 @@ class LoginNotify implements LoggerAwareInterface {
 		if ( !$this->config->get( 'LoginNotifyEnableOnSuccess' ) ) {
 			return;
 		}
+		$this->incrStats( 'success.total' );
 		$result = $this->isKnownSystemFast( $user, $user->getRequest() );
 		if ( $result !== self::USER_KNOWN ) {
 			$this->createJob( DeferredChecksJob::TYPE_LOGIN_SUCCESS,
@@ -755,6 +764,7 @@ class LoginNotify implements LoggerAwareInterface {
 	public function sendSuccessNoticeDeferred( User $user, $subnet, $resultSoFar ) {
 		$isKnown = $this->isKnownSystemSlow( $user, $subnet, $resultSoFar );
 		if ( !$isKnown ) {
+			$this->incrStats( 'success.notifications' );
 			$this->sendNotice( $user, 'login-success' );
 		}
 	}
@@ -778,5 +788,14 @@ class LoginNotify implements LoggerAwareInterface {
 			]
 		);
 		JobQueueGroup::singleton()->lazyPush( $job );
+	}
+
+	/**
+	 * Increments the given statistic
+	 *
+	 * @param string $metric
+	 */
+	private function incrStats( $metric ) {
+		$this->stats->increment( "loginnotify.$metric" );
 	}
 }
