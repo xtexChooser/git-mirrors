@@ -68,7 +68,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 */
 	public function __construct( Config $cfg = null, BagOStuff $cache = null ) {
 		if ( !$cache ) {
-			$cache = ObjectCache::getLocalClusterInstance();
+			$cache = MediaWikiServices::getInstance()->getMainObjectStash();
 		}
 		if ( !$cfg ) {
 			$cfg = RequestContext::getMain()->getConfig();
