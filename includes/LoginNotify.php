@@ -134,11 +134,16 @@ class LoginNotify implements LoggerAwareInterface {
 	 */
 	private function isKnownSystemFast( User $user, WebRequest $request ) {
 		$result = $this->userIsInCookie( $user, $request );
-		if ( $result === self::USER_KNOWN ) {
-			return $result;
+
+		if ( $result !== self::USER_KNOWN ) {
+			$result = $this->mergeResults( $result, $this->userIsInCache( $user, $request ) );
 		}
 
-		$result = $this->mergeResults( $result, $this->userIsInCache( $user, $request ) );
+		$this->log->debug( 'Checking cookies and cache for {user}: {result}', [
+			'function' => __METHOD__,
+			'user' => $user->getName(),
+			'result' => $result,
+		] );
 
 		return $result;
 	}
@@ -408,6 +413,13 @@ class LoginNotify implements LoggerAwareInterface {
 	public function setCurrentAddressAsKnown( User $user ) {
 		$this->cacheLoginIP( $user );
 		$this->setLoginCookie( $user );
+
+		$this->log->debug( 'Recording user {user} as known',
+			[
+				'function' => __METHOD__,
+				'user' => $user->getName(),
+			]
+		);
 	}
 
 	/**
@@ -456,10 +468,13 @@ class LoginNotify implements LoggerAwareInterface {
 
 		// FIXME, does this really make sense?
 		if ( $cookie === '' ) {
-			return self::USER_NO_INFO;
+			$result = self::USER_NO_INFO;
+		} else {
+			list( $userKnown, ) = $this->checkAndGenerateCookie( $user, $cookie );
+			$result = $userKnown ? self::USER_KNOWN : self::USER_NOT_KNOWN;
 		}
-		list( $userKnown, ) = $this->checkAndGenerateCookie( $user, $cookie );
-		return $userKnown ? self::USER_KNOWN : self::USER_NOT_KNOWN;
+
+		return $result;
 	}
 
 	/**
@@ -665,6 +680,14 @@ class LoginNotify implements LoggerAwareInterface {
 			'extra' => $extra,
 			'agent' => $user,
 		] );
+
+		$this->log->info( 'Sending a {type} notification to {user}',
+			[
+				'function' => __METHOD__,
+				'type' => $type,
+				'user' => $user->getName(),
+			]
+		);
 	}
 
 	/**
@@ -788,6 +811,15 @@ class LoginNotify implements LoggerAwareInterface {
 			]
 		);
 		JobQueueGroup::singleton()->lazyPush( $job );
+
+		$this->log->debug( 'Login {status}, creating a job to verify {user}, result so far: {result}',
+			[
+				'function' => __METHOD__,
+				'status' => $type,
+				'user' => $user->getName(),
+				'result' => $resultSoFar,
+			]
+		);
 	}
 
 	/**
