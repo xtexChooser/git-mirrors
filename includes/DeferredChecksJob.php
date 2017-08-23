@@ -40,7 +40,7 @@ class DeferredChecksJob extends Job {
 				. print_r( $this->params['subnet'], true )
 			);
 		}
-		$subnet = $this->params['resultSoFar'];
+		$subnet = $this->params['subnet'];
 		if ( !isset( $this->params['resultSoFar'] ) || !is_string( $this->params['resultSoFar'] ) ) {
 			throw new Exception( __CLASS__
 				. " expected to receive a string parameter 'resultSoFar', got "
