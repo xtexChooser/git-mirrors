@@ -31,7 +31,7 @@ class DeferredChecksJob extends Job {
 		$checkType = $this->params['checkType'];
 		$userId = $this->params['userId'];
 		$user = User::newFromId( $userId );
-		if ( !$user ) {
+		if ( !$user || $user->isAnon() ) {
 			throw new Exception( "Can't find user for user id=" . print_r( $userId, true ) );
 		}
 		if ( !isset( $this->params['subnet'] ) || !is_string( $this->params['subnet'] ) ) {
