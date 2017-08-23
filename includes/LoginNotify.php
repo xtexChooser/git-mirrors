@@ -738,6 +738,16 @@ class LoginNotify implements LoggerAwareInterface {
 	 */
 	public function recordFailure( User $user ) {
 		$this->incrStats( 'fail.total' );
+
+		if ( $user->isAnon() ) {
+			// Login failed because user doesn't exist
+			// skip this user.
+			$this->log->debug( "Skipping recording failure for {user} - no account",
+				[ 'user' => $user->getName() ]
+			);
+			return;
+		}
+
 		$known = $this->isKnownSystemFast( $user, $user->getRequest() );
 		if ( $known === self::USER_KNOWN ) {
 			$this->recordLoginFailureFromKnownSystem( $user );
