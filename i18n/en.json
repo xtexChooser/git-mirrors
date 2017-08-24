@@ -6,7 +6,7 @@
 			"Niharika"
 		]
 	},
-	"loginnotify-desc": "Notify users about suspicious logins from unfamiliar devices and/or IP addresses.",
+	"loginnotify-desc": "Notify users about suspicious logins from unfamiliar devices and/or IP addresses",
 	"echo-category-title-login-fail": "Failed login attempts",
 	"echo-pref-tooltip-login-fail": "Notify me when there have been failed attempts to log in to my account.",
 	"echo-category-title-login-success": "Login from an unfamiliar device",
