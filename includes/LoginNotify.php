@@ -292,9 +292,9 @@ class LoginNotify implements LoggerAwareInterface {
 						$dbrLocal
 					);
 
-					if ( $res ) {
+					if ( $res === self::USER_KNOWN ) {
 						$lb->reuseConnection( $dbrLocal );
-						return self::USER_KNOWN;
+						return $res;
 					}
 					if ( $result === self::USER_NO_INFO
 						 && $this->userHasCheckUserData( $user->getId(), $dbr )
