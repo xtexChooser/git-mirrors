@@ -161,9 +161,16 @@ class LoginNotify implements LoggerAwareInterface {
 	 */
 	private function isKnownSystemSlow( User $user, $subnet, $resultSoFar = null ) {
 		$result = $this->checkUserAllWikis( $user, $subnet );
-		if ( $result === self::USER_KNOWN ) {
-			return true;
-		}
+
+		$this->log->debug( 'Checking user {user} from {subnet} (result so far: {soFar}): {result}',
+			[
+				'function' => __METHOD__,
+				'user' => $user->getName(),
+				'subnet' => $subnet,
+				'result' => $result,
+				'soFar' => json_encode( $resultSoFar ),
+			]
+		);
 
 		if ( $resultSoFar !== null ) {
 			$result = $this->mergeResults( $result, $resultSoFar );
@@ -186,7 +193,7 @@ class LoginNotify implements LoggerAwareInterface {
 			return true;
 		}
 
-		return false;
+		return $result === self::USER_KNOWN;
 	}
 
 	/**
@@ -640,10 +647,20 @@ class LoginNotify implements LoggerAwareInterface {
 			$this->config->get( 'LoginNotifyAttemptsNewIP' ),
 			$this->config->get( 'LoginNotifyExpiryNewIP' )
 		);
+		$message = '{count} failed login attempts for {user} from an unknown system';
 		if ( $count ) {
 			$this->incrStats( 'fail.unknown.notifications' );
 			$this->sendNotice( $user, 'login-fail-new', $count );
+			$message .= ', sending notification';
 		}
+
+		$this->log->debug( $message,
+			[
+				'function' => __METHOD__,
+				'count' => $count,
+				'user' => $user->getName(),
+			]
+		);
 	}
 
 	/**
@@ -799,7 +816,15 @@ class LoginNotify implements LoggerAwareInterface {
 	 */
 	public function sendSuccessNoticeDeferred( User $user, $subnet, $resultSoFar ) {
 		$isKnown = $this->isKnownSystemSlow( $user, $subnet, $resultSoFar );
-		if ( !$isKnown ) {
+		if ( $isKnown ) {
+			$this->log->debug( 'Found data for user {user} from {subnet}',
+				[
+					'function' => __METHOD__,
+					'user' => $user->getName(),
+					'subnet' => $subnet,
+				]
+			);
+		} else {
 			$this->incrStats( 'success.notifications' );
 			$this->sendNotice( $user, 'login-success' );
 		}
