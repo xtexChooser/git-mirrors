@@ -23,7 +23,6 @@ use Exception;
 use IP;
 use MediaWiki\Logger\LoggerFactory;
 use MWCryptRand;
-use ObjectCache;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerAwareInterface;
 use RequestContext;
