@@ -1,8 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"Urbalazs"
+			"Urbalazs",
+			"Bináris"
 		]
 	},
+	"loginnotify-desc": "Értesíti a felhasználókat az ismeretlen eszközről és/vagy IP-címről érkező gyanús bejelentkezési kísérletekről",
 	"loginnotify-primary-link": "Súgó"
 }
