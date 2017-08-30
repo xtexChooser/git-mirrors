@@ -233,7 +233,7 @@ class LoginNotify implements LoggerAwareInterface {
 			return self::USER_NOT_KNOWN;
 		}
 
-		$dbr = wfGetDB( DB_SLAVE );
+		$dbr = wfGetDB( DB_REPLICA );
 		$result = $this->checkUserOneWiki( $user->getId(), $subnet, $dbr );
 		if ( $result === self::USER_KNOWN ) {
 			return $result;
@@ -276,7 +276,7 @@ class LoginNotify implements LoggerAwareInterface {
 					$lb = MediaWikiServices::getInstance()
 						->getDBLoadBalancerFactory()
 						->getMainLB( $wiki );
-					$dbrLocal = $lb->getConnection( DB_SLAVE, [], $wiki );
+					$dbrLocal = $lb->getConnection( DB_REPLICA, [], $wiki );
 
 					if ( !$this->hasCheckUserTables( $dbrLocal ) ) {
 						// Skip this wiki, no checkuser table.
