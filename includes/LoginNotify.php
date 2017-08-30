@@ -52,8 +52,8 @@ class LoginNotify implements LoggerAwareInterface {
 	private $config;
 	/** @var LoggerInterface Usually instance of LoginNotify log */
 	private $log;
-	/** @var string|bool Salt for cookie hash */
-	private $gSalt;
+	/** @var string Salt for cookie hash. DON'T USE DIRECTLY, use getSalt() */
+	private $salt;
 	/** @var string */
 	private $secret;
 	/** @var IBufferingStatsdDataFactory */
@@ -74,8 +74,6 @@ class LoginNotify implements LoggerAwareInterface {
 		}
 		$this->cache = $cache;
 		$this->config = $cfg;
-		// Generate salt just once to avoid duplicate cookies
-		$this->gSalt = \Wikimedia\base_convert( MWCryptRand::generateHex( 8 ), 16, 36 );
 
 		if ( $this->config->get( 'LoginNotifySecretKey' ) !== null ) {
 			$this->secret = $this->config->get( 'LoginNotifySecretKey' );
@@ -122,6 +120,20 @@ class LoginNotify implements LoggerAwareInterface {
 			throw new Exception( __METHOD__ . " Regex failed on '$ip'!?" );
 		}
 		return $prefix;
+	}
+
+	/**
+	 * Returns lazy-initialized salt
+	 *
+	 * @return string
+	 */
+	private function getSalt() {
+		// Generate salt just once to avoid duplicate cookies
+		if ( $this->salt === null ) {
+			$this->salt = \Wikimedia\base_convert( MWCryptRand::generateHex( 8 ), 16, 36 );
+		}
+
+		return $this->salt;
 	}
 
 	/**
@@ -606,7 +618,7 @@ class LoginNotify implements LoggerAwareInterface {
 		}
 
 		if ( $salt === false ) {
-			$salt = $this->gSalt;
+			$salt = $this->getSalt();
 		}
 
 		// FIXME Maybe shorten, e.g. User only half the hash?
