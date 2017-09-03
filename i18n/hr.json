@@ -1,0 +1,10 @@
+{
+	"@metadata": {
+		"authors": [
+			"Bugoslav"
+		]
+	},
+	"echo-category-title-login-fail": "Neuspješni pokušaji prijave",
+	"echo-category-title-login-success": "Prijava s nepoznate naprave",
+	"loginnotify-primary-link": "Pomoć"
+}
