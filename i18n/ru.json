@@ -5,8 +5,7 @@
 			"Alexey zakharenkov"
 		]
 	},
-	"echo-pref-tooltip-login-fail": "Уведомлять меня, если было предпринято несколько неудачных попыток войти под моей учётной записью.",
-	"echo-category-title-login-success": "Вход с нового компьютера",
-	"loginnotify-login-fail": "Было предпринято несколько неудачных попыток войти под Вашей учётной записью.",
+	"echo-pref-tooltip-login-fail": "Уведомлять меня, если были предприняты неудачные попытки войти под моей учётной записью.",
+	"echo-category-title-login-success": "Вход с незнакомого компьютера",
 	"loginnotify-primary-link": "Справка"
 }
