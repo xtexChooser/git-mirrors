@@ -1,0 +1,10 @@
+{
+	"@metadata": {
+		"authors": [
+			"A2093064",
+			"Liuxinyu970226"
+		]
+	},
+	"loginnotify-primary-link": "說明",
+	"notification-new-unbundled-header-login-fail": "目前在新裝置上已經有{{PLURAL:$1|'''一次'''|'''多次'''}}失敗的登入您帳戶的嘗試。請確保您的帳戶擁有強式密碼。"
+}
