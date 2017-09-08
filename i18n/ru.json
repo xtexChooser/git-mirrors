@@ -2,10 +2,17 @@
 	"@metadata": {
 		"authors": [
 			"Okras",
-			"Alexey zakharenkov"
+			"Alexey zakharenkov",
+			"Contra ventum"
 		]
 	},
+	"loginnotify-desc": "Уведомлять пользователей о подозрительных входах с незнакомых компьютеров и/или IP-адресов",
+	"echo-category-title-login-fail": "Неудачные попытки входа",
 	"echo-pref-tooltip-login-fail": "Уведомлять меня, если были предприняты неудачные попытки войти под моей учётной записью.",
 	"echo-category-title-login-success": "Вход с незнакомого компьютера",
-	"loginnotify-primary-link": "Справка"
+	"echo-pref-tooltip-login-success": "Уведомлять меня, когда кто-либо входит в мою учётную запись с незнакомого компьютера или IP-адреса.",
+	"loginnotify-primary-link": "Справка",
+	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Неудачная попытка|Многократные неудачные попытки}} войти в {{SITENAME}} под именем $1",
+	"notification-loginnotify-login-success-email-subject": "Вход в {{SITENAME}} под именем $1 с компьютера, которым вы в последнее время не пользовались",
+	"notification-header-login-success": "Кто-то (вероятно {{GENDER:$1|вы}}) недавно вошёл в вашу учётную запись с нового компьютера. Если это были вы, можете не обращать внимание на это сообщение. Если это были не вы, то вам рекомендуется поменять пароль и проверить действия, совершённые в вашей учётной записи."
 }
