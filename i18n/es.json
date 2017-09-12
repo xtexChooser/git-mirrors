@@ -3,7 +3,8 @@
 		"authors": [
 			"Macofe",
 			"Fitoschido",
-			"PoLuX124"
+			"PoLuX124",
+			"Dgstranz"
 		]
 	},
 	"loginnotify-desc": "Notifica a los usuarios sobre accesos sospechosos provenientes de dispositivos o direcciones IP inusuales.",
@@ -16,6 +17,6 @@
 	"notification-loginnotify-login-success-email-subject": "Acceso a {{SITENAME}} como $1 desde un equipo que no has utilizado recientemente",
 	"notification-header-login-success": "Alguien, probablemente {{GENDER:$1|tú}}, ha accedido con éxito a tu cuenta desde un dispositivo nuevo. Si fuiste tú, puedes ignorar este mensaje. Si no fuiste tú, se recomienda que cambies tu contraseña y revises la actividad de la cuenta.",
 	"notification-new-bundled-header-login-fail": "{{PLURAL:$1|Ha habido '''un intento fallido'''|Ha habido '''$1 intentos fallidos'''}} de acceder a tu cuenta desde un dispositivo nuevo desde la última vez que la utilizaste. Si no has sido tú, asegúrate de que tu cuenta posee una contraseña fuerte.",
-	"notification-known-header-login-fail": "{{PLURAL:$1|Ha habido '''un intento fallido'''|Ha habido '''$1 intentos fallidos'''}} de acceder a tu cuenta desde la última vez que la utilizaste. Si no has sido tú, asegúrate de que tu cuenta posee una contraseña fuerte.",
-	"notification-new-unbundled-header-login-fail": "{{PLURAL:$1|Ha habido '''un intento fallido'''|Ha habido '''$1 intentos fallidos'''}} de acceder a tu cuenta desde un dispositivo nuevo. Asegúrate de que tu cuenta posee una contraseña fuerte."
+	"notification-known-header-login-fail": "Ha habido '''{{PLURAL:$1|un intento fallido|$1 intentos fallidos}}''' de acceder a tu cuenta desde la última vez que la utilizaste. Si no has sido tú, asegúrate de que tu cuenta posee una contraseña fuerte.",
+	"notification-new-unbundled-header-login-fail": "Ha habido '''{{PLURAL:$1|un intento fallido|$1 intentos fallidos}}''' de acceder a tu cuenta desde un dispositivo nuevo. Asegúrate de que tu cuenta posee una contraseña fuerte."
 }
