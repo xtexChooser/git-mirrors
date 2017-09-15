@@ -15,9 +15,9 @@
 	},
 	"DefaultUserOptions": {
 		"echo-subscriptions-web-login-fail": true,
-		"echo-subscriptions-email-login-fail": false,
+		"echo-subscriptions-email-login-fail": true,
 		"echo-subscriptions-web-login-success": false,
-		"echo-subscriptions-email-login-success": false
+		"echo-subscriptions-email-login-success": true
 	},
 	"MessagesDirs": {
 		"LoginNotify": [
