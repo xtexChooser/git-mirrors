@@ -1,0 +1,9 @@
+{
+	"@metadata": {
+		"authors": [
+			"Obsuser"
+		]
+	},
+	"echo-category-title-login-fail": "Neuspešni pokušaji prijave",
+	"echo-pref-tooltip-login-fail": "Obaveštava vas kada je bilo neuspešnih pokušaja prijave na vaš nalog."
+}
