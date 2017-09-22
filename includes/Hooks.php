@@ -15,10 +15,6 @@ use MediaWiki\Auth\AuthenticationResponse;
 use User;
 
 class Hooks {
-
-	const OPTIONS_FAKE_TRUTH = 2;
-	const OPTIONS_FAKE_FALSE = 'fake-false';
-
 	/**
 	 * Add LoginNotify events to Echo
 	 *
@@ -198,113 +194,5 @@ class Hooks {
 			$loginNotify = new LoginNotify();
 			$loginNotify->setCurrentAddressAsKnown( $user );
 		}
-	}
-
-	/**
-	 * Hook for loading options.
-	 *
-	 * This is a bit hacky. Used to be able to set a different
-	 * default for admins than other users
-	 *
-	 * @param User $user The user in question.
-	 * @param mixed[] &$options The options.
-	 * @return bool
-	 */
-	public static function onUserLoadOptions( User $user, array &$options ) {
-		global $wgLoginNotifyEnableForPriv;
-		if ( !is_array( $wgLoginNotifyEnableForPriv ) ) {
-			return true;
-		}
-
-		if ( !self::isUserOptionOverridden( $user ) ) {
-			return true;
-		}
-
-		$defaultOpts = User::getDefaultOptions();
-		$optionsToCheck = self::getOverriddenOptions();
-
-		foreach ( $optionsToCheck as $opt ) {
-			if ( $options[$opt] === self::OPTIONS_FAKE_FALSE ) {
-				$options[$opt] = '0';
-			}
-			if ( $defaultOpts[$opt] !== false ) {
-				continue;
-			}
-			if ( $options[$opt] === false ) {
-				$options[$opt] = self::OPTIONS_FAKE_TRUTH;
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * Hook for saving options.
-	 *
-	 * This is a bit hacky. Used to be able to set a different
-	 * default for admins than other users. Since admins are higher value
-	 * targets, it may make sense to have notices enabled by default for
-	 * them, but disabled for normal users.
-	 *
-	 * @todo This is a bit icky. Need to decide if we really want to do this.
-	 * @todo If someone explicitly enables, gets admin rights, gets de-admined,
-	 *   this will then disable the preference, which is definitely non-ideal.
-	 * @param User $user The user that is being saved.
-	 * @param mixed[] &$options The options.
-	 * @return bool
-	 */
-	public static function onUserSaveOptions( User $user, array &$options ) {
-		$optionsToCheck = self::getOverriddenOptions();
-		$defaultOpts = User::getDefaultOptions();
-		if ( !self::isUserOptionOverridden( $user ) ) {
-			return true;
-		}
-		foreach ( $optionsToCheck as $opt ) {
-			if ( $defaultOpts[$opt] !== false ) {
-				continue;
-			}
-
-			if ( $options[$opt] === self::OPTIONS_FAKE_TRUTH ) {
-				$options[$opt] = false;
-			}
-			if ( $options[$opt] !== self::OPTIONS_FAKE_TRUTH
-				&& $options[$opt]
-			) {
-				// Its checked on the form. Keep at default
-			}
-
-			if ( !$options[$opt] ) {
-				// Somehow this means it got unchecked on form
-				$options[$opt] = self::OPTIONS_FAKE_FALSE;
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * Helper for onUser(Load|Save)Options
-	 *
-	 * @return array Which option keys to check
-	 */
-	private static function getOverriddenOptions() {
-		// For login-success, it makes most sense to email
-		// people about it, but auto-subscribing people to email
-		// is a bit icky as nobody likes to be spammed.
-		return [
-			'echo-subscriptions-web-login-fail',
-			'echo-subscriptions-web-login-success'
-		];
-	}
-
-	private static function isUserOptionOverridden( User $user ) {
-		global $wgLoginNotifyEnableForPriv;
-		// Note: isAllowedAny calls into session for per-session restrictions,
-		// which we do not want to take into account, and more importantly
-		// causes an infinite loop.
-		$rights = User::getGroupPermissions( $user->getEffectiveGroups() );
-		if ( !array_intersect( $rights, $wgLoginNotifyEnableForPriv ) ) {
-			// Not a user we care about.
-			return false;
-		}
-		return true;
 	}
 }

@@ -46,12 +46,6 @@
 		"AddNewAccount": [
 			"LoginNotify\\Hooks::onAddNewAccount"
 		],
-		"UserLoadOptions": [
-			"LoginNotify\\Hooks::onUserLoadOptions"
-		],
-		"UserSaveOptions": [
-			"LoginNotify\\Hooks::onUserSaveOptions"
-		],
 		"LocalUserCreated": [
 			"LoginNotify\\Hooks::onLocalUserCreated"
 		]
@@ -72,8 +66,6 @@
 		"LoginNotifyCheckKnownIPs": true,
 		"@docLoginNotifyEnableOnSuccess": "Whether to trigger a notification after successful logins from unknown IPs.",
 		"LoginNotifyEnableOnSuccess": true,
-		"@docLoginNotifyEnableForPriv": "Set different default notification preferences for different user groups. For user groups that have any of the user rights listed in this array, the preferences specified in Hooks:getOverriddenOptions() are on by default.",
-		"LoginNotifyEnableForPriv": [ "editinterface", "userrights" ],
 		"@docLoginNotifySecretKey": "Override this to use a different secret than $wgSecretKey",
 		"LoginNotifySecretKey": null,
 		"@docLoginNotifyCookieExpire": "Expiry in seconds. Default is 180 days",
