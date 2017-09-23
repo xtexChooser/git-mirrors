@@ -1,8 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
-			"StanProg"
+			"StanProg",
+			"ShockD"
 		]
 	},
+	"echo-category-title-login-fail": "Неуспешни опити за влизане",
+	"echo-category-title-login-success": "Влизане от непознато устройство",
 	"loginnotify-primary-link": "Помощ"
 }
