@@ -4,11 +4,11 @@
 			"Xuacu"
 		]
 	},
-	"loginnotify-desc": "Avisar a los usuarios sobro anicios de sesión sospechosos",
+	"loginnotify-desc": "Avisar a los usuarios d'anicios de sesión sospechosos dende preseos o direiciones IP desconocíos",
 	"echo-category-title-login-fail": "Intentos d'aniciu de sesión incorreutos",
-	"echo-pref-tooltip-login-fail": "Avisame de cuando hubieren múltiples intentos fallíos d'aniciu de sesión cola mio cuenta.",
-	"echo-category-title-login-success": "Aniciu de sesión dende un ordenador nuevu",
-	"echo-pref-tooltip-login-success": "avisame cada vez que dalguién anicie sesión cola mio cuenta dende un ordenador que nun usé antes.",
+	"echo-pref-tooltip-login-fail": "Avisame cuando hubieren intentos fallíos d'aniciu de sesión cola mio cuenta.",
+	"echo-category-title-login-success": "Aniciu de sesión dende un preséu desconocíu",
+	"echo-pref-tooltip-login-success": "Avisame cada vez que dalguién anicie sesión cola mio cuenta dende un preséu ya IP desconocíu.",
 	"loginnotify-primary-link": "Ayuda",
 	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Intentu fallíu|Múltiples intentos fallíos}} d'aniciu de sesión en {{SITENAME}} como $1",
 	"notification-loginnotify-login-success-email-subject": "Aniciu de sesión en {{SITENAME}} como $1 dende un ordenador que nun usasti apocayá",
