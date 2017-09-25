@@ -1,6 +1,6 @@
 {
 	"name": "CategoryWatch",
-	"version": "1.2.2, 2011-12-03",
+	"version": "2.0, 2017-09-19",
 	"author": [
 		"[http://www.organicdesign.co.nz/User:Nad User:Nad]",
 		"Sean Chen",
@@ -11,20 +11,29 @@
 	"license-name": "GPL-2.0-or-later",
 	"type": "other",
 	"AutoloadClasses": {
-		"CategoryWatch": "CategoryWatch.php"
+		"CategoryWatch\\CategoryWatch": "src/CategoryWatch.php",
+		"CategoryWatch\\EchoEventPresentationModel": "src/EchoEventPresentationModel.php",
+		"CategoryWatch\\Hook": "src/Hook.php"
 	},
-	"ExtensionFunctions": [
-		"CategoryWatch::setupCategoryWatch"
-	],
 	"MessagesDirs": {
 		"CategoryWatch": "i18n"
 	},
+	"DefaultUserOptions": {
+		"echo-subscriptions-email-categorywatch": true,
+		"echo-subscriptions-web-categorywatch": true
+	},
 	"Hooks": {
-		"PageContentSave": [
-			"CategoryWatch::onPageContentSave"
+		"BeforeCreateEchoEvent": [
+			"CategoryWatch\\Hook::onBeforeCreateEchoEvent"
 		],
-		"PageContentSaveComplete": [
-			"CategoryWatch::onPageContentSaveComplete"
+		"EchoGetBundleRules": [
+			"CategoryWatch\\Hook::onEchoGetBundleRules"
+		],
+		"CategoryAfterPageAdded": [
+			"CategoryWatch\\Hook::onCategoryAfterPageAdded"
+		],
+		"CategoryAfterPageRemoved": [
+			"CategoryWatch\\Hook::onCategoryAfterPageRemoved"
 		]
 	},
 	"config": {
