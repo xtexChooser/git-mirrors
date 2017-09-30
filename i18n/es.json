@@ -18,6 +18,6 @@
 	"notification-loginnotify-login-success-email-subject": "Acceso a {{SITENAME}} como $1 desde un equipo que no has utilizado recientemente",
 	"notification-header-login-success": "Alguien, probablemente {{GENDER:$1|tú}}, ha accedido con éxito a tu cuenta desde un dispositivo nuevo. Si fuiste tú, puedes ignorar este mensaje. Si no fuiste tú, se recomienda que cambies tu contraseña y revises la actividad de la cuenta.",
 	"notification-new-bundled-header-login-fail": "{{PLURAL:$1|Hubo '''un intento fallido'''|Hubo '''$1 intentos fallidos'''}} de acceder a tu cuenta desde un dispositivo nuevo desde la última vez que la utilizaste. Si no has sido tú, asegúrate de que tu cuenta posea una contraseña fuerte.",
-	"notification-known-header-login-fail": "Hubo '''{{PLURAL:$1|un intento fallido|$1 intentos fallidos}}''' de acceder a tu cuenta desde la última vez que la utilizaste. Si no has sido tú, asegúrate de que tu cuenta posee una contraseña segura.",
-	"notification-new-unbundled-header-login-fail": "Hubo '''{{PLURAL:$1|un intento fallido|$1 intentos fallidos}}''' de acceder a tu cuenta desde un dispositivo nuevo. Asegúrate de que tu cuenta posee una contraseña segura."
+	"notification-known-header-login-fail": "Hubo '''{{PLURAL:$1|un intento fallido|$1 intentos fallidos}}''' de acceder a tu cuenta desde la última vez que la utilizaste. Si no has sido tú, asegúrate de que tu cuenta posea una contraseña segura.",
+	"notification-new-unbundled-header-login-fail": "Hubo '''{{PLURAL:$1|un intento fallido|$1 intentos fallidos}}''' de acceder a tu cuenta desde un dispositivo nuevo. Asegúrate de que tu cuenta posea una contraseña segura."
 }
