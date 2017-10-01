@@ -10,7 +10,7 @@
 	},
 	"loginnotify-desc": "Notifica a los usuarios sobre accesos sospechosos provenientes de dispositivos o direcciones IP inusuales.",
 	"echo-category-title-login-fail": "Intentos de acceso fallidos",
-	"echo-pref-tooltip-login-fail": "Notificarme cuando hayan intentos fallidos de acceder a mi cuenta.",
+	"echo-pref-tooltip-login-fail": "Notificarme cuando se produzcan intentos fallidos de acceder a mi cuenta.",
 	"echo-category-title-login-success": "Acceso a la cuenta desde un dispositivo inusual",
 	"echo-pref-tooltip-login-success": "Notificarme cada vez que alguien acceda a mi cuenta desde un dispositivo o una dirección IP inusual.",
 	"loginnotify-primary-link": "Ayuda",
