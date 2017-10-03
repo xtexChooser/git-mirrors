@@ -1,10 +1,12 @@
 {
 	"@metadata": {
 		"authors": [
-			"Bugoslav"
+			"Bugoslav",
+			"MaGa"
 		]
 	},
 	"echo-category-title-login-fail": "Neuspješni pokušaji prijave",
 	"echo-category-title-login-success": "Prijava s nepoznate naprave",
-	"loginnotify-primary-link": "Pomoć"
+	"loginnotify-primary-link": "Pomoć",
+	"notification-header-login-success": "Netko (vjerojatno {{GENDER:$1|Vi}}) se nedavno prijavio na Vaš suradnički račun s novog uređaja. Ako ste to bili Vi, zanemarite ovu poruku. Ako to niste bili vi, preporučujemo Vam da promijenite zaporku i provjerite aktivnost suradničkog računa."
 }
