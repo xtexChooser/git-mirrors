@@ -10,7 +10,6 @@ namespace LoginNotify;
 
 use EchoAttributeManager;
 use EchoEvent;
-use LoginForm;
 use MediaWiki\Auth\AuthenticationResponse;
 use User;
 
@@ -97,24 +96,7 @@ class Hooks {
 	}
 
 	/**
-	 * Old hook for pre 1.27 or wikis with auth manager disabled.
-	 *
-	 * @todo Doesn't catch CAPTCHA or throttle failures
-	 *
-	 * @param User $user User in question.
-	 * @param string $pass The password (parameter not used).
-	 * @param int $retval A LoginForm constant (e.g. LoginForm::SUCCESS).
-	 */
-	public static function onLoginAuthenticateAudit( User $user, $pass, $retval ) {
-		if ( $retval === LoginForm::WRONG_PASS ) {
-			self::doFailedLogin( $user );
-		} elseif ( $retval === LoginForm::SUCCESS ) {
-			self::doSuccessfulLogin( $user );
-		}
-	}
-
-	/**
-	 * Hook for login auditing post 1.27
+	 * Hook for login auditing
 	 *
 	 * @param AuthenticationResponse $ret Is login successful?
 	 * @param User|null $user User object on successful auth
@@ -165,23 +147,7 @@ class Hooks {
 	}
 
 	/**
-	 * Deprecated since v1.27
-	 *
-	 * Set a cookie saying this is a known computer when creating an account.
-	 *
-	 * @todo This still sets cookies if user creates an account while logged in as someone else.
-	 * @param User $user The user that has been created.
-	 * @param bool $byMail Account created by email
-	 */
-	public static function onAddNewAccount( User $user, $byMail ) {
-		if ( !$byMail ) {
-			$loginNotify = new LoginNotify();
-			$loginNotify->setCurrentAddressAsKnown( $user );
-		}
-	}
-
-	/**
-	 * Hook for new account creation since v1.27
+	 * Hook handler for new account creation.
 	 *
 	 * Called immediately after a local user has been created and saved to the database
 	 *
