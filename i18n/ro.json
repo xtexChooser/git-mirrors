@@ -2,8 +2,15 @@
 	"@metadata": {
 		"authors": [
 			"Matrafox",
-			"XXN"
+			"XXN",
+			"Strainu"
 		]
 	},
-	"loginnotify-primary-link": "Ajutor"
+	"echo-category-title-login-fail": "Încercări eșuate de autentificare",
+	"echo-pref-tooltip-login-fail": "Notifică-mă când apar încercări eșuate de autentificare în contul meu.",
+	"echo-category-title-login-success": "Autentificare de pe un dispozitiv nefamiliar",
+	"echo-pref-tooltip-login-success": "Notifică-mă când cineva se autentifică în contul meu de pe un dispozitiv sau adresă IP nefamiliară.",
+	"loginnotify-primary-link": "Ajutor",
+	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Încercare eșuată|Multiple încercări eșuate}} de autentificare pe {{SITENAME}} ca $1",
+	"notification-loginnotify-login-success-email-subject": "Autentificare pe {{SITENAME}} ca $1 de pe un calculator pe care nu l-ați folosit recent"
 }
