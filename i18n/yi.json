@@ -4,5 +4,8 @@
 			"פוילישער"
 		]
 	},
-	"loginnotify-primary-link": "הילף"
+	"echo-category-title-login-success": "אריינלאגירונג פון אן אומבאקאנטן אפאראט",
+	"echo-pref-tooltip-login-success": "מיך מודיע זיין ווען איינער לאגירט אריין אין מיין קאנטע פון אן אומבאקאנטן אפאראט און IP אדרעס",
+	"loginnotify-primary-link": "הילף",
+	"notification-loginnotify-login-success-email-subject": "אריינלאגרין צו {{SITENAME}} ווי $1 פון א קאמפיוטער וואס איר האט נישט געניצט לעצטנס"
 }
