@@ -408,9 +408,12 @@ class CategoryWatch {
 				}
 
 				# Define keys for body message
+				# body message is defined in page MediaWiki:Enotif_body
+				# set both $PAGEINTRO and $HELPPAGE to empty string for now.
 				$userPage = $editor->getUserPage();
 				$keys = [
 					'$WATCHINGUSERNAME' => $name,
+					'$PAGEINTRO'        => '',
 					'$NEWPAGE'          => $message,
 					'$PAGETITLE'        => $page,
 					'$PAGEEDITDATE'     => $editdate,
@@ -420,6 +423,7 @@ class CategoryWatch {
 					'$PAGEEDITOR_WIKI'  => $userPage->getFullUrl(),
 					'$PAGESUMMARY'      => $summary,
 					'$PAGEMINOREDIT'    => $medit,
+					'$HELPPAGE'         => '',
 					'$OLDID'            => ''
 				];
 				if ( $editor->isIP( $name ) ) {
