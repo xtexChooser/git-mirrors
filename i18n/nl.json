@@ -3,10 +3,11 @@
 		"authors": [
 			"Sjoerddebruin",
 			"Festina90",
-			"Mainframe98"
+			"Mainframe98",
+			"Mar(c)"
 		]
 	},
-	"echo-category-title-login-fail": "Mislukte aanmeldspogingen",
+	"echo-category-title-login-fail": "Mislukte aanmeldpogingen",
 	"echo-pref-tooltip-login-fail": "Laat het me weten wanneer er voor mijn account een mislukte aanmeldpoging plaatsvindt.",
 	"echo-category-title-login-success": "Aanmeldingen vanaf een onbekend apparaat",
 	"echo-pref-tooltip-login-success": "Laat het me weten wanneer er iemand zich met mijn account aanmeld vanaf een onbekend apparaat en IP-adres.",
