@@ -48,7 +48,7 @@ class MigratePreferences extends LoggedUpdateMaintenance {
 		$iterator = new BatchRowIterator( $dbr,
 			[ 'user_properties', 'user' ],
 			[ 'up_user', 'up_property' ],
-			$this->mBatchSize
+			$this->getBatchSize()
 		);
 		$iterator->addConditions( [
 			'user_id=up_user',
@@ -77,7 +77,7 @@ class MigratePreferences extends LoggedUpdateMaintenance {
 
 			if ( $userId != $lastRow->user_id ) {
 				$rows += $this->updateUser( $lastRow, $optionsToUpdate );
-				if ( $rows >= $this->mBatchSize ) {
+				if ( $rows >= $this->getBatchSize() ) {
 					$this->output( "  Updated {$rows} rows up to user ID {$lastRow->user_id}\n" );
 					$lbFactory->waitForReplication( [ 'wiki' => wfWikiID() ] );
 					$total += $rows;
