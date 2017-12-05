@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Harald Khan"
+			"Harald Khan",
+			"Njardarlogar"
 		]
 	},
 	"categorywatch-desc": "Utvider overvakingslista sin funksjonalitet til òg å gjelda innhaldet i kategoriar",
