@@ -66,7 +66,7 @@ class CategoryWatch {
 	 * @param Status $status Status (object)
 	 */
 	public static function onPageContentSave(
-		$wikiPage, $user, $content, $summary, $isMinor,
+		WikiPage $wikiPage, $user, $content, $summary, $isMinor,
 		$isWatch, $section, $flags, $status
 	) {
 		global $wgCategoryWatchUseAutoCat, $wgCategoryWatchUseAutoCatRealName,
@@ -133,7 +133,8 @@ class CategoryWatch {
 	/**
 	 * the proper hook for save page request.
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/PageContentSaveComplete
-	 * @param WikiPage $article Article edited
+	 *
+	 * @param WikiPage $wikiPage WikiPage modified
 	 * @param User $user who edited
 	 * @param Content $content New article text
 	 * @param string $summary Edit summary
@@ -146,7 +147,7 @@ class CategoryWatch {
 	 * @param int $baseRevId base revision
 	 */
 	public static function onPageContentSaveComplete(
-		$article, $user, $content, $summary, $isMinor, $isWatch, $section,
+		WikiPage $wikiPage, $user, $content, $summary, $isMinor, $isWatch, $section,
 		$flags, $revision, $status, $baseRevId
 	) {
 		# Get cats after update
@@ -154,7 +155,7 @@ class CategoryWatch {
 
 		$parseTimestamp = $revision->getTimestamp();
 		$content = $revision->getContent();
-		$title = $article->getTitle();
+		$title = $wikiPage->getTitle();
 		$options = $content->getContentHandler()->makeParserOptions( 'canonical' );
 		$options->setTimestamp( $parseTimestamp );
 		$output = $content->getParserOutput( $title, $revision->getId(), $options );
@@ -170,7 +171,7 @@ class CategoryWatch {
 
 		# Notify watchers of each cat about the addition or removal of this article
 		if ( count( $add ) > 0 || count( $sub ) > 0 ) {
-			$page     = $article->getTitle();
+			$page = $wikiPage->getTitle();
 			$pagename = $page->getPrefixedText();
 			$pageurl  = $page->getFullUrl();
 			$page     = "$pagename ($pageurl)";
