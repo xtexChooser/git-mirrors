@@ -10,6 +10,7 @@
 	"echo-category-title-login-fail": "ログインの失敗",
 	"echo-pref-tooltip-login-fail": "自分のアカウントへのログインが失敗したときに通知する。",
 	"echo-category-title-login-success": "見覚えのない端末からのログイン",
+	"echo-pref-tooltip-login-success": "見覚えのない端末およびIPアドレスからのログインがあったときに通知する。",
 	"loginnotify-primary-link": "ヘルプ",
 	"notification-header-login-success": "誰か（おそらく{{GENDER:$1|あなた}}）が最近新しいデバイスからあなたのアカウントにログインしました。もし、それがあなたであれば、このメッセージは無視して構いません。もし，それがあなたでなかったなければ、パスワードを変更し、あなたのアカウントのアクティビティを確認することをお勧めします。"
 }
