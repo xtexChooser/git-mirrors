@@ -4,8 +4,11 @@
 			"פוילישער"
 		]
 	},
+	"echo-category-title-login-fail": "נישט געראטענע אריינלאגירן פרואוון",
 	"echo-category-title-login-success": "אריינלאגירונג פון אן אומבאקאנטן אפאראט",
 	"echo-pref-tooltip-login-success": "מיך מודיע זיין ווען איינער לאגירט אריין אין מיין קאנטע פון אן אומבאקאנטן אפאראט און IP אדרעס",
 	"loginnotify-primary-link": "הילף",
-	"notification-loginnotify-login-success-email-subject": "אריינלאגרין צו {{SITENAME}} ווי $1 פון א קאמפיוטער וואס איר האט נישט געניצט לעצטנס"
+	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|נישט געראטענער פרואוו|מערערע נישט געראטענע פרואוון }} אריינלאגירן צו {{SITENAME}} ווי $1",
+	"notification-loginnotify-login-success-email-subject": "אריינלאגרין צו {{SITENAME}} ווי $1 פון א קאמפיוטער וואס איר האט נישט געניצט לעצטנס",
+	"notification-header-login-success": "עמעצער (מסתמא  {{GENDER:$1|איר}}) האט לעצטנס אריינלאגירט צו אייער קאנטע פון א נייעם אפאראט. ווען דאס איז געווען איר, קענט איר איגנארירן די מעלדונג. טאמער ס׳איז נישט געווען איר, ווערט רעקאמענדירט אז איר זאלט ענדערן אייער פאסווארט, און איר זאלט קאנטראלירן אייער קאנטע־אקטיוויטעט."
 }

@@ -4,7 +4,8 @@
 			"Sjoerddebruin",
 			"Festina90",
 			"Mainframe98",
-			"Mar(c)"
+			"Mar(c)",
+			"Woodcutterty"
 		]
 	},
 	"echo-category-title-login-fail": "Mislukte aanmeldpogingen",
@@ -12,5 +13,5 @@
 	"echo-category-title-login-success": "Aanmeldingen vanaf een onbekend apparaat",
 	"echo-pref-tooltip-login-success": "Laat het me weten wanneer er iemand zich met mijn account aanmeld vanaf een onbekend apparaat en IP-adres.",
 	"loginnotify-primary-link": "Hulp",
-	"notification-header-login-success": "Iemand (Waarschijnijk {{GENDER:$1|u}}) heeft zich aangemeld onder uw account vanaf een nieuw apparaat. Als dit u weldadelijk was, kunt u dit bericht negeren . Als dit u niet was, dan is het aangeraden om een nieuw wachtwoord te kiezen, en uw account geschiedenis na te kijken."
+	"notification-header-login-success": "Iemand (waarschijnlijk {{GENDER:$1|u}}) heeft vanaf een nieuw apparaat op uw account ingelogd. Als u dit zelf was kunt u dit bericht negeren. Als iemand anders op uw account heeft ingelogd raden wij u aan uw wachtwoord te veranderen, en de activiteit vanaf uw account te controleren."
 }
