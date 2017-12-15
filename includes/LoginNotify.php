@@ -12,6 +12,7 @@ use BagOStuff;
 use CentralAuthUser;
 use Config;
 use EchoEvent;
+use ExtensionRegistry;
 use IBufferingStatsdDataFactory;
 use JobQueueGroup;
 use JobSpecification;
@@ -238,7 +239,7 @@ class LoginNotify implements LoggerAwareInterface {
 		Assert::parameter( $user->isLoggedIn(), '$user', 'User must be logged in' );
 
 		if ( !$this->config->get( 'LoginNotifyCheckKnownIPs' )
-			|| !class_exists( 'CheckUser' )
+			|| !$this->isCheckUserInstalled()
 		) {
 			// Checkuser checks disabled.
 			// Note: It's important this be USER_NOT_KNOWN and not USER_NO_INFO.
@@ -399,6 +400,14 @@ class LoginNotify implements LoggerAwareInterface {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Whether CheckUser extension is installed
+	 * @return bool
+	 */
+	private function isCheckUserInstalled() {
+		return ExtensionRegistry::getInstance()->isLoaded( 'CheckUser' );
 	}
 
 	/**
