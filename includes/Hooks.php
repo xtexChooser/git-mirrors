@@ -129,7 +129,7 @@ class Hooks {
 	 *
 	 * @param User $user The user who logged in.
 	 */
-	private static function doSuccessfulLogin( User $user ) {
+	public static function doSuccessfulLogin( User $user ) {
 		$loginNotify = new LoginNotify();
 		$loginNotify->clearCounters( $user );
 		$loginNotify->sendSuccessNotice( $user );
@@ -141,7 +141,7 @@ class Hooks {
 	 *
 	 * @param User $user The user that failed to log in.
 	 */
-	private static function doFailedLogin( User $user ) {
+	public static function doFailedLogin( User $user ) {
 		$loginNotify = new LoginNotify();
 		$loginNotify->recordFailure( $user );
 	}
