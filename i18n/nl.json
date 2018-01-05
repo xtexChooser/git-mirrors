@@ -13,5 +13,5 @@
 	"echo-category-title-login-success": "Aanmeldingen vanaf een onbekend apparaat",
 	"echo-pref-tooltip-login-success": "Laat het me weten wanneer er iemand zich met mijn account aanmeld vanaf een onbekend apparaat en IP-adres.",
 	"loginnotify-primary-link": "Hulp",
-	"notification-header-login-success": "Iemand (waarschijnlijk {{GENDER:$1|u}}) heeft vanaf een nieuw apparaat op uw account ingelogd. Als u dit zelf was kunt u dit bericht negeren. Als iemand anders op uw account heeft ingelogd raden wij u aan uw wachtwoord te veranderen, en de activiteit vanaf uw account te controleren."
+	"notification-header-login-success": "Iemand (waarschijnlijk {{GENDER:$1|u}}) heeft recentelijk vanaf een nieuw apparaat op uw account ingelogd. Als u dit zelf was, kunt u dit bericht negeren. Als u dit niet was, dan raden wij u aan uw wachtwoord te veranderen en de activiteit van uw account te controleren."
 }
