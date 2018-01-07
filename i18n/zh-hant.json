@@ -8,6 +8,7 @@
 	},
 	"echo-category-title-login-fail": "失敗的登入嘗試",
 	"echo-category-title-login-success": "使用不熟悉的裝置登入",
+	"echo-pref-tooltip-login-success": "當有人從某個不熟悉的裝置和IP地址登入我的帳戶時通知我。",
 	"loginnotify-primary-link": "說明",
 	"notification-loginnotify-login-success-email-subject": "在您最近未使用的裝置上以$1登入至{{SITENAME}}",
 	"notification-header-login-success": "最近有人（可能是{{GENDER:$1|您}}）在新的裝置上登入了您的帳戶。如果這確實是您的話，您可以無視這條訊息。如果不是您，那麼建議您更改您的密碼，並檢查您帳戶的活動。",
