@@ -7,6 +7,7 @@
 		]
 	},
 	"echo-category-title-login-fail": "失敗的登入嘗試",
+	"echo-pref-tooltip-login-fail": "當我的帳戶有失敗的登入嘗試時通知我。",
 	"echo-category-title-login-success": "使用不熟悉的裝置登入",
 	"echo-pref-tooltip-login-success": "當有人從某個不熟悉的裝置和IP地址登入我的帳戶時通知我。",
 	"loginnotify-primary-link": "說明",
