@@ -9,9 +9,9 @@
 		]
 	},
 	"echo-category-title-login-fail": "Mislukte aanmeldpogingen",
-	"echo-pref-tooltip-login-fail": "Laat het me weten wanneer er voor mijn account een mislukte aanmeldpoging plaatsvindt.",
-	"echo-category-title-login-success": "Aanmeldingen vanaf een onbekend apparaat",
-	"echo-pref-tooltip-login-success": "Laat het me weten wanneer er iemand zich met mijn account aanmeld vanaf een onbekend apparaat en IP-adres.",
+	"echo-pref-tooltip-login-fail": "Informeer mij wanneer er voor mijn account mislukte aanmeldpogingen plaatsvinden.",
+	"echo-category-title-login-success": "Aanmelding vanaf onbekend apparaat",
+	"echo-pref-tooltip-login-success": "Informeer mij telkens als iemand zich met mijn account aanmeldt vanaf een onbekend apparaat en IP-adres.",
 	"loginnotify-primary-link": "Hulp",
 	"notification-header-login-success": "Iemand (waarschijnlijk {{GENDER:$1|u}}) heeft recentelijk vanaf een nieuw apparaat op uw account ingelogd. Als u dit zelf was, kunt u dit bericht negeren. Als u dit niet was, dan raden wij u aan uw wachtwoord te veranderen en de activiteit van uw account te controleren."
 }

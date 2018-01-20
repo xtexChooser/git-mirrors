@@ -4,14 +4,15 @@
 			"Brian Wolff",
 			"Niharika",
 			"Liuxinyu970226",
-			"Mormegil"
+			"Mormegil",
+			"Mar(c)"
 		]
 	},
 	"loginnotify-desc": "{{desc|name=LoginNotify|url=https://www.mediawiki.org/wiki/Extension:LoginNotify}}",
-	"echo-category-title-login-fail": "Label for 2 checkboxes in the Notifications section of [[Special:Preferences]]. The checkbox controls if the user receives notification on someone attempting unsuccessfully to log in as them.\n\nUsed in a list of options under the heading {{msg-mw|Prefs-echosubscriptions}} in Special:Preferences.\n\n{{Related|Echo-category-title}}",
-	"echo-pref-tooltip-login-fail": "Help tooltip for {{msg-mw|echo-category-title-login-fail}}",
-	"echo-category-title-login-success": "Label for 2 checkboxes in the Notifications section of [[Special:Preferences]]. The checkbox controls if the user receives notification on someone logging in to this account from a computer that has not previously been used to log in by this user.\n\nUsed in a list of options under the heading {{msg-mw|Prefs-echosubscriptions}} in Special:Preferences.\n\n{{Related|Echo-category-title}}",
-	"echo-pref-tooltip-login-success": "Help tooltip for {{msg-mw|echo-category-title-login-success}}",
+	"echo-category-title-login-fail": "{{doc-echo-category-title|tooltip=Echo-pref-tooltip-login-fail}}",
+	"echo-pref-tooltip-login-fail": "{{doc-echo-pref-tooltip|title=Echo-category-title-login-fail}}",
+	"echo-category-title-login-success": "{{doc-echo-category-title|tooltip=Echo-pref-tooltip-login-success}}",
+	"echo-pref-tooltip-login-success": "{{doc-echo-pref-tooltip|title=Echo-category-title-login-success}}",
 	"loginnotify-primary-link": "Label for link to a help page about the feature\n{{Identical|Help}}",
 	"notification-loginnotify-login-fail-email-subject": "Email subject line for email notice that there have been failed login attempts for the user's account. $1 is the user in question.",
 	"notification-loginnotify-login-success-email-subject": "Email subject line for email notice that someone has logged in to the user's account from a computer that has not previously been used. $1 is the user in question.",
