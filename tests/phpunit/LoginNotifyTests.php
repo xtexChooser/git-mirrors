@@ -5,6 +5,9 @@ use \Psr\Log\NullLogger;
 use Wikimedia\TestingAccessWrapper;
 
 // @codingStandardsIgnoreStart Generic.Files.LineLength.TooLong
+/**
+ * @covers \LoginNotify\LoginNotify
+ */
 class LoginNotifyTests extends MediaWikiTestCase {
 
 	private $inst;
