@@ -7,8 +7,9 @@ use Wikimedia\TestingAccessWrapper;
 // @codingStandardsIgnoreStart Generic.Files.LineLength.TooLong
 /**
  * @covers \LoginNotify\LoginNotify
+ * @group LoginNotify
  */
-class LoginNotifyTests extends MediaWikiTestCase {
+class LoginNotifyTest extends MediaWikiTestCase {
 
 	private $inst;
 
@@ -220,7 +221,7 @@ class LoginNotifyTests extends MediaWikiTestCase {
 	public function provideCheckAndGenerateCookie() {
 		$this->setUpLoginNotify();
 		$y = gmdate( 'Y' );
-		$oldYear = $curYear - 3;
+		$oldYear = $y - 4;
 		$u1 = User::newFromName( 'Foo' );
 
 		$cookie1 = $this->inst->generateUserCookieRecord( 'Foo' );
@@ -305,18 +306,26 @@ class LoginNotifyTests extends MediaWikiTestCase {
 		];
 	}
 
-	public function testIsUserInCache() {
+	public function testUserIsInCache() {
 		$u = User::newFromName( 'Xyzzy' );
-		$uWrap = TestingAccessWrapper::newFromObject( $u );
-		$this->assertEquals( $this->inst->IsUserInCache( $u ), LoginNotify::NO_INFO_AVAILABLE );
+		$this->assertSame(
+			LoginNotify::USER_NO_INFO,
+			$this->inst->userIsInCache( $u, new FauxRequest() )
+		);
 
 		$this->inst->cacheLoginIP( $u );
-		$this->assertTrue( $this->inst->IsUserInCache( $u ) );
+		$this->assertSame(
+			LoginNotify::USER_KNOWN,
+			$this->inst->userIsInCache( $u, new FauxRequest() )
+		);
 
-		$uWrap->mRequest = new FauxRequest();
-		$uWrap->mRequest->setIP( '10.1.2.3' );
+		$request = new FauxRequest();
+		$request->setIP( '10.1.2.3' );
 
-		$this->assertFalse( $this->inst->IsUserInCache( $u ) );
+		$this->assertSame(
+			LoginNotify::USER_NOT_KNOWN,
+			$this->inst->userIsInCache( $u, $request )
+		);
 	}
 }
 // @codingStandardsIgnoreEnd
