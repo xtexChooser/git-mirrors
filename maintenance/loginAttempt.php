@@ -3,6 +3,7 @@
 namespace LoginNotify\Maintenance;
 
 use Maintenance;
+use FauxRequest;
 use User;
 use LoginNotify\Hooks as LNHooks;
 
@@ -43,20 +44,23 @@ class LoginAttempt extends Maintenance {
 	 * Registers a failed or successful login attempt for a given user
 	 */
 	public function execute() {
+		global $wgRequest;
+
 		$username = $this->getArg( 0 );
 		$success = $this->getArg( 1, false ) === 'true';
 		$ip = $this->getArg( 2, '127.0.0.1' );
 		$ua = $this->getArg( 3, 'Login attempt by LoginNotify maintenance script' );
 		$reps = intval( $this->getArg( 4, 1 ) );
 
+		$wgRequest = new FauxRequest();
+		$wgRequest->setIP( $ip );
+		$wgRequest->setHeader( 'User-Agent', $ua );
+
 		$user = User::newFromName( $username, 'usable' );
 		if ( !$user ) {
 			echo "User {$username} does not exist!";
 			return;
 		}
-
-		$user->getRequest()->setIP( $ip );
-		$user->getRequest()->setUserAgent( $ua );
 
 		for ( $i = 0; $i < $reps; $i++ ) {
 			if ( $success ) {
