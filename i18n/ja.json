@@ -4,9 +4,11 @@
 			"Iwai.masaharu",
 			"Delim",
 			"Otokoume",
-			"Suzukaze-c"
+			"Suzukaze-c",
+			"Yusuke1109"
 		]
 	},
+	"loginnotify-desc": "見覚えのない端末およびIPアドレスからのログインがあったときにユーザに通知する",
 	"echo-category-title-login-fail": "ログインの失敗",
 	"echo-pref-tooltip-login-fail": "自分のアカウントへのログインが失敗したときに通知する。",
 	"echo-category-title-login-success": "見覚えのない端末からのログイン",
