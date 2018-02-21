@@ -2,10 +2,12 @@
 
 namespace LoginNotify\Maintenance;
 
+use Hooks;
 use Maintenance;
 use FauxRequest;
+use MediaWiki\Auth\AuthenticationResponse;
+use RawMessage;
 use User;
-use LoginNotify\Hooks as LNHooks;
 
 $IP = getenv( 'MW_INSTALL_PATH' );
 if ( $IP === false ) {
@@ -64,10 +66,12 @@ class LoginAttempt extends Maintenance {
 
 		for ( $i = 0; $i < $reps; $i++ ) {
 			if ( $success ) {
-				LNHooks::doSuccessfulLogin( $user );
+				$res = AuthenticationResponse::newPass( $username );
+				Hooks::run( 'AuthManagerLoginAuthenticateAudit', [ $res, $user, $username ] );
 				$this->output( "A successful login attempt was registered!\n" );
 			} else {
-				LNHooks::doFailedLogin( $user );
+				$res = AuthenticationResponse::newFail( new RawMessage( 'Well, it failed' ) );
+				Hooks::run( 'AuthManagerLoginAuthenticateAudit', [ $res, null, $username ] );
 				$this->output( "A failed login attempt was registered!\n" );
 			}
 		}
