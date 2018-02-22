@@ -58,11 +58,12 @@ class LoginAttempt extends Maintenance {
 		$wgRequest->setIP( $ip );
 		$wgRequest->setHeader( 'User-Agent', $ua );
 
-		$user = User::newFromName( $username, 'usable' );
-		if ( !$user ) {
-			echo "User {$username} does not exist!";
+		if ( !User::idFromName( $username ) ) {
+			$this->output( "User {$username} does not exist!\n" );
 			return;
 		}
+
+		$user = User::newFromName( $username, 'usable' );
 
 		for ( $i = 0; $i < $reps; $i++ ) {
 			if ( $success ) {
