@@ -9,5 +9,5 @@
 	"echo-category-title-login-success": "Prijava s nepoznate naprave",
 	"loginnotify-primary-link": "Pomoć",
 	"notification-loginnotify-login-success-email-subject": "Prijava na projekt {{SITENAME}} kao $1 s računala koje niste rabili u zadnje vrijeme",
-	"notification-header-login-success": "Netko (vjerojatno {{GENDER:$1|Vi}}) se nedavno prijavio na Vaš suradnički račun s novog uređaja. Ako ste to bili Vi, zanemarite ovu poruku. Ako to niste bili vi, preporučujemo Vam da promijenite zaporku i provjerite aktivnost suradničkog računa."
+	"notification-header-login-success": "Netko (vjerojatno {{GENDER:$1|Vi}}) se nedavno prijavio na Vaš suradnički račun s novog uređaja. Ako ste to bili Vi, zanemarite ovu poruku. Ako to niste bili Vi, preporučujemo Vam da promijenite zaporku i provjerite aktivnost suradničkog računa."
 }
