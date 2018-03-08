@@ -10,5 +10,11 @@
 	"categorywatch-catmoveout": "$1 aus der Kategorie $2 an d'Kategorie $3 geréckelt huet",
 	"categorywatch-catadd": "$1 an d'Kategorie $2 dobäigesat huet",
 	"categorywatch-catsub": "$1 aus der Kategorie $2 erausgeholl huet",
-	"categorywatch-autocat": "Automatesch iwwerwaacht vum $1"
+	"categorywatch-autocat": "Automatesch iwwerwaacht vum $1",
+	"categorywatch-notification-link": "Kategorie: [[:$1]]",
+	"categorywatch-notification-categorywatch-add-header": "[[:$1|$2]] huet [[:$3|$4]] dobäigesat",
+	"categorywatch-notification-categorywatch-add-body": "[[User:$1|$1]] huet [[:$3|$3]] bäi [[:$4|$4]] dobäigesat",
+	"categorywatch-notification-bundle": "$1 Ännerunge an der Kategorisatioun op {{SITENAME}}",
+	"categorywatch-add-title": "Titel dee bäi eng iwwerwaacht Kategorie dobäigesat gëtt",
+	"echo-category-title-categorywatch": "iwwerwaacht Kategorie"
 }

@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Davidpar",
-			"Solde"
+			"Solde",
+			"Fitoschido"
 		]
 	},
 	"categorywatch-desc": "Amplia la funcionalitat de les alertes per tal d'incloure la notificació sobre els canvis de membres de les categories visitades.",
@@ -11,5 +12,6 @@
 	"categorywatch-catmoveout": "$1 s'ha mogut fora de $2 i dins de $3",
 	"categorywatch-catadd": "$1 s'ha afegit a $2",
 	"categorywatch-catsub": "$1 s'ha extret de $2",
-	"categorywatch-autocat": "Automàticament controlat per $1"
+	"categorywatch-autocat": "Automàticament controlat per $1",
+	"categorywatch-notification-link": "Categoria: [[:$1]]"
 }
