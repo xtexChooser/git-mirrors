@@ -3,7 +3,8 @@
 		"authors": [
 			"Felipe L. Ewald",
 			"HenriqueCrang",
-			"TheEduGobi"
+			"TheEduGobi",
+			"Eduardo Addad de Oliveira"
 		]
 	},
 	"loginnotify-desc": "Notificar usuários sobre logins  suspeitos de dispositivos desconhecidos e/ou endereços IP.",
@@ -13,7 +14,7 @@
 	"echo-pref-tooltip-login-success": "Notifique-me sempre que alguém entrar na minha conta a partir de um computador que não usei antes.",
 	"loginnotify-primary-link": "Ajuda",
 	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Falha na tentativa|Múltiplas tentativas falhadas}} para fazer logon em {{SITENAME}} como $1",
-	"notification-loginnotify-login-success-email-subject": "Foi realizado login em {{SITENAME}} como $1 de um computador que você não utilizou recentemente",
+	"notification-loginnotify-login-success-email-subject": "Foi realizado login em {{SITENAME}} como $1 de um dispositivo que você não utilizou recentemente",
 	"notification-header-login-success": "Alguém (provavelmente {{GENDER:$1|você}}) efetuou login recentemente em sua conta a partir de um novo dispositivo. Se foi você, pode desconsiderar esta mensagem. Se não foi você, é recomendável que você altere sua senha e verifique a atividade da sua conta.",
 	"notification-new-bundled-header-login-fail": "{{PLURAL:$1|Houve '''uma tentativa falhada'''|Houveram '''$1 tentativas falhadas'''}} de acesso a sua conta a partir de um novo dispositivo desde a última vez que você entrou. Se não foi você, por favor, certifique-se de que sua conta tenha uma senha forte.",
 	"notification-known-header-login-fail": "{{PLURAL:$1|Houve '''uma tentativa falhada'''|Houveram '''$1 tentativas falhadas'''}} de acesso a sua conta desde a última vez que você entrou. Se não foi você, por favor, certifique-se de que sua conta tenha uma senha forte.",

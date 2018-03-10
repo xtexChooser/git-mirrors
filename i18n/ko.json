@@ -11,6 +11,7 @@
 	"echo-category-title-login-success": "친숙하지 않은 장치로부터의 로그인",
 	"echo-pref-tooltip-login-success": "누군가가 친숙하지 않은 장치와 IP 주소로부터 내 계정에 로그인하면 내게 알립니다.",
 	"loginnotify-primary-link": "도움말",
+	"notification-loginnotify-login-success-email-subject": "최근에 사용한 적이 없는 장치로부터 $1님으로 ${{SITENAME}}에 로그인",
 	"notification-known-header-login-fail": "마지막으로 로그인한 이후로 사용자 계정으로의 로그인 {{PLURAL:$1|시도 실패가 한 번|시도 실패가 여러 번}} 있었습니다. 당신의 계정 비밀번호가 강력한지 확인해 주십시오.",
 	"notification-new-unbundled-header-login-fail": "새로운 장치에서 사용자 계정으로의 로그인 {{PLURAL:$1|시도 실패가 한 번|시도 실패가 여러 번}} 있었습니다. 당신의 계정의 비밀번호가 강력한지 확인해 주십시오."
 }
