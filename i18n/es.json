@@ -3,7 +3,8 @@
 		"authors": [
 			"Baiji",
 			"Crazymadlover",
-			"MarcoAurelio"
+			"MarcoAurelio",
+			"Fitoschido"
 		]
 	},
 	"categorywatch-desc": "Extiende funcionalidad de la lista de vigilancia para incluir notificación acerca de cambios en la mmbresía de las categorías vigiladas",
@@ -15,5 +16,7 @@
 	"categorywatch-autocat": "Automáticamente vigilado por $1",
 	"categorywatch-notification-link": "Categoría: [[:$1]]",
 	"categorywatch-notification-categorywatch-add-header": "[[:$1|$2]] añadida a [[:$3|$4]]",
-	"categorywatch-notification-categorywatch-add-body": "[[User:$1|$1]] añadió [[:$3|$3]] a [[:$4|$4]]"
+	"categorywatch-notification-categorywatch-add-body": "[[User:$1|$1]] añadió [[:$3|$3]] a [[:$4|$4]]",
+	"echo-category-title-categorywatch": "Seguimiento de categorías",
+	"echo-pref-tooltip-categorywatch": "Notificarme cuando alguien añada o quite una página de una categoría que esté bajo mi seguimiento."
 }
