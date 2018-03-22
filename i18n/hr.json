@@ -6,7 +6,9 @@
 		]
 	},
 	"echo-category-title-login-fail": "Neuspješni pokušaji prijave",
-	"echo-category-title-login-success": "Prijava s nepoznate naprave",
+	"echo-pref-tooltip-login-fail": "Obavijesti me o neuspješnim pokušajima prijavljivanja na moj račun.",
+	"echo-category-title-login-success": "Prijava s nepoznatog uređaja",
+	"echo-pref-tooltip-login-success": "Obavijesti me kad se netko prijavi na moj račun s nepoznatog uređaja ili IP adrese.",
 	"loginnotify-primary-link": "Pomoć",
 	"notification-loginnotify-login-success-email-subject": "Prijava na projekt {{SITENAME}} kao $1 s računala koje niste rabili u zadnje vrijeme",
 	"notification-header-login-success": "Netko (vjerojatno {{GENDER:$1|Vi}}) se nedavno prijavio na Vaš suradnički račun s novog uređaja. Ako ste to bili Vi, zanemarite ovu poruku. Ako to niste bili Vi, preporučujemo Vam da promijenite zaporku i provjerite aktivnost suradničkog računa."
