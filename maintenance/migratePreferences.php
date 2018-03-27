@@ -17,10 +17,9 @@ require_once "$IP/maintenance/Maintenance.php";
 
 /**
  * Cleans up old preference values
- * @codingStandardsIgnoreStart
  */
 class MigratePreferences extends LoggedUpdateMaintenance {
-	// @codingStandardsIgnoreEnd
+
 	// Previously, these constants were used by Hooks to force different per-user defaults
 	const OPTIONS_FAKE_TRUTH = 2;
 	const OPTIONS_FAKE_FALSE = 'fake-false';

@@ -4,7 +4,6 @@ use LoginNotify\LoginNotify;
 use \Psr\Log\NullLogger;
 use Wikimedia\TestingAccessWrapper;
 
-// @codingStandardsIgnoreStart Generic.Files.LineLength.TooLong
 /**
  * @covers \LoginNotify\LoginNotify
  * @group LoginNotify
@@ -26,7 +25,7 @@ class LoginNotifyTest extends MediaWikiTestCase {
 			"LoginNotifyCookieExpire" => 15552000,
 			"LoginNotifyCookieDomain" => null,
 			"LoginNotifyMaxCookieRecords" => 6,
-			"LoginNotifyCacheLoginIPExpiry" => 60*60*24*60
+			"LoginNotifyCacheLoginIPExpiry" => 60 * 60 * 24 * 60
 		] );
 		$this->inst = TestingAccessWrapper::newFromObject(
 			new LoginNotify(
@@ -214,7 +213,10 @@ class LoginNotifyTest extends MediaWikiTestCase {
 		if ( !isset( $newCookieParts[1] ) ) {
 			$newCookieParts[1] = '';
 		}
-		$this->assertTrue( $this->inst->isUserRecordGivenCookie( $user, $newCookieParts[0] ), "[Cookie new entry] $desc" );
+		$this->assertTrue(
+			$this->inst->isUserRecordGivenCookie( $user, $newCookieParts[0] ),
+			"[Cookie new entry] $desc"
+		);
 		$this->assertEquals( $expectedNewCookie, $newCookieParts[1], "[Cookie] $desc" );
 	}
 
@@ -239,7 +241,8 @@ class LoginNotifyTest extends MediaWikiTestCase {
 			],
 			[
 				$u1,
-				"$cookieOtherUser.$y-.$y-abcdefg-8oerxg4l59zpiu0by7m2to1b4cjeer4.$oldYear-1234567-tpnsk00419wba6vjh1upif21qtst1cv",
+				"$cookieOtherUser.$y-.$y-abcdefg-8oerxg4l59zpiu0by7m2to1b4cjeer4.$oldYear-" .
+					"1234567-tpnsk00419wba6vjh1upif21qtst1cv",
 				false,
 				"$cookieOtherUser.$y-abcdefg-8oerxg4l59zpiu0by7m2to1b4cjeer4",
 				"old values in cookie"
@@ -328,4 +331,3 @@ class LoginNotifyTest extends MediaWikiTestCase {
 		);
 	}
 }
-// @codingStandardsIgnoreEnd
