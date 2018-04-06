@@ -5,7 +5,6 @@ $cfg = require __DIR__ . '/../../vendor/mediawiki/mediawiki-phan-config/src/conf
 $cfg['directory_list'] = array_merge(
 	$cfg['directory_list'],
 	[
-		'maintenance/',
 		'./../../extensions/Echo',
 		'./../../extensions/CentralAuth',
 	]
