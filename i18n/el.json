@@ -3,7 +3,8 @@
 		"authors": [
 			"GR",
 			"Thodoris",
-			"Geraki"
+			"Geraki",
+			"Nikosgranturismogt"
 		]
 	},
 	"loginnotify-desc": "Ειδοποίηση χρηστών σχετικά με ύποπτες συνδέσεις από άγνωστες συσκευές ή/και διευθύνσεις IP",
@@ -13,6 +14,6 @@
 	"echo-pref-tooltip-login-success": "Να ενημερώνομαι όποτε κάποιος συνδέεται στο λογαριασμό μου από μια άγνωστη συσκευή και διεύθυνση IP.",
 	"loginnotify-primary-link": "Βοήθεια",
 	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Αποτυχημένη προσπάθεια|Πολλαπλές αποτυχημένες προσπάθειες}} για σύνδεση σε {{SITENAME}} ως $1",
-	"notification-loginnotify-login-success-email-subject": "Σύνδεση σε {{SITENAME}} ως $1 από υπολογιστή που δεν χρησιμοποιήσατε πρόσφατα",
+	"notification-loginnotify-login-success-email-subject": "Σύνδεση σε {{SITENAME}} ως $1 από συσκευή που δεν χρησιμοποιήσατε πρόσφατα",
 	"notification-header-login-success": "Κάποιος (πιθανά εσείς) πρόσφατα συνδέθηκε στο λογαριασμό σας από μια νέα συσκευή. Αν ήσασταν εσείς, τότε μπορείτε να αγνοήσετε αυτό το μήνυμα. Αν δεν ήσασταν εσείς, τότε συνιστάται να αλλάξετε τον κωδικό πρόσβασής σας και να ελέγξετε τη δραστηριότητα του λογαριασμού σας."
 }
