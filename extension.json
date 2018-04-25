@@ -11,7 +11,6 @@
 	"license-name": "GPL-2.0-or-later",
 	"type": "other",
 	"AutoloadClasses": {
-		"CategoryWatch\\CategoryWatch": "src/CategoryWatch.php",
 		"CategoryWatch\\EchoEventPresentationModel": "src/EchoEventPresentationModel.php",
 		"CategoryWatch\\Hook": "src/Hook.php"
 	},
@@ -35,13 +34,6 @@
 		"CategoryAfterPageRemoved": [
 			"CategoryWatch\\Hook::onCategoryAfterPageRemoved"
 		]
-	},
-	"config": {
-		"_prefix": "wgCategoryWatch",
-		"NotifyEditor": true,
-		"NotifyParentWatchers": false,
-		"UseAutoCat": false,
-		"UseAutoCatRealName": false
 	},
 	"manifest_version": 1
 }

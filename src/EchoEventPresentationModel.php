@@ -3,7 +3,7 @@
 /**
  * Category watch events
  *
- * Copyright (C) 2017  Mark A. Hershberger
+ * Copyright (C) 2017, 2018 NicheWork, LLC
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @author Mark A. Hershberger <mah@nichework.com>
  */
 
 namespace CategoryWatch;
@@ -86,7 +88,9 @@ class EchoEventPresentationModel extends \EchoEventPresentationModel {
 	 */
 	public function getRevisionEditSummary() {
 		wfDebugLog( 'CategoryWatch', __METHOD__ );
-		$msg = $this->getMessageWithAgent( 'categorywatch-notification-' . $this->event->getType() . '-summary' );
+		$msg = $this->getMessageWithAgent(
+			'categorywatch-notification-' . $this->event->getType() . '-summary'
+		);
 		$msg->params( $this->getPageTitle() );
 		$msg->params( $this->getTruncatedTitleText( $this->getPageTitle(), true ) );
 		$msg->params( $this->event->getTitle() );
@@ -101,8 +105,9 @@ class EchoEventPresentationModel extends \EchoEventPresentationModel {
 	 */
 	public function getBodyMessage() {
 		wfDebugLog( 'CategoryWatch', __METHOD__ );
-		$msg = $this->getMessageWithAgent( 'categorywatch-notification-' .
-										   $this->event->getType() . '-body' );
+		$msg = $this->getMessageWithAgent(
+			'categorywatch-notification-' . $this->event->getType() . '-body'
+		);
 		$msg->params( $this->getPageTitle() );
 		$msg->params( $this->event->getTitle() );
 		return $msg;

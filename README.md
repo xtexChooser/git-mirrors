@@ -11,28 +11,6 @@ MediaWiki extension CategoryWatch, https://www.mediawiki.org/wiki/Extension:Cate
 Initial commit is forked from commit 4ad0f63:
 https://github.com/OrganicDesign/extensions/tree/4ad0f631438ed16c05edfa08e65e0de00b4b1342/MediaWiki-Legacy/CategoryWatch
 
-## Configurables
-
-Whether or not to also send notificaton to the person who made the change.
-```php
-$wgCategoryWatchNotifyEditor = true;
-```
-
-Give every user a unique category that they're automatically watching. The format of the category name is defined on the "categorywatch-autocat" localisation message (i.e. [[MediaWiki:categorywatch-autocat]])
-```php
-$wgCategoryWatchUseAutoCat = true;
-```
-
-Make the categorisation work by realname instead of username
-```php
-$wgCategoryWatchUseAutoCatRealName = true;
-```
-
-Notify watchers of parent categories as well
-```php
-$wgCategoryWatchNotifyParentWatchers = true;
-```
-
 ## How to debug
 
 3 simple steps to debug an extension.

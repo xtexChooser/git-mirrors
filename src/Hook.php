@@ -2,7 +2,7 @@
 /**
  * Hooks for CategoryWatch extension
  *
- * Copyright (C) 2017  Mark A. Hershberger
+ * Copyright (C) 2017, 2018  NicheWork, LLC
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,6 +16,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @author Mark A. Hershberger <mah@nichework.com>
  */
 namespace CategoryWatch;
 
@@ -143,10 +145,12 @@ class Hook {
 	 *
 	 * @param Category $cat that page is being removed from
 	 * @param WikiPage $page that is being removed
-	 * @param int $id that this happened in. (not given pre 1.27ish)
+	 * @param int $pageID Page ID that this happened in. (not given pre 1.27ish)
+	 * @see https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:Hooks/CategoryAfterPageRemoved
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
 	public static function onCategoryAfterPageRemoved(
-		Category $cat, WikiPage $page, $id = 0
+		Category $cat, WikiPage $page, $pageID = 0
 	) {
 		wfDebugLog( 'CategoryWatch', __METHOD__ );
 		# Is anyone watching the category?
@@ -193,8 +197,8 @@ class Hook {
 			__METHOD__
 		);
 
-		return array_map( function ( $id ) {
-			return User::newFromID( $id );
+		return array_map( function ( $userID ) {
+			return User::newFromID( $userID );
 		}, $return );
 	}
 
