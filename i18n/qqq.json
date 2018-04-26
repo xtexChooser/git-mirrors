@@ -25,6 +25,7 @@
 	"categorywatch-notification-bundle": "Name of bundle for CategoryWatch notifications",
 	"categorywatch-add-title": "Title added to watched category",
 	"categorywatch-remove-title": "Title removed from watched category",
+	"categorywatch-page-watch-pref": "String to display for the preference to add all pages added to the watched categories to the watchlist",
 	"echo-category-title-categorywatch": "Membership changes in categories watched",
 	"echo-pref-tooltip-categorywatch": "Tooltip for categorywatch notification preference"
 }

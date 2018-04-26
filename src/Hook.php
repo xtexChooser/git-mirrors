@@ -30,9 +30,6 @@ use User;
 use WikiPage;
 
 class Hook {
-	// Instance
-	protected static $watcher;
-
 	/**
 	 * Explain bundling
 	 *
@@ -101,7 +98,7 @@ class Hook {
 	 * Internal compatibility function
 	 * @return WatchedItemStore
 	 */
-	protected static function getWatchedItemStore() {
+	private static function getWatchedItemStore() {
 		wfDebugLog( 'CategoryWatch', __METHOD__ );
 		if ( method_exists( 'WatchedItemStore', 'getDefaultInstance' ) ) {
 			return WatchedItemStore::getDefaultInstance();
@@ -120,11 +117,11 @@ class Hook {
 		Category $cat, WikiPage $page
 	) {
 		wfDebugLog( 'CategoryWatch', __METHOD__ );
+
+		$store = self::getWatchedItemStore();
+
 		# Is anyone watching the category?
-		if (
-			self::getWatchedItemStore()
-			->countWatchers( $cat->getTitle() ) > 0
-		) {
+		if ( $store->countWatchers( $cat->getTitle() ) > 0 ) {
 			# Send them a notification!
 			$user = User::newFromId( $page->getUser() );
 
@@ -138,6 +135,72 @@ class Hook {
 				],
 			] );
 		}
+		$watchers = [];
+		foreach ( self::getWatchers( $cat->getTitle() ) as $watcher ) {
+			if ( $watcher->getOption( 'catwatch-watch-pages' ) ) {
+				$watchers[] = $watcher;
+			}
+		}
+		self::addUserBatchForWatch( $watchers, $cat->getTitle() );
+	}
+
+	/**
+	 * Preferences for catwatch
+	 *
+	 * @param User $user User whose preferences are being modified
+	 * @param array &$preferences Preferences description array, to be fed to an HTMLForm object
+	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/GetPreferences
+	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+	 */
+	public static function onGetPreferences( User $user, array &$preferences ) {
+		$preferences['categorywatch-page-watch'] = [
+			'type' => 'toggle',
+			'label-message' => 'categorywatch-page-watch-pref',
+			'section' => 'watchlist/advancedwatchlist'
+		];
+	}
+
+	/**
+	 * Mirror of WatchedItemStore::addWatchBatchForUser
+	 *
+	 * @param array $watchers list of users
+	 * @param Title $title title to add them to
+	 */
+	private static function addUserBatchForWatch( array $watchers, Title $target ) {
+		if ( wfReadOnly() ) {
+			return false;
+		}
+
+		if ( !$watchers ) {
+			return true;
+		}
+
+		$rows = [];
+		foreach ( $watchers as $user ) {
+			$rows[] = [
+				'wl_user' => $user->getId(),
+				'wl_namespace' => $target->getNamespace(),
+				'wl_title' => $target->getDBkey(),
+				'wl_notificationtimestamp' => null,
+			];
+			// WatchedItemStore instantiates a WatchedItem instance
+			// with the HashBagOStuff here, but it shouldn't be needed
+			// on small non-farm wikis. See
+			// https://gerrit.wikimedia.org/r/#/c/319255/2/includes/WatchedItemStore.php
+		}
+
+		$dbw = wfGetDB( DB_MASTER );
+		foreach ( array_chunk( $rows, 100 ) as $toInsert ) {
+			// Use INSERT IGNORE to avoid overwriting the notification timestamp
+			// if there's already an entry for this page
+			$dbw->insert( 'watchlist', $toInsert, __METHOD__, 'IGNORE' );
+		}
+		// WatchedItemStore instantiates a WatchedItem instance with
+		// the HashBagOStuff here, but it shouldn't be needed on small
+		// non-farm wikis.
+		// https://gerrit.wikimedia.org/r/#/c/319255/2/includes/WatchedItemStore.php
+
+		return true;
 	}
 
 	/**
@@ -184,9 +247,10 @@ class Hook {
 	 * @param Title $target to check
 	 *
 	 * @return array
+	 * phpcs:disable MediaWiki.Usage.DeprecatedConstantUsage.DB_SLAVE
 	 */
-	protected static function getWatchers( Title $target ) {
-		$dbr = wfGetDB( DB_REPLICA );
+	private static function getWatchers( Title $target ) {
+		$dbr = wfGetDB( DB_SLAVE );
 		$return = $dbr->selectFieldValues(
 			'watchlist',
 			'wl_user',
