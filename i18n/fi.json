@@ -11,5 +11,6 @@
 	"echo-category-title-login-success": "Kirjautuminen tuntemattomalta laitteelta",
 	"echo-pref-tooltip-login-success": "Ilmoita minulle, kun tunnukselleni kirjaudutaan tuntemattomalta laitteelta ja IP-osoitteesta.",
 	"loginnotify-primary-link": "Ohje",
-	"notification-header-login-success": "Joku (luultavasti {{GENDER:$1|sinä}}) kirjautui hiljattain sisään tunnuksellasi uudelta laitteelta. Jos tämä olit sinä, voit jättää tämän viestin huomioimatta. Jos se et ollut sinä, on suositeltavaa, että vaihdat salasanasi ja tarkistat tunnuksesi toiminnan."
+	"notification-header-login-success": "Joku (luultavasti {{GENDER:$1|sinä}}) kirjautui hiljattain sisään tunnuksellasi uudelta laitteelta. Jos tämä olit sinä, voit jättää tämän viestin huomioimatta. Jos se et ollut sinä, on suositeltavaa, että vaihdat salasanasi ja tarkistat tunnuksesi toiminnan.",
+	"notification-new-unbundled-header-login-fail": "{{PLURAL:$1|Yksi '''epäonnistunut yritys'''|'''Useita epäonnistuneita yrityksiä'''}} kirjautua tunnuksellasi uudelta laitteelta on havaittu. Varmista, että tunnuksellasi on vahva salasana."
 }
