@@ -91,11 +91,11 @@ class CategoryWatch {
 		$add = array_diff( $this->after, $this->before );
 		$sub = array_diff( $this->before, $this->after );
 		wfDebugLog( 'CategoryWatch', 'Categories after page saved' );
-		wfDebugLog( 'CategoryWatch', join( ', ', $this->after ) );
+		wfDebugLog( 'CategoryWatch', implode( ', ', $this->after ) );
 		wfDebugLog( 'CategoryWatch', 'Categories added' );
-		wfDebugLog( 'CategoryWatch', join( ', ', $add ) );
+		wfDebugLog( 'CategoryWatch', implode( ', ', $add ) );
 		wfDebugLog( 'CategoryWatch', 'Categories removed' );
-		wfDebugLog( 'CategoryWatch', join( ', ', $sub ) );
+		wfDebugLog( 'CategoryWatch', implode( ', ', $sub ) );
 
 		# Notify watchers of each cat about the addition or removal of this article
 		if ( count( $add ) > 0 || count( $sub ) > 0 ) {
@@ -188,7 +188,7 @@ class CategoryWatch {
 			$wgEnotifFromEditor, $wgPasswordSenderName;
 
 		# Get list of users watching this category
-		$dbr = wfGetDB( DB_SLAVE );
+		$dbr = wfGetDB( DB_REPLICA );
 		$conds = [
 			'wl_title' => $title->getDBkey(), 'wl_namespace' => $title->getNamespace()
 		];
@@ -320,7 +320,7 @@ class CategoryWatch {
 		wfDebugLog( 'CategoryWatch', __METHOD__ );
 		global $wgCategoryWatchUseAutoCat;
 		if ( $wgCategoryWatchUseAutoCat ) {
-			$dbr = wfGetDB( DB_SLAVE );
+			$dbr = wfGetDB( DB_REPLICA );
 
 			# Find all users not watching the autocat
 			$like = '%' . str_replace(

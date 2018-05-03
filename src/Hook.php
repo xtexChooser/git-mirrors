@@ -182,7 +182,7 @@ class Hook {
 	 * @return array
 	 */
 	protected static function getWatchers( Title $target ) {
-		$dbr = wfGetDB( DB_SLAVE );
+		$dbr = wfGetDB( DB_REPLICA );
 		$return = $dbr->selectFieldValues(
 			'watchlist',
 			'wl_user',
