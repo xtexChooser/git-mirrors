@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<ruleset>
+	<rule ref="./vendor/mediawiki/mediawiki-codesniffer/MediaWiki">
+		<exclude name="Generic.Files.LineLength.TooLong" />
+		<exclude name="MediaWiki.Classes.UnusedUseStatement.UnusedUse" />
+		<exclude name="MediaWiki.Commenting.LicenseComment.InvalidLicenseTag" />
+		<exclude name="MediaWiki.Commenting.LicenseComment.LicenceTag" />
+		<exclude name="MediaWiki.Usage.DeprecatedConstantUsage.DB_SLAVE" />
+		<exclude name="MediaWiki.Usage.ForbiddenFunctions.join" />
+	</rule>
+	<file>.</file>
+	<arg name="extensions" value="php,php5,inc"/>
+	<arg name="encoding" value="UTF-8"/>
+</ruleset>
