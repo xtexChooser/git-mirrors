@@ -21,7 +21,6 @@
 
 namespace CategoryWatch;
 
-use RawMessage;
 use Title;
 use WikiPage;
 

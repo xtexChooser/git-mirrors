@@ -20,12 +20,9 @@
 namespace CategoryWatch;
 
 use Category;
-use Content;
-use EchoDiscussionParser;
 use EchoEvent;
 use MediaWiki\MediaWikiServices;
 use WatchedItemStore;
-use Status;
 use Title;
 use User;
 use WikiPage;
