@@ -31,7 +31,7 @@
  * @ingroup Extensions
  * @author Aran Dunkley [http://www.organicdesign.co.nz/nad User:Nad]
  * @copyright © 2008 Aran Dunkley
- * @licence GNU General Public Licence 2.0 or later
+ * @license GPL-2.0-or-later
  */
 
 namespace CategoryWatch;
