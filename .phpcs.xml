@@ -2,8 +2,6 @@
 <ruleset>
 	<rule ref="./vendor/mediawiki/mediawiki-codesniffer/MediaWiki">
 		<exclude name="Generic.Files.LineLength.TooLong" />
-		<exclude name="MediaWiki.Commenting.LicenseComment.InvalidLicenseTag" />
-		<exclude name="MediaWiki.Commenting.LicenseComment.LicenceTag" />
 		<exclude name="MediaWiki.Usage.DeprecatedConstantUsage.DB_SLAVE" />
 		<exclude name="MediaWiki.Usage.ForbiddenFunctions.join" />
 	</rule>
