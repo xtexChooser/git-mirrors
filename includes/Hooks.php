@@ -116,7 +116,10 @@ class Hooks {
 
 		if ( $ret->status === AuthenticationResponse::PASS ) {
 			self::doSuccessfulLogin( $userObj );
-		} elseif ( $ret->status === AuthenticationResponse::FAIL ) {
+		} elseif (
+			$ret->status === AuthenticationResponse::FAIL
+			&& $ret->message->getKey() !== 'login-throttled'
+		) {
 			self::doFailedLogin( $userObj );
 		}
 		// Other statuses include Abstain, Redirect, or UI. We ignore such
