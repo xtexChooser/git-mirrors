@@ -5,8 +5,16 @@
 			"HairyFotr"
 		]
 	},
+	"loginnotify-desc": "Obvesti uporabnike o sumljivih prijavah iz neznanih naprav in/ali IP naslovov",
 	"echo-category-title-login-fail": "Neuspeli poskusi prijave",
 	"echo-pref-tooltip-login-fail": "Obvesti me v primeru več neuspešnih poskusov prijave.",
 	"echo-category-title-login-success": "Prijava iz neznane naprave",
-	"echo-pref-tooltip-login-success": "Obvesti me ob prijavi v moj račun iz neznane naprave ali naslova IP."
+	"echo-pref-tooltip-login-success": "Obvesti me ob prijavi v moj račun iz neznane naprave ali naslova IP.",
+	"loginnotify-primary-link": "Pomoč",
+	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Neuspešen poskus|Dva neuspešna poskusa|Več neuspešnih poskusov}} prijave na stran {{SITENAME}} kot $1",
+	"notification-loginnotify-login-success-email-subject": "Prijava na {{SITENAME}} kot $1 iz naprave, ki je zadnje čase nisi uporabljal",
+	"notification-header-login-success": "Nekdo (verjetno {{GENDER:$1|ti}}) se je nedavno prijavil v tvoj račun iz nove naprave. V primeru, da si bil ti sam, smatraj to sporočilo za nepomembno. Če nisi bil ti, je priporočeno, da si spremeniš geslo in preveriš dejavnosti svojega računa.",
+	"notification-new-bundled-header-login-fail": "{{PLURAL:$1|Zabeležen je bil '''neuspešen poskus'''|Zabeležena sta bila '''$1 nesupešna poskusa'''|Zabeleženi so bili '''$1 nesupešni poskusi'''|Zabeleženih je bilo več '''$1 neuspešnih poskusov'''}} prijave v tvoj račun iz nove naprave, za tem, ko si se prijavil sam. Če to nisi bil ti, prosimo poskrbi, da bo tvoje geslo močno.",
+	"notification-known-header-login-fail": "{{PLURAL:$1|Zabeležen je bil '''neuspešen poskus'''|Zabeležena sta bila '''$1 nesupešna poskusa'''|Zabeleženi so bili '''$1 nesupešni poskusi'''|Zabeleženih je bilo več '''$1 neuspešnih poskusov'''}} prijave za tem, ko si se prijavil sam. Če to nisi bil ti, prosimo poskrbi, da bo tvoje geslo močno.",
+	"notification-new-unbundled-header-login-fail": "{{PLURAL:$1|Zabeležen je bil '''neuspešen poskus'''|Zabeležena sta bila '''$1 nesupešna poskusa'''|Zabeleženi so bili '''$1 nesupešni poskusi'''|Zabeleženih je bilo več '''$1 neuspešnih poskusov'''}} prijave v tvoj račun iz nove naprave. Prosimo poskrbi, da bo tvoje geslo močno."
 }

@@ -4,7 +4,8 @@
 			"Urbalazs",
 			"Bináris",
 			"Tacsipacsi",
-			"Bencemac"
+			"Bencemac",
+			"Tgr"
 		]
 	},
 	"loginnotify-desc": "Értesíti a felhasználókat az ismeretlen eszközről és/vagy IP-címről érkező gyanús bejelentkezési kísérletekről",
@@ -18,5 +19,5 @@
 	"notification-header-login-success": "Valaki (valószínűleg {{GENDER:$1|te}}) nemrég bejelentkezett a fiókodba egy új eszközről. Ha ez te voltál, figyelmen kívül hagyhatod ezt az üzenetet. Ha nem te voltál, ajánlott megváltoztatnod a jelszavadat és ellenőrizned a fiókod aktivitását.",
 	"notification-new-bundled-header-login-fail": "{{PLURAL:$1|'''Egy sikertelen bejelentkezési kísérlet'''|'''$1 sikertelen bejelentkezési kísérlet'''}} történt a fiókodba egy új eszközről, mióta utoljára beléptél. Amennyiben nem te voltál, győződj meg arról, hogy a fiókodnak erős jelszava van.",
 	"notification-known-header-login-fail": "{{PLURAL:$1|'''Egy sikertelen bejelentkezési kísérlet'''|'''$1 sikertelen bejelentkezési kísérlet'''}} történt a fiókodba, mióta utoljára beléptél. Amennyiben nem te voltál, győződj meg arról, hogy a fiókodnak erős jelszava van.",
-	"notification-new-unbundled-header-login-fail": "{{PLURAL:$1|'''Egy sikertelen bejelentkezési kísérlet'''|'''Nagyszámú sikertelen bejelentkezési kísérlet'''}} történt a fiókodba egy új eszközről, mióta utoljára beléptél. Amennyiben nem te voltál, győződj meg arról, hogy a fiókodnak erős jelszava van."
+	"notification-new-unbundled-header-login-fail": "'''{{PLURAL:$1|Egy|$1}} sikertelen bejelentkezési kísérlet''' történt a fiókodba egy új eszközről, mióta utoljára beléptél. Amennyiben nem te voltál, győződj meg arról, hogy a fiókodnak erős jelszava van."
 }
