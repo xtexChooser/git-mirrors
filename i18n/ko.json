@@ -23,6 +23,7 @@
 	"categorywatch-notification-categorywatch-remove-body": "[[User:$1|$1]]님이 [[:$3|$3]] 문서를 [[:$4|$4]]에서 제거했습니다",
 	"categorywatch-add-title": "주시 중인 분류에 제목을 추가했습니다",
 	"categorywatch-remove-title": "주시 중인 분류에서 제목을 제거했습니다",
+	"categorywatch-page-watch-pref": "분류를 추가할 때 내 주시문서 목록에 분류에 속한 모든 문서를 추가합니다",
 	"echo-category-title-categorywatch": "분류 주시",
 	"echo-pref-tooltip-categorywatch": "주시하고 있는 분류에 문서를 추가하거나 제거할 때 내게 알립니다."
 }

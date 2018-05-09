@@ -23,6 +23,7 @@
 	"categorywatch-notification-bundle": "{{PLURAL:$1|שינוי אחד|$1 שינויים}} בקטגוריות באתר {{SITENAME}}",
 	"categorywatch-add-title": "הכותרת נוספה לקטגוריה במעקב",
 	"categorywatch-remove-title": "הכותרת הוסרה מקטגוריה במעקב",
+	"categorywatch-page-watch-pref": "בעת הוספת קטגוריה לרשימת המעקב, להוסיף גם כל הדפים שבה לרשימה",
 	"echo-category-title-categorywatch": "מעקב אחר קטגוריות",
 	"echo-pref-tooltip-categorywatch": "להודיע לי כשמישהו מוסיף דף לקטגוריה שנמצאת ברשימת המעקב שלי, או מסיר דף ממנה."
 }

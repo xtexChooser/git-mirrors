@@ -5,7 +5,8 @@
 			"IAlex",
 			"Verdy p",
 			"Zetud",
-			"Wladek92"
+			"Wladek92",
+			"Gomoko"
 		]
 	},
 	"categorywatch-desc": "Étend la fonctionnalité de la liste de suivi afin d’y inclure la notification des modifications de la liste des membres des catégories suivies.",
@@ -25,6 +26,7 @@
 	"categorywatch-notification-bundle": "$1 modifications de catégorisation sur {{SITENAME}}",
 	"categorywatch-add-title": "Titre ajouté aux catégories suivies",
 	"categorywatch-remove-title": "Titre supprimé des catégories suivies",
+	"categorywatch-page-watch-pref": "Ajouter toutes les pages d’une catégorie à votre liste de suivi, quand vous ajoutez une catégorie",
 	"echo-category-title-categorywatch": "Catégorie suivie",
 	"echo-pref-tooltip-categorywatch": "Me notifier quand quelqu'un catégorise ou sort une page des catégories que je suis."
 }

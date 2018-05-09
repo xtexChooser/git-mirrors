@@ -23,6 +23,7 @@
 	"categorywatch-notification-bundle": "$1 Änderungen bei Kategorisierungen auf {{SITENAME}}",
 	"categorywatch-add-title": "Titel zur beobachteten Kategorie hinzugefügt",
 	"categorywatch-remove-title": "Titel aus der beobachteten Kategorie entfernt",
+	"categorywatch-page-watch-pref": "Alle Seiten in einer Kategorie zu deiner Beobachtungsliste hinzufügen, wenn du eine Kategorie hinzufügst.",
 	"echo-category-title-categorywatch": "Kategorienbeobachtung",
 	"echo-pref-tooltip-categorywatch": "Benachrichtige mich, wenn jemand eine Seite in eine Kategorie einordnet oder aus ihr entfernt, die ich beobachte."
 }
