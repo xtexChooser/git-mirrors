@@ -25,6 +25,7 @@
 	"categorywatch-notification-bundle": "在 {{SITENAME}} 有 $1 次分類更改",
 	"categorywatch-add-title": "標題已添加至監視分類",
 	"categorywatch-remove-title": "標題已從監視分類裡移除",
+	"categorywatch-page-watch-pref": "當您添加一個分類時，添加所有在分類裡的頁面至您的監視清單",
 	"echo-category-title-categorywatch": "分類監視",
 	"echo-pref-tooltip-categorywatch": "當我監視的分類裡有頁面添加或移除時通知我。"
 }

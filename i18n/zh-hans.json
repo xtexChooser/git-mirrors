@@ -24,6 +24,7 @@
 	"categorywatch-notification-bundle": "{{SITENAME}}上的$1次分类更改",
 	"categorywatch-add-title": "标题已添加至监视的分类",
 	"categorywatch-remove-title": "标题已从监视的分类移除",
+	"categorywatch-page-watch-pref": "当您添加一个分类时，将该分类内所有页面添加至您的监视列表",
 	"echo-category-title-categorywatch": "分类监视",
 	"echo-pref-tooltip-categorywatch": "当有人在页面上添加或移除我正在监视的分类时通知我。"
 }

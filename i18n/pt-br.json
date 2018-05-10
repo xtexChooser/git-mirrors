@@ -22,6 +22,7 @@
 	"categorywatch-notification-bundle": "$1 mudanças na categorização em {{SITENAME}}",
 	"categorywatch-add-title": "Título adicionado à categoria vigiada",
 	"categorywatch-remove-title": "Título removido da categoria vigiada",
+	"categorywatch-page-watch-pref": "Adicionar todas as páginas de uma categoria à sua lista de vigiados quando você adicionar uma categoria",
 	"echo-category-title-categorywatch": "Categoria vigiada",
 	"echo-pref-tooltip-categorywatch": "Notifique-me quando alguém categoriza uma página dentro ou fora de uma categoria que eu estou vigiando."
 }

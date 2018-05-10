@@ -22,6 +22,7 @@
 	"categorywatch-notification-bundle": "$1 промени во категоризацијата на {{SITENAME}}",
 	"categorywatch-add-title": "Насловот е ставен во набљудуваната категорија",
 	"categorywatch-remove-title": "Насловот е отстранет од набљудуваната категорија",
+	"categorywatch-page-watch-pref": "Додај ги сите страници од дадена категорија во набљудуваните кога се додава категорија",
 	"echo-category-title-categorywatch": "Категориско набљудување",
 	"echo-pref-tooltip-categorywatch": "Извести ме кога некој ќе стави или отстрани страница во категорија што набљудувам."
 }
