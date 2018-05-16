@@ -21,6 +21,7 @@
 	"categorywatch-notification-bundle": "$1 cambios na categorización en {{SITENAME}}",
 	"categorywatch-add-title": "Títulu amestáu a la categoría siguía",
 	"categorywatch-remove-title": "Títulu desaniciáu de la categoría siguía",
+	"categorywatch-page-watch-pref": "Añadir toles páxines d'una categoría a la llista de siguimientu cuando añadas una categoría",
 	"echo-category-title-categorywatch": "Siguimientu de categoríes",
 	"echo-pref-tooltip-categorywatch": "Avisame cuando daquién añada o quite una páxina d'una categoría que tea nel mio siguimientu."
 }
