@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Omnipaedista"
+			"Omnipaedista",
+			"Nikosgranturismogt"
 		]
 	},
 	"categorywatch-desc": "Εκτείνει τη λειτουργικότητα της λίστας παρακολούθησης για να περιληφθούν ειδοποιήσεις σχετικά με τις αλλαγές ιδιότητας μέλους των παρακολουθούμενων κατηγοριών",
@@ -10,5 +11,7 @@
 	"categorywatch-catmoveout": "Η $1 μετακινήθηκε έξω από την $2 στην $3",
 	"categorywatch-catadd": "Η $1 προστέθηκε στην $2",
 	"categorywatch-catsub": "Η $1 αφαιρέθηκε από την $2",
-	"categorywatch-autocat": "Αυτόματα παρακολουθούμενο από τον $1"
+	"categorywatch-autocat": "Αυτόματα παρακολουθούμενο από τον $1",
+	"categorywatch-notification-link": "Κατηγορία: [[:$1]]",
+	"categorywatch-notification-categorywatch-add-header": "Ο [[:$1|$2]] πρόσθεσε στο [[:$3|$4]]"
 }
