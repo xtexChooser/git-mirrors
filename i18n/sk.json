@@ -1,0 +1,9 @@
+{
+	"@metadata": {
+		"authors": [
+			"Teslaton"
+		]
+	},
+	"echo-category-title-login-fail": "neúspešné pokusy o prihlásenie",
+	"echo-category-title-login-success": "prihlásenie z neznámeho zariadenia"
+}
