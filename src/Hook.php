@@ -247,10 +247,9 @@ class Hook {
 	 * @param Title $target to check
 	 *
 	 * @return array
-	 * phpcs:disable MediaWiki.Usage.DeprecatedConstantUsage.DB_SLAVE
 	 */
 	private static function getWatchers( Title $target ) {
-		$dbr = wfGetDB( DB_SLAVE );
+		$dbr = wfGetDB( DB_REPLICA );
 		$return = $dbr->selectFieldValues(
 			'watchlist',
 			'wl_user',
