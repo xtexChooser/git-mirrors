@@ -2,6 +2,7 @@
 
 namespace LoginNotify;
 
+use EchoEvent;
 use EchoEventPresentationModel;
 use Message;
 use SpecialPage;
@@ -67,7 +68,10 @@ class PresentationModel extends EchoEventPresentationModel {
 				// If it's a bundle, pass it the bundle count as param
 				if ( $this->isBundled() ) {
 					$msg = $this->msg( 'notification-new-bundled-header-login-fail' );
-					$msg->params( $this->getBundleCount() );
+					$totalAttempts = array_reduce( $this->getBundledEvents(), function ( $sum, EchoEvent $event ) {
+						return $sum + $event->getExtraParam( 'count', 0 );
+					}, 0 );
+					$msg->params( $totalAttempts );
 				} else {
 					// If the bundle is read or user goes to Special:Notifications, show
 					// one notification per attempt (aligned with how unbundled bundles work)
@@ -97,4 +101,5 @@ class PresentationModel extends EchoEventPresentationModel {
 
 		return [ $changePasswordLink ];
 	}
+
 }
