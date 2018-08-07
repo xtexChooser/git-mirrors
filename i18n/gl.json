@@ -3,7 +3,8 @@
 		"authors": [
 			"Toliño",
 			"Elisardojm",
-			"Banjo"
+			"Banjo",
+			"Maria zaos"
 		]
 	},
 	"categorywatch-desc": "Extende unha función da lista de vixilancia para incluír notificación acerca dos cambios no número de membros e as categorías vixiadas",
@@ -23,7 +24,7 @@
 	"categorywatch-notification-bundle": "$1 cambios de categorización en {{SITENAME}}",
 	"categorywatch-add-title": "Título engadido á categoría vixiada",
 	"categorywatch-remove-title": "Título eliminado da categoría vixiada",
-	"categorywatch-page-watch-pref": "Engadir tódalas páxinas nunha categoría a súa lista de vixiancia cando engade unha categoría",
+	"categorywatch-page-watch-pref": "Engadir tódalas páxinas nunha categoría á súa lista de vixiancia cando engade unha categoría",
 	"echo-category-title-categorywatch": "Vixiancia de categorías",
-	"echo-pref-tooltip-categorywatch": "Notificarme cando alguén categoriza unah páxina dentro ou fóra dunha categoría que estou a vixiar."
+	"echo-pref-tooltip-categorywatch": "Notificarme cando alguén categoriza unha páxina dentro ou fóra dunha categoría que estou a vixiar."
 }
