@@ -2,10 +2,11 @@
 	"@metadata": {
 		"authors": [
 			"Obsuser",
-			"Zoranzoki21"
+			"Zoranzoki21",
+			"BadDog"
 		]
 	},
-	"loginnotify-desc": "Обавестите кориснике о сумњивим пријавама са непознатих уређаја и / или IP адреса",
+	"loginnotify-desc": "Обавестите кориснике о сумњивим пријавама с непознатих уређаја и/или ИП адреса",
 	"echo-category-title-login-fail": "Неуспешни покушаји пријаве",
 	"echo-pref-tooltip-login-fail": "Обавештава вас када је било неуспешних покушаја пријаве на ваш налог.",
 	"echo-category-title-login-success": "Пријава с неуобичајеног уређаја",
