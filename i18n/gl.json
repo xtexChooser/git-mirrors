@@ -24,7 +24,7 @@
 	"categorywatch-notification-bundle": "$1 cambios de categorización en {{SITENAME}}",
 	"categorywatch-add-title": "Título engadido á categoría vixiada",
 	"categorywatch-remove-title": "Título eliminado da categoría vixiada",
-	"categorywatch-page-watch-pref": "Engadir tódalas páxinas nunha categoría á súa lista de vixiancia cando engade unha categoría",
+	"categorywatch-page-watch-pref": "Engadir tódalas páxinas dunha categoría á súa lista de vixiancia cando engada unha categoría",
 	"echo-category-title-categorywatch": "Vixiancia de categorías",
-	"echo-pref-tooltip-categorywatch": "Notificarme cando alguén categoriza unha páxina dentro ou fóra dunha categoría que estou a vixiar."
+	"echo-pref-tooltip-categorywatch": "Avísenme cando alguén categorice unha páxina dentro ou fóra dunha categoría que estea a vixiar."
 }
