@@ -1,8 +1,12 @@
 {
 	"@metadata": {
 		"authors": [
-			"Eitvys200"
+			"Eitvys200",
+			"Manvydasz"
 		]
 	},
-	"echo-pref-tooltip-login-fail": "Pranešti man, kai kelis kartus nepavyko prisijungti prie mano paskyros."
+	"echo-category-title-login-fail": "Nepavykę prisijungimai",
+	"echo-pref-tooltip-login-fail": "Pranešti man, kai kelis kartus nepavyko prisijungti prie mano paskyros.",
+	"echo-category-title-login-success": "Prisijungimas iš nepažįstamo įrenginio",
+	"echo-pref-tooltip-login-success": "Pranešti man, kai kas nors prisijungia prie mano paskyros iš nepažįstamo įrenginio ir IP adreso."
 }
