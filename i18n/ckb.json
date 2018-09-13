@@ -1,0 +1,10 @@
+{
+	"@metadata": {
+		"authors": [
+			"Épine"
+		]
+	},
+	"echo-category-title-login-fail": "ھەوڵدانی شکستخواردوو بۆ چوونەژوورەوە",
+	"echo-category-title-login-success": "چوونەژوورەوە لە جیھازێکی نەناسراوەوە",
+	"loginnotify-primary-link": "یارمەتی"
+}
