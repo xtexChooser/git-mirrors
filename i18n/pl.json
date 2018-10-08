@@ -4,10 +4,11 @@
 			"Chrumps",
 			"Sp5uhe",
 			"Woytecr",
-			"WTM"
+			"WTM",
+			"Railfail536"
 		]
 	},
-	"loginnotify-desc": "Powiadamiaj użytkowników o podejrzanych próbach logowania.",
+	"loginnotify-desc": "Powiadamiaj użytkowników o podejrzanych próbach logowania z nieznanych urządzeń i/lub adresów IP",
 	"echo-category-title-login-fail": "Nieudane próby logowania",
 	"echo-pref-tooltip-login-fail": "Powiadom mnie, jeśli będą nieudane próby logowania na moje konto.",
 	"echo-category-title-login-success": "Logowanie z nieznanego urządzenia",
