@@ -10,7 +10,7 @@
 	},
 	"loginnotify-desc": "Powiadamiaj użytkowników o podejrzanych próbach logowania z nieznanych urządzeń i/lub adresów IP",
 	"echo-category-title-login-fail": "Nieudane próby logowania",
-	"echo-pref-tooltip-login-fail": "Powiadom mnie, jeśli będą nieudane próby logowania na moje konto.",
+	"echo-pref-tooltip-login-fail": "Powiadom mnie, jeśli wystąpią nieudane próby logowania na moje konto.",
 	"echo-category-title-login-success": "Logowanie z nieznanego urządzenia",
 	"echo-pref-tooltip-login-success": "Powiadom mnie, gdy ktoś zaloguje się na moje konto z nieznanego urządzenia i adresu IP.",
 	"loginnotify-primary-link": "Pomoc",
