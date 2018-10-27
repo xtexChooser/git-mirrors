@@ -42,6 +42,7 @@ class Hooks {
 			EchoAttributeManager::ATTR_LOCATORS => [
 				'EchoUserLocator::locateEventAgent'
 			],
+			'canNotifyAgent' => true,
 			'category' => 'login-fail',
 			'group' => 'negative',
 			'presentation-model' => PresentationModel::class,

@@ -711,7 +711,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 * @param int $count [Optional] How many failed attempts
 	 */
 	private function sendNotice( User $user, $type, $count = null ) {
-		$extra = [ 'notifyAgent' => true ];
+		$extra = [];
 		if ( $count !== null ) {
 			$extra['count'] = $count;
 		}
