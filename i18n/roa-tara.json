@@ -4,6 +4,7 @@
 			"Joetaras"
 		]
 	},
+	"echo-category-title-login-fail": "Tendative de trasè fallite",
 	"echo-category-title-login-success": "Tràse cu 'nu dispositive scanusciute",
 	"loginnotify-primary-link": "Aijute"
 }
