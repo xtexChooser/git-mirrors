@@ -68,11 +68,11 @@ class LoginAttempt extends Maintenance {
 		for ( $i = 0; $i < $reps; $i++ ) {
 			if ( $success ) {
 				$res = AuthenticationResponse::newPass( $username );
-				Hooks::run( 'AuthManagerLoginAuthenticateAudit', [ $res, $user, $username ] );
+				Hooks::run( 'AuthManagerLoginAuthenticateAudit', [ $res, $user, $username, [] ] );
 				$this->output( "A successful login attempt was registered!\n" );
 			} else {
 				$res = AuthenticationResponse::newFail( new RawMessage( 'Well, it failed' ) );
-				Hooks::run( 'AuthManagerLoginAuthenticateAudit', [ $res, null, $username ] );
+				Hooks::run( 'AuthManagerLoginAuthenticateAudit', [ $res, null, $username, [] ] );
 				$this->output( "A failed login attempt was registered!\n" );
 			}
 		}
