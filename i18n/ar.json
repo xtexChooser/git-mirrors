@@ -8,7 +8,7 @@
 	},
 	"loginnotify-desc": "إخطار المستخدمين حول تسجيلات الدخول المثيرة للشبهات من أجهزة و/أو عناوين الآيبي غير المعروفة",
 	"echo-category-title-login-fail": "محاولات الدخول الفاشلة",
-	"echo-pref-tooltip-login-fail": "أخطرني عند وجود مُحاولات فاشلة لتسجيل الدخول إلى حسابي.",
+	"echo-pref-tooltip-login-fail": "أخطرني عند وجود محاولات فاشلة لتسجيل الدخول إلى حسابي.",
 	"echo-category-title-login-success": "تسجيل دخول من جهاز غير معروف",
 	"echo-pref-tooltip-login-success": "أخطرني عندما يسجل شخص ما الدخول إلى حسابي من جهاز وآيبي غير معروف.",
 	"loginnotify-primary-link": "مساعدة",
