@@ -8,7 +8,7 @@
 			"Tiberius1701"
 		]
 	},
-	"categorywatch-desc": "Amplía la funcionalidad de la lista de vigilancia para incluir notificaciones sobre los cambios de membresía de las categorías vigiladas",
+	"categorywatch-desc": "Amplía la funcionalidad de la lista de seguimiento para incluir notificaciones sobre los cambios de membresía de las categorías vigiladas",
 	"categorywatch-emailsubject": "Actividad relacionada con la categoría vigilada «$1»",
 	"categorywatch-catmovein": "$1 se trasladó desde $3 a $2",
 	"categorywatch-catmoveout": "$1 se trasladó desde $2 a $3",
