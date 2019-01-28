@@ -34,6 +34,8 @@ use object::{properties::ObjectProperties, ObjectExt};
 #[serde(rename_all = "camelCase")]
 pub struct Arrive {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     pub kind: ArriveType,
 
     /// Adds all valid arrive properties to this struct

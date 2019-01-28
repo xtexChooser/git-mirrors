@@ -35,6 +35,8 @@ use object::{properties::ObjectProperties, ObjectExt};
 #[serde(rename_all = "camelCase")]
 pub struct Add {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     pub kind: AddType,
 
     /// Adds all valid add properties to this struct

@@ -33,6 +33,8 @@ use object::{properties::ObjectProperties, ObjectExt};
 #[serde(rename_all = "camelCase")]
 pub struct Reject {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     pub kind: RejectType,
 
     /// Adds all valid reject properties to this struct

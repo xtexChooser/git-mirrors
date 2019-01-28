@@ -31,6 +31,8 @@ use object::{properties::ObjectProperties, ObjectExt};
 #[serde(rename_all = "camelCase")]
 pub struct View {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     pub kind: ViewType,
 
     /// Adds all valid view properties to this struct

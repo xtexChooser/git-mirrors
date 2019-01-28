@@ -33,6 +33,8 @@ use object::{properties::ObjectProperties, ObjectExt};
 #[serde(rename_all = "camelCase")]
 pub struct Announce {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     pub kind: AnnounceType,
 
     /// Adds all valid announce properties to this struct

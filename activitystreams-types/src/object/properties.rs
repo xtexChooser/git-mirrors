@@ -83,6 +83,7 @@ pub struct ObjectProperties {
     /// - Range: `anyUri`
     /// - Functional: true
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(alias = "@id")]
     #[activitystreams(concrete(String), functional)]
     pub id: Option<serde_json::Value>,
 
@@ -153,6 +154,7 @@ pub struct ObjectProperties {
     /// - Range: `xsd:string` | `rdf:langString`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(alias = "displayName")]
     #[activitystreams(concrete(String))]
     pub name: Option<serde_json::Value>,
 

@@ -31,6 +31,8 @@ use self::kind::*;
 #[serde(rename_all = "camelCase")]
 pub struct Application {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: ApplicationType,
 
     /// Adds all valid object properties to this struct
@@ -55,6 +57,8 @@ impl Actor for Application {}
 #[serde(rename_all = "camelCase")]
 pub struct Group {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: GroupType,
 
     /// Adds all valid object properties to this struct
@@ -79,6 +83,8 @@ impl Actor for Group {}
 #[serde(rename_all = "camelCase")]
 pub struct Organization {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: OrganizationType,
 
     /// Adds all valid object properties to this struct
@@ -103,6 +109,8 @@ impl Actor for Organization {}
 #[serde(rename_all = "camelCase")]
 pub struct Person {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: PersonType,
 
     /// Adds all valid object properties to this struct
@@ -127,6 +135,8 @@ impl Actor for Person {}
 #[serde(rename_all = "camelCase")]
 pub struct Service {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: ServiceType,
 
     /// Adds all valid object properties to this struct

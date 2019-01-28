@@ -38,6 +38,8 @@
 //! #[serde(rename_all = "camelCase")]
 //! pub struct MyActivity {
 //!     #[serde(rename = "type")]
+//!     #[serde(alias = "objectType")]
+//!     #[serde(alias = "verb")]
 //!     pub kind: String,
 //!
 //!     /// Define a require property for the MyActivity type

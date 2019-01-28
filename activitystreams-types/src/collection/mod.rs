@@ -49,6 +49,8 @@ pub trait CollectionPageExt: CollectionPage {
 #[serde(rename_all = "camelCase")]
 pub struct UnorderedCollection {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: CollectionType,
 
     /// Adds all valid object properties to this struct
@@ -87,6 +89,8 @@ impl CollectionExt for UnorderedCollection {
 #[serde(rename_all = "camelCase")]
 pub struct OrderedCollection {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: OrderedCollectionType,
 
     /// Adds all valid object properties to this struct
@@ -124,6 +128,8 @@ impl CollectionExt for OrderedCollection {
 #[serde(rename_all = "camelCase")]
 pub struct UnorderedCollectionPage {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: CollectionPageType,
 
     /// Adds all valid object properties to this struct
@@ -175,6 +181,8 @@ impl CollectionPageExt for UnorderedCollectionPage {
 #[serde(rename_all = "camelCase")]
 pub struct OrderedCollectionPage {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: OrderedCollectionPageType,
 
     /// Adds all valid object properties to this struct
