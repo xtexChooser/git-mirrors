@@ -1,0 +1,10 @@
+{
+	"@metadata": {
+		"authors": [
+			"Aefgh39622"
+		]
+	},
+	"echo-category-title-login-fail": "ความพยายามการเข้าสู่ระบบที่ล้มเหลว",
+	"echo-category-title-login-success": "การเข้าสู่ระบบจากอุปกรณ์ที่ไม่คุ้นเคย",
+	"loginnotify-primary-link": "ช่วยเหลือ"
+}
