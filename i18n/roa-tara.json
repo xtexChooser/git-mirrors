@@ -4,6 +4,7 @@
 			"Joetaras"
 		]
 	},
+	"loginnotify-desc": "Avvise le utinde de accesse sospette da 'nu dispositive e/o indirizze IP scanusciute.",
 	"echo-category-title-login-fail": "Tendative de trasè fallite",
 	"echo-category-title-login-success": "Tràse cu 'nu dispositive scanusciute",
 	"loginnotify-primary-link": "Aijute"
