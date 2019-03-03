@@ -261,7 +261,7 @@ class LoginNotify implements LoggerAwareInterface {
 		// Also check checkuser table on the top ten wikis where this user has
 		// edited the most. We only do top ten, to limit the worst-case where the
 		// user has accounts on 800 wikis.
-		if ( class_exists( 'CentralAuthUser' ) ) {
+		if ( ExtensionRegistry::getInstance()->isLoaded( 'CentralAuth' ) ) {
 			$globalUser = CentralAuthUser::getInstance( $user );
 			if ( $globalUser->exists() ) {
 				// This is expensive. However, On WMF wikis, probably
