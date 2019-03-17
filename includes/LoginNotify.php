@@ -324,8 +324,6 @@ class LoginNotify implements LoggerAwareInterface {
 	/**
 	 * Actually do the query of the check user table.
 	 *
-	 * @suppress PhanTypeMismatchArgument
-	 *
 	 * @note This catches and ignores database errors.
 	 * @param int $userId User id number (Not necessarily for the local wiki)
 	 * @param string $ipFragment Prefix to match against cuc_ip (from $this->getIPNetwork())
@@ -358,8 +356,6 @@ class LoginNotify implements LoggerAwareInterface {
 	 *
 	 * If we have no info for user, we maybe don't treat it as
 	 * an unknown IP, since user has no known IPs.
-	 *
-	 * @suppress PhanTypeMismatchArgument
 	 *
 	 * @todo FIXME Does this behaviour make sense, esp. with cookie check?
 	 * @param int $userId User id number (possibly on foreign wiki)
