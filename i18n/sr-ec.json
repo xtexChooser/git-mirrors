@@ -7,9 +7,9 @@
 		]
 	},
 	"loginnotify-desc": "Обавестите кориснике о сумњивим пријавама с непознатих уређаја и/или IP адреса",
-	"echo-category-title-login-fail": "Неуспешни покушаји пријаве",
+	"echo-category-title-login-fail": "Неуспели покушаји пријаве",
 	"echo-pref-tooltip-login-fail": "Обавештава вас када је било неуспешних покушаја пријаве на ваш налог.",
-	"echo-category-title-login-success": "Пријава с неуобичајеног уређаја",
+	"echo-category-title-login-success": "Пријава са непознатог уређаја",
 	"echo-pref-tooltip-login-success": "Обавештава вас када се неко пријави на ваш налог с неуобичајеног уређаја и IP адресе.",
 	"loginnotify-primary-link": "Помоћ",
 	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Неуспешни покушај|Више неуспешних покушаја}} пријаве на пројекту {{SITENAME}} као $1",
