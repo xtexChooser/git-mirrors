@@ -17,9 +17,9 @@ class DeferredChecksJob extends Job {
 
 	/**
 	 * @param Title $title
-	 * @param array|bool $params
+	 * @param array $params
 	 */
-	public function __construct( Title $title, $params = false ) {
+	public function __construct( Title $title, array $params = [] ) {
 		parent::__construct( 'LoginNotifyChecks', $title, $params );
 	}
 
