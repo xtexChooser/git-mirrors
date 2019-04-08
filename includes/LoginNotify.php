@@ -19,7 +19,6 @@ use JobSpecification;
 use MediaWiki\MediaWikiServices;
 use WebRequest;
 use Wikimedia\Assert\Assert;
-use Wikimedia\Rdbms\Database;
 use Exception;
 use IP;
 use MediaWiki\Logger\LoggerFactory;
@@ -29,6 +28,7 @@ use Psr\Log\LoggerAwareInterface;
 use RequestContext;
 use UnexpectedValueException;
 use User;
+use Wikimedia\Rdbms\IDatabase;
 
 /**
  * Handle sending notifications on login from unknown source.
@@ -327,10 +327,10 @@ class LoginNotify implements LoggerAwareInterface {
 	 * @note This catches and ignores database errors.
 	 * @param int $userId User id number (Not necessarily for the local wiki)
 	 * @param string $ipFragment Prefix to match against cuc_ip (from $this->getIPNetwork())
-	 * @param Database $dbr A database connection (possibly foreign)
+	 * @param IDatabase $dbr A database connection (possibly foreign)
 	 * @return string One of USER_* constants
 	 */
-	private function checkUserOneWiki( $userId, $ipFragment, Database $dbr ) {
+	private function checkUserOneWiki( $userId, $ipFragment, IDatabase $dbr ) {
 		// For some unknown reason, the index is on
 		// (cuc_user, cuc_ip, cuc_timestamp), instead of
 		// cuc_ip_hex which would be ideal.
@@ -359,10 +359,10 @@ class LoginNotify implements LoggerAwareInterface {
 	 *
 	 * @todo FIXME Does this behaviour make sense, esp. with cookie check?
 	 * @param int $userId User id number (possibly on foreign wiki)
-	 * @param Database $dbr DB connection (possibly to foreign wiki)
+	 * @param IDatabase $dbr DB connection (possibly to foreign wiki)
 	 * @return bool
 	 */
-	private function userHasCheckUserData( $userId, Database $dbr ) {
+	private function userHasCheckUserData( $userId, IDatabase $dbr ) {
 		// Verify that we actually have IP info for
 		// this user.
 		// @todo: Should this instead be if we have a
@@ -384,10 +384,10 @@ class LoginNotify implements LoggerAwareInterface {
 	/**
 	 * Does this wiki have a checkuser table?
 	 *
-	 * @param Database $dbr Database to check
+	 * @param IDatabase $dbr Database to check
 	 * @return bool
 	 */
-	private function hasCheckUserTables( Database $dbr ) {
+	private function hasCheckUserTables( IDatabase $dbr ) {
 		if ( !$dbr->tableExists( 'cu_changes' ) ) {
 			$this->log->warning( "LoginNotify: No checkuser table on {wikiId}", [
 				'method' => __METHOD__,
