@@ -27,7 +27,7 @@ class Hooks {
 		array &$notificationCategories,
 		array &$icons
 	) {
-		global $wgLoginNotifyEnableOnSuccess;
+		global $wgLoginNotifyEnableOnSuccess, $wgNotifyTypeAvailabilityByCategory;
 
 		$icons['LoginNotify-user-avatar'] = [
 			'path' => 'LoginNotify/UserAvatar.svg'
@@ -77,6 +77,10 @@ class Hooks {
 			$notifications['login-success'] = [
 				'category' => 'login-success',
 			] + $loginBase;
+			$wgNotifyTypeAvailabilityByCategory['login-success'] = [
+				'web' => false,
+				'email' => true,
+			];
 		}
 
 		return true;
