@@ -6,11 +6,11 @@
 			"Jerrykim306"
 		]
 	},
-	"loginnotify-desc": "친숙하지 않은 장치나 IP 주소로부터 의심스러운 로그인이 있으면 사용자에게 알립니다.",
+	"loginnotify-desc": "낯선 기기나 IP 주소로부터 의심스러운 로그인이 있으면 사용자에게 알립니다",
 	"echo-category-title-login-fail": "로그인 시도 실패",
 	"echo-pref-tooltip-login-fail": "내 계정에 대해 로그인 시도를 실패하면 내게 알립니다.",
-	"echo-category-title-login-success": "친숙하지 않은 장치로부터의 로그인",
-	"echo-pref-tooltip-login-success": "누군가가 친숙하지 않은 장치와 IP 주소로부터 내 계정에 로그인하면 내게 알립니다.",
+	"echo-category-title-login-success": "낯선 기기에서의 로그인",
+	"echo-pref-tooltip-login-success": "누군가가 낯선 기기와 IP 주소로 내 계정에 로그인하면 내게 알립니다.",
 	"loginnotify-primary-link": "도움말",
 	"notification-loginnotify-login-fail-email-subject": "$1님으로 로그인 {{PLURAL:$2|시도를 실패했습니다|시도를 여러 번 실패했습니다}}",
 	"notification-loginnotify-login-success-email-subject": "최근에 사용한 적이 없는 장치로부터 $1님으로 {{SITENAME}}에 로그인",
