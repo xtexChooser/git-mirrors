@@ -413,7 +413,7 @@ pub fn properties_derive(input: TokenStream) -> TokenStream {
                                     /// a lot.
                                     ///
                                     /// Possible errors from this method are `Error::Serialize`
-                                    pub #set_fn_plural(&mut self, item: Vec<#variant>) -> ::activitystreams_traits::Result<()> {
+                                    pub fn #set_fn_plural(&mut self, item: Vec<#variant>) -> ::activitystreams_traits::Result<()> {
                                         self.#ident = ::activitystreams_traits::properties::to_value(item)?;
                                         Ok(())
                                     }
