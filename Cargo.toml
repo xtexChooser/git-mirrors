@@ -1,7 +1,7 @@
 [package]
 name = "activitystreams"
 description = "Activity Streams in Rust"
-version = "0.2.3"
+version = "0.2.4"
 license = "GPL-3.0"
 authors = ["asonix <asonix@asonix.dog>"]
 repository = "https://git.asonix.dog/Aardwolf/activitystreams"
@@ -10,7 +10,7 @@ keywords = ["activitystreams", "activitypub"]
 
 [dependencies]
 activitystreams-traits = { version = "0.1", path = "activitystreams-traits" }
-activitystreams-types = { version = "0.2.2", path = "activitystreams-types" }
+activitystreams-types = { version = "0.2.3", path = "activitystreams-types" }
 
 [dev-dependencies]
 failure = "0.1"
