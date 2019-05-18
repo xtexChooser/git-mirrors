@@ -1,7 +1,7 @@
 [package]
 name = "activitystreams-types"
 description = "Base types from the Activity Streams spec"
-version = "0.2.2"
+version = "0.2.3"
 license = "GPL-3.0"
 authors = ["asonix <asonix@asonix.dog>"]
 repository = "https://git.asonix.dog/Aardwolf/activitystreams"
