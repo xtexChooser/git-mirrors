@@ -1,14 +1,15 @@
 {
 	"@metadata": {
 		"authors": [
-			"Hbseren"
+			"Hbseren",
+			"Sayginer"
 		]
 	},
-	"loginnotify-desc": "Şüpheli oturum açma girişimleri hakkında kullanıcıları bilgilendir",
+	"loginnotify-desc": "Tanınmayan cihaz ve/veya IP adreslerinden şüpheli oturum açma girişimleri hakkında kullanıcıları bilgilendirir",
 	"echo-category-title-login-fail": "Başarısız oturum açma girişimleri",
 	"echo-pref-tooltip-login-fail": "Hesabıma birden fazla başarısız oturum açma girişimi olduğu zaman bana bildir.",
 	"echo-category-title-login-success": "Yeni bilgisayardan giriş",
-	"echo-pref-tooltip-login-success": "Birisi hesabıma daha önce kullanmadığım bir bilgisayardan giriş yaptığı zaman bana bildir.",
+	"echo-pref-tooltip-login-success": "Birisi hesabıma daha önce kullanmadığım bir cihaz ve/veya IP adresinden giriş yaptığı zaman bana bildir.",
 	"notification-loginnotify-login-fail-email-subject": "{{SITENAME}} sitesine $1 kullanıcısı olarak {{PLURAL:$2|başarısız giriş|birden çok başarısız giriş}} denemesi",
 	"notification-loginnotify-login-success-email-subject": "{{SITENAME}} sitesine $1 kullanıcısı olarak, daha önce kullanmadığınız bir bilgisayardan giriş",
 	"notification-header-login-success": "Birisi başarılı bir şekilde hesabınıza yakın zamanda düzenleme yapmakta olduğunuzun dışındaki bir bilgisayardan giriş yapmış."
