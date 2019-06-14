@@ -391,7 +391,7 @@ class LoginNotify implements LoggerAwareInterface {
 		if ( !$dbr->tableExists( 'cu_changes' ) ) {
 			$this->log->warning( "LoginNotify: No checkuser table on {wikiId}", [
 				'method' => __METHOD__,
-				'wikiId' => $dbr->getWikiID()
+				'wikiId' => $dbr->getDomainID()
 			] );
 			return false;
 		}
