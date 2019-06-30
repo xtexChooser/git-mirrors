@@ -1,0 +1,10 @@
+{
+	"@metadata": {
+		"authors": [
+			"FarsiNevis"
+		]
+	},
+	"categorywatch-autocat": "پی‌گیری‌شده به‌طور خودکار توسط $1",
+	"categorywatch-notification-link": "رده: [[:$1]]",
+	"echo-category-title-categorywatch": "پی‌گیری رده"
+}
