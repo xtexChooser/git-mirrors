@@ -39,6 +39,8 @@ pub trait LinkExt: Link {
 #[serde(rename_all = "camelCase")]
 pub struct Mention {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: MentionType,
 
     /// Adds all valid link properties to this struct

@@ -1,10 +1,10 @@
 [package]
 name = "activitystreams-types"
 description = "Base types from the Activity Streams spec"
-version = "0.2.1"
+version = "0.2.3"
 license = "GPL-3.0"
 authors = ["asonix <asonix@asonix.dog>"]
-repository = "https://git.asonix.cloud/asonix/activitystreams.git"
+repository = "https://git.asonix.dog/Aardwolf/activitystreams"
 readme = "README.md"
 keywords = ["activitystreams", "activitypub"]
 

@@ -39,6 +39,8 @@ pub trait ObjectExt: Object {
 #[serde(rename_all = "camelCase")]
 pub struct Article {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: ArticleType,
 
     /// Adds all valid object properties to this struct
@@ -62,6 +64,8 @@ impl ObjectExt for Article {
 #[serde(rename_all = "camelCase")]
 pub struct Audio {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: AudioType,
 
     /// Adds all valid object properties to this struct
@@ -85,6 +89,8 @@ impl ObjectExt for Audio {
 #[serde(rename_all = "camelCase")]
 pub struct Document {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: DocumentType,
 
     /// Adds all valid object properties to this struct
@@ -108,6 +114,8 @@ impl ObjectExt for Document {
 #[serde(rename_all = "camelCase")]
 pub struct Event {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: EventType,
 
     /// Adds all valid object properties to this struct
@@ -131,6 +139,8 @@ impl ObjectExt for Event {
 #[serde(rename_all = "camelCase")]
 pub struct Image {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: ImageType,
 
     /// Adds all valid object properties to this struct
@@ -154,6 +164,8 @@ impl ObjectExt for Image {
 #[serde(rename_all = "camelCase")]
 pub struct Note {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: NoteType,
 
     /// Adds all valid object properties to this struct
@@ -177,6 +189,8 @@ impl ObjectExt for Note {
 #[serde(rename_all = "camelCase")]
 pub struct Page {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: PageType,
 
     /// Adds all valid object properties to this struct
@@ -217,6 +231,8 @@ impl ObjectExt for Page {
 #[serde(rename_all = "camelCase")]
 pub struct Place {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: PlaceType,
 
     /// Adds all valid object properties to this struct
@@ -247,6 +263,8 @@ impl ObjectExt for Place {
 #[serde(rename_all = "camelCase")]
 pub struct Profile {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: ProfileType,
 
     /// Adds all valid object properties to this struct
@@ -287,6 +305,8 @@ impl ObjectExt for Profile {
 #[serde(rename_all = "camelCase")]
 pub struct Relationship {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: RelationshipType,
 
     /// Adds all valid object properties to this struct
@@ -317,6 +337,8 @@ impl ObjectExt for Relationship {
 #[serde(rename_all = "camelCase")]
 pub struct Tombstone {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: TombstoneType,
 
     /// Adds all valid object properties to this struct
@@ -344,6 +366,8 @@ impl ObjectExt for Tombstone {
 #[serde(rename_all = "camelCase")]
 pub struct Video {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: VideoType,
 
     /// Adds all valid object properties to this struct

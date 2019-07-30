@@ -31,6 +31,8 @@ use object::{properties::ObjectProperties, ObjectExt};
 #[serde(rename_all = "camelCase")]
 pub struct TentativeReject {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     pub kind: TentativeRejectType,
 
     /// Adds all valid tentative_reject properties to this struct

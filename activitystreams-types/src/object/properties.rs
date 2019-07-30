@@ -83,6 +83,7 @@ pub struct ObjectProperties {
     /// - Range: `anyUri`
     /// - Functional: true
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(alias = "@id")]
     #[activitystreams(concrete(String), functional)]
     pub id: Option<serde_json::Value>,
 
@@ -95,7 +96,7 @@ pub struct ObjectProperties {
     /// - Range: `Object` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub attachment: Option<serde_json::Value>,
 
     /// Identifies one or more entities to which this object is attributed.
@@ -106,7 +107,7 @@ pub struct ObjectProperties {
     /// - Range: `Object` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub attributed_to: Option<serde_json::Value>,
 
     /// Identifies one or more entities that represent the total population of entities for which
@@ -115,7 +116,7 @@ pub struct ObjectProperties {
     /// - Range: `Object` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub audience: Option<serde_json::Value>,
 
     // TODO: rdf:langString
@@ -141,7 +142,7 @@ pub struct ObjectProperties {
     /// - Range: `Object` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none", rename = "@context")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub context: Option<serde_json::Value>,
 
     // TODO: rdf:langString
@@ -153,6 +154,7 @@ pub struct ObjectProperties {
     /// - Range: `xsd:string` | `rdf:langString`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(alias = "displayName")]
     #[activitystreams(concrete(String))]
     pub name: Option<serde_json::Value>,
 
@@ -172,7 +174,7 @@ pub struct ObjectProperties {
     /// - Range: `Object` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub generator: Option<serde_json::Value>,
 
     /// Indicates an entity that describes an icon for this object.
@@ -183,7 +185,7 @@ pub struct ObjectProperties {
     /// - Range: `Image` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(Image))]
+    #[activitystreams(ab(Object, Link), concrete(Image, String))]
     pub icon: Option<serde_json::Value>,
 
     /// Indicates an entity that describes an image for this object.
@@ -193,7 +195,7 @@ pub struct ObjectProperties {
     /// - Range: `Image` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(Image))]
+    #[activitystreams(ab(Object, Link), concrete(Image, String))]
     pub image: Option<serde_json::Value>,
 
     /// Indicates one or more entities for which this object is considered a response.
@@ -201,7 +203,7 @@ pub struct ObjectProperties {
     /// - Range: `Object` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub in_reply_to: Option<serde_json::Value>,
 
     /// Indicates one or more physical or logical locations associated with the object.
@@ -209,7 +211,7 @@ pub struct ObjectProperties {
     /// - Range: `Object` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub location: Option<serde_json::Value>,
 
     /// Identifies an entity that provides a preview of this object.
@@ -217,7 +219,7 @@ pub struct ObjectProperties {
     /// - Range: `Object` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub preview: Option<serde_json::Value>,
 
     /// The date and time at which the object was published.
@@ -233,7 +235,7 @@ pub struct ObjectProperties {
     /// - Range: `Object` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Collection), functional)]
+    #[activitystreams(ab(Collection), concrete(String), functional)]
     pub replies: Option<serde_json::Value>,
 
     /// The date and time describing the actual or expected starting time of the object.
@@ -267,7 +269,7 @@ pub struct ObjectProperties {
     /// - Range: `Object` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub tag: Option<serde_json::Value>,
 
     /// The date and time at which the object was updated,
@@ -291,7 +293,7 @@ pub struct ObjectProperties {
     /// - Range: `Object` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub to: Option<serde_json::Value>,
 
     /// Identifies an `Object` that is part of the private primary audience of this `Object`.
@@ -299,7 +301,7 @@ pub struct ObjectProperties {
     /// - Range: `Object` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub bto: Option<serde_json::Value>,
 
     /// Identifies an `Object` that is part of the public secondary audience of this `Object`.
@@ -307,7 +309,7 @@ pub struct ObjectProperties {
     /// - Range: `Object` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub cc: Option<serde_json::Value>,
 
     /// Identifies one or more `Objects` that are part of the private secondary audience of this
@@ -316,7 +318,7 @@ pub struct ObjectProperties {
     /// - Range: `Object` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub bcc: Option<serde_json::Value>,
 
     /// When used on an `Object`, identifies the MIME media type of the value of the content
@@ -425,7 +427,7 @@ pub struct ProfileProperties {
     ///
     /// - Range: `Object`
     /// - Functional: true
-    #[activitystreams(ab(Object), functional)]
+    #[activitystreams(ab(Object), concrete(String), functional)]
     pub describes: serde_json::Value,
 }
 
@@ -442,14 +444,14 @@ pub struct RelationshipProperties {
     ///
     /// - Range: `Object` | `Link`
     /// - Functional: true
-    #[activitystreams(ab(Object, Link), functional)]
+    #[activitystreams(ab(Object, Link), concrete(String), functional)]
     subject: serde_json::Value,
 
     /// When used within a `Relationship` describes the entity to which the subject is related.
     ///
     /// - Range: `Object` | `Link`
     /// - Functional: false
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     object: serde_json::Value,
 
     /// On a `Relationship` object, the relationship property identifies the kind of relationship
@@ -457,7 +459,7 @@ pub struct RelationshipProperties {
     ///
     /// - Range: `Object`
     /// - Functional: false
-    #[activitystreams(ab(Object))]
+    #[activitystreams(ab(Object), concrete(String))]
     relationship: serde_json::Value,
 }
 
@@ -471,7 +473,7 @@ pub struct TombstoneProperties {
     /// - Range: `Object`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object))]
+    #[activitystreams(ab(Object), concrete(String))]
     pub former_type: Option<serde_json::Value>,
 
     /// On a `Tombstone` object, the deleted property is a timestamp for when the object was

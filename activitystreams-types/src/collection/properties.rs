@@ -73,7 +73,7 @@ pub struct CollectionProperties {
     ///
     /// - Range: `Object` | `Link` | Ordered List of [ `Object` | `Link` ]
     /// - Functional: false
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub items: serde_json::Value,
 
     /// A non-negative integer specifying the total number of objects contained by the logical view
@@ -94,7 +94,7 @@ pub struct CollectionProperties {
     /// - Range: `CollectionPage` | `Link`
     /// - Functional: true
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Link, CollectionPage), functional)]
+    #[activitystreams(ab(Link, CollectionPage), concrete(String), functional)]
     pub current: Option<serde_json::Value>,
 
     /// In a paged `Collection`, indicates the furthest preceeding page of items in the collection.
@@ -102,7 +102,7 @@ pub struct CollectionProperties {
     /// - Range: `CollectionPage` | `Link`
     /// - Functional: true
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Link, CollectionPage), functional)]
+    #[activitystreams(ab(Link, CollectionPage), concrete(String), functional)]
     pub first: Option<serde_json::Value>,
 
     /// In a paged `Collection`, indicates the furthest proceeding page of the collection.
@@ -110,7 +110,7 @@ pub struct CollectionProperties {
     /// - Range: `CollectionPage` | `Link`
     /// - Functional: true
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Link, CollectionPage), functional)]
+    #[activitystreams(ab(Link, CollectionPage), concrete(String), functional)]
     pub last: Option<serde_json::Value>,
 }
 
@@ -124,7 +124,7 @@ pub struct CollectionPageProperties {
     /// Range: `Collection` | `Link`
     /// Functional: true
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Link, Collection), functional)]
+    #[activitystreams(ab(Link, Collection), concrete(String), functional)]
     pub part_of: Option<serde_json::Value>,
 
     /// In a paged `Collection`, indicates the next page of items.
@@ -132,7 +132,7 @@ pub struct CollectionPageProperties {
     /// - Range: `CollectionPage` | `Link`
     /// - Functional: true
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Link, CollectionPage), functional)]
+    #[activitystreams(ab(Link, CollectionPage), concrete(String), functional)]
     pub next: Option<serde_json::Value>,
 
     /// In a paged `Collection`, identifies the previous page of items.
@@ -140,7 +140,7 @@ pub struct CollectionPageProperties {
     /// - Range: `CollectionPage` | `Link`
     /// - Functional: true
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Link, CollectionPage), functional)]
+    #[activitystreams(ab(Link, CollectionPage), concrete(String), functional)]
     pub prev: Option<serde_json::Value>,
 }
 

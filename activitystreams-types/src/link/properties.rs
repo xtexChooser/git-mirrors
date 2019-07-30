@@ -93,7 +93,7 @@ pub struct LinkProperties {
     /// - Range: `Object` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none", rename = "@context")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub context: Option<serde_json::Value>,
 
     // TODO: rdf:langString
@@ -180,7 +180,7 @@ pub struct LinkProperties {
     /// - Range: `Object` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub preview: Option<serde_json::Value>,
 }
 

@@ -38,6 +38,8 @@
 //! #[serde(rename_all = "camelCase")]
 //! pub struct MyActivity {
 //!     #[serde(rename = "type")]
+//!     #[serde(alias = "objectType")]
+//!     #[serde(alias = "verb")]
 //!     pub kind: String,
 //!
 //!     /// Define a require property for the MyActivity type
@@ -73,7 +75,7 @@ pub struct ActivityProperties {
     /// - Range: `Object` | `Link`
     /// - Funcitonal: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub result: Option<serde_json::Value>,
 
     /// Identifies one or more objects used (or to be used) in the completion of an `Activity`.
@@ -81,7 +83,7 @@ pub struct ActivityProperties {
     /// - Range: `Object` | `Link`
     /// - Funcitonal: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub instrument: Option<serde_json::Value>,
 }
 
@@ -97,7 +99,7 @@ pub struct ActorOptOriginAndTarget {
     ///
     /// - Range: `Object` | `Link`
     /// - Functional: false
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub actor: serde_json::Value,
 
     /// Describes an indirect object of the activity from which the activity is directed.
@@ -109,7 +111,7 @@ pub struct ActorOptOriginAndTarget {
     /// - Range: `Object` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub origin: Option<serde_json::Value>,
 
     /// Describes the indirect object, or target, of the activity.
@@ -122,7 +124,7 @@ pub struct ActorOptOriginAndTarget {
     /// - Range: `Object` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub target: Option<serde_json::Value>,
 }
 
@@ -138,7 +140,7 @@ pub struct ActorAndObject {
     ///
     /// - Range: `Object` | `Link`
     /// - Functional: false
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub actor: serde_json::Value,
 
     /// When used within an Activity, describes the direct object of the activity.
@@ -148,7 +150,7 @@ pub struct ActorAndObject {
     ///
     /// - Range: `Object` | `Link`
     /// - Functional: false
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub object: serde_json::Value,
 }
 
@@ -164,7 +166,7 @@ pub struct ActorObjectAndTarget {
     ///
     /// - Range: `Object` | `Link`
     /// - Functional: false
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub actor: serde_json::Value,
 
     /// When used within an Activity, describes the direct object of the activity.
@@ -174,7 +176,7 @@ pub struct ActorObjectAndTarget {
     ///
     /// - Range: `Object` | `Link`
     /// - Functional: false
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub object: serde_json::Value,
 
     /// Describes the indirect object, or target, of the activity.
@@ -186,7 +188,7 @@ pub struct ActorObjectAndTarget {
     ///
     /// - Range: `Object` | `Link`
     /// - Functional: false
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub target: serde_json::Value,
 }
 
@@ -202,7 +204,7 @@ pub struct ActorAndObjectOptTarget {
     ///
     /// - Range: `Object` | `Link`
     /// - Functional: false
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub actor: serde_json::Value,
 
     /// When used within an Activity, describes the direct object of the activity.
@@ -212,7 +214,7 @@ pub struct ActorAndObjectOptTarget {
     ///
     /// - Range: `Object` | `Link`
     /// - Functional: false
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub object: serde_json::Value,
 
     /// Describes the indirect object, or target, of the activity.
@@ -225,7 +227,7 @@ pub struct ActorAndObjectOptTarget {
     /// - Range: `Object` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub target: Option<serde_json::Value>,
 }
 
@@ -241,7 +243,7 @@ pub struct ActorAndObjectOptOrigin {
     ///
     /// - Range: `Object` | `Link`
     /// - Functional: false
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub actor: serde_json::Value,
 
     /// When used within an Activity, describes the direct object of the activity.
@@ -251,7 +253,7 @@ pub struct ActorAndObjectOptOrigin {
     ///
     /// - Range: `Object` | `Link`
     /// - Functional: false
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub object: serde_json::Value,
 
     /// Describes an indirect object of the activity from which the activity is directed.
@@ -263,7 +265,7 @@ pub struct ActorAndObjectOptOrigin {
     /// - Range: `Object` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub origin: Option<serde_json::Value>,
 }
 
@@ -279,7 +281,7 @@ pub struct ActorAndObjectOptOthers {
     ///
     /// - Range: `Object` | `Link`
     /// - Functional: false
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub actor: serde_json::Value,
 
     /// When used within an Activity, describes the direct object of the activity.
@@ -289,7 +291,7 @@ pub struct ActorAndObjectOptOthers {
     ///
     /// - Range: `Object` | `Link`
     /// - Functional: false
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub object: serde_json::Value,
 
     /// Describes an indirect object of the activity from which the activity is directed.
@@ -301,7 +303,7 @@ pub struct ActorAndObjectOptOthers {
     /// - Range: `Object` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub origin: Option<serde_json::Value>,
 
     /// Describes the indirect object, or target, of the activity.
@@ -314,7 +316,7 @@ pub struct ActorAndObjectOptOthers {
     /// - Range: `Object` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub target: Option<serde_json::Value>,
 }
 
@@ -330,7 +332,7 @@ pub struct ActorAndOrigin {
     ///
     /// - Range: `Object` | `Link`
     /// - Functional: false
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub actor: serde_json::Value,
 
     /// Describes an indirect object of the activity from which the activity is directed.
@@ -341,7 +343,7 @@ pub struct ActorAndOrigin {
     ///
     /// - Range: `Object` | `Link`
     /// - Functional: false
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub origin: serde_json::Value,
 }
 
@@ -411,7 +413,7 @@ pub struct QuestionProperties {
     /// - Range: `Object` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub one_of: Option<serde_json::Value>,
 
     /// Identifies an inclusive option for a Question.
@@ -422,7 +424,7 @@ pub struct QuestionProperties {
     /// - Range: `Object` | `Link`
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link))]
+    #[activitystreams(ab(Object, Link), concrete(String))]
     pub any_of: Option<serde_json::Value>,
 }
 
