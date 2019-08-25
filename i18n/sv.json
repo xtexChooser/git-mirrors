@@ -8,7 +8,7 @@
 	"loginnotify-desc": "Meddelar användare om misstänkta inloggningar från okända enheter och /eller IP-adresser",
 	"echo-category-title-login-fail": "Misslyckade inloggningsförsök",
 	"echo-pref-tooltip-login-fail": "Meddela mig när misslyckade inloggningsförsök har gjorts för mitt konto.",
-	"echo-category-title-login-success": "Logga in från en främmande enhet",
+	"echo-category-title-login-success": "Inloggning från en främmande enhet",
 	"echo-pref-tooltip-login-success": "Meddela mig när någon loggar in på mitt konto från en okänd enhet och IP-adress.",
 	"loginnotify-primary-link": "Hjälp",
 	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Misslyckat försök|Flera misslyckade försök}} att logga in på {{SITENAME}} som $1",
