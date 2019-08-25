@@ -23,6 +23,7 @@
 	"categorywatch-notification-bundle": "$1 ändringar i kategoriseringen på {{SITENAME}}",
 	"categorywatch-add-title": "Titel lades till i bevakad kategori",
 	"categorywatch-remove-title": "Titel togs bort från bevakad kategori",
+	"categorywatch-page-watch-pref": "Lägg till alla sidor i en kategori i din bevakningslista när du lägger till en kategori",
 	"echo-category-title-categorywatch": "Kategoribevakning",
 	"echo-pref-tooltip-categorywatch": "Meddela mig när någon kategoriserar en sida till eller från en kategori som jag bevakar."
 }
