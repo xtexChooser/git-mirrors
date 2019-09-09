@@ -4,7 +4,8 @@
 			"Derbeth",
 			"Leinad",
 			"Sp5uhe",
-			"Chrumps"
+			"Chrumps",
+			"Railfail536"
 		]
 	},
 	"categorywatch-desc": "Rozszerza funkcjonalność listy obserwowanych poprzez powiadamianie o zmianach, jakie zaszły w elementach należących do obserwowanej kategorii.",
@@ -14,5 +15,6 @@
 	"categorywatch-catadd": "dodał $1 do kategorii $2",
 	"categorywatch-catsub": "usunął $1 z kategorii $2",
 	"categorywatch-autocat": "Automatycznie obserwowane przez $1",
-	"categorywatch-notification-link": "Kategoria: [[:$1]]"
+	"categorywatch-notification-link": "Kategoria: [[:$1]]",
+	"categorywatch-notification-categorywatch-add-header": "Dodano [[:$1|$2]] do [[:$3|$4]]"
 }
