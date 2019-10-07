@@ -60,10 +60,8 @@ class LoginNotifyTest extends MediaWikiTestCase {
 		];
 	}
 
-	/**
-	 * @expectedException UnexpectedValueException
-	 */
 	public function testGetIPNetworkInvalid() {
+		$this->expectException( UnexpectedValueException::class );
 		$this->inst->getIPNetwork( 'localhost' );
 	}
 
