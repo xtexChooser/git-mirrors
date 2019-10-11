@@ -1,7 +1,7 @@
 <?php
 
 use LoginNotify\LoginNotify;
-use \Psr\Log\NullLogger;
+use Psr\Log\NullLogger;
 use Wikimedia\TestingAccessWrapper;
 
 /**
@@ -36,7 +36,7 @@ class LoginNotifyTest extends MediaWikiTestCase {
 		$this->inst->setLogger( new NullLogger );
 	}
 
-	public function setUp() {
+	public function setUp() : void {
 		parent::setUp();
 		$this->setUpLoginNotify();
 	}
