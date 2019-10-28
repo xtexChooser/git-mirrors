@@ -22,17 +22,12 @@
 //! To use these properties in your own types, you can flatten them into your struct with serde:
 //!
 //! ```rust
-//! extern crate activitystreams_traits;
-//! extern crate activitystreams_types;
-//! extern crate serde;
-//! #[macro_use]
-//! extern crate serde_derive;
-//!
 //! use activitystreams_traits::{Activity, Object};
 //! use activitystreams_types::{
 //!   activity::properties::ActivityProperties,
 //!   object::properties::ObjectProperties,
 //! };
+//! use serde_derive::{Deserialize, Serialize};
 //!
 //! #[derive(Clone, Debug, Serialize, Deserialize)]
 //! #[serde(rename_all = "camelCase")]
@@ -58,8 +53,9 @@
 //! # fn main() {}
 //! ```
 
+use activitystreams_derive::Properties;
 use activitystreams_traits::{Link, Object};
-use serde_json;
+use serde_derive::{Deserialize, Serialize};
 
 /// Activity objects are specializations of the base Object type that provide information about
 /// actions that have either already occurred, are in the process of occurring, or may occur in the

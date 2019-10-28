@@ -20,6 +20,7 @@
 //! Namespace for Link types
 
 use activitystreams_traits::Link;
+use serde_derive::{Deserialize, Serialize};
 
 pub mod kind;
 pub mod properties;

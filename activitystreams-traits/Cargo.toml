@@ -7,6 +7,7 @@ authors = ["asonix <asonix.dev@gmail.com>"]
 repository = "https://git.asonix.dog/Aardwolf/activitystreams"
 readme = "README.md"
 keywords = ["activitystreams", "activitypub"]
+edition = "2018"
 
 [dependencies]
 serde = "1.0"

@@ -17,7 +17,7 @@
  * along with ActivityStreams Traits.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use object::Object;
+use crate::object::Object;
 
 /// A Collection is a subtype of `Object` that represents ordered or unordered sets of `Object` or
 /// `Link` instances.

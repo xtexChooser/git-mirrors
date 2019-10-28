@@ -17,14 +17,16 @@
  * along with ActivityStreams Types.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use activitystreams_derive::Properties;
 use activitystreams_traits::{Activity, Object};
+use serde_derive::{Deserialize, Serialize};
 
 use super::{
     kind::TentativeAcceptType,
     properties::{ActivityProperties, TentativeAcceptProperties},
     ActivityExt,
 };
-use object::{properties::ObjectProperties, ObjectExt};
+use crate::object::{properties::ObjectProperties, ObjectExt};
 
 /// A specialization of Accept indicating that the acceptance is tentative.
 #[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]

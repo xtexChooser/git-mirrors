@@ -22,17 +22,12 @@
 //! To use these properties in your own types, you can flatten them into your struct with serde:
 //!
 //! ```rust
-//! extern crate activitystreams_traits;
-//! extern crate activitystreams_types;
-//! extern crate serde;
-//! #[macro_use]
-//! extern crate serde_derive;
-//!
 //! use activitystreams_traits::{Collection, Object};
 //! use activitystreams_types::{
 //!   collection::properties::CollectionProperties,
 //!   object::properties::ObjectProperties,
 //! };
+//! use serde_derive::{Deserialize, Serialize};
 //!
 //! #[derive(Clone, Debug, Serialize, Deserialize)]
 //! #[serde(rename_all = "camelCase")]
@@ -56,8 +51,9 @@
 //! # fn main() {}
 //! ```
 
+use activitystreams_derive::Properties;
 use activitystreams_traits::{Collection, CollectionPage, Link, Object};
-use serde_json;
+use serde_derive::{Deserialize, Serialize};
 
 /// `Collection` objects are a specialization of the base `Object` that serve as a container for
 /// other `Objects` or `Links`.

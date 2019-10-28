@@ -20,8 +20,9 @@
 //! Namespace for Actor types
 
 use activitystreams_traits::{Actor, Object};
+use serde_derive::{Deserialize, Serialize};
 
-use object::{properties::ObjectProperties, ObjectExt};
+use crate::object::{properties::ObjectProperties, ObjectExt};
 
 pub mod kind;
 use self::kind::*;

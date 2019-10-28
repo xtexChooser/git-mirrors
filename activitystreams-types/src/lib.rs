@@ -23,10 +23,6 @@
 //!
 //! ## Example Usage
 //! ```rust
-//! extern crate activitystreams_types;
-//! extern crate anyhow;
-//! extern crate serde_json;
-//!
 //! use activitystreams_types::{context, link::Mention};
 //!
 //! fn run() -> Result<(), anyhow::Error> {
@@ -46,15 +42,7 @@
 //! # }
 //! ```
 
-#[macro_use]
-extern crate activitystreams_derive;
-extern crate activitystreams_traits;
-extern crate chrono;
-extern crate mime;
-extern crate serde;
-#[macro_use]
-extern crate serde_derive;
-extern crate serde_json;
+use serde_derive::{Deserialize, Serialize};
 
 /// Define a simple wrapper around a string for this crate's main Context type
 #[derive(Clone, Debug, Deserialize, Serialize)]

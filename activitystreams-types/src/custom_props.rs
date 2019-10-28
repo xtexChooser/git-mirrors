@@ -19,11 +19,12 @@
 
 //! A collection of simple types for extending the ActivityStreams Types base types
 
-use serde::{de::DeserializeOwned, ser::Serialize};
+use serde::{de::DeserializeOwned, ser};
 
 use activitystreams_traits::{
     Activity, Actor, Collection, CollectionPage, IntransitiveActivity, Link, Object,
 };
+use serde_derive::{Deserialize, Serialize};
 
 /// A custom type extending Link
 ///
@@ -64,7 +65,7 @@ impl<C, L: Link> CustomLink<C, L> {
 
 impl<C, L> Link for CustomLink<C, L>
 where
-    C: DeserializeOwned + Serialize,
+    C: DeserializeOwned + ser::Serialize,
     L: Link,
 {
 }
@@ -114,33 +115,37 @@ impl<C, O: Object> CustomObject<C, O> {
 
 impl<C, O> Object for CustomObject<C, O>
 where
-    C: DeserializeOwned + Serialize,
+    C: DeserializeOwned + ser::Serialize,
     O: Object,
 {
 }
 impl<C, O> Actor for CustomObject<C, O>
 where
-    C: DeserializeOwned + Serialize,
+    C: DeserializeOwned + ser::Serialize,
     O: Actor,
 {
 }
 impl<C, O> Collection for CustomObject<C, O>
 where
-    C: DeserializeOwned + Serialize,
+    C: DeserializeOwned + ser::Serialize,
     O: Collection,
-{}
+{
+}
 impl<C, O> CollectionPage for CustomObject<C, O>
 where
-    C: DeserializeOwned + Serialize,
+    C: DeserializeOwned + ser::Serialize,
     O: CollectionPage,
-{}
+{
+}
 impl<C, O> Activity for CustomObject<C, O>
 where
-    C: DeserializeOwned + Serialize,
+    C: DeserializeOwned + ser::Serialize,
     O: Activity,
-{}
+{
+}
 impl<C, O> IntransitiveActivity for CustomObject<C, O>
 where
-    C: DeserializeOwned + Serialize,
+    C: DeserializeOwned + ser::Serialize,
     O: IntransitiveActivity,
-{}
+{
+}

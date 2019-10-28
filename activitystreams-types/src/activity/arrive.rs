@@ -17,14 +17,16 @@
  * along with ActivityStreams Types.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use activitystreams_derive::Properties;
 use activitystreams_traits::{Activity, IntransitiveActivity, Object};
+use serde_derive::{Deserialize, Serialize};
 
 use super::{
     kind::ArriveType,
     properties::{ActivityProperties, ArriveProperties},
     ActivityExt,
 };
-use object::{properties::ObjectProperties, ObjectExt};
+use crate::object::{properties::ObjectProperties, ObjectExt};
 
 /// An IntransitiveActivity that indicates that the actor has arrived at the location.
 ///

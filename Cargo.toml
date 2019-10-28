@@ -7,6 +7,7 @@ authors = ["asonix <asonix@asonix.dog>"]
 repository = "https://git.asonix.dog/Aardwolf/activitystreams"
 readme = "README.md"
 keywords = ["activitystreams", "activitypub"]
+edition = "2018"
 
 [dependencies]
 activitystreams-traits = { version = "0.2", path = "activitystreams-traits" }

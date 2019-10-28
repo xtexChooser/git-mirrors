@@ -19,9 +19,11 @@
 
 //! Namespace for Collection types
 
+use activitystreams_derive::Properties;
 use activitystreams_traits::{Collection, CollectionPage, Object};
+use serde_derive::{Deserialize, Serialize};
 
-use object::{properties::ObjectProperties, ObjectExt};
+use crate::object::{properties::ObjectProperties, ObjectExt};
 
 pub mod kind;
 pub mod properties;

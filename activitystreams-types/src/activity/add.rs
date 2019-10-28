@@ -17,14 +17,16 @@
  * along with ActivityStreams Types.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use activitystreams_derive::Properties;
 use activitystreams_traits::{Activity, Object};
+use serde_derive::{Deserialize, Serialize};
 
 use super::{
     kind::AddType,
     properties::{ActivityProperties, AddProperties},
     ActivityExt,
 };
-use object::{properties::ObjectProperties, ObjectExt};
+use crate::object::{properties::ObjectProperties, ObjectExt};
 
 /// Indicates that the actor has added the object to the target.
 ///

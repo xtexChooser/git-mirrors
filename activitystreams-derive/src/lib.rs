@@ -22,15 +22,9 @@
 //! ## Examples
 //!
 //! ```rust
-//! #[macro_use]
-//! extern crate activitystreams_derive;
-//! extern crate activitystreams_traits;
-//! extern crate serde;
-//! #[macro_use]
-//! extern crate serde_derive;
-//! extern crate serde_json;
-//!
+//! use activitystreams_derive::{Properties, UnitString};
 //! use activitystreams_traits::{Link, Object};
+//! use serde_derive::{Deserialize, Serialize};
 //!
 //! /// Using the UnitString derive macro
 //! ///
@@ -68,16 +62,13 @@
 //! ```
 
 extern crate proc_macro;
-extern crate proc_macro2;
-extern crate syn;
-
-#[macro_use]
-extern crate quote;
 
 use proc_macro::TokenStream;
 use proc_macro2::TokenTree;
-use quote::Tokens;
+use quote::quote;
 use syn::{Attribute, Data, DeriveInput, Fields, Ident, Type};
+
+use std::iter::FromIterator;
 
 #[proc_macro_derive(UnitString, attributes(activitystreams))]
 pub fn unit_string(input: TokenStream) -> TokenStream {
@@ -93,16 +84,14 @@ pub fn unit_string(input: TokenStream) -> TokenStream {
                 .path
                 .segments
                 .last()
-                .map(|segment| {
-                    let segment = segment.into_value();
-                    segment.ident == Ident::new("activitystreams", segment.ident.span())
-                }).unwrap_or(false)
-        }).unwrap()
+                .map(|segment| segment.ident == Ident::new("activitystreams", segment.ident.span()))
+                .unwrap_or(false)
+        })
+        .unwrap()
         .clone();
 
-    let value = from_value(attr);
-
-    let visitor_name = Ident::from(format!("{}Visitor", value));
+    let visitor_name = from_value(attr);
+    let value = format!("\"{}\"", visitor_name);
 
     let serialize = quote! {
         impl ::serde::ser::Serialize for #name {
@@ -166,15 +155,16 @@ pub fn unit_string(input: TokenStream) -> TokenStream {
     c.into()
 }
 
-fn from_value(attr: Attribute) -> String {
+fn from_value(attr: Attribute) -> Ident {
     let group = attr
-        .tts
+        .tokens
         .clone()
         .into_iter()
         .filter_map(|token_tree| match token_tree {
             TokenTree::Group(group) => Some(group),
             _ => None,
-        }).next()
+        })
+        .next()
         .unwrap();
 
     group
@@ -182,9 +172,10 @@ fn from_value(attr: Attribute) -> String {
         .clone()
         .into_iter()
         .filter_map(|token_tree| match token_tree {
-            TokenTree::Term(term) => Some(term.as_str().to_owned()),
+            TokenTree::Ident(ident) => Some(ident),
             _ => None,
-        }).next()
+        })
+        .next()
         .unwrap()
 }
 
@@ -214,7 +205,6 @@ pub fn properties_derive(input: TokenStream) -> TokenStream {
                     .segments
                     .last()
                     .map(|segment| {
-                        let segment = segment.into_value();
                         segment.ident == Ident::new("activitystreams", segment.ident.span())
                     })
                     .unwrap_or(false)
@@ -228,7 +218,6 @@ pub fn properties_derive(input: TokenStream) -> TokenStream {
                         .segments
                         .last()
                         .map(|seg| {
-                            let seg = seg.into_value();
                             seg.ident == Ident::new("Option", seg.ident.span())
                         })
                         .unwrap_or(false),
@@ -240,7 +229,6 @@ pub fn properties_derive(input: TokenStream) -> TokenStream {
                         .segments
                         .last()
                         .map(|seg| {
-                            let seg = seg.into_value();
                             seg.ident == Ident::new("Vec", seg.ident.span())
                         })
                         .unwrap_or(false),
@@ -262,12 +250,11 @@ pub fn properties_derive(input: TokenStream) -> TokenStream {
             variants(attr)
                 .into_iter()
                 .map(move |(variant, is_concrete)| {
-                    let lower_variant = variant.to_lowercase();
-                    let fn_name = Ident::from(format!("{}_{}", ident, lower_variant));
-                    let fn_plural = Ident::from(format!("{}_{}_vec", ident, lower_variant));
-                    let set_fn_name = Ident::from(format!("set_{}_{}", ident, lower_variant));
-                    let set_fn_plural = Ident::from(format!("set_{}_{}_vec", ident, lower_variant));
-                    let variant = Ident::from(variant);
+                    let lower_variant = variant.to_string().to_lowercase();
+                    let fn_name = Ident::new(&format!("{}_{}", ident, lower_variant), variant.span());
+                    let fn_plural = Ident::new(&format!("{}_{}_vec", ident, lower_variant), variant.span());
+                    let set_fn_name = Ident::new(&format!("set_{}_{}", ident, lower_variant), variant.span());
+                    let set_fn_plural = Ident::new(&format!("set_{}_{}_vec", ident, lower_variant), variant.span());
 
                     if is_concrete {
                         if is_option {
@@ -592,10 +579,9 @@ pub fn properties_derive(input: TokenStream) -> TokenStream {
                 })
         });
 
-    let mut tokens = Tokens::new();
-    tokens.append_all(impls);
+    let tokens = proc_macro2::TokenStream::from_iter(impls);
 
-    let full = quote!{
+    let full = quote! {
         impl #name {
             #tokens
         }
@@ -604,15 +590,16 @@ pub fn properties_derive(input: TokenStream) -> TokenStream {
     full.into()
 }
 
-fn variants(attr: Attribute) -> Vec<(String, bool)> {
+fn variants(attr: Attribute) -> Vec<(Ident, bool)> {
     let group = attr
-        .tts
+        .tokens
         .clone()
         .into_iter()
         .filter_map(|token_tree| match token_tree {
             TokenTree::Group(group) => Some(group),
             _ => None,
-        }).next()
+        })
+        .next()
         .unwrap();
 
     let mut is_concrete = false;
@@ -622,30 +609,32 @@ fn variants(attr: Attribute) -> Vec<(String, bool)> {
         .clone()
         .into_iter()
         .filter_map(|token_tree| match token_tree {
-            TokenTree::Term(term) => {
-                is_concrete = term.as_str() == "concrete";
+            TokenTree::Ident(ident) => {
+                is_concrete = ident.to_string() == "concrete";
                 None
             }
             TokenTree::Group(group) => Some(group.stream().into_iter().filter_map(
                 move |token_tree| match token_tree {
-                    TokenTree::Term(term) => Some((term.as_str().to_owned(), is_concrete)),
+                    TokenTree::Ident(ident) => Some((ident, is_concrete)),
                     _ => None,
                 },
             )),
             _ => None,
-        }).flat_map(|i| i)
+        })
+        .flat_map(|i| i)
         .collect()
 }
 
 fn is_functional(attr: Attribute) -> bool {
     let group = attr
-        .tts
+        .tokens
         .clone()
         .into_iter()
         .filter_map(|token_tree| match token_tree {
             TokenTree::Group(group) => Some(group),
             _ => None,
-        }).next()
+        })
+        .next()
         .unwrap();
 
     group
@@ -653,7 +642,7 @@ fn is_functional(attr: Attribute) -> bool {
         .clone()
         .into_iter()
         .any(|token_tree| match token_tree {
-            TokenTree::Term(term) => term.as_str() == "functional",
+            TokenTree::Ident(ident) => ident.to_string() == "functional",
             _ => false,
         })
 }
