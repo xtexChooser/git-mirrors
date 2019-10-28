@@ -20,19 +20,19 @@
 use std::result;
 
 /// The Error type
-#[derive(Copy, Clone, Debug, Eq, Fail, PartialEq)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, thiserror::Error)]
 pub enum Error {
     /// This error occurs when an Activity Streams type does not contain a requested value
-    #[fail(display = "Key not present")]
+    #[error("Key not present")]
     NotFound,
 
     /// This error occurs when a requested value could not be deserialized into the requested type
-    #[fail(display = "Failed to deserialize data as requested type")]
+    #[error("Failed to deserialize data as requested type")]
     Deserialize,
 
     /// This error occurs when a provided item could not be serialized into an Activity Streams
     /// type
-    #[fail(display = "Failed to serialize data")]
+    #[error("Failed to serialize data")]
     Serialize,
 }
 

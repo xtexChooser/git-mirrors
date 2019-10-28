@@ -10,8 +10,8 @@ Add the required crates to your `Cargo.toml`
 ```toml
 # Cargo.toml
 
-activitystreams-derive = "0.1"
-activitystreams-traits = "0.1"
+activitystreams-derive = "0.2"
+activitystreams-traits = "0.2"
 serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"

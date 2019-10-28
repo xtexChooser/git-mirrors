@@ -12,20 +12,19 @@ For basic use, add the following to your Cargo.toml
 ```toml
 # Cargo.toml
 
-activitystreams = "0.2"
+activitystreams = "0.3"
 ```
 
 And then use it in your project
 ```rust
 extern crate activitystreams;
-extern crate failure;
+extern crate anyhow;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
 extern crate serde_json;
 
 use activitystreams::{context, Object, Actor, object::Profile};
-use failure::Error;
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -40,7 +39,7 @@ pub struct Persona {
 impl Object for Persona {}
 impl Actor for Persona {}
 
-fn run() -> Result<(), Error> {
+fn run() -> Result<(), anyhow::Error> {
     let mut profile = Profile::default();
 
     profile.profile.set_describes_object(Persona {
@@ -77,7 +76,7 @@ And then in your project
 extern crate activitystreams_derive;
 extern crate activitystreams_traits;
 extern crate activitystreams_types;
-extern crate failure;
+extern crate anyhow;
 extern crate serde;
 #[macro_use]
 extern crate serde_derive;
@@ -85,7 +84,6 @@ extern crate serde_json;
 
 use activitystreams_traits::{Link, Object};
 use activitystreams_types::{CustomLink, link::Mention};
-use failure::Error;
 
 /// Using the UnitString derive macro
 ///
@@ -118,7 +116,7 @@ pub struct MyProperties {
     pub required_key: serde_json::Value,
 }
 
-fn run() -> Result<(), Error> {
+fn run() -> Result<(), anyhow::Error> {
     let mut props = MyProperties::default();
 
     props.set_required_key_string("Hey".to_owned())?;

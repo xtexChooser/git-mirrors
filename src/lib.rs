@@ -27,14 +27,13 @@
 //!
 //! ```rust
 //! extern crate activitystreams;
-//! extern crate failure;
+//! extern crate anyhow;
 //! extern crate serde;
 //! #[macro_use]
 //! extern crate serde_derive;
 //! extern crate serde_json;
 //!
 //! use activitystreams::{context, Object, Actor, object::Profile};
-//! use failure::Error;
 //!
 //! #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 //! #[serde(rename_all = "camelCase")]
@@ -49,7 +48,7 @@
 //! impl Object for Persona {}
 //! impl Actor for Persona {}
 //!
-//! fn run() -> Result<(), Error> {
+//! fn run() -> Result<(), anyhow::Error> {
 //!     let mut profile = Profile::default();
 //!
 //!     profile.profile.set_describes_object(Persona {
@@ -79,7 +78,7 @@
 //! extern crate activitystreams_derive;
 //! extern crate activitystreams_traits;
 //! extern crate activitystreams_types;
-//! extern crate failure;
+//! extern crate anyhow;
 //! extern crate serde;
 //! #[macro_use]
 //! extern crate serde_derive;
@@ -87,7 +86,6 @@
 //!
 //! use activitystreams_traits::{Link, Object};
 //! use activitystreams_types::{CustomLink, link::Mention};
-//! use failure::Error;
 //!
 //! /// Using the UnitString derive macro
 //! ///
@@ -120,7 +118,7 @@
 //!     pub required_key: serde_json::Value,
 //! }
 //!
-//! fn run() -> Result<(), Error> {
+//! fn run() -> Result<(), anyhow::Error> {
 //!     let mut props = MyProperties::default();
 //!
 //!     props.set_required_key_string("Hey".to_owned())?;
