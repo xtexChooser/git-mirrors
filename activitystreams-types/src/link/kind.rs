@@ -18,6 +18,7 @@
  */
 
 //! Namespace for Unit Structs that serialize to strings
+use activitystreams_derive::UnitString;
 
 /// A Unit Struct that represents the string "Mention"
 #[derive(Clone, Debug, Default, UnitString)]

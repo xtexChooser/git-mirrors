@@ -17,7 +17,7 @@
  * along with ActivityStreams Traits.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use object::Object;
+use crate::object::Object;
 
 /// `Actor` types are `Object` types that are capable of performing activities.
 ///

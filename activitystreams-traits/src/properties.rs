@@ -21,9 +21,8 @@
 //! types
 
 use serde::{de::DeserializeOwned, ser::Serialize};
-use serde_json;
 
-use error::{Error, Result};
+use crate::error::{Error, Result};
 
 /// Deserialize a `Value` into concrete type I
 pub fn from_value<I>(item: &serde_json::Value) -> Result<I>

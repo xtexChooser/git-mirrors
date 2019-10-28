@@ -22,14 +22,9 @@
 //! To use these properties in your own types, you can flatten them into your struct with serde:
 //!
 //! ```rust
-//! extern crate activitystreams_traits;
-//! extern crate activitystreams_types;
-//! extern crate serde;
-//! #[macro_use]
-//! extern crate serde_derive;
-//!
 //! use activitystreams_traits::Link;
 //! use activitystreams_types::link::properties::LinkProperties;
+//! use serde_derive::{Deserialize, Serialize};
 //!
 //! #[derive(Clone, Debug, Serialize, Deserialize)]
 //! #[serde(rename_all = "camelCase")]
@@ -49,9 +44,9 @@
 //! # fn main() {}
 //! ```
 
+use activitystreams_derive::Properties;
 use activitystreams_traits::{Error, Link, Object, Result};
-use mime;
-use serde_json;
+use serde_derive::{Deserialize, Serialize};
 
 /// Define all the properties of the Object base type as described by the Activity Streams
 /// vocabulary.

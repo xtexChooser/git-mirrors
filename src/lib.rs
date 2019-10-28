@@ -26,14 +26,8 @@
 //! ### Basic
 //!
 //! ```rust
-//! extern crate activitystreams;
-//! extern crate anyhow;
-//! extern crate serde;
-//! #[macro_use]
-//! extern crate serde_derive;
-//! extern crate serde_json;
-//!
 //! use activitystreams::{context, Object, Actor, object::Profile};
+//! use serde_derive::{Deserialize, Serialize};
 //!
 //! #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 //! #[serde(rename_all = "camelCase")]
@@ -74,18 +68,10 @@
 //! ### Advanced
 //!
 //! ```rust
-//! #[macro_use]
-//! extern crate activitystreams_derive;
-//! extern crate activitystreams_traits;
-//! extern crate activitystreams_types;
-//! extern crate anyhow;
-//! extern crate serde;
-//! #[macro_use]
-//! extern crate serde_derive;
-//! extern crate serde_json;
-//!
+//! use activitystreams_derive::{Properties, UnitString};
 //! use activitystreams_traits::{Link, Object};
 //! use activitystreams_types::{CustomLink, link::Mention};
+//! use serde_derive::{Deserialize, Serialize};
 //!
 //! /// Using the UnitString derive macro
 //! ///
@@ -135,9 +121,6 @@
 //! #   run().unwrap();
 //! # }
 //! ```
-
-extern crate activitystreams_traits;
-extern crate activitystreams_types;
 
 pub mod activity;
 pub mod actor;

@@ -17,14 +17,16 @@
  * along with ActivityStreams Types.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use activitystreams_derive::Properties;
 use activitystreams_traits::{Activity, Object};
+use serde_derive::{Deserialize, Serialize};
 
 use super::{
     kind::InviteType,
     properties::{ActivityProperties, InviteProperties},
     ActivityExt,
 };
-use object::{properties::ObjectProperties, ObjectExt};
+use crate::object::{properties::ObjectProperties, ObjectExt};
 
 /// A specialization of Offer in which the actor is extending an invitation for the object to the
 /// target.

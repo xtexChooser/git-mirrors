@@ -25,13 +25,8 @@
 //! ## Examples
 //!
 //! ```rust
-//! extern crate activitystreams_traits;
-//! extern crate serde;
-//! #[macro_use]
-//! extern crate serde_derive;
-//! extern crate serde_json;
-//!
 //! use activitystreams_traits::{Object, Actor};
+//! use serde_derive::{Deserialize, Serialize};
 //!
 //! #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 //! #[serde(rename_all = "camelCase")]
@@ -48,9 +43,6 @@
 //!
 //! # fn main() {}
 //! ```
-
-extern crate serde;
-extern crate serde_json;
 
 mod activity;
 mod actor;

@@ -48,34 +48,12 @@ mod undo;
 mod update;
 mod view;
 
-pub use self::accept::*;
-pub use self::add::*;
-pub use self::amove::*;
-pub use self::announce::*;
-pub use self::arrive::*;
-pub use self::block::*;
-pub use self::create::*;
-pub use self::delete::*;
-pub use self::dislike::*;
-pub use self::flag::*;
-pub use self::follow::*;
-pub use self::ignore::*;
-pub use self::invite::*;
-pub use self::join::*;
-pub use self::leave::*;
-pub use self::like::*;
-pub use self::listen::*;
-pub use self::offer::*;
-pub use self::question::*;
-pub use self::read::*;
-pub use self::reject::*;
-pub use self::remove::*;
-pub use self::tentative_accept::*;
-pub use self::tentative_reject::*;
-pub use self::travel::*;
-pub use self::undo::*;
-pub use self::update::*;
-pub use self::view::*;
+pub use self::{
+    accept::*, add::*, amove::*, announce::*, arrive::*, block::*, create::*, delete::*,
+    dislike::*, flag::*, follow::*, ignore::*, invite::*, join::*, leave::*, like::*, listen::*,
+    offer::*, question::*, read::*, reject::*, remove::*, tentative_accept::*, tentative_reject::*,
+    travel::*, undo::*, update::*, view::*,
+};
 
 use activitystreams_traits::Activity;
 

@@ -22,14 +22,9 @@
 //! To use these properties in your own types, you can flatten them into your struct with serde:
 //!
 //! ```rust
-//! extern crate activitystreams_traits;
-//! extern crate activitystreams_types;
-//! extern crate serde;
-//! #[macro_use]
-//! extern crate serde_derive;
-//!
 //! use activitystreams_traits::Object;
 //! use activitystreams_types::object::properties::ObjectProperties;
+//! use serde_derive::{Deserialize, Serialize};
 //!
 //! #[derive(Clone, Debug, Serialize, Deserialize)]
 //! #[serde(rename_all = "camelCase")]
@@ -49,12 +44,12 @@
 //! # fn main() {}
 //! ```
 
+use activitystreams_derive::Properties;
 use activitystreams_traits::{Collection, Error, Link, Object, Result};
 use chrono::{offset::Utc, DateTime};
-use mime;
-use serde_json;
+use serde_derive::{Deserialize, Serialize};
 
-use object::Image;
+use crate::object::Image;
 
 /// Alias chrono::DateTime<Utc> for use in derive macros
 pub type UtcTime = DateTime<Utc>;

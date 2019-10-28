@@ -19,6 +19,8 @@
 
 //! Namespace for Unit Structs that serialize to strings
 
+use activitystreams_derive::UnitString;
+
 #[derive(Clone, Debug, Default, UnitString)]
 #[activitystreams(Accept)]
 pub struct AcceptType;

@@ -19,7 +19,9 @@
 
 //! Namespace for Object types
 
+use activitystreams_derive::Properties;
 use activitystreams_traits::Object;
+use serde_derive::{Deserialize, Serialize};
 
 pub mod kind;
 pub mod properties;

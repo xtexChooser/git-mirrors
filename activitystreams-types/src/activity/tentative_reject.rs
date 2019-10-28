@@ -17,14 +17,16 @@
  * along with ActivityStreams Types.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+use activitystreams_derive::Properties;
 use activitystreams_traits::{Activity, Object};
+use serde_derive::{Deserialize, Serialize};
 
 use super::{
     kind::TentativeRejectType,
     properties::{ActivityProperties, TentativeRejectProperties},
     ActivityExt,
 };
-use object::{properties::ObjectProperties, ObjectExt};
+use crate::object::{properties::ObjectProperties, ObjectExt};
 
 /// A specialization of Reject in which the rejection is considered tentative.
 #[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]

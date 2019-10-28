@@ -17,7 +17,7 @@
  * along with ActivityStreams Traits.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use object::Object;
+use crate::object::Object;
 
 /// An Activity is a subtype of `Object` that describes some form of action that may happen, is
 /// currently happening, or has already happened.
