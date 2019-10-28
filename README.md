@@ -17,14 +17,8 @@ activitystreams = "0.3"
 
 And then use it in your project
 ```rust
-extern crate activitystreams;
-extern crate anyhow;
-extern crate serde;
-#[macro_use]
-extern crate serde_derive;
-extern crate serde_json;
-
 use activitystreams::{context, Object, Actor, object::Profile};
+use serde_derive::{Serialize, Deserialize};
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -73,17 +67,10 @@ serde_json = "1.0"
 And then in your project
 ```rust
 #[macro_use]
-extern crate activitystreams_derive;
-extern crate activitystreams_traits;
-extern crate activitystreams_types;
-extern crate anyhow;
-extern crate serde;
-#[macro_use]
-extern crate serde_derive;
-extern crate serde_json;
-
+use activitystreams_derive::{Properties, UnitString};
 use activitystreams_traits::{Link, Object};
 use activitystreams_types::{CustomLink, link::Mention};
+use serde_derive::{Deserialize, Serialize};
 
 /// Using the UnitString derive macro
 ///

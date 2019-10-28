@@ -11,12 +11,8 @@ projects. See the `activitystreams-types` crate for examples of how these traits
 ## Examples
 
 ```rust
-extern crate activitystreams_traits;
-extern crate serde;
-#[macro_use]
-extern crate serde_derive;
-
 use activitystreams_traits::{Object, Actor};
+use serde_derive::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]

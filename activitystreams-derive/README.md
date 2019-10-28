@@ -19,15 +19,9 @@ serde_json = "1.0"
 
 And then in your project
 ```rust
-#[macro_use]
-extern crate activitystreams_derive;
-extern crate activitystreams_traits;
-extern crate serde;
-#[macro_use]
-extern crate serde_derive;
-extern crate serde_json;
-
+use activitystreams_derive::{Properties, UnitString};
 use activitystreams_traits::{Link, Object};
+use serde_derive::{Deserialize, Serialize};
 
 /// Using the UnitString derive macro
 ///

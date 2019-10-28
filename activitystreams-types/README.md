@@ -17,10 +17,6 @@ Then use it in your project!
 ```rust
 // in your project
 
-extern crate activitystreams_types;
-extern crate failure;
-extern crate serde_json;
-
 use activitystreams_types::{context, link::Mention};
 use failure::Error;
 
