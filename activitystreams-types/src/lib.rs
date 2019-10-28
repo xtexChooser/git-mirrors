@@ -24,13 +24,12 @@
 //! ## Example Usage
 //! ```rust
 //! extern crate activitystreams_types;
-//! extern crate failure;
+//! extern crate anyhow;
 //! extern crate serde_json;
 //!
 //! use activitystreams_types::{context, link::Mention};
-//! use failure::Error;
 //!
-//! fn run() -> Result<(), Error> {
+//! fn run() -> Result<(), anyhow::Error> {
 //!     /// A Mention is the only predefined Link type in the Activity Streams spec
 //!     let mut mention = Mention::default();
 //!     mention.link_props.set_context_object(context())?;
