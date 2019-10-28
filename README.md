@@ -66,7 +66,6 @@ serde_json = "1.0"
 
 And then in your project
 ```rust
-#[macro_use]
 use activitystreams_derive::{Properties, UnitString};
 use activitystreams_traits::{Link, Object};
 use activitystreams_types::{CustomLink, link::Mention};
