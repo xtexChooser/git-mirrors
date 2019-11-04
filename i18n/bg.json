@@ -2,11 +2,12 @@
 	"@metadata": {
 		"authors": [
 			"StanProg",
-			"ShockD"
+			"ShockD",
+			"Ted Masters"
 		]
 	},
 	"echo-category-title-login-fail": "Неуспешни опити за влизане",
-	"echo-pref-tooltip-login-fail": "Известяване, при неуспешни опити за влизане в моята сметка.",
+	"echo-pref-tooltip-login-fail": "Известяване при неуспешни опити за влизане в моята сметка.",
 	"echo-category-title-login-success": "Влизане от непознато устройство",
 	"echo-pref-tooltip-login-success": "Известяване, когато някой влезе в моята сметка от непознато устройство или IP-адрес.",
 	"loginnotify-primary-link": "Помощ",
