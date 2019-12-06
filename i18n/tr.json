@@ -2,15 +2,20 @@
 	"@metadata": {
 		"authors": [
 			"Hbseren",
-			"Sayginer"
+			"Sayginer",
+			"BaRaN6161 TURK"
 		]
 	},
 	"loginnotify-desc": "Tanınmayan cihaz ve/veya IP adreslerinden şüpheli oturum açma girişimleri hakkında kullanıcıları bilgilendirir",
 	"echo-category-title-login-fail": "Başarısız oturum açma girişimleri",
-	"echo-pref-tooltip-login-fail": "Hesabıma birden fazla başarısız oturum açma girişimi olduğu zaman bana bildir.",
-	"echo-category-title-login-success": "Yeni bilgisayardan giriş",
+	"echo-pref-tooltip-login-fail": "Hesabımda oturum açma girişimi başarısız olduğunda bana bildir.",
+	"echo-category-title-login-success": "Tanıdık olmayan bir cihazdan giriş yapın",
 	"echo-pref-tooltip-login-success": "Birisi hesabıma daha önce kullanmadığım bir cihaz ve/veya IP adresinden giriş yaptığı zaman bana bildir.",
+	"loginnotify-primary-link": "Yardım",
 	"notification-loginnotify-login-fail-email-subject": "{{SITENAME}} sitesine $1 kullanıcısı olarak {{PLURAL:$2|başarısız giriş|birden çok başarısız giriş}} denemesi",
-	"notification-loginnotify-login-success-email-subject": "{{SITENAME}} sitesine $1 kullanıcısı olarak, daha önce kullanmadığınız bir bilgisayardan giriş",
-	"notification-header-login-success": "Birisi başarılı bir şekilde hesabınıza yakın zamanda düzenleme yapmakta olduğunuzun dışındaki bir bilgisayardan giriş yapmış."
+	"notification-loginnotify-login-success-email-subject": "{{SITENAME}}'e {{GENDER:$1|sizin}} bir cihazdan $1 olarak giriş yapın",
+	"notification-header-login-success": "Yakın zamanda hesabınıza yeni bir cihazdan giriş yapmış (muhtemelen {{GENDER:$1|siz}}). Eğer bu sizseniz, o zaman bu mesajı ihmal edebilirsiniz. Sen değilsen, şifreni değiştirmen ve hesap etkinliğini kontrol etmen önerilir.",
+	"notification-new-bundled-header-login-fail": "{{PLURAL:$1|'''Başarısız bir girişim oldu'''|'''$1 başarısız oldu'''}} yeni bir cihazdan en son giriş yaptığınız zaman hesabınıza giriş yapmak için giriş yaptı. Eğer siz değilseniz, lütfen hesabınızın güçlü bir şifresi olduğundan emin olun.",
+	"notification-known-header-login-fail": "{{PLURAL:$1|'''başarısız bir girişim oldu''' |'''$1 başarısız oldu'''}}, hesabınıza son giriş yaptığınız günden bu yana giriş yapmayı denedi. Lütfen, hesabınızın güçlü bir şifresi olduğundan emin olun.",
+	"notification-new-unbundled-header-login-fail": "{{PLURAL:$1|'''Başarısız bir girişim oldu'''|'''Başarısız bir girişim oldu'''}}. Hesabınıza yeni bir cihazdan giriş yapmak için, lütfen hesabınızın güçlü bir şifresi olduğundan emin olun."
 }
