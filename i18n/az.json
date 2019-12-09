@@ -6,6 +6,8 @@
 			"Neriman2003"
 		]
 	},
+	"echo-category-title-login-success": "Fərqli cihazdan daxil olma",
+	"echo-pref-tooltip-login-success": "Kimsə hesabıma əvvəllər istifadə etmədiyim cihaz və ya IP ünvanından daxil olduğu zaman mənə bildiriş göndər.",
 	"loginnotify-primary-link": "Kömək",
 	"notification-loginnotify-login-success-email-subject": "Əvvəllər istifadə etmədiyiniz kompüterdən {{SITENAME}} layihəsinə $1 istifadəçi adı ilə daxilolma",
 	"notification-header-login-success": "Kimsə (ehtimal ki, {{GENDER:$1|siz}} özünüz), sizin istifadəçi hesabınıza yeni kompüterdən daxil olub. Əgər bu siz özünüz idinizsə, o halda bu bildirişə məhəl qoymayın. Əgər bu siz deyildinizsə, o zaman parolunuzu dəyişməyi və hesabınızdan edilmiş redaktələri nəzərdən keçirməyi məsləhət görürük.",
