@@ -613,8 +613,8 @@ class LoginNotify implements LoggerAwareInterface {
 	 * When generating a new hash, only use the first argument.
 	 *
 	 * @param string $username Username,
-	 * @param int|bool $year int [Optional] Year. Default to current year
-	 * @param string|bool $salt [Optional] Salt (expected to be base-36 encoded)
+	 * @param string|false $year [Optional] Year. Default to current year
+	 * @param string|false $salt [Optional] Salt (expected to be base-36 encoded)
 	 * @return string A record for the cookie
 	 */
 	private function generateUserCookieRecord( $username, $year = false, $salt = false ) {
