@@ -593,7 +593,7 @@ class LoginNotify implements LoggerAwareInterface {
 			);
 			return false;
 		}
-		if ( (int)$parts[0] < gmdate( 'Y' ) - 3 ) {
+		if ( (int)$parts[0] < (int)gmdate( 'Y' ) - 3 ) {
 			// Record is too old. If user hasn't logged in from this
 			// computer in two years, should probably not consider it trusted.
 			return false;
