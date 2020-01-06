@@ -6,6 +6,8 @@
 			"Neriman2003"
 		]
 	},
+	"echo-category-title-login-fail": "Uğursuz daxilolma cəhdləri",
+	"echo-pref-tooltip-login-fail": "İstifadəçi hesabıma daxilolma uğursuz olduqda mənə bildiriş göndər.",
 	"echo-category-title-login-success": "Fərqli cihazdan daxil olma",
 	"echo-pref-tooltip-login-success": "Kimsə hesabıma əvvəllər istifadə etmədiyim cihaz və ya IP ünvanından daxil olduğu zaman mənə bildiriş göndər.",
 	"loginnotify-primary-link": "Kömək",
