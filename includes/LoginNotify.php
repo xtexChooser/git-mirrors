@@ -12,22 +12,22 @@ use BagOStuff;
 use CentralAuthUser;
 use Config;
 use EchoEvent;
+use Exception;
 use ExtensionRegistry;
 use IBufferingStatsdDataFactory;
+use IP;
 use JobQueueGroup;
 use JobSpecification;
-use MediaWiki\MediaWikiServices;
-use WebRequest;
-use Wikimedia\Assert\Assert;
-use Exception;
-use IP;
 use MediaWiki\Logger\LoggerFactory;
+use MediaWiki\MediaWikiServices;
 use MWCryptRand;
-use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
 use RequestContext;
 use UnexpectedValueException;
 use User;
+use WebRequest;
+use Wikimedia\Assert\Assert;
 use Wikimedia\Rdbms\IDatabase;
 
 /**
@@ -167,7 +167,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 *
 	 * @param User $user User in question
 	 * @param string $subnet User's current subnet
-	 * @param string $resultSoFar Value returned by isKnownSystemFast() or null if
+	 * @param string|null $resultSoFar Value returned by isKnownSystemFast() or null if
 	 *        not available.
 	 * @return bool true if the user has used this computer before
 	 */
@@ -704,7 +704,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 *
 	 * @param User $user The account in question
 	 * @param string $type 'login-fail-new' or 'login-fail-known'
-	 * @param int $count [Optional] How many failed attempts
+	 * @param int|null $count [Optional] How many failed attempts
 	 */
 	private function sendNotice( User $user, $type, $count = null ) {
 		$extra = [];
