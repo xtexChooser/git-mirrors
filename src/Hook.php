@@ -24,9 +24,9 @@ namespace CategoryWatch;
 use Category;
 use EchoEvent;
 use MediaWiki\MediaWikiServices;
-use WatchedItemStore;
 use Title;
 use User;
+use WatchedItemStore;
 use WikiPage;
 
 class Hook {
@@ -164,7 +164,8 @@ class Hook {
 	 * Mirror of WatchedItemStore::addWatchBatchForUser
 	 *
 	 * @param array $watchers list of users
-	 * @param Title $title title to add them to
+	 * @param Title $target title to add them to
+	 * @return bool
 	 */
 	private static function addUserBatchForWatch( array $watchers, Title $target ) {
 		if ( wfReadOnly() ) {
