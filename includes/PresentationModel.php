@@ -25,7 +25,7 @@ class PresentationModel extends EchoEventPresentationModel {
 	 */
 	public function getPrimaryLink() {
 		return [
-			'url' => 'https://mediawiki.org/wiki/Help:Login_notifications',
+			'url' => 'https://mediawiki.org/wiki/Special:MyLanguage/Help:Login_notifications',
 			'label' => $this->msg( 'loginnotify-primary-link' )->text()
 		];
 	}
