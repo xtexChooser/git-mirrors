@@ -15,7 +15,6 @@ use EchoEvent;
 use Exception;
 use ExtensionRegistry;
 use IBufferingStatsdDataFactory;
-use IP;
 use JobQueueGroup;
 use JobSpecification;
 use MediaWiki\Logger\LoggerFactory;
@@ -28,6 +27,7 @@ use UnexpectedValueException;
 use User;
 use WebRequest;
 use Wikimedia\Assert\Assert;
+use Wikimedia\IPUtils;
 use Wikimedia\Rdbms\IDatabase;
 
 /**
@@ -106,11 +106,11 @@ class LoginNotify implements LoggerAwareInterface {
 	 * @throws Exception If regex totally fails (Should never happen)
 	 */
 	private function getIPNetwork( $ip ) {
-		$ip = IP::sanitizeIP( $ip );
-		if ( IP::isIPv6( $ip ) ) {
+		$ip = IPUtils::sanitizeIP( $ip );
+		if ( IPUtils::isIPv6( $ip ) ) {
 			// Match against the /64
 			$subnetRegex = '/[0-9A-F]+:[0-9A-F]+:[0-9A-F]+:[0-9A-F]+$/i';
-		} elseif ( IP::isIPv4( $ip ) ) {
+		} elseif ( IPUtils::isIPv4( $ip ) ) {
 			// match against the /24
 			$subnetRegex = '/\d+$/';
 		} else {
