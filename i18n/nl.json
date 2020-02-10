@@ -5,13 +5,14 @@
 			"Festina90",
 			"Mainframe98",
 			"Mar(c)",
-			"Woodcutterty"
+			"Woodcutterty",
+			"PiefPafPier"
 		]
 	},
 	"echo-category-title-login-fail": "Mislukte aanmeldpogingen",
-	"echo-pref-tooltip-login-fail": "Informeer mij wanneer er voor mijn account mislukte aanmeldpogingen plaatsvinden.",
+	"echo-pref-tooltip-login-fail": "Meld mij wanneer er voor mijn account mislukte aanmeldpogingen plaatsvinden.",
 	"echo-category-title-login-success": "Aanmelding vanaf onbekend apparaat",
-	"echo-pref-tooltip-login-success": "Informeer mij telkens als iemand zich met mijn account aanmeldt vanaf een onbekend apparaat en IP-adres.",
+	"echo-pref-tooltip-login-success": "Meld mij wanneer iemand zich met mijn account aanmeldt vanaf een onbekend apparaat en IP-adres.",
 	"loginnotify-primary-link": "Hulp",
 	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Mislukte aanmeldingspoging|Meerdere mislukte aanmeldingspogingen}} op {{SITENAME}} als $1",
 	"notification-loginnotify-login-success-email-subject": "Er is aangemeld op {{SITENAME}} als $1 vanaf een apparaat dat u niet recentelijk hebt gebruikt",

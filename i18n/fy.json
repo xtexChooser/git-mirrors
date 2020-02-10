@@ -5,5 +5,7 @@
 		]
 	},
 	"echo-category-title-login-fail": "Mislearre besykjen ta ynloggen",
-	"echo-category-title-login-success": "Ynloch út ûnbekend apparaat wei"
+	"echo-pref-tooltip-login-fail": "Meld my wannear't der fergees besocht is op myn akkount oan te melden.",
+	"echo-category-title-login-success": "Ynloch út ûnbekend apparaat wei",
+	"echo-pref-tooltip-login-success": "Meld my wannear't immen him oanmeldt op myn akkount, út in ûnbekend apparaat en IP-adres wei."
 }
