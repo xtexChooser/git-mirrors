@@ -717,10 +717,10 @@ class LoginNotify implements LoggerAwareInterface {
 			'agent' => $user,
 		] );
 
-		$this->log->info( 'Sending a {type} notification to {user}',
+		$this->log->info( 'Sending a {notificationtype} notification to {user}',
 			[
 				'function' => __METHOD__,
-				'type' => $type,
+				'notificationtype' => $type,
 				'user' => $user->getName(),
 			]
 		);
