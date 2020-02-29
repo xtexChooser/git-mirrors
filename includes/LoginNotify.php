@@ -562,7 +562,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 * machines.
 	 *
 	 * @param User $user
-	 * @param $cookieRecord
+	 * @param string $cookieRecord
 	 * @return bool
 	 */
 	private function isUserRecordGivenCookie( User $user, $cookieRecord ) {
@@ -638,8 +638,8 @@ class LoginNotify implements LoggerAwareInterface {
 	/**
 	 * Get the cache key for the counter.
 	 *
-	 * @param $user User
-	 * @param $type string 'known' or 'new'
+	 * @param User $user
+	 * @param string $type 'known' or 'new'
 	 * @return string The cache key
 	 */
 	private function getKey( User $user, $type ) {

@@ -100,7 +100,7 @@ class MigratePreferences extends LoggedUpdateMaintenance {
 	 * Update one user's preferences
 	 *
 	 * @param object $userRow Row from the user table
-	 * @param array $options Associative array of preference => value
+	 * @param array &$options Associative array of preference => value
 	 * @return int Number of options updated
 	 */
 	private function updateUser( $userRow, array &$options ) {
