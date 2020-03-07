@@ -19,7 +19,7 @@
 
 //! Namespace for Object types
 
-use activitystreams_derive::Properties;
+use activitystreams_derive::{PropRefs, Properties};
 use activitystreams_traits::Object;
 use serde_derive::{Deserialize, Serialize};
 
@@ -37,7 +37,7 @@ pub trait ObjectExt: Object {
 }
 
 /// Represents any kind of multi-paragraph written work.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Article {
     #[serde(rename = "type")]
@@ -47,22 +47,12 @@ pub struct Article {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 }
 
-impl Object for Article {}
-impl ObjectExt for Article {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
-}
-
 /// Represents an audio document of any kind.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Audio {
     #[serde(rename = "type")]
@@ -72,22 +62,12 @@ pub struct Audio {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 }
 
-impl Object for Audio {}
-impl ObjectExt for Audio {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
-}
-
 /// Represents a document of any kind.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Document {
     #[serde(rename = "type")]
@@ -97,22 +77,12 @@ pub struct Document {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 }
 
-impl Object for Document {}
-impl ObjectExt for Document {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
-}
-
 /// Represents any kind of event.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Event {
     #[serde(rename = "type")]
@@ -122,22 +92,12 @@ pub struct Event {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 }
 
-impl Object for Event {}
-impl ObjectExt for Event {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
-}
-
 /// An image document of any kind
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Image {
     #[serde(rename = "type")]
@@ -147,22 +107,12 @@ pub struct Image {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 }
 
-impl Object for Image {}
-impl ObjectExt for Image {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
-}
-
 /// Represents a short written work typically less than a single paragraph in length.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Note {
     #[serde(rename = "type")]
@@ -172,22 +122,12 @@ pub struct Note {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 }
 
-impl Object for Note {}
-impl ObjectExt for Note {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
-}
-
 /// Represents a Web Page.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Page {
     #[serde(rename = "type")]
@@ -197,18 +137,8 @@ pub struct Page {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
-}
-
-impl Object for Page {}
-impl ObjectExt for Page {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
 }
 
 /// Represents a logical or physical location.
@@ -229,7 +159,7 @@ impl ObjectExt for Page {
 /// While publishers are not required to use these specific properties and MAY make use of other
 /// mechanisms for describing locations, consuming implementations that support the Place object
 /// MUST support the use of these properties.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Place {
     #[serde(rename = "type")]
@@ -239,29 +169,20 @@ pub struct Place {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 
     /// Adds all valid place properties to this struct
     #[serde(flatten)]
+    #[activitystreams(None)]
     pub place: PlaceProperties,
-}
-
-impl Object for Place {}
-impl ObjectExt for Place {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
 }
 
 /// A Profile is a content object that describes another `Object`, typically used to describe
 /// `Actor` Type objects.
 ///
 /// The `describes` property is used to reference the object being described by the profile.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs, Properties)]
 #[serde(rename_all = "camelCase")]
 pub struct Profile {
     #[serde(rename = "type")]
@@ -271,22 +192,13 @@ pub struct Profile {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 
     /// Adds all valid profile properties to this struct
     #[serde(flatten)]
+    #[activitystreams(None)]
     pub profile: ProfileProperties,
-}
-
-impl Object for Profile {}
-impl ObjectExt for Profile {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
 }
 
 /// Describes a relationship between two individuals.
@@ -303,7 +215,7 @@ impl ObjectExt for Profile {
 /// individuals that are directly connected within a person's social graph. Suppose we have a user,
 /// Sally, with direct relationships to users Joe and Jane. Sally follows Joe's updates while Sally
 /// and Jane have a mutual relationship.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties, PropRefs)]
 #[serde(rename_all = "camelCase")]
 pub struct Relationship {
     #[serde(rename = "type")]
@@ -313,29 +225,20 @@ pub struct Relationship {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 
     /// Adds all valid relationship properties to this struct
     #[serde(flatten)]
+    #[activitystreams(None)]
     pub relationship: RelationshipProperties,
-}
-
-impl Object for Relationship {}
-impl ObjectExt for Relationship {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
 }
 
 /// A Tombstone represents a content object that has been deleted.
 ///
 /// It can be used in Collections to signify that there used to be an object at this position, but
 /// it has been deleted.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Tombstone {
     #[serde(rename = "type")]
@@ -345,26 +248,17 @@ pub struct Tombstone {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 
     /// Adds all valid tombstone properties to this struct
     #[serde(flatten)]
+    #[activitystreams(None)]
     pub tombstone_props: TombstoneProperties,
 }
 
-impl Object for Tombstone {}
-impl ObjectExt for Tombstone {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
-}
-
 /// Represents a video document of any kind.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Video {
     #[serde(rename = "type")]
@@ -374,16 +268,6 @@ pub struct Video {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
-}
-
-impl Object for Video {}
-impl ObjectExt for Video {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
 }

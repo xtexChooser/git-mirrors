@@ -70,6 +70,121 @@ use syn::{Attribute, Data, DeriveInput, Fields, Ident, Type};
 
 use std::iter::FromIterator;
 
+#[proc_macro_derive(PropRefs, attributes(activitystreams))]
+pub fn ref_derive(input: TokenStream) -> TokenStream {
+    let input: DeriveInput = syn::parse(input).unwrap();
+
+    let name = input.ident;
+
+    let data = match input.data {
+        Data::Struct(s) => s,
+        _ => panic!("Can only derive for structs"),
+    };
+
+    let fields = match data.fields {
+        Fields::Named(fields) => fields,
+        _ => panic!("Can only derive for named fields"),
+    };
+
+    let impls = fields
+        .named
+        .iter()
+        .filter_map(|field| {
+            let our_attr = field.attrs.iter().find(|attribute| {
+                attribute
+                    .path
+                    .segments
+                    .last()
+                    .map(|segment| {
+                        segment.ident == Ident::new("activitystreams", segment.ident.span())
+                    })
+                    .unwrap_or(false)
+            });
+
+            our_attr.map(move |our_attr| {
+                (
+                    field.ident.clone().unwrap(),
+                    field.ty.clone(),
+                    our_attr.clone(),
+                )
+            })
+        })
+        .flat_map(move |(ident, ty, attr)| {
+            let object = object(attr);
+            let name = name.clone();
+            let ext_trait = Ident::new(&format!("{}Ext", object), name.span());
+
+            let activity_impls = quote! {
+                impl #object for #name {}
+
+                impl #ext_trait for #name {
+                    fn props(&self) -> &#ty {
+                        self.as_ref()
+                    }
+
+                    fn props_mut(&mut self) -> &mut #ty {
+                        self.as_mut()
+                    }
+                }
+            };
+
+            let ref_impls = quote! {
+                impl AsRef<#ty> for #name {
+                    fn as_ref(&self) -> &#ty {
+                        &self.#ident
+                    }
+                }
+
+                impl AsMut<#ty> for #name {
+                    fn as_mut(&mut self) -> &mut #ty {
+                        &mut self.#ident
+                    }
+                }
+            };
+
+            if object == "None" {
+                ref_impls
+            } else {
+                quote! {
+                    #ref_impls
+                    #activity_impls
+                }
+            }
+        });
+
+    let tokens = proc_macro2::TokenStream::from_iter(impls);
+
+    let full = quote! {
+        #tokens
+    };
+
+    full.into()
+}
+
+fn object(attr: Attribute) -> Ident {
+    let group = attr
+        .tokens
+        .clone()
+        .into_iter()
+        .filter_map(|token_tree| match token_tree {
+            TokenTree::Group(group) => Some(group),
+            _ => None,
+        })
+        .next()
+        .unwrap();
+
+    group
+        .stream()
+        .clone()
+        .into_iter()
+        .filter_map(|token_tree| match token_tree {
+            TokenTree::Ident(ident) => Some(ident),
+            _ => None,
+        })
+        .next()
+        .unwrap()
+}
+
 #[proc_macro_derive(UnitString, attributes(activitystreams))]
 pub fn unit_string(input: TokenStream) -> TokenStream {
     let input: DeriveInput = syn::parse(input).unwrap();

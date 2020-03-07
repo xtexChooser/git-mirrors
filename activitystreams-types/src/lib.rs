@@ -61,5 +61,6 @@ pub mod collection;
 mod custom_props;
 pub mod link;
 pub mod object;
+pub mod primitives;
 
 pub use self::custom_props::{CustomLink, CustomObject};
