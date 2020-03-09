@@ -25,6 +25,7 @@
 //! use activitystreams_traits::Object;
 //! use activitystreams_types::object::properties::ObjectProperties;
 //! use serde_derive::{Deserialize, Serialize};
+//! use std::any::Any;
 //!
 //! #[derive(Clone, Debug, Serialize, Deserialize)]
 //! #[serde(rename_all = "camelCase")]
@@ -39,7 +40,15 @@
 //!     pub object_properties: ObjectProperties,
 //! }
 //!
-//! impl Object for MyObject {}
+//! impl Object for MyObject {
+//!     fn as_any(&self) -> &dyn Any {
+//!         self
+//!     }
+//!
+//!     fn as_any_mut(&mut self) -> &mut dyn Any {
+//!         self
+//!     }
+//! }
 //! #
 //! # fn main() {}
 //! ```

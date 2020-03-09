@@ -142,14 +142,22 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
             let name = name.clone();
             let ext_trait = Ident::new(&format!("{}Ext", object), name.span());
 
+            let tt = if object.to_string() == "Object" || object.to_string() == "Link" {
+                quote! {
+                    #[typetag::serde]
+                }
+            } else {
+                quote! {}
+            };
+
             let activity_impls = quote! {
-                #[typetag::serde]
+                #tt
                 impl #object for #name {
-                    fn as_any(&self) -> &std::any::Any {
+                    fn as_any(&self) -> &dyn std::any::Any {
                         self
                     }
 
-                    fn as_any_mut(&self) -> &mut std::any::Any {
+                    fn as_any_mut(&self) -> &mut dyn std::any::Any {
                         self
                     }
                 }
