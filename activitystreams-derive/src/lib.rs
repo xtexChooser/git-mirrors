@@ -21,10 +21,15 @@
 //!
 //! ## Examples
 //!
+//! First, add `serde` and `activitystreams-derive` to your Cargo.toml
+//! ```toml
+//! activitystreams-derive = "3.0"
+//! serde = { version = "1.0", features = ["derive"] }
+//! ```
+//!
 //! ```rust
-//! use activitystreams_derive::{Properties, UnitString};
-//! use activitystreams_traits::{Link, Object};
-//! use serde_derive::{Deserialize, Serialize};
+//! use activitystreams_derive::{properties, UnitString};
+//! use serde_json::Value;
 //!
 //! /// Using the UnitString derive macro
 //! ///
@@ -34,39 +39,62 @@
 //! #[activitystreams(SomeKind)]
 //! pub struct MyKind;
 //!
-//! /// Using the Properties derive macro
+//! /// Using the properties macro
 //! ///
 //! /// This macro generates getters and setters for the associated fields.
-//! #[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
-//! #[serde(rename_all = "camelCase")]
-//! pub struct MyProperties {
-//!     /// Derive getters and setters for @context with Link and Object traits.
-//!     #[serde(rename = "@context")]
-//!     #[activitystreams(ab(Object, Link))]
-//!     pub context: Option<serde_json::Value>,
-//!
-//!     /// Use the UnitString MyKind to enforce the type of the object by "SomeKind"
-//!     #[serde(rename = "type")]
-//!     pub kind: MyKind,
-//!
-//!     /// Derive getters and setters for required_key with String type.
-//!     ///
-//!     /// In the Activity Streams spec, 'functional' means there can only be one item for this
-//!     /// key. This means all fields not labeled 'functional' can also be serialized/deserialized
-//!     /// as Vec<T>.
-//!     #[activitystreams(concrete(String), functional)]
-//!     pub required_key: serde_json::Value,
+//! properties! {
+//!     My {
+//!         context {
+//!             types [
+//!                 Value,
+//!             ],
+//!             rename("@context"),
+//!         },
+//!         kind {
+//!             types [
+//!                 MyKind,
+//!             ],
+//!             functional,
+//!             required,
+//!             rename("type"),
+//!         },
+//!         required_key {
+//!             types [
+//!                 Value,
+//!             ],
+//!             functional,
+//!             required,
+//!         },
+//!     }
 //! }
 //! #
-//! # fn main () {}
+//! # fn main () -> Result<(), Box<dyn std::error::Error> {
+//! let s = r#"{
+//!     "@context": "http://www.w3c.org/ns#activitystreams",
+//!     "type": "SomeKind",
+//!     "required_key": {
+//!         "key": "value"
+//!     }
+//! }"#
+//!
+//! let m: MyProperties = serde_json::from_str(s)?;
+//! println!("{:?}", m.get_kind());
+//! # Ok(())
+//! # }
 //! ```
 
 extern crate proc_macro;
 
 use proc_macro::TokenStream;
 use proc_macro2::TokenTree;
-use quote::quote;
-use syn::{Attribute, Data, DeriveInput, Fields, Ident, Type};
+use quote::{quote, ToTokens};
+use syn::{
+    braced, bracketed, parenthesized,
+    parse::{Parse, ParseStream, Peek},
+    parse_macro_input,
+    punctuated::Punctuated,
+    token, Attribute, Data, DeriveInput, Fields, Ident, LitStr, Result, Token, Type,
+};
 
 use std::iter::FromIterator;
 
@@ -110,12 +138,21 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
             })
         })
         .flat_map(move |(ident, ty, attr)| {
-            let object = object(attr);
+            let object = from_value(attr);
             let name = name.clone();
             let ext_trait = Ident::new(&format!("{}Ext", object), name.span());
 
             let activity_impls = quote! {
-                impl #object for #name {}
+                #[typetag::serde]
+                impl #object for #name {
+                    fn as_any(&self) -> &std::any::Any {
+                        self
+                    }
+
+                    fn as_any_mut(&self) -> &mut std::any::Any {
+                        self
+                    }
+                }
 
                 impl #ext_trait for #name {
                     fn props(&self) -> &#ty {
@@ -159,30 +196,6 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
     };
 
     full.into()
-}
-
-fn object(attr: Attribute) -> Ident {
-    let group = attr
-        .tokens
-        .clone()
-        .into_iter()
-        .filter_map(|token_tree| match token_tree {
-            TokenTree::Group(group) => Some(group),
-            _ => None,
-        })
-        .next()
-        .unwrap();
-
-    group
-        .stream()
-        .clone()
-        .into_iter()
-        .filter_map(|token_tree| match token_tree {
-            TokenTree::Ident(ident) => Some(ident),
-            _ => None,
-        })
-        .next()
-        .unwrap()
 }
 
 #[proc_macro_derive(UnitString, attributes(activitystreams))]
@@ -294,470 +307,705 @@ fn from_value(attr: Attribute) -> Ident {
         .unwrap()
 }
 
-#[proc_macro_derive(Properties, attributes(activitystreams))]
-pub fn properties_derive(input: TokenStream) -> TokenStream {
-    let input: DeriveInput = syn::parse(input).unwrap();
+#[proc_macro]
+pub fn properties(tokens: TokenStream) -> TokenStream {
+    let Properties { name, fields } = parse_macro_input!(tokens as Properties);
 
-    let name = input.ident;
+    let name = Ident::new(&format!("{}Properties", name), name.span());
 
-    let data = match input.data {
-        Data::Struct(s) => s,
-        _ => panic!("Can only derive for structs"),
-    };
+    let (fields, deps): (Vec<_>, Vec<_>) = fields.iter().filter_map(|field| {
+        if field.description.types.is_empty() {
+            return None;
+        }
 
-    let fields = match data.fields {
-        Fields::Named(fields) => fields,
-        _ => panic!("Can only derive for named fields"),
-    };
-
-    let impls = fields
-        .named
-        .iter()
-        .filter_map(|field| {
-            let our_attr = field.attrs.iter().find(|attribute| {
-                attribute
-                    .path
-                    .segments
-                    .last()
-                    .map(|segment| {
-                        segment.ident == Ident::new("activitystreams", segment.ident.span())
-                    })
-                    .unwrap_or(false)
-            });
-
-            if our_attr.is_some() {
-                let our_attr = our_attr.unwrap();
-
-                let is_option = match field.ty {
-                    Type::Path(ref path) => path.path
-                        .segments
-                        .last()
-                        .map(|seg| {
-                            seg.ident == Ident::new("Option", seg.ident.span())
-                        })
-                        .unwrap_or(false),
-                    _ => false,
-                };
-
-                let is_vec = match field.ty {
-                    Type::Path(ref path) => path.path
-                        .segments
-                        .last()
-                        .map(|seg| {
-                            seg.ident == Ident::new("Vec", seg.ident.span())
-                        })
-                        .unwrap_or(false),
-                    _ => false,
-                };
-
-                Some((
-                    field.ident.clone().unwrap(),
-                    is_option,
-                    is_vec,
-                    is_functional(our_attr.clone()),
-                    our_attr.clone(),
-                ))
+        let fname = field.name.clone();
+        let (ty, deps) = if field.description.types.len() == 1 {
+            let ty = Ident::new(&field.description.types.first().unwrap().to_token_stream().to_string(), fname.span());
+            if field.description.functional {
+                (ty, None)
             } else {
-                None
+                let enum_ty = Ident::new(&camelize(&format!("{}_{}_enum", name, fname)), fname.span());
+                let deps = quote! {
+                    #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
+                    #[serde(rename_all = "camelCase")]
+                    #[serde(untagged)]
+                    pub enum #enum_ty {
+                        Term(#ty),
+                        Array(Vec<#ty>),
+                    }
+
+                    impl From<#ty> for #enum_ty {
+                        fn from(t: #ty) -> Self {
+                            #enum_ty::Term(t)
+                        }
+                    }
+
+                    impl From<Vec<#ty>> for #enum_ty {
+                        fn from(v: Vec<#ty>) -> Self {
+                            #enum_ty::Array(v)
+                        }
+                    }
+                };
+
+                (enum_ty, Some(deps))
             }
-        })
-        .flat_map(|(ident, is_option, is_vec, is_functional, attr)| {
-            variants(attr)
-                .into_iter()
-                .map(move |(variant, is_concrete)| {
-                    let lower_variant = variant.to_string().to_lowercase();
-                    let fn_name = Ident::new(&format!("{}_{}", ident, lower_variant), variant.span());
-                    let fn_plural = Ident::new(&format!("{}_{}_vec", ident, lower_variant), variant.span());
-                    let set_fn_name = Ident::new(&format!("set_{}_{}", ident, lower_variant), variant.span());
-                    let set_fn_plural = Ident::new(&format!("set_{}_{}_vec", ident, lower_variant), variant.span());
+        } else {
+            let ty = Ident::new(&camelize(&format!("{}_{}_enum", name, fname)), fname.span());
 
-                    if is_concrete {
-                        if is_option {
-                            let single_1 = quote! {
-                                /// Retrieve a value from the given struct
-                                ///
-                                /// This method deserializes the item from JSON, so be wary of using
-                                /// this a lot.
-                                ///
-                                /// Possible errors from this method are `Error::NotFound` and
-                                /// `Error::Deserialize`
-                                pub fn #fn_name(&self) -> ::activitystreams_traits::Result<#variant> {
-                                    ::activitystreams_traits::properties::from_item(&self.#ident)
-                                }
-                            };
+            let v_tys: Vec<_> = field
+                .description
+                .types
+                .iter()
+                .map(|v_ty| {
+                    quote! {
+                        #v_ty(#v_ty),
+                    }
+                })
+                .collect();
 
-                            let single_2 = quote! {
-                                /// Set a value in the given struct
-                                ///
-                                /// This method serializes the item to JSON, so be wary of using this a
-                                /// lot.
-                                ///
-                                /// Possible errors from this method are `Error::Serialize`
-                                pub fn #set_fn_name(&mut self, item: #variant) -> ::activitystreams_traits::Result<()> {
-                                    self.#ident = ::activitystreams_traits::properties::to_item(item)?;
-                                    Ok(())
-                                }
-                            };
+            let v_tokens = proc_macro2::TokenStream::from_iter(v_tys);
 
-                            let single = quote! {
-                                #single_1
-                                #single_2
-                            };
+            let deps = if !field.description.functional {
+                let term_ty = Ident::new(&camelize(&format!("{}_{}_term_enum", name, fname)), fname.span());
 
-                            if is_functional {
-                                single
-                            } else {
-                                let plural_1 = quote! {
-                                    /// Retrieve many values from the given struct
-                                    ///
-                                    /// This method deserializes the item from JSON, so be wary of using
-                                    /// this a lot.
-                                    ///
-                                    /// Possible errors from this method are `Error::NotFound` and
-                                    /// `Error::Deserialize`
-                                    pub fn #fn_plural(&self) -> ::activitystreams_traits::Result<Vec<#variant>> {
-                                        ::activitystreams_traits::properties::from_item(&self.#ident)
-                                    }
-                                };
-
-                                let plural_2 = quote! {
-                                    /// Set many values in the given struct
-                                    ///
-                                    /// This method serializes the item to JSON, so be wary of using
-                                    /// this a lot.
-                                    ///
-                                    /// Possible errors from this method are `Error::Serialize`
-                                    pub fn #set_fn_plural(&mut self, item: Vec<#variant>) -> ::activitystreams_traits::Result<()> {
-                                        self.#ident = ::activitystreams_traits::properties::to_item(item)?;
-                                        Ok(())
-                                    }
-                                };
-
-                                quote! {
-                                    #single
-                                    #plural_1
-                                    #plural_2
-                                }
-                            }
-                        } else if is_vec {
-                            let single_1 = quote! {
-                                /// Retrieve many values from the given struct
-                                ///
-                                /// This method deserializes the item from JSON, so be wary of using
-                                /// this a lot.
-                                ///
-                                /// Possible errors from this method are `Error::Deserialize`
-                                pub fn #fn_name(&self) -> ::activitystreams_traits::Result<Vec<#variant>> {
-                                    ::activitystreams_traits::properties::from_vec(&self.#ident)
-                                }
-                            };
-
-                            let single_2 = quote! {
-                                /// Set many values in the given struct
-                                ///
-                                /// This method serializes the item to JSON, so be wary of using
-                                /// this a lot.
-                                ///
-                                /// Possible errors from this method are `Error::Serialize`
-                                pub fn #set_fn_name(&mut self, item: Vec<#variant>>) -> ::activitystreams_traits::Result<()> {
-                                    self.#ident = ::activitystreams_traits::properties::to_vec(item)?;
-                                    Ok(())
-                                }
-                            };
-
-                            quote! {
-                                #single_1
-                                #single_2
-                            }
-                        } else {
-                            let single = quote! {
-                                /// Retrieve a value from the given struct
-                                ///
-                                /// This method deserializes the item from JSON, so be wary of using
-                                /// this a lot.
-                                ///
-                                /// Possible errors from this method are `Error::Deserialize`
-                                pub fn #fn_name(&self) -> ::activitystreams_traits::Result<#variant> {
-                                    ::activitystreams_traits::properties::from_value(&self.#ident)
-                                }
-
-                                /// Set a value in the given struct
-                                ///
-                                /// This method serializes the item to JSON, so be wary of using this a
-                                /// lot.
-                                ///
-                                /// Possible errors from this method are `Error::Serialize`
-                                pub fn #set_fn_name(&mut self, item: #variant) -> ::activitystreams_traits::Result<()> {
-                                    self.#ident = ::activitystreams_traits::properties::to_value(item)?;
-                                    Ok(())
-                                }
-                            };
-
-                            if is_functional {
-                                single
-                            } else {
-                                let plural_1 = quote! {
-                                    /// Retrieve many values from the given struct
-                                    ///
-                                    /// This method deserializes the item from JSON, so be wary of using
-                                    /// this a lot.
-                                    ///
-                                    /// Possible errors from this method are `Error::Deserialize`
-                                    pub fn #fn_plural(&self) -> ::activitystreams_traits::Result<Vec<#variant>> {
-                                        ::activitystreams_traits::properties::from_value(&self.#ident)
-                                    }
-                                };
-
-                                let plural_2 = quote! {
-                                    /// Set many values in the given struct
-                                    ///
-                                    /// This method serializes the item to JSON, so be wary of using this
-                                    /// a lot.
-                                    ///
-                                    /// Possible errors from this method are `Error::Serialize`
-                                    pub fn #set_fn_plural(&mut self, item: Vec<#variant>) -> ::activitystreams_traits::Result<()> {
-                                        self.#ident = ::activitystreams_traits::properties::to_value(item)?;
-                                        Ok(())
-                                    }
-                                };
-
-                                quote! {
-                                    #single
-                                    #plural_1
-                                    #plural_2
+                let froms: Vec<_> = field
+                    .description
+                    .types
+                    .iter()
+                    .map(|v_ty| {
+                        quote! {
+                            impl From<#v_ty> for #term_ty {
+                                fn from(item: #v_ty) -> #term_ty {
+                                    #term_ty::#v_ty(item)
                                 }
                             }
                         }
-                    } else if is_option {
-                        let single_1 = quote! {
-                            /// Retrieve a value of type T from the given struct
-                            ///
-                            /// This method deserializes the item from JSON, so be wary of using
-                            /// this a lot.
-                            ///
-                            /// Possible errors from this method are `Error::NotFound` and
-                            /// `Error::Deserialize`
-                            pub fn #fn_name<T: #variant>(&self) -> ::activitystreams_traits::Result<T> {
-                                ::activitystreams_traits::properties::from_item(&self.#ident)
-                            }
-                        };
+                    })
+                    .collect();
 
-                        let single_2 = quote! {
-                            /// Set a value of type T in the given struct
-                            ///
-                            /// This method serializes the item to JSON, so be wary of using this a
-                            /// lot.
-                            ///
-                            /// Possible errors from this method are `Error::Serialize`
-                            pub fn #set_fn_name<T: #variant>(&mut self, item: T) -> ::activitystreams_traits::Result<()> {
-                                self.#ident = ::activitystreams_traits::properties::to_item(item)?;
-                                Ok(())
-                            }
-                        };
+                let from_tokens = proc_macro2::TokenStream::from_iter(froms);
 
-                        let single = quote!{
-                            #single_1
-                            #single_2
-                        };
+                quote! {
+                    #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
+                    #[serde(rename_all = "camelCase")]
+                    #[serde(untagged)]
+                    pub enum #term_ty {
+                        #v_tokens
+                    }
 
-                        if is_functional {
-                            single
-                        } else {
-                            let plural_1 = quote! {
-                                /// Retrieve many values of type T from the given struct
-                                ///
-                                /// This method deserializes the item from JSON, so be wary of using
-                                /// this a lot.
-                                ///
-                                /// Possible errors from this method are `Error::NotFound` and
-                                /// `Error::Deserialize`
-                                pub fn #fn_plural<T: #variant>(&self) -> ::activitystreams_traits::Result<Vec<T>> {
-                                    ::activitystreams_traits::properties::from_item(&self.#ident)
+                    #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
+                    #[serde(rename_all = "camelCase")]
+                    #[serde(untagged)]
+                    pub enum #ty {
+                        Term(#term_ty),
+                        Array(Vec<#term_ty>),
+                    }
+
+                    impl From<#term_ty> for #ty {
+                        fn from(term: #term_ty) -> Self {
+                            #ty::Term(term)
+                        }
+                    }
+
+                    impl From<Vec<#term_ty>> for #ty {
+                        fn from(v: Vec<#term_ty>) -> Self {
+                            #ty::Array(v)
+                        }
+                    }
+
+                    #from_tokens
+                }
+            } else {
+                let froms: Vec<_> = field
+                    .description
+                    .types
+                    .iter()
+                    .map(|v_ty| {
+                        quote! {
+                            impl From<#v_ty> for #ty {
+                                fn from(item: #v_ty) -> #ty {
+                                    #ty::#v_ty(item)
                                 }
-                            };
-
-                            let plural_2 = quote! {
-                                /// Set many values of type T in the given struct
-                                ///
-                                /// This method serializes the item to JSON, so be wary of using
-                                /// this a lot.
-                                ///
-                                /// Possible errors from this method are `Error::Serialize`
-                                pub fn #set_fn_plural<T: #variant>(&mut self, item: Vec<T>) -> ::activitystreams_traits::Result<()> {
-                                    self.#ident = ::activitystreams_traits::properties::to_item(item)?;
-                                    Ok(())
-                                }
-                            };
-
-                            quote! {
-                                #single
-                                #plural_1
-                                #plural_2
                             }
                         }
-                    } else if is_vec {
-                        let single_1 = quote! {
-                            /// Retrieve many values of type T from the given struct
-                            ///
-                            /// This method deserializes the item from JSON, so be wary of using
-                            /// this a lot.
-                            ///
-                            /// Possible errors from this method are `Error::Deserialize`
-                            pub fn #fn_name<T: #variant>(&self) -> ::activitystreams_traits::Result<Vec<T>> {
-                                ::activitystreams_traits::properties::from_vec(&self.#ident)
+                    })
+                    .collect();
+
+                let from_tokens = proc_macro2::TokenStream::from_iter(froms);
+
+                quote! {
+                    #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
+                    #[serde(rename_all = "camelCase")]
+                    #[serde(untagged)]
+                    pub enum #ty {
+                        #v_tokens
+                    }
+
+                    #from_tokens
+                }
+            };
+
+            (ty, Some(deps))
+        };
+
+        let field_tokens = if field.description.required {
+            if let Some(ref rename) = field.description.rename {
+                quote! {
+                    #[serde(rename = #rename)]
+                    pub #fname: #ty,
+                }
+            } else {
+                quote! {
+                    pub #fname: #ty,
+                }
+            }
+        } else {
+            if let Some(ref rename) = field.description.rename {
+                quote! {
+                    #[serde(skip_serializing_if = "Option::is_none")]
+                    #[serde(rename = #rename)]
+                    pub #fname: Option<#ty>,
+                }
+            } else {
+                quote! {
+                    #[serde(skip_serializing_if = "Option::is_none")]
+                    pub #fname: Option<#ty>,
+                }
+            }
+        };
+
+        let fns = if field.description.types.len() == 1 {
+            let v_ty = field.description.types.first().unwrap().clone();
+
+            let set_ident =
+                Ident::new(&format!("set_{}", fname), fname.span());
+            let get_ident =
+                Ident::new(&format!("get_{}", fname), fname.span());
+
+            let enum_ty = Ident::new(&camelize(&format!("{}_{}_enum", name, fname)), fname.span());
+
+            let set_many_ident =
+                Ident::new(&format!("set_many_{}s", fname), fname.span());
+            let get_many_ident =
+                Ident::new(&format!("get_many_{}s", fname), fname.span());
+
+            if field.description.required {
+                if field.description.functional {
+                    let set = quote! {
+                        pub fn #set_ident<T>(&mut self, item: T) -> &mut Self
+                        where
+                            T: Into<#v_ty>
+                        {
+                            self.#fname = item.into();
+                            self
+                        }
+                    };
+
+                    let get = quote! {
+                        pub fn #get_ident(&self) -> &#v_ty {
+                            &self.#fname
+                        }
+                    };
+
+                    quote!{
+                        #get
+                        #set
+                    }
+                } else {
+                    let set = quote! {
+                        pub fn #set_ident<T>(&mut self, item: T) -> &mut Self
+                        where
+                            T: Into<#v_ty>
+                        {
+                            self.#fname = #enum_ty::Term(item.into());
+                            self
+                        }
+                    };
+
+                    let get = quote! {
+                        pub fn #get_ident(&self) -> Option<&#v_ty> {
+                            match self.#fname {
+                                #enum_ty::Term(ref term) => Some(term),
+                                _ => None,
+                            }
+                        }
+                    };
+
+                    let set_many = quote! {
+                        pub fn #set_many_ident<T>(&mut self, item: Vec<T>) -> &mut Self
+                        where
+                            T: Into<#v_ty>,
+                        {
+                            let item: Vec<#v_ty> = item.into_iter().map(Into::into).collect();
+                            self.#fname = #enum_ty::Array(item);
+                            self
+                        }
+                    };
+
+                    let get_many = quote! {
+                        pub fn #get_many_ident(&self) -> Option<&[#v_ty]> {
+                            match self.#fname {
+                                #enum_ty::Array(ref array) => Some(array),
+                                _ => None,
+                            }
+                        }
+                    };
+
+                    quote! {
+                        #get
+                        #set
+                        #get_many
+                        #set_many
+                    }
+                }
+            } else {
+                if field.description.functional {
+                    let set = quote! {
+                        pub fn #set_ident<T>(&mut self, item: T) -> &mut Self
+                        where
+                            T: Into<#v_ty>
+                        {
+                            self.#fname = Some(item.into());
+                            self
+                        }
+                    };
+
+                    let get = quote! {
+                        pub fn #get_ident(&self) -> Option<&#v_ty> {
+                            self.#fname.as_ref()
+                        }
+                    };
+
+                    quote!{
+                        #get
+                        #set
+                    }
+                } else {
+                    let set = quote! {
+                        pub fn #set_ident<T>(&mut self, item: T) -> &mut Self
+                        where
+                            T: Into<#v_ty>
+                        {
+                            self.#fname = Some(#enum_ty::Term(item.into()));
+                            self
+                        }
+                    };
+
+                    let get = quote! {
+                        pub fn #get_ident(&self) -> Option<&#v_ty> {
+                            match self.#fname {
+                                Some(#enum_ty::Term(ref term)) => Some(term),
+                                _ => None,
+                            }
+                        }
+                    };
+
+                    let set_many = quote! {
+                        pub fn #set_many_ident<T>(&mut self, item: Vec<T>) -> &mut Self
+                        where
+                            T: Into<#v_ty>,
+                        {
+                            let item: Vec<#v_ty> = item.into_iter().map(Into::into).collect();
+                            self.#fname = Some(#enum_ty::Array(item));
+                            self
+                        }
+                    };
+
+                    let get_many = quote! {
+                        pub fn #get_many_ident(&self) -> Option<&[#v_ty]> {
+                            match self.#fname {
+                                Some(#enum_ty::Array(ref a)) => Some(a),
+                                _ => None,
+                            }
+                        }
+                    };
+
+                    quote! {
+                        #get
+                        #set
+                        #get_many
+                        #set_many
+                    }
+                }
+            }
+        } else if field.description.functional {
+            let impls: Vec<_> = field
+                .description
+                .types
+                .iter()
+                .map(|v_ty| {
+                    let set_ident =
+                        Ident::new(&format!("set_{}_{}", fname, snakize(&v_ty.to_token_stream().to_string())), fname.span());
+                    let get_ident =
+                        Ident::new(&format!("get_{}_{}", fname, snakize(&v_ty.to_token_stream().to_string())), fname.span());
+
+                    if field.description.required {
+                        let set = quote! {
+                            pub fn #set_ident<T>(&mut self, item: T) -> &mut Self
+                            where
+                                T: Into<#v_ty>,
+                            {
+                                let item: #v_ty = item.into();
+                                self.#fname = item.into();
+                                self
                             }
                         };
 
-                        let single_2 = quote! {
-                            /// Set many values of type T in the given struct
-                            ///
-                            /// This method serializes the item to JSON, so be wary of using
-                            /// this a lot.
-                            ///
-                            /// Possible errors from this method are `Error::Serialize`
-                            pub fn #set_fn_name<T: #variant>(&mut self, item: Vec<T>) -> ::activitystreams_traits::Result<()> {
-                                self.#ident = ::activitystreams_traits::properties::to_vec(item)?;
-                                Ok(())
+                        let get = quote! {
+                            pub fn #get_ident(&self) -> Option<&#v_ty> {
+                                match self.#fname {
+                                    #ty::#v_ty(ref term) => Some(term),
+                                    _ => None,
+                                }
                             }
                         };
 
                         quote! {
-                            #single_1
-                            #single_2
+                            #get
+                            #set
                         }
                     } else {
-                        let single_1 = quote! {
-                            /// Retrieve a value of type T from the given struct
-                            ///
-                            /// This method deserializes the item from JSON, so be wary of using
-                            /// this a lot.
-                            ///
-                            /// Possible errors from this method are `Error::Deserialize`
-                            pub fn #fn_name<T: #variant>(&self) -> ::activitystreams_traits::Result<T> {
-                                ::activitystreams_traits::properties::from_value(&self.#ident)
+                        let set = quote! {
+                            pub fn #set_ident<T>(&mut self, item: T) -> &mut Self
+                            where
+                                T: Into<#v_ty>,
+                            {
+                                let item: #v_ty = item.into();
+                                self.#fname = Some(item.into());
+                                self
                             }
                         };
 
-                        let single_2 = quote! {
-                            /// Set a value of type T in the given struct
-                            ///
-                            /// This method serializes the item to JSON, so be wary of using this a
-                            /// lot.
-                            ///
-                            /// Possible errors from this method are `Error::Serialize`
-                            pub fn #set_fn_name<T: #variant>(&mut self, item: T) -> ::activitystreams_traits::Result<()> {
-                                self.#ident = ::activitystreams_traits::properties::to_value(item)?;
-                                Ok(())
-                            }
-                        };
-
-                        let single = quote! {
-                            #single_1
-                            #single_2
-                        };
-
-                        if is_functional {
-                            single
-                        } else {
-                            let plural_1 = quote! {
-                                /// Retrieve many values of type T from the given struct
-                                ///
-                                /// This method deserializes the item from JSON, so be wary of using
-                                /// this a lot.
-                                ///
-                                /// Possible errors from this method are `Error::Deserialize`
-                                pub fn #fn_plural<T: #variant>(&self) -> ::activitystreams_traits::Result<Vec<T>> {
-                                    ::activitystreams_traits::properties::from_value(&self.#ident)
+                        let get = quote! {
+                            pub fn #get_ident(&self) -> Option<&#v_ty> {
+                                match self.#fname {
+                                    Some(#ty::#v_ty(ref term)) => Some(term),
+                                    _ => None,
                                 }
-                            };
-
-                            let plural_2 = quote! {
-                                /// Set many values of type T in the given struct
-                                ///
-                                /// This method serializes the item to JSON, so be wary of using this
-                                /// a lot.
-                                ///
-                                /// Possible errors from this method are `Error::Serialize`
-                                pub fn #set_fn_plural<T: #variant>(&mut self, item: Vec<T>) -> ::activitystreams_traits::Result<()> {
-                                    self.#ident = ::activitystreams_traits::properties::to_value(item)?;
-                                    Ok(())
-                                }
-                            };
-
-                            quote! {
-                                #single
-                                #plural_1
-                                #plural_2
                             }
+                        };
+
+                        quote! {
+                            #get
+                            #set
                         }
                     }
                 })
-        });
+                .collect();
 
-    let tokens = proc_macro2::TokenStream::from_iter(impls);
+            let tokens = proc_macro2::TokenStream::from_iter(impls);
 
-    let full = quote! {
+            quote! {
+                #tokens
+            }
+        } else {
+            let term_ty = Ident::new(&camelize(&format!("{}_{}_term_enum", name, fname)), fname.span());
+            let impls: Vec<_> = field
+                .description
+                .types
+                .iter()
+                .map(|v_ty| {
+                    let set_ident =
+                        Ident::new(&format!("set_{}_{}", fname, snakize(&v_ty.to_token_stream().to_string())), fname.span());
+                    let get_ident =
+                        Ident::new(&format!("get_{}_{}", fname, snakize(&v_ty.to_token_stream().to_string())), fname.span());
+
+                    let set_many_ident =
+                        Ident::new(&format!("set_many_{}_{}s", fname, snakize(&v_ty.to_token_stream().to_string())), fname.span());
+                    let get_many_ident =
+                        Ident::new(&format!("get_many_{}_{}s", fname, snakize(&v_ty.to_token_stream().to_string())), fname.span());
+
+                    if field.description.required {
+                        let set = quote! {
+                            pub fn #set_ident<T>(&mut self, item: T) -> &mut Self
+                            where
+                                T: Into<#v_ty>,
+                            {
+                                let item: #v_ty = item.into();
+                                let item: #term_ty = item.into();
+                                self.#fname = item.into();
+                                self
+                            }
+                        };
+
+                        let get = quote! {
+                            pub fn #get_ident(&self) -> Option<&#v_ty> {
+                                match self.#fname {
+                                    #ty::Term(#term_ty::#v_ty(ref term)) => Some(term),
+                                    _ => None,
+                                }
+                            }
+                        };
+
+                        let set_many = quote! {
+                            pub fn #set_many_ident<T>(&mut self, item: Vec<T>) -> &mut Self
+                            where
+                                T: Into<#v_ty>,
+                            {
+                                let item: Vec<#v_ty> = item.into_iter().map(Into::into).collect();
+                                let item: Vec<#term_ty> = item.into_iter().map(Into::into).collect();
+                                self.#fname = item.into();
+                                self
+                            }
+                        };
+
+                        let get_many = quote! {
+                            pub fn #get_many_ident(&self) -> Option<&[#term_ty]> {
+                                match self.#fname {
+                                    #ty::Array(ref array) => Some(array),
+                                    _ => None,
+                                }
+                            }
+                        };
+
+                        quote! {
+                            #get
+                            #set
+                            #get_many
+                            #set_many
+                        }
+                    } else {
+                        let set = quote! {
+                            pub fn #set_ident<T>(&mut self, item: T) -> &mut Self
+                            where
+                                T: Into<#v_ty>,
+                            {
+                                let item: #v_ty = item.into();
+                                let item: #term_ty = item.into();
+                                self.#fname = Some(item.into());
+                                self
+                            }
+                        };
+
+                        let get = quote! {
+                            pub fn #get_ident(&self) -> Option<&#v_ty> {
+                                match self.#fname {
+                                    Some(#ty::Term(#term_ty::#v_ty(ref term))) => Some(term),
+                                    _ => None,
+                                }
+                            }
+                        };
+
+                        let set_many = quote! {
+                            pub fn #set_many_ident<T>(&mut self, item: Vec<T>) -> &mut Self
+                            where
+                                T: Into<#v_ty>,
+                            {
+                                let item: Vec<#v_ty> = item.into_iter().map(Into::into).collect();
+                                let item: Vec<#term_ty> = item.into_iter().map(Into::into).collect();
+                                self.#fname = Some(item.into());
+                                self
+                            }
+                        };
+
+                        let get_many = quote! {
+                            pub fn #get_many_ident(&self) -> Option<&[#term_ty]> {
+                                match self.#fname {
+                                    Some(#ty::Array(ref array)) => Some(array),
+                                    _ => None,
+                                }
+                            }
+                        };
+
+                        quote! {
+                            #get
+                            #set
+                            #get_many
+                            #set_many
+                        }
+                    }
+                })
+                .collect();
+
+            let tokens = proc_macro2::TokenStream::from_iter(impls);
+
+            let delete = if !field.description.required {
+                let delete_ident =
+                    Ident::new(&format!("delete_{}", fname), fname.span());
+
+                quote! {
+                    pub fn #delete_ident(&mut self) -> &mut Self {
+                        self.#fname = None;
+                        self
+                    }
+                }
+            } else {
+                quote! {}
+            };
+
+            quote! {
+                #tokens
+
+                #delete
+            }
+        };
+
+        Some(((field_tokens, fns), deps))
+    }).unzip();
+
+    let (fields, fns): (Vec<_>, Vec<_>) = fields.into_iter().unzip();
+    let deps: Vec<_> = deps.into_iter().filter_map(|d| d).collect();
+
+    let field_tokens = proc_macro2::TokenStream::from_iter(fields);
+    let fn_tokens = proc_macro2::TokenStream::from_iter(fns);
+    let deps_tokens = proc_macro2::TokenStream::from_iter(deps);
+
+    let q = quote! {
+        #deps_tokens
+
+        #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
+        #[serde(rename_all = "camelCase")]
+        pub struct #name {
+            #field_tokens
+        }
+
         impl #name {
-            #tokens
+            #fn_tokens
         }
     };
-
-    full.into()
+    q.into()
 }
 
-fn variants(attr: Attribute) -> Vec<(Ident, bool)> {
-    let group = attr
-        .tokens
-        .clone()
-        .into_iter()
-        .filter_map(|token_tree| match token_tree {
-            TokenTree::Group(group) => Some(group),
-            _ => None,
+mod kw {
+    syn::custom_keyword!(types);
+    syn::custom_keyword!(functional);
+    syn::custom_keyword!(required);
+    syn::custom_keyword!(rename);
+}
+
+struct Properties {
+    name: Ident,
+    fields: Punctuated<Field, Token![,]>,
+}
+
+struct Field {
+    name: Ident,
+    description: Description,
+}
+
+struct Description {
+    types: Punctuated<Type, Token![,]>,
+    functional: bool,
+    required: bool,
+    rename: Option<String>,
+}
+
+impl Parse for Properties {
+    fn parse(input: ParseStream) -> Result<Self> {
+        let name: Ident = input.parse()?;
+
+        let content;
+        let _: token::Brace = braced!(content in input);
+        let fields = Punctuated::<Field, Token![,]>::parse_terminated(&content)?;
+
+        Ok(Properties { name, fields })
+    }
+}
+
+impl Parse for Field {
+    fn parse(input: ParseStream) -> Result<Self> {
+        let name: Ident = input.parse()?;
+
+        let content;
+        let _: token::Brace = braced!(content in input);
+
+        let description = content.parse()?;
+
+        Ok(Field { name, description })
+    }
+}
+
+impl Parse for Description {
+    fn parse(input: ParseStream) -> Result<Self> {
+        let lookahead = input.lookahead1();
+        if !lookahead.peek(kw::types) {
+            return Err(lookahead.error());
+        }
+        input.parse::<kw::types>()?;
+
+        let content;
+        let _: token::Bracket = bracketed!(content in input);
+        let types = Punctuated::<Type, Token![,]>::parse_terminated(&content)?;
+        optional_comma(&input)?;
+
+        let functional = parse_kw::<_, kw::functional>(&input, kw::functional)?;
+        let required = parse_kw::<_, kw::required>(&input, kw::required)?;
+        let rename = parse_rename::<_, kw::rename>(&input, kw::rename)?;
+
+        Ok(Description {
+            types,
+            functional,
+            required,
+            rename,
         })
-        .next()
-        .unwrap();
+    }
+}
 
-    let mut is_concrete = false;
+fn parse_kw<T: Peek + Copy, U: Parse>(input: &ParseStream, t: T) -> Result<bool> {
+    let lookahead = input.lookahead1();
+    if lookahead.peek(t) {
+        input.parse::<U>()?;
+        optional_comma(&input)?;
 
-    group
-        .stream()
-        .clone()
-        .into_iter()
-        .filter_map(|token_tree| match token_tree {
-            TokenTree::Ident(ident) => {
-                is_concrete = ident.to_string() == "concrete";
-                None
+        return Ok(true);
+    }
+
+    Ok(false)
+}
+
+fn parse_rename<T: Peek + Copy, U: Parse>(input: &ParseStream, t: T) -> Result<Option<String>> {
+    let lookahead = input.lookahead1();
+    if lookahead.peek(t) {
+        input.parse::<U>()?;
+        let content;
+        parenthesized!(content in input);
+        let s: LitStr = content.parse()?;
+        optional_comma(&input)?;
+
+        return Ok(Some(s.value()));
+    }
+
+    Ok(None)
+}
+
+fn optional_comma(input: &ParseStream) -> Result<()> {
+    let lookahead = input.lookahead1();
+    if lookahead.peek(Token![,]) {
+        input.parse::<Token![,]>()?;
+    }
+    Ok(())
+}
+
+fn camelize(s: &str) -> String {
+    let (s, _) = s
+        .chars()
+        .fold((String::new(), true), |(mut acc, should_upper), c| {
+            if c == '_' {
+                (acc, true)
+            } else {
+                if should_upper {
+                    acc += &c.to_uppercase().to_string();
+                } else {
+                    acc += &c.to_string();
+                }
+
+                (acc, false)
             }
-            TokenTree::Group(group) => Some(group.stream().into_iter().filter_map(
-                move |token_tree| match token_tree {
-                    TokenTree::Ident(ident) => Some((ident, is_concrete)),
-                    _ => None,
-                },
-            )),
-            _ => None,
-        })
-        .flat_map(|i| i)
-        .collect()
+        });
+
+    s
 }
 
-fn is_functional(attr: Attribute) -> bool {
-    let group = attr
-        .tokens
-        .clone()
-        .into_iter()
-        .filter_map(|token_tree| match token_tree {
-            TokenTree::Group(group) => Some(group),
-            _ => None,
-        })
-        .next()
-        .unwrap();
-
-    group
-        .stream()
-        .clone()
-        .into_iter()
-        .any(|token_tree| match token_tree {
-            TokenTree::Ident(ident) => ident.to_string() == "functional",
-            _ => false,
-        })
+fn snakize(s: &str) -> String {
+    s.chars().fold(String::new(), |mut acc, c| {
+        if c.is_uppercase() && !acc.is_empty() {
+            acc += "_";
+            acc += &c.to_lowercase().to_string();
+        } else if c.is_uppercase() {
+            acc += &c.to_lowercase().to_string();
+        } else {
+            acc += &c.to_string();
+        }
+        acc
+    })
 }

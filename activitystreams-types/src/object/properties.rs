@@ -32,7 +32,7 @@
 //!     #[serde(rename = "type")]
 //!     pub kind: String,
 //!
-//!     /// Define a require property for the MyObject type
+//!     /// Define a required property for the MyObject type
 //!     pub my_property: String,
 //!
 //!     #[serde(flatten)]
@@ -44,15 +44,16 @@
 //! # fn main() {}
 //! ```
 
-use activitystreams_derive::Properties;
+use activitystreams_derive::properties;
 use activitystreams_traits::{Collection, Error, Link, Object, Result};
 use chrono::{offset::Utc, DateTime};
 use serde_derive::{Deserialize, Serialize};
 
-use crate::object::Image;
-
-/// Alias chrono::DateTime<Utc> for use in derive macros
-pub type UtcTime = DateTime<Utc>;
+use crate::{
+    link::LinkBox,
+    object::{Image, ObjectBox},
+    primitives::*,
+};
 
 /// Define all the properties of the Object base type as described by the Activity Streams
 /// vocabulary.
@@ -66,417 +67,546 @@ pub type UtcTime = DateTime<Utc>;
 /// own `type` properties as Unit Structs with custom serde behaviour.
 ///
 /// All properties are optional (including the id and type).
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
-#[serde(rename_all = "camelCase")]
-pub struct ObjectProperties {
-    // TODO: IRI type
-    /// Provides the globally unique identifier for an Object or Link.
-    ///
-    /// The `id` property is expressed as an absolute IRI in the spec, but for now is represented
-    /// as a string.
-    ///
-    /// - Range: `anyUri`
-    /// - Functional: true
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(alias = "@id")]
-    #[activitystreams(concrete(String), functional)]
-    pub id: Option<serde_json::Value>,
+properties! {
+    Object {
+        id {
+            /// Provides the globally unique identifier for an Object or Link.
+            ///
+            /// The `id` property is expressed as an absolute IRI in the spec, but for now is represented
+            /// as a string.
+            ///
+            /// - Range: `xsd:anyUri`
+            /// - Functional: true
+            types [
+                XsdAnyUri,
+            ],
+            functional,
+        },
 
-    /// Identifies a resource attached or related to an object that potentially requires special
-    /// handling.
-    ///
-    /// The intent is to provide a model that is at least semantically similar to attachments in
-    /// email.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub attachment: Option<serde_json::Value>,
+        attachment {
+            /// Identifies a resource attached or related to an object that potentially requires special
+            /// handling.
+            ///
+            /// The intent is to provide a model that is at least semantically similar to attachments in
+            /// email.
+            ///
+            /// - Range: `Object` | `Link`
+            /// - Functional: false
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
 
-    /// Identifies one or more entities to which this object is attributed.
-    ///
-    /// The attributed entities might not be Actors. For instance, an object might be attributed to
-    /// the completion of another activity.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub attributed_to: Option<serde_json::Value>,
+        attributed_to {
+            /// Identifies one or more entities to which this object is attributed.
+            ///
+            /// The attributed entities might not be Actors. For instance, an object might be attributed to
+            /// the completion of another activity.
+            ///
+            /// - Range: `Object` | `Link`
+            /// - Functional: false
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
 
-    /// Identifies one or more entities that represent the total population of entities for which
-    /// the object can considered to be relevant.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub audience: Option<serde_json::Value>,
+        audience {
+            /// Identifies one or more entities that represent the total population of entities for which
+            /// the object can considered to be relevant.
+            ///
+            /// - Range: `Object` | `Link`
+            /// - Functional: false
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
 
-    // TODO: rdf:langString
-    /// The content or textual representation of the Object encoded as a JSON string.
-    ///
-    /// By default, the value of content is HTML. The mediaType property can be used in the object
-    /// to indicate a different content type.
-    ///
-    /// The content MAY be expressed using multiple language-tagged values.
-    ///
-    /// - Range: `xsd:string` | `rdf:langString`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(concrete(String))]
-    pub content: Option<serde_json::Value>,
+        content {
+            /// The content or textual representation of the Object encoded as a JSON string.
+            ///
+            /// By default, the value of content is HTML. The mediaType property can be used in the object
+            /// to indicate a different content type.
+            ///
+            /// The content MAY be expressed using multiple language-tagged values.
+            ///
+            /// - Range: `xsd:string` | `rdf:langString`
+            /// - Functional: false
+            types [
+                XsdString,
+                RdfLangString,
+            ],
+        },
 
-    /// Identifies the context within which the object exists or an activity was performed.
-    ///
-    /// The notion of "context" used is intentionally vague. The intended function is to serve as a
-    /// means of grouping objects and activities that share a common originating context or purpose.
-    /// An example could be all activities relating to a common project or event.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none", rename = "@context")]
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub context: Option<serde_json::Value>,
+        context {
+            /// Identifies the context within which the object exists or an activity was performed.
+            ///
+            /// The notion of "context" used is intentionally vague. The intended function is to serve as a
+            /// means of grouping objects and activities that share a common originating context or purpose.
+            /// An example could be all activities relating to a common project or event.
+            ///
+            /// - Range: `Object` | `Link`
+            /// - Functional: false
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
 
-    // TODO: rdf:langString
-    /// A simple, human-readable, plain-text name for the object.
-    ///
-    /// HTML markup MUST NOT be included. The name MAY be expressed using multiple language-tagged
-    /// values.
-    ///
-    /// - Range: `xsd:string` | `rdf:langString`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[serde(alias = "displayName")]
-    #[activitystreams(concrete(String))]
-    pub name: Option<serde_json::Value>,
+        name {
+            /// A simple, human-readable, plain-text name for the object.
+            ///
+            /// HTML markup MUST NOT be included. The name MAY be expressed using multiple language-tagged
+            /// values.
+            ///
+            /// - Range: `xsd:string` | `rdf:langString`
+            /// - Functional: false
+            types [
+                XsdString,
+                RdfLangString,
+            ],
+            alias("displayName"),
+        },
 
-    /// The date and time describing the actual or expected ending time of the object.
-    ///
-    /// When used with an Activity object, for instance, the endTime property specifies the moment
-    /// the activity concluded or is expected to conclude.
-    ///
-    /// - Range: `xsd:dateTime`
-    /// - Functional: true
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(concrete(String, UtcTime), functional)]
-    pub end_time: Option<serde_json::Value>,
+        end_time {
+            /// The date and time describing the actual or expected ending time of the object.
+            ///
+            /// When used with an Activity object, for instance, the endTime property specifies the moment
+            /// the activity concluded or is expected to conclude.
+            ///
+            /// - Range: `xsd:dateTime`
+            /// - Functional: true
+            types [
+                XsdDateTime,
+            ],
+            functional,
+        },
 
-    /// Identifies the entity (e.g. an application) that generated the object.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub generator: Option<serde_json::Value>,
+        generator {
+            /// Identifies the entity (e.g. an application) that generated the object.
+            ///
+            /// - Range: `Object` | `Link`
+            /// - Functional: false
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
 
-    /// Indicates an entity that describes an icon for this object.
-    ///
-    /// The image should have an aspect ratio of one (horizontal) to one (vertical) and should be
-    /// suitable for presentation at a small size.
-    ///
-    /// - Range: `Image` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(Image, String))]
-    pub icon: Option<serde_json::Value>,
+        icon {
+            /// Indicates an entity that describes an icon for this object.
+            ///
+            /// The image should have an aspect ratio of one (horizontal) to one (vertical) and should be
+            /// suitable for presentation at a small size.
+            ///
+            /// - Range: `Image` | `Link`
+            /// - Functional: false
+            types [
+                XsdAnyUri,
+                ImageBox,
+                LinkBox,
+            ],
+        },
 
-    /// Indicates an entity that describes an image for this object.
-    ///
-    /// Unlike the icon property, there are no aspect ratio or display size limitations assumed.
-    ///
-    /// - Range: `Image` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(Image, String))]
-    pub image: Option<serde_json::Value>,
+        image {
+            /// Indicates an entity that describes an image for this object.
+            ///
+            /// Unlike the icon property, there are no aspect ratio or display size limitations assumed.
+            ///
+            /// - Range: `Image` | `Link`
+            /// - Functional: false
+            types [
+                XsdAnyUri,
+                ImageBox,
+                LinkBox,
+            ],
+        },
 
-    /// Indicates one or more entities for which this object is considered a response.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub in_reply_to: Option<serde_json::Value>,
+        in_reply_to {
+            /// Indicates one or more entities for which this object is considered a response.
+            ///
+            /// - Range: `Object` | `Link`
+            /// - Functional: false
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
 
-    /// Indicates one or more physical or logical locations associated with the object.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub location: Option<serde_json::Value>,
+        location {
+            /// Indicates one or more physical or logical locations associated with the object.
+            ///
+            /// - Range: `Object` | `Link`
+            /// - Functional: false
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
 
-    /// Identifies an entity that provides a preview of this object.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub preview: Option<serde_json::Value>,
+        preview {
+            /// Identifies an entity that provides a preview of this object.
+            ///
+            /// - Range: `Object` | `Link`
+            /// - Functional: false
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
 
-    /// The date and time at which the object was published.
-    ///
-    /// - Range: `xsd:dateTime`
-    /// - Functional: true
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(concrete(String, UtcTime), functional)]
-    pub published: Option<serde_json::Value>,
+        published {
+            /// The date and time at which the object was published.
+            ///
+            /// - Range: `xsd:dateTime`
+            /// - Functional: true
+            types [
+                XsdDateTime,
+            ],
+            functional,
+        },
 
-    /// Identifies a `Collection` containing objects considered to be responses to this object.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Collection), concrete(String), functional)]
-    pub replies: Option<serde_json::Value>,
+        replies {
+            /// Identifies a `Collection` containing objects considered to be responses to this object.
+            ///
+            /// - Range: `Object` | `Link`
+            /// - Functional: false
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
 
-    /// The date and time describing the actual or expected starting time of the object.
-    ///
-    /// When used with an `Activity` object, for instance, the `start_time` property specifies the
-    /// moment the activity began or is scheduled to begin.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: true
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(concrete(String, UtcTime), functional)]
-    pub start_time: Option<serde_json::Value>,
+        start_time {
+            /// The date and time describing the actual or expected starting time of the object.
+            ///
+            /// When used with an `Activity` object, for instance, the `start_time` property specifies the
+            /// moment the activity began or is scheduled to begin.
+            ///
+            /// - Range: `xsd:DateTime`
+            /// - Functional: true
+            types [
+                XsdDateTime,
+            ],
+            functional,
+        },
 
-    // TODO: rdf:langString
-    /// A natural language summarization of the object encoded as HTML.
-    ///
-    /// Multiple language tagged summaries MAY be provided.
-    ///
-    /// - Range: `xsd:string` | `rdf:langString`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(concrete(String))]
-    pub summary: Option<serde_json::Value>,
+        summary {
+            /// A natural language summarization of the object encoded as HTML.
+            ///
+            /// Multiple language tagged summaries MAY be provided.
+            ///
+            /// - Range: `xsd:string` | `rdf:langString`
+            /// - Functional: false
+            types [
+                XsdString,
+                RdfLangString,
+            ],
+        },
 
-    /// One or more "tags" that have been associated with an objects. A tag can be any kind of
-    /// `Object`.
-    ///
-    /// The key difference between attachment and tag is that the former implies association by
-    /// inclusion, while the latter implies associated by reference.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub tag: Option<serde_json::Value>,
+        tag {
+            /// One or more "tags" that have been associated with an objects. A tag can be any kind of
+            /// `Object`.
+            ///
+            /// The key difference between attachment and tag is that the former implies association by
+            /// inclusion, while the latter implies associated by reference.
+            ///
+            /// - Range: `Object` | `Link`
+            /// - Functional: false
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
 
-    /// The date and time at which the object was updated,
-    ///
-    /// - Range: `xsd:dateTime`
-    /// - Functional: true
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(concrete(String, UtcTime), functional)]
-    pub updated: Option<serde_json::Value>,
+        updated {
+            /// The date and time at which the object was updated,
+            ///
+            /// - Range: `xsd:dateTime`
+            /// - Functional: true
+            types [
+                XsdDateTime,
+            ],
+            functional,
+        },
 
-    /// Identifies one or more links to representations of the object.
-    ///
-    /// - Range: `xsd:anyUri` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(concrete(String), ab(Link))]
-    pub url: Option<serde_json::Value>,
+        url {
+            /// Identifies one or more links to representations of the object.
+            ///
+            /// - Range: `xsd:anyUri` | `Link`
+            /// - Functional: false
+            types [
+                XsdAnyUri,
+                LinkBox,
+            ],
+        },
 
-    /// Identifies an entity considered to be part of the public primary audience of an `Object`.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub to: Option<serde_json::Value>,
+        to {
+            /// Identifies an entity considered to be part of the public primary audience of an `Object`.
+            ///
+            /// - Range: `Object` | `Link`
+            /// - Functional: false
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
 
-    /// Identifies an `Object` that is part of the private primary audience of this `Object`.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub bto: Option<serde_json::Value>,
+        bto {
+            /// Identifies an `Object` that is part of the private primary audience of this `Object`.
+            ///
+            /// - Range: `Object` | `Link`
+            /// - Functional: false
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
 
-    /// Identifies an `Object` that is part of the public secondary audience of this `Object`.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub cc: Option<serde_json::Value>,
+        cc {
+            /// Identifies an `Object` that is part of the public secondary audience of this `Object`.
+            ///
+            /// - Range: `Object` | `Link`
+            /// - Functional: false
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
 
-    /// Identifies one or more `Objects` that are part of the private secondary audience of this
-    /// `Object`.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub bcc: Option<serde_json::Value>,
+        bcc {
+            /// Identifies one or more `Objects` that are part of the private secondary audience of this
+            /// `Object`.
+            ///
+            /// - Range: `Object` | `Link`
+            /// - Functional: false
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
 
-    /// When used on an `Object`, identifies the MIME media type of the value of the content
-    /// property.
-    ///
-    /// If not specified, the content property is assumed to contain text/html content.
-    ///
-    /// - Range: `Mime Media Type`
-    /// - Functional: true
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(concrete(String), functional)]
-    pub media_type: Option<serde_json::Value>,
+        media_type {
+            /// When used on an `Object`, identifies the MIME media type of the value of the content
+            /// property.
+            ///
+            /// If not specified, the content property is assumed to contain text/html content.
+            ///
+            /// - Range: `Mime Media Type`
+            /// - Functional: true
+            types [
+                MimeMediaType,
+            ],
+            functional,
+        },
 
-    // TODO: xsd:duration
-    /// When the object describes a time-bound resource, such as an audio or video, a meeting, etc,
-    /// the duration property indicates the object's approximate duration.
-    ///
-    /// The value MUST be expressed as an xsd:duration as defined by
-    /// [[xmlschema11-2](https://www.w3.org/TR/xmlschema11-2/)], section
-    /// 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").
-    ///
-    /// - Range: `xsd:duration`
-    /// - Functional: true
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(concrete(String), functional)]
-    pub duration: Option<serde_json::Value>,
-}
-
-impl ObjectProperties {
-    /// Fetch a typed `Mime` struct from the `media_type` field.
-    pub fn media_type(&self) -> Result<mime::Mime> {
-        self.media_type_string()
-            .and_then(|s| s.parse().map_err(|_| Error::Deserialize))
+        duration {
+            /// When the object describes a time-bound resource, such as an audio or video, a meeting, etc,
+            /// the duration property indicates the object's approximate duration.
+            ///
+            /// The value MUST be expressed as an xsd:duration as defined by
+            /// [[xmlschema11-2](https://www.w3.org/TR/xmlschema11-2/)], section
+            /// 3.3.6 (e.g. a period of 5 seconds is represented as "PT5S").
+            ///
+            /// - Range: `xsd:duration`
+            /// - Functional: true
+            types [
+                XsdDuration,
+            ],
+            functional,
+        },
     }
 }
 
 /// Define all the properties of the Location type as described by the Activity Streams vocabulary.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
-#[serde(rename_all = "camelCase")]
-pub struct PlaceProperties {
-    /// Indicates the accuracy of position coordinates on a `Place` objects.
-    ///
-    /// Expressed in properties of percentage. e.g. "94.0" means "94.0% accurate".
-    ///
-    /// - Range: `xsd:float` [>= 0.0f, <= 100.0f]
-    /// - Functional: true
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(concrete(f64), functional)]
-    pub accuracy: Option<serde_json::Value>,
+properties! {
+    Place {
+        accuracy {
+            /// Indicates the accuracy of position coordinates on a `Place` objects.
+            ///
+            /// Expressed in properties of percentage. e.g. "94.0" means "94.0% accurate".
+            ///
+            /// - Range: `xsd:float` [>= 0.0f, <= 100.0f]
+            /// - Functional: true
+            types [
+                XsdFloat,
+            ],
+            functional,
+        },
 
-    /// Indicates the altitude of a place. The measurement units is indicated using the units
-    /// property.
-    ///
-    /// If units is not specified, the default is assumed to be "m" indicating meters.
-    ///
-    /// - Range: `xsd:float`
-    /// - Functional: true
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(concrete(f64), functional)]
-    pub altitude: Option<serde_json::Value>,
+        altitude {
+            /// Indicates the altitude of a place. The measurement units is indicated using the units
+            /// property.
+            ///
+            /// If units is not specified, the default is assumed to be "m" indicating meters.
+            ///
+            /// - Range: `xsd:float`
+            /// - Functional: true
+            types [
+                XsdFloat,
+            ],
+            functional,
+        },
 
-    /// The latitude of a place.
-    ///
-    /// - Range: `xsd:float`
-    /// - Functional: true
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(concrete(f64), functional)]
-    pub latitude: Option<serde_json::Value>,
+        latitude {
+            /// The latitude of a place.
+            ///
+            /// - Range: `xsd:float`
+            /// - Functional: true
+            types [
+                XsdFloat,
+            ],
+            functional,
+        }
 
-    /// The longitude of a place.
-    ///
-    /// - Range: `xsd:float`
-    /// - Functional: true
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(concrete(f64), functional)]
-    pub longitude: Option<serde_json::Value>,
+        logitude {
+            /// The longitude of a place.
+            ///
+            /// - Range: `xsd:float`
+            /// - Functional: true
+            types [
+                XsdFloat,
+            ],
+            functional,
+        },
 
-    /// The radius from the given latitude and longitude for a Place.
-    ///
-    /// The units is expressed by the units property. If units is not specified, the default is
-    /// assumed to be "m" indicating "meters".
-    ///
-    /// - Range: `xsd:float`
-    /// - Functional: true
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(concrete(f64), functional)]
-    pub radius: Option<serde_json::Value>,
+        radius {
+            /// The radius from the given latitude and longitude for a Place.
+            ///
+            /// The units is expressed by the units property. If units is not specified, the default is
+            /// assumed to be "m" indicating "meters".
+            ///
+            /// - Range: `xsd:float`
+            /// - Functional: true
+            types [
+                XsdFloat,
+            ],
+            functional,
+        },
 
-    /// Specifies the measurement units for the radius and altitude properties on a `Place` object.
-    ///
-    /// If not specified, the default is assumed to be "m" for "meters".
-    ///
-    /// - Range: `xsd:float`
-    /// - Functional: true
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(concrete(String), functional)]
-    pub units: Option<serde_json::Value>,
+        units {
+            /// Specifies the measurement units for the radius and altitude properties on a `Place` object.
+            ///
+            /// If not specified, the default is assumed to be "m" for "meters".
+            ///
+            /// TODO: encode rage as any of `"cm"` | `"feet"` | `"inches"` | `"km"` | `"m"` | `xsd:anyUri`
+            /// - Range: `xsd:anyUri` | `xsd:string`
+            /// - Functional: true
+            types [
+                XsdAnyUri,
+                XsdString,
+            ],
+            functional,
+        },
+    }
 }
 
 /// Define all the properties of the Profile type as described by the Activity Streams vocabulary.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
-#[serde(rename_all = "camelCase")]
-pub struct ProfileProperties {
-    /// On a `Profile` object, the describes property identifies the object described by the
-    /// `Profile`.
-    ///
-    /// - Range: `Object`
-    /// - Functional: true
-    #[activitystreams(ab(Object), concrete(String), functional)]
-    pub describes: serde_json::Value,
+properties! {
+    Profile {
+        describes {
+            /// On a `Profile` object, the describes property identifies the object described by the
+            /// `Profile`.
+            ///
+            /// - Range: `Object`
+            /// - Functional: true
+            types [
+                XsdAnyUri,
+                ObjectBox,
+            ],
+            functional,
+        },
+    }
 }
 
 /// Define all the properties of the Relationship type as described by the Activity Streams
 /// vocabulary.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
-#[serde(rename_all = "camelCase")]
-pub struct RelationshipProperties {
-    /// On a `Relationship` object, the subject property identifies one of the connected
-    /// individuals.
-    ///
-    /// For instance, for a `Relationship` object describing "John is related to Sally", subject
-    /// would refer to John.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: true
-    #[activitystreams(ab(Object, Link), concrete(String), functional)]
-    subject: serde_json::Value,
+properties! {
+    Relationship {
+        subject {
+            /// On a `Relationship` object, the subject property identifies one of the connected
+            /// individuals.
+            ///
+            /// For instance, for a `Relationship` object describing "John is related to Sally", subject
+            /// would refer to John.
+            ///
+            /// - Range: `Object` | `Link`
+            /// - Functional: true
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+            functional,
+        },
 
-    /// When used within a `Relationship` describes the entity to which the subject is related.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    object: serde_json::Value,
+        object {
+            /// When used within a `Relationship` describes the entity to which the subject is related.
+            ///
+            /// - Range: `Object` | `Link`
+            /// - Functional: false
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
 
-    /// On a `Relationship` object, the relationship property identifies the kind of relationship
-    /// that exists between subject and object.
-    ///
-    /// - Range: `Object`
-    /// - Functional: false
-    #[activitystreams(ab(Object), concrete(String))]
-    relationship: serde_json::Value,
+        relationship {
+            /// On a `Relationship` object, the relationship property identifies the kind of relationship
+            /// that exists between subject and object.
+            ///
+            /// - Range: `Object`
+            /// - Functional: false
+            types [
+                XsdAnyUri,
+                ObjectBox,
+            ],
+        },
+    }
 }
 
 /// Define all the properties of the Tombstone type as described by the Activity Streams vocabulary.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
-#[serde(rename_all = "camelCase")]
-pub struct TombstoneProperties {
-    /// On a `Tombstone` object, the formerType property identifies the type of the object that was
-    /// deleted.
-    ///
-    /// - Range: `Object`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object), concrete(String))]
-    pub former_type: Option<serde_json::Value>,
+properties! {
+    Tombstone {
+        former_type {
+            /// On a `Tombstone` object, the formerType property identifies the type of the object that was
+            /// deleted.
+            ///
+            /// - Range: `Object`
+            /// - Functional: false
+            types [
+                XsdAnyUri,
+                ObjectBox,
+            ],
+        },
 
-    /// On a `Tombstone` object, the deleted property is a timestamp for when the object was
-    /// deleted.
-    ///
-    /// - Range: `xsd:dateTime`
-    /// - Functional: true
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(concrete(String, UtcTime), functional)]
-    pub deleted: Option<serde_json::Value>,
+        deleted {
+            /// On a `Tombstone` object, the deleted property is a timestamp for when the object was
+            /// deleted.
+            ///
+            /// - Range: `xsd:dateTime`
+            /// - Functional: true
+            types [
+                XsdDateTime,
+            ],
+            functional,
+        },
+    }
 }

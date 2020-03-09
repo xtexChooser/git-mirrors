@@ -17,7 +17,7 @@
  * along with ActivityStreams Traits.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use serde::{de::DeserializeOwned, ser::Serialize};
+use std::any::Any;
 
 /// A Link is an indirect, qualified reference to a resource identified by a URL.
 ///
@@ -27,4 +27,9 @@ use serde::{de::DeserializeOwned, ser::Serialize};
 /// used, it establishes a qualified relation connecting the subject (the containing object) to the
 /// resource identified by the href. Properties of the Link are properties of the reference as
 /// opposed to properties of the resource.
-pub trait Link: DeserializeOwned + Serialize {}
+#[typetag::serde(tag = "type")]
+pub trait Link: std::fmt::Debug {
+    fn as_any(&self) -> &dyn Any;
+
+    fn as_any_mut(&mut self) -> &mut dyn Any;
+}

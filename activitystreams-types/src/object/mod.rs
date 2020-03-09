@@ -182,7 +182,7 @@ pub struct Place {
 /// `Actor` Type objects.
 ///
 /// The `describes` property is used to reference the object being described by the profile.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs, Properties)]
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Profile {
     #[serde(rename = "type")]
@@ -215,7 +215,7 @@ pub struct Profile {
 /// individuals that are directly connected within a person's social graph. Suppose we have a user,
 /// Sally, with direct relationships to users Joe and Jane. Sally follows Joe's updates while Sally
 /// and Jane have a mutual relationship.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties, PropRefs)]
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Relationship {
     #[serde(rename = "type")]
@@ -270,4 +270,64 @@ pub struct Video {
     #[serde(flatten)]
     #[activitystreams(Object)]
     pub object_props: ObjectProperties,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct ImageBox(pub Box<Image>);
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct ObjectBox(pub Box<dyn Object>);
+
+impl ObjectBox {
+    pub fn is<T>(&self) -> bool
+    where
+        T: Object,
+    {
+        self.0.as_any().is::<T>()
+    }
+
+    pub fn downcast_ref<T>(&self) -> Option<&T>
+    where
+        T: Object,
+    {
+        self.0.as_any().downcast_ref()
+    }
+
+    pub fn downcast_mut<T>(&mut self) -> Option<&mut T>
+    where
+        T: Object,
+    {
+        self.0.as_any_mut().downcast_mut()
+    }
+
+    pub fn downcast<T>(self) -> Option<T>
+    where
+        T: Object,
+    {
+        let any: Box<dyn Any> = self;
+        any.downcast()
+    }
+}
+
+impl From<Image> for ImageBox {
+    fn from(i: Image) -> Self {
+        ImageBox(Box::new(i))
+    }
+}
+
+impl From<ImageBox> for Image {
+    fn from(i: ImageBox) -> Self {
+        *i.0
+    }
+}
+
+impl<T> From<T> for ObjectBox
+where
+    T: Object,
+{
+    fn from(t: T) -> Self {
+        ObjectBox(Box::new(t))
+    }
 }

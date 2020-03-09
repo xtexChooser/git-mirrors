@@ -26,7 +26,7 @@
 //!
 //! ```rust
 //! use activitystreams_traits::{Object, Actor};
-//! use serde_derive::{Deserialize, Serialize};
+//! use serde::{Deserialize, Serialize};
 //!
 //! #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 //! #[serde(rename_all = "camelCase")]
@@ -38,7 +38,9 @@
 //!     kind: String,
 //! }
 //!
+//! #[typetag::serde]
 //! impl Object for Persona {}
+//! #[typetag::serde]
 //! impl Actor for Persona {}
 //!
 //! # fn main() {}
@@ -47,14 +49,13 @@
 mod activity;
 mod actor;
 mod collection;
-mod error;
 mod link;
 mod object;
-pub mod properties;
 
-pub use self::activity::*;
-pub use self::actor::*;
-pub use self::collection::*;
-pub use self::error::*;
-pub use self::link::*;
-pub use self::object::*;
+pub use self::{
+    activity::{Activity, IntransitiveActivity},
+    actor::Actor,
+    collection::{Collection, CollectionPage},
+    link::Link,
+    object::Object,
+};

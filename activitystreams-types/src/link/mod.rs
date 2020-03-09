@@ -59,3 +59,47 @@ impl LinkExt for Mention {
         &mut self.link_props
     }
 }
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct LinkBox(pub Box<dyn Link>);
+
+impl LinkBox {
+    pub fn is<T>(&self) -> bool
+    where
+        T: Link,
+    {
+        self.0.as_any().is::<T>()
+    }
+
+    pub fn downcast_ref<T>(&self) -> Option<&T>
+    where
+        T: Link,
+    {
+        self.0.as_any().downcast_ref()
+    }
+
+    pub fn downcast_mut<T>(&mut self) -> Option<&mut T>
+    where
+        T: Link,
+    {
+        self.0.as_any_mut().downcast_mut()
+    }
+
+    pub fn downcast<T>(self) -> Option<T>
+    where
+        T: Link,
+    {
+        let any: Box<dyn Any> = self;
+        any.downcast()
+    }
+}
+
+impl<T> From<T> for LinkBox
+where
+    T: Link,
+{
+    fn from(t: T) -> Self {
+        LinkBox(Box::new(t))
+    }
+}

@@ -17,11 +17,16 @@
  * along with ActivityStreams Traits.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use serde::{de::DeserializeOwned, ser::Serialize};
+use std::any::Any;
 
 /// Describes an object of any kind.
 ///
 /// The Object type serves as the base type for most of the other kinds of objects defined in the
 /// Activity Vocabulary, including other Core types such as `Activity`, `IntransitiveActivity`,
 /// `Collection` and `OrderedCollection`.
-pub trait Object: DeserializeOwned + Serialize {}
+#[typetag::serde(tag = "type")]
+pub trait Object: std::fmt::Debug {
+    fn as_any(&self) -> &dyn Any;
+
+    fn as_any_mut(&mut self) -> &mut dyn Any;
+}
