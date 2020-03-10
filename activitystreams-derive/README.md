@@ -3,25 +3,27 @@ __derive macros for ActivityStreams__
 
 - [Read the documentation on docs.rs](https://docs.rs/activitystreams-derive)
 - [Find the crate on crates.io](https://crates.io/crates/activitystreams-derive)
-- [Join the discussion on Matrix](https://matrix.to/#/!fAEcHyTUdAaKCzIKCt:asonix.dog?via=asonix.dog)
+- [Hit me up on Mastodon](https://asonix.dog/@asonix)
 
 ## Usage
 Add the required crates to your `Cargo.toml`
 ```toml
 # Cargo.toml
 
-activitystreams-derive = "0.2"
-activitystreams-traits = "0.2"
-serde = "1.0"
-serde_derive = "1.0"
-serde_json = "1.0"
+activitystreams-derive = "0.3"
+activitystreams-traits = "0.3"
+activitystreams-types = "0.4"
+serde = { version = "1.0", features = ["derive"] }
 ```
 
 And then in your project
 ```rust
-use activitystreams_derive::{Properties, UnitString};
-use activitystreams_traits::{Link, Object};
-use serde_derive::{Deserialize, Serialize};
+use activitystreams_derive::{properties, PropRefs, UnitString};
+use activitystreams_traits::Object;
+use activitystreams_types::object::{
+    properties::ObjectProperties,
+    ObjectExt,
+};
 
 /// Using the UnitString derive macro
 ///
@@ -31,27 +33,72 @@ use serde_derive::{Deserialize, Serialize};
 #[activitystreams(SomeKind)]
 pub struct MyKind;
 
-/// Using the Properties derive macro
-///
-/// This macro generates getters and setters for the associated fields.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
+properties! {
+    My {
+        docs [
+            "Using the properties macro",
+            "",
+            "This macro generates getters and setters for the associated fields.",
+        ],
+
+        kind {
+            docs [
+                "Use the UnitString MyKind to enforce the type of the object by \"SomeKind\"",
+                "",
+                "Rename to/from 'type' when serializing/deserializing",
+            ],
+
+            types [
+                MyKind,
+            ],
+            functional,
+            required,
+            rename("type"),
+        },
+
+        required_key {
+            docs [
+                "Derive getters and setters for required_key with String type.",
+                "",
+                "In the Activity Streams spec, 'functional' means there can only be one item for",
+                "this key. This means all fields not labeled 'functional' can also be",
+                "serialized/deserialized as Vec<T>.",
+                "",
+                "'required' here means that the field must be present, otherwise, it's"
+                "represented as an Option<T>",
+            ],
+            types [
+                String,
+            ],
+            functional,
+            required,
+        },
+    }
+}
+
+#[derive(Clone, Default, PropRefs, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct MyProperties {
-    /// Derive getters and setters for @context with Link and Object traits.
-    #[serde(rename = "@context")]
-    #[activitystreams(ab(Object, Link))]
-    pub context: Option<serde_json::Value>,
+pub struct My {
+    /// Derive AsRef<MyProperties> and AsMut<MyProperties>
+    #[serde(flatten)]
+    #[activitystreams(None)]
+    my_properties: MyProperties,
 
-    /// Use the UnitString MyKind to enforce the type of the object by "SomeKind"
-    pub kind: MyKind,
-
-    /// Derive getters and setters for required_key with String type.
+    /// Derive AsRef<ObjectProperties> and AsMut<ObjectProperties>
     ///
-    /// In the Activity Streams spec, 'functional' means there can only be one item for this
-    /// key. This means all fields not labeled 'functional' can also be serialized/deserialized
-    /// as Vec<T>.
-    #[activitystreams(concrete(String), functional)]
-    pub required_key: serde_json::Value,
+    /// as well as the Object and ObjectExt traits
+    #[serde(flatten)]
+    #[activitystreams(Object)]
+    properties: ObjectProperties,
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let mut my = My::default();
+
+    my.as_mut().set_required_key("Hello")?;
+
+    assert_eq!(my.as_ref().get_required_key(), "Hello");
+    Ok(())
 }
 ```
 
@@ -60,7 +107,7 @@ Feel free to open issues for anything you find an issue with. Please note that a
 
 ## License
 
-Copyright © 2018 Riley Trautman
+Copyright © 2020 Riley Trautman
 
 ActivityStreams Derive is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 

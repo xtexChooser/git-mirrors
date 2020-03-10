@@ -1,7 +1,7 @@
 /*
  * This file is part of ActivityStreams Traits.
  *
- * Copyright © 2018 Riley Trautman
+ * Copyright © 2020 Riley Trautman
  *
  * ActivityStreams Traits is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,8 +39,19 @@
 //! }
 //!
 //! #[typetag::serde]
-//! impl Object for Persona {}
-//! #[typetag::serde]
+//! impl Object for Persona {
+//!     fn as_any(&self) -> &(dyn Any + 'static) {
+//!         self
+//!     }
+//!
+//!     fn as_any_mut(&mut self) -> &mut (dyn Any + 'static) {
+//!         self
+//!     }
+//!
+//!     fn duplicate(&self) -> Box<dyn Object + 'static> {
+//!         Box::new(self.clone())
+//!     }
+//! }
 //! impl Actor for Persona {}
 //!
 //! # fn main() {}

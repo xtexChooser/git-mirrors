@@ -1,7 +1,7 @@
 /*
  * This file is part of ActivityStreams Traits.
  *
- * Copyright © 2018 Riley Trautman
+ * Copyright © 2020 Riley Trautman
  *
  * ActivityStreams Traits is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,9 +26,18 @@ use std::any::Any;
 /// `Collection` and `OrderedCollection`.
 #[typetag::serde(tag = "type")]
 pub trait Object: std::fmt::Debug {
+    /// Provide an as_any method to allow for borrowed downcasting.
+    ///
+    /// This is useful since Objects can be deserialized generically via typetag
     fn as_any(&self) -> &dyn Any;
 
+    /// Provide an as_any method to allow for mutably borrowed downcasting.
+    ///
+    /// This is useful since Objects can be deserialized generically via typetag
     fn as_any_mut(&mut self) -> &mut dyn Any;
 
+    /// Provide a duplicate method to allow for cloning type objects.
+    ///
+    /// This is useful since Objects can be deserialized generically via typetag
     fn duplicate(&self) -> Box<dyn Object>;
 }

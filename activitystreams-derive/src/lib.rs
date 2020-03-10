@@ -1,7 +1,7 @@
 /*
  * This file is part of ActivityStreams Derive.
  *
- * Copyright © 2018 Riley Trautman
+ * Copyright © 2020 Riley Trautman
  *
  * ActivityStreams Derive is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

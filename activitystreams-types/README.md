@@ -3,14 +3,14 @@ __A base set of types from the Activity Streams specification.__
 
 - [Read the documentation on docs.rs](https://docs.rs/activitystreams-types)
 - [Find the crate on crates.io](https://crates.io/crates/activitystreams-types)
-- [Join the discussion on Matrix](https://matrix.to/#/!fAEcHyTUdAaKCzIKCt:asonix.dog?via=asonix.dog)
+- [Hit me up on Mastodon](https://asonix.dog/@asonix)
 
 ## Usage
-First, add the crate to your cargo.toml
+First, add the crate to your `Cargo.toml`
 ```toml
 # Cargo.toml
 
-activitystreams-types = "0.3"
+activitystreams-types = "0.4"
 ```
 
 Then use it in your project!
@@ -18,12 +18,11 @@ Then use it in your project!
 // in your project
 
 use activitystreams_types::{context, link::Mention};
-use failure::Error;
 
-fn run() -> Result<(), Error> {
+fn run() -> Result<(), Box<dyn std::error::Error>> {
     /// A Mention is the only predefined Link type in the Activity Streams spec
     let mut mention = Mention::default();
-    mention.link_props.set_context_object(context())?;
+    mention.as_ref().set_context_xsd_any_uri(context())?;
 
     let mention_string = serde_json::to_string(&mention)?;
 
@@ -38,7 +37,7 @@ Feel free to open issues for anything you find an issue with. Please note that a
 
 ## License
 
-Copyright © 2018 Riley Trautman
+Copyright © 2020 Riley Trautman
 
 ActivityStreams Types is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
