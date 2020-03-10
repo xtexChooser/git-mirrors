@@ -5,6 +5,18 @@ pub struct XsdAnyUri(url::Url);
 #[error("Could not parse XsdAnyUri")]
 pub struct XsdAnyUriError;
 
+impl From<url::Url> for XsdAnyUri {
+    fn from(u: url::Url) -> Self {
+        XsdAnyUri(u)
+    }
+}
+
+impl From<XsdAnyUri> for url::Url {
+    fn from(u: XsdAnyUri) -> Self {
+        u.0
+    }
+}
+
 impl Default for XsdAnyUri {
     fn default() -> Self {
         "data:text/plain,uwu".parse().unwrap()
