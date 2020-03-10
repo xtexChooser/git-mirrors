@@ -17,32 +17,91 @@ activitystreams = "0.4"
 
 And then use it in your project
 ```rust
-use activitystreams::{context, Object, Actor, object::Profile};
-use serde_derive::{Serialize, Deserialize};
+use activitystreams::object::Video;
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let mut v = Video::default();
+
+    v.as_mut()
+        .set_context_xsd_any_uri("https://www.w3.org/ns/activitystreams")?
+        .set_id("https://example.com/@example/lions")?
+        .set_url_xsd_any_uri("https://example.com/@example/lions/video.webm")?
+        .set_name_xsd_string("My Cool Video")?
+        .set_summary_xsd_string("A video about some cool lions")?
+        .set_media_type("video/webm")?
+        .set_duration("PT4M20S")?;
+
+    println!("Video, {:#?}", v);
+
+    let s = serde_json::to_string(&v)?;
+
+    println!("json, {}", s);
+
+    let v: Video = serde_json::from_str(&s)?;
+
+    println!("Video again, {:#?}", v);
+
+    Ok(())
+}
+```
+
+### Intermediate Usage
+
+```rust
+use activitystreams::{
+    context,
+    object::{
+        properties::{
+            ObjectProperties,
+            ProfileProperties
+        },
+        Profile,
+    },
+    primitives::XsdAnyUri,
+    Actor,
+    Object,
+};
+use serde::{Deserialize, Serialize};
+use std::any::Any;
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Persona {
     #[serde(rename = "@context")]
-    context: serde_json::Value,
+    context: XsdAnyUri,
 
     #[serde(rename = "type")]
     kind: String,
 }
 
-impl Object for Persona {}
+#[typetag::serde]
+impl Object for Persona {
+    fn as_any(&self) -> &(dyn Any + 'static) {
+        self
+    }
+
+    fn as_any_mut(&mut self) -> &mut (dyn Any + 'static) {
+        self
+    }
+
+    fn duplicate(&self) -> Box<dyn Object + 'static> {
+        Box::new(self.clone())
+    }
+}
 impl Actor for Persona {}
 
-fn run() -> Result<(), anyhow::Error> {
+fn main() -> Result<(), anyhow::Error> {
     let mut profile = Profile::default();
 
-    profile.profile.set_describes_object(Persona {
-        context: serde_json::to_value(context())?,
+    let pprops: &mut ProfileProperties = profile.as_mut();
 
+    pprops.set_describes_object_box(Persona {
+        context: context(),
         kind: "Persona".to_owned(),
     })?;
 
-    profile.object_props.set_context_object(context())?;
+    let oprops: &mut ObjectProperties = profile.as_mut();
+    oprops.set_context_xsd_any_uri(context())?;
 
     let profile_string = serde_json::to_string(&profile)?;
 
@@ -57,62 +116,77 @@ Add the required crates to your `Cargo.toml`
 ```toml
 # Cargo.toml
 
-activitystreams-derive = "0.2"
-activitystreams-traits = "0.2"
-activtystreams-types = "0.3"
-serde = "1.0"
-serde_derive = "1.0"
+activitystreams = "0.4"
+serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 ```
 
 And then in your project
 ```rust
-use activitystreams_derive::{Properties, UnitString};
-use activitystreams_traits::{Link, Object};
-use activitystreams_types::{CustomLink, link::Mention};
-use serde_derive::{Deserialize, Serialize};
+use activitystreams::{
+    context,
+    link::{
+        properties::LinkProperties,
+        LinkExt,
+    },
+    Link,
+    Object,
+    PropRefs,
+    UnitString
+};
 
 /// Using the UnitString derive macro
 ///
 /// This macro implements Serialize and Deserialize for the given type, making this type
 /// represent the string "SomeKind" in JSON.
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(SomeKind)]
+#[activitystreams(MyLink)]
 pub struct MyKind;
+
+properties! {
+    MyLink {
+        docs [ "Document MyLinkProperties" ],
+
+        required_key {
+            docs [ "Document the required key" ],
+            types [ String ],
+            functional,
+            required,
+        }
+    }
+}
 
 /// Using the Properties derive macro
 ///
 /// This macro generates getters and setters for the associated fields.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
+#[derive(Clone, Debug, Default, serde::Deserialize, serde::Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
-pub struct MyProperties {
-    /// Derive getters and setters for @context with Link and Object traits.
-    #[serde(rename = "@context")]
-    #[activitystreams(ab(Object, Link))]
-    pub context: Option<serde_json::Value>,
-
+pub struct MyLink {
     /// Use the UnitString MyKind to enforce the type of the object by "SomeKind"
     pub kind: MyKind,
 
-    /// Derive getters and setters for required_key with String type.
-    ///
-    /// In the Activity Streams spec, 'functional' means there can only be one item for this
-    /// key. This means all fields not labeled 'functional' can also be serialized/deserialized
-    /// as Vec<T>.
-    #[activitystreams(concrete(String), functional)]
-    pub required_key: serde_json::Value,
+    #[activitystreams(Link)]
+    pub link_props: LinkProperties,
+
+    #[activitystreams(None)]
+    pub my_link_props: MyLinkProperties,
 }
 
 fn run() -> Result<(), anyhow::Error> {
-    let mut props = MyProperties::default();
+    let mut my_link = MyLink::default();
 
-    props.set_required_key_string("Hey".to_owned())?;
+    let mprops: &mut MyLinkProperties = my_link.as_mut();
+    mprops.set_required_key("hey")?;
 
-    let my_link = CustomLink::new(Mention::default(), props);
+    let lprops: &mut LinkProperties = my_link.as_mut();
+    lprops.set_context_xsd_any_uri(context)?;
 
     let my_link_string = serde_json::to_string(&my_link)?;
 
-    let my_link: CustomLink<Mention, MyProperties> = serde_json::from_str(&my_link_string)?;
+    let my_link: MyLink = serde_json::from_str(&my_link_string)?;
+    let mprops: &MyLinkProperties = my_link.as_ref();
+
+    println!("{}", mprops.get_required_key());
 
     Ok(())
 }
