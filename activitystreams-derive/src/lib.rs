@@ -529,12 +529,13 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
             if field.description.required {
                 if field.description.functional {
                     let set = quote! {
-                        pub fn #set_ident<T>(&mut self, item: T) -> &mut Self
+                        pub fn #set_ident<T>(&mut self, item: T) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
                         where
-                            T: Into<#v_ty>
+                            T: std::convert::TryInto<#v_ty>,
                         {
-                            self.#fname = item.into();
-                            self
+                            use std::convert::TryInto;
+                            self.#fname = item.try_into()?;
+                            Ok(self)
                         }
                     };
 
@@ -550,12 +551,13 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                     }
                 } else {
                     let set = quote! {
-                        pub fn #set_ident<T>(&mut self, item: T) -> &mut Self
+                        pub fn #set_ident<T>(&mut self, item: T) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
                         where
-                            T: Into<#v_ty>
+                            T: std::convert::TryInto<#v_ty>,
                         {
-                            self.#fname = #enum_ty::Term(item.into());
-                            self
+                            use std::convert::TryInto;
+                            self.#fname = #enum_ty::Term(item.try_into()?);
+                            Ok(self)
                         }
                     };
 
@@ -569,13 +571,13 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                     };
 
                     let set_many = quote! {
-                        pub fn #set_many_ident<T>(&mut self, item: Vec<T>) -> &mut Self
+                        pub fn #set_many_ident<T>(&mut self, item: Vec<T>) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
                         where
-                            T: Into<#v_ty>,
+                            T: std::convert::TryInto<#v_ty>,
                         {
-                            let item: Vec<#v_ty> = item.into_iter().map(Into::into).collect();
+                            let item: Vec<#v_ty> = item.into_iter().map(std::convert::TryInto::try_into).collect::<Result<Vec<_>, _>>()?;
                             self.#fname = #enum_ty::Array(item);
-                            self
+                            Ok(self)
                         }
                     };
 
@@ -598,12 +600,13 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
             } else {
                 if field.description.functional {
                     let set = quote! {
-                        pub fn #set_ident<T>(&mut self, item: T) -> &mut Self
+                        pub fn #set_ident<T>(&mut self, item: T) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
                         where
-                            T: Into<#v_ty>
+                            T: std::convert::TryInto<#v_ty>,
                         {
-                            self.#fname = Some(item.into());
-                            self
+                            use std::convert::TryInto;
+                            self.#fname = Some(item.try_into()?);
+                            Ok(self)
                         }
                     };
 
@@ -619,12 +622,13 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                     }
                 } else {
                     let set = quote! {
-                        pub fn #set_ident<T>(&mut self, item: T) -> &mut Self
+                        pub fn #set_ident<T>(&mut self, item: T) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
                         where
-                            T: Into<#v_ty>
+                            T: std::convert::TryInto<#v_ty>,
                         {
-                            self.#fname = Some(#enum_ty::Term(item.into()));
-                            self
+                            use std::convert::TryInto;
+                            self.#fname = Some(#enum_ty::Term(item.try_into()?));
+                            Ok(self)
                         }
                     };
 
@@ -638,13 +642,13 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                     };
 
                     let set_many = quote! {
-                        pub fn #set_many_ident<T>(&mut self, item: Vec<T>) -> &mut Self
+                        pub fn #set_many_ident<T>(&mut self, item: Vec<T>) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
                         where
-                            T: Into<#v_ty>,
+                            T: std::convert::TryInto<#v_ty>,
                         {
-                            let item: Vec<#v_ty> = item.into_iter().map(Into::into).collect();
+                            let item: Vec<#v_ty> = item.into_iter().map(std::convert::TryInto::try_into).collect::<Result<Vec<_>, _>>()?;
                             self.#fname = Some(#enum_ty::Array(item));
-                            self
+                            Ok(self)
                         }
                     };
 
@@ -678,13 +682,14 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
 
                     if field.description.required {
                         let set = quote! {
-                            pub fn #set_ident<T>(&mut self, item: T) -> &mut Self
+                            pub fn #set_ident<T>(&mut self, item: T) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
                             where
-                                T: Into<#v_ty>,
+                                T: std::convert::TryInto<#v_ty>,
                             {
-                                let item: #v_ty = item.into();
+                                use std::convert::TryInto;
+                                let item: #v_ty = item.try_into()?;
                                 self.#fname = item.into();
-                                self
+                                Ok(self)
                             }
                         };
 
@@ -703,13 +708,14 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                         }
                     } else {
                         let set = quote! {
-                            pub fn #set_ident<T>(&mut self, item: T) -> &mut Self
+                            pub fn #set_ident<T>(&mut self, item: T) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
                             where
-                                T: Into<#v_ty>,
+                                T: std::convert::TryInto<#v_ty>,
                             {
-                                let item: #v_ty = item.into();
+                                use std::convert::TryInto;
+                                let item: #v_ty = item.try_into()?;
                                 self.#fname = Some(item.into());
-                                self
+                                Ok(self)
                             }
                         };
 
@@ -752,14 +758,15 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
 
                     if field.description.required {
                         let set = quote! {
-                            pub fn #set_ident<T>(&mut self, item: T) -> &mut Self
+                            pub fn #set_ident<T>(&mut self, item: T) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
                             where
-                                T: Into<#v_ty>,
+                                T: std::convert::TryInto<#v_ty>,
                             {
-                                let item: #v_ty = item.into();
+                                use std::convert::TryInto;
+                                let item: #v_ty = item.try_into()?;
                                 let item: #term_ty = item.into();
                                 self.#fname = item.into();
-                                self
+                                Ok(self)
                             }
                         };
 
@@ -773,14 +780,14 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                         };
 
                         let set_many = quote! {
-                            pub fn #set_many_ident<T>(&mut self, item: Vec<T>) -> &mut Self
+                            pub fn #set_many_ident<T>(&mut self, item: Vec<T>) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
                             where
-                                T: Into<#v_ty>,
+                                T: std::convert::TryInto<#v_ty>,
                             {
-                                let item: Vec<#v_ty> = item.into_iter().map(Into::into).collect();
+                                let item: Vec<#v_ty> = item.into_iter().map(std::convert::TryInto::try_into).collect::<Result<Vec<_>, _>>()?;
                                 let item: Vec<#term_ty> = item.into_iter().map(Into::into).collect();
                                 self.#fname = item.into();
-                                self
+                                Ok(self)
                             }
                         };
 
@@ -801,14 +808,15 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                         }
                     } else {
                         let set = quote! {
-                            pub fn #set_ident<T>(&mut self, item: T) -> &mut Self
+                            pub fn #set_ident<T>(&mut self, item: T) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
                             where
-                                T: Into<#v_ty>,
+                                T: std::convert::TryInto<#v_ty>,
                             {
-                                let item: #v_ty = item.into();
+                                use std::convert::TryInto;
+                                let item: #v_ty = item.try_into()?;
                                 let item: #term_ty = item.into();
                                 self.#fname = Some(item.into());
-                                self
+                                Ok(self)
                             }
                         };
 
@@ -822,14 +830,14 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                         };
 
                         let set_many = quote! {
-                            pub fn #set_many_ident<T>(&mut self, item: Vec<T>) -> &mut Self
+                            pub fn #set_many_ident<T>(&mut self, item: Vec<T>) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
                             where
-                                T: Into<#v_ty>,
+                                T: std::convert::TryInto<#v_ty>,
                             {
-                                let item: Vec<#v_ty> = item.into_iter().map(Into::into).collect();
+                                let item: Vec<#v_ty> = item.into_iter().map(std::convert::TryInto::try_into).collect::<Result<Vec<_>, _>>()?;
                                 let item: Vec<#term_ty> = item.into_iter().map(Into::into).collect();
                                 self.#fname = Some(item.into());
-                                self
+                                Ok(self)
                             }
                         };
 
