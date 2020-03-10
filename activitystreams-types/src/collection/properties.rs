@@ -27,15 +27,15 @@
 //!   collection::properties::CollectionProperties,
 //!   object::properties::ObjectProperties,
 //! };
-//! use serde_derive::{Deserialize, Serialize};
+//! use serde::{Deserialize, Serialize};
 //!
-//! #[derive(Clone, Debug, Serialize, Deserialize)]
+//! #[derive(Debug, Serialize, Deserialize)]
 //! #[serde(rename_all = "camelCase")]
 //! pub struct MyCollection {
 //!     #[serde(rename = "type")]
 //!     pub kind: String,
 //!
-//!     /// Define a require property for the MyCollection type
+//!     docs("Define a require property for the MyCollection type"),
 //!     pub my_property: String,
 //!
 //!     #[serde(flatten)]
@@ -51,105 +51,173 @@
 //! # fn main() {}
 //! ```
 
-use activitystreams_derive::Properties;
-use activitystreams_traits::{Collection, CollectionPage, Link, Object};
-use serde_derive::{Deserialize, Serialize};
+use crate::{
+    collection::{CollectionBox, CollectionPageBox},
+    link::LinkBox,
+    object::ObjectBox,
+    primitives::*,
+};
+use activitystreams_derive::properties;
 
-/// `Collection` objects are a specialization of the base `Object` that serve as a container for
-/// other `Objects` or `Links`.
-///
-/// The items within a `Collection` can be ordered or unordered. The `OrderedCollection` type MAY be
-/// used to identify a `Collection` whose items are always ordered. In the JSON serialization, the
-/// unordered items of a `Collection` are represented using the `items` property while ordered items
-/// are represented using the `ordered_items` property.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
-#[serde(rename_all = "camelCase")]
-pub struct CollectionProperties {
-    /// Identifies the items contained in a collection. The items might be ordered or unordered.
-    ///
-    /// - Range: `Object` | `Link` | Ordered List of [ `Object` | `Link` ]
-    /// - Functional: false
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub items: serde_json::Value,
+properties! {
+    Collection {
+        docs [
+            "`Collection` objects are a specialization of the base `Object` that serve as a container for",
+            "other `Objects` or `Links`.",
+            "",
+            "The items within a `Collection` can be ordered or unordered. The `OrderedCollection` type MAY be",
+            "used to identify a `Collection` whose items are always ordered. In the JSON serialization, the",
+            "unordered items of a `Collection` are represented using the `items` property while ordered items",
+            "are represented using the `ordered_items` property.",
+        ],
 
-    /// A non-negative integer specifying the total number of objects contained by the logical view
-    /// of the collection.
-    ///
-    /// This number might not reflect the actual number of items serialized within the `Collection`
-    /// object instance.
-    ///
-    /// - Range: `xsd:nonNegativeInteger`
-    /// - Functional: true
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(concrete(u64), functional)]
-    pub total_items: Option<serde_json::Value>,
+        items {
+            docs [
+                "Identifies the items contained in a collection. The items might be ordered or unordered.",
+                "",
+                "- Range: `Object` | `Link` | Ordered List of [ `Object` | `Link` ]",
+                "- Functional: false",
+            ],
+            types [
+                XsdString,
+                ObjectBox,
+                LinkBox,
+            ],
+            required,
+        },
 
-    /// In a paged `Collection`, indicates the page that contains the most recently updated member
-    /// items.
-    ///
-    /// - Range: `CollectionPage` | `Link`
-    /// - Functional: true
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Link, CollectionPage), concrete(String), functional)]
-    pub current: Option<serde_json::Value>,
+        total_items {
+            docs [
+                "A non-negative integer specifying the total number of objects contained by the logical view",
+                "of the collection.",
+                "",
+                "This number might not reflect the actual number of items serialized within the `Collection`",
+                "object instance.",
+                "",
+                "- Range: `xsd:nonNegativeInteger`",
+                "- Functional: true",
+            ],
+            types [
+                XsdNonNegativeInteger,
+            ],
+            functional,
+        },
 
-    /// In a paged `Collection`, indicates the furthest preceeding page of items in the collection.
-    ///
-    /// - Range: `CollectionPage` | `Link`
-    /// - Functional: true
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Link, CollectionPage), concrete(String), functional)]
-    pub first: Option<serde_json::Value>,
+        current {
+            docs [
+                "In a paged `Collection`, indicates the page that contains the most recently updated member",
+                "items.",
+                "",
+                "- Range: `CollectionPage` | `Link`",
+                "- Functional: true",
+            ],
+            types [
+                XsdAnyUri,
+                LinkBox,
+                CollectionPageBox,
+            ],
+            functional,
+        },
 
-    /// In a paged `Collection`, indicates the furthest proceeding page of the collection.
-    ///
-    /// - Range: `CollectionPage` | `Link`
-    /// - Functional: true
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Link, CollectionPage), concrete(String), functional)]
-    pub last: Option<serde_json::Value>,
+        first {
+            docs [
+                "In a paged `Collection`, indicates the furthest preceeding page of items in the collection.",
+                "",
+                "- Range: `CollectionPage` | `Link`",
+                "- Functional: true",
+            ],
+            types [
+                XsdAnyUri,
+                LinkBox,
+                CollectionPageBox,
+            ],
+            functional,
+        },
+
+        last {
+            docs [
+                "In a paged `Collection`, indicates the furthest proceeding page of the collection.",
+                "",
+                "- Range: `CollectionPage` | `Link`",
+                "- Functional: true",
+            ],
+            types [
+                XsdAnyUri,
+                LinkBox,
+                CollectionPageBox,
+            ],
+        },
+    }
 }
 
-/// The `CollectionPage` type extends from the base `Collection` type and inherits all of it's
-/// properties.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
-#[serde(rename_all = "camelCase")]
-pub struct CollectionPageProperties {
-    /// Identifies the `Collection` to which a `CollectionPage` objects items belong.
-    ///
-    /// Range: `Collection` | `Link`
-    /// Functional: true
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Link, Collection), concrete(String), functional)]
-    pub part_of: Option<serde_json::Value>,
+properties! {
+    CollectionPage {
+        docs [
+            "The `CollectionPage` type extends from the base `Collection` type and inherits all of it's",
+            "properties.",
+        ],
 
-    /// In a paged `Collection`, indicates the next page of items.
-    ///
-    /// - Range: `CollectionPage` | `Link`
-    /// - Functional: true
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Link, CollectionPage), concrete(String), functional)]
-    pub next: Option<serde_json::Value>,
+        part_of {
+            docs [
+                "Identifies the `Collection` to which a `CollectionPage` objects items belong.",
+                "",
+                "Range: `Collection` | `Link`",
+                "Functional: true",
+            ],
+            types [
+                XsdAnyUri,
+                LinkBox,
+                CollectionBox,
+            ],
+            functional,
+        },
 
-    /// In a paged `Collection`, identifies the previous page of items.
-    ///
-    /// - Range: `CollectionPage` | `Link`
-    /// - Functional: true
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Link, CollectionPage), concrete(String), functional)]
-    pub prev: Option<serde_json::Value>,
+        next {
+            docs [
+                "In a paged `Collection`, indicates the next page of items.",
+                "",
+                "- Range: `CollectionPage` | `Link`",
+                "- Functional: true",
+            ],
+            types [
+                XsdAnyUri,
+                LinkBox,
+                CollectionPageBox,
+            ],
+            functional,
+        },
+
+        prev {
+            docs [
+                "In a paged `Collection`, identifies the previous page of items.",
+                "",
+                "- Range: `CollectionPage` | `Link`",
+                "- Functional: true",
+            ],
+            types [
+                XsdAnyUri,
+                LinkBox,
+                CollectionPageBox,
+            ],
+            functional,
+        },
+    }
 }
 
-/// The OrderedCollectionPage type MAY be used to identify a page whose items are strictly ordered.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
-#[serde(rename_all = "camelCase")]
-pub struct OrderedCollectionPageProperties {
-    /// A non-negative integer value identifying the relative position within the logical view of a
-    /// strictly ordered collection.
-    ///
-    /// - Range: `xsd:nonNegativeInteger`
-    /// - Functional: true
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(concrete(u64), functional)]
-    pub start_index: Option<serde_json::Value>,
+properties! {
+    OrderedCollectionPage {
+        docs ["The OrderedCollectionPage type MAY be used to identify a page whose items are strictly ordered." ],
+        start_index {
+            docs ["A non-negative integer value identifying the relative position within the logical view of a",
+                "strictly ordered collection.",
+                "",
+                "- Range: `xsd:nonNegativeInteger`",
+                "- Functional: true",
+            ],
+            types [
+                XsdNonNegativeInteger,
+            ],
+            functional,
+        },
+    }
 }

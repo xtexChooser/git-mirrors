@@ -19,8 +19,9 @@
 
 //! Namespace for Actor types
 
+use activitystreams_derive::PropRefs;
 use activitystreams_traits::{Actor, Object};
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 use crate::object::{properties::ObjectProperties, ObjectExt};
 
@@ -28,7 +29,7 @@ pub mod kind;
 use self::kind::*;
 
 /// Describes a software application.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Application {
     #[serde(rename = "type")]
@@ -38,23 +39,14 @@ pub struct Application {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 }
 
-impl Object for Application {}
-impl ObjectExt for Application {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
-}
 impl Actor for Application {}
 
 /// Represents a formal or informal collective of Actors.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Group {
     #[serde(rename = "type")]
@@ -64,23 +56,14 @@ pub struct Group {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 }
 
-impl Object for Group {}
-impl ObjectExt for Group {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
-}
 impl Actor for Group {}
 
 /// Represents an organization.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Organization {
     #[serde(rename = "type")]
@@ -90,23 +73,14 @@ pub struct Organization {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 }
 
-impl Object for Organization {}
-impl ObjectExt for Organization {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
-}
 impl Actor for Organization {}
 
 /// Represents an individual person.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Person {
     #[serde(rename = "type")]
@@ -116,23 +90,14 @@ pub struct Person {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 }
 
-impl Object for Person {}
-impl ObjectExt for Person {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
-}
 impl Actor for Person {}
 
 /// Represents a service of any kind.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Service {
     #[serde(rename = "type")]
@@ -142,17 +107,8 @@ pub struct Service {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 }
 
-impl Object for Service {}
-impl ObjectExt for Service {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
-}
 impl Actor for Service {}

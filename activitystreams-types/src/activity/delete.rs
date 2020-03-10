@@ -17,9 +17,9 @@
  * along with ActivityStreams Types.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use activitystreams_derive::Properties;
+use activitystreams_derive::PropRefs;
 use activitystreams_traits::{Activity, Object};
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 use super::{
     kind::DeleteType,
@@ -31,7 +31,7 @@ use crate::object::{properties::ObjectProperties, ObjectExt};
 /// Indicates that the actor has deleted the object.
 ///
 /// If specified, the origin indicates the context from which the object was deleted.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
 pub struct Delete {
     #[serde(rename = "type")]
@@ -41,34 +41,16 @@ pub struct Delete {
 
     /// Adds all valid delete properties to this struct
     #[serde(flatten)]
+    #[activitystreams(None)]
     pub delete_props: DeleteProperties,
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 
     /// Adds all valid activity properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Activity)]
     pub activity_props: ActivityProperties,
-}
-
-impl Object for Delete {}
-impl ObjectExt for Delete {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
-}
-impl Activity for Delete {}
-impl ActivityExt for Delete {
-    fn props(&self) -> &ActivityProperties {
-        &self.activity_props
-    }
-
-    fn props_mut(&mut self) -> &mut ActivityProperties {
-        &mut self.activity_props
-    }
 }

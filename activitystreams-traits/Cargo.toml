@@ -10,7 +10,6 @@ keywords = ["activitystreams", "activitypub"]
 edition = "2018"
 
 [dependencies]
-thiserror = "1.0"
 typetag = "0.1.4"
 
 [dev-dependencies]

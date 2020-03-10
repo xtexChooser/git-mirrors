@@ -1,4 +1,4 @@
-#[derive(Clone, Debug, serde_derive::Deserialize, serde_derive::Serialize)]
+#[derive(Clone, Debug, Default, serde::Deserialize, serde::Serialize)]
 #[serde(transparent)]
 pub struct XsdString(String);
 

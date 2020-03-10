@@ -19,9 +19,9 @@
 
 //! Namespace for Collection types
 
-use activitystreams_derive::Properties;
+use activitystreams_derive::PropRefs;
 use activitystreams_traits::{Collection, CollectionPage, Object};
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 use crate::object::{properties::ObjectProperties, ObjectExt};
 
@@ -46,8 +46,16 @@ pub trait CollectionPageExt: CollectionPage {
     fn props_mut(&mut self) -> &mut CollectionPageProperties;
 }
 
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct CollectionBox(pub Box<dyn Object>);
+
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct CollectionPageBox(pub Box<dyn Object>);
+
 /// The default `Collection` type.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct UnorderedCollection {
     #[serde(rename = "type")]
@@ -57,37 +65,18 @@ pub struct UnorderedCollection {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 
     /// Adds all valid collection properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Collection)]
     pub collection_props: CollectionProperties,
-}
-
-impl Object for UnorderedCollection {}
-impl ObjectExt for UnorderedCollection {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
-}
-impl Collection for UnorderedCollection {}
-impl CollectionExt for UnorderedCollection {
-    fn props(&self) -> &CollectionProperties {
-        &self.collection_props
-    }
-
-    fn props_mut(&mut self) -> &mut CollectionProperties {
-        &mut self.collection_props
-    }
 }
 
 /// A subtype of `Collection` in which members of the logical collection are assumed to always be
 /// strictly ordered.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct OrderedCollection {
     #[serde(rename = "type")]
@@ -97,36 +86,17 @@ pub struct OrderedCollection {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 
     /// Adds all valid collection properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Collection)]
     pub collection_props: CollectionProperties,
 }
 
-impl Object for OrderedCollection {}
-impl ObjectExt for OrderedCollection {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
-}
-impl Collection for OrderedCollection {}
-impl CollectionExt for OrderedCollection {
-    fn props(&self) -> &CollectionProperties {
-        &self.collection_props
-    }
-
-    fn props_mut(&mut self) -> &mut CollectionProperties {
-        &mut self.collection_props
-    }
-}
-
 /// Used to represent distinct subsets of items from a `Collection`.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct UnorderedCollectionPage {
     #[serde(rename = "type")]
@@ -136,50 +106,22 @@ pub struct UnorderedCollectionPage {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 
     /// Adds all valid collection properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Collection)]
     pub collection_props: CollectionProperties,
 
     /// Adds all valid collection page properties to this struct
     #[serde(flatten)]
+    #[activitystreams(CollectionPage)]
     pub collection_page_props: CollectionPageProperties,
 }
 
-impl Object for UnorderedCollectionPage {}
-impl ObjectExt for UnorderedCollectionPage {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
-}
-impl Collection for UnorderedCollectionPage {}
-impl CollectionExt for UnorderedCollectionPage {
-    fn props(&self) -> &CollectionProperties {
-        &self.collection_props
-    }
-
-    fn props_mut(&mut self) -> &mut CollectionProperties {
-        &mut self.collection_props
-    }
-}
-impl CollectionPage for UnorderedCollectionPage {}
-impl CollectionPageExt for UnorderedCollectionPage {
-    fn props(&self) -> &CollectionPageProperties {
-        &self.collection_page_props
-    }
-
-    fn props_mut(&mut self) -> &mut CollectionPageProperties {
-        &mut self.collection_page_props
-    }
-}
-
 /// Used to represent ordered subsets of items from an `OrderedCollection`.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct OrderedCollectionPage {
     #[serde(rename = "type")]
@@ -189,48 +131,97 @@ pub struct OrderedCollectionPage {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 
     /// Adds all valid collection properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Collection)]
     pub collection_props: CollectionProperties,
 
     /// Adds all valid collection page properties to this struct
     #[serde(flatten)]
+    #[activitystreams(CollectionPage)]
     pub collection_page_props: CollectionPageProperties,
 
     /// Adds all valid ordered collection page properties to this struct
     #[serde(flatten)]
+    #[activitystreams(None)]
     pub ordered_collection_page_props: OrderedCollectionPageProperties,
 }
 
-impl Object for OrderedCollectionPage {}
-impl ObjectExt for OrderedCollectionPage {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
+impl CollectionBox {
+    pub fn is<T>(&self) -> bool
+    where
+        T: Collection + 'static,
+    {
+        self.0.as_any().is::<T>()
     }
 
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
+    pub fn downcast_ref<T>(&self) -> Option<&T>
+    where
+        T: Collection + 'static,
+    {
+        self.0.as_any().downcast_ref()
+    }
+
+    pub fn downcast_mut<T>(&mut self) -> Option<&mut T>
+    where
+        T: Collection + 'static,
+    {
+        self.0.as_any_mut().downcast_mut()
     }
 }
-impl Collection for OrderedCollectionPage {}
-impl CollectionExt for OrderedCollectionPage {
-    fn props(&self) -> &CollectionProperties {
-        &self.collection_props
+
+impl CollectionPageBox {
+    pub fn is<T>(&self) -> bool
+    where
+        T: CollectionPage + 'static,
+    {
+        self.0.as_any().is::<T>()
     }
 
-    fn props_mut(&mut self) -> &mut CollectionProperties {
-        &mut self.collection_props
+    pub fn downcast_ref<T>(&self) -> Option<&T>
+    where
+        T: CollectionPage + 'static,
+    {
+        self.0.as_any().downcast_ref()
+    }
+
+    pub fn downcast_mut<T>(&mut self) -> Option<&mut T>
+    where
+        T: CollectionPage + 'static,
+    {
+        self.0.as_any_mut().downcast_mut()
     }
 }
-impl CollectionPage for OrderedCollectionPage {}
-impl CollectionPageExt for OrderedCollectionPage {
-    fn props(&self) -> &CollectionPageProperties {
-        &self.collection_page_props
-    }
 
-    fn props_mut(&mut self) -> &mut CollectionPageProperties {
-        &mut self.collection_page_props
+impl Clone for CollectionBox {
+    fn clone(&self) -> Self {
+        CollectionBox(self.0.duplicate())
+    }
+}
+
+impl Clone for CollectionPageBox {
+    fn clone(&self) -> Self {
+        CollectionPageBox(self.0.duplicate())
+    }
+}
+
+impl<T> From<T> for CollectionBox
+where
+    T: Collection + 'static,
+{
+    fn from(t: T) -> Self {
+        CollectionBox(Box::new(t))
+    }
+}
+
+impl<T> From<T> for CollectionPageBox
+where
+    T: CollectionPage + 'static,
+{
+    fn from(t: T) -> Self {
+        CollectionPageBox(Box::new(t))
     }
 }

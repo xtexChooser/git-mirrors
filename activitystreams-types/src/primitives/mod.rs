@@ -10,8 +10,8 @@ mod xsd_string;
 
 pub use self::{
     mime_media_type::{MimeMediaType, MimeMediaTypeError},
-    rdf_lang_string::RDFLangString,
-    xsd_any_uri::{XsdAnyURI, XsdAnyURIError},
+    rdf_lang_string::RdfLangString,
+    xsd_any_uri::{XsdAnyUri, XsdAnyUriError},
     xsd_datetime::{XsdDateTime, XsdDateTimeError},
     xsd_duration::{XsdDuration, XsdDurationError},
     xsd_float::{XsdFloat, XsdFloatError},

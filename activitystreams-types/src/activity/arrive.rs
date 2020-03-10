@@ -17,9 +17,9 @@
  * along with ActivityStreams Types.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use activitystreams_derive::Properties;
+use activitystreams_derive::PropRefs;
 use activitystreams_traits::{Activity, IntransitiveActivity, Object};
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 use super::{
     kind::ArriveType,
@@ -32,7 +32,7 @@ use crate::object::{properties::ObjectProperties, ObjectExt};
 ///
 /// The origin can be used to identify the context from which the actor originated. The target
 /// typically has no defined meaning.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
 pub struct Arrive {
     #[serde(rename = "type")]
@@ -42,35 +42,18 @@ pub struct Arrive {
 
     /// Adds all valid arrive properties to this struct
     #[serde(flatten)]
+    #[activitystreams(None)]
     pub arrive_props: ArriveProperties,
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 
     /// Adds all valid activity properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Activity)]
     pub activity_props: ActivityProperties,
 }
 
-impl Object for Arrive {}
-impl ObjectExt for Arrive {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
-}
-impl Activity for Arrive {}
 impl IntransitiveActivity for Arrive {}
-impl ActivityExt for Arrive {
-    fn props(&self) -> &ActivityProperties {
-        &self.activity_props
-    }
-
-    fn props_mut(&mut self) -> &mut ActivityProperties {
-        &mut self.activity_props
-    }
-}

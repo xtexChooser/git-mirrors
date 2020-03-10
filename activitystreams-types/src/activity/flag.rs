@@ -17,9 +17,9 @@
  * along with ActivityStreams Types.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use activitystreams_derive::Properties;
+use activitystreams_derive::PropRefs;
 use activitystreams_traits::{Activity, Object};
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 use super::{
     kind::FlagType,
@@ -32,7 +32,7 @@ use crate::object::{properties::ObjectProperties, ObjectExt};
 ///
 /// Flagging is defined in the sense common to many social platforms as reporting content as being
 /// inappropriate for any number of reasons.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
 pub struct Flag {
     #[serde(rename = "type")]
@@ -42,34 +42,16 @@ pub struct Flag {
 
     /// Adds all valid flag properties to this struct
     #[serde(flatten)]
+    #[activitystreams(None)]
     pub flag_props: FlagProperties,
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 
     /// Adds all valid activity properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Activity)]
     pub activity_props: ActivityProperties,
-}
-
-impl Object for Flag {}
-impl ObjectExt for Flag {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
-}
-impl Activity for Flag {}
-impl ActivityExt for Flag {
-    fn props(&self) -> &ActivityProperties {
-        &self.activity_props
-    }
-
-    fn props_mut(&mut self) -> &mut ActivityProperties {
-        &mut self.activity_props
-    }
 }

@@ -96,8 +96,6 @@ use syn::{
     token, Attribute, Data, DeriveInput, Fields, Ident, LitStr, Result, Token, Type,
 };
 
-use std::iter::FromIterator;
-
 #[proc_macro_derive(PropRefs, attributes(activitystreams))]
 pub fn ref_derive(input: TokenStream) -> TokenStream {
     let input: DeriveInput = syn::parse(input).unwrap();
@@ -114,7 +112,7 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
         _ => panic!("Can only derive for named fields"),
     };
 
-    let impls = fields
+    let tokens: proc_macro2::TokenStream = fields
         .named
         .iter()
         .filter_map(|field| {
@@ -142,25 +140,31 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
             let name = name.clone();
             let ext_trait = Ident::new(&format!("{}Ext", object), name.span());
 
-            let tt = if object.to_string() == "Object" || object.to_string() == "Link" {
+            let base_impl = if object.to_string() == "Object" || object.to_string() == "Link" {
                 quote! {
                     #[typetag::serde]
+                    impl #object for #name {
+                        fn as_any(&self) -> &dyn std::any::Any {
+                            self
+                        }
+
+                        fn as_any_mut(&mut self) -> &mut dyn std::any::Any {
+                            self
+                        }
+
+                        fn duplicate(&self) -> Box<dyn #object> {
+                            Box::new(self.clone())
+                        }
+                    }
                 }
             } else {
-                quote! {}
+                quote! {
+                    impl #object for #name {}
+                }
             };
 
             let activity_impls = quote! {
-                #tt
-                impl #object for #name {
-                    fn as_any(&self) -> &dyn std::any::Any {
-                        self
-                    }
-
-                    fn as_any_mut(&self) -> &mut dyn std::any::Any {
-                        self
-                    }
-                }
+                #base_impl
 
                 impl #ext_trait for #name {
                     fn props(&self) -> &#ty {
@@ -195,9 +199,8 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
                     #activity_impls
                 }
             }
-        });
-
-    let tokens = proc_macro2::TokenStream::from_iter(impls);
+        })
+        .collect();
 
     let full = quote! {
         #tokens
@@ -317,7 +320,15 @@ fn from_value(attr: Attribute) -> Ident {
 
 #[proc_macro]
 pub fn properties(tokens: TokenStream) -> TokenStream {
-    let Properties { name, fields } = parse_macro_input!(tokens as Properties);
+    let Properties { name, docs, fields } = parse_macro_input!(tokens as Properties);
+
+    let docs: proc_macro2::TokenStream = docs
+        .into_iter()
+        .map(|doc| {
+            let idents: proc_macro2::TokenStream = format!("/// {}", doc).parse().unwrap();
+            quote! { #idents }
+        })
+        .collect();
 
     let name = Ident::new(&format!("{}Properties", name), name.span());
 
@@ -327,6 +338,11 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
         }
 
         let fname = field.name.clone();
+        let fdocs: proc_macro2::TokenStream = field.description.docs.iter().map(|doc| {
+            let idents: proc_macro2::TokenStream = format!("/// {}", doc).parse().unwrap();
+            quote! { #idents }
+        }).collect();
+
         let (ty, deps) = if field.description.types.len() == 1 {
             let ty = Ident::new(&field.description.types.first().unwrap().to_token_stream().to_string(), fname.span());
             if field.description.functional {
@@ -340,6 +356,12 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                     pub enum #enum_ty {
                         Term(#ty),
                         Array(Vec<#ty>),
+                    }
+
+                    impl Default for #enum_ty {
+                        fn default() -> Self {
+                            #enum_ty::Array(Vec::new())
+                        }
                     }
 
                     impl From<#ty> for #enum_ty {
@@ -360,7 +382,7 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
         } else {
             let ty = Ident::new(&camelize(&format!("{}_{}_enum", name, fname)), fname.span());
 
-            let v_tys: Vec<_> = field
+            let v_tokens: proc_macro2::TokenStream = field
                 .description
                 .types
                 .iter()
@@ -371,12 +393,12 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                 })
                 .collect();
 
-            let v_tokens = proc_macro2::TokenStream::from_iter(v_tys);
+            let first_type = field.description.types.iter().next().unwrap().clone();
 
             let deps = if !field.description.functional {
                 let term_ty = Ident::new(&camelize(&format!("{}_{}_term_enum", name, fname)), fname.span());
 
-                let froms: Vec<_> = field
+                let from_tokens: proc_macro2::TokenStream = field
                     .description
                     .types
                     .iter()
@@ -390,8 +412,6 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                         }
                     })
                     .collect();
-
-                let from_tokens = proc_macro2::TokenStream::from_iter(froms);
 
                 quote! {
                     #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
@@ -409,6 +429,12 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                         Array(Vec<#term_ty>),
                     }
 
+                    impl Default for #ty {
+                        fn default() -> Self {
+                            #ty::Array(Vec::new())
+                        }
+                    }
+
                     impl From<#term_ty> for #ty {
                         fn from(term: #term_ty) -> Self {
                             #ty::Term(term)
@@ -424,7 +450,7 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                     #from_tokens
                 }
             } else {
-                let froms: Vec<_> = field
+                let from_tokens: proc_macro2::TokenStream = field
                     .description
                     .types
                     .iter()
@@ -439,14 +465,18 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                     })
                     .collect();
 
-                let from_tokens = proc_macro2::TokenStream::from_iter(froms);
-
                 quote! {
                     #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
                     #[serde(rename_all = "camelCase")]
                     #[serde(untagged)]
                     pub enum #ty {
                         #v_tokens
+                    }
+
+                    impl Default for #ty {
+                        fn default() -> Self {
+                            #ty::#first_type(Default::default())
+                        }
                     }
 
                     #from_tokens
@@ -456,30 +486,29 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
             (ty, Some(deps))
         };
 
+        let alias_tokens: proc_macro2::TokenStream = field.description.aliases.iter().map(|alias| quote!{
+            #[serde(alias = #alias)]
+        }).collect();
+        let rename_tokens: proc_macro2::TokenStream = field.description.rename.iter().map(|rename| quote!{
+            #[serde(rename = #rename)]
+        }).collect();
+
         let field_tokens = if field.description.required {
-            if let Some(ref rename) = field.description.rename {
-                quote! {
-                    #[serde(rename = #rename)]
-                    pub #fname: #ty,
-                }
-            } else {
-                quote! {
-                    pub #fname: #ty,
-                }
+            quote! {
+                pub #fname: #ty,
             }
         } else {
-            if let Some(ref rename) = field.description.rename {
-                quote! {
-                    #[serde(skip_serializing_if = "Option::is_none")]
-                    #[serde(rename = #rename)]
-                    pub #fname: Option<#ty>,
-                }
-            } else {
-                quote! {
-                    #[serde(skip_serializing_if = "Option::is_none")]
-                    pub #fname: Option<#ty>,
-                }
+            quote! {
+                #[serde(skip_serializing_if = "Option::is_none")]
+                pub #fname: Option<#ty>,
             }
+        };
+
+        let field_tokens = quote!{
+            #fdocs
+            #rename_tokens
+            #alias_tokens
+            #field_tokens
         };
 
         let fns = if field.description.types.len() == 1 {
@@ -637,7 +666,7 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                 }
             }
         } else if field.description.functional {
-            let impls: Vec<_> = field
+            let tokens: proc_macro2::TokenStream = field
                 .description
                 .types
                 .iter()
@@ -701,14 +730,12 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                 })
                 .collect();
 
-            let tokens = proc_macro2::TokenStream::from_iter(impls);
-
             quote! {
                 #tokens
             }
         } else {
             let term_ty = Ident::new(&camelize(&format!("{}_{}_term_enum", name, fname)), fname.span());
-            let impls: Vec<_> = field
+            let tokens: proc_macro2::TokenStream = field
                 .description
                 .types
                 .iter()
@@ -825,8 +852,6 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                 })
                 .collect();
 
-            let tokens = proc_macro2::TokenStream::from_iter(impls);
-
             let delete = if !field.description.required {
                 let delete_ident =
                     Ident::new(&format!("delete_{}", fname), fname.span());
@@ -851,17 +876,13 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
         Some(((field_tokens, fns), deps))
     }).unzip();
 
-    let (fields, fns): (Vec<_>, Vec<_>) = fields.into_iter().unzip();
-    let deps: Vec<_> = deps.into_iter().filter_map(|d| d).collect();
-
-    let field_tokens = proc_macro2::TokenStream::from_iter(fields);
-    let fn_tokens = proc_macro2::TokenStream::from_iter(fns);
-    let deps_tokens = proc_macro2::TokenStream::from_iter(deps);
+    let (field_tokens, fn_tokens): (proc_macro2::TokenStream, proc_macro2::TokenStream) =
+        fields.into_iter().unzip();
+    let deps_tokens: proc_macro2::TokenStream = deps.into_iter().filter_map(|d| d).collect();
 
     let q = quote! {
-        #deps_tokens
-
-        #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
+        #docs
+        #[derive(Clone, Debug, Default, serde::Deserialize, serde::Serialize)]
         #[serde(rename_all = "camelCase")]
         pub struct #name {
             #field_tokens
@@ -870,6 +891,8 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
         impl #name {
             #fn_tokens
         }
+
+        #deps_tokens
     };
     q.into()
 }
@@ -879,10 +902,13 @@ mod kw {
     syn::custom_keyword!(functional);
     syn::custom_keyword!(required);
     syn::custom_keyword!(rename);
+    syn::custom_keyword!(alias);
+    syn::custom_keyword!(docs);
 }
 
 struct Properties {
     name: Ident,
+    docs: Vec<String>,
     fields: Punctuated<Field, Token![,]>,
 }
 
@@ -892,10 +918,12 @@ struct Field {
 }
 
 struct Description {
+    docs: Vec<String>,
     types: Punctuated<Type, Token![,]>,
     functional: bool,
     required: bool,
     rename: Option<String>,
+    aliases: Vec<String>,
 }
 
 impl Parse for Properties {
@@ -904,9 +932,12 @@ impl Parse for Properties {
 
         let content;
         let _: token::Brace = braced!(content in input);
+
+        let docs = parse_string_array::<_, kw::docs>(&&content, kw::docs)?;
+
         let fields = Punctuated::<Field, Token![,]>::parse_terminated(&content)?;
 
-        Ok(Properties { name, fields })
+        Ok(Properties { name, docs, fields })
     }
 }
 
@@ -925,6 +956,8 @@ impl Parse for Field {
 
 impl Parse for Description {
     fn parse(input: ParseStream) -> Result<Self> {
+        let docs = parse_string_array::<_, kw::docs>(&input, kw::docs)?;
+
         let lookahead = input.lookahead1();
         if !lookahead.peek(kw::types) {
             return Err(lookahead.error());
@@ -938,13 +971,16 @@ impl Parse for Description {
 
         let functional = parse_kw::<_, kw::functional>(&input, kw::functional)?;
         let required = parse_kw::<_, kw::required>(&input, kw::required)?;
-        let rename = parse_rename::<_, kw::rename>(&input, kw::rename)?;
+        let rename = parse_string_group::<_, kw::rename>(&input, kw::rename)?;
+        let aliases = parse_string_array::<_, kw::alias>(&input, kw::alias)?;
 
         Ok(Description {
+            docs,
             types,
             functional,
             required,
             rename,
+            aliases,
         })
     }
 }
@@ -961,7 +997,25 @@ fn parse_kw<T: Peek + Copy, U: Parse>(input: &ParseStream, t: T) -> Result<bool>
     Ok(false)
 }
 
-fn parse_rename<T: Peek + Copy, U: Parse>(input: &ParseStream, t: T) -> Result<Option<String>> {
+fn parse_string_array<T: Peek + Copy, U: Parse>(input: &ParseStream, t: T) -> Result<Vec<String>> {
+    let lookahead = input.lookahead1();
+    if lookahead.peek(t) {
+        input.parse::<U>()?;
+        let content;
+        bracketed!(content in input);
+
+        let docs = Punctuated::<LitStr, Token![,]>::parse_terminated(&content)?;
+        optional_comma(&input)?;
+        Ok(docs.into_iter().map(|d| d.value()).collect())
+    } else {
+        Ok(vec![])
+    }
+}
+
+fn parse_string_group<T: Peek + Copy, U: Parse>(
+    input: &ParseStream,
+    t: T,
+) -> Result<Option<String>> {
     let lookahead = input.lookahead1();
     if lookahead.peek(t) {
         input.parse::<U>()?;

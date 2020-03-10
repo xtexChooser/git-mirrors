@@ -17,9 +17,9 @@
  * along with ActivityStreams Types.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use activitystreams_derive::Properties;
+use activitystreams_derive::PropRefs;
 use activitystreams_traits::{Activity, Object};
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 use super::{
     kind::BlockType,
@@ -33,7 +33,7 @@ use crate::object::{properties::ObjectProperties, ObjectExt};
 /// Blocking is a stronger form of Ignore. The typical use is to support social systems that allow
 /// one user to block activities or content of other users. The target and origin typically have no
 /// defined meaning.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
 pub struct Block {
     #[serde(rename = "type")]
@@ -43,34 +43,16 @@ pub struct Block {
 
     /// Adds all valid block properties to this struct
     #[serde(flatten)]
+    #[activitystreams(None)]
     pub block_props: BlockProperties,
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 
     /// Adds all valid activity properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Activity)]
     pub activity_props: ActivityProperties,
-}
-
-impl Object for Block {}
-impl ObjectExt for Block {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
-}
-impl Activity for Block {}
-impl ActivityExt for Block {
-    fn props(&self) -> &ActivityProperties {
-        &self.activity_props
-    }
-
-    fn props_mut(&mut self) -> &mut ActivityProperties {
-        &mut self.activity_props
-    }
 }

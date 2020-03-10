@@ -17,9 +17,9 @@
  * along with ActivityStreams Types.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use activitystreams_derive::Properties;
+use activitystreams_derive::PropRefs;
 use activitystreams_traits::{Activity, Object};
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 use super::{
     kind::UndoType,
@@ -35,7 +35,7 @@ use crate::object::{properties::ObjectProperties, ObjectExt};
 /// choose to undo that like at some later point in time).
 ///
 /// The target and origin typically have no defined meaning.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
 pub struct Undo {
     #[serde(rename = "type")]
@@ -45,34 +45,16 @@ pub struct Undo {
 
     /// Adds all valid undo properties to this struct
     #[serde(flatten)]
+    #[activitystreams(None)]
     pub undo_props: UndoProperties,
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 
     /// Adds all valid activity properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Activity)]
     pub activity_props: ActivityProperties,
-}
-
-impl Object for Undo {}
-impl ObjectExt for Undo {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
-}
-impl Activity for Undo {}
-impl ActivityExt for Undo {
-    fn props(&self) -> &ActivityProperties {
-        &self.activity_props
-    }
-
-    fn props_mut(&mut self) -> &mut ActivityProperties {
-        &mut self.activity_props
-    }
 }

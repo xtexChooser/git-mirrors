@@ -17,9 +17,9 @@
  * along with ActivityStreams Types.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use activitystreams_derive::Properties;
+use activitystreams_derive::PropRefs;
 use activitystreams_traits::{Activity, Object};
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 use super::{
     kind::AcceptType,
@@ -32,7 +32,7 @@ use crate::object::{properties::ObjectProperties, ObjectExt};
 ///
 /// The target property can be used in certain circumstances to indicate the context into which the
 /// object has been accepted.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Accept {
     #[serde(rename = "type")]
@@ -42,34 +42,16 @@ pub struct Accept {
 
     /// Adds all valid accept properties to this struct
     #[serde(flatten)]
+    #[activitystreams(None)]
     pub accept_props: AcceptProperties,
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 
     /// Adds all valid activity properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Activity)]
     pub activity_props: ActivityProperties,
-}
-
-impl Object for Accept {}
-impl ObjectExt for Accept {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
-}
-impl Activity for Accept {}
-impl ActivityExt for Accept {
-    fn props(&self) -> &ActivityProperties {
-        &self.activity_props
-    }
-
-    fn props_mut(&mut self) -> &mut ActivityProperties {
-        &mut self.activity_props
-    }
 }

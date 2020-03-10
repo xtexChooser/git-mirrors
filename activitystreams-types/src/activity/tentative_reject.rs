@@ -17,9 +17,9 @@
  * along with ActivityStreams Types.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use activitystreams_derive::Properties;
+use activitystreams_derive::PropRefs;
 use activitystreams_traits::{Activity, Object};
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 use super::{
     kind::TentativeRejectType,
@@ -29,7 +29,7 @@ use super::{
 use crate::object::{properties::ObjectProperties, ObjectExt};
 
 /// A specialization of Reject in which the rejection is considered tentative.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
 pub struct TentativeReject {
     #[serde(rename = "type")]
@@ -39,34 +39,16 @@ pub struct TentativeReject {
 
     /// Adds all valid tentative_reject properties to this struct
     #[serde(flatten)]
+    #[activitystreams(None)]
     pub tentative_reject_props: TentativeRejectProperties,
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 
     /// Adds all valid activity properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Activity)]
     pub activity_props: ActivityProperties,
-}
-
-impl Object for TentativeReject {}
-impl ObjectExt for TentativeReject {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
-}
-impl Activity for TentativeReject {}
-impl ActivityExt for TentativeReject {
-    fn props(&self) -> &ActivityProperties {
-        &self.activity_props
-    }
-
-    fn props_mut(&mut self) -> &mut ActivityProperties {
-        &mut self.activity_props
-    }
 }

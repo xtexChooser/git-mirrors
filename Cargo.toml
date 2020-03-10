@@ -20,6 +20,9 @@ serde_derive = "1.0"
 serde_json = "1.0"
 activitystreams-derive = { version = "0.3", path = "activitystreams-derive" }
 
+[profile.dev.package.activitystreams-derive]
+opt-level = 3
+
 [workspace]
 members = [
     "activitystreams-derive",

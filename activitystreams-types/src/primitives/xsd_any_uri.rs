@@ -1,44 +1,44 @@
-#[derive(Clone, Debug, serde_derive::Deserialize, serde_derive::Serialize)]
+#[derive(Clone, Debug, Default, serde::Deserialize, serde::Serialize)]
 #[serde(transparent)]
-pub struct XsdAnyURI(String);
+pub struct XsdAnyUri(String);
 
 #[derive(Clone, Debug, thiserror::Error)]
-#[error("Could not parse XsdAnyURI")]
-pub struct XsdAnyURIError;
+#[error("Could not parse XsdAnyUri")]
+pub struct XsdAnyUriError;
 
-impl std::convert::TryFrom<String> for XsdAnyURI {
-    type Error = XsdAnyURIError;
+impl std::convert::TryFrom<String> for XsdAnyUri {
+    type Error = XsdAnyUriError;
 
     fn try_from(s: String) -> Result<Self, Self::Error> {
-        Ok(XsdAnyURI(s))
+        Ok(XsdAnyUri(s))
     }
 }
 
-impl std::convert::TryFrom<&str> for XsdAnyURI {
-    type Error = XsdAnyURIError;
+impl std::convert::TryFrom<&str> for XsdAnyUri {
+    type Error = XsdAnyUriError;
 
     fn try_from(s: &str) -> Result<Self, Self::Error> {
-        Ok(XsdAnyURI(s.to_owned()))
+        Ok(XsdAnyUri(s.to_owned()))
     }
 }
 
-impl std::convert::TryFrom<&mut str> for XsdAnyURI {
-    type Error = XsdAnyURIError;
+impl std::convert::TryFrom<&mut str> for XsdAnyUri {
+    type Error = XsdAnyUriError;
 
     fn try_from(s: &mut str) -> Result<Self, Self::Error> {
-        Ok(XsdAnyURI(s.to_owned()))
+        Ok(XsdAnyUri(s.to_owned()))
     }
 }
 
-impl std::str::FromStr for XsdAnyURI {
-    type Err = XsdAnyURIError;
+impl std::str::FromStr for XsdAnyUri {
+    type Err = XsdAnyUriError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(XsdAnyURI(s.to_owned()))
+        Ok(XsdAnyUri(s.to_owned()))
     }
 }
 
-impl std::fmt::Display for XsdAnyURI {
+impl std::fmt::Display for XsdAnyUri {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         std::fmt::Display::fmt(&self.0, f)
     }

@@ -17,9 +17,9 @@
  * along with ActivityStreams Types.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use activitystreams_derive::Properties;
+use activitystreams_derive::PropRefs;
 use activitystreams_traits::{Activity, IntransitiveActivity, Object};
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 use super::{
     kind::QuestionType,
@@ -36,7 +36,7 @@ use crate::object::{properties::ObjectProperties, ObjectExt};
 ///
 /// Either of the anyOf and oneOf properties MAY be used to express possible answers, but a
 /// Question object MUST NOT have both properties.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
 pub struct Question {
     #[serde(rename = "type")]
@@ -46,35 +46,18 @@ pub struct Question {
 
     /// Adds all valid question properties to this struct
     #[serde(flatten)]
+    #[activitystreams(None)]
     pub question_props: QuestionProperties,
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Object)]
     pub object_props: ObjectProperties,
 
     /// Adds all valid activity properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Activity)]
     pub activity_props: ActivityProperties,
 }
 
-impl Object for Question {}
-impl ObjectExt for Question {
-    fn props(&self) -> &ObjectProperties {
-        &self.object_props
-    }
-
-    fn props_mut(&mut self) -> &mut ObjectProperties {
-        &mut self.object_props
-    }
-}
-impl Activity for Question {}
-impl ActivityExt for Question {
-    fn props(&self) -> &ActivityProperties {
-        &self.activity_props
-    }
-
-    fn props_mut(&mut self) -> &mut ActivityProperties {
-        &mut self.activity_props
-    }
-}
 impl IntransitiveActivity for Question {}

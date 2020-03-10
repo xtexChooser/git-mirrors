@@ -32,4 +32,6 @@ pub trait Link: std::fmt::Debug {
     fn as_any(&self) -> &dyn Any;
 
     fn as_any_mut(&mut self) -> &mut dyn Any;
+
+    fn duplicate(&self) -> Box<dyn Link>;
 }

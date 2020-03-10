@@ -19,9 +19,9 @@
 
 //! Namespace for Object types
 
-use activitystreams_derive::{PropRefs, Properties};
+use activitystreams_derive::PropRefs;
 use activitystreams_traits::Object;
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 pub mod kind;
 pub mod properties;
@@ -35,6 +35,14 @@ pub trait ObjectExt: Object {
     fn props(&self) -> &ObjectProperties;
     fn props_mut(&mut self) -> &mut ObjectProperties;
 }
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct ImageBox(pub Box<Image>);
+
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct ObjectBox(pub Box<dyn Object>);
 
 /// Represents any kind of multi-paragraph written work.
 #[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
@@ -272,42 +280,26 @@ pub struct Video {
     pub object_props: ObjectProperties,
 }
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(transparent)]
-pub struct ImageBox(pub Box<Image>);
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(transparent)]
-pub struct ObjectBox(pub Box<dyn Object>);
-
 impl ObjectBox {
     pub fn is<T>(&self) -> bool
     where
-        T: Object,
+        T: Object + 'static,
     {
         self.0.as_any().is::<T>()
     }
 
     pub fn downcast_ref<T>(&self) -> Option<&T>
     where
-        T: Object,
+        T: Object + 'static,
     {
         self.0.as_any().downcast_ref()
     }
 
     pub fn downcast_mut<T>(&mut self) -> Option<&mut T>
     where
-        T: Object,
+        T: Object + 'static,
     {
         self.0.as_any_mut().downcast_mut()
-    }
-
-    pub fn downcast<T>(self) -> Option<T>
-    where
-        T: Object,
-    {
-        let any: Box<dyn Any> = self;
-        any.downcast()
     }
 }
 
@@ -323,9 +315,15 @@ impl From<ImageBox> for Image {
     }
 }
 
+impl Clone for ObjectBox {
+    fn clone(&self) -> Self {
+        ObjectBox(self.0.duplicate())
+    }
+}
+
 impl<T> From<T> for ObjectBox
 where
-    T: Object,
+    T: Object + 'static,
 {
     fn from(t: T) -> Self {
         ObjectBox(Box::new(t))

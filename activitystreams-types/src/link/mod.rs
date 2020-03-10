@@ -19,8 +19,9 @@
 
 //! Namespace for Link types
 
+use activitystreams_derive::PropRefs;
 use activitystreams_traits::Link;
-use serde_derive::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 
 pub mod kind;
 pub mod properties;
@@ -35,8 +36,12 @@ pub trait LinkExt: Link {
     fn props_mut(&mut self) -> &mut LinkProperties;
 }
 
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(transparent)]
+pub struct LinkBox(pub Box<dyn Link>);
+
 /// A specialized Link that represents an @mention.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Mention {
     #[serde(rename = "type")]
@@ -46,58 +51,42 @@ pub struct Mention {
 
     /// Adds all valid link properties to this struct
     #[serde(flatten)]
+    #[activitystreams(Link)]
     pub link_props: LinkProperties,
 }
-
-impl Link for Mention {}
-impl LinkExt for Mention {
-    fn props(&self) -> &LinkProperties {
-        &self.link_props
-    }
-
-    fn props_mut(&mut self) -> &mut LinkProperties {
-        &mut self.link_props
-    }
-}
-
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(transparent)]
-pub struct LinkBox(pub Box<dyn Link>);
 
 impl LinkBox {
     pub fn is<T>(&self) -> bool
     where
-        T: Link,
+        T: Link + 'static,
     {
         self.0.as_any().is::<T>()
     }
 
     pub fn downcast_ref<T>(&self) -> Option<&T>
     where
-        T: Link,
+        T: Link + 'static,
     {
         self.0.as_any().downcast_ref()
     }
 
     pub fn downcast_mut<T>(&mut self) -> Option<&mut T>
     where
-        T: Link,
+        T: Link + 'static,
     {
         self.0.as_any_mut().downcast_mut()
     }
+}
 
-    pub fn downcast<T>(self) -> Option<T>
-    where
-        T: Link,
-    {
-        let any: Box<dyn Any> = self;
-        any.downcast()
+impl Clone for LinkBox {
+    fn clone(&self) -> Self {
+        LinkBox(self.0.duplicate())
     }
 }
 
 impl<T> From<T> for LinkBox
 where
-    T: Link,
+    T: Link + 'static,
 {
     fn from(t: T) -> Self {
         LinkBox(Box::new(t))

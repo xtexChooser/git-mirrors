@@ -1,5 +1,4 @@
-/*
- * This file is part of ActivityStreams Types.
+/* This file is part of ActivityStreams Types.
  *
  * Copyright © 2018 Riley Trautman
  *
@@ -27,9 +26,9 @@
 //!   activity::properties::ActivityProperties,
 //!   object::properties::ObjectProperties,
 //! };
-//! use serde_derive::{Deserialize, Serialize};
+//! use serde::{Deserialize, Serialize};
 //!
-//! #[derive(Clone, Debug, Serialize, Deserialize)]
+//! #[derive(Debug, Serialize, Deserialize)]
 //! #[serde(rename_all = "camelCase")]
 //! pub struct MyActivity {
 //!     #[serde(rename = "type")]
@@ -53,400 +52,582 @@
 //! # fn main() {}
 //! ```
 
-use activitystreams_derive::Properties;
-use activitystreams_traits::{Link, Object};
-use serde_derive::{Deserialize, Serialize};
+use crate::{link::LinkBox, object::ObjectBox, primitives::*};
+use activitystreams_derive::properties;
 
-/// Activity objects are specializations of the base Object type that provide information about
-/// actions that have either already occurred, are in the process of occurring, or may occur in the
-/// future.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
-#[serde(rename_all = "camelCase")]
-pub struct ActivityProperties {
-    /// Describes the result of the activity.
-    ///
-    /// For instance, if a particular action results in the creation of a new resource, the result
-    /// property can be used to describe that new resource.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Funcitonal: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub result: Option<serde_json::Value>,
+properties! {
+    Activity {
+        docs [
+            "Activity objects are specializations of the base Object type that provide information about",
+            "actions that have either already occurred, are in the process of occurring, or may occur in the",
+            "future.",
+        ],
 
-    /// Identifies one or more objects used (or to be used) in the completion of an `Activity`.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Funcitonal: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub instrument: Option<serde_json::Value>,
+        result {
+            docs [
+                "Describes the result of the activity.",
+                "",
+                "For instance, if a particular action results in the creation of a new resource, the result",
+                "property can be used to describe that new resource.",
+                "",
+                "- Range: `Object` | `Link`",
+                "- Funcitonal: false",
+            ],
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
+
+        instrument {
+            docs [
+                "Identifies one or more objects used (or to be used) in the completion of an `Activity`.",
+                "",
+                "- Range: `Object` | `Link`",
+                "- Funcitonal: false",
+            ],
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
+    }
 }
 
-/// Struct with `actor` and optional `origin` and `target` properties
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
-#[serde(rename_all = "camelCase")]
-pub struct ActorOptOriginAndTarget {
-    /// Describes one or more entities that either performed or are expected to perform the
-    /// activity.
-    ///
-    /// Any single activity can have multiple actors. The actor MAY be specified using an indirect
-    /// Link.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub actor: serde_json::Value,
+properties! {
+    ActorOptOriginAndTarget {
+        docs [ "Struct with `actor` and optional `origin` and `target` properties" ],
 
-    /// Describes an indirect object of the activity from which the activity is directed.
-    ///
-    /// The precise meaning of the origin is the object of the English preposition "from". For
-    /// instance, in the activity "John moved an item to List B from List A", the origin of the
-    /// activity is "List A".
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub origin: Option<serde_json::Value>,
+        actor {
+            docs [
+                "Describes one or more entities that either performed or are expected to perform the",
+                "activity.",
+                "",
+                "Any single activity can have multiple actors. The actor MAY be specified using an indirect",
+                "Link.",
+                "",
+                "- Range: `Object` | `Link`",
+                "- Functional: false",
+            ],
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+            required
+        },
 
-    /// Describes the indirect object, or target, of the activity.
-    ///
-    /// The precise meaning of the target is largely dependent on the type of action being
-    /// described but will often be the object of the English preposition "to". For instance, in
-    /// the activity "John added a movie to his wishlist", the target of the activity is John's
-    /// wishlist. An activity can have more than one target
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub target: Option<serde_json::Value>,
+        origin {
+            docs [
+                "Describes an indirect object of the activity from which the activity is directed.",
+                "",
+                "The precise meaning of the origin is the object of the English preposition \"from\". For",
+                "instance, in the activity \"John moved an item to List B from List A\", the origin of the",
+                "activity is \"List A\".",
+                "",
+                "- Range: `Object` | `Link`",
+                "- Functional: false",
+            ],
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
+
+        target {
+            docs [
+                "Describes the indirect object, or target, of the activity.",
+                "",
+                "The precise meaning of the target is largely dependent on the type of action being",
+                "described but will often be the object of the English preposition \"to\". For instance, in",
+                "the activity \"John added a movie to his wishlist\", the target of the activity is John's",
+                "wishlist. An activity can have more than one target",
+                "",
+                "- Range: `Object` | `Link`",
+                "- Functional: false",
+            ],
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
+    }
 }
 
-/// Struct with `actor` and `object` properties
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
-#[serde(rename_all = "camelCase")]
-pub struct ActorAndObject {
-    /// Describes one or more entities that either performed or are expected to perform the
-    /// activity.
-    ///
-    /// Any single activity can have multiple actors. The actor MAY be specified using an indirect
-    /// Link.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub actor: serde_json::Value,
+properties! {
+    ActorAndObject {
+        docs [ "Struct with `actor` and `object` properties" ],
 
-    /// When used within an Activity, describes the direct object of the activity.
-    ///
-    /// For instance, in the activity "John added a movie to his wishlist", the object of the
-    /// activity is the movie added.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub object: serde_json::Value,
+        actor {
+            docs [
+                "Describes one or more entities that either performed or are expected to perform the",
+                "activity.",
+                "",
+                "Any single activity can have multiple actors. The actor MAY be specified using an indirect",
+                "Link.",
+                "",
+                "- Range: `Object` | `Link`",
+                "- Functional: false",
+            ],
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+            required,
+        },
+
+        object {
+            docs [
+                "When used within an Activity, describes the direct object of the activity.",
+                "",
+                "For instance, in the activity \"John added a movie to his wishlist\", the object of the",
+                "activity is the movie added.",
+                "",
+                "- Range: `Object` | `Link`",
+                "- Functional: false",
+            ],
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+            required,
+        },
+    }
 }
 
-/// Struct with `actor`, `object`, and `target` properties
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
-#[serde(rename_all = "camelCase")]
-pub struct ActorObjectAndTarget {
-    /// Describes one or more entities that either performed or are expected to perform the
-    /// activity.
-    ///
-    /// Any single activity can have multiple actors. The actor MAY be specified using an indirect
-    /// Link.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub actor: serde_json::Value,
+properties! {
+    ActorObjectAndTarget {
+        docs [ "Struct with `actor`, `object`, and `target` properties" ],
 
-    /// When used within an Activity, describes the direct object of the activity.
-    ///
-    /// For instance, in the activity "John added a movie to his wishlist", the object of the
-    /// activity is the movie added.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub object: serde_json::Value,
+        actor {
+            docs [
+                "Describes one or more entities that either performed or are expected to perform the",
+                "activity.",
+                "",
+                "Any single activity can have multiple actors. The actor MAY be specified using an indirect",
+                "Link.",
+                "",
+                "- Range: `Object` | `Link`",
+                "- Functional: false",
+            ],
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+            required,
+        },
 
-    /// Describes the indirect object, or target, of the activity.
-    ///
-    /// The precise meaning of the target is largely dependent on the type of action being
-    /// described but will often be the object of the English preposition "to". For instance, in
-    /// the activity "John added a movie to his wishlist", the target of the activity is John's
-    /// wishlist. An activity can have more than one target
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub target: serde_json::Value,
+        object {
+            docs [
+                "When used within an Activity, describes the direct object of the activity.",
+                "",
+                "For instance, in the activity \"John added a movie to his wishlist\", the object of the",
+                "activity is the movie added.",
+                "",
+                "- Range: `Object` | `Link`",
+                "- Functional: false",
+            ],
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+            required,
+        },
+
+        target {
+            docs [
+                "Describes the indirect object, or target, of the activity.",
+                "",
+                "The precise meaning of the target is largely dependent on the type of action being",
+                "described but will often be the object of the English preposition \"to\". For instance, in",
+                "the activity \"John added a movie to his wishlist\", the target of the activity is John's",
+                "wishlist. An activity can have more than one target",
+                "",
+                "- Range: `Object` | `Link`",
+                "- Functional: false",
+            ],
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+            required,
+        },
+    }
 }
 
-/// Struct with `actor`, `object`, and optional `target` properties
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
-#[serde(rename_all = "camelCase")]
-pub struct ActorAndObjectOptTarget {
-    /// Describes one or more entities that either performed or are expected to perform the
-    /// activity.
-    ///
-    /// Any single activity can have multiple actors. The actor MAY be specified using an indirect
-    /// Link.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub actor: serde_json::Value,
+properties! {
+    ActorAndObjectOptTarget {
+        docs [ "Struct with `actor`, `object`, and optional `target` properties" ],
 
-    /// When used within an Activity, describes the direct object of the activity.
-    ///
-    /// For instance, in the activity "John added a movie to his wishlist", the object of the
-    /// activity is the movie added.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub object: serde_json::Value,
+        actor {
+            docs [
+                "Describes one or more entities that either performed or are expected to perform the",
+                "activity.",
+                "",
+                "Any single activity can have multiple actors. The actor MAY be specified using an indirect",
+                "Link.",
+                "",
+                "- Range: `Object` | `Link`",
+                "- Functional: false",
+            ],
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+            required,
+        },
 
-    /// Describes the indirect object, or target, of the activity.
-    ///
-    /// The precise meaning of the target is largely dependent on the type of action being
-    /// described but will often be the object of the English preposition "to". For instance, in
-    /// the activity "John added a movie to his wishlist", the target of the activity is John's
-    /// wishlist. An activity can have more than one target
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub target: Option<serde_json::Value>,
+        object {
+            docs [
+                "When used within an Activity, describes the direct object of the activity.",
+                "",
+                "For instance, in the activity \"John added a movie to his wishlist\", the object of the",
+                "activity is the movie added.",
+                "",
+                "- Range: `Object` | `Link`",
+                "- Functional: false",
+            ],
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+            required,
+        },
+
+        target {
+            docs [
+                "Describes the indirect object, or target, of the activity.",
+                "",
+                "The precise meaning of the target is largely dependent on the type of action being",
+                "described but will often be the object of the English preposition \"to\". For instance, in",
+                "the activity \"John added a movie to his wishlist\", the target of the activity is John's",
+                "wishlist. An activity can have more than one target",
+                "",
+                "- Range: `Object` | `Link`",
+                "- Functional: false",
+            ],
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
+    }
 }
 
-/// Struct with `actor`, `object`, and optional `origin` properties
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
-#[serde(rename_all = "camelCase")]
-pub struct ActorAndObjectOptOrigin {
-    /// Describes one or more entities that either performed or are expected to perform the
-    /// activity.
-    ///
-    /// Any single activity can have multiple actors. The actor MAY be specified using an indirect
-    /// Link.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub actor: serde_json::Value,
+properties! {
+    ActorAndObjectOptOrigin {
+        docs [ "Struct with `actor`, `object`, and optional `origin` properties" ],
 
-    /// When used within an Activity, describes the direct object of the activity.
-    ///
-    /// For instance, in the activity "John added a movie to his wishlist", the object of the
-    /// activity is the movie added.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub object: serde_json::Value,
+        actor {
+            docs [
+                "Describes one or more entities that either performed or are expected to perform the",
+                "activity.",
+                "",
+                "Any single activity can have multiple actors. The actor MAY be specified using an indirect",
+                "Link.",
+                "",
+                "- Range: `Object` | `Link`",
+                "- Functional: false",
+            ],
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+            required,
+        },
 
-    /// Describes an indirect object of the activity from which the activity is directed.
-    ///
-    /// The precise meaning of the origin is the object of the English preposition "from". For
-    /// instance, in the activity "John moved an item to List B from List A", the origin of the
-    /// activity is "List A".
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub origin: Option<serde_json::Value>,
+        object {
+            docs [
+                "When used within an Activity, describes the direct object of the activity.",
+                "",
+                "For instance, in the activity \"John added a movie to his wishlist\", the object of the",
+                "activity is the movie added.",
+                "",
+                "- Range: `Object` | `Link`",
+                "- Functional: false",
+            ],
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+            required,
+        },
+
+        origin {
+            docs [
+                "Describes an indirect object of the activity from which the activity is directed.",
+                "",
+                "The precise meaning of the origin is the object of the English preposition \"from\". For",
+                "instance, in the activity \"John moved an item to List B from List A\", the origin of the",
+                "activity is \"List A\".",
+                "",
+                "- Range: `Object` | `Link`",
+                "- Functional: false",
+            ],
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
+    }
 }
 
-/// Struct with `actor`, `object`, and optional `origin` and `target` properties
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
-#[serde(rename_all = "camelCase")]
-pub struct ActorAndObjectOptOthers {
-    /// Describes one or more entities that either performed or are expected to perform the
-    /// activity.
-    ///
-    /// Any single activity can have multiple actors. The actor MAY be specified using an indirect
-    /// Link.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub actor: serde_json::Value,
+properties! {
+    ActorAndObjectOptOthers {
+        docs [ "Struct with `actor`, `object`, and optional `origin` and `target` properties" ],
 
-    /// When used within an Activity, describes the direct object of the activity.
-    ///
-    /// For instance, in the activity "John added a movie to his wishlist", the object of the
-    /// activity is the movie added.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub object: serde_json::Value,
+        actor {
+            docs [
+                "Describes one or more entities that either performed or are expected to perform the",
+                "activity.",
+                "",
+                "Any single activity can have multiple actors. The actor MAY be specified using an indirect",
+                "Link.",
+                "",
+                "- Range: `Object` | `Link`",
+                "- Functional: false",
+            ],
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+            required,
+        },
 
-    /// Describes an indirect object of the activity from which the activity is directed.
-    ///
-    /// The precise meaning of the origin is the object of the English preposition "from". For
-    /// instance, in the activity "John moved an item to List B from List A", the origin of the
-    /// activity is "List A".
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub origin: Option<serde_json::Value>,
+        object {
+            docs [
+                "When used within an Activity, describes the direct object of the activity.",
+                "",
+                "For instance, in the activity \"John added a movie to his wishlist\", the object of the",
+                "activity is the movie added.",
+                "",
+                "- Range: `Object` | `Link`",
+                "- Functional: false",
+            ],
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+            required,
+        },
 
-    /// Describes the indirect object, or target, of the activity.
-    ///
-    /// The precise meaning of the target is largely dependent on the type of action being
-    /// described but will often be the object of the English preposition "to". For instance, in
-    /// the activity "John added a movie to his wishlist", the target of the activity is John's
-    /// wishlist. An activity can have more than one target
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub target: Option<serde_json::Value>,
+        origin {
+            docs [
+                "Describes an indirect object of the activity from which the activity is directed.",
+                "",
+                "The precise meaning of the origin is the object of the English preposition \"from\". For",
+                "instance, in the activity \"John moved an item to List B from List A\", the origin of the",
+                "activity is \"List A\".",
+                "",
+                "- Range: `Object` | `Link`",
+                "- Functional: false",
+            ],
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
+
+        target {
+            docs [
+                "Describes the indirect object, or target, of the activity.",
+                "",
+                "The precise meaning of the target is largely dependent on the type of action being",
+                "described but will often be the object of the English preposition \"to\". For instance, in",
+                "the activity \"John added a movie to his wishlist\", the target of the activity is John's",
+                "wishlist. An activity can have more than one target",
+                "",
+                "- Range: `Object` | `Link`",
+                "- Functional: false",
+            ],
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
+    }
 }
 
-/// Struct with `actor` and `origin` properties
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
-#[serde(rename_all = "camelCase")]
-pub struct ActorAndOrigin {
-    /// Describes one or more entities that either performed or are expected to perform the
-    /// activity.
-    ///
-    /// Any single activity can have multiple actors. The actor MAY be specified using an indirect
-    /// Link.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub actor: serde_json::Value,
+properties! {
+    ActorAndOrigin {
+        docs [ "Struct with `actor` and `origin` properties" ],
 
-    /// Describes an indirect object of the activity from which the activity is directed.
-    ///
-    /// The precise meaning of the origin is the object of the English preposition "from". For
-    /// instance, in the activity "John moved an item to List B from List A", the origin of the
-    /// activity is "List A".
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub origin: serde_json::Value,
+        actor {
+            docs [
+                "Describes one or more entities that either performed or are expected to perform the",
+                "activity.",
+                "",
+                "Any single activity can have multiple actors. The actor MAY be specified using an indirect",
+                "Link.",
+                "",
+                "- Range: `Object` | `Link`",
+                "- Functional: false",
+            ],
+            types [
+                XsdString,
+                ObjectBox,
+                LinkBox,
+            ],
+            required,
+        },
+
+        origin {
+            docs [
+                "Describes an indirect object of the activity from which the activity is directed.",
+                "",
+                "The precise meaning of the origin is the object of the English preposition \"from\". For",
+                "instance, in the activity \"John moved an item to List B from List A\", the origin of the",
+                "activity is \"List A\".",
+                "",
+                "- Range: `Object` | `Link`",
+                "- Functional: false",
+            ],
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+            required,
+        },
+    }
 }
 
 /// Properties for the Accept activity
-pub type AcceptProperties = ActorAndObject;
+pub type AcceptProperties = ActorAndObjectProperties;
 
 /// Properties for the Add activity
-pub type AddProperties = ActorAndObject;
+pub type AddProperties = ActorAndObjectProperties;
 
 /// Properties for the Move activity
-pub type MoveProperties = ActorAndObjectOptOthers;
+pub type MoveProperties = ActorAndObjectOptOthersProperties;
 
 /// Properties for the Announce activity
-pub type AnnounceProperties = ActorAndObjectOptTarget;
+pub type AnnounceProperties = ActorAndObjectOptTargetProperties;
 
 /// Properties for the Arrive activity
-pub type ArriveProperties = ActorAndOrigin;
+pub type ArriveProperties = ActorAndOriginProperties;
 
 /// Properties for the Block activity
-pub type BlockProperties = ActorAndObject;
+pub type BlockProperties = ActorAndObjectProperties;
 
 /// Properties for the Create activity
-pub type CreateProperties = ActorAndObject;
+pub type CreateProperties = ActorAndObjectProperties;
 
 /// Properties for the Delete activity
-pub type DeleteProperties = ActorAndObjectOptOrigin;
+pub type DeleteProperties = ActorAndObjectOptOriginProperties;
 
 /// Properties for the Dislike activity
-pub type DislikeProperties = ActorAndObject;
+pub type DislikeProperties = ActorAndObjectProperties;
 
 /// Properties for the Flag activity
-pub type FlagProperties = ActorAndObject;
+pub type FlagProperties = ActorAndObjectProperties;
 
 /// Properties for the Follow activity
-pub type FollowProperties = ActorAndObject;
+pub type FollowProperties = ActorAndObjectProperties;
 
 /// Properties for the Ignore activity
-pub type IgnoreProperties = ActorAndObject;
+pub type IgnoreProperties = ActorAndObjectProperties;
 
 /// Properties for the Invite activity
-pub type InviteProperties = ActorObjectAndTarget;
+pub type InviteProperties = ActorObjectAndTargetProperties;
 
 /// Properties for the Join activity
-pub type JoinProperties = ActorAndObject;
+pub type JoinProperties = ActorAndObjectProperties;
 
 /// Properties for the Leave activity
-pub type LeaveProperties = ActorAndObject;
+pub type LeaveProperties = ActorAndObjectProperties;
 
 /// Properties for the Like activity
-pub type LikeProperties = ActorAndObject;
+pub type LikeProperties = ActorAndObjectProperties;
 
 /// Properties for the Listen activity
-pub type ListenProperties = ActorAndObject;
+pub type ListenProperties = ActorAndObjectProperties;
 
 /// Properties for the Offer activity
-pub type OfferProperties = ActorAndObjectOptTarget;
+pub type OfferProperties = ActorAndObjectOptTargetProperties;
 
-/// Properties for the Question activity
-#[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
-#[serde(rename_all = "camelCase")]
-pub struct QuestionProperties {
-    /// Identifies an exclusive option for a Question.
-    ///
-    /// Use of `one_of` implies that the Question can have only a single answer. To indicate that a
-    /// `Question` can have multiple answers, use `any_of`.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub one_of: Option<serde_json::Value>,
+properties! {
+    Question {
+        docs [ "Properties for the Question activity" ],
 
-    /// Identifies an inclusive option for a Question.
-    ///
-    /// Use of `any_of` implies that the Question can have multiple answers. To indicate that a
-    /// `Question` can have only one answer, use `one_of`.
-    ///
-    /// - Range: `Object` | `Link`
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    #[activitystreams(ab(Object, Link), concrete(String))]
-    pub any_of: Option<serde_json::Value>,
+        one_of {
+            docs [
+                "Identifies an exclusive option for a Question.",
+                "",
+                "Use of `one_of` implies that the Question can have only a single answer. To indicate that a",
+                "`Question` can have multiple answers, use `any_of`.",
+                "",
+                "- Range: `Object` | `Link`",
+                "- Functional: false",
+            ],
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
+
+        any_of {
+            docs [
+                "Identifies an inclusive option for a Question.",
+                "",
+                "Use of `any_of` implies that the Question can have multiple answers. To indicate that a",
+                "`Question` can have only one answer, use `one_of`.",
+                "",
+                "- Range: `Object` | `Link`",
+                "- Functional: false",
+            ],
+            types [
+                XsdAnyUri,
+                ObjectBox,
+                LinkBox,
+            ],
+        },
+    }
 }
 
 /// Properties for the Read activity
-pub type ReadProperties = ActorAndObject;
+pub type ReadProperties = ActorAndObjectProperties;
 
 /// Properties for the Reject activity
-pub type RejectProperties = ActorAndObject;
+pub type RejectProperties = ActorAndObjectProperties;
 
 /// Properties for the Remove activity
-pub type RemoveProperties = ActorAndObjectOptOthers;
+pub type RemoveProperties = ActorAndObjectOptOthersProperties;
 
 /// Properties for the TentativeAccept activity
-pub type TentativeAcceptProperties = ActorAndObject;
+pub type TentativeAcceptProperties = ActorAndObjectProperties;
 
 /// Properties for the TentativeReject activity
-pub type TentativeRejectProperties = ActorAndObject;
+pub type TentativeRejectProperties = ActorAndObjectProperties;
 
 /// Properties for the Travel activity
-pub type TravelProperties = ActorOptOriginAndTarget;
+pub type TravelProperties = ActorOptOriginAndTargetProperties;
 
 /// Properties for the Undo activity
-pub type UndoProperties = ActorAndObject;
+pub type UndoProperties = ActorAndObjectProperties;
 
 /// Properties for the Update activity
-pub type UpdateProperties = ActorAndObject;
+pub type UpdateProperties = ActorAndObjectProperties;
 
 /// Properties for the View activity
-pub type ViewProperties = ActorAndObject;
+pub type ViewProperties = ActorAndObjectProperties;

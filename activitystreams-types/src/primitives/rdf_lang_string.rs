@@ -1,5 +1,5 @@
-#[derive(Clone, Debug, serde_derive::Deserialize, serde_derive::Serialize)]
-pub struct RDFLangString {
+#[derive(Clone, Debug, Default, serde::Deserialize, serde::Serialize)]
+pub struct RdfLangString {
     #[serde(rename = "@value")]
     pub value: String,
 
@@ -7,7 +7,7 @@ pub struct RDFLangString {
     pub language: String,
 }
 
-impl std::fmt::Display for RDFLangString {
+impl std::fmt::Display for RdfLangString {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "{}:{}", self.language, self.value)
     }

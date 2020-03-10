@@ -28,7 +28,7 @@
 //! fn run() -> Result<(), anyhow::Error> {
 //!     /// A Mention is the only predefined Link type in the Activity Streams spec
 //!     let mut mention = Mention::default();
-//!     mention.link_props.set_context_object(context())?;
+//!     mention.link_props.set_context_xdg_any_uri(context())?;
 //!
 //!     let mention_string = serde_json::to_string(&mention)?;
 //!
@@ -42,25 +42,14 @@
 //! # }
 //! ```
 
-use serde_derive::{Deserialize, Serialize};
-
-/// Define a simple wrapper around a string for this crate's main Context type
-#[derive(Clone, Debug, Deserialize, Serialize)]
-pub struct ContextObject(pub String);
-
-impl activitystreams_traits::Object for ContextObject {}
-
 /// The context associated with all of the Activity Streams types defined in the crate.
-pub fn context() -> ContextObject {
-    ContextObject("https://www.w3.org/ns/activitystreams".to_owned())
+pub fn context() -> crate::primitives::XsdAnyUri {
+    "https://www.w3.org/ns/activitystreams".parse().unwrap()
 }
 
 pub mod activity;
 pub mod actor;
 pub mod collection;
-mod custom_props;
 pub mod link;
 pub mod object;
 pub mod primitives;
-
-pub use self::custom_props::{CustomLink, CustomObject};
