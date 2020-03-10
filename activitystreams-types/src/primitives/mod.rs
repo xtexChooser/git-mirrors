@@ -1,3 +1,4 @@
+mod length;
 mod mime_media_type;
 mod rdf_lang_string;
 mod xsd_any_uri;
@@ -9,6 +10,7 @@ mod xsd_non_negative_integer;
 mod xsd_string;
 
 pub use self::{
+    length::Length,
     mime_media_type::{MimeMediaType, MimeMediaTypeError},
     rdf_lang_string::RdfLangString,
     xsd_any_uri::{XsdAnyUri, XsdAnyUriError},

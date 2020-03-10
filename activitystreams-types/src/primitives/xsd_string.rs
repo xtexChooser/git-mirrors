@@ -26,6 +26,30 @@ impl From<XsdString> for String {
     }
 }
 
+impl AsRef<str> for XsdString {
+    fn as_ref(&self) -> &str {
+        &self.0
+    }
+}
+
+impl AsRef<String> for XsdString {
+    fn as_ref(&self) -> &String {
+        &self.0
+    }
+}
+
+impl AsMut<str> for XsdString {
+    fn as_mut(&mut self) -> &mut str {
+        &mut self.0
+    }
+}
+
+impl AsMut<String> for XsdString {
+    fn as_mut(&mut self) -> &mut String {
+        &mut self.0
+    }
+}
+
 impl std::fmt::Display for XsdString {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         std::fmt::Display::fmt(&self.0, f)
