@@ -3,7 +3,8 @@
 		"authors": [
 			"Hbseren",
 			"Sayginer",
-			"BaRaN6161 TURK"
+			"BaRaN6161 TURK",
+			"ToprakM"
 		]
 	},
 	"loginnotify-desc": "Tanınmayan cihaz ve/veya IP adreslerinden şüpheli oturum açma girişimleri hakkında kullanıcıları bilgilendirir",
@@ -13,8 +14,8 @@
 	"echo-pref-tooltip-login-success": "Birisi hesabıma daha önce kullanmadığım bir cihaz ve/veya IP adresinden giriş yaptığı zaman bana bildir.",
 	"loginnotify-primary-link": "Yardım",
 	"notification-loginnotify-login-fail-email-subject": "{{SITENAME}} sitesine $1 kullanıcısı olarak {{PLURAL:$2|başarısız giriş|birden çok başarısız giriş}} denemesi",
-	"notification-loginnotify-login-success-email-subject": "{{SITENAME}}'e {{GENDER:$1|sizin}} bir cihazdan $1 olarak giriş yapın",
-	"notification-header-login-success": "Yakın zamanda hesabınıza yeni bir cihazdan giriş yapmış (muhtemelen {{GENDER:$1|siz}}). Eğer bu sizseniz, o zaman bu mesajı ihmal edebilirsiniz. Sen değilsen, şifreni değiştirmen ve hesap etkinliğini kontrol etmen önerilir.",
+	"notification-loginnotify-login-success-email-subject": "{{SITENAME}}'e {{GENDER:$1|sizin}} daha önce kullanılmamış bir cihazdan $1 olarak giriş yapıldı",
+	"notification-header-login-success": "Yakın zamanda biri hesabınıza yeni bir cihazdan giriş yapmış (muhtemelen {{GENDER:$1|siz}}). Eğer giriş yapan sizseniz bu mesajı ihmal edebilirsiniz. Eğer siz değilseniz şifrenizi değiştirmeniz ve hesap etkinliğini kontrol etmeniz önerilir.",
 	"notification-new-bundled-header-login-fail": "{{PLURAL:$1|'''Başarısız bir girişim oldu'''|'''$1 başarısız oldu'''}} yeni bir cihazdan en son giriş yaptığınız zaman hesabınıza giriş yapmak için giriş yaptı. Eğer siz değilseniz, lütfen hesabınızın güçlü bir şifresi olduğundan emin olun.",
 	"notification-known-header-login-fail": "{{PLURAL:$1|'''başarısız bir girişim oldu''' |'''$1 başarısız oldu'''}}, hesabınıza son giriş yaptığınız günden bu yana giriş yapmayı denedi. Lütfen, hesabınızın güçlü bir şifresi olduğundan emin olun.",
 	"notification-new-unbundled-header-login-fail": "{{PLURAL:$1|'''Başarısız bir girişim oldu'''|'''Başarısız bir girişim oldu'''}}. Hesabınıza yeni bir cihazdan giriş yapmak için, lütfen hesabınızın güçlü bir şifresi olduğundan emin olun."
