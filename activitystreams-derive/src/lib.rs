@@ -101,6 +101,21 @@ use syn::{
     token, Attribute, Data, DeriveInput, Fields, Ident, LitStr, Result, Token, Type,
 };
 
+/// Derive implementations for activitystreams objects
+///
+/// ```ignore
+/// #[derive(Clone, Debug, serde::Deserialize, serde::Serialize, PropRefs)]
+/// pub struct MyStruct {
+///     /// Derive AsRef<MyProperties> and AsMut<MyProperties> delegating to `my_field`
+///     #[activitystreams(None)]
+///     my_field: MyProperties,
+///
+///     /// Derive the above, plus Object (activitystreams-traits) and ObjectExt
+///     /// (activitystreams-types)
+///     #[activitystreams(Object)]
+///     obj_field: ObjectProperties,
+/// }
+/// ```
 #[proc_macro_derive(PropRefs, attributes(activitystreams))]
 pub fn ref_derive(input: TokenStream) -> TokenStream {
     let input: DeriveInput = syn::parse(input).unwrap();
@@ -214,6 +229,17 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
     full.into()
 }
 
+/// Derive implementations Serialize and Deserialize for a constant string Struct type
+///
+/// ```ignore
+/// /// Derive Serialize and Deserialize such that MyStruct becomes the "MyType" string
+/// #[derive(Clone, Debug, UnitString)]
+/// #[activitystreams(MyType)]
+/// pub struct MyStruct;
+///
+/// // usage
+/// let _: HashMap<String, MyStruct> = serde_json::from_str(r#"{"type":"MyType"}"#)?;
+/// ```
 #[proc_macro_derive(UnitString, attributes(activitystreams))]
 pub fn unit_string(input: TokenStream) -> TokenStream {
     let input: DeriveInput = syn::parse(input).unwrap();
@@ -338,6 +364,46 @@ fn many_docs(v: &Vec<String>) -> proc_macro2::TokenStream {
         .collect()
 }
 
+/// Generate structs and enums for activitystreams objects
+///
+/// ```rust
+/// use activitystreams_derive::properties;
+///
+/// #[derive(Clone, Debug, Default, serde::Deserialize, serde::Serialize)]
+/// pub struct MyStruct;
+///
+/// properties! {
+///     Hello {
+///         docs [ "Defining the HelloProperties struct" ],
+///
+///         field {
+///             types [ String ],
+///         },
+///
+///         other_field {
+///             docs [
+///                 "field documentation",
+///                 "is cool",
+///             ],
+///             types [
+///                 String,
+///                 MyStruct,
+///             ],
+///             functional,
+///             required,
+///             rename("@other_field"),
+///             alias [
+///                 "@second_field",
+///                 "another_field",
+///             ],
+///         },
+///     }
+/// }
+///
+/// fn main() {
+///     let _ = HelloProperties::default();
+/// }
+/// ```
 #[proc_macro]
 pub fn properties(tokens: TokenStream) -> TokenStream {
     let Properties { name, docs, fields } = parse_macro_input!(tokens as Properties);
