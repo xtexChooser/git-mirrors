@@ -12,7 +12,7 @@ For basic use, add the following to your Cargo.toml
 ```toml
 # Cargo.toml
 
-activitystreams = "0.3"
+activitystreams = "0.4"
 ```
 
 And then use it in your project

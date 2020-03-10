@@ -1,7 +1,7 @@
 /*
  * This file is part of ActivityStreams Types.
  *
- * Copyright © 2018 Riley Trautman
+ * Copyright © 2020 Riley Trautman
  *
  * ActivityStreams Types is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,12 +22,13 @@
 //! To use these properties in your own types, you can flatten them into your struct with serde:
 //!
 //! ```rust
+//! use activitystreams_derive::PropRefs;
 //! use activitystreams_traits::Object;
-//! use activitystreams_types::object::properties::ObjectProperties;
+//! use activitystreams_types::object::{properties::ObjectProperties, ObjectExt};
 //! use serde::{Deserialize, Serialize};
 //! use std::any::Any;
 //!
-//! #[derive(Clone, Debug, Serialize, Deserialize)]
+//! #[derive(Clone, Debug, Serialize, Deserialize, PropRefs)]
 //! #[serde(rename_all = "camelCase")]
 //! pub struct MyObject {
 //!     #[serde(rename = "type")]
@@ -37,17 +38,8 @@
 //!     pub my_property: String,
 //!
 //!     #[serde(flatten)]
+//!     #[activitystreams(Object)]
 //!     pub object_properties: ObjectProperties,
-//! }
-//!
-//! impl Object for MyObject {
-//!     fn as_any(&self) -> &dyn Any {
-//!         self
-//!     }
-//!
-//!     fn as_any_mut(&mut self) -> &mut dyn Any {
-//!         self
-//!     }
 //! }
 //! #
 //! # fn main() {}

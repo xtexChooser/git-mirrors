@@ -1,7 +1,7 @@
 /*
  * This file is part of ActivityStreams Types.
  *
- * Copyright © 2018 Riley Trautman
+ * Copyright © 2020 Riley Trautman
  *
  * ActivityStreams Types is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 //! fn run() -> Result<(), anyhow::Error> {
 //!     /// A Mention is the only predefined Link type in the Activity Streams spec
 //!     let mut mention = Mention::default();
-//!     mention.link_props.set_context_xdg_any_uri(context())?;
+//!     mention.as_mut().set_context_xsd_any_uri(context())?;
 //!
 //!     let mention_string = serde_json::to_string(&mention)?;
 //!

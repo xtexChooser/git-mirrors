@@ -1,6 +1,6 @@
 /* This file is part of ActivityStreams Types.
  *
- * Copyright © 2018 Riley Trautman
+ * Copyright © 2020 Riley Trautman
  *
  * ActivityStreams Types is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,14 +21,21 @@
 //! To use these properties in your own types, you can flatten them into your struct with serde:
 //!
 //! ```rust
+//! use activitystreams_derive::PropRefs;
 //! use activitystreams_traits::{Activity, Object};
 //! use activitystreams_types::{
-//!   activity::properties::ActivityProperties,
-//!   object::properties::ObjectProperties,
+//!     activity::{
+//!         properties::ActivityProperties,
+//!         ActivityExt,
+//!     },
+//!     object::{
+//!         properties::ObjectProperties,
+//!         ObjectExt,
+//!     },
 //! };
 //! use serde::{Deserialize, Serialize};
 //!
-//! #[derive(Debug, Serialize, Deserialize)]
+//! #[derive(Clone, Debug, Serialize, Deserialize, PropRefs)]
 //! #[serde(rename_all = "camelCase")]
 //! pub struct MyActivity {
 //!     #[serde(rename = "type")]
@@ -40,14 +47,13 @@
 //!     pub my_property: String,
 //!
 //!     #[serde(flatten)]
+//!     #[activitystreams(Object)]
 //!     pub object_properties: ObjectProperties,
 //!
 //!     #[serde(flatten)]
+//!     #[activitystreams(Activity)]
 //!     pub activity_properties: ActivityProperties,
 //! }
-//!
-//! impl Object for MyActivity {}
-//! impl Activity for MyActivity {}
 //! #
 //! # fn main() {}
 //! ```

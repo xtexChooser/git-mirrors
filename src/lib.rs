@@ -26,32 +26,60 @@
 //! ### Basic
 //!
 //! ```rust
-//! use activitystreams::{context, Object, Actor, object::Profile};
-//! use serde_derive::{Deserialize, Serialize};
+//! use activitystreams::{
+//!     context,
+//!     object::{
+//!         properties::{
+//!             ObjectProperties,
+//!             ProfileProperties
+//!         },
+//!         Profile,
+//!     },
+//!     primitives::XsdAnyUri,
+//!     Actor,
+//!     Object,
+//! };
+//! use serde::{Deserialize, Serialize};
+//! use std::any::Any;
 //!
 //! #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 //! #[serde(rename_all = "camelCase")]
 //! pub struct Persona {
 //!     #[serde(rename = "@context")]
-//!     context: serde_json::Value,
+//!     context: XsdAnyUri,
 //!
 //!     #[serde(rename = "type")]
 //!     kind: String,
 //! }
 //!
-//! impl Object for Persona {}
+//! #[typetag::serde]
+//! impl Object for Persona {
+//!     fn as_any(&self) -> &(dyn Any + 'static) {
+//!         self
+//!     }
+//!
+//!     fn as_any_mut(&mut self) -> &mut (dyn Any + 'static) {
+//!         self
+//!     }
+//!
+//!     fn duplicate(&self) -> Box<dyn Object + 'static> {
+//!         Box::new(self.clone())
+//!     }
+//! }
 //! impl Actor for Persona {}
 //!
-//! fn run() -> Result<(), anyhow::Error> {
+//! fn main() -> Result<(), anyhow::Error> {
 //!     let mut profile = Profile::default();
 //!
-//!     profile.profile.set_describes_object(Persona {
-//!         context: serde_json::to_value(context())?,
+//!     let pprops: &mut ProfileProperties = profile.as_mut();
 //!
+//!     pprops.set_describes_object_box(Persona {
+//!         context: context(),
 //!         kind: "Persona".to_owned(),
 //!     })?;
 //!
-//!     profile.object_props.set_context_object(context())?;
+//!     let oprops: &mut ObjectProperties = profile.as_mut();
+//!     oprops.set_context_xsd_any_uri(context())?;
 //!
 //!     let profile_string = serde_json::to_string(&profile)?;
 //!
@@ -59,67 +87,82 @@
 //!
 //!     Ok(())
 //! }
-//! #
-//! # fn main() {
-//! #   run().unwrap();
-//! # }
 //! ```
 //!
 //! ### Advanced
 //!
 //! ```rust
-//! use activitystreams_derive::{Properties, UnitString};
-//! use activitystreams_traits::{Link, Object};
-//! use activitystreams_types::{CustomLink, link::Mention};
-//! use serde_derive::{Deserialize, Serialize};
+//! use activitystreams::{
+//!     properties,
+//!     link::{
+//!         properties::LinkProperties,
+//!         Mention,
+//!     },
+//!     Link,
+//!     LinkExt,
+//!     PropRefs,
+//!     UnitString,
+//! };
+//! use serde::{Deserialize, Serialize};
 //!
 //! /// Using the UnitString derive macro
 //! ///
 //! /// This macro implements Serialize and Deserialize for the given type, making this type
-//! /// represent the string "SomeKind" in JSON.
+//! /// represent the string "MyLink" in JSON.
 //! #[derive(Clone, Debug, Default, UnitString)]
-//! #[activitystreams(SomeKind)]
+//! #[activitystreams(MyLink)]
 //! pub struct MyKind;
+//!
+//! properties! {
+//!     My {
+//!         docs [ "Defining our own properties struct called MyProperties" ],
+//!
+//!         required_key {
+//!             docs [
+//!                 "Our own required key field",
+//!                 "",
+//!                 "'types' defines the range of values that can be stored in required_key",
+//!                 "",
+//!                 "'functional' means there is at most one value for required_key",
+//!                 "'required' means there is at least one value for required_key",
+//!             ],
+//!             types [ String ],
+//!             functional,
+//!             required,
+//!         },
+//!     }
+//! }
 //!
 //! /// Using the Properties derive macro
 //! ///
 //! /// This macro generates getters and setters for the associated fields.
-//! #[derive(Clone, Debug, Default, Deserialize, Serialize, Properties)]
+//! #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 //! #[serde(rename_all = "camelCase")]
-//! pub struct MyProperties {
-//!     /// Derive getters and setters for @context with Link and Object traits.
-//!     #[serde(rename = "@context")]
-//!     #[activitystreams(ab(Object, Link))]
-//!     pub context: Option<serde_json::Value>,
-//!
-//!     /// Use the UnitString MyKind to enforce the type of the object by "SomeKind"
+//! pub struct My {
+//!     /// Use the UnitString MyKind to enforce the type of the object by "MyLink"
 //!     pub kind: MyKind,
 //!
-//!     /// Derive getters and setters for required_key with String type.
-//!     ///
-//!     /// In the Activity Streams spec, 'functional' means there can only be one item for this
-//!     /// key. This means all fields not labeled 'functional' can also be serialized/deserialized
-//!     /// as Vec<T>.
-//!     #[activitystreams(concrete(String), functional)]
-//!     pub required_key: serde_json::Value,
+//!     /// Derive AsRef/AsMut for My -> MyProperties
+//!     #[activitystreams(None)]
+//!     pub my_properties: MyProperties,
+//!
+//!     /// Derive AsRef/AsMut/Link/LinkExt for My -> MyProperties
+//!     #[activitystreams(Link)]
+//!     pub link_properties: LinkProperties,
 //! }
 //!
-//! fn run() -> Result<(), anyhow::Error> {
-//!     let mut props = MyProperties::default();
+//! fn main() -> Result<(), anyhow::Error> {
+//!     let mut my_link = My::default();
 //!
-//!     props.set_required_key_string("Hey".to_owned())?;
-//!
-//!     let my_link = CustomLink::new(Mention::default(), props);
+//!     let lprops: &mut MyProperties = my_link.as_mut();
+//!     lprops.set_required_key("Hey")?;
 //!
 //!     let my_link_string = serde_json::to_string(&my_link)?;
 //!
-//!     let my_link: CustomLink<Mention, MyProperties> = serde_json::from_str(&my_link_string)?;
+//!     let my_link: My = serde_json::from_str(&my_link_string)?;
 //!
 //!     Ok(())
 //! }
-//! # fn main() {
-//! #   run().unwrap();
-//! # }
 //! ```
 
 pub mod activity;
@@ -136,3 +179,5 @@ pub use self::{
     object::{Object, ObjectExt},
 };
 pub use activitystreams_types::{context, primitives};
+
+pub use activitystreams_derive::{properties, PropRefs, UnitString};

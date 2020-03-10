@@ -1,7 +1,7 @@
 /*
  * This file is part of ActivityStreams Types.
  *
- * Copyright © 2018 Riley Trautman
+ * Copyright © 2020 Riley Trautman
  *
  * ActivityStreams Types is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,11 +22,13 @@
 //! To use these properties in your own types, you can flatten them into your struct with serde:
 //!
 //! ```rust
+//! use activitystreams_derive::PropRefs;
 //! use activitystreams_traits::Link;
-//! use activitystreams_types::link::properties::LinkProperties;
+//! use activitystreams_types::link::{properties::LinkProperties, LinkExt};
 //! use serde::{Deserialize, Serialize};
+//! use std::any::Any;
 //!
-//! #[derive(Clone, Debug, Serialize, Deserialize)]
+//! #[derive(Clone, Debug, Serialize, Deserialize, PropRefs)]
 //! #[serde(rename_all = "camelCase")]
 //! pub struct MyLink {
 //!     #[serde(rename = "type")]
@@ -36,10 +38,9 @@
 //!     pub my_property: String,
 //!
 //!     #[serde(flatten)]
+//!     #[activitystreams(Link)]
 //!     pub link_properties: LinkProperties,
 //! }
-//!
-//! impl Link for MyLink {}
 //! #
 //! # fn main() {}
 //! ```

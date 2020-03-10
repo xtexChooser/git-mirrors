@@ -1,8 +1,35 @@
+/*
+ * This file is part of ActivityStreams Types.
+ *
+ * Copyright © 2020 Riley Trautman
+ *
+ * ActivityStreams Types is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * ActivityStreams Types is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with ActivityStreams Types.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/// A MIME Media Type consists of a top-level type and a subtype, which is further structured into
+/// trees.
+///
+/// Optionally, media types can define companion data, known as parameters.
+///
+/// See [`RFC 2045`](https://tools.ietf.org/html/rfc2045) and
+/// [`RFC 2046`](https://tools.ietf.org/html/rfc2046) for more information.
 #[derive(Clone, Debug)]
 pub struct MimeMediaType(mime::Mime);
 
 #[derive(Clone, Debug, thiserror::Error)]
 #[error("Error parsing MIME")]
+/// The error type produced when a MimeMediaType cannot be parsed
 pub struct MimeMediaTypeError;
 
 impl From<mime::Mime> for MimeMediaType {

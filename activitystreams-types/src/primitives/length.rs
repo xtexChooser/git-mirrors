@@ -1,3 +1,23 @@
+/*
+ * This file is part of ActivityStreams Types.
+ *
+ * Copyright © 2020 Riley Trautman
+ *
+ * ActivityStreams Types is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * ActivityStreams Types is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with ActivityStreams Types.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/// A list of units of length that represent valid units for certain ActivityStreams objects
 #[derive(
     Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, serde::Deserialize, serde::Serialize,
 )]
@@ -21,6 +41,7 @@ pub enum Length {
 
 #[derive(Clone, Debug, thiserror::Error)]
 #[error("Could not parse units")]
+/// The error type produced when a Length cannot be parsed
 pub struct LengthError;
 
 impl Length {

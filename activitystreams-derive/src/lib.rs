@@ -35,7 +35,7 @@
 //! ///
 //! /// This macro implements Serialize and Deserialize for the given type, making this type
 //! /// represent the string "SomeKind" in JSON.
-//! #[derive(Clone, Debug, Default, UnitString)]
+//! #[derive(Clone, Debug, Default, Eq, Hash, Ord, PartialEq, PartialOrd, UnitString)]
 //! #[activitystreams(SomeKind)]
 //! pub struct MyKind;
 //!
@@ -46,7 +46,7 @@
 //!     My {
 //!         context {
 //!             types [
-//!                 Value,
+//!                 String,
 //!             ],
 //!             rename("@context"),
 //!         },
@@ -64,23 +64,28 @@
 //!             ],
 //!             functional,
 //!             required,
+//!             alias [
+//!                 "someKey",
+//!                 "existingKey",
+//!                 "woooKey",
+//!             ],
 //!         },
 //!     }
 //! }
-//! #
-//! # fn main () -> Result<(), Box<dyn std::error::Error> {
-//! let s = r#"{
-//!     "@context": "http://www.w3c.org/ns#activitystreams",
-//!     "type": "SomeKind",
-//!     "required_key": {
-//!         "key": "value"
-//!     }
-//! }"#
 //!
-//! let m: MyProperties = serde_json::from_str(s)?;
-//! println!("{:?}", m.get_kind());
-//! # Ok(())
-//! # }
+//! fn main () -> Result<(), Box<dyn std::error::Error>> {
+//!     let s = r#"{
+//!         "@context": "http://www.w3c.org/ns#activitystreams",
+//!         "type": "SomeKind",
+//!         "woooKey": {
+//!             "key": "value"
+//!         }
+//!     }"#;
+//!
+//!     let m: MyProperties = serde_json::from_str(s)?;
+//!     assert_eq!(&MyKind, m.get_kind());
+//!     Ok(())
+//! }
 //! ```
 
 extern crate proc_macro;
@@ -230,7 +235,7 @@ pub fn unit_string(input: TokenStream) -> TokenStream {
         .clone();
 
     let visitor_name = from_value(attr);
-    let value = format!("\"{}\"", visitor_name);
+    let value = format!("{}", visitor_name);
 
     let serialize = quote! {
         impl ::serde::ser::Serialize for #name {
@@ -318,17 +323,26 @@ fn from_value(attr: Attribute) -> Ident {
         .unwrap()
 }
 
+fn to_doc(s: &String) -> proc_macro2::TokenStream {
+    format!("/// {}", s).parse().unwrap()
+}
+
+fn many_docs(v: &Vec<String>) -> proc_macro2::TokenStream {
+    v.iter()
+        .map(|d| {
+            let d = to_doc(d);
+            quote! {
+                #d
+            }
+        })
+        .collect()
+}
+
 #[proc_macro]
 pub fn properties(tokens: TokenStream) -> TokenStream {
     let Properties { name, docs, fields } = parse_macro_input!(tokens as Properties);
 
-    let docs: proc_macro2::TokenStream = docs
-        .into_iter()
-        .map(|doc| {
-            let idents: proc_macro2::TokenStream = format!("/// {}", doc).parse().unwrap();
-            quote! { #idents }
-        })
-        .collect();
+    let docs: proc_macro2::TokenStream = many_docs(&docs);
 
     let name = Ident::new(&format!("{}Properties", name), name.span());
 
@@ -338,10 +352,7 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
         }
 
         let fname = field.name.clone();
-        let fdocs: proc_macro2::TokenStream = field.description.docs.iter().map(|doc| {
-            let idents: proc_macro2::TokenStream = format!("/// {}", doc).parse().unwrap();
-            quote! { #idents }
-        }).collect();
+        let fdocs: proc_macro2::TokenStream = many_docs(&field.description.docs);
 
         let (ty, deps) = if field.description.types.len() == 1 {
             let ty = Ident::new(&field.description.types.first().unwrap().to_token_stream().to_string(), fname.span());
@@ -349,7 +360,13 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                 (ty, None)
             } else {
                 let enum_ty = Ident::new(&camelize(&format!("{}_{}_enum", name, fname)), fname.span());
+                let doc_lines = many_docs(&vec![
+                    format!("Variations for the `{}` field from `{}", fname, name),
+                    String::new(),
+                    format!("`{}` isn't functional, meaning it can be represented as either a single `{}` or a vector of `{}`.", fname, ty, ty),
+                ]);
                 let deps = quote! {
+                    #doc_lines
                     #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
                     #[serde(rename_all = "camelCase")]
                     #[serde(untagged)]
@@ -413,7 +430,18 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                     })
                     .collect();
 
+                let term_doc_lines = many_docs(&vec![
+                    format!("Terminating variations for the `{}` field from `{}`", fname, name),
+                    String::new(),
+                    format!("Since {} can be one of multiple types, this enum represents all possibilities of {}", fname, fname),
+                ]);
+                let doc_lines = many_docs(&vec![
+                    format!("Non-Terminating variations for the `{}` field from `{}`", fname, name),
+                    String::new(),
+                    format!("`{}` isn't functional, meaning it can be represented as either a single `{}` or a vector of `{}`", fname, term_ty, term_ty),
+                ]);
                 quote! {
+                    #term_doc_lines
                     #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
                     #[serde(rename_all = "camelCase")]
                     #[serde(untagged)]
@@ -421,6 +449,7 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                         #v_tokens
                     }
 
+                    #doc_lines
                     #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
                     #[serde(rename_all = "camelCase")]
                     #[serde(untagged)]
@@ -465,7 +494,15 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                     })
                     .collect();
 
+                let doc_lines = many_docs(&vec![
+                    format!("Variations for the `{}` field from `{}`", fname, name),
+                    String::new(),
+                    format!("`{}` isn't functional, meaning it can only be represented as a single `{}`", fname, ty),
+                    String::new(),
+                    format!("This enum's variants representa ll valid types to construct a `{}`", fname),
+                ]);
                 quote! {
+                    #doc_lines
                     #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
                     #[serde(rename_all = "camelCase")]
                     #[serde(untagged)]
@@ -528,7 +565,9 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
 
             if field.description.required {
                 if field.description.functional {
+                    let doc_line = to_doc(&format!("Set `{}` with a type that can be cnoverted into a `{}`", fname, v_ty.to_token_stream()));
                     let set = quote! {
+                        #doc_line
                         pub fn #set_ident<T>(&mut self, item: T) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
                         where
                             T: std::convert::TryInto<#v_ty>,
@@ -539,7 +578,9 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                         }
                     };
 
+                    let doc_line = to_doc(&format!("Get the `{}` as `{}`", fname, v_ty.to_token_stream()));
                     let get = quote! {
+                        #doc_line
                         pub fn #get_ident(&self) -> &#v_ty {
                             &self.#fname
                         }
@@ -550,7 +591,9 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                         #set
                     }
                 } else {
+                    let doc_line = to_doc(&format!("Set `{}` with a type that can be converted into a `{}`", fname, v_ty.to_token_stream()));
                     let set = quote! {
+                        #doc_line
                         pub fn #set_ident<T>(&mut self, item: T) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
                         where
                             T: std::convert::TryInto<#v_ty>,
@@ -561,7 +604,11 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                         }
                     };
 
+                    let doc_line = to_doc(&format!("Get the `{}` as `{}`", fname, v_ty.to_token_stream()));
                     let get = quote! {
+                        #doc_line
+                        ///
+                        /// This returns `None` when there is more than one item
                         pub fn #get_ident(&self) -> Option<&#v_ty> {
                             match self.#fname {
                                 #enum_ty::Term(ref term) => Some(term),
@@ -570,7 +617,9 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                         }
                     };
 
+                    let doc_line = to_doc(&format!("Set the `{}` with a vector of types that can be converted into `{}`s", fname, v_ty.to_token_stream()));
                     let set_many = quote! {
+                        #doc_line
                         pub fn #set_many_ident<T>(&mut self, item: Vec<T>) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
                         where
                             T: std::convert::TryInto<#v_ty>,
@@ -581,7 +630,12 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                         }
                     };
 
+                    let doc_line = to_doc(&format!("Get the `{}` as a slice of `{}`", fname, v_ty.to_token_stream()));
                     let get_many = quote! {
+                        #doc_line
+                        ///
+                        /// This returns `None` if
+                        /// - There is only one element
                         pub fn #get_many_ident(&self) -> Option<&[#v_ty]> {
                             match self.#fname {
                                 #enum_ty::Array(ref array) => Some(array),
@@ -599,7 +653,9 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                 }
             } else {
                 if field.description.functional {
+                    let doc_line = to_doc(&format!("Set the `{}` with a type that can be converted into `{}`", fname, v_ty.to_token_stream()));
                     let set = quote! {
+                        #doc_line
                         pub fn #set_ident<T>(&mut self, item: T) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
                         where
                             T: std::convert::TryInto<#v_ty>,
@@ -610,7 +666,11 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                         }
                     };
 
+                    let doc_line = to_doc(&format!("Get `{}` as a `{}`", fname, v_ty.to_token_stream()));
                     let get = quote! {
+                        #doc_line
+                        ///
+                        /// This returns `None` if there is no value present
                         pub fn #get_ident(&self) -> Option<&#v_ty> {
                             self.#fname.as_ref()
                         }
@@ -621,7 +681,9 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                         #set
                     }
                 } else {
+                    let doc_line = to_doc(&format!("Set the `{}` with a type that can be converted into `{}`", fname, v_ty.to_token_stream()));
                     let set = quote! {
+                        #doc_line
                         pub fn #set_ident<T>(&mut self, item: T) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
                         where
                             T: std::convert::TryInto<#v_ty>,
@@ -632,7 +694,13 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                         }
                     };
 
+                    let doc_line = to_doc(&format!("Get `{}` as a `{}`", fname, v_ty.to_token_stream()));
                     let get = quote! {
+                        #doc_line
+                        ///
+                        /// This returns `None` if
+                        /// - There is no value present
+                        /// - There is more than one value present
                         pub fn #get_ident(&self) -> Option<&#v_ty> {
                             match self.#fname {
                                 Some(#enum_ty::Term(ref term)) => Some(term),
@@ -641,7 +709,9 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                         }
                     };
 
+                    let doc_line = to_doc(&format!("Set the `{}` with a vector of types that can be converted into `{}`s", fname, v_ty.to_token_stream()));
                     let set_many = quote! {
+                        #doc_line
                         pub fn #set_many_ident<T>(&mut self, item: Vec<T>) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
                         where
                             T: std::convert::TryInto<#v_ty>,
@@ -652,7 +722,13 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                         }
                     };
 
+                    let doc_line = to_doc(&format!("Get `{}` as a slice of `{}`s", fname, v_ty.to_token_stream()));
                     let get_many = quote! {
+                        #doc_line
+                        ///
+                        /// This returns `None` if
+                        /// - There is no value present
+                        /// - There is only one value present
                         pub fn #get_many_ident(&self) -> Option<&[#v_ty]> {
                             match self.#fname {
                                 Some(#enum_ty::Array(ref a)) => Some(a),
@@ -681,7 +757,9 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                         Ident::new(&format!("get_{}_{}", fname, snakize(&v_ty.to_token_stream().to_string())), fname.span());
 
                     if field.description.required {
+                        let doc_line = to_doc(&format!("Set the `{}` with a type that can be converted into `{}`", fname, v_ty.to_token_stream()));
                         let set = quote! {
+                            #doc_line
                             pub fn #set_ident<T>(&mut self, item: T) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
                             where
                                 T: std::convert::TryInto<#v_ty>,
@@ -693,7 +771,12 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                             }
                         };
 
+                        let doc_line = to_doc(&format!("Get `{}` as a slice of `{}`s", fname, v_ty.to_token_stream()));
                         let get = quote! {
+                            #doc_line
+                            ///
+                            /// This returns `None` if
+                            /// - The requested type is not the stored type
                             pub fn #get_ident(&self) -> Option<&#v_ty> {
                                 match self.#fname {
                                     #ty::#v_ty(ref term) => Some(term),
@@ -707,7 +790,9 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                             #set
                         }
                     } else {
+                        let doc_line = to_doc(&format!("Set `{}` with a value that can be converted into `{}`", fname, v_ty.to_token_stream()));
                         let set = quote! {
+                            #doc_line
                             pub fn #set_ident<T>(&mut self, item: T) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
                             where
                                 T: std::convert::TryInto<#v_ty>,
@@ -719,7 +804,13 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                             }
                         };
 
+                        let doc_line = to_doc(&format!("Get `{}` as a `{}`", fname, v_ty.to_token_stream()));
                         let get = quote! {
+                            #doc_line
+                            ///
+                            /// This returns `None` if
+                            /// - There is no value present
+                            /// - The requested type is not the stored type
                             pub fn #get_ident(&self) -> Option<&#v_ty> {
                                 match self.#fname {
                                     Some(#ty::#v_ty(ref term)) => Some(term),
@@ -757,7 +848,9 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                         Ident::new(&format!("get_many_{}_{}s", fname, snakize(&v_ty.to_token_stream().to_string())), fname.span());
 
                     if field.description.required {
+                        let doc_line = to_doc(&format!("Set `{}` with a value that can be converted into `{}`", fname, v_ty.to_token_stream()));
                         let set = quote! {
+                            #doc_line
                             pub fn #set_ident<T>(&mut self, item: T) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
                             where
                                 T: std::convert::TryInto<#v_ty>,
@@ -770,7 +863,13 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                             }
                         };
 
+                        let doc_line = to_doc(&format!("Get the `{}` as a `{}`", fname, v_ty.to_token_stream()));
                         let get = quote! {
+                            #doc_line
+                            ///
+                            /// This returns `None` if
+                            /// - There is more than one value present
+                            /// - The requested type is not the stored type
                             pub fn #get_ident(&self) -> Option<&#v_ty> {
                                 match self.#fname {
                                     #ty::Term(#term_ty::#v_ty(ref term)) => Some(term),
@@ -779,7 +878,9 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                             }
                         };
 
+                        let doc_line = to_doc(&format!("Set `{}` from a vec of items that can be converted into `{}`s", fname, v_ty.to_token_stream()));
                         let set_many = quote! {
+                            #doc_line
                             pub fn #set_many_ident<T>(&mut self, item: Vec<T>) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
                             where
                                 T: std::convert::TryInto<#v_ty>,
@@ -791,7 +892,12 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                             }
                         };
 
+                        let doc_line = to_doc(&format!("Get `{}` as a slice of `{}`s", fname, term_ty.to_token_stream()));
                         let get_many = quote! {
+                            #doc_line
+                            ///
+                            /// This returns `None` if
+                            /// - There is only one value present
                             pub fn #get_many_ident(&self) -> Option<&[#term_ty]> {
                                 match self.#fname {
                                     #ty::Array(ref array) => Some(array),
@@ -807,7 +913,9 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                             #set_many
                         }
                     } else {
+                        let doc_line = to_doc(&format!("Set `{}` from a value that can be converted into `{}`", fname, v_ty.to_token_stream()));
                         let set = quote! {
+                            #doc_line
                             pub fn #set_ident<T>(&mut self, item: T) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
                             where
                                 T: std::convert::TryInto<#v_ty>,
@@ -820,7 +928,14 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                             }
                         };
 
+                        let doc_line = to_doc(&format!("Get `{}` as a `{}`", fname, v_ty.to_token_stream()));
                         let get = quote! {
+                            #doc_line
+                            ///
+                            /// This returns `None` if
+                            /// - There is no value present
+                            /// - There is more than one value present
+                            /// - The requested type is not stored type
                             pub fn #get_ident(&self) -> Option<&#v_ty> {
                                 match self.#fname {
                                     Some(#ty::Term(#term_ty::#v_ty(ref term))) => Some(term),
@@ -829,7 +944,9 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                             }
                         };
 
+                        let doc_line = to_doc(&format!("Set `{}` from a vec of items that can be converted into `{}`s", fname, v_ty.to_token_stream()));
                         let set_many = quote! {
+                            #doc_line
                             pub fn #set_many_ident<T>(&mut self, item: Vec<T>) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
                             where
                                 T: std::convert::TryInto<#v_ty>,
@@ -841,7 +958,13 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                             }
                         };
 
+                        let doc_line = to_doc(&format!("Get `{}` as a slice of `{}`s", fname, term_ty.to_token_stream()));
                         let get_many = quote! {
+                            #doc_line
+                            ///
+                            /// This returns `None` if
+                            /// - There is no value present
+                            /// - There is only one value present
                             pub fn #get_many_ident(&self) -> Option<&[#term_ty]> {
                                 match self.#fname {
                                     Some(#ty::Array(ref array)) => Some(array),
@@ -864,7 +987,9 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                 let delete_ident =
                     Ident::new(&format!("delete_{}", fname), fname.span());
 
+                let doc_line = to_doc(&format!("Set the `{}` field to `None`", fname));
                 quote! {
+                    #doc_line
                     pub fn #delete_ident(&mut self) -> &mut Self {
                         self.#fname = None;
                         self

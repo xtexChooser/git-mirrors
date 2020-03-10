@@ -1,30 +1,63 @@
-#[derive(Clone, Debug)]
-pub struct XsdDateTime(chrono::DateTime<chrono::Utc>);
+/*
+ * This file is part of ActivityStreams Types.
+ *
+ * Copyright © 2020 Riley Trautman
+ *
+ * ActivityStreams Types is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * ActivityStreams Types is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with ActivityStreams Types.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
+/// The type xsd:dateTime represents a specific date and time in the format
+/// CCYY-MM-DDThh:mm:ss.sss, which is a concatenation of the date and time forms, separated by a
+/// literal letter "T".
+///
+/// All of the same rules that apply to the date and time types are applicable
+/// to xsd:dateTime as well.
+///
+/// An optional time zone expression may be added at the end of the value. The letter Z is used to
+/// indicate Coordinated Universal Time (UTC). All other time zones are represented by their
+/// difference from Coordinated Universal Time in the format +hh:mm, or -hh:mm. These values may
+/// range from -14:00 to 14:00. For example, US Eastern Standard Time, which is five hours behind
+/// UTC, is represented as -05:00. If no time zone value is present, it is considered unknown; it
+/// is not assumed to be UTC.
+#[derive(Clone, Debug)]
+pub struct XsdDateTime(chrono::DateTime<chrono::FixedOffset>);
+
+/// The error type produced when an XsdDateTime cannot be parsed
 #[derive(Clone, Debug, thiserror::Error)]
 #[error("Error parsing DateTime")]
 pub struct XsdDateTimeError;
 
-impl From<chrono::DateTime<chrono::Utc>> for XsdDateTime {
-    fn from(d: chrono::DateTime<chrono::Utc>) -> Self {
+impl From<chrono::DateTime<chrono::FixedOffset>> for XsdDateTime {
+    fn from(d: chrono::DateTime<chrono::FixedOffset>) -> Self {
         XsdDateTime(d)
     }
 }
 
-impl From<XsdDateTime> for chrono::DateTime<chrono::Utc> {
+impl From<XsdDateTime> for chrono::DateTime<chrono::FixedOffset> {
     fn from(d: XsdDateTime) -> Self {
         d.0
     }
 }
 
-impl AsRef<chrono::DateTime<chrono::Utc>> for XsdDateTime {
-    fn as_ref(&self) -> &chrono::DateTime<chrono::Utc> {
+impl AsRef<chrono::DateTime<chrono::FixedOffset>> for XsdDateTime {
+    fn as_ref(&self) -> &chrono::DateTime<chrono::FixedOffset> {
         &self.0
     }
 }
 
-impl AsMut<chrono::DateTime<chrono::Utc>> for XsdDateTime {
-    fn as_mut(&mut self) -> &mut chrono::DateTime<chrono::Utc> {
+impl AsMut<chrono::DateTime<chrono::FixedOffset>> for XsdDateTime {
+    fn as_mut(&mut self) -> &mut chrono::DateTime<chrono::FixedOffset> {
         &mut self.0
     }
 }
@@ -58,9 +91,7 @@ impl std::str::FromStr for XsdDateTime {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(XsdDateTime(
-            chrono::DateTime::parse_from_rfc3339(s)
-                .map_err(|_| XsdDateTimeError)?
-                .into(),
+            chrono::DateTime::parse_from_rfc3339(s).map_err(|_| XsdDateTimeError)?,
         ))
     }
 }

@@ -27,12 +27,13 @@
 //! ```rust
 //! use activitystreams_traits::{Object, Actor};
 //! use serde::{Deserialize, Serialize};
+//! use std::any::Any;
 //!
 //! #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 //! #[serde(rename_all = "camelCase")]
 //! pub struct Persona {
 //!     #[serde(rename = "@context")]
-//!     context: serde_json::Value,
+//!     context: String,
 //!
 //!     #[serde(rename = "type")]
 //!     kind: String,

@@ -1,7 +1,7 @@
 /*
  * This file is part of ActivityStreams Types.
  *
- * Copyright © 2018 Riley Trautman
+ * Copyright © 2020 Riley Trautman
  *
  * ActivityStreams Types is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,31 +22,38 @@
 //! To use these properties in your own types, you can flatten them into your struct with serde:
 //!
 //! ```rust
+//! use activitystreams_derive::PropRefs;
 //! use activitystreams_traits::{Collection, Object};
 //! use activitystreams_types::{
-//!   collection::properties::CollectionProperties,
-//!   object::properties::ObjectProperties,
+//!     collection::{
+//!         properties::CollectionProperties,
+//!         CollectionExt,
+//!     },
+//!     object::{
+//!         properties::ObjectProperties,
+//!         ObjectExt,
+//!     },
 //! };
 //! use serde::{Deserialize, Serialize};
+//! use std::any::Any;
 //!
-//! #[derive(Debug, Serialize, Deserialize)]
+//! #[derive(Clone, Debug, Serialize, Deserialize, PropRefs)]
 //! #[serde(rename_all = "camelCase")]
 //! pub struct MyCollection {
 //!     #[serde(rename = "type")]
 //!     pub kind: String,
 //!
-//!     docs("Define a require property for the MyCollection type"),
+//!     /// Define a require property for the MyCollection type
 //!     pub my_property: String,
 //!
 //!     #[serde(flatten)]
+//!     #[activitystreams(Object)]
 //!     pub object_properties: ObjectProperties,
 //!
 //!     #[serde(flatten)]
+//!     #[activitystreams(Collection)]
 //!     pub collection_properties: CollectionProperties,
 //! }
-//!
-//! impl Object for MyCollection {}
-//! impl Collection for MyCollection {}
 //! #
 //! # fn main() {}
 //! ```

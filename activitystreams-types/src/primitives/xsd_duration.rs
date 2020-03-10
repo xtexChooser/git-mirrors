@@ -1,6 +1,50 @@
+/*
+ * This file is part of ActivityStreams Types.
+ *
+ * Copyright © 2020 Riley Trautman
+ *
+ * ActivityStreams Types is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * ActivityStreams Types is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with ActivityStreams Types.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/// The type xsd:duration represents a duration of time expressed as a number of years, months,
+/// days, hours, minutes, and seconds.
+///
+/// The format of xsd:duration is PnYnMnDTnHnMnS, where P is a literal value that starts the
+/// expression, nY is the number of years followed by a literal Y, nM is the number of months
+/// followed by a literal M, nD is the number of days followed by a literal D, T is a literal value
+/// that separates the date and time, nH is the number of hours followed by a literal H, nM is the
+/// number of minutes followed by a literal M, and nS is the number of seconds followed by a
+/// literal S. The following rules apply to xsd:duration values:
+///
+/// - Any of these numbers and corresponding designators may be absent if they are equal to 0, but
+///   at least one number and designator must appear.
+/// - The numbers may be any unsigned integer, with the exception of the number of seconds, which
+///   may be an unsigned decimal number.
+/// - If a decimal point appears in the number of seconds, there must be at least one digit after
+///   the decimal point.
+/// - A minus sign may appear before the P to specify a negative duration.
+/// - If no time items (hour, minute, second) are present, the letter T must not appear.
+///
+/// ### Note
+///
+/// This implementation converts Months to Days by multiplying by 31, and converts Years to days by
+/// multiplying by 365. If this is an issue for your application, look into specifying days
+/// directly.
 #[derive(Clone, Debug)]
 pub struct XsdDuration(chrono::Duration);
 
+/// The error type produced when an XsdDuration cannot be parsed
 #[derive(Clone, Debug, thiserror::Error)]
 #[error("Error parsing Duration")]
 pub struct XsdDurationError;
