@@ -128,9 +128,11 @@ pub mod collection;
 pub mod link;
 pub mod object;
 
-pub use self::activity::{Activity, ActivityExt, IntransitiveActivity};
-pub use self::actor::Actor;
-pub use self::collection::{Collection, CollectionExt, CollectionPage, CollectionPageExt};
-pub use self::link::{Link, LinkExt};
-pub use self::object::{Object, ObjectExt};
-pub use activitystreams_types::context;
+pub use self::{
+    activity::{Activity, ActivityExt, IntransitiveActivity},
+    actor::Actor,
+    collection::{Collection, CollectionExt, CollectionPage, CollectionPageExt},
+    link::{Link, LinkExt},
+    object::{Object, ObjectExt},
+};
+pub use activitystreams_types::{context, primitives};
