@@ -24,9 +24,8 @@ use serde::{Deserialize, Serialize};
 use super::{
     kind::JoinType,
     properties::{ActivityProperties, JoinProperties},
-    ActivityExt,
 };
-use crate::object::{properties::ObjectProperties, ObjectExt};
+use crate::object::properties::ObjectProperties;
 
 /// Indicates that the actor has joined the object.
 ///

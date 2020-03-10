@@ -24,9 +24,8 @@ use serde::{Deserialize, Serialize};
 use super::{
     kind::TentativeRejectType,
     properties::{ActivityProperties, TentativeRejectProperties},
-    ActivityExt,
 };
-use crate::object::{properties::ObjectProperties, ObjectExt};
+use crate::object::properties::ObjectProperties;
 
 /// A specialization of Reject in which the rejection is considered tentative.
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]

@@ -23,7 +23,7 @@ use activitystreams_derive::PropRefs;
 use activitystreams_traits::{Actor, Object};
 use serde::{Deserialize, Serialize};
 
-use crate::object::{properties::ObjectProperties, ObjectExt};
+use crate::object::properties::ObjectProperties;
 
 pub mod kind;
 use self::kind::*;

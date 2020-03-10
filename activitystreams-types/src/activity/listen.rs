@@ -24,9 +24,8 @@ use serde::{Deserialize, Serialize};
 use super::{
     kind::ListenType,
     properties::{ActivityProperties, ListenProperties},
-    ActivityExt,
 };
-use crate::object::{properties::ObjectProperties, ObjectExt};
+use crate::object::properties::ObjectProperties;
 
 /// Indicates that the actor has listened to the object.
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]

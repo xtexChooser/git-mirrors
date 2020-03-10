@@ -24,9 +24,8 @@ use serde::{Deserialize, Serialize};
 use super::{
     kind::FollowType,
     properties::{ActivityProperties, FollowProperties},
-    ActivityExt,
 };
-use crate::object::{properties::ObjectProperties, ObjectExt};
+use crate::object::properties::ObjectProperties;
 
 /// Indicates that the actor is "following" the object.
 ///

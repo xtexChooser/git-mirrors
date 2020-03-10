@@ -24,9 +24,8 @@ use serde::{Deserialize, Serialize};
 use super::{
     kind::BlockType,
     properties::{ActivityProperties, BlockProperties},
-    ActivityExt,
 };
-use crate::object::{properties::ObjectProperties, ObjectExt};
+use crate::object::properties::ObjectProperties;
 
 /// Indicates that the actor is blocking the object.
 ///

@@ -24,9 +24,8 @@ use serde::{Deserialize, Serialize};
 use super::{
     kind::CreateType,
     properties::{ActivityProperties, CreateProperties},
-    ActivityExt,
 };
-use crate::object::{properties::ObjectProperties, ObjectExt};
+use crate::object::properties::ObjectProperties;
 
 /// Indicates that the actor has created the object.
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]

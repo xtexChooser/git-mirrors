@@ -24,9 +24,8 @@ use serde::{Deserialize, Serialize};
 use super::{
     kind::LikeType,
     properties::{ActivityProperties, LikeProperties},
-    ActivityExt,
 };
-use crate::object::{properties::ObjectProperties, ObjectExt};
+use crate::object::properties::ObjectProperties;
 
 /// Indicates that the actor likes, recommends or endorses the object.
 ///

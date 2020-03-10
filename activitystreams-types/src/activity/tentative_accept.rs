@@ -24,9 +24,8 @@ use serde::{Deserialize, Serialize};
 use super::{
     kind::TentativeAcceptType,
     properties::{ActivityProperties, TentativeAcceptProperties},
-    ActivityExt,
 };
-use crate::object::{properties::ObjectProperties, ObjectExt};
+use crate::object::properties::ObjectProperties;
 
 /// A specialization of Accept indicating that the acceptance is tentative.
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]

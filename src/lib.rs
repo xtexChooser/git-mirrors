@@ -99,7 +99,6 @@
 //!         Mention,
 //!     },
 //!     Link,
-//!     LinkExt,
 //!     PropRefs,
 //!     UnitString,
 //! };
@@ -146,7 +145,7 @@
 //!     #[activitystreams(None)]
 //!     pub my_properties: MyProperties,
 //!
-//!     /// Derive AsRef/AsMut/Link/LinkExt for My -> MyProperties
+//!     /// Derive AsRef/AsMut/Link for My -> MyProperties
 //!     #[activitystreams(Link)]
 //!     pub link_properties: LinkProperties,
 //! }
@@ -172,11 +171,11 @@ pub mod link;
 pub mod object;
 
 pub use self::{
-    activity::{Activity, ActivityExt, IntransitiveActivity},
+    activity::{Activity, IntransitiveActivity},
     actor::Actor,
-    collection::{Collection, CollectionExt, CollectionPage, CollectionPageExt},
-    link::{Link, LinkExt},
-    object::{Object, ObjectExt},
+    collection::{Collection, CollectionPage},
+    link::Link,
+    object::Object,
 };
 pub use activitystreams_types::{context, primitives};
 

@@ -110,8 +110,7 @@ use syn::{
 ///     #[activitystreams(None)]
 ///     my_field: MyProperties,
 ///
-///     /// Derive the above, plus Object (activitystreams-traits) and ObjectExt
-///     /// (activitystreams-types)
+///     /// Derive the above, plus Object (activitystreams-traits)
 ///     #[activitystreams(Object)]
 ///     obj_field: ObjectProperties,
 /// }
@@ -158,7 +157,6 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
         .flat_map(move |(ident, ty, attr)| {
             let object = from_value(attr);
             let name = name.clone();
-            let ext_trait = Ident::new(&format!("{}Ext", object), name.span());
 
             let base_impl = if object.to_string() == "Object" || object.to_string() == "Link" {
                 quote! {
@@ -183,20 +181,6 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
                 }
             };
 
-            let activity_impls = quote! {
-                #base_impl
-
-                impl #ext_trait for #name {
-                    fn props(&self) -> &#ty {
-                        self.as_ref()
-                    }
-
-                    fn props_mut(&mut self) -> &mut #ty {
-                        self.as_mut()
-                    }
-                }
-            };
-
             let ref_impls = quote! {
                 impl AsRef<#ty> for #name {
                     fn as_ref(&self) -> &#ty {
@@ -216,7 +200,7 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
             } else {
                 quote! {
                     #ref_impls
-                    #activity_impls
+                    #base_impl
                 }
             }
         })

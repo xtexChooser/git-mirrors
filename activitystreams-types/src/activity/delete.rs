@@ -24,9 +24,8 @@ use serde::{Deserialize, Serialize};
 use super::{
     kind::DeleteType,
     properties::{ActivityProperties, DeleteProperties},
-    ActivityExt,
 };
-use crate::object::{properties::ObjectProperties, ObjectExt};
+use crate::object::properties::ObjectProperties;
 
 /// Indicates that the actor has deleted the object.
 ///

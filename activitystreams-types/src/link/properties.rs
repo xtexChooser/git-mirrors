@@ -24,7 +24,7 @@
 //! ```rust
 //! use activitystreams_derive::PropRefs;
 //! use activitystreams_traits::Link;
-//! use activitystreams_types::link::{properties::LinkProperties, LinkExt};
+//! use activitystreams_types::link::properties::LinkProperties;
 //! use serde::{Deserialize, Serialize};
 //! use std::any::Any;
 //!

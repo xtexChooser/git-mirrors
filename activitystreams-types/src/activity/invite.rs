@@ -24,9 +24,8 @@ use serde::{Deserialize, Serialize};
 use super::{
     kind::InviteType,
     properties::{ActivityProperties, InviteProperties},
-    ActivityExt,
 };
-use crate::object::{properties::ObjectProperties, ObjectExt};
+use crate::object::properties::ObjectProperties;
 
 /// A specialization of Offer in which the actor is extending an invitation for the object to the
 /// target.

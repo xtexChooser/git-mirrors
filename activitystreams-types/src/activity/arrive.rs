@@ -24,9 +24,8 @@ use serde::{Deserialize, Serialize};
 use super::{
     kind::ArriveType,
     properties::{ActivityProperties, ArriveProperties},
-    ActivityExt,
 };
-use crate::object::{properties::ObjectProperties, ObjectExt};
+use crate::object::properties::ObjectProperties;
 
 /// An IntransitiveActivity that indicates that the actor has arrived at the location.
 ///

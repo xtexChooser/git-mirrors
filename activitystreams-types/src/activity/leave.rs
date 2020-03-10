@@ -24,9 +24,8 @@ use serde::{Deserialize, Serialize};
 use super::{
     kind::LeaveType,
     properties::{ActivityProperties, LeaveProperties},
-    ActivityExt,
 };
-use crate::object::{properties::ObjectProperties, ObjectExt};
+use crate::object::properties::ObjectProperties;
 
 /// Indicates that the actor has left the object.
 ///

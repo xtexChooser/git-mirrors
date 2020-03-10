@@ -25,14 +25,8 @@
 //! use activitystreams_derive::PropRefs;
 //! use activitystreams_traits::{Collection, Object};
 //! use activitystreams_types::{
-//!     collection::{
-//!         properties::CollectionProperties,
-//!         CollectionExt,
-//!     },
-//!     object::{
-//!         properties::ObjectProperties,
-//!         ObjectExt,
-//!     },
+//!     collection::properties::CollectionProperties,
+//!     object::properties::ObjectProperties,
 //! };
 //! use serde::{Deserialize, Serialize};
 //! use std::any::Any;

@@ -24,9 +24,8 @@ use serde::{Deserialize, Serialize};
 use super::{
     kind::QuestionType,
     properties::{ActivityProperties, QuestionProperties},
-    ActivityExt,
 };
-use crate::object::{properties::ObjectProperties, ObjectExt};
+use crate::object::properties::ObjectProperties;
 
 /// Represents a question being asked.
 ///

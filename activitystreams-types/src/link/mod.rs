@@ -28,14 +28,6 @@ pub mod properties;
 use self::kind::*;
 use self::properties::*;
 
-/// The Link Extension Trait
-///
-/// This trait provides generic access to a link's properties
-pub trait LinkExt: Link {
-    fn props(&self) -> &LinkProperties;
-    fn props_mut(&mut self) -> &mut LinkProperties;
-}
-
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(transparent)]
 pub struct LinkBox(pub Box<dyn Link>);

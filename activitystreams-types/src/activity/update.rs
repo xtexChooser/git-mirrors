@@ -24,9 +24,8 @@ use serde::{Deserialize, Serialize};
 use super::{
     kind::UpdateType,
     properties::{ActivityProperties, UpdateProperties},
-    ActivityExt,
 };
-use crate::object::{properties::ObjectProperties, ObjectExt};
+use crate::object::properties::ObjectProperties;
 
 /// Indicates that the actor has updated the object.
 ///

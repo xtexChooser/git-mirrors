@@ -24,14 +24,8 @@
 //! use activitystreams_derive::PropRefs;
 //! use activitystreams_traits::{Activity, Object};
 //! use activitystreams_types::{
-//!     activity::{
-//!         properties::ActivityProperties,
-//!         ActivityExt,
-//!     },
-//!     object::{
-//!         properties::ObjectProperties,
-//!         ObjectExt,
-//!     },
+//!     activity::properties::ActivityProperties,
+//!     object::properties::ObjectProperties,
 //! };
 //! use serde::{Deserialize, Serialize};
 //!

@@ -24,9 +24,8 @@ use serde::{Deserialize, Serialize};
 use super::{
     kind::MoveType,
     properties::{ActivityProperties, MoveProperties},
-    ActivityExt,
 };
-use crate::object::{properties::ObjectProperties, ObjectExt};
+use crate::object::properties::ObjectProperties;
 
 /// Indicates that the actor has moved object from origin to target.
 ///

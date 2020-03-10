@@ -49,20 +49,10 @@ mod update;
 mod view;
 
 pub use self::{
-    accept::*, add::*, amove::*, announce::*, arrive::*, block::*, create::*, delete::*,
-    dislike::*, flag::*, follow::*, ignore::*, invite::*, join::*, leave::*, like::*, listen::*,
-    offer::*, question::*, read::*, reject::*, remove::*, tentative_accept::*, tentative_reject::*,
-    travel::*, undo::*, update::*, view::*,
+    accept::Accept, add::Add, amove::AMove, announce::Announce, arrive::Arrive, block::Block,
+    create::Create, delete::Delete, dislike::Dislike, flag::Flag, follow::Follow, ignore::Ignore,
+    invite::Invite, join::Join, leave::Leave, like::Like, listen::Listen, offer::Offer,
+    question::Question, read::Read, reject::Reject, remove::Remove,
+    tentative_accept::TentativeAccept, tentative_reject::TentativeReject, travel::Travel,
+    undo::Undo, update::Update, view::View,
 };
-
-use activitystreams_traits::Activity;
-
-use self::properties::ActivityProperties;
-
-/// The Activity Extension Trait
-///
-/// This trait provides generic access to an activity's properties
-pub trait ActivityExt: Activity {
-    fn props(&self) -> &ActivityProperties;
-    fn props_mut(&mut self) -> &mut ActivityProperties;
-}
