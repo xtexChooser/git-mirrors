@@ -29,18 +29,10 @@
 		"LoginNotify\\": "includes/"
 	},
 	"Hooks": {
-		"BeforeCreateEchoEvent": [
-			"LoginNotify\\Hooks::onBeforeCreateEchoEvent"
-		],
-		"EchoGetBundleRules": [
-			"LoginNotify\\Hooks::onEchoGetBundleRules"
-		],
-		"AuthManagerLoginAuthenticateAudit": [
-			"LoginNotify\\Hooks::onAuthManagerLoginAuthenticateAudit"
-		],
-		"LocalUserCreated": [
-			"LoginNotify\\Hooks::onLocalUserCreated"
-		]
+		"BeforeCreateEchoEvent": "LoginNotify\\Hooks::onBeforeCreateEchoEvent",
+		"EchoGetBundleRules": "LoginNotify\\Hooks::onEchoGetBundleRules",
+		"AuthManagerLoginAuthenticateAudit": "LoginNotify\\Hooks::onAuthManagerLoginAuthenticateAudit",
+		"LocalUserCreated": "LoginNotify\\Hooks::onLocalUserCreated"
 	},
 	"JobClasses": {
 		"LoginNotifyChecks": "LoginNotify\\DeferredChecksJob"
