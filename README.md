@@ -1,5 +1,5 @@
 # ActivityStreams
-__A set of Traits and Types that make up the Activity Streams specification__
+__A set of Traits and Types that make up the ActivityStreams and ActivityPub specifications__
 
 - [Read the documentation on docs.rs](https://docs.rs/activitystreams)
 - [Find the crate on crates.io](https://crates.io/crates/activitystreams)
