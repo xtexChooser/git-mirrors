@@ -10,7 +10,7 @@ First, add the crate to your `Cargo.toml`
 ```toml
 # Cargo.toml
 
-activitystreams-types = "0.4"
+activitystreams-types = "0.4.0-alpha.0"
 ```
 
 Then use it in your project!

@@ -12,7 +12,7 @@ projects. See the `activitystreams-types` crate for examples of how these traits
 
 Add it to your `Cargo.toml`
 ```toml
-activitystreams-traits = "0.3"
+activitystreams-traits = "0.4.0-alpha.0"
 serde = { version = "1.0", features = ["derive"] }
 typetag = "0.1.4"
 ```
