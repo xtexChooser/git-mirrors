@@ -33,7 +33,30 @@ use self::kind::*;
 #[cfg(feature = "types")]
 use self::properties::*;
 
-pub use activitystreams_traits::Object;
+use std::any::Any;
+
+/// Describes an object of any kind.
+///
+/// The Object type serves as the base type for most of the other kinds of objects defined in the
+/// Activity Vocabulary, including other Core types such as `Activity`, `IntransitiveActivity`,
+/// `Collection` and `OrderedCollection`.
+#[typetag::serde(tag = "type")]
+pub trait Object: std::fmt::Debug {
+    /// Provide an as_any method to allow for borrowed downcasting.
+    ///
+    /// This is useful since Objects can be deserialized generically via typetag
+    fn as_any(&self) -> &dyn Any;
+
+    /// Provide an as_any method to allow for mutably borrowed downcasting.
+    ///
+    /// This is useful since Objects can be deserialized generically via typetag
+    fn as_any_mut(&mut self) -> &mut dyn Any;
+
+    /// Provide a duplicate method to allow for cloning type objects.
+    ///
+    /// This is useful since Objects can be deserialized generically via typetag
+    fn duplicate(&self) -> Box<dyn Object>;
+}
 
 #[cfg(feature = "types")]
 #[derive(Clone, Debug, Deserialize, Serialize)]

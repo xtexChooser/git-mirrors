@@ -110,7 +110,7 @@ use syn::{
 ///     #[activitystreams(None)]
 ///     my_field: MyProperties,
 ///
-///     /// Derive the above, plus Object (activitystreams-traits)
+///     /// Derive the above, plus Object (activitystreams)
 ///     #[activitystreams(Object)]
 ///     obj_field: ObjectProperties,
 /// }
