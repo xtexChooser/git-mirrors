@@ -47,13 +47,13 @@
 //! # fn main() {}
 //! ```
 
-use activitystreams_derive::properties;
-
 use crate::{
     link::LinkBox,
-    object::{ImageBox, ObjectBox},
+    object::{apub::ApImageBox, streams::ImageBox, ObjectBox},
     primitives::*,
+    properties,
 };
+
 properties! {
     Object {
         docs [
@@ -233,6 +233,7 @@ properties! {
             types [
                 XsdAnyUri,
                 ImageBox,
+                ApImageBox,
                 LinkBox,
             ],
         },
@@ -249,6 +250,7 @@ properties! {
             types [
                 XsdAnyUri,
                 ImageBox,
+                ApImageBox,
                 LinkBox,
             ],
         },
@@ -688,6 +690,81 @@ properties! {
                 XsdDateTime,
             ],
             functional,
+        },
+    }
+}
+
+properties! {
+    ApObject {
+        docs [
+            "Define activitypub properties for the Object type as described by the Activity Pub vocabulary.",
+        ],
+
+        shares {
+            docs [
+                "This is a list of all Announce activities with this object as the object property, added as",
+                "a side effect.",
+                "",
+                "The shares collection MUST be either an OrderedCollection or a Collection and MAY be",
+                "filtered on privileges of an authenticated user or as appropriate when no authentication is",
+                "given.",
+                "",
+                "- Range: `anyUri`",
+                "- Functional: true",
+            ],
+            types [ XsdAnyUri ],
+            functional,
+        },
+
+        likes {
+            docs [
+                "This is a list of all Like activities with this object as the object property, added as a",
+                "side effect.",
+                "",
+                "The likes collection MUST be either an OrderedCollection or a Collection and MAY be",
+                "filtered on privileges of an authenticated user or as appropriate when no authentication is",
+                "given.",
+                "",
+                "- Range: `anyUri`",
+                "- Functional: true",
+            ],
+            types [ XsdAnyUri ],
+            functional,
+        },
+
+        source {
+            docs [
+                "The source property is intended to convey some sort of source from which the content markup",
+                "was derived, as a form of provenance, or to support future editing by clients.",
+                "",
+                "In general, clients do the conversion from source to content, not the other way around.",
+                "",
+                "The value of source is itself an object which uses its own content and mediaType fields to",
+                "supply source information.",
+                "",
+                "- Range: `Object`",
+                "- Functional: true",
+            ],
+            types [
+                XsdAnyUri,
+                ObjectBox,
+            ],
+            functional,
+        },
+
+        upload_media {
+            docs [
+                "Servers MAY support uploading document types to be referenced in activites, such as images,",
+                "video or other binary data, but the precise mechanism is out of scope for this version of",
+                "`ActivityPub`.",
+                "",
+                "The Social Web Community Group is refining the protocol in the",
+                "[`ActivityPub` Media Upload report](https://www.w3.org/wiki/SocialCG/ActivityPub/MediaUpload).",
+                "",
+                "- Range: `anyUri`",
+                "- Functional: false",
+            ],
+            types [ XsdAnyUri ],
         },
     }
 }

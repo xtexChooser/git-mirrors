@@ -20,20 +20,13 @@
 //! Namespace for Collection types
 
 #[cfg(feature = "types")]
-use crate::object::properties::ObjectProperties;
-#[cfg(feature = "types")]
-use activitystreams_derive::PropRefs;
-#[cfg(feature = "types")]
-use serde::{Deserialize, Serialize};
-
+pub mod apub;
 #[cfg(feature = "kinds")]
 pub mod kind;
 #[cfg(feature = "types")]
 pub mod properties;
 #[cfg(feature = "types")]
-use self::kind::*;
-#[cfg(feature = "types")]
-use self::properties::*;
+pub mod streams;
 
 use crate::object::Object;
 
@@ -61,114 +54,14 @@ pub trait Collection: Object {}
 pub trait CollectionPage: Collection {}
 
 #[cfg(feature = "types")]
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, serde::Deserialize, serde::Serialize)]
 #[serde(transparent)]
 pub struct CollectionBox(pub Box<dyn Object>);
 
 #[cfg(feature = "types")]
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, serde::Deserialize, serde::Serialize)]
 #[serde(transparent)]
 pub struct CollectionPageBox(pub Box<dyn Object>);
-
-#[cfg(feature = "types")]
-/// The default `Collection` type.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct UnorderedCollection {
-    #[serde(rename = "type")]
-    #[serde(alias = "objectType")]
-    #[serde(alias = "verb")]
-    kind: CollectionType,
-
-    /// Adds all valid object properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(Object)]
-    pub object_props: ObjectProperties,
-
-    /// Adds all valid collection properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(Collection)]
-    pub collection_props: CollectionProperties,
-}
-
-#[cfg(feature = "types")]
-/// A subtype of `Collection` in which members of the logical collection are assumed to always be
-/// strictly ordered.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct OrderedCollection {
-    #[serde(rename = "type")]
-    #[serde(alias = "objectType")]
-    #[serde(alias = "verb")]
-    kind: OrderedCollectionType,
-
-    /// Adds all valid object properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(Object)]
-    pub object_props: ObjectProperties,
-
-    /// Adds all valid collection properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(Collection)]
-    pub collection_props: CollectionProperties,
-}
-
-#[cfg(feature = "types")]
-/// Used to represent distinct subsets of items from a `Collection`.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct UnorderedCollectionPage {
-    #[serde(rename = "type")]
-    #[serde(alias = "objectType")]
-    #[serde(alias = "verb")]
-    kind: CollectionPageType,
-
-    /// Adds all valid object properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(Object)]
-    pub object_props: ObjectProperties,
-
-    /// Adds all valid collection properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(Collection)]
-    pub collection_props: CollectionProperties,
-
-    /// Adds all valid collection page properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(CollectionPage)]
-    pub collection_page_props: CollectionPageProperties,
-}
-
-#[cfg(feature = "types")]
-/// Used to represent ordered subsets of items from an `OrderedCollection`.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct OrderedCollectionPage {
-    #[serde(rename = "type")]
-    #[serde(alias = "objectType")]
-    #[serde(alias = "verb")]
-    kind: OrderedCollectionPageType,
-
-    /// Adds all valid object properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(Object)]
-    pub object_props: ObjectProperties,
-
-    /// Adds all valid collection properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(Collection)]
-    pub collection_props: CollectionProperties,
-
-    /// Adds all valid collection page properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(CollectionPage)]
-    pub collection_page_props: CollectionPageProperties,
-
-    /// Adds all valid ordered collection page properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(None)]
-    pub ordered_collection_page_props: OrderedCollectionPageProperties,
-}
 
 #[cfg(feature = "types")]
 impl CollectionBox {

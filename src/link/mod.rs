@@ -19,19 +19,15 @@
 
 //! Namespace for Link types
 
-#[cfg(feature = "types")]
-use activitystreams_derive::PropRefs;
-#[cfg(feature = "types")]
-use serde::{Deserialize, Serialize};
-
 #[cfg(feature = "kinds")]
 pub mod kind;
 #[cfg(feature = "types")]
 pub mod properties;
 #[cfg(feature = "types")]
-use self::kind::*;
+mod types;
+
 #[cfg(feature = "types")]
-use self::properties::*;
+pub use self::types::Mention;
 
 use std::any::Any;
 
@@ -53,25 +49,9 @@ pub trait Link: std::fmt::Debug {
 }
 
 #[cfg(feature = "types")]
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, serde::Deserialize, serde::Serialize)]
 #[serde(transparent)]
 pub struct LinkBox(pub Box<dyn Link>);
-
-#[cfg(feature = "types")]
-/// A specialized Link that represents an @mention.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Mention {
-    #[serde(rename = "type")]
-    #[serde(alias = "objectType")]
-    #[serde(alias = "verb")]
-    kind: MentionType,
-
-    /// Adds all valid link properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(Link)]
-    pub link_props: LinkProperties,
-}
 
 #[cfg(feature = "types")]
 impl LinkBox {

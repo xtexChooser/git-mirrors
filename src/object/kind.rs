@@ -18,7 +18,7 @@
  */
 
 //! Namespace for Unit Structs that serialize to strings
-use activitystreams_derive::UnitString;
+use crate::UnitString;
 
 /// A Unit Struct that represents the string "Article"
 #[derive(Clone, Debug, Default, UnitString)]

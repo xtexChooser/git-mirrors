@@ -1,7 +1,7 @@
 /*
  * This file is part of ActivityStreams.
  *
- * Copyright © 2018 Riley Trautman
+ * Copyright © 2020 Riley Trautman
  *
  * ActivityStreams is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
 //!             ObjectProperties,
 //!             ProfileProperties
 //!         },
-//!         Profile,
+//!         streams::Profile,
 //!     },
 //!     primitives::XsdAnyUri,
 //!     Actor,
@@ -167,6 +167,8 @@
 pub mod activity;
 pub mod actor;
 pub mod collection;
+#[cfg(feature = "types")]
+pub mod endpoint;
 pub mod link;
 pub mod object;
 #[cfg(feature = "primitives")]

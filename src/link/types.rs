@@ -17,25 +17,24 @@
  * along with ActivityStreams.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//! Namespace for Unit Structs that serialize to strings
-use crate::UnitString;
+use crate::{
+    link::{kind::*, properties::*, Link},
+    PropRefs,
+};
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Application)]
-pub struct ApplicationType;
+#[cfg(feature = "types")]
+/// A specialized Link that represents an @mention.
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Mention {
+    #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    kind: MentionType,
 
-#[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Group)]
-pub struct GroupType;
-
-#[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Organization)]
-pub struct OrganizationType;
-
-#[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Person)]
-pub struct PersonType;
-
-#[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Service)]
-pub struct ServiceType;
+    /// Adds all valid link properties to this struct
+    #[serde(flatten)]
+    #[activitystreams(Link)]
+    pub link_props: LinkProperties,
+}

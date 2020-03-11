@@ -53,8 +53,7 @@
 //! # fn main() {}
 //! ```
 
-use crate::{link::LinkBox, object::ObjectBox, primitives::*};
-use activitystreams_derive::properties;
+use crate::{link::LinkBox, object::ObjectBox, primitives::*, properties};
 
 properties! {
     Activity {

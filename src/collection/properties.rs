@@ -58,8 +58,8 @@ use crate::{
     link::LinkBox,
     object::ObjectBox,
     primitives::*,
+    properties,
 };
-use activitystreams_derive::properties;
 
 properties! {
     Collection {

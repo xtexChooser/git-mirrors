@@ -20,18 +20,13 @@
 //! Namespace for Object types
 
 #[cfg(feature = "types")]
-use activitystreams_derive::PropRefs;
-#[cfg(feature = "types")]
-use serde::{Deserialize, Serialize};
-
+pub mod apub;
 #[cfg(feature = "kinds")]
 pub mod kind;
 #[cfg(feature = "types")]
 pub mod properties;
 #[cfg(feature = "types")]
-use self::kind::*;
-#[cfg(feature = "types")]
-use self::properties::*;
+pub mod streams;
 
 use std::any::Any;
 
@@ -59,262 +54,9 @@ pub trait Object: std::fmt::Debug {
 }
 
 #[cfg(feature = "types")]
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(transparent)]
-pub struct ImageBox(pub Box<Image>);
-
-#[cfg(feature = "types")]
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, serde::Deserialize, serde::Serialize)]
 #[serde(transparent)]
 pub struct ObjectBox(pub Box<dyn Object>);
-
-#[cfg(feature = "types")]
-/// Represents any kind of multi-paragraph written work.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Article {
-    #[serde(rename = "type")]
-    #[serde(alias = "objectType")]
-    #[serde(alias = "verb")]
-    kind: ArticleType,
-
-    /// Adds all valid object properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(Object)]
-    pub object_props: ObjectProperties,
-}
-
-#[cfg(feature = "types")]
-/// Represents an audio document of any kind.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Audio {
-    #[serde(rename = "type")]
-    #[serde(alias = "objectType")]
-    #[serde(alias = "verb")]
-    kind: AudioType,
-
-    /// Adds all valid object properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(Object)]
-    pub object_props: ObjectProperties,
-}
-
-#[cfg(feature = "types")]
-/// Represents a document of any kind.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Document {
-    #[serde(rename = "type")]
-    #[serde(alias = "objectType")]
-    #[serde(alias = "verb")]
-    kind: DocumentType,
-
-    /// Adds all valid object properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(Object)]
-    pub object_props: ObjectProperties,
-}
-
-#[cfg(feature = "types")]
-/// Represents any kind of event.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Event {
-    #[serde(rename = "type")]
-    #[serde(alias = "objectType")]
-    #[serde(alias = "verb")]
-    kind: EventType,
-
-    /// Adds all valid object properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(Object)]
-    pub object_props: ObjectProperties,
-}
-
-#[cfg(feature = "types")]
-/// An image document of any kind
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Image {
-    #[serde(rename = "type")]
-    #[serde(alias = "objectType")]
-    #[serde(alias = "verb")]
-    kind: ImageType,
-
-    /// Adds all valid object properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(Object)]
-    pub object_props: ObjectProperties,
-}
-
-#[cfg(feature = "types")]
-/// Represents a short written work typically less than a single paragraph in length.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Note {
-    #[serde(rename = "type")]
-    #[serde(alias = "objectType")]
-    #[serde(alias = "verb")]
-    kind: NoteType,
-
-    /// Adds all valid object properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(Object)]
-    pub object_props: ObjectProperties,
-}
-
-#[cfg(feature = "types")]
-/// Represents a Web Page.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Page {
-    #[serde(rename = "type")]
-    #[serde(alias = "objectType")]
-    #[serde(alias = "verb")]
-    kind: PageType,
-
-    /// Adds all valid object properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(Object)]
-    pub object_props: ObjectProperties,
-}
-
-#[cfg(feature = "types")]
-/// Represents a logical or physical location.
-///
-/// The Place object is used to represent both physical and logical locations. While numerous
-/// existing vocabularies exist for describing locations in a variety of ways, inconsistencies and
-/// incompatibilities between those vocabularies make it difficult to achieve appropriate
-/// interoperability between implementations. The Place object is included within the Activity
-/// vocabulary to provide a minimal, interoperable starting point for describing locations
-/// consistently across Activity Streams 2.0 implementations.
-///
-/// The Place object is intentionally flexible. It can, for instance, be used to identify a location
-/// simply by name, or by longitude and latitude.
-///
-/// The Place object can also describe an area around a given point using the radius property, the
-/// altitude of the location, and a degree of accuracy.
-///
-/// While publishers are not required to use these specific properties and MAY make use of other
-/// mechanisms for describing locations, consuming implementations that support the Place object
-/// MUST support the use of these properties.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Place {
-    #[serde(rename = "type")]
-    #[serde(alias = "objectType")]
-    #[serde(alias = "verb")]
-    kind: PlaceType,
-
-    /// Adds all valid object properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(Object)]
-    pub object_props: ObjectProperties,
-
-    /// Adds all valid place properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(None)]
-    pub place: PlaceProperties,
-}
-
-#[cfg(feature = "types")]
-/// A Profile is a content object that describes another `Object`, typically used to describe
-/// `Actor` Type objects.
-///
-/// The `describes` property is used to reference the object being described by the profile.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Profile {
-    #[serde(rename = "type")]
-    #[serde(alias = "objectType")]
-    #[serde(alias = "verb")]
-    kind: ProfileType,
-
-    /// Adds all valid object properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(Object)]
-    pub object_props: ObjectProperties,
-
-    /// Adds all valid profile properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(None)]
-    pub profile: ProfileProperties,
-}
-
-#[cfg(feature = "types")]
-/// Describes a relationship between two individuals.
-///
-/// The subject and object properties are used to identify the connected individuals.
-///
-/// The `Relationship` object is used to represent relationships between individuals. It can be
-/// used, for instance, to describe that one person is a friend of another, or that one person is a
-/// member of a particular organization. The intent of modeling Relationship in this way is to allow
-/// descriptions of activities that operate on the relationships in general, and to allow
-/// representation of Collections of relationships.
-///
-/// For instance, many social systems have a notion of a "friends list". These are the collection of
-/// individuals that are directly connected within a person's social graph. Suppose we have a user,
-/// Sally, with direct relationships to users Joe and Jane. Sally follows Joe's updates while Sally
-/// and Jane have a mutual relationship.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Relationship {
-    #[serde(rename = "type")]
-    #[serde(alias = "objectType")]
-    #[serde(alias = "verb")]
-    kind: RelationshipType,
-
-    /// Adds all valid object properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(Object)]
-    pub object_props: ObjectProperties,
-
-    /// Adds all valid relationship properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(None)]
-    pub relationship: RelationshipProperties,
-}
-
-#[cfg(feature = "types")]
-/// A Tombstone represents a content object that has been deleted.
-///
-/// It can be used in Collections to signify that there used to be an object at this position, but
-/// it has been deleted.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Tombstone {
-    #[serde(rename = "type")]
-    #[serde(alias = "objectType")]
-    #[serde(alias = "verb")]
-    kind: TombstoneType,
-
-    /// Adds all valid object properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(Object)]
-    pub object_props: ObjectProperties,
-
-    /// Adds all valid tombstone properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(None)]
-    pub tombstone_props: TombstoneProperties,
-}
-
-#[cfg(feature = "types")]
-/// Represents a video document of any kind.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Video {
-    #[serde(rename = "type")]
-    #[serde(alias = "objectType")]
-    #[serde(alias = "verb")]
-    kind: VideoType,
-
-    /// Adds all valid object properties to this struct
-    #[serde(flatten)]
-    #[activitystreams(Object)]
-    pub object_props: ObjectProperties,
-}
 
 #[cfg(feature = "types")]
 impl ObjectBox {
@@ -337,20 +79,6 @@ impl ObjectBox {
         T: Object + 'static,
     {
         self.0.as_any_mut().downcast_mut()
-    }
-}
-
-#[cfg(feature = "types")]
-impl From<Image> for ImageBox {
-    fn from(i: Image) -> Self {
-        ImageBox(Box::new(i))
-    }
-}
-
-#[cfg(feature = "types")]
-impl From<ImageBox> for Image {
-    fn from(i: ImageBox) -> Self {
-        *i.0
     }
 }
 
