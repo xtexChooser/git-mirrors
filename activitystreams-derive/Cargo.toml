@@ -1,7 +1,7 @@
 [package]
 name = "activitystreams-derive"
 description = "Derive macros for activitystreams"
-version = "0.4.0-alpha.1"
+version = "0.4.0-alpha.2"
 license = "GPL-3.0"
 authors = ["asonix <asonix.dev@gmail.com>"]
 repository = "https://git.asonix.dog/Aardwolf/activitystreams"

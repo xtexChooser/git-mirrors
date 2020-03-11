@@ -10,20 +10,22 @@ Add the required crates to your `Cargo.toml`
 ```toml
 # Cargo.toml
 
-activitystreams-derive = "0.4-alpha.0"
-activitystreams-traits = "0.4-alpha.0"
-activitystreams-types = "0.4-alpha.0"
+activitystreams = "0.4.0-alpha.3"
 serde = { version = "1.0", features = ["derive"] }
 ```
 
 And then in your project
 ```rust
-use activitystreams_derive::{properties, PropRefs, UnitString};
-use activitystreams_traits::Object;
-use activitystreams_types::object::{
-    properties::ObjectProperties,
-    ObjectExt,
+// derive macros
+use activitystreams::{
+    properties,
+    PropRefs,
+    UnitString
 };
+// traits
+use activitystreams::Object;
+// properties
+use activitystreams::object::properties::ObjectProperties;
 
 /// Using the UnitString derive macro
 ///
@@ -86,7 +88,7 @@ pub struct My {
 
     /// Derive AsRef<ObjectProperties> and AsMut<ObjectProperties>
     ///
-    /// as well as the Object and ObjectExt traits
+    /// as well as the Object trait
     #[serde(flatten)]
     #[activitystreams(Object)]
     properties: ObjectProperties,
@@ -95,9 +97,11 @@ pub struct My {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut my = My::default();
 
-    my.as_mut().set_required_key("Hello")?;
+    let mprops: &mut MyProperties = my.as_mut();
+    mprops.set_required_key("Hello")?;
 
-    assert_eq!(my.as_ref().get_required_key(), "Hello");
+    let mprops: &MyProperties = my.as_ref();
+    assert_eq!(mprops.get_required_key(), "Hello");
     Ok(())
 }
 ```

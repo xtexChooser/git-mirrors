@@ -551,7 +551,7 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                     String::new(),
                     format!("`{}` isn't functional, meaning it can only be represented as a single `{}`", fname, ty),
                     String::new(),
-                    format!("This enum's variants representa ll valid types to construct a `{}`", fname),
+                    format!("This enum's variants represent all valid types to construct a `{}`", fname),
                 ]);
                 quote! {
                     #doc_lines
@@ -944,15 +944,21 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                             }
                         };
 
-                        let doc_line = to_doc(&format!("Get `{}` as a slice of `{}`s", fname, term_ty.to_token_stream()));
+                        let doc_line = to_doc(&format!("Get `{}` as a vec of `&{}`s", fname, v_ty.to_token_stream()));
                         let get_many = quote! {
                             #doc_line
                             ///
                             /// This returns `None` if
                             /// - There is only one value present
-                            pub fn #get_many_ident(&self) -> Option<&[#term_ty]> {
+                            ///
+                            /// The returned vec will be empty if no values match the requested
+                            /// type, but values are present.
+                            pub fn #get_many_ident(&self) -> Option<Vec<&#v_ty>> {
                                 match self.#fname {
-                                    #ty::Array(ref array) => Some(array),
+                                    #ty::Array(ref array) => Some(array.iter().filter_map(|i| match i {
+                                        #term_ty::#v_ty(item) => Some(item),
+                                        _ => None,
+                                    }).collect()),
                                     _ => None,
                                 }
                             }
@@ -1017,9 +1023,12 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                             /// This returns `None` if
                             /// - There is no value present
                             /// - There is only one value present
-                            pub fn #get_many_ident(&self) -> Option<&[#term_ty]> {
+                            pub fn #get_many_ident(&self) -> Option<Vec<&#v_ty>> {
                                 match self.#fname {
-                                    Some(#ty::Array(ref array)) => Some(array),
+                                    Some(#ty::Array(ref array)) => Some(array.iter().filter_map(|i| match i {
+                                        #term_ty::#v_ty(item) => Some(item),
+                                        _ => None,
+                                    }).collect()),
                                     _ => None,
                                 }
                             }
