@@ -12,12 +12,12 @@ For basic use, add the following to your Cargo.toml
 ```toml
 # Cargo.toml
 
-activitystreams = "0.4.0-alpha.0"
+activitystreams = "0.4.0-alpha.2"
 ```
 
 And then use it in your project
 ```rust
-use activitystreams::object::Video;
+use activitystreams::object::streams::Video;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut v = Video::default();
@@ -125,10 +125,7 @@ And then in your project
 ```rust
 use activitystreams::{
     context,
-    link::{
-        properties::LinkProperties,
-        LinkExt,
-    },
+    link::properties::LinkProperties,
     Link,
     Object,
     PropRefs,
