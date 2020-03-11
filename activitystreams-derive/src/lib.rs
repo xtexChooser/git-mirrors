@@ -23,12 +23,14 @@
 //!
 //! First, add `serde` and `activitystreams-derive` to your Cargo.toml
 //! ```toml
-//! activitystreams-derive = "3.0"
+//! activitystreams-derive = "0.4.0-alpha.1"
+//! # or activitystreams = "0.4.0-alpha.1"
 //! serde = { version = "1.0", features = ["derive"] }
 //! ```
 //!
 //! ```rust
 //! use activitystreams_derive::{properties, UnitString};
+//! // or activitystreams::{properties, UnitString};
 //! use serde_json::Value;
 //!
 //! /// Using the UnitString derive macro
