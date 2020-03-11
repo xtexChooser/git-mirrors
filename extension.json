@@ -25,21 +25,11 @@
 		"echo-subscriptions-web-categorywatch": true
 	},
 	"Hooks": {
-		"BeforeCreateEchoEvent": [
-			"CategoryWatch\\Hook::onBeforeCreateEchoEvent"
-		],
-		"EchoGetBundleRules": [
-			"CategoryWatch\\Hook::onEchoGetBundleRules"
-		],
-		"CategoryAfterPageAdded": [
-			"CategoryWatch\\Hook::onCategoryAfterPageAdded"
-		],
-		"CategoryAfterPageRemoved": [
-			"CategoryWatch\\Hook::onCategoryAfterPageRemoved"
-		],
-		"GetPreferences": [
-			"CategoryWatch\\Hook::onGetPreferences"
-		]
+		"BeforeCreateEchoEvent": "CategoryWatch\\Hook::onBeforeCreateEchoEvent",
+		"EchoGetBundleRules": "CategoryWatch\\Hook::onEchoGetBundleRules",
+		"CategoryAfterPageAdded": "CategoryWatch\\Hook::onCategoryAfterPageAdded",
+		"CategoryAfterPageRemoved": "CategoryWatch\\Hook::onCategoryAfterPageRemoved",
+		"GetPreferences": "CategoryWatch\\Hook::onGetPreferences"
 	},
 	"manifest_version": 1
 }
