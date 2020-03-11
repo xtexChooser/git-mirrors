@@ -24,7 +24,7 @@
 //! contains an `XsdString` or an `RdfLangString`.
 //!
 //! ```rust
-//! use activitystreams_types::primitives::{RdfLangString, XsdString};
+//! use activitystreams::primitives::{RdfLangString, XsdString};
 //!
 //! /// Define a terminating enum for the Summary field in Object Properties
 //! ///
