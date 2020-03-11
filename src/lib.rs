@@ -169,6 +169,8 @@ pub mod actor;
 pub mod collection;
 pub mod link;
 pub mod object;
+#[cfg(feature = "primitives")]
+pub mod primitives;
 
 pub use self::{
     activity::{Activity, IntransitiveActivity},
@@ -177,6 +179,12 @@ pub use self::{
     link::Link,
     object::Object,
 };
-pub use activitystreams_types::{context, primitives};
 
+#[cfg(feature = "primitives")]
+/// The context associated with all of the Activity Streams types defined in the crate.
+pub fn context() -> crate::primitives::XsdAnyUri {
+    "https://www.w3.org/ns/activitystreams".parse().unwrap()
+}
+
+#[cfg(feature = "derive")]
 pub use activitystreams_derive::{properties, PropRefs, UnitString};
