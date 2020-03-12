@@ -19,13 +19,13 @@
 
 //! ActivityStreams
 //!
-//! A set of Traits and Types that make up the Activity Streams specification
+//! A set of Traits and Types that make up the ActivityStreams  and ActivityPub specifications
 //!
 //! ## Usage
 //!
 //! First, add ActivityStreams to your dependencies
 //! ```toml
-//! activitystreams = "0.4.0-alpha.3"
+//! activitystreams = "0.4.0"
 //! ```
 //!
 //! ### Types
@@ -110,7 +110,7 @@
 //!             "@value": "A string",
 //!             "@language": "en"
 //!         },
-//!         "An xsd:string this time",
+//!         "An xsd:string this time"
 //!     ]
 //! }
 //! ```
