@@ -23,8 +23,10 @@
 //!
 //! ```rust
 //! use activitystreams::{
-//!     object::properties::ObjectProperties,
-//!     Object,
+//!     object::{
+//!         properties::ObjectProperties,
+//!         Object, ObjectBox,
+//!     },
 //!     PropRefs,
 //! };
 //! use serde::{Deserialize, Serialize};
@@ -32,6 +34,7 @@
 //!
 //! #[derive(Clone, Debug, Serialize, Deserialize, PropRefs)]
 //! #[serde(rename_all = "camelCase")]
+//! #[prop_refs(Object)]
 //! pub struct MyObject {
 //!     #[serde(rename = "type")]
 //!     pub kind: String,
@@ -40,7 +43,7 @@
 //!     pub my_property: String,
 //!
 //!     #[serde(flatten)]
-//!     #[activitystreams(Object)]
+//!     #[prop_refs]
 //!     pub object_properties: ObjectProperties,
 //! }
 //! #

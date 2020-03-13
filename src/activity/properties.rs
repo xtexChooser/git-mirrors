@@ -22,16 +22,22 @@
 //!
 //! ```rust
 //! use activitystreams::{
-//!     activity::properties::ActivityProperties,
-//!     object::properties::ObjectProperties,
-//!     Activity,
-//!     Object,
+//!     activity::{
+//!         properties::ActivityProperties,
+//!         Activity, ActivityBox,
+//!     },
+//!     object::{
+//!         properties::ObjectProperties,
+//!         Object, ObjectBox,
+//!     },
 //!     PropRefs,
 //! };
 //! use serde::{Deserialize, Serialize};
 //!
 //! #[derive(Clone, Debug, Serialize, Deserialize, PropRefs)]
 //! #[serde(rename_all = "camelCase")]
+//! #[prop_refs(Object)]
+//! #[prop_refs(Activity)]
 //! pub struct MyActivity {
 //!     #[serde(rename = "type")]
 //!     #[serde(alias = "objectType")]
@@ -42,11 +48,11 @@
 //!     pub my_property: String,
 //!
 //!     #[serde(flatten)]
-//!     #[activitystreams(Object)]
+//!     #[prop_refs]
 //!     pub object_properties: ObjectProperties,
 //!
 //!     #[serde(flatten)]
-//!     #[activitystreams(Activity)]
+//!     #[prop_refs]
 //!     pub activity_properties: ActivityProperties,
 //! }
 //! #

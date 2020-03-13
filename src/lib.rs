@@ -25,7 +25,7 @@
 //!
 //! First, add ActivityStreams to your dependencies
 //! ```toml
-//! activitystreams = "0.4.0"
+//! activitystreams = "0.5.0-alpha.0"
 //! ```
 //!
 //! ### Types
@@ -193,7 +193,7 @@
 //! enabled.
 //!
 //! ```toml
-//! activitystreams = { version = "0.4.0", default-features = "false", features = ["derive"] }
+//! activitystreams = { version = "0.5.0-alpha.0", default-features = "false", features = ["derive"] }
 //! ```
 //!
 //! | feature    | what you get                                              |
@@ -257,16 +257,19 @@
 //!             ProfileProperties
 //!         },
 //!         apub::Profile,
+//!         Object,
+//!         ObjectBox,
 //!     },
+//!     actor::{Actor, ActorBox},
 //!     primitives::XsdAnyUri,
-//!     Actor,
-//!     Object,
+//!     PropRefs,
 //! };
 //! use serde::{Deserialize, Serialize};
-//! use std::any::Any;
 //!
-//! #[derive(Clone, Debug, Default, Deserialize, Serialize)]
+//! #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 //! #[serde(rename_all = "camelCase")]
+//! #[prop_refs(Object)]
+//! #[prop_refs(Actor)]
 //! pub struct Persona {
 //!     #[serde(rename = "@context")]
 //!     context: XsdAnyUri,
@@ -274,22 +277,6 @@
 //!     #[serde(rename = "type")]
 //!     kind: String,
 //! }
-//!
-//! #[typetag::serde]
-//! impl Object for Persona {
-//!     fn as_any(&self) -> &(dyn Any + 'static) {
-//!         self
-//!     }
-//!
-//!     fn as_any_mut(&mut self) -> &mut (dyn Any + 'static) {
-//!         self
-//!     }
-//!
-//!     fn duplicate(&self) -> Box<dyn Object + 'static> {
-//!         Box::new(self.clone())
-//!     }
-//! }
-//! impl Actor for Persona {}
 //!
 //! fn main() -> Result<(), anyhow::Error> {
 //!     let mut profile = Profile::default();
@@ -319,9 +306,8 @@
 //!     properties,
 //!     link::{
 //!         properties::LinkProperties,
-//!         Mention,
+//!         Link, LinkBox, Mention,
 //!     },
-//!     Link,
 //!     PropRefs,
 //!     UnitString,
 //! };
@@ -332,7 +318,7 @@
 //! /// This macro implements Serialize and Deserialize for the given type, making this type
 //! /// represent the string "MyLink" in JSON.
 //! #[derive(Clone, Debug, Default, UnitString)]
-//! #[activitystreams(MyLink)]
+//! #[unit_string(MyLink)]
 //! pub struct MyKind;
 //!
 //! properties! {
@@ -360,16 +346,17 @@
 //! /// This macro generates getters and setters for the associated fields.
 //! #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 //! #[serde(rename_all = "camelCase")]
+//! #[prop_refs(Link)]
 //! pub struct My {
 //!     /// Use the UnitString MyKind to enforce the type of the object by "MyLink"
 //!     pub kind: MyKind,
 //!
 //!     /// Derive AsRef/AsMut for My -> MyProperties
-//!     #[activitystreams(None)]
+//!     #[prop_refs]
 //!     pub my_properties: MyProperties,
 //!
 //!     /// Derive AsRef/AsMut/Link for My -> LinkProperties
-//!     #[activitystreams(Link)]
+//!     #[prop_refs]
 //!     pub link_properties: LinkProperties,
 //! }
 //!

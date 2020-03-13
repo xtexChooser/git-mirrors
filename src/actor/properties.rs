@@ -23,14 +23,22 @@
 //!
 //! ```rust
 //! use activitystreams::{
-//!     actor::properties::ApActorProperties,
-//!     object::properties::{ApObjectProperties, ObjectProperties},
-//!     Actor, Object, PropRefs
+//!     actor::{
+//!         properties::ApActorProperties,
+//!         Actor, ActorBox,
+//!     },
+//!     object::{
+//!         properties::{ApObjectProperties, ObjectProperties},
+//!         Object, ObjectBox,
+//!     },
+//!     PropRefs,
 //! };
 //! use serde::{Deserialize, Serialize};
 //!
 //! #[derive(Clone, Debug, Serialize, Deserialize, PropRefs)]
 //! #[serde(rename_all = "camelCase")]
+//! #[prop_refs(Object)]
+//! #[prop_refs(Actor)]
 //! pub struct MyActor {
 //!     #[serde(rename = "type")]
 //!     pub kind: String,
@@ -39,15 +47,15 @@
 //!     pub my_property: String,
 //!
 //!     #[serde(flatten)]
-//!     #[activitystreams(Object)]
+//!     #[prop_refs]
 //!     pub object_props: ObjectProperties,
 //!
 //!     #[serde(flatten)]
-//!     #[activitystreams(None)]
+//!     #[prop_refs]
 //!     pub ap_object_props: ApObjectProperties,
 //!
 //!     #[serde(flatten)]
-//!     #[activitystreams(Actor)]
+//!     #[prop_refs]
 //!     pub actor_props: ApActorProperties,
 //! }
 //! #

@@ -23,10 +23,14 @@
 //!
 //! ```rust
 //! use activitystreams::{
-//!     collection::properties::CollectionProperties,
-//!     object::properties::ObjectProperties,
-//!     Collection,
-//!     Object,
+//!     collection::{
+//!         properties::CollectionProperties,
+//!         Collection, CollectionBox,
+//!     },
+//!     object::{
+//!         properties::ObjectProperties,
+//!         Object, ObjectBox,
+//!     },
 //!     PropRefs,
 //! };
 //! use serde::{Deserialize, Serialize};
@@ -34,6 +38,8 @@
 //!
 //! #[derive(Clone, Debug, Serialize, Deserialize, PropRefs)]
 //! #[serde(rename_all = "camelCase")]
+//! #[prop_refs(Object)]
+//! #[prop_refs(Collection)]
 //! pub struct MyCollection {
 //!     #[serde(rename = "type")]
 //!     pub kind: String,
@@ -42,11 +48,11 @@
 //!     pub my_property: String,
 //!
 //!     #[serde(flatten)]
-//!     #[activitystreams(Object)]
+//!     #[prop_refs]
 //!     pub object_properties: ObjectProperties,
 //!
 //!     #[serde(flatten)]
-//!     #[activitystreams(Collection)]
+//!     #[prop_refs]
 //!     pub collection_properties: CollectionProperties,
 //! }
 //! #

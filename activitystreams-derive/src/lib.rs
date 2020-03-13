@@ -23,8 +23,8 @@
 //!
 //! First, add `serde` and `activitystreams-derive` to your Cargo.toml
 //! ```toml
-//! activitystreams-derive = "0.4.0"
-//! # or activitystreams = "0.4.0"
+//! activitystreams-derive = "0.5.0-alpha.0"
+//! # or activitystreams = "0.5.0-alpha.0"
 //! serde = { version = "1.0", features = ["derive"] }
 //! ```
 //!
@@ -251,15 +251,19 @@ pub fn wrapper_type(_: TokenStream, input: TokenStream) -> TokenStream {
     let trait_name = input.ident.clone();
     let type_name = Ident::new(&format!("{}Box", trait_name), trait_name.span());
 
+    let doc_line = to_doc(&format!("A wrapper type around a generic `{}`", trait_name));
     let tokens = quote! {
         #input
 
+        #doc_line
         #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
         #[serde(transparent)]
         pub struct #type_name(pub serde_json::Value);
 
         impl #type_name {
-            /// Create the wrapper type from a concrete type
+            /// Coerce a concrete type into this wrapper type
+            ///
+            /// This is done automatically via TryFrom in proprties setter methods
             pub fn from_concrete<T>(t: T) -> Result<Self, serde_json::Error>
             where
                 T: #trait_name + serde::ser::Serialize,
@@ -268,6 +272,9 @@ pub fn wrapper_type(_: TokenStream, input: TokenStream) -> TokenStream {
             }
 
             /// Attempt to deserialize the wrapper type to a concrete type
+            ///
+            /// Before this method is called, the type should be verified via the `kind` or
+            /// `is_kind` methods
             pub fn to_concrete<T>(self) -> Result<T, serde_json::Error>
             where
                 T: #trait_name + serde::de::DeserializeOwned,

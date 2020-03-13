@@ -9,7 +9,7 @@ __A set of Traits and Types that make up the ActivityStreams and ActivityPub spe
 
 First, add ActivityStreams to your dependencies
 ```toml
-activitystreams = "0.4.0"
+activitystreams = "0.5.0-alpha.0"
 ```
 
 ### Types
@@ -102,7 +102,7 @@ With multiple values
 It may seem like interacting with these types might get unweildy, so the `properties` macro
 also generates methods for interacting with each field.
 
-```ignore
+```rust
 fn set_summary_xsd_string<T>(&mut self, T) -> Result<...>;
 fn set_summary_rdf_lang_string<T>(&mut self, T) -> Result<...>;
 fn set_many_summary_xsd_strings<T>(&mut self, Vec<T>) -> Result<...>;
@@ -129,7 +129,7 @@ implement `FromStr` for parsing and `Display` to convert back to strings, as wel
 For some fields, like `id`, there is only one valid type. methods generated for fields like
 these will leave out the type name from the function name.
 
-```ignore
+```rust
 fn set_id<T>(&mut self, T) -> Result<...>;
 fn delete_id(&mut self) -> &mut Self;
 fn get_id(&self) -> Option<XsdAnyUri>;
@@ -144,7 +144,7 @@ compiletime.
 
 If you want to make a function that manipulates an Activity, but not a normal object, you could
 bound the function like so:
-```ignore
+```rust
 fn my_manipulator<T>(some_activity: T) -> Result<&mut ObjectProperties, SomeErrorType>
 where
     T: Activity + AsMut<ObjectProperties>,
@@ -160,7 +160,7 @@ enable different ActivityPub Object types to be deserialized into different Name
 These can be found in `activitystreams::objects::kind`, and similar paths.
 
 To build your own Person struct, for example, you could write
-```ignore
+```rust
 use activitystreams::actor::kind::PersonType;
 
 #[derive(serde::Deserialize, serde::Serialize)]
@@ -177,7 +177,7 @@ There are a number of features that can be disabled in this crate. By default, e
 enabled.
 
 ```toml
-activitystreams = { version = "0.4.0", default-features = "false", features = ["derive"] }
+activitystreams = { version = "0.5.0-alpha.0", default-features = "false", features = ["derive"] }
 ```
 
 | feature    | what you get                                              |
@@ -235,22 +235,25 @@ fn main() -> Result<(), Error> {
 ```rust
 use activitystreams::{
     context,
+    actor::{Actor, ActorBox},
     object::{
         properties::{
             ObjectProperties,
             ProfileProperties
         },
         apub::Profile,
+        Object, ObjectBox,
     },
     primitives::XsdAnyUri,
-    Actor,
-    Object,
+    PropRefs,
 };
 use serde::{Deserialize, Serialize};
 use std::any::Any;
 
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
+#[prop_refs(Actor)]
 pub struct Persona {
     #[serde(rename = "@context")]
     context: XsdAnyUri,
@@ -258,22 +261,6 @@ pub struct Persona {
     #[serde(rename = "type")]
     kind: String,
 }
-
-#[typetag::serde]
-impl Object for Persona {
-    fn as_any(&self) -> &(dyn Any + 'static) {
-        self
-    }
-
-    fn as_any_mut(&mut self) -> &mut (dyn Any + 'static) {
-        self
-    }
-
-    fn duplicate(&self) -> Box<dyn Object + 'static> {
-        Box::new(self.clone())
-    }
-}
-impl Actor for Persona {}
 
 fn main() -> Result<(), anyhow::Error> {
     let mut profile = Profile::default();
@@ -303,11 +290,9 @@ use activitystreams::{
     properties,
     link::{
         properties::LinkProperties,
-        Mention,
+        Link, LinkBox, Mention,
     },
-    Link,
-    PropRefs,
-    UnitString,
+    PropRefs, UnitString,
 };
 use serde::{Deserialize, Serialize};
 
@@ -316,7 +301,7 @@ use serde::{Deserialize, Serialize};
 /// This macro implements Serialize and Deserialize for the given type, making this type
 /// represent the string "MyLink" in JSON.
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(MyLink)]
+#[unit_string(MyLink)]
 pub struct MyKind;
 
 properties! {
@@ -344,16 +329,17 @@ properties! {
 /// This macro generates getters and setters for the associated fields.
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Link)]
 pub struct My {
     /// Use the UnitString MyKind to enforce the type of the object by "MyLink"
     pub kind: MyKind,
 
     /// Derive AsRef/AsMut for My -> MyProperties
-    #[activitystreams(None)]
+    #[prop_refs]
     pub my_properties: MyProperties,
 
     /// Derive AsRef/AsMut/Link for My -> LinkProperties
-    #[activitystreams(Link)]
+    #[prop_refs]
     pub link_properties: LinkProperties,
 }
 
