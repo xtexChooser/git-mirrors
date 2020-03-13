@@ -42,7 +42,7 @@ fn main() -> Result<(), Error> {
 
     let page: Page = serde_json::from_str(page_json)?;
     println!("{:#?}", page);
-    let obox: ObjectBox = page.into();
+    let obox = ObjectBox::from_concrete(page)?;
     println!("{:#?}", obox);
     let obox_string = serde_json::to_string(&obox)?;
     println!("{}", obox_string);
