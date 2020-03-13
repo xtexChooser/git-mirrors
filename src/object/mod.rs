@@ -38,3 +38,33 @@ use crate::wrapper_type;
 /// `Collection` and `OrderedCollection`.
 #[cfg_attr(feature = "types", wrapper_type)]
 pub trait Object: std::fmt::Debug {}
+
+#[cfg(feature = "types")]
+/// Describes any kind of Image
+///
+/// Since Image is "concrete" in the ActivityStreams spec, but multiple fields in ObjectProperties
+/// require an "Image", this type acts as a filter to ensure only Images can be serialized or
+/// deserialized, but allows any adjacent fields through
+#[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
+pub struct AnyImage {
+    kind: self::kind::ImageType,
+
+    #[serde(flatten)]
+    rest: std::collections::HashMap<String, serde_json::Value>,
+}
+
+impl AnyImage {
+    pub fn from_concrete<T>(t: T) -> Result<Self, serde_json::Error>
+    where
+        T: Object + serde::ser::Serialize,
+    {
+        serde_json::from_value(serde_json::to_value(t)?)
+    }
+
+    pub fn to_concrete<T>(self) -> Result<T, serde_json::Error>
+    where
+        T: Object + serde::de::DeserializeOwned,
+    {
+        serde_json::from_value(serde_json::to_value(self)?)
+    }
+}

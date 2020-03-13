@@ -23,10 +23,6 @@ use crate::{
 };
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(transparent)]
-pub struct ImageBox(pub Box<Image>);
-
 /// Represents any kind of multi-paragraph written work.
 #[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -273,16 +269,4 @@ pub struct Video {
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
-}
-
-impl From<Image> for ImageBox {
-    fn from(i: Image) -> Self {
-        ImageBox(Box::new(i))
-    }
-}
-
-impl From<ImageBox> for Image {
-    fn from(i: ImageBox) -> Self {
-        *i.0
-    }
 }

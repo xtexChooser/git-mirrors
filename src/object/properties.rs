@@ -52,7 +52,7 @@
 
 use crate::{
     link::LinkBox,
-    object::{apub::ApImageBox, streams::ImageBox, ObjectBox},
+    object::{AnyImage, ObjectBox},
     primitives::*,
     properties,
 };
@@ -235,8 +235,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ImageBox,
-                ApImageBox,
+                AnyImage,
                 LinkBox,
             ],
         },
@@ -252,8 +251,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ImageBox,
-                ApImageBox,
+                AnyImage,
                 LinkBox,
             ],
         },

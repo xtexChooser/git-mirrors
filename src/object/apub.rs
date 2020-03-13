@@ -23,10 +23,6 @@ use crate::{
 };
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, Deserialize, Serialize)]
-#[serde(transparent)]
-pub struct ApImageBox(pub Box<Image>);
-
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
 #[prop_refs(Object)]
@@ -233,16 +229,4 @@ pub struct Video {
     #[serde(flatten)]
     #[prop_refs]
     pub ap_object_props: ApObjectProperties,
-}
-
-impl From<Image> for ApImageBox {
-    fn from(i: Image) -> Self {
-        ApImageBox(Box::new(i))
-    }
-}
-
-impl From<ApImageBox> for Image {
-    fn from(i: ApImageBox) -> Self {
-        *i.0
-    }
 }
