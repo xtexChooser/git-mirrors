@@ -18,10 +18,10 @@
  */
 
 use crate::{
-    actor::{kind::*, properties::*, Actor},
+    actor::{kind::*, properties::*, Actor, ActorBox},
     object::{
         properties::{ApObjectProperties, ObjectProperties},
-        Object,
+        Object, ObjectBox,
     },
     PropRefs,
 };
@@ -30,114 +30,124 @@ use serde::{Deserialize, Serialize};
 /// Describes a software application.
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
+#[prop_refs(Actor)]
 pub struct Application {
     #[serde(rename = "type")]
     kind: ApplicationType,
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     /// Adds all valid activitypub object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub ap_object_props: ApObjectProperties,
 
     /// Adds all valid activitypub actor properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Actor)]
+    #[prop_refs]
     pub ap_actor_props: ApActorProperties,
 }
 
 /// Represents a formal or informal collective of Actors.
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
+#[prop_refs(Actor)]
 pub struct Group {
     #[serde(rename = "type")]
     kind: GroupType,
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     /// Adds all valid activitypub object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub ap_object_props: ApObjectProperties,
 
     /// Adds all valid activitypub actor properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Actor)]
+    #[prop_refs]
     pub ap_actor_props: ApActorProperties,
 }
 
 /// Represents an organization.
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
+#[prop_refs(Actor)]
 pub struct Organization {
     #[serde(rename = "type")]
     kind: OrganizationType,
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     /// Adds all valid activitypub object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub ap_object_props: ApObjectProperties,
 
     /// Adds all valid activitypub actor properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Actor)]
+    #[prop_refs]
     pub ap_actor_props: ApActorProperties,
 }
 
 /// Represents an individual person.
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
+#[prop_refs(Actor)]
 pub struct Person {
     #[serde(rename = "type")]
     kind: PersonType,
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     /// Adds all valid activitypub object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub ap_object_props: ApObjectProperties,
 
     /// Adds all valid activitypub actor properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Actor)]
+    #[prop_refs]
     pub ap_actor_props: ApActorProperties,
 }
 
 /// Represents a service of any kind.
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
+#[prop_refs(Actor)]
 pub struct Service {
     #[serde(rename = "type")]
     kind: ServiceType,
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     /// Adds all valid activitypub object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub ap_object_props: ApObjectProperties,
 
     /// Adds all valid activitypub actor properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Actor)]
+    #[prop_refs]
     pub ap_actor_props: ApActorProperties,
 }

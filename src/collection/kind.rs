@@ -21,17 +21,17 @@
 use crate::UnitString;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Collection)]
+#[unit_string(Collection)]
 pub struct CollectionType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(CollectionPage)]
+#[unit_string(CollectionPage)]
 pub struct CollectionPageType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(OrderedCollection)]
+#[unit_string(OrderedCollection)]
 pub struct OrderedCollectionType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(OrderedCollectionPage)]
+#[unit_string(OrderedCollectionPage)]
 pub struct OrderedCollectionPageType;

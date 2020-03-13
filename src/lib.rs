@@ -412,4 +412,4 @@ pub fn context() -> crate::primitives::XsdAnyUri {
 }
 
 #[cfg(feature = "derive")]
-pub use activitystreams_derive::{properties, PropRefs, UnitString};
+pub use activitystreams_derive::{properties, wrapper_type, PropRefs, UnitString};

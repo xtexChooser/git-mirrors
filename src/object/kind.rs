@@ -22,60 +22,60 @@ use crate::UnitString;
 
 /// A Unit Struct that represents the string "Article"
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Article)]
+#[unit_string(Article)]
 pub struct ArticleType;
 
 /// A Unit Struct that represents the string "Audio"
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Audio)]
+#[unit_string(Audio)]
 pub struct AudioType;
 
 /// A Unit Struct that represents the string "Document"
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Document)]
+#[unit_string(Document)]
 pub struct DocumentType;
 
 /// A Unit Struct that represents the string "Event"
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Event)]
+#[unit_string(Event)]
 pub struct EventType;
 
 /// A Unit Struct that represents the string "Image"
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Image)]
+#[unit_string(Image)]
 pub struct ImageType;
 
 /// A Unit Struct that represents the string "Note"
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Note)]
+#[unit_string(Note)]
 pub struct NoteType;
 
 /// A Unit Struct that represents the string "Page"
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Page)]
+#[unit_string(Page)]
 pub struct PageType;
 
 /// A Unit Struct that represents the string "Place"
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Place)]
+#[unit_string(Place)]
 pub struct PlaceType;
 
 /// A Unit Struct that represents the string "Profile"
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Profile)]
+#[unit_string(Profile)]
 pub struct ProfileType;
 
 /// A Unit Struct that represents the string "Relationship"
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Relationship)]
+#[unit_string(Relationship)]
 pub struct RelationshipType;
 
 /// A Unit Struct that represents the string "Tombstone"
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Tombstone)]
+#[unit_string(Tombstone)]
 pub struct TombstoneType;
 
 /// A Unit Struct that represents the string "Video"
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Video)]
+#[unit_string(Video)]
 pub struct VideoType;

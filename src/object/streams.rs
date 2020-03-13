@@ -18,8 +18,8 @@
  */
 
 use crate::{
-    object::{kind::*, properties::*},
-    Object, PropRefs,
+    object::{kind::*, properties::*, Object, ObjectBox},
+    PropRefs,
 };
 use serde::{Deserialize, Serialize};
 
@@ -30,6 +30,7 @@ pub struct ImageBox(pub Box<Image>);
 /// Represents any kind of multi-paragraph written work.
 #[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct Article {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -38,13 +39,14 @@ pub struct Article {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 }
 
 /// Represents an audio document of any kind.
 #[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct Audio {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -53,13 +55,14 @@ pub struct Audio {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 }
 
 /// Represents a document of any kind.
 #[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct Document {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -68,13 +71,14 @@ pub struct Document {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 }
 
 /// Represents any kind of event.
 #[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct Event {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -83,13 +87,14 @@ pub struct Event {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 }
 
 /// An image document of any kind
 #[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct Image {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -98,13 +103,14 @@ pub struct Image {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 }
 
 /// Represents a short written work typically less than a single paragraph in length.
 #[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct Note {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -113,13 +119,14 @@ pub struct Note {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 }
 
 /// Represents a Web Page.
 #[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct Page {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -128,7 +135,7 @@ pub struct Page {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 }
 
@@ -152,6 +159,7 @@ pub struct Page {
 /// MUST support the use of these properties.
 #[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct Place {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -160,12 +168,12 @@ pub struct Place {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     /// Adds all valid place properties to this struct
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub place: PlaceProperties,
 }
 
@@ -175,6 +183,7 @@ pub struct Place {
 /// The `describes` property is used to reference the object being described by the profile.
 #[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct Profile {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -183,12 +192,12 @@ pub struct Profile {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     /// Adds all valid profile properties to this struct
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub profile: ProfileProperties,
 }
 
@@ -208,6 +217,7 @@ pub struct Profile {
 /// and Jane have a mutual relationship.
 #[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct Relationship {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -216,12 +226,12 @@ pub struct Relationship {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     /// Adds all valid relationship properties to this struct
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub relationship: RelationshipProperties,
 }
 
@@ -231,6 +241,7 @@ pub struct Relationship {
 /// it has been deleted.
 #[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct Tombstone {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -239,18 +250,19 @@ pub struct Tombstone {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     /// Adds all valid tombstone properties to this struct
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub tombstone_props: TombstoneProperties,
 }
 
 /// Represents a video document of any kind.
 #[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct Video {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -259,7 +271,7 @@ pub struct Video {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 }
 

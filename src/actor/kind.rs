@@ -21,21 +21,21 @@
 use crate::UnitString;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Application)]
+#[unit_string(Application)]
 pub struct ApplicationType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Group)]
+#[unit_string(Group)]
 pub struct GroupType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Organization)]
+#[unit_string(Organization)]
 pub struct OrganizationType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Person)]
+#[unit_string(Person)]
 pub struct PersonType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Service)]
+#[unit_string(Service)]
 pub struct ServiceType;

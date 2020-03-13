@@ -38,7 +38,7 @@
 //! /// This macro implements Serialize and Deserialize for the given type, making this type
 //! /// represent the string "SomeKind" in JSON.
 //! #[derive(Clone, Debug, Default, Eq, Hash, Ord, PartialEq, PartialOrd, UnitString)]
-//! #[activitystreams(SomeKind)]
+//! #[unit_string(SomeKind)]
 //! pub struct MyKind;
 //!
 //! /// Using the properties macro
@@ -107,17 +107,18 @@ use syn::{
 ///
 /// ```ignore
 /// #[derive(Clone, Debug, serde::Deserialize, serde::Serialize, PropRefs)]
+/// #[prop_refs(Object)]
 /// pub struct MyStruct {
 ///     /// Derive AsRef<MyProperties> and AsMut<MyProperties> delegating to `my_field`
-///     #[activitystreams(None)]
+///     #[prop_refs]
 ///     my_field: MyProperties,
 ///
 ///     /// Derive the above, plus Object (activitystreams)
-///     #[activitystreams(Object)]
+///     #[prop_refs]
 ///     obj_field: ObjectProperties,
 /// }
 /// ```
-#[proc_macro_derive(PropRefs, attributes(activitystreams))]
+#[proc_macro_derive(PropRefs, attributes(prop_refs))]
 pub fn ref_derive(input: TokenStream) -> TokenStream {
     let input: DeriveInput = syn::parse(input).unwrap();
 
@@ -133,6 +134,39 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
         _ => panic!("Can only derive for named fields"),
     };
 
+    let name2 = name.clone();
+    let base_impls: proc_macro2::TokenStream = input
+        .attrs
+        .iter()
+        .filter_map(move |attr| {
+            if attr
+                .path
+                .segments
+                .last()
+                .map(|segment| segment.ident == "prop_refs")
+                .unwrap_or(false)
+            {
+                let object = from_value(attr.clone());
+                let name = name2.clone();
+                let box_name = Ident::new(&format!("{}Box", object), name.span());
+
+                Some(quote! {
+                    impl #object for #name {}
+
+                    impl std::convert::TryFrom<#name> for #box_name {
+                        type Error = serde_json::Error;
+
+                        fn try_from(s: #name) -> Result<Self, Self::Error> {
+                            #box_name::from_concrete(s)
+                        }
+                    }
+                })
+            } else {
+                None
+            }
+        })
+        .collect();
+
     let tokens: proc_macro2::TokenStream = fields
         .named
         .iter()
@@ -142,48 +176,15 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
                     .path
                     .segments
                     .last()
-                    .map(|segment| {
-                        segment.ident == Ident::new("activitystreams", segment.ident.span())
-                    })
+                    .map(|segment| segment.ident == "prop_refs")
                     .unwrap_or(false)
             });
 
-            our_attr.map(move |our_attr| {
-                (
-                    field.ident.clone().unwrap(),
-                    field.ty.clone(),
-                    our_attr.clone(),
-                )
-            })
+            our_attr.map(move |_| (field.ident.clone().unwrap(), field.ty.clone()))
         })
-        .flat_map(move |(ident, ty, attr)| {
-            let object = from_value(attr);
+        .map(move |(ident, ty)| {
             let name = name.clone();
-
-            let base_impl = if object.to_string() == "Object" || object.to_string() == "Link" {
-                quote! {
-                    #[typetag::serde]
-                    impl #object for #name {
-                        fn as_any(&self) -> &dyn std::any::Any {
-                            self
-                        }
-
-                        fn as_any_mut(&mut self) -> &mut dyn std::any::Any {
-                            self
-                        }
-
-                        fn duplicate(&self) -> Box<dyn #object> {
-                            Box::new(self.clone())
-                        }
-                    }
-                }
-            } else {
-                quote! {
-                    impl #object for #name {}
-                }
-            };
-
-            let ref_impls = quote! {
+            quote! {
                 impl AsRef<#ty> for #name {
                     fn as_ref(&self) -> &#ty {
                         &self.#ident
@@ -195,24 +196,124 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
                         &mut self.#ident
                     }
                 }
-            };
-
-            if object == "None" {
-                ref_impls
-            } else {
-                quote! {
-                    #ref_impls
-                    #base_impl
-                }
             }
         })
         .collect();
 
     let full = quote! {
+        #base_impls
         #tokens
     };
 
     full.into()
+}
+
+/// Derive a wrapper type based on serde_json::Value to contain any possible trait type
+///
+/// The following code
+/// ```ignore
+/// #[wrapper_type]
+/// pub trait Object {}
+/// ```
+/// produces the following type
+/// ```ignore
+/// pub struct ObjectBox(pub serde_json::Value);
+///
+/// impl ObjectBox {
+///     pub fn from_concrete<T>(t: T) -> Result<Self, serde_json::Error>
+///     where
+///         T: Object + serde::ser::Serialize,
+///     {
+///         Ok(ObjectBox(serde_json::to_value(t)?))
+///     }
+///
+///     pub fn to_concrete<T>(self) -> Result<T, serde_json::Error>
+///     where
+///         T: Object + serde::de::DeserializeOwned,
+///     {
+///         serde_json::from_value(self.0)
+///     }
+///
+///     pub fn is_type(&self, kind: impl std::fmt::Display) -> bool {
+///         self.0["type"] == kind.to_string()
+///     }
+///
+///     pub fn type(&self) -> Option<&str> {
+///         match self.0["type"] {
+///             serde_json::Value::String(ref s) -> Some(s),
+///             _ => None,
+///         }
+///     }
+/// }
+#[proc_macro_attribute]
+pub fn wrapper_type(_: TokenStream, input: TokenStream) -> TokenStream {
+    let input: syn::ItemTrait = syn::parse(input).unwrap();
+    let trait_name = input.ident.clone();
+    let type_name = Ident::new(&format!("{}Box", trait_name), trait_name.span());
+
+    let tokens = quote! {
+        #input
+
+        #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
+        #[serde(transparent)]
+        pub struct #type_name(pub serde_json::Value);
+
+        impl #type_name {
+            /// Create the wrapper type from a concrete type
+            pub fn from_concrete<T>(t: T) -> Result<Self, serde_json::Error>
+            where
+                T: #trait_name + serde::ser::Serialize,
+            {
+                Ok(#type_name(serde_json::to_value(t)?))
+            }
+
+            /// Attempt to deserialize the wrapper type to a concrete type
+            pub fn to_concrete<T>(self) -> Result<T, serde_json::Error>
+            where
+                T: #trait_name + serde::de::DeserializeOwned,
+            {
+                serde_json::from_value(self.0)
+            }
+
+            /// Return whether the given wrapper type is expected.
+            ///
+            /// For example
+            /// ```ignore
+            /// use activitystreams::object::{
+            ///     kind::ImageType,
+            ///     apub::Image,
+            /// };
+            /// if my_wrapper_type.is_kind(ImageType) {
+            ///     let image = my_wrapper_type.to_concrete::<Image>()?;
+            ///     ...
+            /// }
+            /// ```
+            pub fn is_kind(&self, kind: impl std::fmt::Display) -> bool {
+                self.0["type"] == kind.to_string()
+            }
+
+            /// Return the kind of wrapper type, if present
+            ///
+            /// Example
+            /// ```ignore
+            /// match my_wrapper_type.kind() {
+            ///     Some("Image") => {
+            ///         let image = my_wrapper_type.to_concrete::<Image>()?;
+            ///         ...
+            ///     }
+            ///     _ => ...,
+            /// }
+            /// ```
+            pub fn kind(&self) -> Option<&str> {
+                match self.0["type"] {
+                    serde_json::Value::String(ref s) => Some(s),
+                    _ => None,
+                }
+            }
+        }
+    };
+
+    tokens.into()
 }
 
 /// Derive implementations Serialize and Deserialize for a constant string Struct type
@@ -220,13 +321,13 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
 /// ```ignore
 /// /// Derive Serialize and Deserialize such that MyStruct becomes the "MyType" string
 /// #[derive(Clone, Debug, UnitString)]
-/// #[activitystreams(MyType)]
+/// #[unit_string(MyType)]
 /// pub struct MyStruct;
 ///
 /// // usage
 /// let _: HashMap<String, MyStruct> = serde_json::from_str(r#"{"type":"MyType"}"#)?;
 /// ```
-#[proc_macro_derive(UnitString, attributes(activitystreams))]
+#[proc_macro_derive(UnitString, attributes(unit_string))]
 pub fn unit_string(input: TokenStream) -> TokenStream {
     let input: DeriveInput = syn::parse(input).unwrap();
 
@@ -240,7 +341,7 @@ pub fn unit_string(input: TokenStream) -> TokenStream {
                 .path
                 .segments
                 .last()
-                .map(|segment| segment.ident == Ident::new("activitystreams", segment.ident.span()))
+                .map(|segment| segment.ident == "unit_string")
                 .unwrap_or(false)
         })
         .unwrap()
@@ -302,10 +403,19 @@ pub fn unit_string(input: TokenStream) -> TokenStream {
         }
     };
 
+    let display = quote! {
+        impl std::fmt::Display for #name {
+            fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+                write!(f, "{}", #value)
+            }
+        }
+    };
+
     let c = quote! {
         #serialize
         #visitor
         #deserialize
+        #display
     };
 
     c.into()

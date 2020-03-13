@@ -22,5 +22,5 @@ use crate::UnitString;
 
 /// A Unit Struct that represents the string "Mention"
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Mention)]
+#[unit_string(Mention)]
 pub struct MentionType;

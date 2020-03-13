@@ -32,7 +32,7 @@ use activitystreams::object::properties::ObjectProperties;
 /// This macro implements Serialize and Deserialize for the given type, making this type
 /// represent the string "SomeKind" in JSON.
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(SomeKind)]
+#[unit_string(SomeKind)]
 pub struct MyKind;
 
 properties! {
@@ -80,17 +80,18 @@ properties! {
 
 #[derive(Clone, Default, PropRefs, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct My {
     /// Derive AsRef<MyProperties> and AsMut<MyProperties>
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     my_properties: MyProperties,
 
     /// Derive AsRef<ObjectProperties> and AsMut<ObjectProperties>
     ///
     /// as well as the Object trait
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     properties: ObjectProperties,
 }
 

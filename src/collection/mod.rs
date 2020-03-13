@@ -30,6 +30,9 @@ pub mod streams;
 
 use crate::object::Object;
 
+#[cfg(feature = "types")]
+use crate::wrapper_type;
+
 /// A Collection is a subtype of `Object` that represents ordered or unordered sets of `Object` or
 /// `Link` instances.
 ///
@@ -40,6 +43,7 @@ use crate::object::Object;
 ///
 /// `UnorderedCollection` and `OrderedCollection` types are provided by the `activitystreams-types`
 /// crate.
+#[cfg_attr(feature = "types", wrapper_type)]
 pub trait Collection: Object {}
 
 /// Used to represent distinct subsets of items from a Collection.
@@ -51,96 +55,5 @@ pub trait Collection: Object {}
 ///
 /// `UnorderedCollectionPage` and `OrderedCollectionPage` types are provied by the
 /// `activitystreams-types` crate.
+#[cfg_attr(feature = "types", wrapper_type)]
 pub trait CollectionPage: Collection {}
-
-#[cfg(feature = "types")]
-#[derive(Debug, serde::Deserialize, serde::Serialize)]
-#[serde(transparent)]
-pub struct CollectionBox(pub Box<dyn Object>);
-
-#[cfg(feature = "types")]
-#[derive(Debug, serde::Deserialize, serde::Serialize)]
-#[serde(transparent)]
-pub struct CollectionPageBox(pub Box<dyn Object>);
-
-#[cfg(feature = "types")]
-impl CollectionBox {
-    pub fn is<T>(&self) -> bool
-    where
-        T: Collection + 'static,
-    {
-        self.0.as_any().is::<T>()
-    }
-
-    pub fn downcast_ref<T>(&self) -> Option<&T>
-    where
-        T: Collection + 'static,
-    {
-        self.0.as_any().downcast_ref()
-    }
-
-    pub fn downcast_mut<T>(&mut self) -> Option<&mut T>
-    where
-        T: Collection + 'static,
-    {
-        self.0.as_any_mut().downcast_mut()
-    }
-}
-
-#[cfg(feature = "types")]
-impl CollectionPageBox {
-    pub fn is<T>(&self) -> bool
-    where
-        T: CollectionPage + 'static,
-    {
-        self.0.as_any().is::<T>()
-    }
-
-    pub fn downcast_ref<T>(&self) -> Option<&T>
-    where
-        T: CollectionPage + 'static,
-    {
-        self.0.as_any().downcast_ref()
-    }
-
-    pub fn downcast_mut<T>(&mut self) -> Option<&mut T>
-    where
-        T: CollectionPage + 'static,
-    {
-        self.0.as_any_mut().downcast_mut()
-    }
-}
-
-#[cfg(feature = "types")]
-impl Clone for CollectionBox {
-    fn clone(&self) -> Self {
-        CollectionBox(self.0.duplicate())
-    }
-}
-
-#[cfg(feature = "types")]
-impl Clone for CollectionPageBox {
-    fn clone(&self) -> Self {
-        CollectionPageBox(self.0.duplicate())
-    }
-}
-
-#[cfg(feature = "types")]
-impl<T> From<T> for CollectionBox
-where
-    T: Collection + 'static,
-{
-    fn from(t: T) -> Self {
-        CollectionBox(Box::new(t))
-    }
-}
-
-#[cfg(feature = "types")]
-impl<T> From<T> for CollectionPageBox
-where
-    T: CollectionPage + 'static,
-{
-    fn from(t: T) -> Self {
-        CollectionPageBox(Box::new(t))
-    }
-}

@@ -18,8 +18,8 @@
  */
 
 use crate::{
-    actor::{kind::*, Actor},
-    object::{properties::ObjectProperties, Object},
+    actor::{kind::*, Actor, ActorBox},
+    object::{properties::ObjectProperties, Object, ObjectBox},
     PropRefs,
 };
 use serde::{Deserialize, Serialize};
@@ -27,6 +27,8 @@ use serde::{Deserialize, Serialize};
 /// Describes a software application.
 #[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
+#[prop_refs(Actor)]
 pub struct Application {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -35,15 +37,15 @@ pub struct Application {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 }
-
-impl Actor for Application {}
 
 /// Represents a formal or informal collective of Actors.
 #[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
+#[prop_refs(Actor)]
 pub struct Group {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -52,11 +54,9 @@ pub struct Group {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 }
-
-impl Actor for Group {}
 
 /// Represents an organization.
 #[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
@@ -69,15 +69,15 @@ pub struct Organization {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 }
-
-impl Actor for Organization {}
 
 /// Represents an individual person.
 #[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
+#[prop_refs(Actor)]
 pub struct Person {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -86,15 +86,15 @@ pub struct Person {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 }
-
-impl Actor for Person {}
 
 /// Represents a service of any kind.
 #[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
+#[prop_refs(Actor)]
 pub struct Service {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -103,8 +103,6 @@ pub struct Service {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 }
-
-impl Actor for Service {}

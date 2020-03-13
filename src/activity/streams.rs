@@ -17,17 +17,12 @@
  * along with ActivityStreams.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//! Activity traits and types
-
 use crate::{
     activity::{
         kind::*, properties::*, Activity, ActivityBox, IntransitiveActivity,
         IntransitiveActivityBox,
     },
-    object::{
-        properties::{ApObjectProperties, ObjectProperties},
-        Object, ObjectBox,
-    },
+    object::{properties::ObjectProperties, Object, ObjectBox},
     PropRefs,
 };
 use serde::{Deserialize, Serialize};
@@ -36,26 +31,27 @@ use serde::{Deserialize, Serialize};
 ///
 /// The target property can be used in certain circumstances to indicate the context into which the
 /// object has been accepted.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
+#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
 #[prop_refs(Object)]
 #[prop_refs(Activity)]
 pub struct Accept {
     #[serde(rename = "type")]
-    kind: AcceptType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: AcceptType,
 
+    /// Adds all valid accept properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub accept_props: AcceptProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -72,20 +68,21 @@ pub struct Accept {
 #[prop_refs(Activity)]
 pub struct Add {
     #[serde(rename = "type")]
-    kind: AddType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: AddType,
 
+    /// Adds all valid add properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub add_props: AddProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -100,20 +97,21 @@ pub struct Add {
 #[prop_refs(Activity)]
 pub struct AMove {
     #[serde(rename = "type")]
-    kind: MoveType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: MoveType,
 
+    /// Adds all valid move properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub move_props: MoveProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -128,20 +126,21 @@ pub struct AMove {
 #[prop_refs(Activity)]
 pub struct Announce {
     #[serde(rename = "type")]
-    kind: AnnounceType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: AnnounceType,
 
+    /// Adds all valid announce properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub announce_props: AnnounceProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -158,20 +157,21 @@ pub struct Announce {
 #[prop_refs(IntransitiveActivity)]
 pub struct Arrive {
     #[serde(rename = "type")]
-    kind: ArriveType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: ArriveType,
 
+    /// Adds all valid arrive properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub arrive_props: ArriveProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -188,20 +188,21 @@ pub struct Arrive {
 #[prop_refs(Activity)]
 pub struct Block {
     #[serde(rename = "type")]
-    kind: BlockType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: BlockType,
 
+    /// Adds all valid block properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub block_props: BlockProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -214,20 +215,21 @@ pub struct Block {
 #[prop_refs(Activity)]
 pub struct Create {
     #[serde(rename = "type")]
-    kind: CreateType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: CreateType,
 
+    /// Adds all valid create properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub create_props: CreateProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -242,20 +244,21 @@ pub struct Create {
 #[prop_refs(Activity)]
 pub struct Delete {
     #[serde(rename = "type")]
-    kind: DeleteType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: DeleteType,
 
+    /// Adds all valid delete properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub delete_props: DeleteProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -268,20 +271,21 @@ pub struct Delete {
 #[prop_refs(Activity)]
 pub struct Dislike {
     #[serde(rename = "type")]
-    kind: DislikeType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: DislikeType,
 
+    /// Adds all valid dislike properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub dislike_props: DislikeProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -297,20 +301,21 @@ pub struct Dislike {
 #[prop_refs(Activity)]
 pub struct Flag {
     #[serde(rename = "type")]
-    kind: FlagType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: FlagType,
 
+    /// Adds all valid flag properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub flag_props: FlagProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -327,20 +332,21 @@ pub struct Flag {
 #[prop_refs(Activity)]
 pub struct Follow {
     #[serde(rename = "type")]
-    kind: FollowType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: FollowType,
 
+    /// Adds all valid follow properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub follow_props: FollowProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -355,20 +361,21 @@ pub struct Follow {
 #[prop_refs(Activity)]
 pub struct Ignore {
     #[serde(rename = "type")]
-    kind: IgnoreType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: IgnoreType,
 
+    /// Adds all valid ignore properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub ignore_props: IgnoreProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -382,20 +389,21 @@ pub struct Ignore {
 #[prop_refs(Activity)]
 pub struct Invite {
     #[serde(rename = "type")]
-    kind: InviteType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: InviteType,
 
+    /// Adds all valid invite properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub invite_props: InviteProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -410,20 +418,21 @@ pub struct Invite {
 #[prop_refs(Activity)]
 pub struct Join {
     #[serde(rename = "type")]
-    kind: JoinType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: JoinType,
 
+    /// Adds all valid join properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub join_props: JoinProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -438,20 +447,21 @@ pub struct Join {
 #[prop_refs(Activity)]
 pub struct Leave {
     #[serde(rename = "type")]
-    kind: LeaveType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: LeaveType,
 
+    /// Adds all valid leave properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub leave_props: LeaveProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -466,20 +476,21 @@ pub struct Leave {
 #[prop_refs(Activity)]
 pub struct Like {
     #[serde(rename = "type")]
-    kind: LikeType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: LikeType,
 
+    /// Adds all valid like properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub like_props: LikeProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -492,20 +503,21 @@ pub struct Like {
 #[prop_refs(Activity)]
 pub struct Listen {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: ListenType,
 
+    /// Adds all valid listen properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub listen_props: ListenProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -520,20 +532,21 @@ pub struct Listen {
 #[prop_refs(Activity)]
 pub struct Offer {
     #[serde(rename = "type")]
-    kind: OfferType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: OfferType,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub offer_props: OfferProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -554,20 +567,21 @@ pub struct Offer {
 #[prop_refs(IntransitiveActivity)]
 pub struct Question {
     #[serde(rename = "type")]
-    kind: QuestionType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: QuestionType,
 
+    /// Adds all valid question properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub question_props: QuestionProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -580,20 +594,21 @@ pub struct Question {
 #[prop_refs(Activity)]
 pub struct Read {
     #[serde(rename = "type")]
-    kind: ReadType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: ReadType,
 
+    /// Adds all valid read properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub read_props: ReadProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -608,20 +623,21 @@ pub struct Read {
 #[prop_refs(Activity)]
 pub struct Reject {
     #[serde(rename = "type")]
-    kind: RejectType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: RejectType,
 
+    /// Adds all valid reject properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub reject_props: RejectProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -636,20 +652,21 @@ pub struct Reject {
 #[prop_refs(Activity)]
 pub struct Remove {
     #[serde(rename = "type")]
-    kind: RemoveType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: RemoveType,
 
+    /// Adds all valid remove properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub remove_props: RemoveProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -662,20 +679,21 @@ pub struct Remove {
 #[prop_refs(Activity)]
 pub struct TentativeAccept {
     #[serde(rename = "type")]
-    kind: TentativeAcceptType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: TentativeAcceptType,
 
+    /// Adds all valid tentative_accept properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub tentative_accept_props: TentativeAcceptProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -688,20 +706,21 @@ pub struct TentativeAccept {
 #[prop_refs(Activity)]
 pub struct TentativeReject {
     #[serde(rename = "type")]
-    kind: TentativeRejectType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: TentativeRejectType,
 
+    /// Adds all valid tentative_reject properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub tentative_reject_props: TentativeRejectProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -718,20 +737,21 @@ pub struct TentativeReject {
 #[prop_refs(IntransitiveActivity)]
 pub struct Travel {
     #[serde(rename = "type")]
-    kind: TravelType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: TravelType,
 
+    /// Adds all valid travel properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub travel_props: TravelProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -750,20 +770,21 @@ pub struct Travel {
 #[prop_refs(Activity)]
 pub struct Undo {
     #[serde(rename = "type")]
-    kind: UndoType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: UndoType,
 
+    /// Adds all valid undo properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub undo_props: UndoProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -781,20 +802,21 @@ pub struct Undo {
 #[prop_refs(Activity)]
 pub struct Update {
     #[serde(rename = "type")]
-    kind: UpdateType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: UpdateType,
 
+    /// Adds all valid update properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub update_props: UpdateProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,
@@ -807,20 +829,21 @@ pub struct Update {
 #[prop_refs(Activity)]
 pub struct View {
     #[serde(rename = "type")]
-    kind: ViewType,
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    pub kind: ViewType,
 
+    /// Adds all valid view properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub view_props: ViewProperties,
 
+    /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
+    /// Adds all valid activity properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub activity_props: ActivityProperties,

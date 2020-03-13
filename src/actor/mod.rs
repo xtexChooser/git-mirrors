@@ -30,6 +30,9 @@ pub mod streams;
 
 use crate::object::Object;
 
+#[cfg(feature = "types")]
+use crate::wrapper_type;
+
 /// `Actor` types are `Object` types that are capable of performing activities.
 ///
 /// This specification intentionally defines `Actors` in only the most generalized way, stopping
@@ -49,4 +52,5 @@ use crate::object::Object;
 /// (e.g. VCard) define their own types for describing people. An implementation that wishes, for
 /// example, to use a `vcard:Individual` as an `Actor` MUST also identify that `Actor` as a
 /// `Person`.
+#[cfg_attr(feature = "types", wrapper_type)]
 pub trait Actor: Object {}

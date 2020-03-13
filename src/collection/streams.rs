@@ -20,8 +20,10 @@
 //! Namespace for Collection types
 
 use crate::{
-    collection::{kind::*, properties::*, Collection, CollectionPage},
-    object::{properties::ObjectProperties, Object},
+    collection::{
+        kind::*, properties::*, Collection, CollectionBox, CollectionPage, CollectionPageBox,
+    },
+    object::{properties::ObjectProperties, Object, ObjectBox},
     PropRefs,
 };
 use serde::{Deserialize, Serialize};
@@ -29,6 +31,8 @@ use serde::{Deserialize, Serialize};
 /// The default `Collection` type.
 #[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
+#[prop_refs(Collection)]
 pub struct UnorderedCollection {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -37,12 +41,12 @@ pub struct UnorderedCollection {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     /// Adds all valid collection properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Collection)]
+    #[prop_refs]
     pub collection_props: CollectionProperties,
 }
 
@@ -50,6 +54,8 @@ pub struct UnorderedCollection {
 /// strictly ordered.
 #[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
+#[prop_refs(Collection)]
 pub struct OrderedCollection {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -58,18 +64,21 @@ pub struct OrderedCollection {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     /// Adds all valid collection properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Collection)]
+    #[prop_refs]
     pub collection_props: CollectionProperties,
 }
 
 /// Used to represent distinct subsets of items from a `Collection`.
 #[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
+#[prop_refs(Collection)]
+#[prop_refs(CollectionPage)]
 pub struct UnorderedCollectionPage {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -78,23 +87,26 @@ pub struct UnorderedCollectionPage {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     /// Adds all valid collection properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Collection)]
+    #[prop_refs]
     pub collection_props: CollectionProperties,
 
     /// Adds all valid collection page properties to this struct
     #[serde(flatten)]
-    #[activitystreams(CollectionPage)]
+    #[prop_refs]
     pub collection_page_props: CollectionPageProperties,
 }
 
 /// Used to represent ordered subsets of items from an `OrderedCollection`.
 #[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
+#[prop_refs(Collection)]
+#[prop_refs(CollectionPage)]
 pub struct OrderedCollectionPage {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -103,21 +115,21 @@ pub struct OrderedCollectionPage {
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     /// Adds all valid collection properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Collection)]
+    #[prop_refs]
     pub collection_props: CollectionProperties,
 
     /// Adds all valid collection page properties to this struct
     #[serde(flatten)]
-    #[activitystreams(CollectionPage)]
+    #[prop_refs]
     pub collection_page_props: CollectionPageProperties,
 
     /// Adds all valid ordered collection page properties to this struct
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub ordered_collection_page_props: OrderedCollectionPageProperties,
 }

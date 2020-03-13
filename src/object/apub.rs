@@ -18,8 +18,8 @@
  */
 
 use crate::{
-    object::{kind::*, properties::*},
-    Object, PropRefs,
+    object::{kind::*, properties::*, Object, ObjectBox},
+    PropRefs,
 };
 use serde::{Deserialize, Serialize};
 
@@ -29,197 +29,209 @@ pub struct ApImageBox(pub Box<Image>);
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct Article {
     #[serde(rename = "type")]
     kind: ArticleType,
 
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub ap_object_props: ApObjectProperties,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct Audio {
     #[serde(rename = "type")]
     kind: AudioType,
 
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub ap_object_props: ApObjectProperties,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct Document {
     #[serde(rename = "type")]
     kind: DocumentType,
 
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub ap_object_props: ApObjectProperties,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct Event {
     #[serde(rename = "type")]
     kind: EventType,
 
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub ap_object_props: ApObjectProperties,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct Image {
     #[serde(rename = "type")]
     kind: ImageType,
 
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub ap_object_props: ApObjectProperties,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct Note {
     #[serde(rename = "type")]
     kind: NoteType,
 
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub ap_object_props: ApObjectProperties,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct Page {
     #[serde(rename = "type")]
     kind: PageType,
 
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub ap_object_props: ApObjectProperties,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct Place {
     #[serde(rename = "type")]
     kind: PlaceType,
 
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub ap_object_props: ApObjectProperties,
 
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub place_props: PlaceProperties,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct Profile {
     #[serde(rename = "type")]
     kind: ProfileType,
 
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub ap_object_props: ApObjectProperties,
 
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub profile_props: ProfileProperties,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct Relationship {
     #[serde(rename = "type")]
     kind: RelationshipType,
 
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub ap_object_props: ApObjectProperties,
 
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub relationship_props: RelationshipProperties,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct Tombstone {
     #[serde(rename = "type")]
     kind: TombstoneType,
 
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub ap_object_props: ApObjectProperties,
 
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub tombstone_props: TombstoneProperties,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
 pub struct Video {
     #[serde(rename = "type")]
     kind: VideoType,
 
     #[serde(flatten)]
-    #[activitystreams(Object)]
+    #[prop_refs]
     pub object_props: ObjectProperties,
 
     #[serde(flatten)]
-    #[activitystreams(None)]
+    #[prop_refs]
     pub ap_object_props: ApObjectProperties,
 }
 

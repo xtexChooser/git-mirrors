@@ -29,7 +29,8 @@ mod types;
 #[cfg(feature = "types")]
 pub use self::types::Mention;
 
-use std::any::Any;
+#[cfg(feature = "types")]
+use crate::wrapper_type;
 
 /// A Link is an indirect, qualified reference to a resource identified by a URL.
 ///
@@ -39,57 +40,5 @@ use std::any::Any;
 /// used, it establishes a qualified relation connecting the subject (the containing object) to the
 /// resource identified by the href. Properties of the Link are properties of the reference as
 /// opposed to properties of the resource.
-#[typetag::serde(tag = "type")]
-pub trait Link: std::fmt::Debug {
-    fn as_any(&self) -> &dyn Any;
-
-    fn as_any_mut(&mut self) -> &mut dyn Any;
-
-    fn duplicate(&self) -> Box<dyn Link>;
-}
-
-#[cfg(feature = "types")]
-#[derive(Debug, serde::Deserialize, serde::Serialize)]
-#[serde(transparent)]
-pub struct LinkBox(pub Box<dyn Link>);
-
-#[cfg(feature = "types")]
-impl LinkBox {
-    pub fn is<T>(&self) -> bool
-    where
-        T: Link + 'static,
-    {
-        self.0.as_any().is::<T>()
-    }
-
-    pub fn downcast_ref<T>(&self) -> Option<&T>
-    where
-        T: Link + 'static,
-    {
-        self.0.as_any().downcast_ref()
-    }
-
-    pub fn downcast_mut<T>(&mut self) -> Option<&mut T>
-    where
-        T: Link + 'static,
-    {
-        self.0.as_any_mut().downcast_mut()
-    }
-}
-
-#[cfg(feature = "types")]
-impl Clone for LinkBox {
-    fn clone(&self) -> Self {
-        LinkBox(self.0.duplicate())
-    }
-}
-
-#[cfg(feature = "types")]
-impl<T> From<T> for LinkBox
-where
-    T: Link + 'static,
-{
-    fn from(t: T) -> Self {
-        LinkBox(Box::new(t))
-    }
-}
+#[cfg_attr(feature = "types", wrapper_type)]
+pub trait Link: std::fmt::Debug {}

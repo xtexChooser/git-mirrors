@@ -22,113 +22,113 @@
 use crate::UnitString;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Accept)]
+#[unit_string(Accept)]
 pub struct AcceptType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Add)]
+#[unit_string(Add)]
 pub struct AddType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Move)]
+#[unit_string(Move)]
 pub struct MoveType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Announce)]
+#[unit_string(Announce)]
 pub struct AnnounceType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Arrive)]
+#[unit_string(Arrive)]
 pub struct ArriveType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Block)]
+#[unit_string(Block)]
 pub struct BlockType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Create)]
+#[unit_string(Create)]
 pub struct CreateType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Delete)]
+#[unit_string(Delete)]
 pub struct DeleteType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Dislike)]
+#[unit_string(Dislike)]
 pub struct DislikeType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Flag)]
+#[unit_string(Flag)]
 pub struct FlagType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Follow)]
+#[unit_string(Follow)]
 pub struct FollowType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Ignore)]
+#[unit_string(Ignore)]
 pub struct IgnoreType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Invite)]
+#[unit_string(Invite)]
 pub struct InviteType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Join)]
+#[unit_string(Join)]
 pub struct JoinType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Leave)]
+#[unit_string(Leave)]
 pub struct LeaveType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Like)]
+#[unit_string(Like)]
 pub struct LikeType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Listen)]
+#[unit_string(Listen)]
 pub struct ListenType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Offer)]
+#[unit_string(Offer)]
 pub struct OfferType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Question)]
+#[unit_string(Question)]
 pub struct QuestionType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Real)]
+#[unit_string(Real)]
 pub struct ReadType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Reject)]
+#[unit_string(Reject)]
 pub struct RejectType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Remove)]
+#[unit_string(Remove)]
 pub struct RemoveType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(TentativeAccept)]
+#[unit_string(TentativeAccept)]
 pub struct TentativeAcceptType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(TentativeReject)]
+#[unit_string(TentativeReject)]
 pub struct TentativeRejectType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Travel)]
+#[unit_string(Travel)]
 pub struct TravelType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Undo)]
+#[unit_string(Undo)]
 pub struct UndoType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(Update)]
+#[unit_string(Update)]
 pub struct UpdateType;
 
 #[derive(Clone, Debug, Default, UnitString)]
-#[activitystreams(View)]
+#[unit_string(View)]
 pub struct ViewType;

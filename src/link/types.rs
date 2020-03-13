@@ -18,7 +18,7 @@
  */
 
 use crate::{
-    link::{kind::*, properties::*, Link},
+    link::{kind::*, properties::*, Link, LinkBox},
     PropRefs,
 };
 use serde::{Deserialize, Serialize};
@@ -27,6 +27,7 @@ use serde::{Deserialize, Serialize};
 /// A specialized Link that represents an @mention.
 #[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
 #[serde(rename_all = "camelCase")]
+#[prop_refs(Link)]
 pub struct Mention {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -35,6 +36,6 @@ pub struct Mention {
 
     /// Adds all valid link properties to this struct
     #[serde(flatten)]
-    #[activitystreams(Link)]
+    #[prop_refs]
     pub link_props: LinkProperties,
 }
