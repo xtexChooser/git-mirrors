@@ -30,9 +30,7 @@
 /// (Not a Number). INF is considered to be greater than all other values, while -INF is less than
 /// all other values. The value NaN cannot be compared to any other values, although it equals
 /// itself.
-#[derive(
-    Clone, Debug, Default, PartialEq, PartialOrd, Default, serde::Deserialize, serde::Serialize,
-)]
+#[derive(Clone, Debug, Default, PartialEq, PartialOrd, serde::Deserialize, serde::Serialize)]
 #[serde(transparent)]
 pub struct XsdFloat(f64);
 
