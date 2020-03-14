@@ -154,7 +154,7 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
                     impl #object for #name {}
 
                     impl std::convert::TryFrom<#name> for #box_name {
-                        type Error = serde_json::Error;
+                        type Error = std::io::Error;
 
                         fn try_from(s: #name) -> Result<Self, Self::Error> {
                             #box_name::from_concrete(s)
@@ -220,30 +220,17 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
 /// pub struct ObjectBox(pub serde_json::Value);
 ///
 /// impl ObjectBox {
-///     pub fn from_concrete<T>(t: T) -> Result<Self, serde_json::Error>
+///     pub fn from_concrete<T>(t: T) -> Result<Self, std::io::Error>
 ///     where
-///         T: Object + serde::ser::Serialize,
-///     {
-///         Ok(ObjectBox(serde_json::to_value(t)?))
-///     }
+///         T: Object + serde::ser::Serialize;
 ///
-///     pub fn to_concrete<T>(self) -> Result<T, serde_json::Error>
+///     pub fn to_concrete<T>(self) -> Result<T, std::io::Error>
 ///     where
-///         T: Object + serde::de::DeserializeOwned,
-///     {
-///         serde_json::from_value(self.0)
-///     }
+///         T: Object + serde::de::DeserializeOwned;
 ///
-///     pub fn is_type(&self, kind: impl std::fmt::Display) -> bool {
-///         self.0["type"] == kind.to_string()
-///     }
+///     pub fn is_type(&self, kind: impl std::fmt::Display) -> bool;
 ///
-///     pub fn type(&self) -> Option<&str> {
-///         match self.0["type"] {
-///             serde_json::Value::String(ref s) -> Some(s),
-///             _ => None,
-///         }
-///     }
+///     pub fn type(&self) -> Option<&str>;
 /// }
 #[proc_macro_attribute]
 pub fn wrapper_type(_: TokenStream, input: TokenStream) -> TokenStream {
@@ -258,28 +245,31 @@ pub fn wrapper_type(_: TokenStream, input: TokenStream) -> TokenStream {
         #doc_line
         #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
         #[serde(transparent)]
-        pub struct #type_name(pub serde_json::Value);
+        pub struct #type_name(serde_json::Map<String, serde_json::Value>);
 
         impl #type_name {
             /// Coerce a concrete type into this wrapper type
             ///
             /// This is done automatically via TryFrom in proprties setter methods
-            pub fn from_concrete<T>(t: T) -> Result<Self, serde_json::Error>
+            pub fn from_concrete<T>(t: T) -> Result<Self, std::io::Error>
             where
                 T: #trait_name + serde::ser::Serialize,
             {
-                Ok(#type_name(serde_json::to_value(t)?))
+                match serde_json::to_value(t)? {
+                    serde_json::Value::Object(map) => Ok(#type_name(map)),
+                    _ => Err(std::io::Error::new(std::io::ErrorKind::InvalidInput, "Not an object")),
+                }
             }
 
             /// Attempt to deserialize the wrapper type to a concrete type
             ///
             /// Before this method is called, the type should be verified via the `kind` or
             /// `is_kind` methods
-            pub fn to_concrete<T>(self) -> Result<T, serde_json::Error>
+            pub fn to_concrete<T>(self) -> Result<T, std::io::Error>
             where
                 T: #trait_name + serde::de::DeserializeOwned,
             {
-                serde_json::from_value(self.0)
+                Ok(serde_json::from_value(serde_json::Value::Object(self.0))?)
             }
 
             /// Return whether the given wrapper type is expected.
