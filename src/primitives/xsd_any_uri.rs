@@ -50,7 +50,7 @@
 /// Note that when relative URI references such as "../prod" are used as values of xsd:anyURI, no
 /// attempt is made to determine or keep track of the base URI to which they may be applied. For
 /// more information on URIs, see RFC 2396, Uniform Resource Identifiers (URI): Generic Syntax.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct XsdAnyUri(url::Url);
 
 /// The error type produced when an XsdAnyUri cannot be parsed
@@ -73,6 +73,12 @@ impl From<XsdAnyUri> for url::Url {
 impl Default for XsdAnyUri {
     fn default() -> Self {
         "data:text/plain,uwu".parse().unwrap()
+    }
+}
+
+impl AsRef<str> for XsdAnyUri {
+    fn as_ref(&self) -> &str {
+        self.0.as_ref()
     }
 }
 

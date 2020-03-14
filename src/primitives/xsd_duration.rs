@@ -41,7 +41,7 @@
 /// This implementation converts Months to Days by multiplying by 31, and converts Years to days by
 /// multiplying by 365. If this is an issue for your application, look into specifying days
 /// directly.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct XsdDuration(chrono::Duration);
 
 /// The error type produced when an XsdDuration cannot be parsed

@@ -20,7 +20,9 @@
 use crate::primitives::XsdString;
 
 /// The rdf.langString type extends xs.string, and represents a language tagged string in RDF.
-#[derive(Clone, Debug, Default, serde::Deserialize, serde::Serialize)]
+#[derive(
+    Clone, Debug, Default, Eq, Ord, PartialEq, PartialOrd, serde::Deserialize, serde::Serialize,
+)]
 pub struct RdfLangString {
     /// The content of the langstring
     ///

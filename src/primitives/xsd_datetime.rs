@@ -30,7 +30,7 @@
 /// range from -14:00 to 14:00. For example, US Eastern Standard Time, which is five hours behind
 /// UTC, is represented as -05:00. If no time zone value is present, it is considered unknown; it
 /// is not assumed to be UTC.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct XsdDateTime(chrono::DateTime<chrono::FixedOffset>);
 
 /// The error type produced when an XsdDateTime cannot be parsed

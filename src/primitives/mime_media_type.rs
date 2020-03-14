@@ -24,13 +24,19 @@
 ///
 /// See [`RFC 2045`](https://tools.ietf.org/html/rfc2045) and
 /// [`RFC 2046`](https://tools.ietf.org/html/rfc2046) for more information.
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct MimeMediaType(mime::Mime);
 
 #[derive(Clone, Debug, thiserror::Error)]
 #[error("Error parsing MIME")]
 /// The error type produced when a MimeMediaType cannot be parsed
 pub struct MimeMediaTypeError;
+
+impl<'a> PartialEq<&'a str> for MimeMediaType {
+    fn eq(&self, rhs: &&'a str) -> bool {
+        self.0.eq(rhs)
+    }
+}
 
 impl From<mime::Mime> for MimeMediaType {
     fn from(m: mime::Mime) -> Self {

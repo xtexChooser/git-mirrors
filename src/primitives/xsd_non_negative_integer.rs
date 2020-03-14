@@ -21,7 +21,18 @@
 ///
 /// An xsd:nonNegativeInteger is a sequence of digits, optionally preceded by a + sign. Leading
 /// zeros are permitted, but decimal points are not.
-#[derive(Clone, Debug, Default, serde::Deserialize, serde::Serialize)]
+#[derive(
+    Clone,
+    Debug,
+    Default,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+    serde::Deserialize,
+    serde::Serialize,
+)]
 #[serde(transparent)]
 pub struct XsdNonNegativeInteger(u64);
 

@@ -29,7 +29,18 @@
 /// The xsd:string type has a whiteSpace facet of preserve, which means that all whitespace
 /// characters (spaces, tabs, carriage returns, and line feeds) are preserved by the processor.
 /// This is in contrast to two types derived from it: normalizedString, and token.
-#[derive(Clone, Debug, Default, serde::Deserialize, serde::Serialize)]
+#[derive(
+    Clone,
+    Debug,
+    Default,
+    Eq,
+    Hash,
+    Ord,
+    PartialEq,
+    PartialOrd,
+    serde::Deserialize,
+    serde::Serialize,
+)]
 #[serde(transparent)]
 pub struct XsdString(String);
 

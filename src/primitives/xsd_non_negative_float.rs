@@ -32,7 +32,7 @@
 /// itself.
 ///
 /// This type also validates that a float is at least 0.0
-#[derive(Clone, Debug, Default, serde::Deserialize, serde::Serialize)]
+#[derive(Clone, Debug, PartialEq, PartialOrd, Default, serde::Deserialize, serde::Serialize)]
 #[serde(transparent)]
 pub struct XsdNonNegativeFloat(f64);
 
