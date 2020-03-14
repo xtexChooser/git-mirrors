@@ -1,5 +1,5 @@
 use activitystreams::{
-    collection::apub::OrderedCollection,
+    collection::{apub::OrderedCollection, properties::CollectionProperties},
     object::{streams::Page, ObjectBox},
 };
 use anyhow::Error;
@@ -50,6 +50,15 @@ fn main() -> Result<(), Error> {
     println!("{:#?}", obox);
     let collection: OrderedCollection = serde_json::from_str(collection_json)?;
     println!("{:#?}", collection);
+
+    let cprops: &CollectionProperties = collection.as_ref();
+    let v: Vec<Page> = cprops
+        .get_many_items_object_boxs()
+        .unwrap()
+        .map(|object_box| object_box.clone().to_concrete::<Page>())
+        .collect::<Result<Vec<_>, std::io::Error>>()?;
+
+    println!("{:#?}", v);
 
     Ok(())
 }

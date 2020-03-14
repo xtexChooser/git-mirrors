@@ -53,6 +53,7 @@ pub struct AnyImage {
     rest: std::collections::HashMap<String, serde_json::Value>,
 }
 
+#[cfg(feature = "types")]
 impl AnyImage {
     pub fn from_concrete<T>(t: T) -> Result<Self, serde_json::Error>
     where

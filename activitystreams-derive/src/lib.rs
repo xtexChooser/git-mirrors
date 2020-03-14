@@ -23,8 +23,8 @@
 //!
 //! First, add `serde` and `activitystreams-derive` to your Cargo.toml
 //! ```toml
-//! activitystreams-derive = "0.5.0-alpha.2"
-//! # or activitystreams = "0.5.0-alpha.3"
+//! activitystreams-derive = "0.5.0-alpha.3"
+//! # or activitystreams = "0.5.0-alpha.4"
 //! serde = { version = "1.0", features = ["derive"] }
 //! ```
 //!
@@ -1060,12 +1060,12 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                             ///
                             /// The returned vec will be empty if no values match the requested
                             /// type, but values are present.
-                            pub fn #get_many_ident(&self) -> Option<Vec<&#v_ty>> {
+                            pub fn #get_many_ident(&self) -> Option<impl Iterator<Item = &#v_ty>> {
                                 match self.#fname {
                                     #ty::Array(ref array) => Some(array.iter().filter_map(|i| match i {
                                         #term_ty::#v_ty(item) => Some(item),
                                         _ => None,
-                                    }).collect()),
+                                    })),
                                     _ => None,
                                 }
                             }
@@ -1130,12 +1130,12 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                             /// This returns `None` if
                             /// - There is no value present
                             /// - There is only one value present
-                            pub fn #get_many_ident(&self) -> Option<Vec<&#v_ty>> {
+                            pub fn #get_many_ident(&self) -> Option<impl Iterator<Item = &#v_ty>> {
                                 match self.#fname {
                                     Some(#ty::Array(ref array)) => Some(array.iter().filter_map(|i| match i {
                                         #term_ty::#v_ty(item) => Some(item),
                                         _ => None,
-                                    }).collect()),
+                                    })),
                                     _ => None,
                                 }
                             }
