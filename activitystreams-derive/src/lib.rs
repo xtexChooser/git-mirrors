@@ -540,8 +540,8 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                     #[serde(rename_all = "camelCase")]
                     #[serde(untagged)]
                     pub enum #enum_ty {
-                        Term(#ty),
                         Array(Vec<#ty>),
+                        Term(#ty),
                     }
 
                     impl Default for #enum_ty {
@@ -623,8 +623,8 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                     #[serde(rename_all = "camelCase")]
                     #[serde(untagged)]
                     pub enum #ty {
-                        Term(#term_ty),
                         Array(Vec<#term_ty>),
+                        Term(#term_ty),
                     }
 
                     impl Default for #ty {
