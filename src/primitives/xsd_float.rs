@@ -39,6 +39,18 @@ pub struct XsdFloat(f64);
 #[error("Error parsing Float")]
 pub struct XsdFloatError;
 
+impl XsdFloat {
+    /// Get an f64 from the XsdFloat
+    pub fn to_f64(&self) -> f64 {
+        self.0
+    }
+
+    /// Get an XsdFloat from an f64
+    pub fn from_f64(f: f64) -> Self {
+        f.into()
+    }
+}
+
 impl AsRef<f64> for XsdFloat {
     fn as_ref(&self) -> &f64 {
         &self.0

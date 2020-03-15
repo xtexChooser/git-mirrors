@@ -41,6 +41,18 @@ pub struct XsdNonNegativeInteger(u64);
 #[error("Error parsing NonNegativeInteger")]
 pub struct XsdNonNegativeIntegerError;
 
+impl XsdNonNegativeInteger {
+    /// Get a u64 from this XsdNonNegativeInteger
+    pub fn to_u64(&self) -> u64 {
+        self.0
+    }
+
+    /// Get an XsdNonNegativeInteger from a u64
+    pub fn from_u64(u: u64) -> Self {
+        u.into()
+    }
+}
+
 impl AsRef<u64> for XsdNonNegativeInteger {
     fn as_ref(&self) -> &u64 {
         &self.0
@@ -53,11 +65,9 @@ impl From<XsdNonNegativeInteger> for u64 {
     }
 }
 
-impl std::convert::TryFrom<u64> for XsdNonNegativeInteger {
-    type Error = XsdNonNegativeIntegerError;
-
-    fn try_from(f: u64) -> Result<Self, Self::Error> {
-        Ok(XsdNonNegativeInteger(f))
+impl From<u64> for XsdNonNegativeInteger {
+    fn from(f: u64) -> Self {
+        XsdNonNegativeInteger(f)
     }
 }
 

@@ -38,6 +38,18 @@ pub struct XsdDateTime(chrono::DateTime<chrono::FixedOffset>);
 #[error("Error parsing DateTime")]
 pub struct XsdDateTimeError;
 
+impl XsdDateTime {
+    /// Borrow the underlying `chrono::DateTime<chrono::FixedOffset>`
+    pub fn as_datetime(&self) -> &chrono::DateTime<chrono::FixedOffset> {
+        self.as_ref()
+    }
+
+    /// Mutably borrow the underlying `chrono::DateTime<chrono::FixedOffset>`
+    pub fn as_datetime_mut(&mut self) -> &mut chrono::DateTime<chrono::FixedOffset> {
+        self.as_mut()
+    }
+}
+
 impl From<chrono::DateTime<chrono::FixedOffset>> for XsdDateTime {
     fn from(d: chrono::DateTime<chrono::FixedOffset>) -> Self {
         XsdDateTime(d)

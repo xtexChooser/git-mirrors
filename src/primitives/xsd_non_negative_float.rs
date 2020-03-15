@@ -41,6 +41,19 @@ pub struct XsdNonNegativeFloat(f64);
 #[error("Error parsing NonNegativeFloat")]
 pub struct XsdNonNegativeFloatError;
 
+impl XsdNonNegativeFloat {
+    /// Get an f64 from this XsdNonNegativeFloat
+    pub fn to_float(&self) -> f64 {
+        self.0
+    }
+
+    /// Try to get an XsdNonNegativeFloat from an f64
+    pub fn from_float(f: f64) -> Result<Self, XsdNonNegativeFloatError> {
+        use std::convert::TryInto;
+        f.try_into()
+    }
+}
+
 impl AsRef<f64> for XsdNonNegativeFloat {
     fn as_ref(&self) -> &f64 {
         &self.0

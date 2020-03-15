@@ -58,6 +58,23 @@ pub struct XsdAnyUri(url::Url);
 #[error("Could not parse XsdAnyUri")]
 pub struct XsdAnyUriError;
 
+impl XsdAnyUri {
+    /// Borrow the underlying string from the XsdAnyUri
+    pub fn as_str(&self) -> &str {
+        self.as_ref()
+    }
+
+    /// Borrow a `url::Url` from the XsdAnyUri
+    pub fn as_url(&self) -> &url::Url {
+        self.as_ref()
+    }
+
+    /// Mutably borrow a `url::Url` from the XsdAnyUri
+    pub fn as_url_mut(&mut self) -> &mut url::Url {
+        self.as_mut()
+    }
+}
+
 impl From<url::Url> for XsdAnyUri {
     fn from(u: url::Url) -> Self {
         XsdAnyUri(u)
@@ -79,6 +96,18 @@ impl Default for XsdAnyUri {
 impl AsRef<str> for XsdAnyUri {
     fn as_ref(&self) -> &str {
         self.0.as_ref()
+    }
+}
+
+impl AsRef<url::Url> for XsdAnyUri {
+    fn as_ref(&self) -> &url::Url {
+        &self.0
+    }
+}
+
+impl AsMut<url::Url> for XsdAnyUri {
+    fn as_mut(&mut self) -> &mut url::Url {
+        &mut self.0
     }
 }
 

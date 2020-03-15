@@ -49,6 +49,18 @@ pub struct XsdDuration(chrono::Duration);
 #[error("Error parsing Duration")]
 pub struct XsdDurationError;
 
+impl XsdDuration {
+    /// Borrow the underlying `chrono::Duration`
+    pub fn as_duration(&self) -> &chrono::Duration {
+        self.as_ref()
+    }
+
+    /// Mutably borrow the underlying `chrono::Duration`
+    pub fn as_duration_mut(&mut self) -> &mut chrono::Duration {
+        self.as_mut()
+    }
+}
+
 impl From<chrono::Duration> for XsdDuration {
     fn from(d: chrono::Duration) -> Self {
         XsdDuration(d)

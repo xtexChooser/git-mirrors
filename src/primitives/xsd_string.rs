@@ -44,6 +44,28 @@
 #[serde(transparent)]
 pub struct XsdString(String);
 
+impl XsdString {
+    /// Get an XsdString from an &str
+    pub fn from_str(s: &str) -> Self {
+        s.into()
+    }
+
+    /// Get an XsdString from a String
+    pub fn from_string(s: String) -> Self {
+        s.into()
+    }
+
+    /// Borrow an &str from an XsdString
+    pub fn as_str(&self) -> &str {
+        self.as_ref()
+    }
+
+    /// Consume the XsdString and get a String
+    pub fn to_string(self) -> String {
+        self.into()
+    }
+}
+
 impl From<String> for XsdString {
     fn from(s: String) -> Self {
         XsdString(s)
