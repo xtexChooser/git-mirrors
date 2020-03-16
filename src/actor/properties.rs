@@ -62,7 +62,11 @@
 //! # fn main() {}
 //! ```
 
-use crate::{endpoint::EndpointProperties, primitives::XsdAnyUri, properties};
+use crate::{
+    endpoint::EndpointProperties,
+    primitives::{XsdAnyUri, XsdString},
+    properties,
+};
 
 properties! {
     ApActor {
@@ -75,7 +79,7 @@ properties! {
                 "A reference to an [[ActivityStreams](https://www.w3.org/ns/activitystreams)]",
                 "OrderedCollection comprised of all the messages received by the actor.",
                 "",
-                "- Range: `anyUri`",
+                "- Range: `xsd:anyUri`",
                 "- Functional: true",
             ],
             types [ XsdAnyUri ],
@@ -88,7 +92,7 @@ properties! {
                 "An [ActivityStreams](https://www.w3.org/ns/activitystreams)] OrderedCollection comprised of",
                 "all the messages produced by the actor.",
                 "",
-                "- Range: `anyUri`",
+                "- Range: `xsd:anyUri`",
                 "- Functional: true",
             ],
             types [ XsdAnyUri ],
@@ -101,7 +105,7 @@ properties! {
                 "A link to an [[ActivityStreams](https://www.w3.org/ns/activitystreams)] collection of the",
                 "actors that this actor is following.",
                 "",
-                "- Range: `anyUri`",
+                "- Range: `xsd:anyUri`",
                 "- Functional: true",
             ],
             types [ XsdAnyUri ],
@@ -113,7 +117,7 @@ properties! {
                 "A link to an [[ActivityStreams](https://www.w3.org/ns/activitystreams)] collection of the",
                 "actors that follow this actor.",
                 "",
-                "- Range: `anyUri`",
+                "- Range: `xsd:anyUri`",
                 "- Functional: true",
             ],
             types [ XsdAnyUri ],
@@ -125,7 +129,7 @@ properties! {
                 "A link to an [[ActivityStreams](https://www.w3.org/ns/activitystreams)] collection of",
                 "objects this actor has liked.",
                 "",
-                "- Range: `anyUri`",
+                "- Range: `xsd:anyUri`",
                 "- Functional: true",
             ],
             types [ XsdAnyUri ],
@@ -136,7 +140,7 @@ properties! {
             docs [
                 "A list of supplementary Collections which may be of interest.",
                 "",
-                "- Range: `anyUri`",
+                "- Range: `xsd:anyUri`",
                 "- Functional: false",
             ],
             types [ XsdAnyUri ],
@@ -146,10 +150,10 @@ properties! {
             docs [
                 "A short username which may be used to refer to the actor, with no uniqueness guarantees.",
                 "",
-                "- Range: `anyUri`",
+                "- Range: `xsd:string`",
                 "- Functional: true",
             ],
-            types [ XsdAnyUri ],
+            types [ XsdString ],
             functional,
         },
 
