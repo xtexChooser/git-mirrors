@@ -174,6 +174,7 @@ properties! {
                 ObjectBox,
                 LinkBox,
             ],
+            rename("@context"),
         },
 
         name {
