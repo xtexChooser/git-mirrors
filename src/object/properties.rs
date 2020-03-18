@@ -23,15 +23,20 @@
 //!
 //! ```rust
 //! use activitystreams::{
+//!     ext::Ext,
 //!     object::{
 //!         properties::ObjectProperties,
 //!         Object, ObjectBox,
 //!     },
 //!     Base, BaseBox, PropRefs,
 //! };
-//! use serde::{Deserialize, Serialize};
+//! use std::collections::HashMap;
 //!
-//! #[derive(Clone, Debug, Serialize, Deserialize, PropRefs)]
+//! #[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
+//! #[serde(transparent)]
+//! pub struct MyProps(pub ObjectProperties);
+//!
+//! #[derive(Clone, Debug, Default, PropRefs, serde::Serialize, serde::Deserialize)]
 //! #[serde(rename_all = "camelCase")]
 //! #[prop_refs(Object)]
 //! pub struct MyObject {
@@ -43,7 +48,7 @@
 //!
 //!     #[serde(flatten)]
 //!     #[prop_refs]
-//!     pub object_properties: ObjectProperties,
+//!     pub extra: MyProps,
 //! }
 //! #
 //! # fn main() {}

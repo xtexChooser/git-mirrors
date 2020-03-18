@@ -267,6 +267,8 @@
 //! ```rust
 //! use activitystreams::{
 //!     context,
+//!     actor::{Actor, ActorBox},
+//!     ext::Ext,
 //!     object::{
 //!         properties::{
 //!             ObjectProperties,
@@ -276,9 +278,8 @@
 //!         Object,
 //!         ObjectBox,
 //!     },
-//!     actor::{Actor, ActorBox},
 //!     primitives::XsdAnyUri,
-//!     PropRefs,
+//!     Base, BaseBox, PropRefs,
 //! };
 //! use serde::{Deserialize, Serialize};
 //!
@@ -320,11 +321,12 @@
 //! ```rust
 //! use activitystreams::{
 //!     properties,
+//!     ext::Ext,
 //!     link::{
 //!         properties::LinkProperties,
 //!         Link, LinkBox, Mention,
 //!     },
-//!     PropRefs,
+//!     Base, BaseBox, PropRefs,
 //!     UnitString,
 //! };
 //! use serde::{Deserialize, Serialize};
@@ -357,6 +359,10 @@
 //!     }
 //! }
 //!
+//! #[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
+//! #[serde(transparent)]
+//! pub struct MyLinkProps(pub LinkProperties);
+//!
 //! /// Using the Properties derive macro
 //! ///
 //! /// This macro generates getters and setters for the associated fields.
@@ -371,9 +377,9 @@
 //!     #[prop_refs]
 //!     pub my_properties: MyProperties,
 //!
-//!     /// Derive AsRef/AsMut/Link for My -> LinkProperties
+//!     /// Derive AsRef/AsMut/Link for My -> MyLinkProperties
 //!     #[prop_refs]
-//!     pub link_properties: LinkProperties,
+//!     pub link_properties: MyLinkProps,
 //! }
 //!
 //! fn main() -> Result<(), anyhow::Error> {

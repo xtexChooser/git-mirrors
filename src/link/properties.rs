@@ -23,15 +23,20 @@
 //!
 //! ```rust
 //! use activitystreams::{
+//!     ext::Ext,
 //!     link::{
 //!         properties::LinkProperties,
 //!         Link, LinkBox,
 //!     },
-//!     PropRefs,
+//!     Base, BaseBox, PropRefs,
 //! };
 //! use serde::{Deserialize, Serialize};
 //!
-//! #[derive(Clone, Debug, Serialize, Deserialize, PropRefs)]
+//! #[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
+//! #[serde(transparent)]
+//! pub struct MyProps(pub LinkProperties);
+//!
+//! #[derive(Clone, Debug, Default, Serialize, Deserialize, PropRefs)]
 //! #[serde(rename_all = "camelCase")]
 //! #[prop_refs(Link)]
 //! pub struct MyLink {
@@ -43,7 +48,7 @@
 //!
 //!     #[serde(flatten)]
 //!     #[prop_refs]
-//!     pub link_properties: LinkProperties,
+//!     pub link_properties: MyProps,
 //! }
 //! #
 //! # fn main() {}

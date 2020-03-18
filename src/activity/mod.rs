@@ -17,6 +17,8 @@
  * along with ActivityStreams.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+//! Namespace for Activity types
+
 #[cfg(feature = "kinds")]
 pub mod kind;
 #[cfg(feature = "types")]

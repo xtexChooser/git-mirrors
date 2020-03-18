@@ -27,15 +27,24 @@
 //!         properties::CollectionProperties,
 //!         Collection, CollectionBox,
 //!     },
+//!     ext::Ext,
 //!     object::{
 //!         properties::ObjectProperties,
 //!         Object, ObjectBox,
 //!     },
-//!     PropRefs,
+//!     Base, BaseBox, PropRefs,
 //! };
 //! use serde::{Deserialize, Serialize};
 //!
-//! #[derive(Clone, Debug, Serialize, Deserialize, PropRefs)]
+//! #[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
+//! #[serde(transparent)]
+//! pub struct ObjProps(pub ObjectProperties);
+//!
+//! #[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
+//! #[serde(transparent)]
+//! pub struct CollectionProps(pub CollectionProperties);
+//!
+//! #[derive(Clone, Debug, Default, Serialize, Deserialize, PropRefs)]
 //! #[serde(rename_all = "camelCase")]
 //! #[prop_refs(Object)]
 //! #[prop_refs(Collection)]
@@ -48,11 +57,11 @@
 //!
 //!     #[serde(flatten)]
 //!     #[prop_refs]
-//!     pub object_properties: ObjectProperties,
+//!     pub object_properties: ObjProps,
 //!
 //!     #[serde(flatten)]
 //!     #[prop_refs]
-//!     pub collection_properties: CollectionProperties,
+//!     pub collection_properties: CollectionProps,
 //! }
 //! #
 //! # fn main() {}

@@ -26,6 +26,7 @@
 //!         properties::ActivityProperties,
 //!         Activity, ActivityBox,
 //!     },
+//!     ext::Ext,
 //!     object::{
 //!         properties::ObjectProperties,
 //!         Object, ObjectBox,
@@ -34,7 +35,15 @@
 //! };
 //! use serde::{Deserialize, Serialize};
 //!
-//! #[derive(Clone, Debug, Serialize, Deserialize, PropRefs)]
+//! #[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
+//! #[serde(transparent)]
+//! pub struct ObjProps(pub ObjectProperties);
+//!
+//! #[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
+//! #[serde(transparent)]
+//! pub struct ActivityProps(pub ActivityProperties);
+//!
+//! #[derive(Clone, Debug, Default, Serialize, Deserialize, PropRefs)]
 //! #[serde(rename_all = "camelCase")]
 //! #[prop_refs(Object)]
 //! #[prop_refs(Activity)]
@@ -49,11 +58,11 @@
 //!
 //!     #[serde(flatten)]
 //!     #[prop_refs]
-//!     pub object_properties: ObjectProperties,
+//!     pub object_properties: ObjProps,
 //!
 //!     #[serde(flatten)]
 //!     #[prop_refs]
-//!     pub activity_properties: ActivityProperties,
+//!     pub activity_properties: ActivityProps,
 //! }
 //! #
 //! # fn main() {}

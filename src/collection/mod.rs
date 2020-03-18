@@ -26,7 +26,7 @@ pub mod properties;
 #[cfg(feature = "types")]
 mod types;
 
-#[cfg(features = "types")]
+#[cfg(feature = "types")]
 pub use self::types::{
     OrderedCollection, OrderedCollectionPage, UnorderedCollection, UnorderedCollectionPage,
 };

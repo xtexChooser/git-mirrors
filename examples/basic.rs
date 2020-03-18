@@ -1,4 +1,4 @@
-use activitystreams::object::streams::Video;
+use activitystreams::object::Video;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut v = Video::default();

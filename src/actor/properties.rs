@@ -27,15 +27,28 @@
 //!         properties::ApActorProperties,
 //!         Actor, ActorBox,
 //!     },
+//!     ext::Ext,
 //!     object::{
 //!         properties::{ApObjectProperties, ObjectProperties},
 //!         Object, ObjectBox,
 //!     },
-//!     PropRefs,
+//!     Base, BaseBox, PropRefs,
 //! };
 //! use serde::{Deserialize, Serialize};
 //!
-//! #[derive(Clone, Debug, Serialize, Deserialize, PropRefs)]
+//! #[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
+//! #[serde(transparent)]
+//! pub struct ObjProps(pub ObjectProperties);
+//!
+//! #[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
+//! #[serde(transparent)]
+//! pub struct ApObjProps(pub ApObjectProperties);
+//!
+//! #[derive(Clone, Debug, Default, serde::Serialize, serde::Deserialize)]
+//! #[serde(transparent)]
+//! pub struct ApActorProps(pub ApActorProperties);
+//!
+//! #[derive(Clone, Debug, Default, Serialize, Deserialize, PropRefs)]
 //! #[serde(rename_all = "camelCase")]
 //! #[prop_refs(Object)]
 //! #[prop_refs(Actor)]
@@ -48,15 +61,15 @@
 //!
 //!     #[serde(flatten)]
 //!     #[prop_refs]
-//!     pub object_props: ObjectProperties,
+//!     pub object_props: ObjProps,
 //!
 //!     #[serde(flatten)]
 //!     #[prop_refs]
-//!     pub ap_object_props: ApObjectProperties,
+//!     pub ap_object_props: ApObjProps,
 //!
 //!     #[serde(flatten)]
 //!     #[prop_refs]
-//!     pub actor_props: ApActorProperties,
+//!     pub actor_props: ApActorProps,
 //! }
 //! #
 //! # fn main() {}

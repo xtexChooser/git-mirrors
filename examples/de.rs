@@ -1,6 +1,6 @@
 use activitystreams::{
-    collection::{apub::OrderedCollection, properties::CollectionProperties},
-    object::{streams::Page, ObjectBox},
+    collection::{properties::CollectionProperties, OrderedCollection},
+    object::{ObjectBox, Page},
 };
 use anyhow::Error;
 
