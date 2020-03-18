@@ -19,19 +19,17 @@
 
 //! Namespace for Actor types
 
-#[cfg(feature = "types")]
-pub mod apub;
 #[cfg(feature = "kinds")]
 pub mod kind;
 #[cfg(feature = "types")]
 pub mod properties;
 #[cfg(feature = "types")]
-pub mod streams;
-
-use crate::object::Object;
+mod types;
 
 #[cfg(feature = "types")]
-use crate::wrapper_type;
+pub use self::types::{Application, Group, Organization, Person, Service};
+
+use crate::object::Object;
 
 /// `Actor` types are `Object` types that are capable of performing activities.
 ///
@@ -52,5 +50,5 @@ use crate::wrapper_type;
 /// (e.g. VCard) define their own types for describing people. An implementation that wishes, for
 /// example, to use a `vcard:Individual` as an `Actor` MUST also identify that `Actor` as a
 /// `Person`.
-#[cfg_attr(feature = "types", wrapper_type)]
+#[cfg_attr(feature = "derive", crate::wrapper_type)]
 pub trait Actor: Object {}

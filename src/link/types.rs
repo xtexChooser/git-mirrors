@@ -18,14 +18,14 @@
  */
 
 use crate::{
+    ext::Ext,
     link::{kind::*, properties::*, Link, LinkBox},
-    PropRefs,
+    Base, PropRefs,
 };
-use serde::{Deserialize, Serialize};
 
 #[cfg(feature = "types")]
 /// A specialized Link that represents an @mention.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
+#[derive(Clone, Debug, Default, PropRefs, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 #[prop_refs(Link)]
 pub struct Mention {

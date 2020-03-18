@@ -17,17 +17,19 @@
  * along with ActivityStreams.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#[cfg(feature = "types")]
-pub mod apub;
 #[cfg(feature = "kinds")]
 pub mod kind;
 #[cfg(feature = "types")]
 pub mod properties;
 #[cfg(feature = "types")]
-pub mod streams;
+mod types;
 
 #[cfg(feature = "types")]
-use crate::wrapper_type;
+pub use self::types::{
+    AMove, Accept, Add, Announce, Arrive, Block, Create, Delete, Dislike, Flag, Follow, Ignore,
+    Invite, Join, Leave, Like, Listen, Offer, Question, Read, Reject, Remove, TentativeAccept,
+    TentativeReject, Travel, Undo, Update, View,
+};
 
 use crate::object::Object;
 
@@ -37,12 +39,12 @@ use crate::object::Object;
 /// The `Activity` type itself serves as an abstract base type for all types of activities. It is
 /// important to note that the `Activity` type itself does not carry any specific semantics about
 /// the kind of action being taken.
-#[cfg_attr(feature = "types", wrapper_type)]
+#[cfg_attr(feature = "derive", crate::wrapper_type)]
 pub trait Activity: Object {}
 
 /// Instances of `IntransitiveActivity` are a subtype of `Activity` representing intransitive
 /// actions.
 ///
 /// The `object` property is therefore inappropriate for these activities.
-#[cfg_attr(feature = "types", wrapper_type)]
+#[cfg_attr(feature = "derive", crate::wrapper_type)]
 pub trait IntransitiveActivity: Activity {}

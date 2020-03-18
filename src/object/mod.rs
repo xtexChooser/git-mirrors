@@ -19,25 +19,26 @@
 
 //! Namespace for Object types
 
-#[cfg(feature = "types")]
-pub mod apub;
 #[cfg(feature = "kinds")]
 pub mod kind;
 #[cfg(feature = "types")]
 pub mod properties;
 #[cfg(feature = "types")]
-pub mod streams;
+mod types;
 
 #[cfg(feature = "types")]
-use crate::wrapper_type;
+pub use self::types::{
+    Article, Audio, Document, Event, Image, Note, Page, Place, Profile, Relationship, Tombstone,
+    Video,
+};
 
 /// Describes an object of any kind.
 ///
 /// The Object type serves as the base type for most of the other kinds of objects defined in the
 /// Activity Vocabulary, including other Core types such as `Activity`, `IntransitiveActivity`,
 /// `Collection` and `OrderedCollection`.
-#[cfg_attr(feature = "types", wrapper_type)]
-pub trait Object: std::fmt::Debug {}
+#[cfg_attr(feature = "derive", crate::wrapper_type)]
+pub trait Object: crate::Base {}
 
 #[cfg(feature = "types")]
 /// Describes any kind of Image
@@ -47,6 +48,7 @@ pub trait Object: std::fmt::Debug {}
 /// deserialized, but allows any adjacent fields through
 #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 pub struct AnyImage {
+    #[serde(rename = "type")]
     kind: self::kind::ImageType,
 
     #[serde(flatten)]

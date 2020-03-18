@@ -17,27 +17,30 @@
  * along with ActivityStreams.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-//! Collection traits and types
+//! Namespace for Collection types
 
 use crate::{
     collection::{
         kind::*, properties::*, Collection, CollectionBox, CollectionPage, CollectionPageBox,
     },
+    ext::Ext,
     object::{
         properties::{ApObjectProperties, ObjectProperties},
         Object, ObjectBox,
     },
-    PropRefs,
+    Base, Extensible, PropRefs,
 };
-use serde::{Deserialize, Serialize};
 
 /// The default `Collection` type.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
+#[derive(Clone, Debug, Default, Extensible, PropRefs, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 #[prop_refs(Object)]
 #[prop_refs(Collection)]
+#[extension(ApObjectProperties)]
 pub struct UnorderedCollection {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: CollectionType,
 
     /// Adds all valid object properties to this struct
@@ -45,10 +48,29 @@ pub struct UnorderedCollection {
     #[prop_refs]
     pub object_props: ObjectProperties,
 
-    /// Adds all valid ap object properties to this struct
+    /// Adds all valid collection properties to this struct
     #[serde(flatten)]
     #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
+    pub collection_props: CollectionProperties,
+}
+
+/// A subtype of `Collection` in which members of the logical collection are assumed to always be
+/// strictly ordered.
+#[derive(Clone, Debug, Default, Extensible, PropRefs, serde::Deserialize, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+#[prop_refs(Object)]
+#[prop_refs(Collection)]
+#[extension(ApObjectProperties)]
+pub struct OrderedCollection {
+    #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
+    kind: OrderedCollectionType,
+
+    /// Adds all valid object properties to this struct
+    #[serde(flatten)]
+    #[prop_refs]
+    pub object_props: ObjectProperties,
 
     /// Adds all valid collection properties to this struct
     #[serde(flatten)]
@@ -57,24 +79,22 @@ pub struct UnorderedCollection {
 }
 
 /// Used to represent distinct subsets of items from a `Collection`.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
+#[derive(Clone, Debug, Default, Extensible, PropRefs, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 #[prop_refs(Object)]
 #[prop_refs(Collection)]
 #[prop_refs(CollectionPage)]
+#[extension(ApObjectProperties)]
 pub struct UnorderedCollectionPage {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: CollectionPageType,
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
-
-    /// Adds all valid ap object properties to this struct
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
 
     /// Adds all valid collection properties to this struct
     #[serde(flatten)]
@@ -87,51 +107,23 @@ pub struct UnorderedCollectionPage {
     pub collection_page_props: CollectionPageProperties,
 }
 
-/// A subtype of `Collection` in which members of the logical collection are assumed to always be
-/// strictly ordered.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
-#[serde(rename_all = "camelCase")]
-#[prop_refs(Object)]
-#[prop_refs(Collection)]
-pub struct OrderedCollection {
-    #[serde(rename = "type")]
-    kind: OrderedCollectionType,
-
-    /// Adds all valid object properties to this struct
-    #[serde(flatten)]
-    #[prop_refs]
-    pub object_props: ObjectProperties,
-
-    /// Adds all valid ap object properties to this struct
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
-
-    /// Adds all valid collection properties to this struct
-    #[serde(flatten)]
-    #[prop_refs]
-    pub collection_props: CollectionProperties,
-}
-
 /// Used to represent ordered subsets of items from an `OrderedCollection`.
-#[derive(Clone, Debug, Default, Deserialize, Serialize, PropRefs)]
+#[derive(Clone, Debug, Default, Extensible, PropRefs, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 #[prop_refs(Object)]
 #[prop_refs(Collection)]
 #[prop_refs(CollectionPage)]
+#[extension(ApObjectProperties)]
 pub struct OrderedCollectionPage {
     #[serde(rename = "type")]
+    #[serde(alias = "objectType")]
+    #[serde(alias = "verb")]
     kind: OrderedCollectionPageType,
 
     /// Adds all valid object properties to this struct
     #[serde(flatten)]
     #[prop_refs]
     pub object_props: ObjectProperties,
-
-    /// Adds all valid ap object properties to this struct
-    #[serde(flatten)]
-    #[prop_refs]
-    pub ap_object_props: ApObjectProperties,
 
     /// Adds all valid collection properties to this struct
     #[serde(flatten)]

@@ -29,9 +29,6 @@ mod types;
 #[cfg(feature = "types")]
 pub use self::types::Mention;
 
-#[cfg(feature = "types")]
-use crate::wrapper_type;
-
 /// A Link is an indirect, qualified reference to a resource identified by a URL.
 ///
 /// The fundamental model for links is established by
@@ -40,5 +37,5 @@ use crate::wrapper_type;
 /// used, it establishes a qualified relation connecting the subject (the containing object) to the
 /// resource identified by the href. Properties of the Link are properties of the reference as
 /// opposed to properties of the resource.
-#[cfg_attr(feature = "types", wrapper_type)]
-pub trait Link: std::fmt::Debug {}
+#[cfg_attr(feature = "derive", crate::wrapper_type)]
+pub trait Link: crate::Base {}

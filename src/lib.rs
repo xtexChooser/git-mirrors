@@ -25,34 +25,27 @@
 //!
 //! First, add ActivityStreams to your dependencies
 //! ```toml
-//! activitystreams = "0.5.0-alpha.8"
+//! activitystreams = "0.5.0-alpha.9"
 //! ```
 //!
 //! ### Types
 //!
-//! The project is laid out by Kind => vocabulary => Type
+//! The project is laid out by Kind => Type
 //!
 //! So to use an ActivityStreams Video, you'd write
 //! ```rust
-//! use activitystreams::object::streams::Video;
+//! use activitystreams::object::Video;
 //! ```
 //!
-//! And to use an ActivityPub profile, you'd write
+//! And to use an ActivityStreams profile, you'd write
 //! ```rust
-//! use activitystreams::object::apub::Profile;
-//! ```
-//!
-//! Link is a little different, since there's only one defined link type, called Mention.
-//! ```rust
-//! use activitystreams::link::Mention;
+//! use activitystreams::object::Profile;
 //! ```
 //!
 //! ### Properties
 //!
 //! Each concrete type implements `AsRef<>` for each of their properties fields. A basic
-//! ActivityStreams object will implement `AsRef<ObjectProperties>`, while an ActivityPub Actor
-//! might implement `AsRef<ObjectProperties>`, `AsRef<ApObjectProperties>`, and
-//! `AsRef<ApActorProperties>`.
+//! ActivityStreams object will implement `AsRef<ObjectProperties>`.
 //!
 //! The Properties types can be found near the kind they're associated with. `ObjectProperties` and
 //! `ApObjectProperties` are located in `activitystreams::object::properties`.
@@ -188,12 +181,35 @@
 //! ```
 //! And this type would only deserialize for JSON where `"type":"Person"`
 //!
+//! ### Extensions
+//!
+//! In some cases, like when dealing with ActivityPub, it is neccessary to extend the
+//! ActivityStreams specification. For this purpose, two traits and a type have been introduced.
+//!
+//! ```ignore
+//! use activitystreams::ext::{Ext, Extensible, Extension};
+//! ```
+//!
+//! The `Ext` type is a simple record containing first, the ActivityStreams type, and second, the
+//! extension to that type.
+//!
+//! There are two provided extensions in the ActivityStreams library.
+//! - ApObjectProperties, extra properties for all ActivityStreams objects in the ActivityPub spec
+//! - ApActorProperties, extra properties specifically for Actors in the ActivityPub spec
+//!
+//! To use an object with its default extensions, the object's `full()` associated function may be
+//! invoked.
+//! ```rust
+//! # use activitystreams::object::Video;
+//! let video_with_extensions = Video::full();
+//! ```
+//!
 //! ### Features
 //! There are a number of features that can be disabled in this crate. By default, everything is
 //! enabled.
 //!
 //! ```toml
-//! activitystreams = { version = "0.5.0-alpha.8", default-features = "false", features = ["derive"] }
+//! activitystreams = { version = "0.5.0-alpha.9", default-features = "false", features = ["derive"] }
 //! ```
 //!
 //! | feature    | what you get                                              |
@@ -209,7 +225,7 @@
 //! ### Basic
 //!
 //! ```rust
-//! use activitystreams::object::{streams::Video, properties::ObjectProperties};
+//! use activitystreams::object::{Video, properties::ObjectProperties};
 //! use anyhow::Error;
 //!
 //! // We perform configuration in a dedicated function to specify which Properties type we want to
@@ -256,7 +272,7 @@
 //!             ObjectProperties,
 //!             ProfileProperties
 //!         },
-//!         apub::Profile,
+//!         Profile,
 //!         Object,
 //!         ObjectBox,
 //!     },
@@ -279,7 +295,7 @@
 //! }
 //!
 //! fn main() -> Result<(), anyhow::Error> {
-//!     let mut profile = Profile::default();
+//!     let mut profile = Profile::full();
 //!
 //!     let pprops: &mut ProfileProperties = profile.as_mut();
 //!
@@ -379,6 +395,7 @@ pub mod actor;
 pub mod collection;
 #[cfg(feature = "types")]
 pub mod endpoint;
+pub mod ext;
 pub mod link;
 pub mod object;
 #[cfg(feature = "primitives")]
@@ -392,11 +409,28 @@ pub use self::{
     object::Object,
 };
 
+#[cfg_attr(feature = "types", wrapper_type)]
+pub trait Base: std::fmt::Debug {}
+
 #[cfg(feature = "primitives")]
 /// The context associated with all of the Activity Streams types defined in the crate.
 pub fn context() -> crate::primitives::XsdAnyUri {
     "https://www.w3.org/ns/activitystreams".parse().unwrap()
 }
 
+#[cfg(feature = "primitives")]
+/// The 'security' extension used by some implementations
+pub fn security() -> crate::primitives::XsdAnyUri {
+    "https://w3id.org/security/v1".parse().unwrap()
+}
+
+#[cfg(feature = "primitives")]
+/// The 'public' actor, doesn't denote a real actor but describes a publicly available object.
+pub fn public() -> crate::primitives::XsdAnyUri {
+    "https://www.w3.org/ns/activitystreams#Public"
+        .parse()
+        .unwrap()
+}
+
 #[cfg(feature = "derive")]
-pub use activitystreams_derive::{properties, wrapper_type, PropRefs, UnitString};
+pub use activitystreams_derive::{properties, wrapper_type, Extensible, PropRefs, UnitString};

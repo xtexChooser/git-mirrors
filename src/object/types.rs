@@ -18,15 +18,16 @@
  */
 
 use crate::{
+    ext::Ext,
     object::{kind::*, properties::*, Object, ObjectBox},
-    PropRefs,
+    Base, Extensible, PropRefs,
 };
-use serde::{Deserialize, Serialize};
 
 /// Represents any kind of multi-paragraph written work.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
+#[derive(Clone, Debug, Default, Extensible, PropRefs, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 #[prop_refs(Object)]
+#[extension(ApObjectProperties)]
 pub struct Article {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -40,9 +41,10 @@ pub struct Article {
 }
 
 /// Represents an audio document of any kind.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
+#[derive(Clone, Debug, Default, Extensible, PropRefs, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 #[prop_refs(Object)]
+#[extension(ApObjectProperties)]
 pub struct Audio {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -56,9 +58,10 @@ pub struct Audio {
 }
 
 /// Represents a document of any kind.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
+#[derive(Clone, Debug, Default, Extensible, PropRefs, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 #[prop_refs(Object)]
+#[extension(ApObjectProperties)]
 pub struct Document {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -72,9 +75,10 @@ pub struct Document {
 }
 
 /// Represents any kind of event.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
+#[derive(Clone, Debug, Default, Extensible, PropRefs, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 #[prop_refs(Object)]
+#[extension(ApObjectProperties)]
 pub struct Event {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -88,9 +92,10 @@ pub struct Event {
 }
 
 /// An image document of any kind
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
+#[derive(Clone, Debug, Default, Extensible, PropRefs, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 #[prop_refs(Object)]
+#[extension(ApObjectProperties)]
 pub struct Image {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -104,9 +109,10 @@ pub struct Image {
 }
 
 /// Represents a short written work typically less than a single paragraph in length.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
+#[derive(Clone, Debug, Default, Extensible, PropRefs, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 #[prop_refs(Object)]
+#[extension(ApObjectProperties)]
 pub struct Note {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -120,9 +126,10 @@ pub struct Note {
 }
 
 /// Represents a Web Page.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
+#[derive(Clone, Debug, Default, Extensible, PropRefs, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 #[prop_refs(Object)]
+#[extension(ApObjectProperties)]
 pub struct Page {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -153,9 +160,10 @@ pub struct Page {
 /// While publishers are not required to use these specific properties and MAY make use of other
 /// mechanisms for describing locations, consuming implementations that support the Place object
 /// MUST support the use of these properties.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
+#[derive(Clone, Debug, Default, Extensible, PropRefs, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 #[prop_refs(Object)]
+#[extension(ApObjectProperties)]
 pub struct Place {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -177,9 +185,10 @@ pub struct Place {
 /// `Actor` Type objects.
 ///
 /// The `describes` property is used to reference the object being described by the profile.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
+#[derive(Clone, Debug, Default, Extensible, PropRefs, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 #[prop_refs(Object)]
+#[extension(ApObjectProperties)]
 pub struct Profile {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -211,9 +220,10 @@ pub struct Profile {
 /// individuals that are directly connected within a person's social graph. Suppose we have a user,
 /// Sally, with direct relationships to users Joe and Jane. Sally follows Joe's updates while Sally
 /// and Jane have a mutual relationship.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
+#[derive(Clone, Debug, Default, Extensible, PropRefs, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 #[prop_refs(Object)]
+#[extension(ApObjectProperties)]
 pub struct Relationship {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -235,9 +245,10 @@ pub struct Relationship {
 ///
 /// It can be used in Collections to signify that there used to be an object at this position, but
 /// it has been deleted.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
+#[derive(Clone, Debug, Default, Extensible, PropRefs, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 #[prop_refs(Object)]
+#[extension(ApObjectProperties)]
 pub struct Tombstone {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -256,9 +267,10 @@ pub struct Tombstone {
 }
 
 /// Represents a video document of any kind.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
+#[derive(Clone, Debug, Default, Extensible, PropRefs, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 #[prop_refs(Object)]
+#[extension(ApObjectProperties)]
 pub struct Video {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]

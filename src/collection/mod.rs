@@ -19,19 +19,19 @@
 
 //! Namespace for Collection types
 
-#[cfg(feature = "types")]
-pub mod apub;
 #[cfg(feature = "kinds")]
 pub mod kind;
 #[cfg(feature = "types")]
 pub mod properties;
 #[cfg(feature = "types")]
-pub mod streams;
+mod types;
+
+#[cfg(features = "types")]
+pub use self::types::{
+    OrderedCollection, OrderedCollectionPage, UnorderedCollection, UnorderedCollectionPage,
+};
 
 use crate::object::Object;
-
-#[cfg(feature = "types")]
-use crate::wrapper_type;
 
 /// A Collection is a subtype of `Object` that represents ordered or unordered sets of `Object` or
 /// `Link` instances.
@@ -43,7 +43,7 @@ use crate::wrapper_type;
 ///
 /// `UnorderedCollection` and `OrderedCollection` types are provided by the `activitystreams-types`
 /// crate.
-#[cfg_attr(feature = "types", wrapper_type)]
+#[cfg_attr(feature = "derive", crate::wrapper_type)]
 pub trait Collection: Object {}
 
 /// Used to represent distinct subsets of items from a Collection.
@@ -55,5 +55,5 @@ pub trait Collection: Object {}
 ///
 /// `UnorderedCollectionPage` and `OrderedCollectionPage` types are provied by the
 /// `activitystreams-types` crate.
-#[cfg_attr(feature = "types", wrapper_type)]
+#[cfg_attr(feature = "derive", crate::wrapper_type)]
 pub trait CollectionPage: Collection {}

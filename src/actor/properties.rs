@@ -63,10 +63,14 @@
 //! ```
 
 use crate::{
+    actor::Actor,
     endpoint::EndpointProperties,
+    ext::Extension,
     primitives::{XsdAnyUri, XsdString},
     properties,
 };
+
+impl<T> Extension<T> for ApActorProperties where T: Actor {}
 
 properties! {
     ApActor {

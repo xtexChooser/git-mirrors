@@ -34,7 +34,6 @@
 //!     PropRefs,
 //! };
 //! use serde::{Deserialize, Serialize};
-//! use std::any::Any;
 //!
 //! #[derive(Clone, Debug, Serialize, Deserialize, PropRefs)]
 //! #[serde(rename_all = "camelCase")]

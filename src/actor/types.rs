@@ -18,17 +18,22 @@
  */
 
 use crate::{
-    actor::{kind::*, Actor, ActorBox},
-    object::{properties::ObjectProperties, Object, ObjectBox},
-    PropRefs,
+    actor::{kind::*, properties::ApActorProperties, Actor, ActorBox},
+    ext::Ext,
+    object::{
+        properties::{ApObjectProperties, ObjectProperties},
+        Object, ObjectBox,
+    },
+    Base, Extensible, PropRefs,
 };
-use serde::{Deserialize, Serialize};
 
 /// Describes a software application.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
+#[derive(Clone, Debug, Default, Extensible, PropRefs, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 #[prop_refs(Object)]
 #[prop_refs(Actor)]
+#[extension(ApObjectProperties)]
+#[extension(ApActorProperties)]
 pub struct Application {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -42,10 +47,12 @@ pub struct Application {
 }
 
 /// Represents a formal or informal collective of Actors.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
+#[derive(Clone, Debug, Default, Extensible, PropRefs, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 #[prop_refs(Object)]
 #[prop_refs(Actor)]
+#[extension(ApObjectProperties)]
+#[extension(ApActorProperties)]
 pub struct Group {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -59,7 +66,7 @@ pub struct Group {
 }
 
 /// Represents an organization.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
+#[derive(Clone, Debug, Default, Extensible, PropRefs, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Organization {
     #[serde(rename = "type")]
@@ -74,10 +81,12 @@ pub struct Organization {
 }
 
 /// Represents an individual person.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
+#[derive(Clone, Debug, Default, Extensible, PropRefs, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 #[prop_refs(Object)]
 #[prop_refs(Actor)]
+#[extension(ApObjectProperties)]
+#[extension(ApActorProperties)]
 pub struct Person {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]
@@ -91,10 +100,12 @@ pub struct Person {
 }
 
 /// Represents a service of any kind.
-#[derive(Clone, Debug, Default, Deserialize, PropRefs, Serialize)]
+#[derive(Clone, Debug, Default, Extensible, PropRefs, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 #[prop_refs(Object)]
 #[prop_refs(Actor)]
+#[extension(ApObjectProperties)]
+#[extension(ApActorProperties)]
 pub struct Service {
     #[serde(rename = "type")]
     #[serde(alias = "objectType")]

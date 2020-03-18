@@ -27,10 +27,9 @@
 //!         properties::ObjectProperties,
 //!         Object, ObjectBox,
 //!     },
-//!     PropRefs,
+//!     Base, BaseBox, PropRefs,
 //! };
 //! use serde::{Deserialize, Serialize};
-//! use std::any::Any;
 //!
 //! #[derive(Clone, Debug, Serialize, Deserialize, PropRefs)]
 //! #[serde(rename_all = "camelCase")]
@@ -51,11 +50,14 @@
 //! ```
 
 use crate::{
+    ext::Extension,
     link::LinkBox,
-    object::{AnyImage, ObjectBox},
+    object::{AnyImage, Object, ObjectBox},
     primitives::*,
-    properties,
+    properties, BaseBox,
 };
+
+impl<T> Extension<T> for ApObjectProperties where T: Object {}
 
 properties! {
     Object {
@@ -103,8 +105,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
         },
 
@@ -120,8 +121,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
         },
 
@@ -135,8 +135,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
         },
 
@@ -171,8 +170,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
             rename("@context"),
         },
@@ -219,8 +217,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
         },
 
@@ -266,8 +263,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
         },
 
@@ -280,8 +276,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
         },
 
@@ -294,8 +289,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
         },
 
@@ -321,8 +315,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
         },
 
@@ -370,8 +363,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
         },
 
@@ -410,8 +402,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
         },
 
@@ -424,8 +415,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
         },
 
@@ -438,8 +428,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
         },
 
@@ -453,8 +442,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
         },
 
@@ -627,8 +615,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
             functional,
         },
@@ -642,8 +629,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
         },
 

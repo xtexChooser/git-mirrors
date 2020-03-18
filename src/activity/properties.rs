@@ -30,7 +30,7 @@
 //!         properties::ObjectProperties,
 //!         Object, ObjectBox,
 //!     },
-//!     PropRefs,
+//!     Base, BaseBox, PropRefs,
 //! };
 //! use serde::{Deserialize, Serialize};
 //!
@@ -59,7 +59,7 @@
 //! # fn main() {}
 //! ```
 
-use crate::{link::LinkBox, object::ObjectBox, primitives::*, properties};
+use crate::{primitives::*, properties, BaseBox};
 
 properties! {
     Activity {
@@ -81,8 +81,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox
             ],
         },
 
@@ -95,8 +94,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
         },
     }
@@ -119,8 +117,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
             required
         },
@@ -138,8 +135,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
         },
 
@@ -157,8 +153,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
         },
     }
@@ -181,8 +176,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
             required,
         },
@@ -199,8 +193,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
             required,
         },
@@ -224,8 +217,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
             required,
         },
@@ -242,8 +234,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
             required,
         },
@@ -262,8 +253,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
             required,
         },
@@ -287,8 +277,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
             required,
         },
@@ -305,8 +294,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
             required,
         },
@@ -325,8 +313,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
         },
     }
@@ -349,8 +336,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
             required,
         },
@@ -367,8 +353,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
             required,
         },
@@ -386,8 +371,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
         },
     }
@@ -410,8 +394,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
             required,
         },
@@ -428,8 +411,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
             required,
         },
@@ -447,8 +429,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
         },
 
@@ -466,8 +447,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
         },
     }
@@ -490,8 +470,7 @@ properties! {
             ],
             types [
                 XsdString,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
             required,
         },
@@ -509,8 +488,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
             required,
         },
@@ -587,8 +565,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
         },
 
@@ -604,8 +581,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
         },
     }

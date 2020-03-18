@@ -23,8 +23,8 @@
 //!
 //! First, add `serde` and `activitystreams-derive` to your Cargo.toml
 //! ```toml
-//! activitystreams-derive = "0.5.0-alpha.3"
-//! # or activitystreams = "0.5.0-alpha.4"
+//! activitystreams-derive = "0.5.0-alpha.4"
+//! # or activitystreams = "0.5.0-alpha.9"
 //! serde = { version = "1.0", features = ["derive"] }
 //! ```
 //!
@@ -103,6 +103,66 @@ use syn::{
     token, Attribute, Data, DeriveInput, Fields, Ident, LitStr, Result, Token, Type,
 };
 
+/// Generate a type with default extensions
+///
+/// This derive
+/// ```ignore
+/// use activitystreams::{extensions::Ext, Extensible};
+///
+/// #[derive(Clone, Debug, Default, Extensible)]
+/// #[extension(MyExtension)]
+/// #[extension(MyOtherExtension)]
+/// pub struct MyType;
+/// ```
+///
+/// Produces this code
+/// ```ignore
+/// impl MyType {
+///     pub fn full() -> Ext<Ext<MyType, MyExtension>, OtherExtension> {
+///         Default::default()
+///     }
+/// }
+/// ```
+#[proc_macro_derive(Extensible, attributes(extension))]
+pub fn extensible(input: TokenStream) -> TokenStream {
+    let input: DeriveInput = syn::parse(input).unwrap();
+
+    let name = input.ident;
+
+    let kind: proc_macro2::TokenStream = input
+        .attrs
+        .iter()
+        .filter_map(move |attr| {
+            if attr
+                .path
+                .segments
+                .last()
+                .map(|segment| segment.ident == "extension")
+                .unwrap_or(false)
+            {
+                Some(from_value(attr.clone()))
+            } else {
+                None
+            }
+        })
+        .fold(quote! {#name}, |acc, ident| {
+            quote! { Ext<#acc, #ident> }
+        });
+
+    let tokens = quote! {
+        impl #name {
+            /// Generate a fully extended type
+            ///
+            /// This effect can be achieved with `Self::new().extend(SomeExtension::default())`
+            pub fn full() -> #kind {
+                Default::default()
+            }
+        }
+    };
+
+    tokens.into()
+}
+
 /// Derive implementations for activitystreams objects
 ///
 /// ```ignore
@@ -135,7 +195,18 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
     };
 
     let name2 = name.clone();
-    let base_impls: proc_macro2::TokenStream = input
+    let name3 = name.clone();
+    let base_impl = quote! {
+        impl Base for #name3 {}
+
+        impl #name3 {
+            /// Create from default
+            pub fn new() -> Self {
+                Default::default()
+            }
+        }
+    };
+    let trait_impls: proc_macro2::TokenStream = input
         .attrs
         .iter()
         .filter_map(move |attr| {
@@ -191,9 +262,47 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
                     }
                 }
 
+                impl<U> AsRef<#ty> for Ext<#name, U>
+                where
+                    U: std::fmt::Debug,
+                {
+                    fn as_ref(&self) -> &#ty {
+                        self.base.as_ref()
+                    }
+                }
+
+                impl<U, V> AsRef<#ty> for Ext<Ext<#name, U>, V>
+                where
+                    U: std::fmt::Debug,
+                    V: std::fmt::Debug,
+                {
+                    fn as_ref(&self) -> &#ty {
+                        self.base.as_ref()
+                    }
+                }
+
                 impl AsMut<#ty> for #name {
                     fn as_mut(&mut self) -> &mut #ty {
                         &mut self.#ident
+                    }
+                }
+
+                impl<U> AsMut<#ty> for Ext<#name, U>
+                where
+                    U: std::fmt::Debug,
+                {
+                    fn as_mut(&mut self) -> &mut #ty {
+                        self.base.as_mut()
+                    }
+                }
+
+                impl<U, V> AsMut<#ty> for Ext<Ext<#name, U>, V>
+                where
+                    U: std::fmt::Debug,
+                    V: std::fmt::Debug,
+                {
+                    fn as_mut(&mut self) -> &mut #ty {
+                        self.base.as_mut()
                     }
                 }
             }
@@ -201,7 +310,8 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
         .collect();
 
     let full = quote! {
-        #base_impls
+        #base_impl
+        #trait_impls
         #tokens
     };
 
