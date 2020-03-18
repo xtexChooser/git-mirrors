@@ -205,6 +205,14 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
                 Default::default()
             }
         }
+
+        impl std::convert::TryFrom<#name> for BaseBox {
+            type Error = std::io::Error;
+
+            fn try_from(s: #name) -> Result<Self, Self::Error> {
+                BaseBox::from_concrete(s)
+            }
+        }
     };
     let trait_impls: proc_macro2::TokenStream = input
         .attrs

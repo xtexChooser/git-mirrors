@@ -20,7 +20,7 @@
 use crate::{
     ext::Ext,
     link::{kind::*, properties::*, Link, LinkBox},
-    Base, PropRefs,
+    Base, BaseBox, PropRefs,
 };
 
 #[cfg(feature = "types")]

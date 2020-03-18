@@ -27,7 +27,7 @@ use crate::{
         properties::{ApObjectProperties, ObjectProperties},
         Object, ObjectBox,
     },
-    Base, Extensible, PropRefs,
+    Base, BaseBox, Extensible, PropRefs,
 };
 
 /// Indicates that the actor accepts the object.

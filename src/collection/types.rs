@@ -28,7 +28,7 @@ use crate::{
         properties::{ApObjectProperties, ObjectProperties},
         Object, ObjectBox,
     },
-    Base, Extensible, PropRefs,
+    Base, BaseBox, Extensible, PropRefs,
 };
 
 /// The default `Collection` type.

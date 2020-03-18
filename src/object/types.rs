@@ -20,7 +20,7 @@
 use crate::{
     ext::Ext,
     object::{kind::*, properties::*, Object, ObjectBox},
-    Base, Extensible, PropRefs,
+    Base, BaseBox, Extensible, PropRefs,
 };
 
 /// Represents any kind of multi-paragraph written work.

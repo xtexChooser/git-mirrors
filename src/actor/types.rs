@@ -24,7 +24,7 @@ use crate::{
         properties::{ApObjectProperties, ObjectProperties},
         Object, ObjectBox,
     },
-    Base, Extensible, PropRefs,
+    Base, BaseBox, Extensible, PropRefs,
 };
 
 /// Describes a software application.
