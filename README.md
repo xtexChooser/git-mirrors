@@ -9,7 +9,7 @@ __A set of Traits and Types that make up the ActivityStreams and ActivityPub spe
 
 First, add ActivityStreams to your dependencies
 ```toml
-activitystreams = "0.5.0-alpha.9"
+activitystreams = "0.5.0-alpha.10"
 ```
 
 ### Types
@@ -177,7 +177,7 @@ There are a number of features that can be disabled in this crate. By default, e
 enabled.
 
 ```toml
-activitystreams = { version = "0.5.0-alpha.9", default-features = "false", features = ["derive"] }
+activitystreams = { version = "0.5.0-alpha.10", default-features = "false", features = ["derive"] }
 ```
 
 | feature    | what you get                                              |

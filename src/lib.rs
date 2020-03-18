@@ -25,7 +25,7 @@
 //!
 //! First, add ActivityStreams to your dependencies
 //! ```toml
-//! activitystreams = "0.5.0-alpha.9"
+//! activitystreams = "0.5.0-alpha.10"
 //! ```
 //!
 //! ### Types
@@ -209,7 +209,7 @@
 //! enabled.
 //!
 //! ```toml
-//! activitystreams = { version = "0.5.0-alpha.9", default-features = "false", features = ["derive"] }
+//! activitystreams = { version = "0.5.0-alpha.10", default-features = "false", features = ["derive"] }
 //! ```
 //!
 //! | feature    | what you get                                              |
@@ -416,6 +416,9 @@ pub use self::{
 };
 
 #[cfg_attr(feature = "types", wrapper_type)]
+/// The lowermost trait of the trait structure
+///
+/// Base exists solely so Object and Link can have impls that don't potentially conflict
 pub trait Base: std::fmt::Debug {}
 
 #[cfg(feature = "primitives")]
