@@ -1,4 +1,112 @@
+/*
+ * This file is part of ActivityStreams.
+ *
+ * Copyright © 2020 Riley Trautman
+ *
+ * ActivityStreams is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * ActivityStreams is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with ActivityStreams.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 //! Defining extensibility in the ActivityStreams spec
+//!
+//! In ActivityStreams, there are many times you may want to use an extension. For example, to
+//! interact with Mastodon, you need to at least understand the `publicKey` field on their actor
+//! type. If not, you won't be able to use HTTP Signatures, and will have your messages rejected.
+//!
+//! But this library doesn't provide any of the security extensions to ActivityStreams. In order to
+//! support it, you could implment your own extensions to this library. Let's cover a basic
+//! example.
+//!
+//! ```rust
+//! // For this example, we'll use the Extensible trait, the Extension trait, the Actor trait, and
+//! // the Person type
+//! use activitystreams::{
+//!     actor::{Actor, Person},
+//!     ext::{Extensible, Extension},
+//! };
+//!
+//! /// Let's define the PublicKey type. The three fields in this PublicKey struct are how Mastodon
+//! /// represents Public Keys on actors. We'll need to derive Serialize and Deserialize for these
+//! /// in order for them to be useful.
+//! #[derive(Clone, Debug, Default, serde::Deserialize, serde::Serialize)]
+//! #[serde(rename_all = "camelCase")]
+//! pub struct PublicKey {
+//!     /// The ID of the key.
+//!     ///
+//!     /// In mastodon, this is the same as the actor's URL with a #main-key on
+//!     /// the end.
+//!     pub id: String,
+//!
+//!     /// The ID of the actor who owns this key.
+//!     pub owner: String,
+//!
+//!     /// This is a PEM file with PKCS#8 encoded data.
+//!     pub public_key_pem: String,
+//! }
+//!
+//! /// Now, we'll need more than just a PublicKey struct to make this work. We'll need to define a
+//! /// second struct that declares the correct key to house this information inside of
+//! ///
+//! /// The information is represented as the following json:
+//! /// ```json
+//! /// {
+//! ///     "publicKey": {
+//! ///         "id": "key id",
+//! ///         "owner": "actor id",
+//! ///         "publicKeyPem": "pem string"
+//! ///     }
+//! /// }
+//! /// ```
+//! ///
+//! /// This means we'll need to define the 'publicKey' key
+//! #[derive(Clone, Debug, Default, serde::Deserialize, serde::Serialize)]
+//! #[serde(rename_all = "camelCase")]
+//! pub struct PublicKeyExtension {
+//!     /// The public key's information
+//!     pub public_key: PublicKey
+//! }
+//!
+//! impl PublicKey {
+//!     /// Let's add a convenience method to turn a PublicKey into a PublicKeyExtension
+//!     pub fn to_ext(self) -> PublicKeyExtension {
+//!         PublicKeyExtension { public_key: self }
+//!     }
+//! }
+//!
+//! // And finally, we'll implement the Extension trait for PublicKeyExtension
+//! //
+//! // We'll bound this extension by the Actor trait, since we don't care about non-actors having
+//! // keys. This means that you can put a key on a `Person`, but not on a `Video`.
+//! impl<T> Extension<T> for PublicKeyExtension where T: Actor {}
+//!
+//! // Now that these types are defined, we can put them to use!
+//! fn main() {
+//!     let person = Person::new();
+//!
+//!     // let's just create a dummy key for this example
+//!     let public_key = PublicKey {
+//!         id: "My ID".to_owned(),
+//!         owner: "Owner ID".to_owned(),
+//!         public_key_pem: "My Public Key".to_owned(),
+//!     };
+//!
+//!     // We're doing it! The person is being extended with a public key
+//!     //
+//!     // Note that calling `extend` on person here is possible because the Extensible trait is in
+//!     // scope
+//!     let person_with_key = person.extend(public_key.to_ext());
+//! }
+//! ```
 
 use crate::{
     activity::{Activity, IntransitiveActivity},
@@ -22,6 +130,27 @@ use std::fmt::Debug;
 /// `Ext<Ext<Follow, SomeTime>, AnotherType>` exists, that will implement
 /// `AsRef<ActivityProperties>` just like the innermost `Follow`. This only works for types
 /// two levels deep, however.
+///
+/// Usage:
+/// ```rust
+/// use activitystreams::object::Video;
+///
+/// fn main() -> Result<(), Box<dyn std::error::Error>> {
+///     let mut video = Video::full();
+///
+///     // AsMut works even though this is an Ext<Video, ApObjectProperties>
+///     video
+///         .as_mut()
+///         .set_id("https://example.com")?;
+///
+///     // set information on the extension
+///     video
+///         .extension
+///         .set_source_xsd_any_uri("https://example.com")?;
+///
+///     Ok(())
+/// }
+/// ```
 #[derive(Clone, Debug, Default)]
 #[cfg_attr(feature = "derive", derive(serde::Deserialize, serde::Serialize))]
 pub struct Ext<T, U> {
