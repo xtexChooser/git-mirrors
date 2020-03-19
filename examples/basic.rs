@@ -1,7 +1,10 @@
-use activitystreams::object::Video;
+use activitystreams::{
+    ext::Ext,
+    object::{properties::ApObjectProperties, Video},
+};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut v = Video::default();
+    let mut v = Video::full();
 
     v.as_mut()
         .set_context_xsd_any_uri("https://www.w3.org/ns/activitystreams")?
@@ -18,7 +21,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     println!("json, {}", s);
 
-    let v: Video = serde_json::from_str(&s)?;
+    let v: Ext<Video, ApObjectProperties> = serde_json::from_str(&s)?;
 
     println!("Video again, {:#?}", v);
 
