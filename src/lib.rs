@@ -25,7 +25,7 @@
 //!
 //! First, add ActivityStreams to your dependencies
 //! ```toml
-//! activitystreams = "0.5.0-alpha.14"
+//! activitystreams = "0.5.0-alpha.15"
 //! ```
 //!
 //! ### Types
@@ -209,7 +209,7 @@
 //! enabled.
 //!
 //! ```toml
-//! activitystreams = { version = "0.5.0-alpha.14", default-features = "false", features = ["derive"] }
+//! activitystreams = { version = "0.5.0-alpha.15", default-features = "false", features = ["derive"] }
 //! ```
 //!
 //! | feature    | what you get                                              |

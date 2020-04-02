@@ -23,8 +23,8 @@
 //!
 //! First, add `serde` and `activitystreams-derive` to your Cargo.toml
 //! ```toml
-//! activitystreams-derive = "0.5.0-alpha.6"
-//! # or activitystreams = "0.5.0-alpha.14"
+//! activitystreams-derive = "0.5.0-alpha.7"
+//! # or activitystreams = "0.5.0-alpha.15"
 //! serde = { version = "1.0", features = ["derive"] }
 //! ```
 //!
@@ -1537,8 +1537,10 @@ fn snakize(s: &str) -> String {
 }
 
 fn pluralize(s: String) -> String {
-    if s.ends_with('s') || s.ends_with('x') {
+    if s.ends_with('x') {
         s + "es"
+    } else if s.ends_with('s') {
+        s
     } else {
         s + "s"
     }
