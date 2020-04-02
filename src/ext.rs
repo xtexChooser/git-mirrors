@@ -109,14 +109,14 @@
 //! ```
 
 use crate::{
-    activity::{Activity, IntransitiveActivity},
-    actor::Actor,
-    collection::{Collection, CollectionPage},
-    link::Link,
-    object::Object,
-    Base,
+    activity::{Activity, ActivityBox, IntransitiveActivity, IntransitiveActivityBox},
+    actor::{Actor, ActorBox},
+    collection::{Collection, CollectionBox, CollectionPage, CollectionPageBox},
+    link::{Link, LinkBox},
+    object::{Object, ObjectBox},
+    Base, BaseBox,
 };
-use std::fmt::Debug;
+use std::{convert::TryFrom, fmt::Debug};
 
 /// Defines an extension to an activitystreams object or link
 ///
@@ -202,6 +202,102 @@ pub trait Extensible<U> {
     fn extend(self, extension: U) -> Ext<Self, U>
     where
         Self: Sized;
+}
+
+impl<T, U> TryFrom<Ext<T, U>> for BaseBox
+where
+    T: Base + serde::ser::Serialize,
+    U: Extension<T> + serde::ser::Serialize + Debug,
+{
+    type Error = std::io::Error;
+
+    fn try_from(e: Ext<T, U>) -> Result<Self, Self::Error> {
+        BaseBox::from_concrete(e)
+    }
+}
+
+impl<T, U> TryFrom<Ext<T, U>> for ObjectBox
+where
+    T: Object + serde::ser::Serialize,
+    U: Extension<T> + serde::ser::Serialize + Debug,
+{
+    type Error = std::io::Error;
+
+    fn try_from(e: Ext<T, U>) -> Result<Self, Self::Error> {
+        ObjectBox::from_concrete(e)
+    }
+}
+
+impl<T, U> TryFrom<Ext<T, U>> for LinkBox
+where
+    T: Link + serde::ser::Serialize,
+    U: Extension<T> + serde::ser::Serialize + Debug,
+{
+    type Error = std::io::Error;
+
+    fn try_from(e: Ext<T, U>) -> Result<Self, Self::Error> {
+        LinkBox::from_concrete(e)
+    }
+}
+
+impl<T, U> TryFrom<Ext<T, U>> for CollectionBox
+where
+    T: Collection + serde::ser::Serialize,
+    U: Extension<T> + serde::ser::Serialize + Debug,
+{
+    type Error = std::io::Error;
+
+    fn try_from(e: Ext<T, U>) -> Result<Self, Self::Error> {
+        CollectionBox::from_concrete(e)
+    }
+}
+
+impl<T, U> TryFrom<Ext<T, U>> for CollectionPageBox
+where
+    T: CollectionPage + serde::ser::Serialize,
+    U: Extension<T> + serde::ser::Serialize + Debug,
+{
+    type Error = std::io::Error;
+
+    fn try_from(e: Ext<T, U>) -> Result<Self, Self::Error> {
+        CollectionPageBox::from_concrete(e)
+    }
+}
+
+impl<T, U> TryFrom<Ext<T, U>> for ActivityBox
+where
+    T: Activity + serde::ser::Serialize,
+    U: Extension<T> + serde::ser::Serialize + Debug,
+{
+    type Error = std::io::Error;
+
+    fn try_from(e: Ext<T, U>) -> Result<Self, Self::Error> {
+        ActivityBox::from_concrete(e)
+    }
+}
+
+impl<T, U> TryFrom<Ext<T, U>> for IntransitiveActivityBox
+where
+    T: IntransitiveActivity + serde::ser::Serialize,
+    U: Extension<T> + serde::ser::Serialize + Debug,
+{
+    type Error = std::io::Error;
+
+    fn try_from(e: Ext<T, U>) -> Result<Self, Self::Error> {
+        IntransitiveActivityBox::from_concrete(e)
+    }
+}
+
+impl<T, U> TryFrom<Ext<T, U>> for ActorBox
+where
+    T: Actor + serde::ser::Serialize,
+    U: Extension<T> + serde::ser::Serialize + Debug,
+{
+    type Error = std::io::Error;
+
+    fn try_from(e: Ext<T, U>) -> Result<Self, Self::Error> {
+        ActorBox::from_concrete(e)
+    }
 }
 
 impl<T, U> Extensible<U> for T

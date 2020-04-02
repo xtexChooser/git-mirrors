@@ -10,7 +10,7 @@ Add the required crates to your `Cargo.toml`
 ```toml
 # Cargo.toml
 
-activitystreams = "0.5.0-alpha.15"
+activitystreams = "0.5.0-alpha.16"
 serde = { version = "1.0", features = ["derive"] }
 ```
 
