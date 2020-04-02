@@ -54,13 +54,13 @@ fn main() -> Result<(), Error> {
 
     let cprops: &CollectionProperties = collection.as_ref();
     let v: Vec<Ext<Page, ApObjectProperties>> = cprops
-        .get_many_items_object_boxs()
+        .get_many_items_base_boxes()
         .unwrap()
-        .map(|object_box| object_box.clone().to_concrete())
+        .map(|base_box| base_box.clone().to_concrete())
         .collect::<Result<Vec<_>, std::io::Error>>()?;
 
     let cprops: &mut CollectionProperties = collection.as_mut();
-    cprops.set_many_items_object_boxs(v.clone())?;
+    cprops.set_many_items_base_boxes(v.clone())?;
 
     println!("{:#?}", v);
 

@@ -23,8 +23,8 @@
 //!
 //! First, add `serde` and `activitystreams-derive` to your Cargo.toml
 //! ```toml
-//! activitystreams-derive = "0.5.0-alpha.5"
-//! # or activitystreams = "0.5.0-alpha.12"
+//! activitystreams-derive = "0.5.0-alpha.6"
+//! # or activitystreams = "0.5.0-alpha.14"
 //! serde = { version = "1.0", features = ["derive"] }
 //! ```
 //!
@@ -195,11 +195,10 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
     };
 
     let name2 = name.clone();
-    let name3 = name.clone();
     let base_impl = quote! {
-        impl Base for #name3 {}
+        impl Base for #name {}
 
-        impl #name3 {
+        impl #name {
             /// Create from default
             pub fn new() -> Self {
                 Default::default()
@@ -210,6 +209,29 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
             type Error = std::io::Error;
 
             fn try_from(s: #name) -> Result<Self, Self::Error> {
+                BaseBox::from_concrete(s)
+            }
+        }
+
+        impl<T> std::convert::TryFrom<Ext<#name, T>> for BaseBox
+        where
+            T: serde::de::DeserializeOwned + serde::ser::Serialize + std::fmt::Debug,
+        {
+            type Error = std::io::Error;
+
+            fn try_from(s: Ext<#name, T>) -> Result<Self, Self::Error> {
+                BaseBox::from_concrete(s)
+            }
+        }
+
+        impl<T, U> std::convert::TryFrom<Ext<Ext<#name, T>, U>> for BaseBox
+        where
+            T: serde::de::DeserializeOwned + serde::ser::Serialize + std::fmt::Debug,
+            U: serde::de::DeserializeOwned + serde::ser::Serialize + std::fmt::Debug,
+        {
+            type Error = std::io::Error;
+
+            fn try_from(s: Ext<Ext<#name, T>, U>) -> Result<Self, Self::Error> {
                 BaseBox::from_concrete(s)
             }
         }
@@ -859,9 +881,9 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
             let enum_ty = Ident::new(&camelize(&format!("{}_{}_enum", name, fname)), fname.span());
 
             let set_many_ident =
-                Ident::new(&format!("set_many_{}s", fname), fname.span());
+                Ident::new(&format!("set_many_{}", pluralize(fname.to_string())), fname.span());
             let get_many_ident =
-                Ident::new(&format!("get_many_{}s", fname), fname.span());
+                Ident::new(&format!("get_many_{}", pluralize(fname.to_string())), fname.span());
 
             if field.description.required {
                 if field.description.functional {
@@ -1143,9 +1165,9 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                         Ident::new(&format!("get_{}_{}", fname, snakize(&v_ty.to_token_stream().to_string())), fname.span());
 
                     let set_many_ident =
-                        Ident::new(&format!("set_many_{}_{}s", fname, snakize(&v_ty.to_token_stream().to_string())), fname.span());
+                        Ident::new(&format!("set_many_{}_{}", fname, pluralize(snakize(&v_ty.to_token_stream().to_string()))), fname.span());
                     let get_many_ident =
-                        Ident::new(&format!("get_many_{}_{}s", fname, snakize(&v_ty.to_token_stream().to_string())), fname.span());
+                        Ident::new(&format!("get_many_{}_{}", fname, pluralize(snakize(&v_ty.to_token_stream().to_string()))), fname.span());
 
                     if field.description.required {
                         let doc_line = to_doc(&format!("Set `{}` with a value that can be converted into `{}`", fname, v_ty.to_token_stream()));
@@ -1512,4 +1534,12 @@ fn snakize(s: &str) -> String {
         }
         acc
     })
+}
+
+fn pluralize(s: String) -> String {
+    if s.ends_with('s') || s.ends_with('x') {
+        s + "es"
+    } else {
+        s + "s"
+    }
 }
