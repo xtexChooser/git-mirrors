@@ -23,8 +23,8 @@
 //!
 //! First, add `serde` and `activitystreams-derive` to your Cargo.toml
 //! ```toml
-//! activitystreams-derive = "0.5.0-alpha.4"
-//! # or activitystreams = "0.5.0-alpha.9"
+//! activitystreams-derive = "0.5.0-alpha.5"
+//! # or activitystreams = "0.5.0-alpha.12"
 //! serde = { version = "1.0", features = ["derive"] }
 //! ```
 //!
@@ -236,6 +236,29 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
                         type Error = std::io::Error;
 
                         fn try_from(s: #name) -> Result<Self, Self::Error> {
+                            #box_name::from_concrete(s)
+                        }
+                    }
+
+                    impl<T> std::convert::TryFrom<Ext<#name, T>> for #box_name
+                    where
+                        T: serde::de::DeserializeOwned + serde::ser::Serialize + std::fmt::Debug,
+                    {
+                        type Error = std::io::Error;
+
+                        fn try_from(s: Ext<#name, T>) -> Result<Self, Self::Error> {
+                            #box_name::from_concrete(s)
+                        }
+                    }
+
+                    impl<T, U> std::convert::TryFrom<Ext<Ext<#name, T>, U>> for #box_name
+                    where
+                        T: serde::de::DeserializeOwned + serde::ser::Serialize + std::fmt::Debug,
+                        U: serde::de::DeserializeOwned + serde::ser::Serialize + std::fmt::Debug,
+                    {
+                        type Error = std::io::Error;
+
+                        fn try_from(s: Ext<Ext<#name, T>, U>) -> Result<Self, Self::Error> {
                             #box_name::from_concrete(s)
                         }
                     }
