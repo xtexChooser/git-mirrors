@@ -25,7 +25,7 @@
 //! use activitystreams::{
 //!     collection::{
 //!         properties::CollectionProperties,
-//!         Collection, CollectionBox,
+//!         Collection,
 //!     },
 //!     ext::Ext,
 //!     object::{
@@ -67,13 +67,7 @@
 //! # fn main() {}
 //! ```
 
-use crate::{
-    collection::{CollectionBox, CollectionPageBox},
-    link::LinkBox,
-    object::ObjectBox,
-    primitives::*,
-    properties,
-};
+use crate::{primitives::*, properties, BaseBox};
 
 properties! {
     Collection {
@@ -96,8 +90,7 @@ properties! {
             ],
             types [
                 XsdString,
-                ObjectBox,
-                LinkBox,
+                BaseBox,
             ],
             required,
         },
@@ -129,8 +122,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                LinkBox,
-                CollectionPageBox,
+                BaseBox,
             ],
             functional,
         },
@@ -144,8 +136,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                LinkBox,
-                CollectionPageBox,
+                BaseBox,
             ],
             functional,
         },
@@ -159,8 +150,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                LinkBox,
-                CollectionPageBox,
+                BaseBox,
             ],
         },
     }
@@ -182,8 +172,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                LinkBox,
-                CollectionBox,
+                BaseBox,
             ],
             functional,
         },
@@ -197,8 +186,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                LinkBox,
-                CollectionPageBox,
+                BaseBox,
             ],
             functional,
         },
@@ -212,8 +200,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
-                LinkBox,
-                CollectionPageBox,
+                BaseBox,
             ],
             functional,
         },
