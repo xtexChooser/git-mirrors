@@ -25,7 +25,7 @@
 //! use activitystreams::{
 //!     collection::{
 //!         properties::CollectionProperties,
-//!         Collection,
+//!         Collection, CollectionBox,
 //!     },
 //!     ext::Ext,
 //!     object::{
