@@ -18,7 +18,6 @@
  */
 
 use crate::{
-    ext::Ext,
     link::{kind::*, properties::*, Link, LinkBox},
     Base, BaseBox, PropRefs,
 };

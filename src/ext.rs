@@ -126,10 +126,9 @@ use std::{convert::TryFrom, fmt::Debug};
 /// For example, the type `Ext<Video, HashMap<String, String>>` will implement the `Object` trait,
 /// because `Video` implements that trait.
 ///
-/// Additionally, some level of AsRef and AsMut have been derived for Ext. If type type
+/// Additionally, AsRef and AsMut have been implemented for Ext. If type type
 /// `Ext<Ext<Follow, SomeTime>, AnotherType>` exists, that will implement
-/// `AsRef<ActivityProperties>` just like the innermost `Follow`. This only works for types
-/// two levels deep, however.
+/// `AsRef<ActivityProperties>` just like the innermost `Follow`.
 ///
 /// Usage:
 /// ```rust
@@ -202,6 +201,26 @@ pub trait Extensible<U> {
     fn extend(self, extension: U) -> Ext<Self, U>
     where
         Self: Sized;
+}
+
+impl<T, U, V> AsRef<V> for Ext<T, U>
+where
+    T: Base + AsRef<V>,
+    U: Extension<T> + Debug,
+{
+    fn as_ref(&self) -> &V {
+        self.base.as_ref()
+    }
+}
+
+impl<T, U, V> AsMut<V> for Ext<T, U>
+where
+    T: Base + AsMut<V>,
+    U: Extension<T> + Debug,
+{
+    fn as_mut(&mut self) -> &mut V {
+        self.base.as_mut()
+    }
 }
 
 impl<T, U> TryFrom<Ext<T, U>> for BaseBox

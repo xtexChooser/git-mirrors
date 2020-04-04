@@ -23,8 +23,8 @@
 //!
 //! First, add `serde` and `activitystreams-derive` to your Cargo.toml
 //! ```toml
-//! activitystreams-derive = "0.5.0-alpha.8"
-//! # or activitystreams = "0.5.0-alpha.16"
+//! activitystreams-derive = "0.5.0-alpha.9"
+//! # or activitystreams = "0.5.0-alpha.17"
 //! serde = { version = "1.0", features = ["derive"] }
 //! ```
 //!
@@ -269,47 +269,9 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
                     }
                 }
 
-                impl<U> AsRef<#ty> for Ext<#name, U>
-                where
-                    U: std::fmt::Debug,
-                {
-                    fn as_ref(&self) -> &#ty {
-                        self.base.as_ref()
-                    }
-                }
-
-                impl<U, V> AsRef<#ty> for Ext<Ext<#name, U>, V>
-                where
-                    U: std::fmt::Debug,
-                    V: std::fmt::Debug,
-                {
-                    fn as_ref(&self) -> &#ty {
-                        self.base.as_ref()
-                    }
-                }
-
                 impl AsMut<#ty> for #name {
                     fn as_mut(&mut self) -> &mut #ty {
                         &mut self.#ident
-                    }
-                }
-
-                impl<U> AsMut<#ty> for Ext<#name, U>
-                where
-                    U: std::fmt::Debug,
-                {
-                    fn as_mut(&mut self) -> &mut #ty {
-                        self.base.as_mut()
-                    }
-                }
-
-                impl<U, V> AsMut<#ty> for Ext<Ext<#name, U>, V>
-                where
-                    U: std::fmt::Debug,
-                    V: std::fmt::Debug,
-                {
-                    fn as_mut(&mut self) -> &mut #ty {
-                        self.base.as_mut()
                     }
                 }
             }
