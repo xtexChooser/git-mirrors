@@ -1,10 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
+			"Andrei Stroe",
 			"Matrafox",
-			"XXN",
 			"Strainu",
-			"Andrei Stroe"
+			"XXN"
 		]
 	},
 	"echo-category-title-login-fail": "Încercări eșuate de autentificare",

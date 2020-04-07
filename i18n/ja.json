@@ -1,13 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
-			"Iwai.masaharu",
 			"Delim",
+			"Iwai.masaharu",
+			"Omotecho",
 			"Otokoume",
 			"Suzukaze-c",
-			"Yusuke1109",
 			"Takot",
-			"Omotecho"
+			"Yusuke1109"
 		]
 	},
 	"loginnotify-desc": "身に覚えのない端末およびIPアドレスからのログインがあったときにユーザに通知する",

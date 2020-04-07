@@ -2,10 +2,10 @@
 	"@metadata": {
 		"authors": [
 			"Brian Wolff",
-			"Niharika",
 			"Liuxinyu970226",
+			"Mar(c)",
 			"Mormegil",
-			"Mar(c)"
+			"Niharika"
 		]
 	},
 	"loginnotify-desc": "{{desc|name=LoginNotify|url=https://www.mediawiki.org/wiki/Extension:LoginNotify}}",

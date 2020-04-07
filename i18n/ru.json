@@ -1,13 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
-			"Okras",
 			"Alexey zakharenkov",
 			"Contra ventum",
-			"Vcohen",
-			"Patrick Star",
 			"Movses",
-			"Putnik"
+			"Okras",
+			"Patrick Star",
+			"Putnik",
+			"Vcohen"
 		]
 	},
 	"loginnotify-desc": "Уведомлять пользователей о подозрительных входах с незнакомых компьютеров и/или IP-адресов",

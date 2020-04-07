@@ -1,8 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"WikiPhoenix",
-			"Skalman"
+			"Skalman",
+			"WikiPhoenix"
 		]
 	},
 	"loginnotify-desc": "Meddelar användare om misstänkta inloggningar från okända enheter och /eller IP-adresser",

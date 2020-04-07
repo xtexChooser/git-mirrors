@@ -2,10 +2,10 @@
 	"@metadata": {
 		"authors": [
 			"GR",
-			"Thodoris",
 			"Geraki",
 			"Nikosgranturismogt",
-			"Protnet"
+			"Protnet",
+			"Thodoris"
 		]
 	},
 	"loginnotify-desc": "Ειδοποίηση χρηστών σχετικά με ύποπτες συνδέσεις από άγνωστες συσκευές ή/και διευθύνσεις IP",

@@ -1,9 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
-			"Vitorvicentevalente",
+			"Fúlvio",
 			"Hamilton Abreu",
-			"Fúlvio"
+			"Vitorvicentevalente"
 		]
 	},
 	"loginnotify-desc": "Notificar os utilizadores sobre tentativas suspeitas de entrar na wiki a partir de dispositivos ou de endereços IP desconhecidos",

@@ -1,8 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Elisardojm",
-			"Banjo"
+			"Banjo",
+			"Elisardojm"
 		]
 	},
 	"loginnotify-desc": "Notificar usuarios sobre conexións sospeitosas dende dispositivos descoñecidos e/ou enderezos IP.",

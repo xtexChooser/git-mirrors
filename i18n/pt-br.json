@@ -1,10 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
+			"Eduardo Addad de Oliveira",
 			"Felipe L. Ewald",
 			"HenriqueCrang",
-			"TheEduGobi",
-			"Eduardo Addad de Oliveira"
+			"TheEduGobi"
 		]
 	},
 	"loginnotify-desc": "Notificar usuários sobre logins  suspeitos de dispositivos desconhecidos e/ou endereços IP.",

@@ -1,12 +1,12 @@
 {
 	"@metadata": {
 		"authors": [
-			"Sjoerddebruin",
 			"Festina90",
 			"Mainframe98",
 			"Mar(c)",
-			"Woodcutterty",
-			"PiefPafPier"
+			"PiefPafPier",
+			"Sjoerddebruin",
+			"Woodcutterty"
 		]
 	},
 	"echo-category-title-login-fail": "Mislukte aanmeldpogingen",

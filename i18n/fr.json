@@ -2,11 +2,11 @@
 	"@metadata": {
 		"authors": [
 			"Gomoko",
-			"Wladek92",
-			"Verdy p",
-			"Urhixidur",
+			"Seb35",
 			"Thibaut120094",
-			"Seb35"
+			"Urhixidur",
+			"Verdy p",
+			"Wladek92"
 		]
 	},
 	"loginnotify-desc": "Notifier les utilisateurs des connexions suspectes à partir d’appareils ou d’adresses IP inhabituels.",

@@ -2,9 +2,9 @@
 	"@metadata": {
 		"authors": [
 			"Nike",
-			"Stryn",
+			"Pxos",
 			"Pyscowicz",
-			"Pxos"
+			"Stryn"
 		]
 	},
 	"loginnotify-desc": "Ilmoittaa käyttäjille epäilyttävistä kirjautumisista tuntemattomilta laitteilta ja/tai IP-osoitteista",

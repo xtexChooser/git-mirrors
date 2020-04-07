@@ -2,11 +2,11 @@
 	"@metadata": {
 		"authors": [
 			"Chrumps",
-			"Sp5uhe",
-			"Woytecr",
-			"WTM",
+			"Rail",
 			"Railfail536",
-			"Rail"
+			"Sp5uhe",
+			"WTM",
+			"Woytecr"
 		]
 	},
 	"loginnotify-desc": "Powiadamiaj użytkowników o podejrzanych próbach logowania z nieznanych urządzeń i/lub adresów IP",

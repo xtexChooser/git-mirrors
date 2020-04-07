@@ -1,11 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
-			"Urbalazs",
+			"Bencemac",
 			"Bináris",
 			"Tacsipacsi",
-			"Bencemac",
-			"Tgr"
+			"Tgr",
+			"Urbalazs"
 		]
 	},
 	"loginnotify-desc": "Értesíti a felhasználókat az ismeretlen eszközről és/vagy IP-címről érkező gyanús bejelentkezési kísérletekről",

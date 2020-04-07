@@ -1,9 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
+			"BadDog",
 			"Obsuser",
-			"Zoranzoki21",
-			"BadDog"
+			"Zoranzoki21"
 		]
 	},
 	"loginnotify-desc": "Обавестите кориснике о сумњивим пријавама с непознатих уређаја и/или IP адреса",

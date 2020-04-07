@@ -1,12 +1,12 @@
 {
 	"@metadata": {
 		"authors": [
-			"Macofe",
-			"Fitoschido",
-			"PoLuX124",
+			"DannyS712",
 			"Dgstranz",
 			"Edslov",
-			"DannyS712"
+			"Fitoschido",
+			"Macofe",
+			"PoLuX124"
 		]
 	},
 	"loginnotify-desc": "Notifica a los usuarios sobre accesos sospechosos provenientes de dispositivos o direcciones IP inusuales.",
