@@ -1,9 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
+			"Beta16",
 			"BrokenArrow",
-			"Darth Kule",
-			"Beta16"
+			"Darth Kule"
 		]
 	},
 	"categorywatch-desc": "Estende le funzioni degli osservati speciali includendo notifiche dei cambiamenti alle pagine appartenenti alle categorie osservate",

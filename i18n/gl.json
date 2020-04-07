@@ -1,10 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"Toliño",
-			"Elisardojm",
 			"Banjo",
-			"Maria zaos"
+			"Elisardojm",
+			"Maria zaos",
+			"Toliño"
 		]
 	},
 	"categorywatch-desc": "Extende unha función da lista de vixilancia para incluír notificación acerca dos cambios no número de membros e as categorías vixiadas",

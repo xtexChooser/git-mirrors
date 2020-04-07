@@ -1,9 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
-			"Sarrus",
 			"Joedalton",
-			"Saederup92"
+			"Saederup92",
+			"Sarrus"
 		]
 	},
 	"categorywatch-desc": "Udvider overvågningslistens funktionalitet til også at omfatte underretning om ændringer af overvågede kategoriers artikelmedlemsstatus",

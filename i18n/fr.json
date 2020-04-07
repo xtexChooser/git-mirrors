@@ -1,12 +1,12 @@
 {
 	"@metadata": {
 		"authors": [
+			"Gomoko",
 			"Grondin",
 			"IAlex",
 			"Verdy p",
-			"Zetud",
 			"Wladek92",
-			"Gomoko"
+			"Zetud"
 		]
 	},
 	"categorywatch-desc": "Étend la fonctionnalité de la liste de suivi afin d’y inclure la notification des modifications de la liste des membres des catégories suivies.",
