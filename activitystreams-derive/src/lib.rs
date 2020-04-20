@@ -23,8 +23,8 @@
 //!
 //! First, add `serde` and `activitystreams-derive` to your Cargo.toml
 //! ```toml
-//! activitystreams-derive = "0.5.0-alpha.9"
-//! # or activitystreams = "0.5.0-alpha.17"
+//! activitystreams-derive = "0.5.0"
+//! # or activitystreams = "0.5.0"
 //! serde = { version = "1.0", features = ["derive"] }
 //! ```
 //!
