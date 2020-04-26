@@ -165,9 +165,9 @@ fn parse_next(s: &str, c: char) -> Result<(i64, &str), XsdDurationError> {
 impl std::fmt::Display for XsdDuration {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         let (s, mut duration) = if chrono::Duration::seconds(0) > self.0 {
-            (format!("P-"), self.0 * -1)
+            ("P-".to_string(), self.0 * -1)
         } else {
-            (format!("P"), self.0)
+            ("P".to_string(), self.0)
         };
 
         let s = if duration.num_days() > 0 {

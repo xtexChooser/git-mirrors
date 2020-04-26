@@ -90,22 +90,20 @@
 //! impl<T> Extension<T> for PublicKeyExtension where T: Actor {}
 //!
 //! // Now that these types are defined, we can put them to use!
-//! fn main() {
-//!     let person = Person::new();
+//! let person = Person::new();
 //!
-//!     // let's just create a dummy key for this example
-//!     let public_key = PublicKey {
-//!         id: "My ID".to_owned(),
-//!         owner: "Owner ID".to_owned(),
-//!         public_key_pem: "My Public Key".to_owned(),
-//!     };
+//! // let's just create a dummy key for this example
+//! let public_key = PublicKey {
+//!     id: "My ID".to_owned(),
+//!     owner: "Owner ID".to_owned(),
+//!     public_key_pem: "My Public Key".to_owned(),
+//! };
 //!
-//!     // We're doing it! The person is being extended with a public key
-//!     //
-//!     // Note that calling `extend` on person here is possible because the Extensible trait is in
-//!     // scope
-//!     let person_with_key = person.extend(public_key.to_ext());
-//! }
+//! // We're doing it! The person is being extended with a public key
+//! //
+//! // Note that calling `extend` on person here is possible because the Extensible trait is in
+//! // scope
+//! let person_with_key = person.extend(public_key.to_ext());
 //! ```
 
 use crate::{

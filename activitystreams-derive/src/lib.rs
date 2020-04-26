@@ -303,7 +303,7 @@ pub fn ref_derive(input: TokenStream) -> TokenStream {
 ///     where
 ///         T: Object + serde::ser::Serialize;
 ///
-///     pub fn to_concrete<T>(self) -> Result<T, std::io::Error>
+///     pub fn into_concrete<T>(self) -> Result<T, std::io::Error>
 ///     where
 ///         T: Object + serde::de::DeserializeOwned;
 ///
@@ -344,7 +344,7 @@ pub fn wrapper_type(_: TokenStream, input: TokenStream) -> TokenStream {
             ///
             /// Before this method is called, the type should be verified via the `kind` or
             /// `is_kind` methods
-            pub fn to_concrete<T>(self) -> Result<T, std::io::Error>
+            pub fn into_concrete<T>(self) -> Result<T, std::io::Error>
             where
                 T: #trait_name + serde::de::DeserializeOwned,
             {
@@ -360,7 +360,7 @@ pub fn wrapper_type(_: TokenStream, input: TokenStream) -> TokenStream {
             ///     apub::Image,
             /// };
             /// if my_wrapper_type.is_kind(ImageType) {
-            ///     let image = my_wrapper_type.to_concrete::<Image>()?;
+            ///     let image = my_wrapper_type.into_concrete::<Image>()?;
             ///     ...
             /// }
             /// ```
@@ -374,7 +374,7 @@ pub fn wrapper_type(_: TokenStream, input: TokenStream) -> TokenStream {
             /// ```ignore
             /// match my_wrapper_type.kind() {
             ///     Some("Image") => {
-            ///         let image = my_wrapper_type.to_concrete::<Image>()?;
+            ///         let image = my_wrapper_type.into_concrete::<Image>()?;
             ///         ...
             ///     }
             ///     _ => ...,
@@ -500,7 +500,6 @@ pub fn unit_string(input: TokenStream) -> TokenStream {
 fn from_value(attr: Attribute) -> Ident {
     let group = attr
         .tokens
-        .clone()
         .into_iter()
         .filter_map(|token_tree| match token_tree {
             TokenTree::Group(group) => Some(group),
@@ -511,7 +510,6 @@ fn from_value(attr: Attribute) -> Ident {
 
     group
         .stream()
-        .clone()
         .into_iter()
         .filter_map(|token_tree| match token_tree {
             TokenTree::Ident(ident) => Some(ident),
@@ -521,11 +519,11 @@ fn from_value(attr: Attribute) -> Ident {
         .unwrap()
 }
 
-fn to_doc(s: &String) -> proc_macro2::TokenStream {
+fn to_doc(s: &str) -> proc_macro2::TokenStream {
     format!("/// {}", s).parse().unwrap()
 }
 
-fn many_docs(v: &Vec<String>) -> proc_macro2::TokenStream {
+fn many_docs(v: &[String]) -> proc_macro2::TokenStream {
     v.iter()
         .map(|d| {
             let d = to_doc(d);
@@ -572,9 +570,7 @@ fn many_docs(v: &Vec<String>) -> proc_macro2::TokenStream {
 ///     }
 /// }
 ///
-/// fn main() {
-///     let _ = HelloProperties::default();
-/// }
+/// let _ = HelloProperties::default();
 /// ```
 #[proc_macro]
 pub fn properties(tokens: TokenStream) -> TokenStream {
@@ -598,7 +594,7 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                 (ty, None)
             } else {
                 let enum_ty = Ident::new(&camelize(&format!("{}_{}_enum", name, fname)), fname.span());
-                let doc_lines = many_docs(&vec![
+                let doc_lines = many_docs(&[
                     format!("Variations for the `{}` field from `{}", fname, name),
                     String::new(),
                     format!("`{}` isn't functional, meaning it can be represented as either a single `{}` or a vector of `{}`.", fname, ty, ty),
@@ -668,12 +664,12 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                     })
                     .collect();
 
-                let term_doc_lines = many_docs(&vec![
+                let term_doc_lines = many_docs(&[
                     format!("Terminating variations for the `{}` field from `{}`", fname, name),
                     String::new(),
                     format!("Since {} can be one of multiple types, this enum represents all possibilities of {}", fname, fname),
                 ]);
-                let doc_lines = many_docs(&vec![
+                let doc_lines = many_docs(&[
                     format!("Non-Terminating variations for the `{}` field from `{}`", fname, name),
                     String::new(),
                     format!("`{}` isn't functional, meaning it can be represented as either a single `{}` or a vector of `{}`", fname, term_ty, term_ty),
@@ -732,7 +728,7 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                     })
                     .collect();
 
-                let doc_lines = many_docs(&vec![
+                let doc_lines = many_docs(&[
                     format!("Variations for the `{}` field from `{}`", fname, name),
                     String::new(),
                     format!("`{}` isn't functional, meaning it can only be represented as a single `{}`", fname, ty),
@@ -889,98 +885,96 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                         #set_many
                     }
                 }
+            } else if field.description.functional {
+                let doc_line = to_doc(&format!("Set the `{}` with a type that can be converted into `{}`", fname, v_ty.to_token_stream()));
+                let set = quote! {
+                    #doc_line
+                    pub fn #set_ident<T>(&mut self, item: T) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
+                    where
+                        T: std::convert::TryInto<#v_ty>,
+                    {
+                        use std::convert::TryInto;
+                        self.#fname = Some(item.try_into()?);
+                        Ok(self)
+                    }
+                };
+
+                let doc_line = to_doc(&format!("Get `{}` as a `{}`", fname, v_ty.to_token_stream()));
+                let get = quote! {
+                    #doc_line
+                    ///
+                    /// This returns `None` if there is no value present
+                    pub fn #get_ident(&self) -> Option<&#v_ty> {
+                        self.#fname.as_ref()
+                    }
+                };
+
+                quote!{
+                    #get
+                    #set
+                }
             } else {
-                if field.description.functional {
-                    let doc_line = to_doc(&format!("Set the `{}` with a type that can be converted into `{}`", fname, v_ty.to_token_stream()));
-                    let set = quote! {
-                        #doc_line
-                        pub fn #set_ident<T>(&mut self, item: T) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
-                        where
-                            T: std::convert::TryInto<#v_ty>,
-                        {
-                            use std::convert::TryInto;
-                            self.#fname = Some(item.try_into()?);
-                            Ok(self)
-                        }
-                    };
-
-                    let doc_line = to_doc(&format!("Get `{}` as a `{}`", fname, v_ty.to_token_stream()));
-                    let get = quote! {
-                        #doc_line
-                        ///
-                        /// This returns `None` if there is no value present
-                        pub fn #get_ident(&self) -> Option<&#v_ty> {
-                            self.#fname.as_ref()
-                        }
-                    };
-
-                    quote!{
-                        #get
-                        #set
+                let doc_line = to_doc(&format!("Set the `{}` with a type that can be converted into `{}`", fname, v_ty.to_token_stream()));
+                let set = quote! {
+                    #doc_line
+                    pub fn #set_ident<T>(&mut self, item: T) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
+                    where
+                        T: std::convert::TryInto<#v_ty>,
+                    {
+                        use std::convert::TryInto;
+                        self.#fname = Some(#enum_ty::Term(item.try_into()?));
+                        Ok(self)
                     }
-                } else {
-                    let doc_line = to_doc(&format!("Set the `{}` with a type that can be converted into `{}`", fname, v_ty.to_token_stream()));
-                    let set = quote! {
-                        #doc_line
-                        pub fn #set_ident<T>(&mut self, item: T) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
-                        where
-                            T: std::convert::TryInto<#v_ty>,
-                        {
-                            use std::convert::TryInto;
-                            self.#fname = Some(#enum_ty::Term(item.try_into()?));
-                            Ok(self)
-                        }
-                    };
+                };
 
-                    let doc_line = to_doc(&format!("Get `{}` as a `{}`", fname, v_ty.to_token_stream()));
-                    let get = quote! {
-                        #doc_line
-                        ///
-                        /// This returns `None` if
-                        /// - There is no value present
-                        /// - There is more than one value present
-                        pub fn #get_ident(&self) -> Option<&#v_ty> {
-                            match self.#fname {
-                                Some(#enum_ty::Term(ref term)) => Some(term),
-                                _ => None,
-                            }
+                let doc_line = to_doc(&format!("Get `{}` as a `{}`", fname, v_ty.to_token_stream()));
+                let get = quote! {
+                    #doc_line
+                    ///
+                    /// This returns `None` if
+                    /// - There is no value present
+                    /// - There is more than one value present
+                    pub fn #get_ident(&self) -> Option<&#v_ty> {
+                        match self.#fname {
+                            Some(#enum_ty::Term(ref term)) => Some(term),
+                            _ => None,
                         }
-                    };
-
-                    let doc_line = to_doc(&format!("Set the `{}` with a vector of types that can be converted into `{}`s", fname, v_ty.to_token_stream()));
-                    let set_many = quote! {
-                        #doc_line
-                        pub fn #set_many_ident<T>(&mut self, item: Vec<T>) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
-                        where
-                            T: std::convert::TryInto<#v_ty>,
-                        {
-                            let item: Vec<#v_ty> = item.into_iter().map(std::convert::TryInto::try_into).collect::<Result<Vec<_>, _>>()?;
-                            self.#fname = Some(#enum_ty::Array(item));
-                            Ok(self)
-                        }
-                    };
-
-                    let doc_line = to_doc(&format!("Get `{}` as a slice of `{}`s", fname, v_ty.to_token_stream()));
-                    let get_many = quote! {
-                        #doc_line
-                        ///
-                        /// This returns `None` if
-                        /// - There is no value present
-                        /// - There is only one value present
-                        pub fn #get_many_ident(&self) -> Option<&[#v_ty]> {
-                            match self.#fname {
-                                Some(#enum_ty::Array(ref a)) => Some(a),
-                                _ => None,
-                            }
-                        }
-                    };
-
-                    quote! {
-                        #get
-                        #set
-                        #get_many
-                        #set_many
                     }
+                };
+
+                let doc_line = to_doc(&format!("Set the `{}` with a vector of types that can be converted into `{}`s", fname, v_ty.to_token_stream()));
+                let set_many = quote! {
+                    #doc_line
+                    pub fn #set_many_ident<T>(&mut self, item: Vec<T>) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
+                    where
+                        T: std::convert::TryInto<#v_ty>,
+                    {
+                        let item: Vec<#v_ty> = item.into_iter().map(std::convert::TryInto::try_into).collect::<Result<Vec<_>, _>>()?;
+                        self.#fname = Some(#enum_ty::Array(item));
+                        Ok(self)
+                    }
+                };
+
+                let doc_line = to_doc(&format!("Get `{}` as a slice of `{}`s", fname, v_ty.to_token_stream()));
+                let get_many = quote! {
+                    #doc_line
+                    ///
+                    /// This returns `None` if
+                    /// - There is no value present
+                    /// - There is only one value present
+                    pub fn #get_many_ident(&self) -> Option<&[#v_ty]> {
+                        match self.#fname {
+                            Some(#enum_ty::Array(ref a)) => Some(a),
+                            _ => None,
+                        }
+                    }
+                };
+
+                quote! {
+                    #get
+                    #set
+                    #get_many
+                    #set_many
                 }
             }
         } else if field.description.functional {
@@ -1365,7 +1359,7 @@ impl Parse for Description {
     }
 }
 
-fn parse_kw<T: Peek + Copy, U: Parse>(input: &ParseStream, t: T) -> Result<bool> {
+fn parse_kw<T: Peek + Copy, U: Parse>(input: ParseStream, t: T) -> Result<bool> {
     let lookahead = input.lookahead1();
     if lookahead.peek(t) {
         input.parse::<U>()?;
@@ -1377,7 +1371,7 @@ fn parse_kw<T: Peek + Copy, U: Parse>(input: &ParseStream, t: T) -> Result<bool>
     Ok(false)
 }
 
-fn parse_string_array<T: Peek + Copy, U: Parse>(input: &ParseStream, t: T) -> Result<Vec<String>> {
+fn parse_string_array<T: Peek + Copy, U: Parse>(input: ParseStream, t: T) -> Result<Vec<String>> {
     let lookahead = input.lookahead1();
     if lookahead.peek(t) {
         input.parse::<U>()?;
@@ -1393,7 +1387,7 @@ fn parse_string_array<T: Peek + Copy, U: Parse>(input: &ParseStream, t: T) -> Re
 }
 
 fn parse_string_group<T: Peek + Copy, U: Parse>(
-    input: &ParseStream,
+    input: ParseStream,
     t: T,
 ) -> Result<Option<String>> {
     let lookahead = input.lookahead1();
@@ -1410,7 +1404,7 @@ fn parse_string_group<T: Peek + Copy, U: Parse>(
     Ok(None)
 }
 
-fn optional_comma(input: &ParseStream) -> Result<()> {
+fn optional_comma(input: ParseStream) -> Result<()> {
     let lookahead = input.lookahead1();
     if lookahead.peek(Token![,]) {
         input.parse::<Token![,]>()?;

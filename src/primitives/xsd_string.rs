@@ -45,11 +45,6 @@
 pub struct XsdString(String);
 
 impl XsdString {
-    /// Get an XsdString from an &str
-    pub fn from_str(s: &str) -> Self {
-        s.into()
-    }
-
     /// Get an XsdString from a String
     pub fn from_string(s: String) -> Self {
         s.into()
@@ -61,8 +56,16 @@ impl XsdString {
     }
 
     /// Consume the XsdString and get a String
-    pub fn to_string(self) -> String {
+    pub fn into_string(self) -> String {
         self.into()
+    }
+}
+
+impl std::str::FromStr for XsdString {
+    type Err = std::convert::Infallible;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        Ok(s.into())
     }
 }
 

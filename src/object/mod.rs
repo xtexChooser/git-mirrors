@@ -64,7 +64,7 @@ impl AnyImage {
         serde_json::from_value(serde_json::to_value(t)?)
     }
 
-    pub fn to_concrete<T>(self) -> Result<T, serde_json::Error>
+    pub fn into_concrete<T>(self) -> Result<T, serde_json::Error>
     where
         T: Object + serde::de::DeserializeOwned,
     {

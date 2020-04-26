@@ -56,7 +56,7 @@ fn main() -> Result<(), Error> {
     let v: Vec<Ext<Page, ApObjectProperties>> = cprops
         .get_many_items_base_boxes()
         .unwrap()
-        .map(|base_box| base_box.clone().to_concrete())
+        .map(|base_box| base_box.clone().into_concrete())
         .collect::<Result<Vec<_>, std::io::Error>>()?;
 
     let cprops: &mut CollectionProperties = collection.as_mut();
