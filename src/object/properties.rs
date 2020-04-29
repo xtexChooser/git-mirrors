@@ -667,6 +667,7 @@ properties! {
             ],
             types [
                 XsdAnyUri,
+                XsdString,
                 ObjectBox,
             ],
         },
