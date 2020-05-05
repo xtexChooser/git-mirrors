@@ -796,6 +796,7 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                 Ident::new(&format!("set_many_{}", pluralize(fname.to_string())), fname.span());
             let get_many_ident =
                 Ident::new(&format!("get_many_{}", pluralize(fname.to_string())), fname.span());
+            let add_ident = Ident::new(&format!("add_{}", fname.to_string()), fname.span());
 
             if field.description.required {
                 if field.description.functional {
@@ -864,6 +865,35 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                         }
                     };
 
+                    let doc_line = to_doc(&format!("Add a type that can be converted into a `{}` to the `{}` vec", v_ty.to_token_stream(), fname));
+                    let add = quote! {
+                        #doc_line
+                        pub fn #add_ident<T>(&mut self, item: T) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
+                        where
+                            T: std::convert::TryInto<#v_ty>,
+                        {
+                            let item = item.try_into()?;
+
+                            let new_vec = match self.#fname {
+                                #enum_ty::Array(items) => {
+                                    let mut new_vec = Vec::new();
+                                    new_vec.extend(&items)
+                                    new_vec.push(item);
+                                    new_vec
+                                }
+                                #enum_ty::Term(old_item) => {
+                                    let mut new_vec = Vec::new();
+                                    new_vec.push(old_item.clone());
+                                    new_vec.push(item);
+                                    new_vec
+                                }
+                            };
+
+                            self.#fname = #enum_ty::Array(new_vec);
+                            Ok(self)
+                        }
+                    };
+
                     let doc_line = to_doc(&format!("Get the `{}` as a slice of `{}`", fname, v_ty.to_token_stream()));
                     let get_many = quote! {
                         #doc_line
@@ -883,6 +913,7 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                         #set
                         #get_many
                         #set_many
+                        #add
                     }
                 }
             } else if field.description.functional {
@@ -955,6 +986,38 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                     }
                 };
 
+                let doc_line = to_doc(&format!("Add a type that can be converted into a `{}` to the `{}` vec", v_ty.to_token_stream(), fname));
+                let add = quote! {
+                    #doc_line
+                    pub fn #add_ident<T>(&mut self, item: T) -> Result<&mut Self, <T as std::convert::TryInto<#v_ty>>::Error>
+                    where
+                        T: std::convert::TryInto<#v_ty>,
+                    {
+                        let item = item.try_into()?;
+
+                        let new_vec = match self.#fname.take() {
+                            Some(#enum_ty::Array(mut items)) => {
+                                items.push(item);
+                                items
+                            }
+                            Some(#enum_ty::Term(old_item)) => {
+                                let mut new_vec = Vec::new();
+                                new_vec.push(old_item.clone());
+                                new_vec.push(item);
+                                new_vec
+                            }
+                            None => {
+                                let mut new_vec = Vec::new();
+                                new_vec.push(item);
+                                new_vec
+                            }
+                        };
+
+                        self.#fname = Some(#enum_ty::Array(new_vec));
+                        Ok(self)
+                    }
+                };
+
                 let doc_line = to_doc(&format!("Get `{}` as a slice of `{}`s", fname, v_ty.to_token_stream()));
                 let get_many = quote! {
                     #doc_line
@@ -975,6 +1038,7 @@ pub fn properties(tokens: TokenStream) -> TokenStream {
                     #set
                     #get_many
                     #set_many
+                    #add
                 }
             }
         } else if field.description.functional {
