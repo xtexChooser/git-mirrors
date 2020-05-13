@@ -401,6 +401,7 @@ pub mod actor;
 pub mod collection;
 #[cfg(feature = "types")]
 pub mod endpoint;
+#[cfg(feature = "types")]
 pub mod ext;
 pub mod link;
 pub mod object;
