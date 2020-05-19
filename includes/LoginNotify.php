@@ -37,15 +37,15 @@ use Wikimedia\Rdbms\IDatabase;
  */
 class LoginNotify implements LoggerAwareInterface {
 
-	const COOKIE_NAME = 'loginnotify_prevlogins';
+	private const COOKIE_NAME = 'loginnotify_prevlogins';
 
 	// The following 3 constants specify outcomes of user search
 	/** User's system is known to us */
-	const USER_KNOWN = 'known';
+	public const USER_KNOWN = 'known';
 	/** User's system is new for us, based on our data */
-	const USER_NOT_KNOWN = 'not known';
+	public const USER_NOT_KNOWN = 'not known';
 	/** We don't have data to confirm or deny this is a known system */
-	const USER_NO_INFO = 'no info';
+	public const USER_NO_INFO = 'no info';
 
 	/** @var BagOStuff */
 	private $cache;

@@ -12,8 +12,8 @@ use User;
  * @package LoginNotify
  */
 class DeferredChecksJob extends Job {
-	const TYPE_LOGIN_FAILED = 'failed';
-	const TYPE_LOGIN_SUCCESS = 'success';
+	public const TYPE_LOGIN_FAILED = 'failed';
+	public const TYPE_LOGIN_SUCCESS = 'success';
 
 	/**
 	 * @param Title $title

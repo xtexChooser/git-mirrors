@@ -21,8 +21,8 @@ require_once "$IP/maintenance/Maintenance.php";
 class MigratePreferences extends LoggedUpdateMaintenance {
 
 	// Previously, these constants were used by Hooks to force different per-user defaults
-	const OPTIONS_FAKE_TRUTH = 2;
-	const OPTIONS_FAKE_FALSE = 'fake-false';
+	private const OPTIONS_FAKE_TRUTH = 2;
+	private const OPTIONS_FAKE_FALSE = 'fake-false';
 
 	private static $mapping = [
 		self::OPTIONS_FAKE_FALSE => false,
