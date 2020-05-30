@@ -179,7 +179,7 @@ class LoginNotifyTest extends MediaWikiTestCase {
 		$this->assertEquals( 2, $res, "prior to clear" );
 		$this->inst->clearCounters( $user );
 		$res = $this->inst->checkAndIncKey( $key, 1, 3600 );
-		$this->assertEquals( 1, $res, "after clear" );
+		$this->assertSame( 1, $res, "after clear" );
 	}
 
 	public function provideClearCounters() {
