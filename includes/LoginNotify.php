@@ -388,7 +388,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 * @return bool
 	 */
 	private function hasCheckUserTables( IDatabase $dbr ) {
-		if ( !$dbr->tableExists( 'cu_changes' ) ) {
+		if ( !$dbr->tableExists( 'cu_changes', __METHOD__ ) ) {
 			$this->log->warning( "LoginNotify: No checkuser table on {wikiId}", [
 				'method' => __METHOD__,
 				'wikiId' => $dbr->getDomainID()
