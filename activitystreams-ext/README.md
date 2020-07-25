@@ -1,8 +1,8 @@
 # ActivityStreams Ext
 _This crate provides Ext1, Ext2, Ext3, and Ext4 for adding extensions to ActivityStreams types_
 
-- Find the code on [git.asonix.dog](https://git.asonix.dog/asonix/activitystreams-ext)
-- Read the docs on [activitystreams-ext.asonix.dog](https://activitystreams-ext.asonix.dog)
+- Find the code on [git.asonix.dog](https://git.asonix.dog/Aardwolf/activitystreams)
+- Read the docs on [docs.rs](https://docs.rs/activitystreams-ext)
 - Join the matrix channel at [#activitypub:asonix.dog](https://matrix.to/#/!fAEcHyTUdAaKCzIKCt:asonix.dog?via=asonix.dog&via=matrix.org&via=t2bot.io)
 - Hit me up on [mastodon](https://asonix.dog/@asonix)
 
@@ -11,14 +11,14 @@ _This crate provides Ext1, Ext2, Ext3, and Ext4 for adding extensions to Activit
 First, add ActivityStreams to your dependencies
 ```toml
 [dependencies]
-activitystreams-new = { git = "https://git.asonix.dog/asonix/activitystreams-sketch", branch = "main" }
-activitystreams-ext = { git = "https://git.asonix.dog/asonix/activitystreams-ext", branch = "main" }
+activitystreams = "0.7.0-alpha.0"
+activitystreams-ext = "0.1.0-alpha.0"
 ```
 
 For an example, we'll implement a PublicKey extension and demonstrate usage with Ext1
 ```rust
 use activitystreams_ext::{Ext1, UnparsedExtension};
-use activitystreams_new::{
+use activitystreams::{
     actor::{ApActor, Person},
     context,
     prelude::*,

@@ -1,8 +1,8 @@
 //! # ActivityStreams New
 //! _A set of Traits and Types that make up the ActivityStreams and ActivityPub specifications_
 //!
-//! - Find the code on [git.asonix.dog](https://git.asonix.dog/asonix/activitystreams-sketch)
-//! - Read the docs on [activitystreams-new.asonix.dog](https://activitystreams-new.asonix.dog)
+//! - Find the code on [git.asonix.dog](https://git.asonix.dog/Aardwolf/activitystreams)
+//! - Read the docs on [docs.rs](https://docs.rs/activitystreams)
 //! - Join the matrix channel at [#activitypub:asonix.dog](https://matrix.to/#/!fAEcHyTUdAaKCzIKCt:asonix.dog?via=asonix.dog&via=matrix.org&via=t2bot.io)
 //! - Hit me up on [mastodon](https://asonix.dog/@asonix)
 //!
@@ -11,7 +11,7 @@
 //! First, add ActivityStreams to your dependencies
 //! ```toml
 //! [dependencies]
-//! activitystreams-new = { git = "https://git.asonix.dog/asonix/activitystreams-sketch", branch = "main" }
+//! activitystreams = "0.7.0-alpha.0"
 //! ```
 //!
 //! ### Types
@@ -293,7 +293,7 @@
 //!
 //! You should have received a copy of the GNU General Public License along with ActivityStreams. If not, see [http://www.gnu.org/licenses/](http://www.gnu.org/licenses/).
 
-#![doc(html_root_url = "https://activitystreams-new.asonix.dog")]
+#![doc(html_root_url = "https://docs.rs/activitystreams/0.7.0-alpha.0/activitystreams")]
 
 pub mod activity;
 pub mod actor;
