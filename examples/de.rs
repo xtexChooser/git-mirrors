@@ -1,7 +1,7 @@
 use activitystreams::{
-    collection::{properties::CollectionProperties, OrderedCollection},
-    ext::Ext,
-    object::{properties::ApObjectProperties, ObjectBox, Page},
+    collection::OrderedCollection,
+    object::{ApObject, Page},
+    prelude::*,
 };
 use anyhow::Error;
 
@@ -41,28 +41,28 @@ fn main() -> Result<(), Error> {
       "published": "2020-03-13T00:14:41.188634+00:00"
     }"#;
 
-    let page: Ext<Page, ApObjectProperties> = serde_json::from_str(page_json)?;
+    let page: ApObject<Page> = serde_json::from_str(page_json)?;
     println!("{:#?}", page);
-    let obox = ObjectBox::from_concrete(page)?;
-    println!("{:#?}", obox);
-    let obox_string = serde_json::to_string(&obox)?;
-    println!("{}", obox_string);
-    let obox: ObjectBox = serde_json::from_str(&obox_string)?;
-    println!("{:#?}", obox);
-    let mut collection: OrderedCollection = serde_json::from_str(collection_json)?;
+    let mut collection: ApObject<OrderedCollection> = serde_json::from_str(collection_json)?;
     println!("{:#?}", collection);
 
-    let cprops: &CollectionProperties = collection.as_ref();
-    let v: Vec<Ext<Page, ApObjectProperties>> = cprops
-        .get_many_items_base_boxes()
-        .unwrap()
-        .map(|base_box| base_box.clone().into_concrete())
-        .collect::<Result<Vec<_>, std::io::Error>>()?;
-
-    let cprops: &mut CollectionProperties = collection.as_mut();
-    cprops.set_many_items_base_boxes(v.clone())?;
+    let v: Vec<ApObject<Page>> = collection
+        .items()
+        .clone()
+        .many()
+        .into_iter()
+        .flatten()
+        .filter_map(|any_base| any_base.take_base())
+        .map(|base| base.solidify().and_then(|o| o.extend()))
+        .collect::<Result<Vec<_>, _>>()?;
 
     println!("{:#?}", v);
+    let v = v
+        .into_iter()
+        .map(|o| o.into_any_base())
+        .collect::<Result<Vec<_>, _>>()?;
+
+    collection.set_many_items(v);
 
     Ok(())
 }

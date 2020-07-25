@@ -1,27 +1,30 @@
 use activitystreams::{
-    ext::Ext,
-    object::{properties::ApObjectProperties, Video},
+    context,
+    object::{ApObject, Video},
+    prelude::*,
+    uri,
 };
+use chrono::Duration;
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut v = Video::full();
+fn main() -> Result<(), anyhow::Error> {
+    let mut video = ApObject::new(Video::new());
 
-    v.as_mut()
-        .set_context_xsd_any_uri("https://www.w3.org/ns/activitystreams")?
-        .set_id("https://example.com/@example/lions")?
-        .set_url_xsd_any_uri("https://example.com/@example/lions/video.webm")?
-        .set_name_xsd_string("My Cool Video")?
-        .set_summary_xsd_string("A video about some cool lions")?
-        .set_media_type("video/webm")?
-        .set_duration("PT4M20S")?;
+    video
+        .set_context(context())
+        .set_id(uri!("https://example.com/@example/lions"))
+        .set_media_type("video/webm".parse()?)
+        .set_url(uri!("https://example.com/@example/lions/video.webm"))
+        .set_summary("A cool video".to_owned())
+        .set_duration(Duration::minutes(4) + Duration::seconds(20))
+        .set_shares(uri!("https://example.com/@example/lions/video.webm#shares"));
 
-    println!("Video, {:#?}", v);
+    println!("Video, {:#?}", video);
 
-    let s = serde_json::to_string(&v)?;
+    let s = serde_json::to_string(&video)?;
 
     println!("json, {}", s);
 
-    let v: Ext<Video, ApObjectProperties> = serde_json::from_str(&s)?;
+    let v: ApObject<Video> = serde_json::from_str(&s)?;
 
     println!("Video again, {:#?}", v);
 
