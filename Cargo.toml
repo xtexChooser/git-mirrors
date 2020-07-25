@@ -1,5 +1,6 @@
 [package]
 name = "activitystreams"
+description = "A set of core types and traits for activitystreams data"
 version = "0.7.0-alpha.0"
 license = "GPL-3.0"
 authors = ["asonix <asonix@asonix.dog>"]
