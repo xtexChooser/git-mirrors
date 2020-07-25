@@ -1,28 +1,20 @@
 [package]
-name = "activitystreams"
-version = "0.7.0-alpha.0"
+name = "activitystreams-ext"
+version = "0.1.0"
 license = "GPL-3.0"
 authors = ["asonix <asonix@asonix.dog>"]
-repository = "https://git.asonix.dog/asonix/activitystreams-sketch"
-documentation = "https://activitystreams-new.asonix.dog"
+repository = "https://git.asonix.dog/asonix/activitystreams-ext"
+documentation = "https://activitystreams-ext.asonix.dog"
 readme = "README.md"
 keywords = ["activitystreams", "activitypub"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[workspace]
-members = [
-    "activitystreams-ext"
-]
-
 [dependencies]
-chrono = "0.4"
-mime = "0.3"
+activitystreams = { path = ".." }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-thiserror = "1.0"
-url = { version = "2.1", features = ["serde"] }
 
 [dev-dependencies]
 anyhow = "1.0"

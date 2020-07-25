@@ -17,8 +17,6 @@
  * along with ActivityStreams.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use crate::primitives::XsdString;
-
 /// The rdf.langString type extends xs.string, and represents a language tagged string in RDF.
 #[derive(
     Clone, Debug, Default, Eq, Ord, PartialEq, PartialOrd, serde::Deserialize, serde::Serialize,
@@ -28,13 +26,13 @@ pub struct RdfLangString {
     ///
     /// Represented in json as "@value"
     #[serde(rename = "@value")]
-    pub value: XsdString,
+    pub value: String,
 
     /// The language identifier
     ///
     /// Represented in json as "@language"
     #[serde(rename = "@language")]
-    pub language: XsdString,
+    pub language: String,
 }
 
 impl std::fmt::Display for RdfLangString {

@@ -31,14 +31,19 @@
 /// UTC, is represented as -05:00. If no time zone value is present, it is considered unknown; it
 /// is not assumed to be UTC.
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
-pub struct XsdDateTime(chrono::DateTime<chrono::FixedOffset>);
-
-/// The error type produced when an XsdDateTime cannot be parsed
-#[derive(Clone, Debug, thiserror::Error)]
-#[error("Error parsing DateTime")]
-pub struct XsdDateTimeError;
+pub struct XsdDateTime(pub chrono::DateTime<chrono::FixedOffset>);
 
 impl XsdDateTime {
+    /// Create a XsdDateTime from a chrono::DateTime
+    pub fn new(d: chrono::DateTime<chrono::FixedOffset>) -> Self {
+        XsdDateTime(d)
+    }
+
+    /// Extract the chrono::DateTime from XsdDateTime
+    pub fn into_inner(self) -> chrono::DateTime<chrono::FixedOffset> {
+        self.0
+    }
+
     /// Borrow the underlying `chrono::DateTime<chrono::FixedOffset>`
     pub fn as_datetime(&self) -> &chrono::DateTime<chrono::FixedOffset> {
         self.as_ref()
@@ -75,7 +80,7 @@ impl AsMut<chrono::DateTime<chrono::FixedOffset>> for XsdDateTime {
 }
 
 impl std::convert::TryFrom<String> for XsdDateTime {
-    type Error = XsdDateTimeError;
+    type Error = chrono::format::ParseError;
 
     fn try_from(s: String) -> Result<Self, Self::Error> {
         s.parse()
@@ -83,7 +88,7 @@ impl std::convert::TryFrom<String> for XsdDateTime {
 }
 
 impl std::convert::TryFrom<&str> for XsdDateTime {
-    type Error = XsdDateTimeError;
+    type Error = chrono::format::ParseError;
 
     fn try_from(s: &str) -> Result<Self, Self::Error> {
         s.parse()
@@ -91,7 +96,7 @@ impl std::convert::TryFrom<&str> for XsdDateTime {
 }
 
 impl std::convert::TryFrom<&mut str> for XsdDateTime {
-    type Error = XsdDateTimeError;
+    type Error = chrono::format::ParseError;
 
     fn try_from(s: &mut str) -> Result<Self, Self::Error> {
         s.parse()
@@ -99,12 +104,10 @@ impl std::convert::TryFrom<&mut str> for XsdDateTime {
 }
 
 impl std::str::FromStr for XsdDateTime {
-    type Err = XsdDateTimeError;
+    type Err = chrono::format::ParseError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(XsdDateTime(
-            chrono::DateTime::parse_from_rfc3339(s).map_err(|_| XsdDateTimeError)?,
-        ))
+        Ok(XsdDateTime(chrono::DateTime::parse_from_rfc3339(s)?))
     }
 }
 

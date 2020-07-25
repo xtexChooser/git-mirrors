@@ -42,7 +42,7 @@
 /// multiplying by 365. If this is an issue for your application, look into specifying days
 /// directly.
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
-pub struct XsdDuration(chrono::Duration);
+pub struct XsdDuration(pub chrono::Duration);
 
 /// The error type produced when an XsdDuration cannot be parsed
 #[derive(Clone, Debug, thiserror::Error)]
@@ -50,6 +50,16 @@ pub struct XsdDuration(chrono::Duration);
 pub struct XsdDurationError;
 
 impl XsdDuration {
+    /// Create a new XsdDuration from a chrono::Duration
+    pub fn new(duration: chrono::Duration) -> Self {
+        XsdDuration(duration)
+    }
+
+    /// Extract the chrono::Duration from an XsdDuration
+    pub fn into_inner(self) -> chrono::Duration {
+        self.0
+    }
+
     /// Borrow the underlying `chrono::Duration`
     pub fn as_duration(&self) -> &chrono::Duration {
         self.as_ref()

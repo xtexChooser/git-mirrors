@@ -1,0 +1,6 @@
+FROM arm64v8/nginx:mainline-alpine
+
+COPY html/ /usr/share/nginx/html/
+
+RUN chown -R nginx:nginx /usr/share/nginx/html
+
