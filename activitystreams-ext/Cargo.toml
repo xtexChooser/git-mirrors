@@ -1,7 +1,7 @@
 [package]
 name = "activitystreams-ext"
 description = "Extension types for the ActivityStreams crate"
-version = "0.1.0-alpha.1"
+version = "0.1.0-alpha.2"
 license = "GPL-3.0"
 authors = ["asonix <asonix@asonix.dog>"]
 repository = "https://git.asonix.dog/Aardwolf/activitystreams"

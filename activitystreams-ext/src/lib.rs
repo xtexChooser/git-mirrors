@@ -12,20 +12,20 @@
 //! ```toml
 //! [dependencies]
 //! activitystreams = "0.7.0-alpha.3"
-//! activitystreams-ext = "0.1.0-alpha.1"
+//! activitystreams-ext = "0.1.0-alpha.2"
 //! ```
 //!
 //! For an example, we'll implement a PublicKey extension and demonstrate usage with Ext1
 //! ```rust
-//! use activitystreams_ext::{Ext1, UnparsedExtension};
 //! use activitystreams::{
 //!     actor::{ApActor, Person},
 //!     context,
 //!     prelude::*,
-//!     primitives::XsdAnyUri,
 //!     security,
 //!     unparsed::UnparsedMutExt,
+//!     url::Url,
 //! };
+//! use activitystreams_ext::{Ext1, UnparsedExtension};
 //!
 //! #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 //! #[serde(rename_all = "camelCase")]
@@ -36,8 +36,8 @@
 //! #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 //! #[serde(rename_all = "camelCase")]
 //! pub struct PublicKeyInner {
-//!     id: XsdAnyUri,
-//!     owner: XsdAnyUri,
+//!     id: Url,
+//!     owner: Url,
 //!     public_key_pem: String,
 //! }
 //!
@@ -62,11 +62,7 @@
 //! pub type ExtendedPerson = Ext1<ApActor<Person>, PublicKey>;
 //!
 //! fn main() -> Result<(), anyhow::Error> {
-//!     let actor = ApActor::new(
-//!         "http://in.box".parse()?,
-//!         "http://out.box".parse()?,
-//!         Person::new(),
-//!     );
+//!     let actor = ApActor::new("http://in.box".parse()?, Person::new());
 //!
 //!     let mut person = Ext1::new(
 //!         actor,

@@ -1,12 +1,12 @@
-use activitystreams_ext::{Ext1, UnparsedExtension};
 use activitystreams::{
     actor::{ApActor, Person},
     context,
     prelude::*,
-    primitives::XsdAnyUri,
     security,
     unparsed::UnparsedMutExt,
+    url::Url,
 };
+use activitystreams_ext::{Ext1, UnparsedExtension};
 
 #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -17,8 +17,8 @@ pub struct PublicKey {
 #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PublicKeyInner {
-    id: XsdAnyUri,
-    owner: XsdAnyUri,
+    id: Url,
+    owner: Url,
     public_key_pem: String,
 }
 
@@ -43,11 +43,7 @@ where
 pub type ExtendedPerson = Ext1<ApActor<Person>, PublicKey>;
 
 fn main() -> Result<(), anyhow::Error> {
-    let actor = ApActor::new(
-        "http://in.box".parse()?,
-        "http://out.box".parse()?,
-        Person::new(),
-    );
+    let actor = ApActor::new("http://in.box".parse()?, Person::new());
 
     let mut person = Ext1::new(
         actor,
