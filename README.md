@@ -11,7 +11,7 @@ _A set of Traits and Types that make up the ActivityStreams and ActivityPub spec
 First, add ActivityStreams to your dependencies
 ```toml
 [dependencies]
-activitystreams = "0.7.0-alpha.0"
+activitystreams = "0.7.0-alpha.2"
 ```
 
 ### Types

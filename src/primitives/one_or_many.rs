@@ -22,7 +22,70 @@ use crate::either::Either;
 #[serde(transparent)]
 pub struct OneOrMany<T>(pub(crate) Either<T, Vec<T>>);
 
+/// An iterator over a OneOrMany's borrowed contents
+#[derive(Clone, Debug)]
+pub struct Iter<'a, T>(Either<Option<&'a T>, std::slice::Iter<'a, T>>);
+
+/// An iterator over a OneOrMany's mutably borrowed contents
+#[derive(Debug)]
+pub struct IterMut<'a, T>(Either<Option<&'a mut T>, std::slice::IterMut<'a, T>>);
+
+/// An iterator consuming a OneOrMany
+#[derive(Clone, Debug)]
+pub struct IntoIter<T>(Either<Option<T>, std::vec::IntoIter<T>>);
+
 impl<T> OneOrMany<T> {
+    /// Construct an iterator over borrows of the OneOrMany's contents
+    ///
+    /// ```rust
+    /// use activitystreams::primitives::OneOrMany;
+    ///
+    /// let value = OneOrMany::from_one(String::from("hi"));
+    ///
+    /// for item in value.iter() {
+    ///     println!("{}", item);
+    /// }
+    /// ```
+    pub fn iter<'a>(&'a self) -> Iter<'a, T> {
+        match self.0 {
+            Either::Left(ref t) => Iter(Either::Left(Some(t))),
+            Either::Right(ref v) => Iter(Either::Right(v.iter())),
+        }
+    }
+
+    /// Construct an iterator over mutable borrows of the OneOrMany's contents
+    ///
+    /// ```rust
+    /// use activitystreams::primitives::OneOrMany;
+    ///
+    /// let mut value = OneOrMany::from_one(String::from("hi"));
+    ///
+    /// for item in value.iter_mut() {
+    ///     item.push_str("hey");
+    /// }
+    /// ```
+    pub fn iter_mut<'a>(&'a mut self) -> IterMut<'a, T> {
+        match self.0 {
+            Either::Left(ref mut t) => IterMut(Either::Left(Some(t))),
+            Either::Right(ref mut v) => IterMut(Either::Right(v.iter_mut())),
+        }
+    }
+
+    /// Construct an iterator over the OneOrMany's contents, consuming the OneOrMany
+    ///
+    /// ```rust
+    /// use activitystreams::primitives::OneOrMany;
+    ///
+    /// let value = OneOrMany::from_one(String::from("hi"));
+    /// let vec = value.into_iter().map(|s| s + "hello").collect::<Vec<_>>();
+    /// ```
+    pub fn into_iter(self) -> IntoIter<T> {
+        match self.0 {
+            Either::Left(t) => IntoIter(Either::Left(Some(t))),
+            Either::Right(v) => IntoIter(Either::Right(v.into_iter())),
+        }
+    }
+
     /// Create a OneOrMany referencing the existing one
     ///
     /// ```rust
@@ -279,6 +342,213 @@ impl<T> OneOrMany<T> {
     }
 }
 
+impl<T> IntoIterator for OneOrMany<T> {
+    type Item = T;
+    type IntoIter = IntoIter<T>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        OneOrMany::into_iter(self)
+    }
+}
+
+impl<'a, T> Iterator for Iter<'a, T> {
+    type Item = &'a T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.0 {
+            Either::Left(ref mut opt) => opt.take(),
+            Either::Right(ref mut iter) => iter.next(),
+        }
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        match self.0 {
+            Either::Left(ref opt) if opt.is_some() => (1, Some(1)),
+            Either::Left(_) => (0, Some(0)),
+            Either::Right(ref iter) => iter.size_hint(),
+        }
+    }
+
+    fn count(self) -> usize {
+        match self.0 {
+            Either::Left(opt) => {
+                if opt.is_some() {
+                    1
+                } else {
+                    0
+                }
+            }
+            Either::Right(iter) => iter.count(),
+        }
+    }
+
+    fn last(self) -> Option<Self::Item> {
+        match self.0 {
+            Either::Left(mut opt) => opt.take(),
+            Either::Right(iter) => iter.last(),
+        }
+    }
+
+    fn nth(&mut self, n: usize) -> Option<Self::Item> {
+        match self.0 {
+            Either::Left(ref mut opt) if n == 0 => opt.take(),
+            Either::Left(_) => None,
+            Either::Right(ref mut iter) => iter.nth(n),
+        }
+    }
+}
+
+impl<'a, T> DoubleEndedIterator for Iter<'a, T> {
+    fn next_back(&mut self) -> Option<Self::Item> {
+        match self.0 {
+            Either::Left(ref mut opt) => opt.take(),
+            Either::Right(ref mut iter) => iter.next_back(),
+        }
+    }
+
+    fn nth_back(&mut self, n: usize) -> Option<Self::Item> {
+        match self.0 {
+            Either::Left(ref mut opt) if n == 0 => opt.take(),
+            Either::Left(_) => None,
+            Either::Right(ref mut iter) => iter.nth_back(n),
+        }
+    }
+}
+
+impl<'a, T> std::iter::FusedIterator for Iter<'a, T> {}
+
+impl<'a, T> Iterator for IterMut<'a, T> {
+    type Item = &'a mut T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.0 {
+            Either::Left(ref mut opt) => opt.take(),
+            Either::Right(ref mut iter) => iter.next(),
+        }
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        match self.0 {
+            Either::Left(ref opt) if opt.is_some() => (1, Some(1)),
+            Either::Left(_) => (0, Some(0)),
+            Either::Right(ref iter) => iter.size_hint(),
+        }
+    }
+
+    fn count(self) -> usize {
+        match self.0 {
+            Either::Left(opt) => {
+                if opt.is_some() {
+                    1
+                } else {
+                    0
+                }
+            }
+            Either::Right(iter) => iter.count(),
+        }
+    }
+
+    fn last(self) -> Option<Self::Item> {
+        match self.0 {
+            Either::Left(mut opt) => opt.take(),
+            Either::Right(iter) => iter.last(),
+        }
+    }
+
+    fn nth(&mut self, n: usize) -> Option<Self::Item> {
+        match self.0 {
+            Either::Left(ref mut opt) if n == 0 => opt.take(),
+            Either::Left(_) => None,
+            Either::Right(ref mut iter) => iter.nth(n),
+        }
+    }
+}
+
+impl<'a, T> DoubleEndedIterator for IterMut<'a, T> {
+    fn next_back(&mut self) -> Option<Self::Item> {
+        match self.0 {
+            Either::Left(ref mut opt) => opt.take(),
+            Either::Right(ref mut iter) => iter.next_back(),
+        }
+    }
+
+    fn nth_back(&mut self, n: usize) -> Option<Self::Item> {
+        match self.0 {
+            Either::Left(ref mut opt) if n == 0 => opt.take(),
+            Either::Left(_) => None,
+            Either::Right(ref mut iter) => iter.nth_back(n),
+        }
+    }
+}
+
+impl<'a, T> std::iter::FusedIterator for IterMut<'a, T> {}
+
+impl<T> Iterator for IntoIter<T> {
+    type Item = T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.0 {
+            Either::Left(ref mut opt) => opt.take(),
+            Either::Right(ref mut iter) => iter.next(),
+        }
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        match self.0 {
+            Either::Left(ref opt) if opt.is_some() => (1, Some(1)),
+            Either::Left(_) => (0, Some(0)),
+            Either::Right(ref iter) => iter.size_hint(),
+        }
+    }
+
+    fn count(self) -> usize {
+        match self.0 {
+            Either::Left(opt) => {
+                if opt.is_some() {
+                    1
+                } else {
+                    0
+                }
+            }
+            Either::Right(iter) => iter.count(),
+        }
+    }
+
+    fn last(self) -> Option<Self::Item> {
+        match self.0 {
+            Either::Left(mut opt) => opt.take(),
+            Either::Right(iter) => iter.last(),
+        }
+    }
+
+    fn nth(&mut self, n: usize) -> Option<Self::Item> {
+        match self.0 {
+            Either::Left(ref mut opt) if n == 0 => opt.take(),
+            Either::Left(_) => None,
+            Either::Right(ref mut iter) => iter.nth(n),
+        }
+    }
+}
+
+impl<T> DoubleEndedIterator for IntoIter<T> {
+    fn next_back(&mut self) -> Option<Self::Item> {
+        match self.0 {
+            Either::Left(ref mut opt) => opt.take(),
+            Either::Right(ref mut iter) => iter.next_back(),
+        }
+    }
+
+    fn nth_back(&mut self, n: usize) -> Option<Self::Item> {
+        match self.0 {
+            Either::Left(ref mut opt) if n == 0 => opt.take(),
+            Either::Left(_) => None,
+            Either::Right(ref mut iter) => iter.nth_back(n),
+        }
+    }
+}
+
+impl<T> std::iter::FusedIterator for IntoIter<T> {}
+
 impl<T> From<T> for OneOrMany<T> {
     fn from(t: T) -> Self {
         OneOrMany::from_one(t)
@@ -288,5 +558,45 @@ impl<T> From<T> for OneOrMany<T> {
 impl<T> From<Vec<T>> for OneOrMany<T> {
     fn from(t: Vec<T>) -> Self {
         OneOrMany::from_many(t)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::OneOrMany;
+
+    #[test]
+    fn iter_works() {
+        let single = OneOrMany::from_one(1);
+        assert_eq!(single.iter().collect::<Vec<_>>(), vec![&1]);
+
+        let many = OneOrMany::from_many(vec![1, 2, 3]);
+        assert_eq!(many.iter().collect::<Vec<_>>(), vec![&1, &2, &3]);
+    }
+
+    #[test]
+    fn iter_mut_works() {
+        let mut single = OneOrMany::from_one(1);
+        for item in single.iter_mut() {
+            *item += 1;
+        }
+        assert_eq!(single.as_one(), Some(&2));
+
+        let mut many = OneOrMany::from_many(vec![1, 2, 3]);
+        for item in many.iter_mut() {
+            *item += 1;
+        }
+        assert_eq!(many.as_many(), Some(&[2, 3, 4][..]));
+    }
+
+    #[test]
+    fn into_iter_works() {
+        let single = OneOrMany::from_one(1);
+        let v = single.into_iter().collect::<Vec<_>>();
+        assert_eq!(v, vec![1]);
+
+        let many = OneOrMany::from_many(vec![1, 2, 3]);
+        let v = many.into_iter().collect::<Vec<_>>();
+        assert_eq!(v, vec![1, 2, 3]);
     }
 }
