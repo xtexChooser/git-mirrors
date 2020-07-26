@@ -1287,6 +1287,54 @@ impl<Inner> ApActor<Inner> {
         }
     }
 
+    /// Deconstruct the ApActor into its parts
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// use activitystreams::{actor::{ApActor, Person}, uri};
+    ///
+    /// let actor = ApActor::new(uri!("https://inbox.url"), Person::new());
+    ///
+    /// let (
+    ///     inbox,
+    ///     outbox,
+    ///     following,
+    ///     followers,
+    ///     liked,
+    ///     streams,
+    ///     preferred_username,
+    ///     endpoints,
+    ///     person,
+    /// ) = actor.into_parts();
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn into_parts(
+        self,
+    ) -> (
+        Url,
+        Option<Url>,
+        Option<Url>,
+        Option<Url>,
+        Option<Url>,
+        Option<OneOrMany<Url>>,
+        Option<String>,
+        Option<Endpoints<Url>>,
+        Inner,
+    ) {
+        (
+            self.inbox,
+            self.outbox,
+            self.following,
+            self.followers,
+            self.liked,
+            self.streams,
+            self.preferred_username,
+            self.endpoints,
+            self.inner,
+        )
+    }
+
     fn extending(mut inner: Inner) -> Result<Self, serde_json::Error>
     where
         Inner: UnparsedMut + markers::Actor,

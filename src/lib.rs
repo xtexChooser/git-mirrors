@@ -11,7 +11,7 @@
 //! First, add ActivityStreams to your dependencies
 //! ```toml
 //! [dependencies]
-//! activitystreams = "0.7.0-alpha.2"
+//! activitystreams = "0.7.0-alpha.3"
 //! ```
 //!
 //! ### Types
@@ -293,7 +293,7 @@
 //!
 //! You should have received a copy of the GNU General Public License along with ActivityStreams. If not, see [http://www.gnu.org/licenses/](http://www.gnu.org/licenses/).
 
-#![doc(html_root_url = "https://docs.rs/activitystreams/0.7.0-alpha.2/activitystreams")]
+#![doc(html_root_url = "https://docs.rs/activitystreams/0.7.0-alpha.3/activitystreams")]
 
 pub mod activity;
 pub mod actor;

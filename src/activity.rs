@@ -2024,6 +2024,19 @@ impl<Kind> ActorAndObject<Kind> {
         }
     }
 
+    /// Deconstruct the ActorAndObject into its parts
+    ///
+    /// ```rust
+    /// use activitystreams::activity::ActorAndObject;
+    ///
+    /// let activity = ActorAndObject::<String>::new(vec![], vec![]);
+    ///
+    /// let (actor, object, activity) = activity.into_parts();
+    /// ```
+    pub fn into_parts(self) -> (OneOrMany<AnyBase>, OneOrMany<AnyBase>, Activity<Kind>) {
+        (self.actor, self.object, self.inner)
+    }
+
     fn extending(object: Object<Kind>) -> Result<Self, serde_json::Error> {
         let mut inner = Activity::extending(object)?;
 
@@ -2068,6 +2081,19 @@ impl Arrive {
             origin: origin.into(),
             inner: Activity::new(),
         }
+    }
+
+    /// Deconstruct the Arrive into its parts
+    ///
+    /// ```rust
+    /// use activitystreams::activity::Arrive;
+    ///
+    /// let activity = Arrive::new(vec![], vec![]);
+    ///
+    /// let (actor, origin, activity) = activity.into_parts();
+    /// ```
+    pub fn into_parts(self) -> (OneOrMany<AnyBase>, OneOrMany<AnyBase>, Activity<ArriveType>) {
+        (self.actor, self.origin, self.inner)
     }
 
     fn extending(object: Object<ArriveType>) -> Result<Self, serde_json::Error> {
@@ -2116,6 +2142,26 @@ impl Invite {
             target: target.into(),
             inner: Activity::new(),
         }
+    }
+
+    /// Deconstruct the Invite into its parts
+    ///
+    /// ```rust
+    /// use activitystreams::activity::Invite;
+    ///
+    /// let activity = Invite::new(vec![], vec![], vec![]);
+    ///
+    /// let (actor, object, target, activity) = activity.into_parts();
+    /// ```
+    pub fn into_parts(
+        self,
+    ) -> (
+        OneOrMany<AnyBase>,
+        OneOrMany<AnyBase>,
+        OneOrMany<AnyBase>,
+        Activity<InviteType>,
+    ) {
+        (self.actor, self.object, self.target, self.inner)
     }
 
     fn extending(object: Object<InviteType>) -> Result<Self, serde_json::Error> {
@@ -2169,6 +2215,26 @@ impl Delete {
             origin: None,
             inner: Activity::new(),
         }
+    }
+
+    /// Deconstruct the Delete into its parts
+    ///
+    /// ```rust
+    /// use activitystreams::activity::Delete;
+    ///
+    /// let activity = Delete::new(vec![], vec![]);
+    ///
+    /// let (actor, object, origin, activity) = activity.into_parts();
+    /// ```
+    pub fn into_parts(
+        self,
+    ) -> (
+        OneOrMany<AnyBase>,
+        OneOrMany<AnyBase>,
+        Option<OneOrMany<AnyBase>>,
+        Activity<DeleteType>,
+    ) {
+        (self.actor, self.object, self.origin, self.inner)
     }
 
     fn extending(object: Object<DeleteType>) -> Result<Self, serde_json::Error> {
@@ -2227,6 +2293,33 @@ impl<Kind> ActorAndObjectOptOriginAndTarget<Kind> {
             target: None,
             inner: Activity::new(),
         }
+    }
+
+    /// Deconstruct the ActorAndObjectOptOriginAndTarget into its parts
+    ///
+    /// ```rust
+    /// use activitystreams::activity::ActorAndObjectOptOriginAndTarget;
+    ///
+    /// let activity = ActorAndObjectOptOriginAndTarget::<String>::new(vec![], vec![]);
+    ///
+    /// let (actor, object, origin, target, activity) = activity.into_parts();
+    /// ```
+    pub fn into_parts(
+        self,
+    ) -> (
+        OneOrMany<AnyBase>,
+        OneOrMany<AnyBase>,
+        Option<OneOrMany<AnyBase>>,
+        Option<OneOrMany<AnyBase>>,
+        Activity<Kind>,
+    ) {
+        (
+            self.actor,
+            self.object,
+            self.origin,
+            self.target,
+            self.inner,
+        )
     }
 
     fn extending(object: Object<Kind>) -> Result<Self, serde_json::Error> {
@@ -2290,6 +2383,26 @@ impl<Kind> ActorAndObjectOptTarget<Kind> {
         }
     }
 
+    /// Deconstruct the ActorAndObjectOptTarget into its parts
+    ///
+    /// ```rust
+    /// use activitystreams::activity::ActorAndObjectOptTarget;
+    ///
+    /// let activity = ActorAndObjectOptTarget::<String>::new(vec![], vec![]);
+    ///
+    /// let (actor, object, target, activity) = activity.into_parts();
+    /// ```
+    pub fn into_parts(
+        self,
+    ) -> (
+        OneOrMany<AnyBase>,
+        OneOrMany<AnyBase>,
+        Option<OneOrMany<AnyBase>>,
+        Activity<Kind>,
+    ) {
+        (self.actor, self.object, self.target, self.inner)
+    }
+
     fn extending(object: Object<Kind>) -> Result<Self, serde_json::Error> {
         let mut inner = Activity::extending(object)?;
 
@@ -2342,6 +2455,26 @@ impl Travel {
         }
     }
 
+    /// Deconstruct the Travel into its parts
+    ///
+    /// ```rust
+    /// use activitystreams::activity::Travel;
+    ///
+    /// let activity = Travel::new(vec![]);
+    ///
+    /// let (actor, origin, target, activity) = activity.into_parts();
+    /// ```
+    pub fn into_parts(
+        self,
+    ) -> (
+        OneOrMany<AnyBase>,
+        Option<OneOrMany<AnyBase>>,
+        Option<OneOrMany<AnyBase>>,
+        Activity<TravelType>,
+    ) {
+        (self.actor, self.origin, self.target, self.inner)
+    }
+
     fn extending(object: Object<TravelType>) -> Result<Self, serde_json::Error> {
         let mut inner = Activity::extending(object)?;
 
@@ -2388,6 +2521,25 @@ impl Question {
             any_of: None,
             inner: Activity::new(),
         }
+    }
+
+    /// Deconstruct the Question into its parts
+    ///
+    /// ```rust
+    /// use activitystreams::activity::Question;
+    ///
+    /// let activity = Question::new();
+    ///
+    /// let (one_of, any_of, activity) = activity.into_parts();
+    /// ```
+    pub fn into_parts(
+        self,
+    ) -> (
+        Option<OneOrMany<AnyBase>>,
+        Option<OneOrMany<AnyBase>>,
+        Activity<QuestionType>,
+    ) {
+        (self.one_of, self.any_of, self.inner)
     }
 
     fn extending(object: Object<QuestionType>) -> Result<Self, serde_json::Error> {

@@ -11,8 +11,8 @@ _This crate provides Ext1, Ext2, Ext3, and Ext4 for adding extensions to Activit
 First, add ActivityStreams to your dependencies
 ```toml
 [dependencies]
-activitystreams = "0.7.0-alpha.0"
-activitystreams-ext = "0.1.0-alpha.0"
+activitystreams = "0.7.0-alpha.3"
+activitystreams-ext = "0.1.0-alpha.1"
 ```
 
 For an example, we'll implement a PublicKey extension and demonstrate usage with Ext1

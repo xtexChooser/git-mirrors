@@ -11,8 +11,8 @@
 //! First, add ActivityStreams to your dependencies
 //! ```toml
 //! [dependencies]
-//! activitystreams = "0.7.0-alpha.0"
-//! activitystreams-ext = "0.1.0-alpha.0"
+//! activitystreams = "0.7.0-alpha.3"
+//! activitystreams-ext = "0.1.0-alpha.1"
 //! ```
 //!
 //! For an example, we'll implement a PublicKey extension and demonstrate usage with Ext1
@@ -185,6 +185,10 @@ impl<Inner, A> Ext1<Inner, A> {
         Ext1 { inner, ext_one }
     }
 
+    pub fn into_parts(self) -> (Inner, A) {
+        (self.inner, self.ext_one)
+    }
+
     pub fn extend<B>(self, ext_two: B) -> Ext2<Inner, A, B> {
         Ext2 {
             inner: self.inner,
@@ -201,6 +205,10 @@ impl<Inner, A, B> Ext2<Inner, A, B> {
             ext_one,
             ext_two,
         }
+    }
+
+    pub fn into_parts(self) -> (Inner, A, B) {
+        (self.inner, self.ext_one, self.ext_two)
     }
 
     pub fn extend<C>(self, ext_three: C) -> Ext3<Inner, A, B, C> {
@@ -223,6 +231,10 @@ impl<Inner, A, B, C> Ext3<Inner, A, B, C> {
         }
     }
 
+    pub fn into_parts(self) -> (Inner, A, B, C) {
+        (self.inner, self.ext_one, self.ext_two, self.ext_three)
+    }
+
     pub fn extend<D>(self, ext_four: D) -> Ext4<Inner, A, B, C, D> {
         Ext4 {
             inner: self.inner,
@@ -231,6 +243,28 @@ impl<Inner, A, B, C> Ext3<Inner, A, B, C> {
             ext_three: self.ext_three,
             ext_four,
         }
+    }
+}
+
+impl<Inner, A, B, C, D> Ext4<Inner, A, B, C, D> {
+    pub fn new(inner: Inner, ext_one: A, ext_two: B, ext_three: C, ext_four: D) -> Self {
+        Ext4 {
+            inner,
+            ext_one,
+            ext_two,
+            ext_three,
+            ext_four,
+        }
+    }
+
+    pub fn into_parts(self) -> (Inner, A, B, C, D) {
+        (
+            self.inner,
+            self.ext_one,
+            self.ext_two,
+            self.ext_three,
+            self.ext_four,
+        )
     }
 }
 

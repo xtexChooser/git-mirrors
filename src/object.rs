@@ -4846,6 +4846,33 @@ impl<Inner> ApObject<Inner> {
         }
     }
 
+    /// Deconstruct the ApObject into its parts
+    ///
+    /// ```rust
+    /// use activitystreams::object::{ApObject, Image};
+    ///
+    /// let object = ApObject::new(Image::new());
+    ///
+    /// let (shares, likes, source, upload_media, image) = object.into_parts();
+    /// ```
+    pub fn into_parts(
+        self,
+    ) -> (
+        Option<Url>,
+        Option<Url>,
+        Option<AnyBase>,
+        Option<OneOrMany<Url>>,
+        Inner,
+    ) {
+        (
+            self.shares,
+            self.likes,
+            self.source,
+            self.upload_media,
+            self.inner,
+        )
+    }
+
     fn extending(mut inner: Inner) -> Result<Self, serde_json::Error>
     where
         Inner: UnparsedMut + markers::Object,
