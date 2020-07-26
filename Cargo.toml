@@ -1,7 +1,7 @@
 [package]
 name = "activitystreams"
 description = "A set of core types and traits for activitystreams data"
-version = "0.7.0-alpha.0"
+version = "0.7.0-alpha.1"
 license = "GPL-3.0"
 authors = ["asonix <asonix@asonix.dog>"]
 repository = "https://git.asonix.dog/Aardwolf/activitystreams"

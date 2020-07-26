@@ -47,10 +47,9 @@ fn main() -> Result<(), Error> {
     println!("{:#?}", collection);
 
     let v: Vec<ApObject<Page>> = collection
-        .items()
-        .clone()
-        .many()
+        .take_items()
         .into_iter()
+        .map(|o| o.many().into_iter().flatten())
         .flatten()
         .filter_map(|any_base| any_base.take_base())
         .map(|base| base.solidify().and_then(|o| o.extend()))

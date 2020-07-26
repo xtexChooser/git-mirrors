@@ -293,7 +293,7 @@
 //!
 //! You should have received a copy of the GNU General Public License along with ActivityStreams. If not, see [http://www.gnu.org/licenses/](http://www.gnu.org/licenses/).
 
-#![doc(html_root_url = "https://docs.rs/activitystreams/0.7.0-alpha.0/activitystreams")]
+#![doc(html_root_url = "https://docs.rs/activitystreams/0.7.0-alpha.1/activitystreams")]
 
 pub mod activity;
 pub mod actor;

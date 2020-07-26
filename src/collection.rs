@@ -9,11 +9,10 @@
 //!     uri,
 //! };
 //!
-//! let mut collection = OrderedCollection::new(vec![
-//!     uri!("https://example.com/notes/1234").into(),
-//! ]);
+//! let mut collection = OrderedCollection::new();
 //!
 //! collection
+//!     .set_items(uri!("https://example.com/notes/1234"))
 //!     .set_total_items(1u64)
 //!     .set_current(uri!("https://example.com/notes/1234"))
 //!     .set_first(uri!("https://example.com/notes/1234"))
@@ -83,19 +82,19 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// Fetch the items for the current activity
     ///
     /// ```rust
-    /// # use activitystreams::{context, collection::UnorderedCollection};
-    /// # let mut collection = UnorderedCollection::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollection};
+    /// # let mut collection = UnorderedCollection::new();
     /// #
     /// use activitystreams::prelude::*;
     ///
     /// let items_ref = collection.items();
     /// println!("{:?}", items_ref);
     /// ```
-    fn items<'a>(&'a self) -> &'a OneOrMany<AnyBase>
+    fn items<'a>(&'a self) -> Option<&'a OneOrMany<AnyBase>>
     where
         Kind: 'a,
     {
-        &self.collection_ref().items
+        self.collection_ref().items.as_ref()
     }
 
     /// Set the items for the current activity
@@ -105,8 +104,8 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{context, collection::UnorderedCollection, uri};
-    /// # let mut collection = UnorderedCollection::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollection, uri};
+    /// # let mut collection = UnorderedCollection::new();
     ///
     /// collection.set_items(uri!("https://example.com"));
     /// # Ok(())
@@ -116,7 +115,7 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     where
         T: Into<AnyBase>,
     {
-        self.collection_mut().items = item.into().into();
+        self.collection_mut().items = Some(item.into().into());
         self
     }
 
@@ -127,8 +126,8 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{context, collection::UnorderedCollection, uri};
-    /// # let mut collection = UnorderedCollection::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollection, uri};
+    /// # let mut collection = UnorderedCollection::new();
     ///
     /// collection.set_many_items(vec![
     ///     uri!("https://example.com/one"),
@@ -143,7 +142,7 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
         T: Into<AnyBase>,
     {
         let v: Vec<_> = items.into_iter().map(Into::into).collect();
-        self.collection_mut().items = v.into();
+        self.collection_mut().items = Some(v.into());
         self
     }
 
@@ -154,8 +153,8 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{context, collection::UnorderedCollection, uri};
-    /// # let mut collection = UnorderedCollection::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollection, uri};
+    /// # let mut collection = UnorderedCollection::new();
     ///
     /// collection
     ///     .add_items(uri!("https://example.com/one"))
@@ -167,15 +166,53 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     where
         T: Into<AnyBase>,
     {
-        self.collection_mut().items.add(item.into());
+        match self.collection_mut().items {
+            Some(ref mut items) => {
+                items.add(item.into());
+            }
+            None => self.collection_mut().items = Some(item.into().into()),
+        }
+
+        self
+    }
+
+    /// Take the items of the current object, leaving nothing
+    ///
+    /// ```rust
+    /// # use activitystreams::{collection::UnorderedCollection};
+    /// # let mut collection = UnorderedCollection::new();
+    /// use activitystreams::prelude::*;
+    ///
+    /// if let Some(items) = collection.take_items() {
+    ///     println!("{:?}", items);
+    /// }
+    /// ```
+    fn take_items(&mut self) -> Option<OneOrMany<AnyBase>> {
+        self.collection_mut().items.take()
+    }
+
+    /// Delete the items from the current object
+    ///
+    /// ```rust
+    /// # use activitystreams::{context, collection::UnorderedCollection};
+    /// # let mut collection = UnorderedCollection::new();
+    /// # collection.set_items(context());
+    /// use activitystreams::prelude::*;
+    ///
+    /// assert!(collection.items().is_some());
+    /// collection.delete_items();
+    /// assert!(collection.items().is_none());
+    /// ```
+    fn delete_items(&mut self) -> &mut Self {
+        self.collection_mut().items = None;
         self
     }
 
     /// Fetch the total_items of the current object
     ///
     /// ```rust
-    /// # use activitystreams::{context, collection::UnorderedCollection};
-    /// # let mut collection = UnorderedCollection::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollection};
+    /// # let mut collection = UnorderedCollection::new();
     /// use activitystreams::prelude::*;
     ///
     /// if let Some(total_items) = collection.total_items() {
@@ -194,8 +231,8 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// This overwrites the contents of total_items
     ///
     /// ```rust
-    /// # use activitystreams::{context, collection::UnorderedCollection};
-    /// # let mut collection = UnorderedCollection::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollection};
+    /// # let mut collection = UnorderedCollection::new();
     /// use activitystreams::prelude::*;
     ///
     /// collection.set_total_items(5u64);
@@ -211,11 +248,11 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// Take the total_items of the current object, leaving nothing
     ///
     /// ```rust
-    /// # use activitystreams::{context, collection::UnorderedCollection};
-    /// # let mut collection = UnorderedCollection::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollection};
+    /// # let mut collection = UnorderedCollection::new();
     /// use activitystreams::prelude::*;
     ///
-    /// if let Some(total_items) = collection.total_items() {
+    /// if let Some(total_items) = collection.take_total_items() {
     ///     println!("{:?}", total_items);
     /// }
     /// ```
@@ -226,8 +263,8 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// Delete the total_items from the current object
     ///
     /// ```rust
-    /// # use activitystreams::{context, collection::UnorderedCollection};
-    /// # let mut collection = UnorderedCollection::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollection};
+    /// # let mut collection = UnorderedCollection::new();
     /// # collection.set_total_items(5u64);
     /// use activitystreams::prelude::*;
     ///
@@ -243,8 +280,8 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// Fetch the current field for the current object
     ///
     /// ```rust
-    /// # use activitystreams::{context, collection::UnorderedCollection};
-    /// # let mut collection = UnorderedCollection::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollection};
+    /// # let mut collection = UnorderedCollection::new();
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -265,8 +302,8 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{context, collection::UnorderedCollection, uri};
-    /// # let mut collection = UnorderedCollection::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollection, uri};
+    /// # let mut collection = UnorderedCollection::new();
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -285,8 +322,8 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// Take the current field from the current object, leaving nothing
     ///
     /// ```rust
-    /// # use activitystreams::{context, collection::UnorderedCollection};
-    /// # let mut collection = UnorderedCollection::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollection};
+    /// # let mut collection = UnorderedCollection::new();
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -302,7 +339,7 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     ///
     /// ```rust
     /// # use activitystreams::{context, collection::UnorderedCollection};
-    /// # let mut collection = UnorderedCollection::new(vec![context().into()]);
+    /// # let mut collection = UnorderedCollection::new();
     /// # collection.set_current(context());
     /// #
     /// use activitystreams::prelude::*;
@@ -319,8 +356,8 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// Fetch the first field for the current object
     ///
     /// ```rust
-    /// # use activitystreams::{context, collection::UnorderedCollection};
-    /// # let mut collection = UnorderedCollection::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollection};
+    /// # let mut collection = UnorderedCollection::new();
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -341,8 +378,8 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{context, collection::UnorderedCollection};
-    /// # let mut collection = UnorderedCollection::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollection};
+    /// # let mut collection = UnorderedCollection::new();
     /// #
     /// use activitystreams::{prelude::*, uri};
     ///
@@ -361,8 +398,8 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// Take the first field from the current object, leaving nothing
     ///
     /// ```rust
-    /// # use activitystreams::{context, collection::UnorderedCollection};
-    /// # let mut collection = UnorderedCollection::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollection};
+    /// # let mut collection = UnorderedCollection::new();
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -378,7 +415,7 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     ///
     /// ```rust
     /// # use activitystreams::{context, collection::UnorderedCollection};
-    /// # let mut collection = UnorderedCollection::new(vec![context().into()]);
+    /// # let mut collection = UnorderedCollection::new();
     /// # collection.set_first(context());
     /// #
     /// use activitystreams::prelude::*;
@@ -395,8 +432,8 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// Fetch the last field for the current object
     ///
     /// ```rust
-    /// # use activitystreams::{context, collection::UnorderedCollection};
-    /// # let mut collection = UnorderedCollection::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollection};
+    /// # let mut collection = UnorderedCollection::new();
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -417,8 +454,8 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{context, collection::UnorderedCollection};
-    /// # let mut collection = UnorderedCollection::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollection};
+    /// # let mut collection = UnorderedCollection::new();
     /// #
     /// use activitystreams::{prelude::*, uri};
     ///
@@ -437,8 +474,8 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// Take the last field from the current object, leaving nothing
     ///
     /// ```rust
-    /// # use activitystreams::{context, collection::UnorderedCollection};
-    /// # let mut collection = UnorderedCollection::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollection};
+    /// # let mut collection = UnorderedCollection::new();
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -454,7 +491,7 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     ///
     /// ```rust
     /// # use activitystreams::{context, collection::UnorderedCollection};
-    /// # let mut collection = UnorderedCollection::new(vec![context().into()]);
+    /// # let mut collection = UnorderedCollection::new();
     /// # collection.set_last(context());
     /// #
     /// use activitystreams::prelude::*;
@@ -479,8 +516,8 @@ pub trait CollectionPageExt<Kind>: AsCollectionPage<Kind> {
     /// Fetch the part_of field for the current object
     ///
     /// ```rust
-    /// # use activitystreams::{context, collection::UnorderedCollectionPage};
-    /// # let mut collection = UnorderedCollectionPage::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollectionPage};
+    /// # let mut collection = UnorderedCollectionPage::new();
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -501,8 +538,8 @@ pub trait CollectionPageExt<Kind>: AsCollectionPage<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{context, collection::UnorderedCollectionPage};
-    /// # let mut collection = UnorderedCollectionPage::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollectionPage};
+    /// # let mut collection = UnorderedCollectionPage::new();
     /// #
     /// use activitystreams::{prelude::*, uri};
     ///
@@ -521,8 +558,8 @@ pub trait CollectionPageExt<Kind>: AsCollectionPage<Kind> {
     /// Take the part_of field from the current object, leaving nothing
     ///
     /// ```rust
-    /// # use activitystreams::{context, collection::UnorderedCollectionPage};
-    /// # let mut collection = UnorderedCollectionPage::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollectionPage};
+    /// # let mut collection = UnorderedCollectionPage::new();
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -538,7 +575,7 @@ pub trait CollectionPageExt<Kind>: AsCollectionPage<Kind> {
     ///
     /// ```rust
     /// # use activitystreams::{context, collection::UnorderedCollectionPage};
-    /// # let mut collection = UnorderedCollectionPage::new(vec![context().into()]);
+    /// # let mut collection = UnorderedCollectionPage::new();
     /// # collection.set_part_of(context());
     /// #
     /// use activitystreams::prelude::*;
@@ -555,8 +592,8 @@ pub trait CollectionPageExt<Kind>: AsCollectionPage<Kind> {
     /// Fetch the next field for the current object
     ///
     /// ```rust
-    /// # use activitystreams::{context, collection::UnorderedCollectionPage};
-    /// # let mut collection = UnorderedCollectionPage::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollectionPage};
+    /// # let mut collection = UnorderedCollectionPage::new();
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -577,8 +614,8 @@ pub trait CollectionPageExt<Kind>: AsCollectionPage<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{context, collection::UnorderedCollectionPage};
-    /// # let mut collection = UnorderedCollectionPage::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollectionPage};
+    /// # let mut collection = UnorderedCollectionPage::new();
     /// #
     /// use activitystreams::{prelude::*, uri};
     ///
@@ -597,8 +634,8 @@ pub trait CollectionPageExt<Kind>: AsCollectionPage<Kind> {
     /// Take the next field from the current object, leaving nothing
     ///
     /// ```rust
-    /// # use activitystreams::{context, collection::UnorderedCollectionPage};
-    /// # let mut collection = UnorderedCollectionPage::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollectionPage};
+    /// # let mut collection = UnorderedCollectionPage::new();
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -614,7 +651,7 @@ pub trait CollectionPageExt<Kind>: AsCollectionPage<Kind> {
     ///
     /// ```rust
     /// # use activitystreams::{context, collection::UnorderedCollectionPage};
-    /// # let mut collection = UnorderedCollectionPage::new(vec![context().into()]);
+    /// # let mut collection = UnorderedCollectionPage::new();
     /// # collection.set_next(context());
     /// #
     /// use activitystreams::prelude::*;
@@ -631,8 +668,8 @@ pub trait CollectionPageExt<Kind>: AsCollectionPage<Kind> {
     /// Fetch the prev field for the current object
     ///
     /// ```rust
-    /// # use activitystreams::{context, collection::UnorderedCollectionPage};
-    /// # let mut collection = UnorderedCollectionPage::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollectionPage};
+    /// # let mut collection = UnorderedCollectionPage::new();
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -653,8 +690,8 @@ pub trait CollectionPageExt<Kind>: AsCollectionPage<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{context, collection::UnorderedCollectionPage};
-    /// # let mut collection = UnorderedCollectionPage::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollectionPage};
+    /// # let mut collection = UnorderedCollectionPage::new();
     /// #
     /// use activitystreams::{prelude::*, uri};
     ///
@@ -673,8 +710,8 @@ pub trait CollectionPageExt<Kind>: AsCollectionPage<Kind> {
     /// Take the prev field from the current object, leaving nothing
     ///
     /// ```rust
-    /// # use activitystreams::{context, collection::UnorderedCollectionPage};
-    /// # let mut collection = UnorderedCollectionPage::new(vec![context().into()]);
+    /// # use activitystreams::{collection::UnorderedCollectionPage};
+    /// # let mut collection = UnorderedCollectionPage::new();
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -690,7 +727,7 @@ pub trait CollectionPageExt<Kind>: AsCollectionPage<Kind> {
     ///
     /// ```rust
     /// # use activitystreams::{context, collection::UnorderedCollectionPage};
-    /// # let mut collection = UnorderedCollectionPage::new(vec![context().into()]);
+    /// # let mut collection = UnorderedCollectionPage::new();
     /// # collection.set_prev(context());
     /// #
     /// use activitystreams::prelude::*;
@@ -709,8 +746,8 @@ pub trait OrderedCollectionPageExt: AsOrderedCollectionPage {
     /// Fetch the start_index of the current object
     ///
     /// ```rust
-    /// # use activitystreams::{context, collection::OrderedCollectionPage};
-    /// # let mut collection = OrderedCollectionPage::new(vec![context().into()]);
+    /// # use activitystreams::{collection::OrderedCollectionPage};
+    /// # let mut collection = OrderedCollectionPage::new();
     /// use activitystreams::prelude::*;
     ///
     /// if let Some(start_index) = collection.start_index() {
@@ -726,8 +763,8 @@ pub trait OrderedCollectionPageExt: AsOrderedCollectionPage {
     /// This overwrites the contents of start_index
     ///
     /// ```rust
-    /// # use activitystreams::{context, collection::OrderedCollectionPage};
-    /// # let mut collection = OrderedCollectionPage::new(vec![context().into()]);
+    /// # use activitystreams::{collection::OrderedCollectionPage};
+    /// # let mut collection = OrderedCollectionPage::new();
     /// use activitystreams::prelude::*;
     ///
     /// collection.set_start_index(5u64);
@@ -743,8 +780,8 @@ pub trait OrderedCollectionPageExt: AsOrderedCollectionPage {
     /// Take the start_index of the current object, leaving nothing
     ///
     /// ```rust
-    /// # use activitystreams::{context, collection::OrderedCollectionPage};
-    /// # let mut collection = OrderedCollectionPage::new(vec![context().into()]);
+    /// # use activitystreams::{collection::OrderedCollectionPage};
+    /// # let mut collection = OrderedCollectionPage::new();
     /// use activitystreams::prelude::*;
     ///
     /// if let Some(start_index) = collection.start_index() {
@@ -758,8 +795,8 @@ pub trait OrderedCollectionPageExt: AsOrderedCollectionPage {
     /// Delete the start_index from the current object
     ///
     /// ```rust
-    /// # use activitystreams::{context, collection::OrderedCollectionPage};
-    /// # let mut collection = OrderedCollectionPage::new(vec![context().into()]);
+    /// # use activitystreams::{collection::OrderedCollectionPage};
+    /// # let mut collection = OrderedCollectionPage::new();
     /// # collection.set_start_index(5u64);
     /// use activitystreams::prelude::*;
     ///
@@ -806,7 +843,7 @@ pub struct Collection<Kind> {
     ///
     /// - Range: Object | Link | Ordered List of [ Object | Link ]
     /// - Functional: false
-    items: OneOrMany<AnyBase>,
+    items: Option<OneOrMany<AnyBase>>,
 
     /// A non-negative integer specifying the total number of objects contained by the logical view
     /// of the collection.
@@ -903,15 +940,14 @@ impl<Kind> Collection<Kind> {
     /// ```rust
     /// use activitystreams::collection::Collection;
     ///
-    /// let collection = Collection::<String>::new(vec![]);
+    /// let collection = Collection::<String>::new();
     /// ```
-    pub fn new<T>(items: T) -> Self
+    pub fn new() -> Self
     where
-        T: Into<OneOrMany<AnyBase>>,
         Kind: Default,
     {
         Collection {
-            items: items.into(),
+            items: None,
             total_items: None,
             current: None,
             first: None,
@@ -964,18 +1000,17 @@ impl<Kind> CollectionPage<Kind> {
     /// ```rust
     /// use activitystreams::collection::CollectionPage;
     ///
-    /// let collection = CollectionPage::<String>::new(vec![]);
+    /// let collection = CollectionPage::<String>::new();
     /// ```
-    pub fn new<T>(items: T) -> Self
+    pub fn new() -> Self
     where
-        T: Into<OneOrMany<AnyBase>>,
         Kind: Default,
     {
         CollectionPage {
             part_of: None,
             next: None,
             prev: None,
-            inner: Collection::new(items),
+            inner: Collection::new(),
         }
     }
 
@@ -1017,15 +1052,12 @@ impl OrderedCollectionPage {
     /// ```rust
     /// use activitystreams::collection::OrderedCollectionPage;
     ///
-    /// let collection = OrderedCollectionPage::new(vec![]);
+    /// let collection = OrderedCollectionPage::new();
     /// ```
-    pub fn new<T>(items: T) -> Self
-    where
-        T: Into<OneOrMany<AnyBase>>,
-    {
+    pub fn new() -> Self {
         OrderedCollectionPage {
             start_index: None,
-            inner: CollectionPage::new(items),
+            inner: CollectionPage::new(),
         }
     }
 
