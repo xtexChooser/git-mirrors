@@ -1,4 +1,5 @@
 # Unreleased
+Fix example in readme
 
 # 0.1.0-alpha.2
 Fix docs
