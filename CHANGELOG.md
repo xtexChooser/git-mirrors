@@ -1,4 +1,9 @@
 # Unreleased
+- Clean up unneeded `.into()` calls
+- Remove redundant `into_iter` method on OneOrMany.
+- Add `new_none_type` constructors to create activitystreams constructs without setting the `type`
+    field
+- Don't serialize a collection's `items` field if it's `None`
 - Rename plural methods
     - `src/actor.rs`: set_streams -> set_stream, add_streams -> add_stream
     - `src/collections.rs`: set_items -> set_item, add_items -> add_item

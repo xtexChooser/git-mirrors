@@ -345,7 +345,7 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     /// # }
     /// ```
     fn set_id(&mut self, id: Url) -> &mut Self {
-        self.base_mut().id = Some(id.into());
+        self.base_mut().id = Some(id);
         self
     }
 
@@ -948,6 +948,34 @@ impl<Kind> Base<Kind> {
             context: None,
             id: None,
             kind: Some(Kind::default()),
+            name: None,
+            media_type: None,
+            preview: None,
+            unparsed: Default::default(),
+        }
+    }
+
+    /// Create a new base with `None` for it's `kind` property
+    ///
+    /// This means that no `type` field will be present in serialized JSON
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// use activitystreams::base::Base;
+    ///
+    /// let base = Base::<()>::new_none_type();
+    ///
+    /// let s = serde_json::to_string(&base)?;
+    ///
+    /// assert_eq!(s, "{}");
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn new_none_type() -> Self {
+        Base {
+            context: None,
+            id: None,
+            kind: None,
             name: None,
             media_type: None,
             preview: None,

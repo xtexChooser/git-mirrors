@@ -843,6 +843,7 @@ pub struct Collection<Kind> {
     ///
     /// - Range: Object | Link | Ordered List of [ Object | Link ]
     /// - Functional: false
+    #[serde(skip_serializing_if = "Option::is_none")]
     items: Option<OneOrMany<AnyBase>>,
 
     /// A non-negative integer specifying the total number of objects contained by the logical view
@@ -956,6 +957,33 @@ impl<Kind> Collection<Kind> {
         }
     }
 
+    /// Create a new collection with `None` for it's `kind` property
+    ///
+    /// This means that no `type` field will be present in serialized JSON
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// use activitystreams::collection::Collection;
+    ///
+    /// let collection = Collection::<()>::new_none_type();
+    ///
+    /// let s = serde_json::to_string(&collection)?;
+    ///
+    /// assert_eq!(s, "{}");
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn new_none_type() -> Self {
+        Collection {
+            items: None,
+            total_items: None,
+            current: None,
+            first: None,
+            last: None,
+            inner: Object::new_none_type(),
+        }
+    }
+
     fn extending(mut inner: Object<Kind>) -> Result<Self, serde_json::Error> {
         let items = inner.remove("items")?;
         let total_items = inner.remove("totalItems")?;
@@ -1011,6 +1039,31 @@ impl<Kind> CollectionPage<Kind> {
             next: None,
             prev: None,
             inner: Collection::new(),
+        }
+    }
+
+    /// Create a new collection page with `None` for it's `kind` property
+    ///
+    /// This means that no `type` field will be present in serialized JSON
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// use activitystreams::collection::CollectionPage;
+    ///
+    /// let collection_page = CollectionPage::<()>::new_none_type();
+    ///
+    /// let s = serde_json::to_string(&collection_page)?;
+    ///
+    /// assert_eq!(s, "{}");
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn new_none_type() -> Self {
+        CollectionPage {
+            part_of: None,
+            next: None,
+            prev: None,
+            inner: Collection::new_none_type(),
         }
     }
 

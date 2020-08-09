@@ -2840,7 +2840,7 @@ pub trait ApObjectExt<Inner>: AsApObject<Inner> {
     /// # }
     /// ```
     fn set_shares(&mut self, shares: Url) -> &mut Self {
-        self.ap_object_mut().shares = Some(shares.into());
+        self.ap_object_mut().shares = Some(shares);
         self
     }
 
@@ -2913,7 +2913,7 @@ pub trait ApObjectExt<Inner>: AsApObject<Inner> {
     /// # }
     /// ```
     fn set_likes(&mut self, likes: Url) -> &mut Self {
-        self.ap_object_mut().likes = Some(likes.into());
+        self.ap_object_mut().likes = Some(likes);
         self
     }
 
@@ -3120,7 +3120,7 @@ pub trait ApObjectExt<Inner>: AsApObject<Inner> {
                 v.add(upload_media);
                 v
             }
-            None => vec![upload_media.into()].into(),
+            None => vec![upload_media].into(),
         };
         self.ap_object_mut().upload_media = Some(v);
         self
@@ -4739,6 +4739,50 @@ impl<Kind> Object<Kind> {
             cc: None,
             bcc: None,
             inner: Base::new(),
+        }
+    }
+
+    /// Create a new object with `None` for it's `kind` property
+    ///
+    /// This means that no `type` field will be present in serialized JSON
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// use activitystreams::object::Object;
+    ///
+    /// let object = Object::<()>::new_none_type();
+    ///
+    /// let s = serde_json::to_string(&object)?;
+    ///
+    /// assert_eq!(s, "{}");
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn new_none_type() -> Self {
+        Object {
+            attachment: None,
+            attributed_to: None,
+            audience: None,
+            content: None,
+            summary: None,
+            url: None,
+            generator: None,
+            icon: None,
+            image: None,
+            location: None,
+            tag: None,
+            start_time: None,
+            end_time: None,
+            duration: None,
+            published: None,
+            updated: None,
+            in_reply_to: None,
+            replies: None,
+            to: None,
+            bto: None,
+            cc: None,
+            bcc: None,
+            inner: Base::new_none_type(),
         }
     }
 

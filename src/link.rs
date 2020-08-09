@@ -147,7 +147,7 @@ pub trait LinkExt<Kind>: AsLink<Kind> {
     where
         Kind: 'a,
     {
-        self.link_ref().hreflang.as_ref().map(|lr| lr.as_str())
+        self.link_ref().hreflang.as_deref()
     }
 
     /// Set the hreflang for the current object
@@ -562,6 +562,33 @@ impl<Kind> Link<Kind> {
             height: None,
             width: None,
             inner: Base::new(),
+        }
+    }
+
+    /// Create a new link with `None` for it's `kind` property
+    ///
+    /// This means that no `type` field will be present in serialized JSON
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// use activitystreams::link::Link;
+    ///
+    /// let link = Link::<()>::new_none_type();
+    ///
+    /// let s = serde_json::to_string(&link)?;
+    ///
+    /// assert_eq!(s, "{}");
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn new_none_type() -> Self {
+        Link {
+            href: None,
+            hreflang: None,
+            rel: None,
+            height: None,
+            width: None,
+            inner: Base::new_none_type(),
         }
     }
 

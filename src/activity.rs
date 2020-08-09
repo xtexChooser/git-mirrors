@@ -1977,6 +1977,30 @@ impl<Kind> Activity<Kind> {
         }
     }
 
+    /// Create a new activity with `None` for it's `kind` property
+    ///
+    /// This means that no `type` field will be present in serialized JSON
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// use activitystreams::activity::Activity;
+    ///
+    /// let activity = Activity::<()>::new_none_type();
+    ///
+    /// let s = serde_json::to_string(&activity)?;
+    ///
+    /// assert_eq!(s, "{}");
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn new_none_type() -> Self {
+        Activity {
+            result: None,
+            instrument: None,
+            inner: Object::new_none_type(),
+        }
+    }
+
     fn extending(mut inner: Object<Kind>) -> Result<Self, serde_json::Error> {
         let result = inner.remove("result")?;
         let instrument = inner.remove("instrument")?;
@@ -2021,6 +2045,34 @@ impl<Kind> ActorAndObject<Kind> {
             actor: actor.into(),
             object: object.into(),
             inner: Activity::new(),
+        }
+    }
+
+    /// Create a new ActorAndObject with `None` for it's `kind` property
+    ///
+    /// This means that no `type` field will be present in serialized JSON
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// use activitystreams::activity::ActorAndObject;
+    ///
+    /// let activity = ActorAndObject::<()>::new_none_type(vec![], vec![]);
+    ///
+    /// let s = serde_json::to_string(&activity)?;
+    ///
+    /// assert_eq!(s, r#"{"actor":[],"object":[]}"#);
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn new_none_type<T, U>(actor: T, object: U) -> Self
+    where
+        T: Into<OneOrMany<AnyBase>>,
+        U: Into<OneOrMany<AnyBase>>,
+    {
+        ActorAndObject {
+            actor: actor.into(),
+            object: object.into(),
+            inner: Activity::new_none_type(),
         }
     }
 
@@ -2295,6 +2347,36 @@ impl<Kind> ActorAndObjectOptOriginAndTarget<Kind> {
         }
     }
 
+    /// Create a new ActorAndObjectOptOriginAndTarget with `None` for it's `kind` property
+    ///
+    /// This means that no `type` field will be present in serialized JSON
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// use activitystreams::activity::ActorAndObjectOptOriginAndTarget;
+    ///
+    /// let activity = ActorAndObjectOptOriginAndTarget::<()>::new_none_type(vec![], vec![]);
+    ///
+    /// let s = serde_json::to_string(&activity)?;
+    ///
+    /// assert_eq!(s, r#"{"actor":[],"object":[]}"#);
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn new_none_type<T, U>(actor: T, object: U) -> Self
+    where
+        T: Into<OneOrMany<AnyBase>>,
+        U: Into<OneOrMany<AnyBase>>,
+    {
+        ActorAndObjectOptOriginAndTarget {
+            actor: actor.into(),
+            object: object.into(),
+            origin: None,
+            target: None,
+            inner: Activity::new_none_type(),
+        }
+    }
+
     /// Deconstruct the ActorAndObjectOptOriginAndTarget into its parts
     ///
     /// ```rust
@@ -2380,6 +2462,35 @@ impl<Kind> ActorAndObjectOptTarget<Kind> {
             object: object.into(),
             target: None,
             inner: Activity::new(),
+        }
+    }
+
+    /// Create a new ActorAndObjectOptTarget with `None` for it's `kind` property
+    ///
+    /// This means that no `type` field will be present in serialized JSON
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// use activitystreams::activity::ActorAndObjectOptTarget;
+    ///
+    /// let activity = ActorAndObjectOptTarget::<()>::new_none_type(vec![], vec![]);
+    ///
+    /// let s = serde_json::to_string(&activity)?;
+    ///
+    /// assert_eq!(s, r#"{"actor":[],"object":[]}"#);
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn new_none_type<T, U>(actor: T, object: U) -> Self
+    where
+        T: Into<OneOrMany<AnyBase>>,
+        U: Into<OneOrMany<AnyBase>>,
+    {
+        ActorAndObjectOptTarget {
+            actor: actor.into(),
+            object: object.into(),
+            target: None,
+            inner: Activity::new_none_type(),
         }
     }
 

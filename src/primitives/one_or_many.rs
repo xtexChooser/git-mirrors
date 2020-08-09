@@ -46,7 +46,7 @@ impl<T> OneOrMany<T> {
     ///     println!("{}", item);
     /// }
     /// ```
-    pub fn iter<'a>(&'a self) -> Iter<'a, T> {
+    pub fn iter(&self) -> Iter<'_, T> {
         match self.0 {
             Either::Left(ref t) => Iter(Either::Left(Some(t))),
             Either::Right(ref v) => Iter(Either::Right(v.iter())),
@@ -64,25 +64,10 @@ impl<T> OneOrMany<T> {
     ///     item.push_str("hey");
     /// }
     /// ```
-    pub fn iter_mut<'a>(&'a mut self) -> IterMut<'a, T> {
+    pub fn iter_mut(&mut self) -> IterMut<'_, T> {
         match self.0 {
             Either::Left(ref mut t) => IterMut(Either::Left(Some(t))),
             Either::Right(ref mut v) => IterMut(Either::Right(v.iter_mut())),
-        }
-    }
-
-    /// Construct an iterator over the OneOrMany's contents, consuming the OneOrMany
-    ///
-    /// ```rust
-    /// use activitystreams::primitives::OneOrMany;
-    ///
-    /// let value = OneOrMany::from_one(String::from("hi"));
-    /// let vec = value.into_iter().map(|s| s + "hello").collect::<Vec<_>>();
-    /// ```
-    pub fn into_iter(self) -> IntoIter<T> {
-        match self.0 {
-            Either::Left(t) => IntoIter(Either::Left(Some(t))),
-            Either::Right(v) => IntoIter(Either::Right(v.into_iter())),
         }
     }
 
@@ -346,8 +331,19 @@ impl<T> IntoIterator for OneOrMany<T> {
     type Item = T;
     type IntoIter = IntoIter<T>;
 
+    /// Construct an iterator over the OneOrMany's contents, consuming the OneOrMany
+    ///
+    /// ```rust
+    /// use activitystreams::primitives::OneOrMany;
+    ///
+    /// let value = OneOrMany::from_one(String::from("hi"));
+    /// let vec = value.into_iter().map(|s| s + "hello").collect::<Vec<_>>();
+    /// ```
     fn into_iter(self) -> Self::IntoIter {
-        OneOrMany::into_iter(self)
+        match self.0 {
+            Either::Left(t) => IntoIter(Either::Left(Some(t))),
+            Either::Right(v) => IntoIter(Either::Right(v.into_iter())),
+        }
     }
 }
 

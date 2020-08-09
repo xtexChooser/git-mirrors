@@ -141,7 +141,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # }
     /// ```
     fn set_inbox(&mut self, inbox: Url) -> &mut Self {
-        self.ap_actor_mut().inbox = inbox.into();
+        self.ap_actor_mut().inbox = inbox;
         self
     }
 
@@ -223,7 +223,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # }
     /// ```
     fn set_outbox(&mut self, outbox: Url) -> &mut Self {
-        self.ap_actor_mut().outbox = Some(outbox.into());
+        self.ap_actor_mut().outbox = Some(outbox);
         self
     }
 
@@ -344,7 +344,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # }
     /// ```
     fn set_following(&mut self, following: Url) -> &mut Self {
-        self.ap_actor_mut().following = Some(following.into());
+        self.ap_actor_mut().following = Some(following);
         self
     }
 
@@ -465,7 +465,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # }
     /// ```
     fn set_followers(&mut self, followers: Url) -> &mut Self {
-        self.ap_actor_mut().followers = Some(followers.into());
+        self.ap_actor_mut().followers = Some(followers);
         self
     }
 
@@ -586,7 +586,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # }
     /// ```
     fn set_liked(&mut self, liked: Url) -> &mut Self {
-        self.ap_actor_mut().liked = Some(liked.into());
+        self.ap_actor_mut().liked = Some(liked);
         self
     }
 
@@ -773,7 +773,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
                 v.add(stream);
                 v
             }
-            None => vec![stream.into()].into(),
+            None => vec![stream].into(),
         };
         self.ap_actor_mut().streams = Some(v);
         self
@@ -829,10 +829,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     where
         Inner: 'a,
     {
-        self.ap_actor_ref()
-            .preferred_username
-            .as_ref()
-            .map(|pu| pu.as_str())
+        self.ap_actor_ref().preferred_username.as_deref()
     }
 
     /// Set the preferred_username for the current actor
@@ -1005,7 +1002,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # }
     /// ```
     fn set_endpoints(&mut self, endpoints: Endpoints<Url>) -> &mut Self {
-        self.ap_actor_mut().endpoints = Some(endpoints.map(|u| u.into()));
+        self.ap_actor_mut().endpoints = Some(endpoints);
         self
     }
 
@@ -1254,6 +1251,26 @@ impl<Kind> Actor<Kind> {
     {
         Actor(Object::new())
     }
+
+    /// Create a new actor with `None` for it's `kind` property
+    ///
+    /// This means that no `type` field will be present in serialized JSON
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// use activitystreams::actor::Actor;
+    ///
+    /// let actor = Actor::<()>::new_none_type();
+    ///
+    /// let s = serde_json::to_string(&actor)?;
+    ///
+    /// assert_eq!(s, "{}");
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn new_none_type() -> Self {
+        Actor(Object::new_none_type())
+    }
 }
 
 impl<Inner> ApActor<Inner> {
@@ -1275,7 +1292,7 @@ impl<Inner> ApActor<Inner> {
         Inner: markers::Actor,
     {
         ApActor {
-            inbox: inbox.into(),
+            inbox,
             outbox: None,
             following: None,
             followers: None,
