@@ -2147,11 +2147,11 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// # use activitystreams::{object::Video, uri};
     /// # let mut video = Video::new();
     ///
-    /// video.set_replies(uri!("https://example.com"));
+    /// video.set_reply(uri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
-    fn set_replies<T>(&mut self, replies: T) -> &mut Self
+    fn set_reply<T>(&mut self, replies: T) -> &mut Self
     where
         T: Into<AnyBase>,
     {
@@ -2197,12 +2197,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// # let mut video = Video::new();
     ///
     /// video
-    ///     .add_replies(uri!("https://example.com/one"))
-    ///     .add_replies(uri!("https://example.com/two"));
+    ///     .add_reply(uri!("https://example.com/one"))
+    ///     .add_reply(uri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
-    fn add_replies<T>(&mut self, replies: T) -> &mut Self
+    fn add_reply<T>(&mut self, replies: T) -> &mut Self
     where
         T: Into<AnyBase>,
     {
@@ -2239,7 +2239,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// # fn main() -> Result<(), anyhow::Error> {
     /// # use activitystreams::{object::Video, uri};
     /// # let mut video = Video::new();
-    /// # video.set_replies(uri!("https://example.com"));
+    /// # video.set_reply(uri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///

@@ -581,7 +581,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # let mut person = ApActor::new(context(), Person::new());
     /// use activitystreams::prelude::*;
     ///
-    /// person.set_streams(uri!("https://example.com/liked"));
+    /// person.set_stream(uri!("https://example.com/liked"));
     /// # Ok(())
     /// # }
     /// ```
@@ -632,7 +632,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # fn main() -> Result<(), anyhow::Error> {
     /// # use activitystreams::{actor::{ApActor, Person}, context};
     /// # let mut person = ApActor::new(context(), Person::new());
-    /// # person.set_id(context()).add_streams(context()).add_streams(context());
+    /// # person.set_id(context()).add_stream(context()).add_stream(context());
     /// use activitystreams::prelude::*;
     ///
     /// if let Some(streams) = person.streams()? {
@@ -719,11 +719,11 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # let mut person = ApActor::new(context(), Person::new());
     /// use activitystreams::prelude::*;
     ///
-    /// person.set_streams(uri!("https://example.com/streams"));
+    /// person.set_stream(uri!("https://example.com/streams"));
     /// # Ok(())
     /// # }
     /// ```
-    fn set_streams(&mut self, streams: Url) -> &mut Self {
+    fn set_stream(&mut self, streams: Url) -> &mut Self {
         self.ap_actor_mut().streams = Some(streams.into());
         self
     }
@@ -762,12 +762,12 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// use activitystreams::prelude::*;
     ///
     /// person
-    ///     .add_streams(uri!("https://example.com/streams1"))
-    ///     .add_streams(uri!("https://example.com/streams2"));
+    ///     .add_stream(uri!("https://example.com/streams1"))
+    ///     .add_stream(uri!("https://example.com/streams2"));
     /// # Ok(())
     /// # }
     /// ```
-    fn add_streams(&mut self, stream: Url) -> &mut Self {
+    fn add_stream(&mut self, stream: Url) -> &mut Self {
         let v = match self.ap_actor_mut().streams.take() {
             Some(mut v) => {
                 v.add(stream);
@@ -800,7 +800,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # fn main() -> Result<(), anyhow::Error> {
     /// # use activitystreams::{actor::{ApActor, Person}, context, uri};
     /// # let mut person = ApActor::new(context(), Person::new());
-    /// # person.set_streams(uri!("https://example.com/streams"));
+    /// # person.set_stream(uri!("https://example.com/streams"));
     /// use activitystreams::prelude::*;
     ///
     /// assert!(person.streams_unchecked().is_some());

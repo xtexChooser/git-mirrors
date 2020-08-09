@@ -12,7 +12,7 @@
 //! let mut collection = OrderedCollection::new();
 //!
 //! collection
-//!     .set_items(uri!("https://example.com/notes/1234"))
+//!     .set_item(uri!("https://example.com/notes/1234"))
 //!     .set_total_items(1u64)
 //!     .set_current(uri!("https://example.com/notes/1234"))
 //!     .set_first(uri!("https://example.com/notes/1234"))
@@ -107,11 +107,11 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// # use activitystreams::{collection::UnorderedCollection, uri};
     /// # let mut collection = UnorderedCollection::new();
     ///
-    /// collection.set_items(uri!("https://example.com"));
+    /// collection.set_item(uri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
-    fn set_items<T>(&mut self, item: T) -> &mut Self
+    fn set_item<T>(&mut self, item: T) -> &mut Self
     where
         T: Into<AnyBase>,
     {
@@ -157,12 +157,12 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// # let mut collection = UnorderedCollection::new();
     ///
     /// collection
-    ///     .add_items(uri!("https://example.com/one"))
-    ///     .add_items(uri!("https://example.com/two"));
+    ///     .add_item(uri!("https://example.com/one"))
+    ///     .add_item(uri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
-    fn add_items<T>(&mut self, item: T) -> &mut Self
+    fn add_item<T>(&mut self, item: T) -> &mut Self
     where
         T: Into<AnyBase>,
     {
@@ -196,7 +196,7 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// ```rust
     /// # use activitystreams::{context, collection::UnorderedCollection};
     /// # let mut collection = UnorderedCollection::new();
-    /// # collection.set_items(context());
+    /// # collection.set_item(context());
     /// use activitystreams::prelude::*;
     ///
     /// assert!(collection.items().is_some());
