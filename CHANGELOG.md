@@ -1,4 +1,4 @@
-# Unreleased
+# 0.7.0-alpha.4
 - Clean up unneeded `.into()` calls
 - Remove redundant `into_iter` method on OneOrMany.
 - Add `new_none_type` constructors to create activitystreams constructs without setting the `type`
