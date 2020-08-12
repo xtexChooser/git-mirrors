@@ -3,6 +3,7 @@
 		"authors": [
 			"BaRaN6161 TURK",
 			"Hbseren",
+			"MuratTheTurkish",
 			"Sayginer",
 			"ToprakM"
 		]
@@ -15,7 +16,7 @@
 	"loginnotify-primary-link": "Yardım",
 	"notification-loginnotify-login-fail-email-subject": "{{SITENAME}} sitesine $1 kullanıcısı olarak {{PLURAL:$2|başarısız giriş|birden çok başarısız giriş}} denemesi",
 	"notification-loginnotify-login-success-email-subject": "{{SITENAME}} sitesine daha önce kullanmadığınız bir cihazdan $1 olarak giriş yapıldı",
-	"notification-header-login-success": "Birisi (muhtemelen siz) yakın zamanda hesabınıza yeni bir cihazdan giriş yaptı. Eğer bu işlemi siz yaptıysanız bu mesajı gözardı edebilirsiniz. Ancak bu işlemi yapan siz değilseniz, parolanızı değiştirmeniz ve hesap etkinliğini kontrol etmeniz önerilir.",
+	"notification-header-login-success": "Birisi (muhtemelen {{GENDER:$1|siz}}) yakın zamanda hesabınıza yeni bir cihazdan oturum açtı. Eğer bu işlemi siz yaptıysanız bu mesajı gözardı edebilirsiniz. Ancak bu işlemi yapan siz değilseniz, parolanızı değiştirmeniz ve hesap etkinliğini kontrol etmenizi önerilir.",
 	"notification-new-bundled-header-login-fail": "{{PLURAL:$1|'''Başarısız bir girişim oldu'''|'''$1 başarısız oldu'''}} yeni bir cihazdan en son giriş yaptığınız zaman hesabınıza giriş yapmak için giriş yaptı. Eğer siz değilseniz, lütfen hesabınızın güçlü bir şifresi olduğundan emin olun.",
 	"notification-known-header-login-fail": "{{PLURAL:$1|'''başarısız bir girişim oldu''' |'''$1 başarısız oldu'''}}, hesabınıza son giriş yaptığınız günden bu yana giriş yapmayı denedi. Lütfen, hesabınızın güçlü bir şifresi olduğundan emin olun.",
 	"notification-new-unbundled-header-login-fail": "{{PLURAL:$1|'''Başarısız bir girişim oldu'''|'''Başarısız bir girişim oldu'''}}. Hesabınıza yeni bir cihazdan giriş yapmak için, lütfen hesabınızın güçlü bir şifresi olduğundan emin olun."
