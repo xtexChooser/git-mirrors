@@ -63,6 +63,7 @@ class MigratePreferences extends LoggedUpdateMaintenance {
 			],
 		] );
 		$iterator->setFetchColumns( [ '*' ] );
+		$iterator->setCaller( __METHOD__ );
 
 		$lastRow = (object)[ 'user_id' => 0 ];
 		$optionsToUpdate = [];
