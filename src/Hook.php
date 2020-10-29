@@ -39,10 +39,10 @@ class Hook {
 	public static function onEchoGetBundleRules( EchoEvent $event, &$bundleString ) {
 		wfDebugLog( 'CategoryWatch', __METHOD__ );
 		switch ( $event->getType() ) {
-		case 'categorywatch-add':
-		case 'categorywatch-remove':
-			$bundleString = 'categorywatch';
-			break;
+			case 'categorywatch-add':
+			case 'categorywatch-remove':
+				$bundleString = 'categorywatch';
+				break;
 		}
 	}
 
