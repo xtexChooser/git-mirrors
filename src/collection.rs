@@ -119,7 +119,7 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
         self
     }
 
-    /// Set many itemss for the current activity
+    /// Set many items for the current activity
     ///
     /// This overwrites the contents of items
     ///
@@ -146,7 +146,7 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
         self
     }
 
-    /// Add a items to the current activity
+    /// Add an item to the current activity
     ///
     /// This does not overwrite the contents of items, only appends an item
     ///
@@ -205,6 +205,135 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// ```
     fn delete_items(&mut self) -> &mut Self {
         self.collection_mut().items = None;
+        self
+    }
+
+    /// Fetch the ordered_items for the current activity
+    ///
+    /// ```rust
+    /// # use activitystreams::{collection::OrderedCollection};
+    /// # let mut collection = OrderedCollection::new();
+    /// #
+    /// use activitystreams::prelude::*;
+    ///
+    /// let items_ref = collection.ordered_items();
+    /// println!("{:?}", items_ref);
+    /// ```
+    fn ordered_items<'a>(&'a self) -> Option<&'a OneOrMany<AnyBase>>
+    where
+        Kind: 'a,
+    {
+        self.collection_ref().ordered_items.as_ref()
+    }
+
+    /// Set the ordered_items for the current activity
+    ///
+    /// This overwrites the contents of ordered_items
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// use activitystreams::prelude::*;
+    /// # use activitystreams::{collection::OrderedCollection, uri};
+    /// # let mut collection = OrderedCollection::new();
+    ///
+    /// collection.set_ordered_item(uri!("https://example.com"));
+    /// # Ok(())
+    /// # }
+    /// ```
+    fn set_ordered_item<T>(&mut self, item: T) -> &mut Self
+    where
+        T: Into<AnyBase>,
+    {
+        self.collection_mut().ordered_items = Some(item.into().into());
+        self
+    }
+
+    /// Set many ordered_items for the current activity
+    ///
+    /// This overwrites the contents of ordered_items
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// use activitystreams::prelude::*;
+    /// # use activitystreams::{collection::OrderedCollection, uri};
+    /// # let mut collection = OrderedCollection::new();
+    ///
+    /// collection.set_many_ordered_items(vec![
+    ///     uri!("https://example.com/one"),
+    ///     uri!("https://example.com/two"),
+    /// ]);
+    /// # Ok(())
+    /// # }
+    /// ```
+    fn set_many_ordered_items<I, T>(&mut self, items: I) -> &mut Self
+    where
+        I: IntoIterator<Item = T>,
+        T: Into<AnyBase>,
+    {
+        let v: Vec<_> = items.into_iter().map(Into::into).collect();
+        self.collection_mut().ordered_items = Some(v.into());
+        self
+    }
+
+    /// Add an ordered_item to the current activity
+    ///
+    /// This does not overwrite the contents of ordered_items, only appends an item
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// use activitystreams::prelude::*;
+    /// # use activitystreams::{collection::OrderedCollection, uri};
+    /// # let mut collection = OrderedCollection::new();
+    ///
+    /// collection
+    ///     .add_ordered_item(uri!("https://example.com/one"))
+    ///     .add_ordered_item(uri!("https://example.com/two"));
+    /// # Ok(())
+    /// # }
+    /// ```
+    fn add_ordered_item<T>(&mut self, item: T) -> &mut Self
+    where
+        T: Into<AnyBase>,
+    {
+        match self.collection_mut().ordered_items {
+            Some(ref mut items) => {
+                items.add(item.into());
+            }
+            None => self.collection_mut().ordered_items = Some(item.into().into()),
+        }
+
+        self
+    }
+
+    /// Take the ordered_items of the current object, leaving nothing
+    ///
+    /// ```rust
+    /// # use activitystreams::{collection::OrderedCollection};
+    /// # let mut collection = OrderedCollection::new();
+    /// use activitystreams::prelude::*;
+    ///
+    /// if let Some(items) = collection.take_ordered_items() {
+    ///     println!("{:?}", items);
+    /// }
+    /// ```
+    fn take_ordered_items(&mut self) -> Option<OneOrMany<AnyBase>> {
+        self.collection_mut().ordered_items.take()
+    }
+
+    /// Delete the ordered_items from the current object
+    ///
+    /// ```rust
+    /// # use activitystreams::{context, collection::OrderedCollection};
+    /// # let mut collection = OrderedCollection::new();
+    /// # collection.set_ordered_item(context());
+    /// use activitystreams::prelude::*;
+    ///
+    /// assert!(collection.ordered_items().is_some());
+    /// collection.delete_ordered_items();
+    /// assert!(collection.ordered_items().is_none());
+    /// ```
+    fn delete_ordered_items(&mut self) -> &mut Self {
+        self.collection_mut().ordered_items = None;
         self
     }
 
@@ -846,6 +975,13 @@ pub struct Collection<Kind> {
     #[serde(skip_serializing_if = "Option::is_none")]
     items: Option<OneOrMany<AnyBase>>,
 
+    /// Identifies ordered items contained in a collection.
+    ///
+    /// - Range: Object | Link | Ordered List of [ Object | Link ]
+    /// - Functional: false
+    #[serde(skip_serializing_if = "Option::is_none")]
+    ordered_items: Option<OneOrMany<AnyBase>>,
+
     /// A non-negative integer specifying the total number of objects contained by the logical view
     /// of the collection.
     ///
@@ -949,6 +1085,7 @@ impl<Kind> Collection<Kind> {
     {
         Collection {
             items: None,
+            ordered_items: None,
             total_items: None,
             current: None,
             first: None,
@@ -976,6 +1113,7 @@ impl<Kind> Collection<Kind> {
     pub fn new_none_type() -> Self {
         Collection {
             items: None,
+            ordered_items: None,
             total_items: None,
             current: None,
             first: None,
@@ -986,6 +1124,7 @@ impl<Kind> Collection<Kind> {
 
     fn extending(mut inner: Object<Kind>) -> Result<Self, serde_json::Error> {
         let items = inner.remove("items")?;
+        let ordered_items = inner.remove("orderedItems")?;
         let total_items = inner.remove("totalItems")?;
         let current = inner.remove("current")?;
         let first = inner.remove("first")?;
@@ -993,6 +1132,7 @@ impl<Kind> Collection<Kind> {
 
         Ok(Collection {
             items,
+            ordered_items,
             total_items,
             current,
             first,
@@ -1004,6 +1144,7 @@ impl<Kind> Collection<Kind> {
     fn retracting(self) -> Result<Object<Kind>, serde_json::Error> {
         let Collection {
             items,
+            ordered_items,
             total_items,
             current,
             first,
@@ -1016,6 +1157,7 @@ impl<Kind> Collection<Kind> {
             .insert("first", first)?
             .insert("current", current)?
             .insert("totalItems", total_items)?
+            .insert("orderedItems", ordered_items)?
             .insert("items", items)?;
 
         Ok(inner)
