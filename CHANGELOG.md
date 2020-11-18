@@ -1,3 +1,7 @@
+# 0.7.0-alpha.5
+- Add orderedItems field to collections
+- Document URL functions from crate root
+
 # 0.7.0-alpha.4
 - Clean up unneeded `.into()` calls
 - Remove redundant `into_iter` method on OneOrMany.
