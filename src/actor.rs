@@ -1504,6 +1504,8 @@ impl<Inner> markers::Base for ApActor<Inner> where Inner: markers::Base {}
 impl<Inner> markers::Object for ApActor<Inner> where Inner: markers::Object {}
 impl<Inner> markers::Actor for ApActor<Inner> where Inner: markers::Actor {}
 
+impl<Inner> markers::Actor for ApObject<Inner> where Inner: markers::Actor {}
+
 impl<Inner, Kind, Error> Extends<Kind> for ApActor<Inner>
 where
     Inner: Extends<Kind, Error = Error> + UnparsedMut + markers::Actor,
@@ -1622,3 +1624,16 @@ impl<Kind> AsObject<Kind> for Actor<Kind> {
 }
 
 impl<T, Inner> ApActorExt<Inner> for T where T: AsApActor<Inner> {}
+
+impl<Inner1, Inner2> AsApActor<Inner2> for ApObject<Inner1>
+where
+    Inner1: AsApActor<Inner2>,
+{
+    fn ap_actor_ref(&self) -> &ApActor<Inner2> {
+        self.inner().ap_actor_ref()
+    }
+
+    fn ap_actor_mut(&mut self) -> &mut ApActor<Inner2> {
+        self.inner_mut().ap_actor_mut()
+    }
+}

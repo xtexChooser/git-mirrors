@@ -1,3 +1,8 @@
+# Unreleased
+
+# 0.7.0-alpha.6
+- Add Actor and AsApActor impls for ApObject
+
 # 0.7.0-alpha.5
 - Add orderedItems field to collections
 - Document URL functions from crate root
