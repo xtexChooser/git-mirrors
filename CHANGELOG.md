@@ -1,5 +1,8 @@
 # Unreleased
 
+# 0.7.0-alpha.7
+- implement Extends for Base
+
 # 0.7.0-alpha.6
 - Add Actor and AsApActor impls for ApObject
 

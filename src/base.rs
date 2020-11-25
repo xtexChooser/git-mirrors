@@ -1850,6 +1850,18 @@ impl<Kind> AsBase<Kind> for Base<Kind> {
     }
 }
 
+impl<Kind> Extends<Kind> for Base<Kind> {
+    type Error = std::convert::Infallible;
+
+    fn extends(base: Base<Kind>) -> Result<Self, Self::Error> {
+        Ok(base)
+    }
+
+    fn retracts(self) -> Result<Base<Kind>, Self::Error> {
+        Ok(self)
+    }
+}
+
 impl<T, Kind> ExtendsExt<Kind> for T
 where
     T: Extends<Kind>,
