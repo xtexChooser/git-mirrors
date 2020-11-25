@@ -1,5 +1,8 @@
 # Unreleased
 
+# 0.7.0-alpha.8
+- Add `from_arbitrary_json` to AnyBase
+
 # 0.7.0-alpha.7
 - implement Extends for Base
 

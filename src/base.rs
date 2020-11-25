@@ -1097,6 +1097,29 @@ impl<Kind> Base<Kind> {
 }
 
 impl AnyBase {
+    /// Convert arbitrary json into an AnyBase
+    ///
+    /// This is provided so that strangely-shaped objects, specifically in context fields, can be
+    /// easily added into a structure, but otherwise probably shouldn't be used.
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// # use activitystreams::base::AnyBase;
+    /// let any_base = AnyBase::from_arbitrary_json(serde_json::json!({
+    ///     "key": "value"
+    /// }))?;
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn from_arbitrary_json<T>(serializable: T) -> Result<Self, serde_json::Error>
+    where
+        T: serde::Serialize,
+    {
+        let value = serde_json::to_value(serializable)?;
+        let base: Base<serde_json::Value> = serde_json::from_value(value)?;
+        Ok(base.into())
+    }
+
     /// Convert any type that is extended from `Base<Kind>` into an AnyBase for storing
     ///
     /// ```rust
