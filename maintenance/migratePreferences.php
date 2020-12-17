@@ -24,6 +24,7 @@ class MigratePreferences extends LoggedUpdateMaintenance {
 	private const OPTIONS_FAKE_TRUTH = 2;
 	private const OPTIONS_FAKE_FALSE = 'fake-false';
 
+	/** @var bool[] */
 	private static $mapping = [
 		self::OPTIONS_FAKE_FALSE => false,
 		self::OPTIONS_FAKE_TRUTH => true,
@@ -100,7 +101,7 @@ class MigratePreferences extends LoggedUpdateMaintenance {
 	/**
 	 * Update one user's preferences
 	 *
-	 * @param object $userRow Row from the user table
+	 * @param \stdClass $userRow Row from the user table
 	 * @param array &$options Associative array of preference => value
 	 * @return int Number of options updated
 	 */
