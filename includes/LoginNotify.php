@@ -236,7 +236,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 * @return string One of USER_* constants
 	 */
 	private function checkUserAllWikis( User $user, $subnet ) {
-		Assert::parameter( $user->isLoggedIn(), '$user', 'User must be logged in' );
+		Assert::parameter( $user->isRegistered(), '$user', 'User must be logged in' );
 
 		if ( !$this->config->get( 'LoginNotifyCheckKnownIPs' )
 			|| !$this->isCheckUserInstalled()
