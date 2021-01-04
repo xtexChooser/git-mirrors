@@ -5609,3 +5609,36 @@ impl AsTombstone for Tombstone {
         self
     }
 }
+
+impl<Kind> Default for Object<Kind>
+where
+    Kind: Default,
+{
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl Default for Place {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl Default for Profile {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl Default for Relationship {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl Default for Tombstone {
+    fn default() -> Self {
+        Self::new()
+    }
+}

@@ -1563,3 +1563,27 @@ where
 impl<T, Kind> CollectionExt<Kind> for T where T: AsCollection<Kind> {}
 impl<T, Kind> CollectionPageExt<Kind> for T where T: AsCollectionPage<Kind> {}
 impl<T> OrderedCollectionPageExt for T where T: AsOrderedCollectionPage {}
+
+impl<Kind> Default for Collection<Kind>
+where
+    Kind: Default,
+{
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl<Kind> Default for CollectionPage<Kind>
+where
+    Kind: Default,
+{
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl Default for OrderedCollectionPage {
+    fn default() -> Self {
+        Self::new()
+    }
+}

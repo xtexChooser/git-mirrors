@@ -1120,6 +1120,29 @@ impl AnyBase {
         Ok(base.into())
     }
 
+    /// Extend this AnyBase into a kind T where T implements Extends<Kind>
+    ///
+    /// This method returns Ok(None) when the AnyBase does not contain an extensible object, i.e.
+    /// it's just an IRI
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// # use activitystreams::{object::Video, base::AnyBase};
+    /// # let video = Video::new();
+    /// # let any_base = AnyBase::from_extended(video)?;
+    /// let video: Video = any_base.extend()?;
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn extend<T, Kind>(self) -> Result<Option<T>, T::Error>
+    where
+        T: ExtendsExt<Kind>,
+        <T as Extends<Kind>>::Error: From<serde_json::Error>,
+        for<'de> Kind: serde::Deserialize<'de>,
+    {
+        T::from_any_base(self)
+    }
+
     /// Convert any type that is extended from `Base<Kind>` into an AnyBase for storing
     ///
     /// ```rust
@@ -1932,5 +1955,14 @@ impl From<String> for OneOrMany<AnyBase> {
 impl From<&str> for OneOrMany<AnyBase> {
     fn from(xsd_string: &str) -> Self {
         Self::from_xsd_string(xsd_string.to_owned())
+    }
+}
+
+impl<Kind> Default for Base<Kind>
+where
+    Kind: Default,
+{
+    fn default() -> Self {
+        Self::new()
     }
 }

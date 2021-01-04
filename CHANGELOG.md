@@ -1,5 +1,10 @@
 # Unreleased
 
+# 0.7.0-alpha.9
+- Add default impls for many object kinds
+- Add `extend` method on AnyBase
+- Clippy nits
+
 # 0.7.0-alpha.8
 - Add `from_arbitrary_json` to AnyBase
 

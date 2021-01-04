@@ -688,3 +688,12 @@ impl<Kind> AsLink<Kind> for Link<Kind> {
 }
 
 impl<T, Kind> LinkExt<Kind> for T where T: AsLink<Kind> {}
+
+impl<Kind> Default for Link<Kind>
+where
+    Kind: Default,
+{
+    fn default() -> Self {
+        Self::new()
+    }
+}

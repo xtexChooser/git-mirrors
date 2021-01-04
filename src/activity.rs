@@ -3604,3 +3604,18 @@ impl<T> OriginRefExt for T where T: OriginRef {}
 impl<T> OptTargetRefExt for T where T: OptTargetRef {}
 impl<T> OptOriginRefExt for T where T: OptOriginRef {}
 impl<T> QuestionExt for T where T: AsQuestion {}
+
+impl<Kind> Default for Activity<Kind>
+where
+    Kind: Default,
+{
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl Default for Question {
+    fn default() -> Self {
+        Self::new()
+    }
+}

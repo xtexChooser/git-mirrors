@@ -1637,3 +1637,12 @@ where
         self.inner_mut().ap_actor_mut()
     }
 }
+
+impl<Kind> Default for Actor<Kind>
+where
+    Kind: Default,
+{
+    fn default() -> Self {
+        Self::new()
+    }
+}

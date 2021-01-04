@@ -249,38 +249,23 @@ struct LengthError;
 
 impl Length {
     fn is_centimeters(&self) -> bool {
-        match self {
-            Length::Centimeters => true,
-            _ => false,
-        }
+        matches!(self, Length::Centimeters)
     }
 
     fn is_feet(&self) -> bool {
-        match self {
-            Length::Feet => true,
-            _ => false,
-        }
+        matches!(self, Length::Feet)
     }
 
     fn is_inches(&self) -> bool {
-        match self {
-            Length::Inches => true,
-            _ => false,
-        }
+        matches!(self, Length::Inches)
     }
 
     fn is_kilometers(&self) -> bool {
-        match self {
-            Length::Kilometers => true,
-            _ => false,
-        }
+        matches!(self, Length::Kilometers)
     }
 
     fn is_meters(&self) -> bool {
-        match self {
-            Length::Meters => true,
-            _ => false,
-        }
+        matches!(self, Length::Meters)
     }
 }
 
