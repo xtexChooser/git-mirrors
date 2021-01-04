@@ -1130,7 +1130,7 @@ impl AnyBase {
     /// # use activitystreams::{object::Video, base::AnyBase};
     /// # let video = Video::new();
     /// # let any_base = AnyBase::from_extended(video)?;
-    /// let video: Video = any_base.extend()?;
+    /// let video: Option<Video> = any_base.extend()?;
     /// # Ok(())
     /// # }
     /// ```
