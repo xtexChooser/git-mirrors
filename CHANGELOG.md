@@ -1,4 +1,6 @@
 # Unreleased
+# 0.7.0-alpha.10
+- Fix extraction of `image` and `icon` when creating Objects from AnyBase
 
 # 0.7.0-alpha.9
 - Add default impls for many object kinds
