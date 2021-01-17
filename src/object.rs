@@ -4795,7 +4795,7 @@ impl<Kind> Object<Kind> {
             summary: base.remove("summary")?,
             url: base.remove("url")?,
             generator: base.remove("generator")?,
-            icon: base.remove("image")?,
+            icon: base.remove("icon")?,
             image: base.remove("image")?,
             location: base.remove("location")?,
             tag: base.remove("tag")?,
