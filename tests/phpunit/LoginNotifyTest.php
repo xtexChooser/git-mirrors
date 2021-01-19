@@ -66,10 +66,6 @@ class LoginNotifyTest extends MediaWikiTestCase {
 	}
 
 	/**
-	 * @param $username string
-	 * @param $year int
-	 * @param $salt string
-	 * @param $expected string
 	 * @dataProvider provideGenerateUserCookieRecord
 	 */
 	public function testGenerateUserCookieRecord( $username, $year, $salt, $expected ) {
