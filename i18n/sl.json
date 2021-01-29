@@ -11,7 +11,7 @@
 	"echo-category-title-login-fail": "Neuspeli poskusi prijave",
 	"echo-pref-tooltip-login-fail": "Obvesti me v primeru več neuspešnih poskusov prijave.",
 	"echo-category-title-login-success": "Prijava iz neznane naprave",
-	"echo-pref-tooltip-login-success": "Obvesti me ob prijavi v moj račun iz neznane naprave ali naslova IP.",
+	"echo-pref-tooltip-login-success": "Obvesti me ob prijavi v moj račun iz neznane naprave ali IP-naslova.",
 	"loginnotify-primary-link": "Pomoč",
 	"notification-loginnotify-login-fail-email-subject": "{{PLURAL:$2|Neuspešen poskus|Dva neuspešna poskusa|Več neuspešnih poskusov}} prijave na stran {{SITENAME}} kot $1",
 	"notification-loginnotify-login-success-email-subject": "Prijava na {{SITENAME}} kot $1 iz naprave, ki je zadnje čase niste {{GENDER:$1|uporabljali}}",
