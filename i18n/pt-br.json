@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Eduardo Addad de Oliveira",
-			"Eduardo.mps"
+			"Eduardo.mps",
+			"Eduardoaddad"
 		]
 	},
 	"categorywatch-desc": "Estende a funcionalidade da lista de vigiados para incluir notificações sobre alterações nos membros de categorias vigiadas",
