@@ -1,10 +1,10 @@
 # ActivityStreams
 _A set of Traits and Types that make up the ActivityStreams and ActivityPub specifications_
 
-- Find the code on [git.asonix.dog](https://git.asonix.dog/Aardwolf/activitystreams)
+- Find the code on [git.asonix.dog](https://git.asonix.dog/asonix/activitystreams)
 - Read the docs on [docs.rs](https://docs.rs/activitystreams)
-- Join the matrix channel at [#activitypub:asonix.dog](https://matrix.to/#/!fAEcHyTUdAaKCzIKCt:asonix.dog?via=asonix.dog&via=matrix.org&via=t2bot.io)
-- Hit me up on [mastodon](https://asonix.dog/@asonix)
+- Join the matrix channel at [#activitystreams:asonix.dog](https://matrix.to/#/#activitystreams:matrix.asonix.dog?via=matrix.asonix.dog)
+- Hit me up on [mastodon](https://masto.asonix.dog/@asonix)
 
 ## Usage
 
