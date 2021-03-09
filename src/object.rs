@@ -544,11 +544,11 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///     println!("{:?}", content);
     /// }
     /// ```
-    fn content<'a>(&'a self) -> Option<&'a OneOrMany<AnyString>>
+    fn content<'a>(&'a self) -> Option<OneOrMany<&'a AnyString>>
     where
         Kind: 'a,
     {
-        self.object_ref().content.as_ref()
+        self.object_ref().content.as_ref().map(|o| o.as_ref())
     }
 
     /// Set the content for the current object
@@ -665,11 +665,11 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///     println!("{:?}", summary);
     /// }
     /// ```
-    fn summary<'a>(&'a self) -> Option<&'a OneOrMany<AnyString>>
+    fn summary<'a>(&'a self) -> Option<OneOrMany<&'a AnyString>>
     where
         Kind: 'a,
     {
-        self.object_ref().summary.as_ref()
+        self.object_ref().summary.as_ref().map(|o| o.as_ref())
     }
 
     /// Set the summary for the current object

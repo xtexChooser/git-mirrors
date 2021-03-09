@@ -308,6 +308,45 @@ impl OneOrMany<AnyString> {
     }
 }
 
+impl OneOrMany<&AnyString> {
+    /// Try to borrow a single String from the current object
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// # use activitystreams::primitives::{OneOrMany, AnyString};
+    /// # let string = OneOrMany::<AnyString>::from_xsd_string("Hey");
+    /// string
+    ///     .as_single_xsd_string()
+    ///     .ok_or(anyhow::Error::msg("Wrong string type"))?;
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn as_single_xsd_string(&self) -> Option<&str> {
+        self.as_one()
+            .and_then(|any_string| any_string.as_xsd_string())
+    }
+
+    /// Try to borrow a single RdfLangString from the current object
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// # use activitystreams::primitives::{OneOrMany, RdfLangString};
+    /// # let string = OneOrMany::from_rdf_lang_string(RdfLangString {
+    /// #   value: "hi".into(),
+    /// #   language: "en".into(),
+    /// # });
+    /// string
+    ///     .as_single_rdf_lang_string()
+    ///     .ok_or(anyhow::Error::msg("Wrong string type"))?;
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn as_single_rdf_lang_string(&self) -> Option<&RdfLangString> {
+        self.as_one()
+            .and_then(|any_string| any_string.as_rdf_lang_string())
+    }
+}
+
 impl From<&str> for AnyString {
     fn from(s: &str) -> Self {
         AnyString::from_xsd_string(s.to_owned())
