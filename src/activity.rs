@@ -1448,8 +1448,8 @@ pub type Accept = ActorAndObject<AcceptType>;
 /// implicitly by context. The origin can be used to identify the context from which the object originated.
 ///
 /// This is just an alias for `Object<AddType>` because there's no fields inherent to
-/// Add that aren't already present on an ActorAndObject.
-pub type Add = ActorAndObject<AddType>;
+/// Add that aren't already present on an ActorAndObjectOptOriginAndTarget.
+pub type Add = ActorAndObjectOptOriginAndTarget<AddType>;
 
 /// Indicates that the actor is blocking the object.
 ///
