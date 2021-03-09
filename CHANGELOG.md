@@ -1,8 +1,9 @@
 # Unreleased
+
+# 0.7.0-alpha.11
 - Update summary and content to return `OneOrMany<&'a AnyString>`
 - Implement as_single_xsd_string and as_single_rdf_lang_string for `OneOrMany<&'a AnyString>`
 - Change Add from aliasing `ActorAndObject` to `ActorAndObjectOptOriginAndTarget`
-
 
 # 0.7.0-alpha.10
 - Fix extraction of `image` and `icon` when creating Objects from AnyBase
