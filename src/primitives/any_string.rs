@@ -345,6 +345,25 @@ impl OneOrMany<&AnyString> {
         self.as_one()
             .and_then(|any_string| any_string.as_rdf_lang_string())
     }
+
+    /// Create and owned clone of the OneOrMany<AnyString>
+    ///
+    /// ```rust
+    /// # use activitystreams::primitives::{OneOrMany, AnyString};
+    /// # let string = OneOrMany::<AnyString>::from_xsd_string("hey");
+    ///
+    /// let borrowed_string: OneOrMany<&AnyString> = string.as_ref();
+    ///
+    /// let owned_one_or_many: OneOrMany<AnyString> = borrowed_string.to_owned();
+    /// ```
+    pub fn to_owned(self) -> OneOrMany<AnyString> {
+        match self.0 {
+            Either::Left(one_ref) => OneOrMany(Either::Left(one_ref.to_owned())),
+            Either::Right(many_ref) => {
+                OneOrMany(Either::Right(many_ref.into_iter().cloned().collect()))
+            }
+        }
+    }
 }
 
 impl From<&str> for AnyString {

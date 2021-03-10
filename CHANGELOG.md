@@ -1,4 +1,5 @@
 # Unreleased
+- Add `to_owned` to `OneOrMany<&'a AnyString>`
 
 # 0.7.0-alpha.11
 - Update summary and content to return `OneOrMany<&'a AnyString>`
