@@ -736,11 +736,8 @@ class LoginNotify implements LoggerAwareInterface {
 	 */
 	private function checkAndIncKey( $key, $interval, $expiry ) {
 		$cache = $this->cache;
-		$cur = $cache->incr( $key );
-		if ( !$cur ) {
-			$cache->add( $key, 1, $expiry );
-			$cur = 1;
-		}
+
+		$cur = $cache->incrWithInit( $key, $expiry );
 		if ( $cur % $interval === 0 ) {
 			return $cur;
 		}
