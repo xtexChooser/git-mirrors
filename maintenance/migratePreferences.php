@@ -108,10 +108,11 @@ class MigratePreferences extends LoggedUpdateMaintenance {
 	private function updateUser( $userRow, array &$options ) {
 		if ( $userRow->user_id && $options ) {
 			$user = User::newFromRow( $userRow );
+			$userOptionsManager = MediaWikiServices::getInstance()->getUserOptionsManager();
 			foreach ( $options as $option => $value ) {
-				$user->setOption( $option, $value );
+				$userOptionsManager->setOption( $user, $option, $value );
 			}
-			$user->saveSettings();
+			$userOptionsManager->saveOptions( $user );
 		}
 		$count = count( $options );
 		$options = [];
