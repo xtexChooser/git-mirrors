@@ -261,7 +261,7 @@ class Hook {
 			__METHOD__
 		);
 
-		return array_map( function ( $userID ) {
+		return array_map( static function ( $userID ) {
 			return User::newFromID( $userID );
 		}, $return );
 	}
