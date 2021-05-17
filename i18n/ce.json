@@ -7,7 +7,7 @@
 	"loginnotify-desc": "Хоуьйту декъашхошна шеко йолуш чубовлар ца евзачу компьютерш йа IP-адрес тӀера",
 	"echo-category-title-login-fail": "Системин довзийта йиш цахилира",
 	"echo-pref-tooltip-login-fail": "Цхьаъ сан аккаунт чу вала/яла гӀерташ велахь/елахь соьга хаам-бе.",
-	"echo-category-title-login-success": "Евзаш йоцу компьютерца чудалар",
+	"echo-category-title-login-success": "Йевзаш йоцу компьютерца чудалар",
 	"echo-pref-tooltip-login-success": "Керла компьютеран йа IP-адрес тӀера сан аккаунт чу ваьлча(йаьлча) соьга хаам-бе.",
 	"loginnotify-primary-link": "ГӀо",
 	"notification-loginnotify-login-fail-email-subject": "{{SITENAME}} чу {{PLURAL:$2|чувала/яла гӀерта}} $1 цӀарца",
