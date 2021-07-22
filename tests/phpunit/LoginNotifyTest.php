@@ -36,7 +36,7 @@ class LoginNotifyTest extends MediaWikiTestCase {
 		$this->inst->setLogger( new NullLogger );
 	}
 
-	public function setUp() : void {
+	public function setUp(): void {
 		parent::setUp();
 		$this->setUpLoginNotify();
 	}
