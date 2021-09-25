@@ -1152,7 +1152,7 @@ class Query {
 		foreach ( $option as $linkGroup ) {
 			foreach ( $linkGroup as $link ) {
 				if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-					$ors[] = "LOWER(CAST(ic.il_from AS char) = LOWER(" . $this->DB->addQuotes( $link->getArticleID() ) . ')';
+					$ors[] = "LOWER(CONVERT(ic.il_from USING utf8mb4)) = LOWER(" . $this->DB->addQuotes( $link->getArticleID() ) . ')';
 				} else {
 					$ors[] = "ic.il_from = " . $this->DB->addQuotes( $link->getArticleID() );
 				}
@@ -1184,7 +1184,7 @@ class Query {
 		foreach ( $option as $linkGroup ) {
 			foreach ( $linkGroup as $link ) {
 				if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-					$ors[] = "LOWER(CAST(il.il_to AS char))=LOWER(" . $this->DB->addQuotes( $link->getDbKey() ) . ')';
+					$ors[] = "LOWER(CONVERT(il.il_to USING utf8mb4))=LOWER(" . $this->DB->addQuotes( $link->getDbKey() ) . ')';
 				} else {
 					$ors[] = "il.il_to=" . $this->DB->addQuotes( $link->getDbKey() );
 				}
@@ -1302,7 +1302,7 @@ class Query {
 							$operator = '=';
 						}
 						if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-							$_or .= ' AND LOWER(CAST(pl.pl_title AS char)) ' . $operator . ' LOWER(' . $this->DB->addQuotes( $link->getDbKey() ) . ')';
+							$_or .= ' AND LOWER(CONVERT(pl.pl_title USING utf8mb4)) ' . $operator . ' LOWER(' . $this->DB->addQuotes( $link->getDbKey() ) . ')';
 						} else {
 							$_or .= ' AND pl.pl_title ' . $operator . ' ' . $this->DB->addQuotes( $link->getDbKey() );
 						}
@@ -1321,7 +1321,7 @@ class Query {
 							$operator = '=';
 						}
 						if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-							$_or .= ' AND LOWER(CAST(' . $this->tableNames['pagelinks'] . '.pl_title AS char)) ' . $operator . ' LOWER(' . $this->DB->addQuotes( $link->getDbKey() ) . ')';
+							$_or .= ' AND LOWER(CONVERT(' . $this->tableNames['pagelinks'] . '.pl_title USING utf8mb4)) ' . $operator . ' LOWER(' . $this->DB->addQuotes( $link->getDbKey() ) . ')';
 						} else {
 							$_or .= ' AND ' . $this->tableNames['pagelinks'] . '.pl_title ' . $operator . ' ' . $this->DB->addQuotes( $link->getDbKey() );
 						}
@@ -1391,7 +1391,7 @@ class Query {
 						$operator = '=';
 					}
 					if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-						$_or .= ' AND LOWER(CAST(' . $this->tableNames['pagelinks'] . '.pl_title AS char)) ' . $operator . ' LOWER(' . $this->DB->addQuotes( $link->getDbKey() ) . '))';
+						$_or .= ' AND LOWER(CONVERT(' . $this->tableNames['pagelinks'] . '.pl_title USING utf8mb4)) ' . $operator . ' LOWER(' . $this->DB->addQuotes( $link->getDbKey() ) . '))';
 					} else {
 						$_or .= ' AND ' . $this->tableNames['pagelinks'] . '.pl_title ' . $operator . ' ' . $this->DB->addQuotes( $link->getDbKey() ) . ')';
 					}
@@ -1966,13 +1966,13 @@ class Query {
 			foreach ( $titles as $title ) {
 				if ( $this->parameters->getParameter( 'openreferences' ) ) {
 					if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-						$_or = "LOWER(CAST(pl_title AS char)) {$comparisonType}" . strtolower( $this->DB->addQuotes( $title ) );
+						$_or = "LOWER(CONVERT(pl_title USING utf8mb4)) {$comparisonType} LOWER(" . $this->DB->addQuotes( $title ) . ')';
 					} else {
 						$_or = "pl_title {$comparisonType} " . $this->DB->addQuotes( $title );
 					}
 				} else {
 					if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-						$_or = "LOWER(CAST({$this->tableNames['page']}.page_title AS char)) {$comparisonType}" . strtolower( $this->DB->addQuotes( $title ) );
+						$_or = "LOWER(CONVERT({$this->tableNames['page']}.page_title USING utf8mb4)) {$comparisonType} LOWER(" . $this->DB->addQuotes( $title ) . ')';
 					} else {
 						$_or = "{$this->tableNames['page']}.page_title {$comparisonType}" . $this->DB->addQuotes( $title );
 					}
@@ -1997,13 +1997,13 @@ class Query {
 			foreach ( $titles as $title ) {
 				if ( $this->parameters->getParameter( 'openreferences' ) ) {
 					if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-						$_or = "LOWER(CAST(pl_title AS char)) {$comparisonType}" . strtolower( $this->DB->addQuotes( $title ) );
+						$_or = "LOWER(CONVERT(pl_title USING utf8mb4)) {$comparisonType} LOWER(" . $this->DB->addQuotes( $title ) . ')';
 					} else {
 						$_or = "pl_title {$comparisonType} " . $this->DB->addQuotes( $title );
 					}
 				} else {
 					if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-						$_or = "LOWER(CAST({$this->tableNames['page']}.page_title AS char)) {$comparisonType}" . strtolower( $this->DB->addQuotes( $title ) );
+						$_or = "LOWER(CONVERT({$this->tableNames['page']}.page_title USING utf8mb4)) {$comparisonType} LOWER(" . $this->DB->addQuotes( $title ) . ')';
 					} else {
 						$_or = "{$this->tableNames['page']}.page_title {$comparisonType}" . $this->DB->addQuotes( $title );
 					}
@@ -2115,7 +2115,7 @@ class Query {
 			foreach ( $linkGroup as $link ) {
 				$_or = '(tl.tl_namespace=' . intval( $link->getNamespace() );
 				if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-					$_or .= " AND LOWER(CAST(tl.tl_title AS char))=LOWER(" . $this->DB->addQuotes( $link->getDbKey() ) . '))';
+					$_or .= " AND LOWER(CONVERT(tl.tl_title USING utf8mb4))=LOWER(" . $this->DB->addQuotes( $link->getDbKey() ) . '))';
 				} else {
 					$_or .= " AND tl.tl_title=" . $this->DB->addQuotes( $link->getDbKey() ) . ')';
 				}
@@ -2141,7 +2141,7 @@ class Query {
 				foreach ( $linkGroup as $link ) {
 					$_or = '(' . $this->tableNames['templatelinks'] . '.tl_namespace=' . intval( $link->getNamespace() );
 					if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-						$_or .= ' AND LOWER(CAST(' . $this->tableNames['templatelinks'] . '.tl_title AS char))=LOWER(' . $this->DB->addQuotes( $link->getDbKey() ) . '))';
+						$_or .= ' AND LOWER(CONVERT(' . $this->tableNames['templatelinks'] . '.tl_title USING utf8mb4))=LOWER(' . $this->DB->addQuotes( $link->getDbKey() ) . '))';
 					} else {
 						$_or .= ' AND ' . $this->tableNames['templatelinks'] . '.tl_title=' . $this->DB->addQuotes( $link->getDbKey() ) . ')';
 					}
