@@ -213,8 +213,8 @@ class Article {
 		$article = new Article( $title, $pageNamespace );
 
 		$revActorName = null;
-		if ( isset( $row['revactor_actor'] ) ) {
-			$revActorName = User::newFromActorId( $row['revactor_actor'] )->getName();
+		if ( isset( $row['rev_actor'] ) ) {
+			$revActorName = User::newFromActorId( $row['rev_actor'] )->getName();
 		}
 
 		$titleText = $title->getText();
@@ -285,9 +285,9 @@ class Article {
 		if ( $parameters->getParameter( 'goal' ) != 'categories' ) {
 			//REVISION SPECIFIED
 			if ( $parameters->getParameter( 'lastrevisionbefore' ) || $parameters->getParameter( 'allrevisionsbefore' ) || $parameters->getParameter( 'firstrevisionsince' ) || $parameters->getParameter( 'allrevisionssince' ) ) {
-				$article->mRevision = $row['revactor_rev'];
+				$article->mRevision = $row['rev_id'];
 				$article->mUser     = $revActorName;
-				$article->mDate     = $row['revactor_timestamp'];
+				$article->mDate     = $row['rev_timestamp'];
 			}
 
 			//SHOW "PAGE_TOUCHED" DATE, "FIRSTCATEGORYDATE" OR (FIRST/LAST) EDIT DATE
@@ -295,8 +295,8 @@ class Article {
 				$article->mDate = $row['page_touched'];
 			} elseif ( $parameters->getParameter( 'addfirstcategorydate' ) ) {
 				$article->mDate = $row['cl_timestamp'];
-			} elseif ( $parameters->getParameter( 'addeditdate' ) && isset( $row['revactor_timestamp'] ) ) {
-				$article->mDate = $row['revactor_timestamp'];
+			} elseif ( $parameters->getParameter( 'addeditdate' ) && isset( $row['rev_timestamp'] ) ) {
+				$article->mDate = $row['rev_timestamp'];
 			} elseif ( $parameters->getParameter( 'addeditdate' ) && isset( $row['page_touched'] ) ) {
 				$article->mDate = $row['page_touched'];
 			}
@@ -348,7 +348,7 @@ class Article {
 						break;
 					case 'user':
 						self::$headings[$revActorName] = ( isset( self::$headings[$revActorName] ) ? self::$headings[$revActorName] + 1 : 1 );
-						if ( $row['revactor_actor'] == 0 ) { //anonymous user
+						if ( $row['rev_actor'] == 0 ) { //anonymous user
 							$article->mParentHLink = '[[User:' . $revActorName . '|' . $revActorName . ']]';
 						} else {
 							$article->mParentHLink = '[[User:' . $revActorName . '|' . $revActorName . ']]';
