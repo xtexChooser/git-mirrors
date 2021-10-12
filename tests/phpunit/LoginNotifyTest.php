@@ -8,7 +8,7 @@ use Wikimedia\TestingAccessWrapper;
  * @covers \LoginNotify\LoginNotify
  * @group LoginNotify
  */
-class LoginNotifyTest extends MediaWikiTestCase {
+class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 
 	private $inst;
 
