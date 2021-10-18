@@ -194,7 +194,7 @@ class Article {
 	 * @return Article
 	 */
 	public static function newFromRow( $row, Parameters $parameters, Title $title, $pageNamespace, $pageTitle ) {
-		global $wgLang;
+		global $wgActorTableSchemaMigrationStage, $wgLang;
 
 		$services = MediaWikiServices::getInstance();
 
@@ -204,8 +204,9 @@ class Article {
 		$article = new Article( $title, $pageNamespace );
 
 		$revActorName = null;
-		if ( isset( $row['rev_actor'] ) ) {
-			$revActorName = $userFactory->newFromActorId( $row['rev_actor'] )->getName();
+		$revActorField = ( $wgActorTableSchemaMigrationStage & SCHEMA_COMPAT_READ_TEMP ) ? 'revactor_actor' : 'rev_actor';
+		if ( isset( $row[ $revActorField ] ) ) {
+			$revActorName = $userFactory->newFromActorId( $row[ $revActorField ] )->getName();
 		}
 
 		$titleText = $title->getText();
@@ -280,11 +281,13 @@ class Article {
 		}
 
 		if ( $parameters->getParameter( 'goal' ) != 'categories' ) {
+			$revActorRevField = ( $wgActorTableSchemaMigrationStage & SCHEMA_COMPAT_READ_TEMP ) ? 'revactor_rev' : 'rev_id';
+			$revActorTimestampField = ( $wgActorTableSchemaMigrationStage & SCHEMA_COMPAT_READ_TEMP ) ? 'revactor_timestamp' : 'rev_timestamp';
 			// REVISION SPECIFIED
 			if ( $parameters->getParameter( 'lastrevisionbefore' ) || $parameters->getParameter( 'allrevisionsbefore' ) || $parameters->getParameter( 'firstrevisionsince' ) || $parameters->getParameter( 'allrevisionssince' ) ) {
-				$article->mRevision = $row['rev_id'];
+				$article->mRevision = $row[ $revActorRevField ];
 				$article->mUser = $revActorName;
-				$article->mDate = $row['rev_timestamp'];
+				$article->mDate = $row[ $revActorTimestampField ];
 
 				// $article->mComment = $row['rev_comment'];
 			}
@@ -294,8 +297,8 @@ class Article {
 				$article->mDate = $row['page_touched'];
 			} elseif ( $parameters->getParameter( 'addfirstcategorydate' ) ) {
 				$article->mDate = $row['cl_timestamp'];
-			} elseif ( $parameters->getParameter( 'addeditdate' ) && isset( $row['rev_timestamp'] ) ) {
-				$article->mDate = $row['rev_timestamp'];
+			} elseif ( $parameters->getParameter( 'addeditdate' ) && isset( $row[ $revActorTimestampField ] ) ) {
+				$article->mDate = $row[ $revActorTimestampField ];
 			} elseif ( $parameters->getParameter( 'addeditdate' ) && isset( $row['page_touched'] ) ) {
 				$article->mDate = $row['page_touched'];
 			}
