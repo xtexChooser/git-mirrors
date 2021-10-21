@@ -1511,7 +1511,7 @@ class Query {
 	 * @param mixed $option
 	 */
 	private function _maxrevisions( $option ) {
-		$this->addWhere( "((SELECT count(rev_aux3.{$this->revActorPrefix}_page) FROM {$this->tableNames[ $this->revActorTable ]} AS rev_aux3 WHERE rev_aux3.{$this->revActorPrefix}_page = {$this->tableNames['page']}.page_id) <= {$option})" );
+		$this->addWhere( "((SELECT count(rev_aux3.{$this->actorRevPrefix}_page) FROM {$this->tableNames[ $this->actorRevTable ]} AS rev_aux3 WHERE rev_aux3.{$this->actorRevPrefix}_page = {$this->tableNames['page']}.page_id) <= {$option})" );
 	}
 
 	/**
@@ -1532,7 +1532,7 @@ class Query {
 	 * @param mixed $option
 	 */
 	private function _minrevisions( $option ) {
-		$this->addWhere( "((SELECT count(rev_aux2.{$this->revActorPrefix}_page) FROM {$this->tableNames[ $this->revActorTable ]} AS rev_aux2 WHERE rev_aux2.{$this->revActorPrefix}_page = {$this->tableNames['page']}.page_id) >= {$option})" );
+		$this->addWhere( "((SELECT count(rev_aux2.{$this->actorRevPrefix}_page) FROM {$this->tableNames[ $this->actorRevTable ]} AS rev_aux2 WHERE rev_aux2.{$this->actorRevPrefix}_page = {$this->tableNames['page']}.page_id) >= {$option})" );
 	}
 
 	/**
@@ -1813,7 +1813,7 @@ class Query {
 							$this->addWhere(
 								[
 									"{$this->tableNames['page']}.page_id = rev.' . $this->actorRevPrefix . '_page",
-									"rev.' . $this->actorRevPrefix . '_timestamp = (SELECT MAX(rev_aux.' . $this->actorRevPrefix . '_timestamp) FROM {$this->tableNames[ $this->revActorTable ]} AS rev_aux WHERE rev_aux.' . $this->actorRevPrefix . '_page = rev.' . $this->actorRevPrefix . '_page)"
+									"rev.' . $this->actorRevPrefix . '_timestamp = (SELECT MAX(rev_aux.' . $this->actorRevPrefix . '_timestamp) FROM {$this->tableNames[ $this->actorRevTable ]} AS rev_aux WHERE rev_aux.' . $this->actorRevPrefix . '_page = rev.' . $this->actorRevPrefix . '_page)"
 								]
 							);
 						}
