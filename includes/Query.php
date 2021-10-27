@@ -1729,6 +1729,7 @@ class Query {
 				case 'categoryadd':
 					// @TODO: See TODO in __addfirstcategorydate().
 					$this->addOrderBy( 'cl1.cl_timestamp' );
+					$this->addSelect( [ 'cl1.cl_timestamp' ] );
 					break;
 				case 'counter':
 					if ( class_exists( "\\HitCounters\\Hooks" ) ) {
@@ -1814,6 +1815,7 @@ class Query {
 					break;
 				case 'size':
 					$this->addOrderBy( 'page_len' );
+					$this->addSelect( [ 'page_len' => "{$this->tableNames['page']}.page_len" ] );
 					break;
 				case 'sortkey':
 					$this->addOrderBy( 'sortkey' );
@@ -1848,17 +1850,21 @@ class Query {
 					}
 					break;
 				case 'titlewithoutnamespace':
+					$this->addOrderBy( 'sortkey' );
 					if ( $this->parameters->getParameter( 'openreferences' ) ) {
-						$this->addOrderBy( "pl_title" );
+						$this->addSelect(
+							[
+								'sortkey' => "{$this->tableNames['pagelinks']}.pl_title " . $this->getCollateSQL()
+							]
+						);
 					} else {
-						$this->addOrderBy( "page_title" );
+						// Generate sortkey like for category links. UTF-8 created problems with non-utf-8 MySQL databases.
+						$this->addSelect(
+							[
+								'sortkey' => "{$this->tableNames['page']}.page_title " . $this->getCollateSQL()
+							]
+						);
 					}
-
-					$this->addSelect(
-						[
-							'sortkey' => "{$this->tableNames['page']}.page_title " . $this->getCollateSQL()
-						]
-					);
 					break;
 				case 'title':
 					$this->addOrderBy( 'sortkey' );
