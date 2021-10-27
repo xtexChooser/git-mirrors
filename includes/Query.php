@@ -151,16 +151,10 @@ class Query {
 	 */
 	private $userFactory;
 
-	private $actorRevId;
-	private $actorRevPrefix;
-	private $actorRevTable;
-
 	/**
 	 * @param Parameters $parameters
 	 */
 	public function __construct( Parameters $parameters ) {
-		global $wgActorTableSchemaMigrationStage;
-
 		$this->parameters = $parameters;
 
 		$this->tableNames = self::getTableNames();
@@ -168,10 +162,6 @@ class Query {
 		$this->DB = wfGetDB( DB_REPLICA, 'dpl' );
 
 		$this->userFactory = MediaWikiServices::getInstance()->getUserFactory();
-
-		$this->actorRevId = ( $wgActorTableSchemaMigrationStage & SCHEMA_COMPAT_READ_TEMP ) ? 'revactor_rev' : 'rev_id';
-		$this->actorRevPrefix = ( $wgActorTableSchemaMigrationStage & SCHEMA_COMPAT_READ_TEMP ) ? 'revactor' : 'rev';
-		$this->actorRevTable = ( $wgActorTableSchemaMigrationStage & SCHEMA_COMPAT_READ_TEMP ) ? 'revision_actor_temp' : 'revision';
 	}
 
 	/**
@@ -371,7 +361,6 @@ class Query {
 	 * @return array
 	 */
 	public static function getTableNames() {
-		global $wgActorTableSchemaMigrationStage;
 		$DB = wfGetDB( DB_REPLICA, 'dpl' );
 
 		$tables = [
@@ -386,10 +375,6 @@ class Query {
 			'revision',
 			'templatelinks'
 		];
-
-		if ( $wgActorTableSchemaMigrationStage & SCHEMA_COMPAT_READ_TEMP ) {
-			$tables[] = 'revision_actor_temp';
-		}
 
 		$tableNames = [];
 		foreach ( $tables as $table ) {
@@ -734,11 +719,11 @@ class Query {
 	private function _addauthor( $option ) {
 		// Addauthor can not be used with addlasteditor.
 		if ( !isset( $this->parametersProcessed['addlasteditor'] ) || !$this->parametersProcessed['addlasteditor'] ) {
-			$this->addTable( $this->actorRevTable, 'rev' );
+			$this->addTable( 'revision', 'rev' );
 			$this->addWhere(
 				[
-					$this->tableNames['page'] . '.page_id = rev.' . $this->actorRevPrefix . '_page',
-					'rev.' . $this->actorRevPrefix . '_timestamp = (SELECT MIN(rev_aux_min.' . $this->actorRevPrefix . '_timestamp) FROM ' . $this->tableNames[ $this->actorRevTable ] . ' AS rev_aux_min WHERE rev_aux_min.' . $this->actorRevPrefix . '_page = rev.' . $this->actorRevPrefix . '_page)'
+					$this->tableNames['page'] . '.page_id = rev.rev_page',
+					'rev.rev_timestamp = (SELECT MIN(rev_aux_min.rev_timestamp) FROM ' . $this->tableNames['revision'] . ' AS rev_aux_min WHERE rev_aux_min.rev_page = rev.rev_page)'
 				]
 			);
 
@@ -802,12 +787,12 @@ class Query {
 	 * @param mixed $option
 	 */
 	private function _addeditdate( $option ) {
-		$this->addTable( $this->actorRevTable, 'rev' );
-		$this->addSelect( [ 'rev.' . $this->actorRevPrefix . '_timestamp' ] );
+		$this->addTable( 'revision', 'rev' );
+		$this->addSelect( [ 'rev.rev_timestamp' ] );
 
 		$this->addWhere(
 			[
-				$this->tableNames['page'] . '.page_id = rev.' . $this->actorRevPrefix . '_page',
+				$this->tableNames['page'] . '.page_id = rev.rev_page',
 			]
 		);
 	}
@@ -834,12 +819,12 @@ class Query {
 	private function _addlasteditor( $option ) {
 		// Addlasteditor can not be used with addauthor.
 		if ( !isset( $this->parametersProcessed['addauthor'] ) || !$this->parametersProcessed['addauthor'] ) {
-			$this->addTable( $this->actorRevTable, 'rev' );
+			$this->addTable( 'revision', 'rev' );
 
 			$this->addWhere(
 				[
-					$this->tableNames['page'] . '.page_id = rev.' . $this->actorRevPrefix . '_page',
-					'rev.' . $this->actorRevPrefix . '_timestamp = (SELECT MAX(rev_aux_max.' . $this->actorRevPrefix . '_timestamp) FROM ' . $this->tableNames[ $this->actorRevTable ] . ' AS rev_aux_max WHERE rev_aux_max.' . $this->actorRevPrefix . '_page = rev.' . $this->actorRevPrefix . '_page)'
+					$this->tableNames['page'] . '.page_id = rev.rev_page',
+					'rev.rev_timestamp = (SELECT MAX(rev_aux_max.rev_timestamp) FROM ' . $this->tableNames['revision'] . ' AS rev_aux_max WHERE rev_aux_max.rev_page = rev.rev_page)'
 				]
 			);
 
@@ -910,7 +895,7 @@ class Query {
 
 		$this->addSelect(
 			[
-				$tableAlias . $this->actorRevPrefix . '_actor',
+				$tableAlias . 'rev_actor',
 			]
 		);
 	}
@@ -921,21 +906,21 @@ class Query {
 	 * @param mixed $option
 	 */
 	private function _allrevisionsbefore( $option ) {
-		$this->addTable( $this->actorRevTable, 'rev' );
+		$this->addTable( 'revision', 'rev' );
 		$this->addSelect(
 			[
-				'rev.' . $this->actorRevId,
-				'rev.' . $this->actorRevPrefix . '_timestamp'
+				'rev.rev_id',
+				'rev.rev_timestamp'
 			]
 		);
 
-		$this->addOrderBy( 'rev.' . $this->actorRevId );
+		$this->addOrderBy( 'rev.rev_id' );
 		$this->setOrderDir( 'DESC' );
 
 		$this->addWhere(
 			[
-				$this->tableNames['page'] . '.page_id = rev.' . $this->actorRevPrefix . '_page',
-				'rev.' . $this->actorRevPrefix . '_timestamp < ' . $this->convertTimestamp( $option )
+				$this->tableNames['page'] . '.page_id = rev.rev_page',
+				'rev.rev_timestamp < ' . $this->convertTimestamp( $option )
 			]
 		);
 	}
@@ -946,21 +931,21 @@ class Query {
 	 * @param mixed $option
 	 */
 	private function _allrevisionssince( $option ) {
-		$this->addTable( $this->actorRevTable, 'rev' );
+		$this->addTable( 'revision', 'rev' );
 		$this->addSelect(
 			[
-				'rev.' . $this->actorRevId,
-				'rev.' . $this->actorRevPrefix . '_timestamp'
+				'rev.rev_id',
+				'rev.rev_timestamp'
 			]
 		);
 
-		$this->addOrderBy( 'rev.' . $this->actorRevId );
+		$this->addOrderBy( 'rev.rev_id' );
 		$this->setOrderDir( 'DESC' );
 
 		$this->addWhere(
 			[
-				$this->tableNames['page'] . '.page_id = rev.' . $this->actorRevPrefix . '_page',
-				'rev.' . $this->actorRevPrefix . '_timestamp >= ' . $this->convertTimestamp( $option )
+				$this->tableNames['page'] . '.page_id = rev.rev_page',
+				'rev.rev_timestamp >= ' . $this->convertTimestamp( $option )
 			]
 		);
 	}
@@ -1083,18 +1068,13 @@ class Query {
 	 * @param mixed $option
 	 */
 	private function _createdby( $option ) {
-		global $wgActorTableSchemaMigrationStage;
 		$this->addTable( 'revision', 'creation_rev' );
-		$actorRevCreationTable = ( $wgActorTableSchemaMigrationStage & SCHEMA_COMPAT_READ_TEMP ) ? 'creation_rev_actor' : 'creation_rev';
-		if ( $wgActorTableSchemaMigrationStage & SCHEMA_COMPAT_READ_TEMP ) {
-			$this->addTable( 'revision_actor_temp', 'creation_rev_actor' );
-		}
-		$this->_adduser( null, $actorRevCreationTable );
+		$this->_adduser( null, 'creation_rev' );
 
 		$this->addWhere(
 			[
-				$this->DB->addQuotes( $this->userFactory->newFromName( $option )->getActorId() ) . ' = ' . $actorRevCreationTable . '.' . $this->actorRevPrefix . '_actor',
-				$actorRevCreationTable . '.' . $this->actorRevPrefix . '_page = page_id',
+				$this->DB->addQuotes( $this->userFactory->newFromName( $option )->getActorId() ) . ' = creation_rev.rev_actor',
+				'creation_rev.rev_page = page_id',
 				'creation_rev.rev_parent_id = 0'
 			]
 		);
@@ -1119,26 +1099,26 @@ class Query {
 	 * @param mixed $option
 	 */
 	private function _firstrevisionsince( $option ) {
-		$this->addTable( $this->actorRevTable, 'rev' );
+		$this->addTable( 'revision', 'rev' );
 		$this->addSelect(
 			[
-				'rev.' . $this->actorRevId,
-				'rev.' . $this->actorRevPrefix . '_timestamp'
+				'rev.rev_id',
+				'rev.rev_timestamp'
 			]
 		);
 
 		// tell the query optimizer not to look at rows that the following subquery will filter out anyway
 		$this->addWhere(
 			[
-				$this->tableNames['page'] . '.page_id = rev.' . $this->actorRevPrefix . '_page',
-				'rev.' . $this->actorRevPrefix . '_timestamp >= ' . $this->DB->addQuotes( $option )
+				$this->tableNames['page'] . '.page_id = rev.rev_page',
+				'rev.rev_timestamp >= ' . $this->DB->addQuotes( $option )
 			]
 		);
 
 		$this->addWhere(
 			[
-				$this->tableNames['page'] . '.page_id = rev.' . $this->actorRevPrefix . '_page',
-				'rev.' . $this->actorRevPrefix . '_timestamp = (SELECT MIN(rev_aux_snc.rev_timestamp) FROM ' . $this->tableNames['revision'] . ' AS rev_aux_snc WHERE rev_aux_snc.rev_page=rev.rev_page AND rev_aux_snc.rev_timestamp >= ' . $this->convertTimestamp( $option ) . ')'
+				$this->tableNames['page'] . '.page_id = rev.rev_page',
+				'rev.rev_timestamp = (SELECT MIN(rev_aux_snc.rev_timestamp) FROM ' . $this->tableNames['revision'] . ' AS rev_aux_snc WHERE rev_aux_snc.rev_page=rev.rev_page AND rev_aux_snc.rev_timestamp >= ' . $this->convertTimestamp( $option ) . ')'
 			]
 		);
 	}
@@ -1243,7 +1223,7 @@ class Query {
 	 * @param mixed $option
 	 */
 	private function _lastmodifiedby( $option ) {
-		$this->addWhere( $this->DB->addQuotes( $this->userFactory->newFromName( $option )->getActorId() ) . ' = (SELECT ' . $this->actorRevPrefix . '_actor FROM ' . $this->tableNames[ $this->actorRevTable ] . ' WHERE ' . $this->tableNames[ $this->actorRevTable ] . '.' . $this->actorRevPrefix . '_page=page_id ORDER BY ' . $this->tableNames[ $this->actorRevTable ] . '.' . $this->actorRevPrefix . '_timestamp DESC LIMIT 1)' );
+		$this->addWhere( $this->DB->addQuotes( $this->userFactory->newFromName( $option )->getActorId() ) . ' = (SELECT rev_actor FROM ' . $this->tableNames['revision'] . ' WHERE ' . $this->tableNames['revision'] . '.rev_page=page_id ORDER BY ' . $this->tableNames['revision'] . '.rev_timestamp DESC LIMIT 1)' );
 	}
 
 	/**
@@ -1252,21 +1232,21 @@ class Query {
 	 * @param mixed $option
 	 */
 	private function _lastrevisionbefore( $option ) {
-		$this->addTable( $this->actorRevTable, 'rev' );
-		$this->addSelect( [ 'rev.' . $this->actorRevId, 'rev.' . $this->actorRevPrefix . '_timestamp' ] );
+		$this->addTable( 'revision', 'rev' );
+		$this->addSelect( [ 'rev.rev_id', 'rev.rev_timestamp' ] );
 
 		// tell the query optimizer not to look at rows that the following subquery will filter out anyway
 		$this->addWhere(
 			[
-				$this->tableNames['page'] . '.page_id = rev.' . $this->actorRevPrefix . '_page',
-				'rev.' . $this->actorRevPrefix . '_timestamp < ' . $this->convertTimestamp( $option )
+				$this->tableNames['page'] . '.page_id = rev.rev_page',
+				'rev.rev_timestamp < ' . $this->convertTimestamp( $option )
 			]
 		);
 
 		$this->addWhere(
 			[
-				$this->tableNames['page'] . '.page_id = rev.' . $this->actorRevPrefix . '_page',
-				'rev.' . $this->actorRevPrefix . '_timestamp = (SELECT MAX(rev_aux_bef.rev_timestamp) FROM ' . $this->tableNames['revision'] . ' AS rev_aux_bef WHERE rev_aux_bef.rev_page=rev.rev_page AND rev_aux_bef.rev_timestamp < ' . $this->convertTimestamp( $option ) . ')'
+				$this->tableNames['page'] . '.page_id = rev.rev_page',
+				'rev.rev_timestamp = (SELECT MAX(rev_aux_bef.rev_timestamp) FROM ' . $this->tableNames['revision'] . ' AS rev_aux_bef WHERE rev_aux_bef.rev_page=rev.rev_page AND rev_aux_bef.rev_timestamp < ' . $this->convertTimestamp( $option ) . ')'
 			]
 		);
 	}
@@ -1511,7 +1491,7 @@ class Query {
 	 * @param mixed $option
 	 */
 	private function _maxrevisions( $option ) {
-		$this->addWhere( "((SELECT count(rev_aux3.{$this->actorRevPrefix}_page) FROM {$this->tableNames[ $this->actorRevTable ]} AS rev_aux3 WHERE rev_aux3.{$this->actorRevPrefix}_page = {$this->tableNames['page']}.page_id) <= {$option})" );
+		$this->addWhere( "((SELECT count(rev_aux3.rev_page) FROM {$this->tableNames['revision']} AS rev_aux3 WHERE rev_aux3.rev_page = {$this->tableNames['page']}.page_id) <= {$option})" );
 	}
 
 	/**
@@ -1532,7 +1512,7 @@ class Query {
 	 * @param mixed $option
 	 */
 	private function _minrevisions( $option ) {
-		$this->addWhere( "((SELECT count(rev_aux2.{$this->actorRevPrefix}_page) FROM {$this->tableNames[ $this->actorRevTable ]} AS rev_aux2 WHERE rev_aux2.{$this->actorRevPrefix}_page = {$this->tableNames['page']}.page_id) >= {$option})" );
+		$this->addWhere( "((SELECT count(rev_aux2.rev_page) FROM {$this->tableNames['revision']} AS rev_aux2 WHERE rev_aux2.rev_page = {$this->tableNames['page']}.page_id) >= {$option})" );
 	}
 
 	/**
@@ -1541,9 +1521,9 @@ class Query {
 	 * @param mixed $option
 	 */
 	private function _modifiedby( $option ) {
-		$this->addTable( $this->actorRevTable, 'change_rev' );
+		$this->addTable( 'revision', 'change_rev' );
 
-		$this->addWhere( $this->DB->addQuotes( $this->userFactory->newFromName( $option )->getActorId() ) . ' = change_rev.' . $this->actorRevPrefix . '_actor AND change_rev.' . $this->actorRevPrefix . '_page = page_id' );
+		$this->addWhere( $this->DB->addQuotes( $this->userFactory->newFromName( $option )->getActorId() ) . ' = change_rev.rev_actor AND change_rev.rev_page = page_id' );
 	}
 
 	/**
@@ -1575,14 +1555,9 @@ class Query {
 	 * @param mixed $option
 	 */
 	private function _notcreatedby( $option ) {
-		global $wgActorTableSchemaMigrationStage;
 		$this->addTable( 'revision', 'no_creation_rev' );
-		$actorRevCreationTable = ( $wgActorTableSchemaMigrationStage & SCHEMA_COMPAT_READ_TEMP ) ? 'no_creation_rev_actor' : 'no_creation_rev';
-		if ( $wgActorTableSchemaMigrationStage & SCHEMA_COMPAT_READ_TEMP ) {
-			$this->addTable( 'revision_actor_temp', 'no_creation_rev_actor' );
-		}
 
-		$this->addWhere( $this->DB->addQuotes( $this->userFactory->newFromName( $option )->getActorId() ) . ' != ' . $actorRevCreationTable . '.' . $this->actorRevPrefix . '_actor AND ' . $actorRevCreationTable . '.' . $this->actorRevPrefix . '_page = page_id AND no_creation_rev.rev_parent_id = 0' );
+		$this->addWhere( $this->DB->addQuotes( $this->userFactory->newFromName( $option )->getActorId() ) . ' != no_creation_rev.rev_actor AND no_creation_rev.rev_page = page_id AND no_creation_rev.rev_parent_id = 0' );
 	}
 
 	/**
@@ -1591,7 +1566,7 @@ class Query {
 	 * @param mixed $option
 	 */
 	private function _notlastmodifiedby( $option ) {
-		$this->addWhere( $this->DB->addQuotes( $this->userFactory->newFromName( $option )->getActorId() ) . ' != (SELECT ' . $this->actorRevPrefix . '_actor FROM ' . $this->tableNames[ $this->actorRevTable ] . ' WHERE ' . $this->tableNames[ $this->actorRevTable ] . '.' . $this->actorRevPrefix . '_page=page_id ORDER BY ' . $this->tableNames[ $this->actorRevTable ] . '.' . $this->actorRevPrefix . '_timestamp DESC LIMIT 1)' );
+		$this->addWhere( $this->DB->addQuotes( $this->userFactory->newFromName( $option )->getActorId() ) . ' != (SELECT rev_actor FROM ' . $this->tableNames['revision'] . ' WHERE ' . $this->tableNames['revision'] . '.rev_page=page_id ORDER BY ' . $this->tableNames['revision'] . '.rev_timestamp DESC LIMIT 1)' );
 	}
 
 	/**
@@ -1600,7 +1575,7 @@ class Query {
 	 * @param mixed $option
 	 */
 	private function _notmodifiedby( $option ) {
-		$this->addWhere( 'NOT EXISTS (SELECT 1 FROM ' . $this->tableNames[ $this->actorRevTable ] . ' WHERE ' . $this->tableNames[ $this->actorRevTable ] . '.' . $this->actorRevPrefix . '_page=page_id AND ' . $this->tableNames[ $this->actorRevTable ] . '.' . $this->actorRevPrefix . '_actor = ' . $this->DB->addQuotes( $this->userFactory->newFromName( $option )->getActorId() ) . ' LIMIT 1)' );
+		$this->addWhere( 'NOT EXISTS (SELECT 1 FROM ' . $this->tableNames['revision'] . ' WHERE ' . $this->tableNames['revision'] . '.rev_page=page_id AND ' . $this->tableNames['revision'] . '.rev_actor = ' . $this->DB->addQuotes( $this->userFactory->newFromName( $option )->getActorId() ) . ' LIMIT 1)' );
 	}
 
 	/**
@@ -1776,20 +1751,20 @@ class Query {
 					}
 					break;
 				case 'firstedit':
-					$this->addOrderBy( 'rev.' . $this->actorRevPrefix . '_timestamp' );
-					$this->addTable( $this->actorRevTable, 'rev' );
+					$this->addOrderBy( 'rev.rev_timestamp' );
+					$this->addTable( 'revision', 'rev' );
 
 					$this->addSelect(
 						[
-							'rev.' . $this->actorRevPrefix . '_timestamp'
+							'rev.rev_timestamp'
 						]
 					);
 
 					if ( !$this->revisionAuxWhereAdded ) {
 						$this->addWhere(
 							[
-								"{$this->tableNames['page']}.page_id = rev.' . $this->actorRevPrefix . '_page",
-								"rev.' . $this->actorRevPrefix . '_timestamp = (SELECT MIN(rev_aux.' . $this->actorRevPrefix . '_timestamp) FROM {$this->tableNames[ $this->actorRevTable ]} AS rev_aux WHERE rev_aux.' . $this->actorRevPrefix . '_page=rev.' . $this->actorRevPrefix . '_page)"
+								"{$this->tableNames['page']}.page_id = rev.rev_page",
+								"rev.rev_timestamp = (SELECT MIN(rev_aux.rev_timestamp) FROM {$this->tableNames['revision']} AS rev_aux WHERE rev_aux.rev_page=rev.rev_page)"
 							]
 						);
 					}
@@ -1805,15 +1780,15 @@ class Query {
 							]
 						);
 					} else {
-						$this->addOrderBy( 'rev.' . $this->actorRevPrefix . '_timestamp' );
-						$this->addTable( $this->actorRevTable, 'rev' );
-						$this->addSelect( [ 'rev.' . $this->actorRevPrefix . '_timestamp' ] );
+						$this->addOrderBy( 'rev.rev_timestamp' );
+						$this->addTable( 'revision', 'rev' );
+						$this->addSelect( [ 'rev.rev_timestamp' ] );
 
 						if ( !$this->revisionAuxWhereAdded ) {
 							$this->addWhere(
 								[
-									"{$this->tableNames['page']}.page_id = rev.' . $this->actorRevPrefix . '_page",
-									"rev.' . $this->actorRevPrefix . '_timestamp = (SELECT MAX(rev_aux.' . $this->actorRevPrefix . '_timestamp) FROM {$this->tableNames[ $this->actorRevTable ]} AS rev_aux WHERE rev_aux.' . $this->actorRevPrefix . '_page = rev.' . $this->actorRevPrefix . '_page)"
+									"{$this->tableNames['page']}.page_id = rev.rev_page",
+									"rev.rev_timestamp = (SELECT MAX(rev_aux.rev_timestamp) FROM {$this->tableNames['revision']} AS rev_aux WHERE rev_aux.rev_page = rev.rev_page)"
 								]
 							);
 						}
@@ -1903,8 +1878,8 @@ class Query {
 					}
 					break;
 				case 'user':
-					$this->addOrderBy( 'rev.' . $this->actorRevPrefix . '_actor' );
-					$this->addTable( $this->actorRevTable, 'rev' );
+					$this->addOrderBy( 'rev.rev_actor' );
+					$this->addTable( 'revision', 'rev' );
 
 					$this->_adduser( null, 'rev' );
 					break;
