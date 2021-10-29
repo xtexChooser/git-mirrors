@@ -1,0 +1,12 @@
+{
+	"@metadata": {
+		"authors": [
+			"Ajeje Brazorf"
+		]
+	},
+	"categorywatch-notification-link": "Catigurìa: [[:$1]]",
+	"categorywatch-notification-categorywatch-add-header": "[[:$1|$2]] agghiunciutu a [[:$3|$4]]",
+	"categorywatch-notification-categorywatch-add-summary": "[[:$3|$4]] agghiunciutu a [[:$5|$6]]",
+	"categorywatch-notification-categorywatch-add-body": "[[User:$1|$1]] agghiunciau [[:$3|$3]] a [[:$4|$4]]",
+	"categorywatch-add-title": "Tìtulu agghiunciutu î catigurìi taliati"
+}
