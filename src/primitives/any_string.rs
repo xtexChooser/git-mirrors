@@ -358,7 +358,7 @@ impl OneOrMany<&AnyString> {
     /// ```
     pub fn to_owned(self) -> OneOrMany<AnyString> {
         match self.0 {
-            Either::Left(one_ref) => OneOrMany(Either::Left(one_ref.to_owned())),
+            Either::Left([one_ref]) => OneOrMany(Either::Left([one_ref.to_owned()])),
             Either::Right(many_ref) => {
                 OneOrMany(Either::Right(many_ref.into_iter().cloned().collect()))
             }

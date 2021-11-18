@@ -18,9 +18,8 @@ use crate::either::Either;
 ///     "key": [value, ...]
 /// }
 /// ```
-#[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
-#[serde(transparent)]
-pub struct OneOrMany<T>(pub(crate) Either<T, Vec<T>>);
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct OneOrMany<T>(pub(crate) Either<[T; 1], Vec<T>>);
 
 /// An iterator over a OneOrMany's borrowed contents
 #[derive(Clone, Debug)]
@@ -48,7 +47,7 @@ impl<T> OneOrMany<T> {
     /// ```
     pub fn iter(&self) -> Iter<'_, T> {
         match self.0 {
-            Either::Left(ref t) => Iter(Either::Left(Some(t))),
+            Either::Left([ref t]) => Iter(Either::Left(Some(t))),
             Either::Right(ref v) => Iter(Either::Right(v.iter())),
         }
     }
@@ -66,7 +65,7 @@ impl<T> OneOrMany<T> {
     /// ```
     pub fn iter_mut(&mut self) -> IterMut<'_, T> {
         match self.0 {
-            Either::Left(ref mut t) => IterMut(Either::Left(Some(t))),
+            Either::Left([ref mut t]) => IterMut(Either::Left(Some(t))),
             Either::Right(ref mut v) => IterMut(Either::Right(v.iter_mut())),
         }
     }
@@ -82,7 +81,7 @@ impl<T> OneOrMany<T> {
     /// assert_eq!(value_ref.one(), Some(&String::from("hi")));
     /// ```
     pub fn as_ref(&self) -> OneOrMany<&T> {
-        OneOrMany(self.0.as_ref().map(|l| l, |r| r.iter().collect()))
+        OneOrMany(self.0.as_ref().map(|[l]| [l], |r| r.iter().collect()))
     }
 
     /// Map the value inside the OneOrMany from T to U
@@ -99,7 +98,7 @@ impl<T> OneOrMany<T> {
     where
         F: Fn(T) -> U + Copy,
     {
-        OneOrMany(self.0.map(f, |v| v.into_iter().map(f).collect()))
+        OneOrMany(self.0.map(|[l]| [f(l)], |v| v.into_iter().map(f).collect()))
     }
 
     /// Create a OneOrMany mutably referencing the existing one
@@ -111,7 +110,7 @@ impl<T> OneOrMany<T> {
     /// let value_mut = value.as_mut();
     /// ```
     pub fn as_mut(&mut self) -> OneOrMany<&mut T> {
-        OneOrMany(self.0.as_mut().map(|l| l, |r| r.iter_mut().collect()))
+        OneOrMany(self.0.as_mut().map(|[l]| [l], |r| r.iter_mut().collect()))
     }
 
     /// Get a reference to a single value
@@ -124,7 +123,7 @@ impl<T> OneOrMany<T> {
     /// }
     /// ```
     pub fn as_one(&self) -> Option<&T> {
-        self.0.as_ref().left()
+        self.0.as_ref().left().map(|[t]| t)
     }
 
     /// Borrow one as mutable
@@ -141,7 +140,7 @@ impl<T> OneOrMany<T> {
     /// assert_eq!(value.one(), Some(2));
     /// ```
     pub fn one_mut(&mut self) -> Option<&mut T> {
-        self.0.as_mut().left()
+        self.0.as_mut().left().map(|[t]| t)
     }
 
     /// Take a single value
@@ -154,7 +153,7 @@ impl<T> OneOrMany<T> {
     /// }
     /// ```
     pub fn one(self) -> Option<T> {
-        self.0.left()
+        self.0.left().map(|[t]| t)
     }
 
     /// Get a slice of values
@@ -211,14 +210,30 @@ impl<T> OneOrMany<T> {
     /// ```rust
     /// # use activitystreams::primitives::OneOrMany;
     /// # let value = OneOrMany::from_many(vec![1, 2, 3]);
-    /// for item in value.unwrap_to_vec() {
+    /// for item in value.into_vec() {
     ///     println!("{:?}", item);
     /// }
     /// ```
-    pub fn unwrap_to_vec(self) -> Vec<T> {
+    pub fn into_vec(self) -> Vec<T> {
         match self.0 {
-            Either::Left(t) => vec![t],
+            Either::Left(t) => t.into(),
             Either::Right(v) => v,
+        }
+    }
+
+    /// Return a slice of values contained by the OneOrMany
+    ///
+    /// ```rust
+    /// # use activitystreams::primitives::OneOrMany;
+    /// # let value = OneOrMany::from_many(vec![1, 2, 3]);
+    /// for item in value.as_slice() {
+    ///     println!("{:?}", item)
+    /// }
+    /// ```
+    pub fn as_slice(&self) -> &[T] {
+        match self.0 {
+            Either::Left(ref t) => t,
+            Either::Right(ref v) => v,
         }
     }
 
@@ -229,7 +244,7 @@ impl<T> OneOrMany<T> {
     /// let v = OneOrMany::from_one(1234);
     /// ```
     pub fn from_one(t: T) -> Self {
-        OneOrMany(Either::Left(t))
+        OneOrMany(Either::Left([t]))
     }
 
     /// Produce a new object from a vec of values
@@ -255,7 +270,7 @@ impl<T> OneOrMany<T> {
     where
         U: Into<T>,
     {
-        self.0 = Either::Left(u.into());
+        self.0 = Either::Left([u.into()]);
         self
     }
 
@@ -293,7 +308,7 @@ impl<T> OneOrMany<T> {
         U: Into<T>,
     {
         let mut v = match std::mem::replace(&mut self.0, Either::Right(vec![])) {
-            Either::Left(one) => vec![one],
+            Either::Left(one) => one.into(),
             Either::Right(v) => v,
         };
         v.push(u.into());
@@ -318,7 +333,7 @@ impl<T> OneOrMany<T> {
         U: Into<T>,
     {
         let mut v = match std::mem::replace(&mut self.0, Either::Right(vec![])) {
-            Either::Left(one) => vec![one],
+            Either::Left(one) => one.into(),
             Either::Right(v) => v,
         };
         v.extend(items.into_iter().map(Into::into));
@@ -341,7 +356,7 @@ impl<T> IntoIterator for OneOrMany<T> {
     /// ```
     fn into_iter(self) -> Self::IntoIter {
         match self.0 {
-            Either::Left(t) => IntoIter(Either::Left(Some(t))),
+            Either::Left([t]) => IntoIter(Either::Left(Some(t))),
             Either::Right(v) => IntoIter(Either::Right(v.into_iter())),
         }
     }
@@ -557,9 +572,72 @@ impl<T> From<Vec<T>> for OneOrMany<T> {
     }
 }
 
+impl<'de, T> serde::de::Deserialize<'de> for OneOrMany<T>
+where
+    T: serde::de::Deserialize<'de>,
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        #[derive(serde::Deserialize)]
+        struct OneOrManyInner<T>(Either<T, Vec<T>>);
+
+        OneOrManyInner::deserialize(deserializer).map(|inner| match inner.0 {
+            Either::Left(one) => OneOrMany(Either::Left([one])),
+            Either::Right(vec) => OneOrMany(Either::Right(vec)),
+        })
+    }
+}
+
+impl<T> serde::Serialize for OneOrMany<T>
+where
+    T: serde::ser::Serialize,
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        #[derive(serde::Serialize)]
+        struct OneOrManyInner<'a, T>(Either<&'a T, &'a [T]>);
+        let to_ser = match self.0 {
+            Either::Left([ref one]) => OneOrManyInner(Either::Left(one)),
+            Either::Right(ref v) => OneOrManyInner(Either::Right(v)),
+        };
+
+        to_ser.serialize(serializer)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::OneOrMany;
+
+    #[test]
+    fn ser_de() {
+        #[derive(Debug, PartialEq, Eq, serde::Deserialize, serde::Serialize)]
+        struct Hi {
+            inner: OneOrMany<String>,
+        }
+
+        let h1 = Hi {
+            inner: OneOrMany::from_one(String::from("hello")),
+        };
+        let s = serde_json::to_string(&h1).unwrap();
+        assert_eq!(s, r#"{"inner":"hello"}"#);
+
+        let h2: Hi = serde_json::from_str(&s).unwrap();
+        assert_eq!(h2, h1);
+
+        let h1 = Hi {
+            inner: OneOrMany::from_many(vec![String::from("hello"), String::from("hi")]),
+        };
+        let s = serde_json::to_string(&h1).unwrap();
+        assert_eq!(s, r#"{"inner":["hello","hi"]}"#);
+
+        let h2: Hi = serde_json::from_str(&s).unwrap();
+        assert_eq!(h2, h1);
+    }
 
     #[test]
     fn iter_works() {

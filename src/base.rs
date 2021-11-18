@@ -1754,7 +1754,7 @@ impl OneOrMany<AnyBase> {
     /// # }
     /// ```
     pub fn from_xsd_any_uri(id: Url) -> Self {
-        OneOrMany(Either::Left(AnyBase::from_xsd_any_uri(id)))
+        OneOrMany(Either::Left([AnyBase::from_xsd_any_uri(id)]))
     }
 
     /// Create a `OneOrMany<AnyBase>` from a String
@@ -1765,7 +1765,7 @@ impl OneOrMany<AnyBase> {
     /// let one = OneOrMany::<AnyBase>::from_xsd_string("hi".into());
     /// ```
     pub fn from_xsd_string(xsd_string: String) -> Self {
-        OneOrMany(Either::Left(AnyBase::from_xsd_string(xsd_string)))
+        OneOrMany(Either::Left([AnyBase::from_xsd_string(xsd_string)]))
     }
 
     /// Create a `OneOrMany<AnyBase>` from a `Base<serde_json::Value>`
@@ -1779,7 +1779,7 @@ impl OneOrMany<AnyBase> {
     /// let one = OneOrMany::from_base(base);
     /// ```
     pub fn from_base(base: Base<serde_json::Value>) -> Self {
-        OneOrMany(Either::Left(AnyBase::from_base(base)))
+        OneOrMany(Either::Left([AnyBase::from_base(base)]))
     }
 
     /// Overwrite the current object with a Url
@@ -1795,7 +1795,7 @@ impl OneOrMany<AnyBase> {
     /// assert!(one.as_single_xsd_any_uri().is_some());
     /// ```
     pub fn set_single_xsd_any_uri(&mut self, id: Url) -> &mut Self {
-        self.0 = Either::Left(AnyBase::from_xsd_any_uri(id));
+        self.0 = Either::Left([AnyBase::from_xsd_any_uri(id)]);
         self
     }
 
@@ -1812,7 +1812,7 @@ impl OneOrMany<AnyBase> {
     /// assert!(one.as_single_xsd_string().is_some());
     /// ```
     pub fn set_single_xsd_string(&mut self, xsd_string: String) -> &mut Self {
-        self.0 = Either::Left(AnyBase::from_xsd_string(xsd_string));
+        self.0 = Either::Left([AnyBase::from_xsd_string(xsd_string)]);
         self
     }
 
@@ -1829,7 +1829,7 @@ impl OneOrMany<AnyBase> {
     /// assert!(one.as_single_base().is_some());
     /// ```
     pub fn set_single_base(&mut self, base: Base<serde_json::Value>) -> &mut Self {
-        self.0 = Either::Left(AnyBase::from_base(base));
+        self.0 = Either::Left([AnyBase::from_base(base)]);
         self
     }
 
