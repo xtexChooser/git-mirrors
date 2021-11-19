@@ -312,22 +312,7 @@ pub extern crate chrono;
 pub extern crate mime;
 pub extern crate url;
 
-/// Returns the `https://www.w3.org/ns/activitystreams` Url
-pub fn context() -> url::Url {
-    "https://www.w3.org/ns/activitystreams".parse().unwrap()
-}
-
-/// Returns the `https://www.w3.org/ns/activitystreams#Public` Url
-pub fn public() -> url::Url {
-    "https://www.w3.org/ns/activitystreams#Public"
-        .parse()
-        .unwrap()
-}
-
-/// Returns the `https://w3id.org/security/v1` Url
-pub fn security() -> url::Url {
-    "https://w3id.org/security/v1".parse().unwrap()
-}
+pub use activitystreams_kinds::{context, kind, public, security};
 
 pub mod prelude {
     //! Extension traits that provide the majority of the helper methods of the crate
