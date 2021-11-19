@@ -1,6 +1,12 @@
 [package]
 name = "activitystreams-kinds"
-version = "0.1.0"
+description = "Type-safe activitystreams 'type' values"
+version = "0.1.1"
+license = "GPL-3.0"
+authors = ["asonix <asonix@asonix.dog>"]
+repository = "https://git.asonix.dog/asonix/activitystreams"
+documentation = "https://docs.rs/activitystreams-ext"
+keywords = ["activitystreams", "activitypub"]
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
