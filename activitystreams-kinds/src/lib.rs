@@ -8,7 +8,7 @@
 ///
 /// ```rust
 /// # fn main() -> Result<(), anyhow::Error> {
-/// use activitystreams::kind;
+/// use activitystreams_kinds::kind;
 ///
 /// kind!(CustomType, Custom);
 ///
