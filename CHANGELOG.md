@@ -1,7 +1,13 @@
 # Unreleased
-- Add `to_owned` to `OneOrMany<&'a AnyString>`
+
+# 0.7.0-alpha.13
+- re-export url functions, kind macro from activitystreams-kinds library
+
+# 0.7.0-alpha.12
+- re-export kinds from new activitystreams-kinds library
 
 # 0.7.0-alpha.11
+- Add `to_owned` to `OneOrMany<&'a AnyString>`
 - Update summary and content to return `OneOrMany<&'a AnyString>`
 - Implement as_single_xsd_string and as_single_rdf_lang_string for `OneOrMany<&'a AnyString>`
 - Change Add from aliasing `ActorAndObject` to `ActorAndObjectOptOriginAndTarget`
