@@ -2,6 +2,25 @@
 //!
 //! Enums representing typed versions of activitypub 'type' fields.
 
+use url::Url;
+
+/// Returns the `https://www.w3.org/ns/activitystreams` Url
+pub fn context() -> Url {
+    "https://www.w3.org/ns/activitystreams".parse().unwrap()
+}
+
+/// Returns the `https://www.w3.org/ns/activitystreams#Public` Url
+pub fn public() -> Url {
+    "https://www.w3.org/ns/activitystreams#Public"
+        .parse()
+        .unwrap()
+}
+
+/// Returns the `https://w3id.org/security/v1` Url
+pub fn security() -> Url {
+    "https://w3id.org/security/v1".parse().unwrap()
+}
+
 /// Generate an enum implementing serde's Serialize and Deserialize with a single variant
 ///
 /// This is useful for describing constants
