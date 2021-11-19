@@ -31,20 +31,7 @@ use crate::{
 };
 use url::Url;
 
-pub mod kind {
-    //! Kinds of actors defined by the spec
-    //!
-    //! These types exist only to be statically-typed versions of the associated string. e.g.
-    //! `PersonType` -> `"Person"`
-
-    use crate::kind;
-
-    kind!(ApplicationType, Application);
-    kind!(GroupType, Group);
-    kind!(OrganizationType, Organization);
-    kind!(PersonType, Person);
-    kind!(ServiceType, Service);
-}
+pub use activitystreams_kinds::actor as kind;
 
 use self::kind::*;
 

@@ -29,27 +29,7 @@ use chrono::{DateTime, Duration, FixedOffset};
 use std::convert::TryFrom;
 use url::Url;
 
-pub mod kind {
-    //! Kinds of objects defined by the spec
-    //!
-    //! These types exist only to be statically-typed versions of the associated string. e.g.
-    //! `PlaceType` -> `"Place"`
-
-    use crate::kind;
-
-    kind!(ArticleType, Article);
-    kind!(AudioType, Audio);
-    kind!(DocumentType, Document);
-    kind!(EventType, Event);
-    kind!(ImageType, Image);
-    kind!(NoteType, Note);
-    kind!(PageType, Page);
-    kind!(PlaceType, Place);
-    kind!(ProfileType, Profile);
-    kind!(RelationshipType, Relationship);
-    kind!(TombstoneType, Tombstone);
-    kind!(VideoType, Video);
-}
+pub use activitystreams_kinds::object as kind;
 
 use self::kind::*;
 

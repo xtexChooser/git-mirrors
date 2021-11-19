@@ -33,43 +33,7 @@ use crate::{
 use std::convert::TryFrom;
 use url::Url;
 
-pub mod kind {
-    //! Kinds of activities defined by the spec
-    //!
-    //! These types exist only to be statically-typed versions of the associated string. e.g.
-    //! `CreateType` -> `"Create"`
-
-    use crate::kind;
-
-    kind!(AcceptType, Accept);
-    kind!(AddType, Add);
-    kind!(AnnounceType, Announce);
-    kind!(ArriveType, Arrive);
-    kind!(BlockType, Block);
-    kind!(CreateType, Create);
-    kind!(DeleteType, Delete);
-    kind!(DislikeType, Dislike);
-    kind!(FlagType, Flag);
-    kind!(FollowType, Follow);
-    kind!(IgnoreType, Ignore);
-    kind!(InviteType, Invite);
-    kind!(JoinType, Join);
-    kind!(LeaveType, Leave);
-    kind!(LikeType, Like);
-    kind!(ListenType, Listen);
-    kind!(MoveType, Move);
-    kind!(OfferType, Offer);
-    kind!(QuestionType, Question);
-    kind!(ReadType, Read);
-    kind!(RejectType, Reject);
-    kind!(RemoveType, Remove);
-    kind!(TentativeAcceptType, TentativeAccept);
-    kind!(TentativeRejectType, TentativeReject);
-    kind!(TravelType, Travel);
-    kind!(UndoType, Undo);
-    kind!(UpdateType, Update);
-    kind!(ViewType, View);
-}
+pub use activitystreams_kinds::activity as kind;
 
 use self::kind::*;
 

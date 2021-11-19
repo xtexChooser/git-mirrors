@@ -31,19 +31,7 @@ use crate::{
 };
 use std::convert::TryFrom;
 
-pub mod kind {
-    //! Kinds of collections defined by the spec
-    //!
-    //! These types exist only to be statically-typed versions of the associated string. e.g.
-    //! `CollectionType` -> `"Collection"`
-
-    use crate::kind;
-
-    kind!(CollectionType, Collection);
-    kind!(OrderedCollectionType, OrderedCollection);
-    kind!(CollectionPageType, CollectionPage);
-    kind!(OrderedCollectionPageType, OrderedCollectionPage);
-}
+pub use activitystreams_kinds::collection as kind;
 
 use self::kind::*;
 

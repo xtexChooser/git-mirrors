@@ -1,7 +1,7 @@
 [package]
 name = "activitystreams"
 description = "A set of core types and traits for activitystreams data"
-version = "0.7.0-alpha.12"
+version = "0.7.0-alpha.13"
 license = "GPL-3.0"
 authors = ["asonix <asonix@asonix.dog>"]
 repository = "https://git.asonix.dog/Aardwolf/activitystreams"
@@ -14,10 +14,12 @@ edition = "2021"
 
 [workspace]
 members = [
-    "activitystreams-ext"
+    "activitystreams-ext",
+    "activitystreams-kinds"
 ]
 
 [dependencies]
+activitystreams-kinds = { version = "0.1.0", path = "./activitystreams-kinds/" }
 chrono = "0.4"
 mime = "0.3"
 serde = { version = "1.0", features = ["derive"] }

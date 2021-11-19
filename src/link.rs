@@ -29,16 +29,7 @@ use crate::{
 use std::convert::TryFrom;
 use url::Url;
 
-pub mod kind {
-    //! Kinds of links defined by the spec
-    //!
-    //! These types exist only to be statically-typed versions of the associated string. e.g.
-    //! `MentionType` -> `"Mention"`
-
-    use crate::kind;
-
-    kind!(MentionType, Mention);
-}
+pub use activitystreams_kinds::link as kind;
 
 use self::kind::MentionType;
 
