@@ -716,8 +716,7 @@ class Query {
 			$this->addSelect( [ 'min_timestamp' => 'MIN(rev.rev_timestamp)' ] );
 			$this->addWhere(
 				[
-					$this->tableNames['page'] . '.page_id = rev.rev_page',
-					"rev.rev_timestamp = min_timestamp"
+					$this->tableNames['page'] . '.page_id = rev.rev_page'
 				]
 			);
 			$this->addGroupBy( $this->tableNames['page'] . '.page_id' );
@@ -818,8 +817,7 @@ class Query {
 			$this->addSelect( [ 'max_timestamp' => 'MAX(rev.rev_timestamp)' ] );
 			$this->addWhere(
 				[
-					$this->tableNames['page'] . '.page_id = rev.rev_page',
-					"rev.rev_timestamp = max_timestamp"
+					$this->tableNames['page'] . '.page_id = rev.rev_page'
 				]
 			);
 			$this->addGroupBy( $this->tableNames['page'] . '.page_id' );
@@ -1739,10 +1737,10 @@ class Query {
 						$this->addOrderBy( 'page_touched' );
 					} else {
 						$this->addTable( 'revision', 'rev' );
-						$this->addSelect( [ 'rev_timestamp' => 'MAX(rev.rev_timestamp)' ] );
+						$this->addSelect( [ 'max_timestamp' => 'MAX(rev.rev_timestamp)' ] );
 						$this->addWhere( [ "{$this->tableNames['page']}.page_id = rev.rev_page" ] );
 						$this->addGroupBy( $this->tableNames['page'] . '.page_id' );
-						$this->addOrderBy( 'rev_timestamp' );
+						$this->addOrderBy( 'max_timestamp' );
 					}
 					break;
 				case 'pagesel':
