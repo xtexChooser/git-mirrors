@@ -1150,11 +1150,7 @@ class Query {
 		$ors = [];
 		foreach ( $option as $linkGroup ) {
 			foreach ( $linkGroup as $link ) {
-				if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-					$ors[] = "LOWER(CONVERT(ic.il_from USING utf8mb4)) = LOWER(" . $this->DB->addQuotes( $link->getArticleID() ) . ')';
-				} else {
-					$ors[] = "ic.il_from = " . $this->DB->addQuotes( $link->getArticleID() );
-				}
+				$ors[] = "ic.il_from = " . $this->DB->addQuotes( $link->getArticleID() );
 			}
 		}
 
@@ -1186,11 +1182,7 @@ class Query {
 
 		foreach ( $option as $linkGroup ) {
 			foreach ( $linkGroup as $link ) {
-				if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-					$ors[] = "LOWER(CONVERT(il.il_to USING utf8mb4))=LOWER(" . $this->DB->addQuotes( $link->getDbKey() ) . ')';
-				} else {
-					$ors[] = "il.il_to=" . $this->DB->addQuotes( $link->getDbKey() );
-				}
+				$ors[] = "il.il_to=" . $this->DB->addQuotes( $link->getDbKey() );
 			}
 		}
 
