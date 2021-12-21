@@ -26,6 +26,7 @@ use RequestContext;
 use UnexpectedValueException;
 use User;
 use WebRequest;
+use WikiMap;
 use Wikimedia\Assert\Assert;
 use Wikimedia\IPUtils;
 use Wikimedia\Rdbms\IDatabase;
@@ -269,7 +270,7 @@ class LoginNotify implements LoggerAwareInterface {
 				// will be cached.
 				$info = $globalUser->queryAttached();
 				// already checked the local wiki.
-				unset( $info[wfWikiID()] );
+				unset( $info[WikiMap::getCurrentWikiId()] );
 				usort( $info,
 					static function ( $a, $b ) {
 						// descending order

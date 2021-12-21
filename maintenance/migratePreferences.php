@@ -7,6 +7,7 @@ use LoggedUpdateMaintenance;
 use MediaWiki\MediaWikiServices;
 use RecursiveIteratorIterator;
 use User;
+use WikiMap;
 
 $IP = getenv( 'MW_INSTALL_PATH' );
 if ( $IP === false ) {
@@ -80,7 +81,7 @@ class MigratePreferences extends LoggedUpdateMaintenance {
 				$rows += $this->updateUser( $lastRow, $optionsToUpdate );
 				if ( $rows >= $this->getBatchSize() ) {
 					$this->output( "  Updated {$rows} rows up to user ID {$lastRow->user_id}\n" );
-					$lbFactory->waitForReplication( [ 'wiki' => wfWikiID() ] );
+					$lbFactory->waitForReplication( [ 'wiki' => WikiMap::getCurrentWikiId() ] );
 					$total += $rows;
 					$rows = 0;
 				}
