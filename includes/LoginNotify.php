@@ -15,7 +15,6 @@ use EchoEvent;
 use Exception;
 use ExtensionRegistry;
 use IBufferingStatsdDataFactory;
-use JobQueueGroup;
 use JobSpecification;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
@@ -862,7 +861,7 @@ class LoginNotify implements LoggerAwareInterface {
 				'resultSoFar' => $resultSoFar,
 			]
 		);
-		JobQueueGroup::singleton()->lazyPush( $job );
+		MediaWikiServices::getInstance()->getJobQueueGroup()->lazyPush( $job );
 
 		$this->log->debug( 'Login {status}, creating a job to verify {user}, result so far: {result}',
 			[
