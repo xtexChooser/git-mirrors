@@ -9,7 +9,6 @@
 namespace LoginNotify;
 
 use BagOStuff;
-use CentralAuthUser;
 use Config;
 use EchoEvent;
 use Exception;
@@ -17,6 +16,7 @@ use ExtensionRegistry;
 use IBufferingStatsdDataFactory;
 use JobQueueGroup;
 use JobSpecification;
+use MediaWiki\Extension\CentralAuth\User\CentralAuthUser;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use MWCryptRand;
