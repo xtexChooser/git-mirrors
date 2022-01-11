@@ -1,0 +1,339 @@
+kind: pipeline
+type: docker
+name: clippy
+
+platform:
+  arch: amd64
+
+clone:
+  disable: true
+
+steps:
+- name: clone
+  image: alpine/git:latest
+  user: root
+  commands:
+  - git clone $DRONE_GIT_HTTP_URL .
+  - git checkout $DRONE_COMMIT
+  - chown -R 991:991 .
+
+- name: clippy
+  image: asonix/rust-builder:latest-linux-amd64
+  pull: always
+  commands:
+  - rustup component add clippy
+  - cargo clippy -p activitystreams-kinds --no-default-features --features url -- -D warnings
+  - cargo clippy -p activitystreams-kinds --no-default-features --features iri-string -- -D warnings
+  - cargo clippy -p activitystreams-kinds --no-default-features --features url,iri-string -- -D warnings
+  - cargo clippy -- -D warnings
+  - cargo clippy -p activitystreams-ext -- -D warnings
+  - cargo clippy --examples -- -D warnings
+
+trigger:
+  event:
+    - tag
+    - push
+    - pull_request
+
+---
+
+kind: pipeline
+type: docker
+name: tests
+
+platform:
+  arch: amd64
+
+clone:
+  disable: true
+
+steps:
+- name: clone
+  image: alpine/git:latest
+  user: root
+  commands:
+  - git clone $DRONE_GIT_HTTP_URL .
+  - git checkout $DRONE_COMMIT
+  - chown -R 991:991 .
+
+- name: tests
+  image: asonix/rust-builder:latest-linux-amd64
+  pull: always
+  commands:
+  - cargo test
+
+trigger:
+  event:
+    - tag
+    - push
+    - pull_request
+
+---
+
+kind: pipeline
+type: docker
+name: check-amd64
+
+platform:
+  arch: amd64
+
+clone:
+  disable: true
+
+steps:
+- name: clone
+  image: alpine/git:latest
+  user: root
+  commands:
+  - git clone $DRONE_GIT_HTTP_URL .
+  - git checkout $DRONE_COMMIT
+  - chown -R 991:991 .
+
+- name: build
+  image: asonix/rust-builder:latest-linux-amd64
+  pull: always
+  commands:
+  - cargo check --target=$TARGET -p activitystreams-kinds --no-default-features --features url
+  - cargo check --target=$TARGET -p activitystreams-kinds --no-default-features --features iri-string
+  - cargo check --target=$TARGET -p activitystreams-kinds --no-default-features --features url,iri-string
+  - cargo check --target=$TARGET
+  - cargo check --target=$TARGET -p activitystreams-ext
+  - cargo check --target=$TARGET --examples
+
+trigger:
+  event:
+    - push
+    - pull_request
+
+---
+
+kind: pipeline
+type: docker
+name: check-arm64v8
+
+platform:
+  arch: amd64
+
+clone:
+  disable: true
+
+steps:
+- name: clone
+  image: alpine/git:latest
+  user: root
+  commands:
+  - git clone $DRONE_GIT_HTTP_URL .
+  - git checkout $DRONE_COMMIT
+  - chown -R 991:991 .
+
+- name: build
+  image: asonix/rust-builder:latest-linux-arm64v8
+  pull: always
+  commands:
+  - cargo check --target=$TARGET -p activitystreams-kinds --no-default-features --features url
+  - cargo check --target=$TARGET -p activitystreams-kinds --no-default-features --features iri-string
+  - cargo check --target=$TARGET -p activitystreams-kinds --no-default-features --features url,iri-string
+  - cargo check --target=$TARGET
+  - cargo check --target=$TARGET -p activitystreams-ext
+  - cargo check --target=$TARGET --examples
+
+trigger:
+  event:
+    - push
+    - pull_request
+
+---
+
+kind: pipeline
+type: docker
+name: check-arm32v7
+
+platform:
+  arch: amd64
+
+clone:
+  disable: true
+
+steps:
+- name: clone
+  image: alpine/git:latest
+  user: root
+  commands:
+  - git clone $DRONE_GIT_HTTP_URL .
+  - git checkout $DRONE_COMMIT
+  - chown -R 991:991 .
+
+- name: build
+  image: asonix/rust-builder:latest-linux-arm32v7
+  pull: always
+  commands:
+  - cargo check --target=$TARGET -p activitystreams-kinds --no-default-features --features url
+  - cargo check --target=$TARGET -p activitystreams-kinds --no-default-features --features iri-string
+  - cargo check --target=$TARGET -p activitystreams-kinds --no-default-features --features url,iri-string
+  - cargo check --target=$TARGET
+  - cargo check --target=$TARGET -p activitystreams-ext
+  - cargo check --target=$TARGET --examples
+
+trigger:
+  event:
+    - push
+    - pull_request
+---
+
+kind: pipeline
+type: docker
+name: build-amd64
+
+platform:
+  arch: amd64
+
+clone:
+  disable: true
+
+steps:
+- name: clone
+  image: alpine/git:latest
+  user: root
+  commands:
+  - git clone $DRONE_GIT_HTTP_URL .
+  - git checkout $DRONE_COMMIT
+  - chown -R 991:991 .
+
+- name: build
+  image: asonix/rust-builder:latest-linux-amd64
+  pull: always
+  commands:
+  - cargo build --target=$TARGET
+  - cargo build --target=$TARGET --examples
+
+trigger:
+  event:
+    - tag
+
+---
+
+kind: pipeline
+type: docker
+name: build-arm64v8
+
+platform:
+  arch: amd64
+
+clone:
+  disable: true
+
+steps:
+- name: clone
+  image: alpine/git:latest
+  user: root
+  commands:
+  - git clone $DRONE_GIT_HTTP_URL .
+  - git checkout $DRONE_COMMIT
+  - chown -R 991:991 .
+
+- name: build
+  image: asonix/rust-builder:latest-linux-arm64v8
+  pull: always
+  commands:
+  - cargo build --target=$TARGET
+  - cargo build --target=$TARGET --examples
+
+trigger:
+  event:
+    - tag
+
+---
+
+kind: pipeline
+type: docker
+name: build-arm32v7
+
+platform:
+  arch: amd64
+
+clone:
+  disable: true
+
+steps:
+- name: clone
+  image: alpine/git:latest
+  user: root
+  commands:
+  - git clone $DRONE_GIT_HTTP_URL .
+  - git checkout $DRONE_COMMIT
+  - chown -R 991:991 .
+
+- name: build
+  image: asonix/rust-builder:latest-linux-arm32v7
+  pull: always
+  commands:
+  - cargo build --target=$TARGET
+  - cargo build --target=$TARGET --examples
+
+trigger:
+  event:
+    - tag
+
+---
+
+kind: pipeline
+type: docker
+name: publish-crate
+
+platform:
+  arch: amd64
+
+clone:
+  disable: true
+
+steps:
+- name: clone
+  image: alpine/git:latest
+  user: root
+  commands:
+  - git clone $DRONE_GIT_HTTP_URL .
+  - git checkout $DRONE_COMMIT
+  - chown -R 991:991 .
+
+- name: publish-kinds
+  image: asonix/rust-builder:latest-linux-amd64
+  pull: always
+  failure: ignore
+  environment:
+    CRATES_IO_TOKEN:
+      from_secret: crates_io_token
+  commands:
+  - cargo publish -p activitystreams-kinds --token $CRATES_IO_TOKEN
+
+- name: publish-main
+  image: asonix/rust-builder:latest-linux-amd64
+  pull: always
+  failure: ignore
+  environment:
+    CRATES_IO_TOKEN:
+      from_secret: crates_io_token
+  commands:
+  - sleep 10
+  - cargo publish --token $CRATES_IO_TOKEN
+
+- name: publish-ext
+  image: asonix/rust-builder:latest-linux-amd64
+  pull: always
+  failure: ignore
+  environment:
+    CRATES_IO_TOKEN:
+      from_secret: crates_io_token
+  commands:
+  - sleep 10
+  - cargo publish -p activitystreams-ext --token $CRATES_IO_TOKEN
+
+depends_on:
+- clippy
+- tests
+- build-amd64
+- build-arm64v8
+- build-arm32v7
+
+trigger:
+  event:
+  - tag
