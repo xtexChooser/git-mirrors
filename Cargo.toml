@@ -1,7 +1,7 @@
 [package]
 name = "activitystreams"
 description = "A set of core types and traits for activitystreams data"
-version = "0.7.0-alpha.14"
+version = "0.7.0-alpha.15"
 license = "GPL-3.0"
 authors = ["asonix <asonix@asonix.dog>"]
 repository = "https://git.asonix.dog/Aardwolf/activitystreams"
@@ -19,13 +19,13 @@ members = [
 ]
 
 [dependencies]
-activitystreams-kinds = { version = "0.1.0", path = "./activitystreams-kinds/" }
-chrono = "0.4"
+activitystreams-kinds = { version = "0.1.0", path = "./activitystreams-kinds/", default-features = false, features = ["iri-string"] }
+iri-string = { version = "0.4.1", features = ["serde", "serde-std"] }
 mime = "0.3"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 thiserror = "1.0"
-url = { version = "2.1", features = ["serde"] }
+time = { version = "0.3.5", features = ["formatting", "parsing"] }
 
 [dev-dependencies]
 anyhow = "1.0"

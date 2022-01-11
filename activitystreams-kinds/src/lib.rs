@@ -2,13 +2,16 @@
 //!
 //! Enums representing typed versions of activitypub 'type' fields.
 
+#[cfg(feature = "url")]
 use url::Url;
 
+#[cfg(feature = "url")]
 /// Returns the `https://www.w3.org/ns/activitystreams` Url
 pub fn context() -> Url {
     "https://www.w3.org/ns/activitystreams".parse().unwrap()
 }
 
+#[cfg(feature = "url")]
 /// Returns the `https://www.w3.org/ns/activitystreams#Public` Url
 pub fn public() -> Url {
     "https://www.w3.org/ns/activitystreams#Public"
@@ -16,8 +19,29 @@ pub fn public() -> Url {
         .unwrap()
 }
 
+#[cfg(feature = "url")]
 /// Returns the `https://w3id.org/security/v1` Url
 pub fn security() -> Url {
+    "https://w3id.org/security/v1".parse().unwrap()
+}
+
+#[cfg(feature = "iri-string")]
+/// Returns the `https://www.w3.org/ns/activitystreams` IRI
+pub fn context_iri() -> iri_string::types::IriString {
+    "https://www.w3.org/ns/activitystreams".parse().unwrap()
+}
+
+#[cfg(feature = "iri-string")]
+/// Returns the `https://www.w3.org/ns/activitystreams#Public` IRI
+pub fn public_iri() -> iri_string::types::IriString {
+    "https://www.w3.org/ns/activitystreams#Public"
+        .parse()
+        .unwrap()
+}
+
+#[cfg(feature = "iri-string")]
+/// Returns the `https://w3id.org/security/v1` IRI
+pub fn security_iri() -> iri_string::types::IriString {
     "https://w3id.org/security/v1".parse().unwrap()
 }
 

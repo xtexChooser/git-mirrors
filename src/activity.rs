@@ -6,32 +6,31 @@
 //!     activity::Create,
 //!     context,
 //!     prelude::*,
-//!     uri,
+//!     iri,
 //! };
 //!
 //! let mut create = Create::new(
-//!     uri!("https://example.com/actors/abcd"),
-//!     uri!("https://example.com/notes/1234"),
+//!     iri!("https://example.com/actors/abcd"),
+//!     iri!("https://example.com/notes/1234"),
 //! );
 //!
 //! create
-//!     .set_result(uri!("https://example.com/"))
-//!     .set_instrument(uri!("https://example.com/"))
-//!     .set_id(uri!("https://example.com/activities/abcd"))
+//!     .set_result(iri!("https://example.com/"))
+//!     .set_instrument(iri!("https://example.com/"))
+//!     .set_id(iri!("https://example.com/activities/abcd"))
 //!     .set_context(context());
 //! # Ok(())
 //! # }
 //! ```
 use crate::{
-    base::{AnyBase, AsBase, Base, BaseExt, Extends},
-    error::DomainError,
+    base::{AnyBase, AsBase, Base, Extends},
     markers,
     object::{ApObject, AsObject, Object},
     primitives::OneOrMany,
     unparsed::{Unparsed, UnparsedMut, UnparsedMutExt},
 };
+use iri_string::types::IriString;
 use std::convert::TryFrom;
-use url::Url;
 
 pub use activitystreams_kinds::activity as kind;
 
@@ -158,10 +157,10 @@ pub trait ActivityExt<Kind>: AsActivity<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{activity::Question, uri};
+    /// # use activitystreams::{activity::Question, iri};
     /// # let mut question = Question::new();
     ///
-    /// question.set_result(uri!("https://example.com"));
+    /// question.set_result(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -180,12 +179,12 @@ pub trait ActivityExt<Kind>: AsActivity<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{activity::Question, uri};
+    /// # use activitystreams::{activity::Question, iri};
     /// # let mut question = Question::new();
     ///
     /// question.set_many_results(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -206,13 +205,13 @@ pub trait ActivityExt<Kind>: AsActivity<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// use activitystreams::{prelude::*, uri};
+    /// use activitystreams::{prelude::*, iri};
     /// # use activitystreams::{activity::Question};
     /// # let mut question = Question::new();
     ///
     /// question
-    ///     .add_result(uri!("https://example.com/one"))
-    ///     .add_result(uri!("https://example.com/two"));
+    ///     .add_result(iri!("https://example.com/one"))
+    ///     .add_result(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -251,9 +250,9 @@ pub trait ActivityExt<Kind>: AsActivity<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{activity::Question, uri};
+    /// # use activitystreams::{activity::Question, iri};
     /// # let mut question = Question::new();
-    /// # question.set_result(uri!("https://example.com"));
+    /// # question.set_result(iri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -294,10 +293,10 @@ pub trait ActivityExt<Kind>: AsActivity<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{activity::Question, uri};
+    /// # use activitystreams::{activity::Question, iri};
     /// # let mut question = Question::new();
     ///
-    /// question.set_instrument(uri!("https://example.com"));
+    /// question.set_instrument(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -316,12 +315,12 @@ pub trait ActivityExt<Kind>: AsActivity<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{activity::Question, uri};
+    /// # use activitystreams::{activity::Question, iri};
     /// # let mut question = Question::new();
     ///
     /// question.set_many_instruments(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -343,12 +342,12 @@ pub trait ActivityExt<Kind>: AsActivity<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{activity::Question, uri};
+    /// # use activitystreams::{activity::Question, iri};
     /// # let mut question = Question::new();
     ///
     /// question
-    ///     .add_instrument(uri!("https://example.com/one"))
-    ///     .add_instrument(uri!("https://example.com/two"));
+    ///     .add_instrument(iri!("https://example.com/one"))
+    ///     .add_instrument(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -387,9 +386,9 @@ pub trait ActivityExt<Kind>: AsActivity<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{activity::Question, uri};
+    /// # use activitystreams::{activity::Question, iri};
     /// # let mut question = Question::new();
-    /// # question.set_instrument(uri!("https://example.com"));
+    /// # question.set_instrument(iri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -410,8 +409,7 @@ pub trait ActivityExt<Kind>: AsActivity<Kind> {
 /// Documentation for the fields related to these methods can be found on the
 /// `ActorAndObject` struct
 pub trait ActorAndObjectRefExt: ActorAndObjectRef {
-    /// Fetch the actor for the current activity, erroring if the actor's domain does not match the
-    /// ID's domain
+    /// Fetch the actor for the current activity
     ///
     /// ```rust
     /// # use activitystreams::{context, activity::Create};
@@ -422,34 +420,7 @@ pub trait ActorAndObjectRefExt: ActorAndObjectRef {
     /// let actor_ref = create.actor();
     /// println!("{:?}", actor_ref);
     /// ```
-    fn actor<'a, Kind>(&'a self) -> Result<&OneOrMany<AnyBase>, DomainError>
-    where
-        Self: BaseExt<Kind>,
-        Kind: 'a,
-    {
-        let unchecked = self.actor_unchecked();
-
-        if unchecked.as_single_id().and_then(|id| id.domain())
-            != self.id_unchecked().and_then(|id| id.domain())
-        {
-            return Err(DomainError);
-        }
-
-        Ok(unchecked)
-    }
-
-    /// Fetch the actor for the current activity
-    ///
-    /// ```rust
-    /// # use activitystreams::{context, activity::Create};
-    /// # let mut create = Create::new(context(), context());
-    /// #
-    /// use activitystreams::prelude::*;
-    ///
-    /// let actor_ref = create.actor_unchecked();
-    /// println!("{:?}", actor_ref);
-    /// ```
-    fn actor_unchecked(&self) -> &OneOrMany<AnyBase> {
+    fn actor(&self) -> &OneOrMany<AnyBase> {
         self.actor_field_ref()
     }
 
@@ -457,18 +428,18 @@ pub trait ActorAndObjectRefExt: ActorAndObjectRef {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{context, activity::Create, uri};
+    /// # use activitystreams::{context, activity::Create, iri};
     /// # let mut create = Create::new(context(), context());
     /// use activitystreams::prelude::*;
     ///
-    /// create.set_actor(uri!("https://example.com"));
+    /// create.set_actor(iri!("https://example.com"));
     ///
-    /// assert!(create.actor_is(&uri!("https://example.com")));
+    /// assert!(create.actor_is(&iri!("https://example.com")));
     /// # Ok(())
     /// # }
     /// ```
-    fn actor_is(&self, id: &Url) -> bool {
-        self.actor_unchecked().is_single_id(id)
+    fn actor_is(&self, id: &IriString) -> bool {
+        self.actor().is_single_id(id)
     }
 
     /// Set the actor for the current activity
@@ -478,10 +449,10 @@ pub trait ActorAndObjectRefExt: ActorAndObjectRef {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{context, activity::Create, uri};
+    /// # use activitystreams::{context, activity::Create, iri};
     /// # let mut create = Create::new(context(), context());
     ///
-    /// create.set_actor(uri!("https://example.com"));
+    /// create.set_actor(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -500,12 +471,12 @@ pub trait ActorAndObjectRefExt: ActorAndObjectRef {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{context, activity::Create, uri};
+    /// # use activitystreams::{context, activity::Create, iri};
     /// # let mut create = Create::new(context(), context());
     ///
     /// create.set_many_actors(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -527,12 +498,12 @@ pub trait ActorAndObjectRefExt: ActorAndObjectRef {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{context, activity::Create, uri};
+    /// # use activitystreams::{context, activity::Create, iri};
     /// # let mut create = Create::new(context(), context());
     ///
     /// create
-    ///     .add_actor(uri!("https://example.com/one"))
-    ///     .add_actor(uri!("https://example.com/two"));
+    ///     .add_actor(iri!("https://example.com/one"))
+    ///     .add_actor(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -563,17 +534,17 @@ pub trait ActorAndObjectRefExt: ActorAndObjectRef {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{context, activity::Create, uri};
+    /// # use activitystreams::{context, activity::Create, iri};
     /// # let mut create = Create::new(context(), context());
     /// use activitystreams::prelude::*;
     ///
-    /// create.set_object(uri!("https://example.com"));
+    /// create.set_object(iri!("https://example.com"));
     ///
-    /// assert!(create.object_is(&uri!("https://example.com")));
+    /// assert!(create.object_is(&iri!("https://example.com")));
     /// # Ok(())
     /// # }
     /// ```
-    fn object_is(&self, id: &Url) -> bool {
+    fn object_is(&self, id: &IriString) -> bool {
         self.object().is_single_id(id)
     }
 
@@ -584,10 +555,10 @@ pub trait ActorAndObjectRefExt: ActorAndObjectRef {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{context, activity::Create, uri};
+    /// # use activitystreams::{context, activity::Create, iri};
     /// # let mut create = Create::new(context(), context());
     ///
-    /// create.set_object(uri!("https://example.com"));
+    /// create.set_object(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -606,12 +577,12 @@ pub trait ActorAndObjectRefExt: ActorAndObjectRef {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{context, activity::Create, uri};
+    /// # use activitystreams::{context, activity::Create, iri};
     /// # let mut create = Create::new(context(), context());
     ///
     /// create.set_many_objects(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -633,12 +604,12 @@ pub trait ActorAndObjectRefExt: ActorAndObjectRef {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{context, activity::Create, uri};
+    /// # use activitystreams::{context, activity::Create, iri};
     /// # let mut create = Create::new(context(), context());
     ///
     /// create
-    ///     .add_object(uri!("https://example.com/one"))
-    ///     .add_object(uri!("https://example.com/two"));
+    ///     .add_object(iri!("https://example.com/one"))
+    ///     .add_object(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -677,10 +648,10 @@ pub trait TargetRefExt: TargetRef {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{context, activity::Invite, uri};
+    /// # use activitystreams::{context, activity::Invite, iri};
     /// # let mut invite = Invite::new(context(), context(), context());
     ///
-    /// invite.set_target(uri!("https://example.com"));
+    /// invite.set_target(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -699,12 +670,12 @@ pub trait TargetRefExt: TargetRef {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{context, activity::Invite, uri};
+    /// # use activitystreams::{context, activity::Invite, iri};
     /// # let mut invite = Invite::new(context(), context(), context());
     ///
     /// invite.set_many_targets(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -726,12 +697,12 @@ pub trait TargetRefExt: TargetRef {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{context, activity::Invite, uri};
+    /// # use activitystreams::{context, activity::Invite, iri};
     /// # let mut invite = Invite::new(context(), context(), context());
     ///
     /// invite
-    ///     .add_target(uri!("https://example.com/one"))
-    ///     .add_target(uri!("https://example.com/two"));
+    ///     .add_target(iri!("https://example.com/one"))
+    ///     .add_target(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -770,10 +741,10 @@ pub trait OriginRefExt: OriginRef {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{context, activity::Arrive, uri};
+    /// # use activitystreams::{context, activity::Arrive, iri};
     /// # let mut arrive = Arrive::new(context(), context());
     ///
-    /// arrive.set_origin(uri!("https://example.com"));
+    /// arrive.set_origin(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -792,12 +763,12 @@ pub trait OriginRefExt: OriginRef {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{context, activity::Arrive, uri};
+    /// # use activitystreams::{context, activity::Arrive, iri};
     /// # let mut arrive = Arrive::new(context(), context());
     ///
     /// arrive.set_many_origins(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -819,12 +790,12 @@ pub trait OriginRefExt: OriginRef {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{context, activity::Arrive, uri};
+    /// # use activitystreams::{context, activity::Arrive, iri};
     /// # let mut arrive = Arrive::new(context(), context());
     ///
     /// arrive
-    ///     .add_origin(uri!("https://example.com/one"))
-    ///     .add_origin(uri!("https://example.com/two"));
+    ///     .add_origin(iri!("https://example.com/one"))
+    ///     .add_origin(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -865,10 +836,10 @@ pub trait OptTargetRefExt: OptTargetRef {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{context, activity::Announce, uri};
+    /// # use activitystreams::{context, activity::Announce, iri};
     /// # let mut announce = Announce::new(context(), context());
     ///
-    /// announce.set_target(uri!("https://example.com"));
+    /// announce.set_target(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -887,12 +858,12 @@ pub trait OptTargetRefExt: OptTargetRef {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{context, activity::Announce, uri};
+    /// # use activitystreams::{context, activity::Announce, iri};
     /// # let mut announce = Announce::new(context(), context());
     ///
     /// announce.set_many_targets(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -914,12 +885,12 @@ pub trait OptTargetRefExt: OptTargetRef {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{context, activity::Announce, uri};
+    /// # use activitystreams::{context, activity::Announce, iri};
     /// # let mut announce = Announce::new(context(), context());
     ///
     /// announce
-    ///     .add_target(uri!("https://example.com/one"))
-    ///     .add_target(uri!("https://example.com/two"));
+    ///     .add_target(iri!("https://example.com/one"))
+    ///     .add_target(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -1011,10 +982,10 @@ pub trait OptOriginRefExt: OptOriginRef {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{context, activity::Delete, uri};
+    /// # use activitystreams::{context, activity::Delete, iri};
     /// # let mut delete = Delete::new(context(), context());
     ///
-    /// delete.set_origin(uri!("https://example.com"));
+    /// delete.set_origin(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -1033,12 +1004,12 @@ pub trait OptOriginRefExt: OptOriginRef {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{context, activity::Delete, uri};
+    /// # use activitystreams::{context, activity::Delete, iri};
     /// # let mut delete = Delete::new(context(), context());
     ///
     /// delete.set_many_origins(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -1060,12 +1031,12 @@ pub trait OptOriginRefExt: OptOriginRef {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{context, activity::Delete, uri};
+    /// # use activitystreams::{context, activity::Delete, iri};
     /// # let mut delete = Delete::new(context(), context());
     ///
     /// delete
-    ///     .add_origin(uri!("https://example.com/one"))
-    ///     .add_origin(uri!("https://example.com/two"));
+    ///     .add_origin(iri!("https://example.com/one"))
+    ///     .add_origin(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -1153,10 +1124,10 @@ pub trait QuestionExt: AsQuestion {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{activity::Question, uri};
+    /// # use activitystreams::{activity::Question, iri};
     /// # let mut question = Question::new();
     ///
-    /// question.set_one_of(uri!("https://example.com"));
+    /// question.set_one_of(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -1175,12 +1146,12 @@ pub trait QuestionExt: AsQuestion {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{activity::Question, uri};
+    /// # use activitystreams::{activity::Question, iri};
     /// # let mut question = Question::new();
     ///
     /// question.set_many_one_ofs(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -1202,12 +1173,12 @@ pub trait QuestionExt: AsQuestion {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{activity::Question, uri};
+    /// # use activitystreams::{activity::Question, iri};
     /// # let mut question = Question::new();
     ///
     /// question
-    ///     .add_one_of(uri!("https://example.com/one"))
-    ///     .add_one_of(uri!("https://example.com/two"));
+    ///     .add_one_of(iri!("https://example.com/one"))
+    ///     .add_one_of(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -1246,9 +1217,9 @@ pub trait QuestionExt: AsQuestion {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{activity::Question, uri};
+    /// # use activitystreams::{activity::Question, iri};
     /// # let mut question = Question::new();
-    /// # question.set_one_of(uri!("https://example.com"));
+    /// # question.set_one_of(iri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -1286,10 +1257,10 @@ pub trait QuestionExt: AsQuestion {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{activity::Question, uri};
+    /// # use activitystreams::{activity::Question, iri};
     /// # let mut question = Question::new();
     ///
-    /// question.set_any_of(uri!("https://example.com"));
+    /// question.set_any_of(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -1308,12 +1279,12 @@ pub trait QuestionExt: AsQuestion {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{activity::Question, uri};
+    /// # use activitystreams::{activity::Question, iri};
     /// # let mut question = Question::new();
     ///
     /// question.set_many_any_ofs(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -1335,12 +1306,12 @@ pub trait QuestionExt: AsQuestion {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{activity::Question, uri};
+    /// # use activitystreams::{activity::Question, iri};
     /// # let mut question = Question::new();
     ///
     /// question
-    ///     .add_any_of(uri!("https://example.com/one"))
-    ///     .add_any_of(uri!("https://example.com/two"));
+    ///     .add_any_of(iri!("https://example.com/one"))
+    ///     .add_any_of(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -1379,9 +1350,9 @@ pub trait QuestionExt: AsQuestion {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{activity::Question, uri};
+    /// # use activitystreams::{activity::Question, iri};
     /// # let mut question = Question::new();
-    /// # question.set_any_of(uri!("https://example.com"));
+    /// # question.set_any_of(iri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -2341,6 +2312,7 @@ impl<Kind> ActorAndObjectOptOriginAndTarget<Kind> {
         }
     }
 
+    #[allow(clippy::type_complexity)]
     /// Deconstruct the ActorAndObjectOptOriginAndTarget into its parts
     ///
     /// ```rust
@@ -2530,6 +2502,7 @@ impl Travel {
         }
     }
 
+    #[allow(clippy::type_complexity)]
     /// Deconstruct the Travel into its parts
     ///
     /// ```rust

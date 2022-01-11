@@ -6,13 +6,13 @@
 //!     link::Mention,
 //!     object::Image,
 //!     prelude::*,
-//!     uri,
+//!     iri,
 //! };
 //!
 //! let mut mention = Mention::new();
 //!
 //! mention
-//!     .set_href(uri!("https://example.com"))
+//!     .set_href(iri!("https://example.com"))
 //!     .set_hreflang("en")
 //!     .set_rel("link")
 //!     .set_preview(Image::new().into_any_base()?);
@@ -26,8 +26,8 @@ use crate::{
     primitives::OneOrMany,
     unparsed::{Unparsed, UnparsedMut, UnparsedMutExt},
 };
+use iri_string::types::IriString;
 use std::convert::TryFrom;
-use url::Url;
 
 pub use activitystreams_kinds::link as kind;
 
@@ -60,7 +60,7 @@ pub trait LinkExt<Kind>: AsLink<Kind> {
     ///
     /// let mention_href = mention.href();
     /// ```
-    fn href<'a>(&'a self) -> Option<&'a Url>
+    fn href<'a>(&'a self) -> Option<&'a IriString>
     where
         Kind: 'a,
     {
@@ -73,16 +73,16 @@ pub trait LinkExt<Kind>: AsLink<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{link::Mention, uri};
+    /// # use activitystreams::{link::Mention, iri};
     /// # let mut mention = Mention::new();
     /// #
     /// use activitystreams::prelude::*;
     ///
-    /// mention.set_href(uri!("https://example.com"));
+    /// mention.set_href(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
-    fn set_href(&mut self, href: Url) -> &mut Self {
+    fn set_href(&mut self, href: IriString) -> &mut Self {
         self.link_mut().href = Some(href);
         self
     }
@@ -99,7 +99,7 @@ pub trait LinkExt<Kind>: AsLink<Kind> {
     ///     println!("{:?}", href);
     /// }
     /// ```
-    fn take_href(&mut self) -> Option<Url> {
+    fn take_href(&mut self) -> Option<IriString> {
         self.link_mut().href.take()
     }
 
@@ -107,9 +107,9 @@ pub trait LinkExt<Kind>: AsLink<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{link::Mention, uri};
+    /// # use activitystreams::{link::Mention, iri};
     /// # let mut mention = Mention::new();
-    /// # mention.set_href(uri!("https://example.com"));
+    /// # mention.set_href(iri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -493,7 +493,7 @@ pub struct Link<Kind> {
     /// - Range: xsd:anyUri
     /// - Functional: true
     #[serde(skip_serializing_if = "Option::is_none")]
-    href: Option<Url>,
+    href: Option<IriString>,
 
     /// Hints as to the language used by the target resource.
     ///

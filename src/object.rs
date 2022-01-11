@@ -5,16 +5,16 @@
 //! use activitystreams::{
 //!     object::Image,
 //!     prelude::*,
-//!     uri,
+//!     iri,
 //! };
 //!
 //! let mut image = Image::new();
 //!
 //! image
-//!     .set_url(uri!("https://example.com/image.png"))
-//!     .set_attributed_to(uri!("https://example.com/actor"))
-//!     .set_generator(uri!("https://example.com/image-generator"))
-//!     .set_icon(uri!("https://example.com/icon.png"));
+//!     .set_url(iri!("https://example.com/image.png"))
+//!     .set_attributed_to(iri!("https://example.com/actor"))
+//!     .set_generator(iri!("https://example.com/image-generator"))
+//!     .set_icon(iri!("https://example.com/icon.png"));
 //! #
 //! # Ok(())
 //! # }
@@ -25,9 +25,9 @@ use crate::{
     primitives::{AnyString, OneOrMany, Unit, XsdDateTime, XsdDuration},
     unparsed::{Unparsed, UnparsedMut, UnparsedMutExt},
 };
-use chrono::{DateTime, Duration, FixedOffset};
+use iri_string::types::IriString;
 use std::convert::TryFrom;
-use url::Url;
+use time::{Duration, OffsetDateTime};
 
 pub use activitystreams_kinds::object as kind;
 
@@ -132,10 +132,10 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
-    /// video.set_attachment(uri!("https://example.com"));
+    /// video.set_attachment(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -154,12 +154,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video.set_many_attachments(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -181,12 +181,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video
-    ///     .add_attachment(uri!("https://example.com/one"))
-    ///     .add_attachment(uri!("https://example.com/two"));
+    ///     .add_attachment(iri!("https://example.com/one"))
+    ///     .add_attachment(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -225,9 +225,9 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
-    /// # video.set_attachment(uri!("https://example.com"));
+    /// # video.set_attachment(iri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -268,10 +268,10 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
-    /// video.set_attributed_to(uri!("https://example.com"));
+    /// video.set_attributed_to(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -290,12 +290,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video.set_many_attributed_tos(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -317,12 +317,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video
-    ///     .add_attributed_to(uri!("https://example.com/one"))
-    ///     .add_attributed_to(uri!("https://example.com/two"));
+    ///     .add_attributed_to(iri!("https://example.com/one"))
+    ///     .add_attributed_to(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -361,9 +361,9 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
-    /// # video.set_attributed_to(uri!("https://example.com"));
+    /// # video.set_attributed_to(iri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -404,10 +404,10 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
-    /// video.set_audience(uri!("https://example.com"));
+    /// video.set_audience(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -424,12 +424,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video.set_many_audiences(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -451,12 +451,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video
-    ///     .add_audience(uri!("https://example.com/one"))
-    ///     .add_audience(uri!("https://example.com/two"));
+    ///     .add_audience(iri!("https://example.com/one"))
+    ///     .add_audience(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -495,9 +495,9 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
-    /// # video.set_audience(uri!("https://example.com"));
+    /// # video.set_audience(iri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -780,10 +780,10 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
-    /// video.set_url(uri!("https://example.com"));
+    /// video.set_url(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -802,12 +802,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video.set_many_urls(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -829,12 +829,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video
-    ///     .add_url(uri!("https://example.com/one"))
-    ///     .add_url(uri!("https://example.com/two"));
+    ///     .add_url(iri!("https://example.com/one"))
+    ///     .add_url(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -873,9 +873,9 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
-    /// # video.set_url(uri!("https://example.com"));
+    /// # video.set_url(iri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -916,10 +916,10 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
-    /// video.set_generator(uri!("https://example.com"));
+    /// video.set_generator(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -938,12 +938,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video.set_many_generators(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -965,12 +965,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video
-    ///     .add_generator(uri!("https://example.com/one"))
-    ///     .add_generator(uri!("https://example.com/two"));
+    ///     .add_generator(iri!("https://example.com/one"))
+    ///     .add_generator(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -1009,9 +1009,9 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
-    /// # video.set_generator(uri!("https://example.com"));
+    /// # video.set_generator(iri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -1052,10 +1052,10 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
-    /// video.set_icon(uri!("https://example.com"));
+    /// video.set_icon(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -1074,12 +1074,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video.set_many_icons(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -1101,12 +1101,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video
-    ///     .add_icon(uri!("https://example.com/one"))
-    ///     .add_icon(uri!("https://example.com/two"));
+    ///     .add_icon(iri!("https://example.com/one"))
+    ///     .add_icon(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -1145,9 +1145,9 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
-    /// # video.set_icon(uri!("https://example.com"));
+    /// # video.set_icon(iri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -1188,10 +1188,10 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
-    /// video.set_image(uri!("https://example.com"));
+    /// video.set_image(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -1210,12 +1210,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video.set_many_images(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -1237,12 +1237,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video
-    ///     .add_image(uri!("https://example.com/one"))
-    ///     .add_image(uri!("https://example.com/two"));
+    ///     .add_image(iri!("https://example.com/one"))
+    ///     .add_image(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -1281,9 +1281,9 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
-    /// # video.set_image(uri!("https://example.com"));
+    /// # video.set_image(iri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -1324,10 +1324,10 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
-    /// video.set_location(uri!("https://example.com"));
+    /// video.set_location(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -1346,12 +1346,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video.set_many_locations(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -1373,12 +1373,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video
-    ///     .add_location(uri!("https://example.com/one"))
-    ///     .add_location(uri!("https://example.com/two"));
+    ///     .add_location(iri!("https://example.com/one"))
+    ///     .add_location(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -1417,9 +1417,9 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
-    /// # video.set_location(uri!("https://example.com"));
+    /// # video.set_location(iri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -1460,10 +1460,10 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
-    /// video.set_tag(uri!("https://example.com"));
+    /// video.set_tag(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -1482,12 +1482,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video.set_many_tags(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -1509,12 +1509,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video
-    ///     .add_tag(uri!("https://example.com/one"))
-    ///     .add_tag(uri!("https://example.com/two"));
+    ///     .add_tag(iri!("https://example.com/one"))
+    ///     .add_tag(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -1553,9 +1553,9 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
-    /// # video.set_tag(uri!("https://example.com"));
+    /// # video.set_tag(iri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -1582,7 +1582,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///     println!("{:?}", start_time);
     /// }
     /// ```
-    fn start_time<'a>(&'a self) -> Option<DateTime<FixedOffset>>
+    fn start_time<'a>(&'a self) -> Option<OffsetDateTime>
     where
         Kind: 'a,
     {
@@ -1599,14 +1599,14 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video};
+    /// # use activitystreams::{object::Video, datetime};
     /// # let mut video = Video::new();
     ///
-    /// video.set_start_time("2020-04-20T04:20:00Z".parse()?);
+    /// video.set_start_time(datetime!("2020-04-20T04:20:00Z"));
     /// # Ok(())
     /// # }
     /// ```
-    fn set_start_time(&mut self, start_time: DateTime<FixedOffset>) -> &mut Self {
+    fn set_start_time(&mut self, start_time: OffsetDateTime) -> &mut Self {
         self.object_mut().start_time = Some(start_time.into());
         self
     }
@@ -1623,7 +1623,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///     println!("{:?}", start_time);
     /// }
     /// ```
-    fn take_start_time(&mut self) -> Option<DateTime<FixedOffset>> {
+    fn take_start_time(&mut self) -> Option<OffsetDateTime> {
         self.object_mut().start_time.take().map(|d| d.into_inner())
     }
 
@@ -1631,9 +1631,9 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::object::Video;
+    /// # use activitystreams::{object::Video, datetime};
     /// # let mut video = Video::new();
-    /// # video.set_start_time("2020-04-20T04:20:00Z".parse()?);
+    /// # video.set_start_time(datetime!("2020-04-20T04:20:00Z"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -1660,7 +1660,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///     println!("{:?}", end_time);
     /// }
     /// ```
-    fn end_time<'a>(&'a self) -> Option<DateTime<FixedOffset>>
+    fn end_time<'a>(&'a self) -> Option<OffsetDateTime>
     where
         Kind: 'a,
     {
@@ -1677,14 +1677,14 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::object::Video;
+    /// # use activitystreams::{object::Video, datetime};
     /// # let mut video = Video::new();
     ///
-    /// video.set_end_time("2020-04-20T04:20:00-05:00".parse()?);
+    /// video.set_end_time(datetime!("2020-04-20T04:20:00-05:00"));
     /// # Ok(())
     /// # }
     /// ```
-    fn set_end_time(&mut self, end_time: DateTime<FixedOffset>) -> &mut Self {
+    fn set_end_time(&mut self, end_time: OffsetDateTime) -> &mut Self {
         self.object_mut().end_time = Some(end_time.into());
         self
     }
@@ -1701,7 +1701,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///     println!("{:?}", end_time);
     /// }
     /// ```
-    fn take_end_time(&mut self) -> Option<DateTime<FixedOffset>> {
+    fn take_end_time(&mut self) -> Option<OffsetDateTime> {
         self.object_mut().end_time.take().map(|d| d.into_inner())
     }
 
@@ -1709,9 +1709,9 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::object::Video;
+    /// # use activitystreams::{object::Video, datetime};
     /// # let mut video = Video::new();
-    /// # video.set_end_time("2020-04-20T04:20:00Z".parse()?);
+    /// # video.set_end_time(datetime!("2020-04-20T04:20:00Z"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -1755,7 +1755,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// use chrono::Duration;
+    /// use time::Duration;
     /// # use activitystreams::object::Video;
     /// # let mut video = Video::new();
     ///
@@ -1789,7 +1789,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// # use activitystreams::object::Video;
-    /// # use chrono::Duration;
+    /// # use time::Duration;
     /// # let mut video = Video::new();
     /// # video.set_duration(Duration::hours(1));
     /// #
@@ -1818,7 +1818,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///     println!("{:?}", published);
     /// }
     /// ```
-    fn published<'a>(&'a self) -> Option<DateTime<FixedOffset>>
+    fn published<'a>(&'a self) -> Option<OffsetDateTime>
     where
         Kind: 'a,
     {
@@ -1835,14 +1835,14 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::object::Video;
+    /// # use activitystreams::{object::Video, datetime};
     /// # let mut video = Video::new();
     ///
-    /// video.set_published("2020-04-20T04:20:00Z".parse()?);
+    /// video.set_published(datetime!("2020-04-20T04:20:00Z"));
     /// # Ok(())
     /// # }
     /// ```
-    fn set_published(&mut self, published: DateTime<FixedOffset>) -> &mut Self {
+    fn set_published(&mut self, published: OffsetDateTime) -> &mut Self {
         self.object_mut().published = Some(published.into());
         self
     }
@@ -1859,7 +1859,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///     println!("{:?}", published);
     /// }
     /// ```
-    fn take_published(&mut self) -> Option<DateTime<FixedOffset>> {
+    fn take_published(&mut self) -> Option<OffsetDateTime> {
         self.object_mut().published.take().map(|d| d.into_inner())
     }
 
@@ -1867,9 +1867,9 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::object::Video;
+    /// # use activitystreams::{object::Video, datetime};
     /// # let mut video = Video::new();
-    /// # video.set_published("2020-04-20T04:20:00Z".parse()?);
+    /// # video.set_published(datetime!("2020-04-20T04:20:00Z"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -1896,7 +1896,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///     println!("{:?}", updated);
     /// }
     /// ```
-    fn updated<'a>(&'a self) -> Option<DateTime<FixedOffset>>
+    fn updated<'a>(&'a self) -> Option<OffsetDateTime>
     where
         Kind: 'a,
     {
@@ -1913,14 +1913,14 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::object::Video;
+    /// # use activitystreams::{object::Video, datetime};
     /// # let mut video = Video::new();
     ///
-    /// video.set_updated("2020-04-20T04:20:00Z".parse()?);
+    /// video.set_updated(datetime!("2020-04-20T04:20:00Z"));
     /// # Ok(())
     /// # }
     /// ```
-    fn set_updated(&mut self, updated: DateTime<FixedOffset>) -> &mut Self {
+    fn set_updated(&mut self, updated: OffsetDateTime) -> &mut Self {
         self.object_mut().updated = Some(updated.into());
         self
     }
@@ -1937,7 +1937,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///     println!("{:?}", updated);
     /// }
     /// ```
-    fn take_updated(&mut self) -> Option<DateTime<FixedOffset>> {
+    fn take_updated(&mut self) -> Option<OffsetDateTime> {
         self.object_mut().updated.take().map(|d| d.into_inner())
     }
 
@@ -1945,9 +1945,9 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::object::Video;
+    /// # use activitystreams::{object::Video, datetime};
     /// # let mut video = Video::new();
-    /// # video.set_updated("2020-04-20T04:20:00Z".parse()?);
+    /// # video.set_updated(datetime!("2020-04-20T04:20:00Z"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -1988,10 +1988,10 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
-    /// video.set_in_reply_to(uri!("https://example.com"));
+    /// video.set_in_reply_to(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -2010,12 +2010,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video.set_many_in_reply_tos(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -2037,12 +2037,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video
-    ///     .add_in_reply_to(uri!("https://example.com/one"))
-    ///     .add_in_reply_to(uri!("https://example.com/two"));
+    ///     .add_in_reply_to(iri!("https://example.com/one"))
+    ///     .add_in_reply_to(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -2081,9 +2081,9 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
-    /// # video.set_in_reply_to(uri!("https://example.com"));
+    /// # video.set_in_reply_to(iri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -2124,10 +2124,10 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
-    /// video.set_reply(uri!("https://example.com"));
+    /// video.set_reply(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -2146,12 +2146,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video.set_many_replies(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -2173,12 +2173,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video
-    ///     .add_reply(uri!("https://example.com/one"))
-    ///     .add_reply(uri!("https://example.com/two"));
+    ///     .add_reply(iri!("https://example.com/one"))
+    ///     .add_reply(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -2217,9 +2217,9 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
-    /// # video.set_reply(uri!("https://example.com"));
+    /// # video.set_reply(iri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -2260,10 +2260,10 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
-    /// video.set_to(uri!("https://example.com"));
+    /// video.set_to(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -2282,12 +2282,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video.set_many_tos(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -2309,12 +2309,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video
-    ///     .add_to(uri!("https://example.com/one"))
-    ///     .add_to(uri!("https://example.com/two"));
+    ///     .add_to(iri!("https://example.com/one"))
+    ///     .add_to(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -2353,9 +2353,9 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
-    /// # video.set_to(uri!("https://example.com"));
+    /// # video.set_to(iri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -2396,10 +2396,10 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
-    /// video.set_bto(uri!("https://example.com"));
+    /// video.set_bto(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -2418,12 +2418,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video.set_many_btos(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -2445,12 +2445,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video
-    ///     .add_bto(uri!("https://example.com/one"))
-    ///     .add_bto(uri!("https://example.com/two"));
+    ///     .add_bto(iri!("https://example.com/one"))
+    ///     .add_bto(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -2489,9 +2489,9 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
-    /// # video.set_bto(uri!("https://example.com"));
+    /// # video.set_bto(iri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -2532,10 +2532,10 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
-    /// video.set_cc(uri!("https://example.com"));
+    /// video.set_cc(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -2554,12 +2554,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video.set_many_ccs(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -2581,12 +2581,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video
-    ///     .add_cc(uri!("https://example.com/one"))
-    ///     .add_cc(uri!("https://example.com/two"));
+    ///     .add_cc(iri!("https://example.com/one"))
+    ///     .add_cc(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -2625,9 +2625,9 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
-    /// # video.set_cc(uri!("https://example.com"));
+    /// # video.set_cc(iri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -2668,10 +2668,10 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
-    /// video.set_bcc(uri!("https://example.com"));
+    /// video.set_bcc(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -2690,12 +2690,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video.set_many_bcc(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -2717,12 +2717,12 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video
-    ///     .add_bcc(uri!("https://example.com/one"))
-    ///     .add_bcc(uri!("https://example.com/two"));
+    ///     .add_bcc(iri!("https://example.com/one"))
+    ///     .add_bcc(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -2761,9 +2761,9 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
-    /// # video.set_bcc(uri!("https://example.com"));
+    /// # video.set_bcc(iri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -2797,7 +2797,7 @@ pub trait ApObjectExt<Inner>: AsApObject<Inner> {
     ///     println!("{:?}", shares);
     /// }
     /// ```
-    fn shares<'a>(&'a self) -> Option<&'a Url>
+    fn shares<'a>(&'a self) -> Option<&'a IriString>
     where
         Inner: 'a,
     {
@@ -2813,13 +2813,13 @@ pub trait ApObjectExt<Inner>: AsApObject<Inner> {
     /// # use activitystreams::object::{ApObject, Video};
     /// # let mut video = ApObject::new(Video::new());
     /// #
-    /// use activitystreams::{prelude::*, uri};
+    /// use activitystreams::{prelude::*, iri};
     ///
-    /// video.set_shares(uri!("https://example.com"));
+    /// video.set_shares(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
-    fn set_shares(&mut self, shares: Url) -> &mut Self {
+    fn set_shares(&mut self, shares: IriString) -> &mut Self {
         self.ap_object_mut().shares = Some(shares);
         self
     }
@@ -2836,7 +2836,7 @@ pub trait ApObjectExt<Inner>: AsApObject<Inner> {
     ///     println!("{:?}", shares);
     /// }
     /// ```
-    fn take_shares(&mut self) -> Option<Url> {
+    fn take_shares(&mut self) -> Option<IriString> {
         self.ap_object_mut().shares.take()
     }
 
@@ -2870,7 +2870,7 @@ pub trait ApObjectExt<Inner>: AsApObject<Inner> {
     ///     println!("{:?}", likes);
     /// }
     /// ```
-    fn likes<'a>(&'a self) -> Option<&'a Url>
+    fn likes<'a>(&'a self) -> Option<&'a IriString>
     where
         Inner: 'a,
     {
@@ -2886,13 +2886,13 @@ pub trait ApObjectExt<Inner>: AsApObject<Inner> {
     /// # use activitystreams::object::{ApObject, Video};
     /// # let mut video = ApObject::new(Video::new());
     /// #
-    /// use activitystreams::{prelude::*, uri};
+    /// use activitystreams::{prelude::*, iri};
     ///
-    /// video.set_likes(uri!("https://example.com"));
+    /// video.set_likes(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
-    fn set_likes(&mut self, likes: Url) -> &mut Self {
+    fn set_likes(&mut self, likes: IriString) -> &mut Self {
         self.ap_object_mut().likes = Some(likes);
         self
     }
@@ -2909,7 +2909,7 @@ pub trait ApObjectExt<Inner>: AsApObject<Inner> {
     ///     println!("{:?}", likes);
     /// }
     /// ```
-    fn take_likes(&mut self) -> Option<Url> {
+    fn take_likes(&mut self) -> Option<IriString> {
         self.ap_object_mut().likes.take()
     }
 
@@ -2956,12 +2956,12 @@ pub trait ApObjectExt<Inner>: AsApObject<Inner> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{object::{ApObject, Video}, uri};
+    /// # use activitystreams::{object::{ApObject, Video}, iri};
     /// # let mut video = ApObject::new(Video::new());
     /// #
     /// use activitystreams::prelude::*;
     ///
-    /// video.set_source(uri!("https://example.com"));
+    /// video.set_source(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -3019,7 +3019,7 @@ pub trait ApObjectExt<Inner>: AsApObject<Inner> {
     ///     println!("{:?}", upload_media);
     /// }
     /// ```
-    fn upload_media<'a>(&'a self) -> Option<OneOrMany<&'a Url>>
+    fn upload_media<'a>(&'a self) -> Option<OneOrMany<&'a IriString>>
     where
         Inner: 'a,
     {
@@ -3038,13 +3038,13 @@ pub trait ApObjectExt<Inner>: AsApObject<Inner> {
     /// # use activitystreams::object::{ApObject, Video};
     /// # let mut video = ApObject::new(Video::new());
     /// #
-    /// use activitystreams::{prelude::*, uri};
+    /// use activitystreams::{prelude::*, iri};
     ///
-    /// video.set_upload_media(uri!("https://example.com"));
+    /// video.set_upload_media(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
-    fn set_upload_media(&mut self, upload_media: Url) -> &mut Self {
+    fn set_upload_media(&mut self, upload_media: IriString) -> &mut Self {
         self.ap_object_mut().upload_media = Some(upload_media.into());
         self
     }
@@ -3058,11 +3058,11 @@ pub trait ApObjectExt<Inner>: AsApObject<Inner> {
     /// # use activitystreams::object::{ApObject, Video};
     /// # let mut video = ApObject::new(Video::new());
     /// #
-    /// use activitystreams::{prelude::*, uri};
+    /// use activitystreams::{prelude::*, iri};
     ///
     /// video.set_many_upload_medias(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -3070,9 +3070,9 @@ pub trait ApObjectExt<Inner>: AsApObject<Inner> {
     fn set_many_upload_medias<I, U>(&mut self, items: I) -> &mut Self
     where
         I: IntoIterator<Item = U>,
-        U: Into<Url>,
+        U: Into<IriString>,
     {
-        let v: Vec<Url> = items.into_iter().map(|u| u.into()).collect();
+        let v: Vec<IriString> = items.into_iter().map(|u| u.into()).collect();
         self.ap_object_mut().upload_media = Some(v.into());
         self
     }
@@ -3086,15 +3086,15 @@ pub trait ApObjectExt<Inner>: AsApObject<Inner> {
     /// # use activitystreams::object::{ApObject, Video};
     /// # let mut video = ApObject::new(Video::new());
     /// #
-    /// use activitystreams::{prelude::*, uri};
+    /// use activitystreams::{prelude::*, iri};
     ///
     /// video
-    ///     .add_upload_media(uri!("https://example.com/one"))
-    ///     .add_upload_media(uri!("https://example.com/two"));
+    ///     .add_upload_media(iri!("https://example.com/one"))
+    ///     .add_upload_media(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
-    fn add_upload_media(&mut self, upload_media: Url) -> &mut Self {
+    fn add_upload_media(&mut self, upload_media: IriString) -> &mut Self {
         let v = match self.ap_object_mut().upload_media.take() {
             Some(mut v) => {
                 v.add(upload_media);
@@ -3118,7 +3118,7 @@ pub trait ApObjectExt<Inner>: AsApObject<Inner> {
     ///     println!("{:?}", upload_media);
     /// }
     /// ```
-    fn take_upload_media(&mut self) -> Option<OneOrMany<Url>> {
+    fn take_upload_media(&mut self) -> Option<OneOrMany<IriString>> {
         self.ap_object_mut().upload_media.take()
     }
 
@@ -3596,12 +3596,12 @@ pub trait ProfileExt: AsProfile {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{object::Profile, uri};
+    /// # use activitystreams::{object::Profile, iri};
     /// # let mut profile = Profile::new();
     /// #
     /// use activitystreams::prelude::*;
     ///
-    /// profile.set_describes(uri!("https://example.com"));
+    /// profile.set_describes(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -3676,12 +3676,12 @@ pub trait RelationshipExt: AsRelationship {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{object::Relationship, uri};
+    /// # use activitystreams::{object::Relationship, iri};
     /// # let mut relationship = Relationship::new();
     /// #
     /// use activitystreams::prelude::*;
     ///
-    /// relationship.set_subject(uri!("https://example.com"));
+    /// relationship.set_subject(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -3750,10 +3750,10 @@ pub trait RelationshipExt: AsRelationship {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Relationship, uri};
+    /// # use activitystreams::{object::Relationship, iri};
     /// # let mut relationship = Relationship::new();
     ///
-    /// relationship.set_object(uri!("https://example.com"));
+    /// relationship.set_object(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -3772,12 +3772,12 @@ pub trait RelationshipExt: AsRelationship {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Relationship, uri};
+    /// # use activitystreams::{object::Relationship, iri};
     /// # let mut relationship = Relationship::new();
     ///
     /// relationship.set_many_objects(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -3799,12 +3799,12 @@ pub trait RelationshipExt: AsRelationship {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Relationship, uri};
+    /// # use activitystreams::{object::Relationship, iri};
     /// # let mut relationship = Relationship::new();
     ///
     /// relationship
-    ///     .add_object(uri!("https://example.com/one"))
-    ///     .add_object(uri!("https://example.com/two"));
+    ///     .add_object(iri!("https://example.com/one"))
+    ///     .add_object(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -3843,9 +3843,9 @@ pub trait RelationshipExt: AsRelationship {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{object::Relationship, uri};
+    /// # use activitystreams::{object::Relationship, iri};
     /// # let mut relationship = Relationship::new();
-    /// # relationship.set_object(uri!("https://example.com"));
+    /// # relationship.set_object(iri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -3883,10 +3883,10 @@ pub trait RelationshipExt: AsRelationship {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Relationship, uri};
+    /// # use activitystreams::{object::Relationship, iri};
     /// # let mut relationship = Relationship::new();
     ///
-    /// relationship.set_relationship(uri!("https://example.com"));
+    /// relationship.set_relationship(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -3905,12 +3905,12 @@ pub trait RelationshipExt: AsRelationship {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Relationship, uri};
+    /// # use activitystreams::{object::Relationship, iri};
     /// # let mut relationship = Relationship::new();
     ///
     /// relationship.set_many_relationships(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -3932,12 +3932,12 @@ pub trait RelationshipExt: AsRelationship {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Relationship, uri};
+    /// # use activitystreams::{object::Relationship, iri};
     /// # let mut relationship = Relationship::new();
     ///
     /// relationship
-    ///     .add_relationship(uri!("https://example.com/one"))
-    ///     .add_relationship(uri!("https://example.com/two"));
+    ///     .add_relationship(iri!("https://example.com/one"))
+    ///     .add_relationship(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -3976,9 +3976,9 @@ pub trait RelationshipExt: AsRelationship {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{object::Relationship, uri};
+    /// # use activitystreams::{object::Relationship, iri};
     /// # let mut relationship = Relationship::new();
-    /// # relationship.set_relationship(uri!("https://example.com"));
+    /// # relationship.set_relationship(iri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -4023,10 +4023,10 @@ pub trait TombstoneExt: AsTombstone {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Tombstone, uri};
+    /// # use activitystreams::{object::Tombstone, iri};
     /// # let mut tombstone = Tombstone::new();
     ///
-    /// tombstone.set_former_type(uri!("https://example.com"));
+    /// tombstone.set_former_type(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -4045,12 +4045,12 @@ pub trait TombstoneExt: AsTombstone {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Tombstone, uri};
+    /// # use activitystreams::{object::Tombstone, iri};
     /// # let mut tombstone = Tombstone::new();
     ///
     /// tombstone.set_many_former_types(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -4072,12 +4072,12 @@ pub trait TombstoneExt: AsTombstone {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Tombstone, uri};
+    /// # use activitystreams::{object::Tombstone, iri};
     /// # let mut tombstone = Tombstone::new();
     ///
     /// tombstone
-    ///     .add_former_type(uri!("https://example.com/one"))
-    ///     .add_former_type(uri!("https://example.com/two"));
+    ///     .add_former_type(iri!("https://example.com/one"))
+    ///     .add_former_type(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -4116,9 +4116,9 @@ pub trait TombstoneExt: AsTombstone {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{object::Tombstone, uri};
+    /// # use activitystreams::{object::Tombstone, iri};
     /// # let mut tombstone = Tombstone::new();
-    /// # tombstone.set_former_type(uri!("https://example.com"));
+    /// # tombstone.set_former_type(iri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -4145,7 +4145,7 @@ pub trait TombstoneExt: AsTombstone {
     ///     println!("{:?}", deleted);
     /// }
     /// ```
-    fn deleted(&self) -> Option<DateTime<FixedOffset>> {
+    fn deleted(&self) -> Option<OffsetDateTime> {
         self.tombstone_ref()
             .deleted
             .as_ref()
@@ -4159,14 +4159,14 @@ pub trait TombstoneExt: AsTombstone {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::object::Tombstone;
+    /// # use activitystreams::{object::Tombstone, datetime};
     /// # let mut tombstone = Tombstone::new();
     ///
-    /// tombstone.set_deleted("2020-04-20T04:20:00Z".parse()?);
+    /// tombstone.set_deleted(datetime!("2020-04-20T04:20:00Z"));
     /// # Ok(())
     /// # }
     /// ```
-    fn set_deleted(&mut self, deleted: DateTime<FixedOffset>) -> &mut Self {
+    fn set_deleted(&mut self, deleted: OffsetDateTime) -> &mut Self {
         self.tombstone_mut().deleted = Some(deleted.into());
         self
     }
@@ -4183,7 +4183,7 @@ pub trait TombstoneExt: AsTombstone {
     ///     println!("{:?}", deleted);
     /// }
     /// ```
-    fn take_deleted(&mut self) -> Option<DateTime<FixedOffset>> {
+    fn take_deleted(&mut self) -> Option<OffsetDateTime> {
         self.tombstone_mut().deleted.take().map(|d| d.into_inner())
     }
 
@@ -4191,9 +4191,9 @@ pub trait TombstoneExt: AsTombstone {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::object::Tombstone;
+    /// # use activitystreams::{object::Tombstone, datetime};
     /// # let mut tombstone = Tombstone::new();
-    /// # tombstone.set_deleted("2020-04-20T04:20:00Z".parse()?);
+    /// # tombstone.set_deleted(datetime!("2020-04-20T04:20:00Z"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -4472,7 +4472,7 @@ pub struct ApObject<Inner> {
     /// - Range: anyUri
     /// - Functional: true
     #[serde(skip_serializing_if = "Option::is_none")]
-    shares: Option<Url>,
+    shares: Option<IriString>,
 
     /// This is a list of all Like activities with this object as the object property, added as a
     /// side effect.
@@ -4484,7 +4484,7 @@ pub struct ApObject<Inner> {
     /// - Range: anyUri
     /// - Functional: true
     #[serde(skip_serializing_if = "Option::is_none")]
-    likes: Option<Url>,
+    likes: Option<IriString>,
 
     /// The source property is intended to convey some sort of source from which the content markup
     /// was derived, as a form of provenance, or to support future editing by clients.
@@ -4509,7 +4509,7 @@ pub struct ApObject<Inner> {
     /// - Range: anyUri
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    upload_media: Option<OneOrMany<Url>>,
+    upload_media: Option<OneOrMany<IriString>>,
 
     /// The ActivityStreams object being extended
     #[serde(flatten)]
@@ -4870,6 +4870,7 @@ impl<Inner> ApObject<Inner> {
         }
     }
 
+    #[allow(clippy::type_complexity)]
     /// Deconstruct the ApObject into its parts
     ///
     /// ```rust
@@ -4882,10 +4883,10 @@ impl<Inner> ApObject<Inner> {
     pub fn into_parts(
         self,
     ) -> (
-        Option<Url>,
-        Option<Url>,
+        Option<IriString>,
+        Option<IriString>,
         Option<AnyBase>,
-        Option<OneOrMany<Url>>,
+        Option<OneOrMany<IriString>>,
         Inner,
     ) {
         (

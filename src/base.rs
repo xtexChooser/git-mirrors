@@ -8,12 +8,12 @@
 //!     object::Video,
 //!     prelude::*,
 //!     security,
-//!     uri,
+//!     iri,
 //! };
 //! let mut video = Video::new();
 //!
 //! video
-//!     .set_id(uri!("https://example.com"))
+//!     .set_id(iri!("https://example.com"))
 //!     .set_context(context())
 //!     .add_context(security())
 //!     .set_name("Hello");
@@ -29,13 +29,12 @@
 //! ```
 use crate::{
     either::Either,
-    error::DomainError,
     markers,
     primitives::{AnyString, MimeMediaType, OneOrMany},
     unparsed::{Unparsed, UnparsedMut},
 };
+use iri_string::types::IriString;
 use mime::Mime;
-use url::Url;
 
 /// Implements conversion between `Base<Kind>` and other ActivityStreams objects defined in this
 /// crate
@@ -246,34 +245,6 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
         self
     }
 
-    /// Fetch the id for the current object, checking it against the provided domain
-    ///
-    /// ```rust
-    /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{object::Video, uri};
-    /// # let mut video = Video::new();
-    /// # video.set_id(uri!("https://example.com"));
-    /// use activitystreams::prelude::*;
-    ///
-    /// assert_eq!(video.id("example.com")?, Some(&uri!("https://example.com")));
-    /// # Ok(())
-    /// # }
-    /// ```
-    fn id<'a>(&'a self, domain: &str) -> Result<Option<&'a Url>, DomainError>
-    where
-        Kind: 'a,
-    {
-        if let Some(unchecked) = self.id_unchecked() {
-            if unchecked.domain() != Some(domain) {
-                return Err(DomainError);
-            }
-
-            return Ok(Some(unchecked));
-        }
-
-        Ok(None)
-    }
-
     /// Fetch the id for the current object
     ///
     /// ```rust
@@ -282,11 +253,11 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     /// #
     /// use activitystreams::prelude::*;
     ///
-    /// if let Some(id) = video.id_unchecked() {
+    /// if let Some(id) = video.id() {
     ///     println!("{:?}", id);
     /// }
     /// ```
-    fn id_unchecked<'a>(&'a self) -> Option<&'a Url>
+    fn id<'a>(&'a self) -> Option<&'a IriString>
     where
         Kind: 'a,
     {
@@ -302,11 +273,10 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     /// use activitystreams::prelude::*;
     ///
     /// if let Some(id) = video.id_mut() {
-    ///     id.set_path("/actor");
     ///     println!("{:?}", id);
     /// }
     /// ```
-    fn id_mut<'a>(&'a mut self) -> Option<&'a mut Url>
+    fn id_mut<'a>(&'a mut self) -> Option<&'a mut IriString>
     where
         Kind: 'a,
     {
@@ -317,16 +287,16 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// use activitystreams::{object::Video, prelude::*, uri};
+    /// use activitystreams::{object::Video, prelude::*, iri};
     ///
     /// let video: Video = serde_json::from_str(r#"{"type":"Video","id":"https://example.com"}"#)?;
     ///
-    /// assert!(video.is_id(&uri!("https://example.com")));
+    /// assert!(video.is_id(&iri!("https://example.com")));
     /// # Ok(())
     /// # }
     /// ```
-    fn is_id(&self, id: &Url) -> bool {
-        self.id_unchecked() == Some(id)
+    fn is_id(&self, id: &IriString) -> bool {
+        self.id() == Some(id)
     }
 
     /// Set the id for the current object
@@ -338,13 +308,13 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     /// # use activitystreams::object::Video;
     /// # let mut video = Video::new();
     /// #
-    /// use activitystreams::{prelude::*, uri};
+    /// use activitystreams::{prelude::*, iri};
     ///
-    /// video.set_id(uri!("https://example.com"));
+    /// video.set_id(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
-    fn set_id(&mut self, id: Url) -> &mut Self {
+    fn set_id(&mut self, id: IriString) -> &mut Self {
         self.base_mut().id = Some(id);
         self
     }
@@ -361,7 +331,7 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     ///     println!("{:?}", id);
     /// }
     /// ```
-    fn take_id(&mut self) -> Option<Url> {
+    fn take_id(&mut self) -> Option<IriString> {
         self.base_mut().id.take()
     }
 
@@ -374,9 +344,9 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     /// #
     /// use activitystreams::prelude::*;
     ///
-    /// assert!(video.id_unchecked().is_some());
+    /// assert!(video.id().is_some());
     /// video.delete_id();
-    /// assert!(video.id_unchecked().is_none());
+    /// assert!(video.id().is_none());
     /// ```
     fn delete_id(&mut self) -> &mut Self {
         self.base_mut().id = None;
@@ -699,10 +669,10 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
-    /// video.set_preview(uri!("https://example.com"));
+    /// video.set_preview(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -721,12 +691,12 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video.set_many_previews(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -748,12 +718,12 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
     ///
     /// video
-    ///     .add_preview(uri!("https://example.com/one"))
-    ///     .add_preview(uri!("https://example.com/two"));
+    ///     .add_preview(iri!("https://example.com/one"))
+    ///     .add_preview(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -792,9 +762,9 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{object::Video, uri};
+    /// # use activitystreams::{object::Video, iri};
     /// # let mut video = Video::new();
-    /// # video.set_preview(uri!("https://example.com"));
+    /// # video.set_preview(iri!("https://example.com"));
     /// #
     /// use activitystreams::prelude::*;
     ///
@@ -812,7 +782,7 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
 
 #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 #[serde(transparent)]
-struct IdOrBase(Either<Url, Box<Base<serde_json::Value>>>);
+struct IdOrBase(Either<IriString, Box<Base<serde_json::Value>>>);
 
 /// A type that can represent Any ActivityStreams type
 ///
@@ -858,7 +828,7 @@ pub struct Base<Kind> {
     /// When processing Activity Streams 1.0 documents and converting those to 2.0, implementations
     /// ought to treat id as an alias for the JSON-LD @id key word[.]
     #[serde(skip_serializing_if = "Option::is_none")]
-    id: Option<Url>,
+    id: Option<IriString>,
 
     /// The `type` field
     ///
@@ -1162,12 +1132,12 @@ impl AnyBase {
         Ok(Base::retract(extended)?.into_generic()?.into())
     }
 
-    /// Check if this object is a Url
+    /// Check if this object is a IriString
     ///
     /// ```rust
-    /// # use activitystreams::{base::AnyBase, uri};
+    /// # use activitystreams::{base::AnyBase, iri};
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// let any_base = AnyBase::from_xsd_any_uri(uri!("https://example.com"));
+    /// let any_base = AnyBase::from_xsd_any_uri(iri!("https://example.com"));
     /// assert!(any_base.is_xsd_any_uri());
     /// # Ok(())
     /// # }
@@ -1217,9 +1187,9 @@ impl AnyBase {
     /// #### Get the ID from the nested video
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{object::Video, base::AnyBase, prelude::*, uri};
+    /// # use activitystreams::{object::Video, base::AnyBase, prelude::*, iri};
     /// # let mut video = Video::new();
-    /// let id = uri!("https://example.com");
+    /// let id = iri!("https://example.com");
     ///
     /// video.set_id(id.clone());
     ///
@@ -1232,15 +1202,15 @@ impl AnyBase {
     /// #### Get the ID from the AnyBase
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{base::AnyBase, prelude::*, uri};
-    /// let id = uri!("https://example.com");
+    /// # use activitystreams::{base::AnyBase, prelude::*, iri};
+    /// let id = iri!("https://example.com");
     ///
     /// let any_base = AnyBase::from_xsd_any_uri(id.clone());
     /// assert!(any_base.id().unwrap() == &id);
     /// # Ok(())
     /// # }
     /// ```
-    pub fn id(&self) -> Option<&Url> {
+    pub fn id(&self) -> Option<&IriString> {
         self.as_xsd_any_uri()
             .or_else(|| self.as_base().and_then(|base| base.id.as_ref()))
     }
@@ -1250,19 +1220,19 @@ impl AnyBase {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// # use activitystreams::{
-    /// #   object::{kind::VideoType, Video}, base::AnyBase, prelude::*, uri
+    /// #   object::{kind::VideoType, Video}, base::AnyBase, prelude::*, iri,
     /// # };
     /// # let mut video = Video::new();
     /// #
-    /// video.set_id(uri!("https://example.com"));
+    /// video.set_id(iri!("https://example.com"));
     ///
     /// let any_base = AnyBase::from_extended(video)?;
     ///
-    /// assert!(any_base.is_id(&uri!("https://example.com")));
+    /// assert!(any_base.is_id(&iri!("https://example.com")));
     /// # Ok(())
     /// # }
     /// ```
-    pub fn is_id(&self, id: &Url) -> bool {
+    pub fn is_id(&self, id: &IriString) -> bool {
         self.id() == Some(id)
     }
 
@@ -1340,20 +1310,20 @@ impl AnyBase {
         self.kind_str() == Some(kind)
     }
 
-    /// Get the object as a Url
+    /// Get the object as a IriString
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{base::AnyBase, uri};
+    /// # use activitystreams::{base::AnyBase, iri};
     /// #
-    /// let any_base = AnyBase::from_xsd_any_uri(uri!("https://example.com"));
+    /// let any_base = AnyBase::from_xsd_any_uri(iri!("https://example.com"));
     ///
     /// assert!(any_base.as_xsd_any_uri().is_some());
     /// #
     /// # Ok(())
     /// # }
     /// ```
-    pub fn as_xsd_any_uri(&self) -> Option<&Url> {
+    pub fn as_xsd_any_uri(&self) -> Option<&IriString> {
         self.0.as_ref().left().and_then(|l| l.as_xsd_any_uri())
     }
 
@@ -1388,20 +1358,20 @@ impl AnyBase {
         self.0.as_ref().left().and_then(|l| l.as_base())
     }
 
-    /// Take the Url from the Object
+    /// Take the IriString from the Object
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{base::AnyBase, uri};
+    /// # use activitystreams::{base::AnyBase, iri};
     /// #
-    /// let any_base = AnyBase::from_xsd_any_uri(uri!("https://example.com"));
+    /// let any_base = AnyBase::from_xsd_any_uri(iri!("https://example.com"));
     ///
     /// assert!(any_base.take_xsd_any_uri().is_some());
     /// #
     /// # Ok(())
     /// # }
     /// ```
-    pub fn take_xsd_any_uri(self) -> Option<Url> {
+    pub fn take_xsd_any_uri(self) -> Option<IriString> {
         self.0.left().and_then(|l| l.id())
     }
 
@@ -1436,22 +1406,22 @@ impl AnyBase {
         self.0.left().and_then(|l| l.base())
     }
 
-    /// Replace the object with the provided Url
+    /// Replace the object with the provided IriString
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{base::AnyBase, uri};
+    /// # use activitystreams::{base::AnyBase, iri};
     /// #
     /// let mut any_base = AnyBase::from_xsd_string("hi".into());
     ///
-    /// any_base.set_xsd_any_uri(uri!("https://example.com"));
+    /// any_base.set_xsd_any_uri(iri!("https://example.com"));
     ///
     /// assert!(any_base.take_xsd_any_uri().is_some());
     /// #
     /// # Ok(())
     /// # }
     /// ```
-    pub fn set_xsd_any_uri(&mut self, id: Url) {
+    pub fn set_xsd_any_uri(&mut self, id: IriString) {
         self.0 = Either::Left(IdOrBase::from_xsd_any_uri(id));
     }
 
@@ -1459,9 +1429,9 @@ impl AnyBase {
     ///
     /// ```
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{base::AnyBase, uri};
+    /// # use activitystreams::{base::AnyBase, iri};
     /// #
-    /// let mut any_base = AnyBase::from_xsd_any_uri(uri!("https://example.com"));
+    /// let mut any_base = AnyBase::from_xsd_any_uri(iri!("https://example.com"));
     ///
     /// any_base.set_xsd_string("hi");
     ///
@@ -1497,16 +1467,16 @@ impl AnyBase {
         self.0 = Either::Left(IdOrBase::from_base(base));
     }
 
-    /// Create an AnyBase from a Url
+    /// Create an AnyBase from a IriString
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// use activitystreams::{base::AnyBase, uri};
-    /// let any_base = AnyBase::from_xsd_any_uri(uri!("https://example.com"));
+    /// use activitystreams::{base::AnyBase, iri};
+    /// let any_base = AnyBase::from_xsd_any_uri(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
-    pub fn from_xsd_any_uri(id: Url) -> Self {
+    pub fn from_xsd_any_uri(id: IriString) -> Self {
         AnyBase(Either::Left(IdOrBase::from_xsd_any_uri(id)))
     }
 
@@ -1539,7 +1509,7 @@ impl AnyBase {
 }
 
 impl IdOrBase {
-    fn as_xsd_any_uri(&self) -> Option<&Url> {
+    fn as_xsd_any_uri(&self) -> Option<&IriString> {
         self.0.as_ref().left()
     }
 
@@ -1547,7 +1517,7 @@ impl IdOrBase {
         self.0.as_ref().right().map(|b| b.as_ref())
     }
 
-    fn id(self) -> Option<Url> {
+    fn id(self) -> Option<IriString> {
         self.0.left()
     }
 
@@ -1555,7 +1525,7 @@ impl IdOrBase {
         self.0.right().map(|b| *b)
     }
 
-    fn from_xsd_any_uri(id: Url) -> Self {
+    fn from_xsd_any_uri(id: IriString) -> Self {
         IdOrBase(Either::Left(id))
     }
 
@@ -1569,9 +1539,9 @@ impl OneOrMany<AnyBase> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{base::{Base, BaseExt}, primitives::OneOrMany, uri};
+    /// # use activitystreams::{base::{Base, BaseExt}, primitives::OneOrMany, iri};
     /// # let mut base = Base::<String>::new();
-    /// # let id = uri!("https://example.com");
+    /// # let id = iri!("https://example.com");
     /// # base.set_id(id.clone());
     /// # let base = OneOrMany::from_base(base.into_generic()?.into());
     /// #
@@ -1579,7 +1549,7 @@ impl OneOrMany<AnyBase> {
     /// # Ok(())
     /// # }
     /// ```
-    pub fn as_single_id(&self) -> Option<&Url> {
+    pub fn as_single_id(&self) -> Option<&IriString> {
         self.as_one().and_then(|one| one.id())
     }
 
@@ -1587,9 +1557,9 @@ impl OneOrMany<AnyBase> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{base::{Base, BaseExt}, primitives::OneOrMany, uri};
+    /// # use activitystreams::{base::{Base, BaseExt}, primitives::OneOrMany, iri};
     /// # let mut base = Base::<String>::new();
-    /// # let id = uri!("https://example.com");
+    /// # let id = iri!("https://example.com");
     /// # base.set_id(id.clone());
     /// # let base = OneOrMany::from_base(base.into_generic()?.into());
     /// #
@@ -1597,7 +1567,7 @@ impl OneOrMany<AnyBase> {
     /// # Ok(())
     /// # }
     /// ```
-    pub fn is_single_id(&self, id: &Url) -> bool {
+    pub fn is_single_id(&self, id: &IriString) -> bool {
         self.as_single_id() == Some(id)
     }
 
@@ -1655,20 +1625,20 @@ impl OneOrMany<AnyBase> {
         self.as_single_kind_str() == Some(kind)
     }
 
-    /// Get a single Url from the object, if that is what is contained
+    /// Get a single IriString from the object, if that is what is contained
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{primitives::OneOrMany, uri};
+    /// # use activitystreams::{primitives::OneOrMany, iri};
     /// #
-    /// let one = OneOrMany::from_xsd_any_uri(uri!("https://example.com"));
+    /// let one = OneOrMany::from_xsd_any_uri(iri!("https://example.com"));
     ///
     /// assert!(one.as_single_xsd_any_uri().is_some());
     /// #
     /// # Ok(())
     /// # }
     /// ```
-    pub fn as_single_xsd_any_uri(&self) -> Option<&Url> {
+    pub fn as_single_xsd_any_uri(&self) -> Option<&IriString> {
         self.as_one().and_then(|inner| inner.as_xsd_any_uri())
     }
 
@@ -1699,20 +1669,20 @@ impl OneOrMany<AnyBase> {
         self.as_one().and_then(|inner| inner.as_base())
     }
 
-    /// Take a single Url from the object, if that is what is contained
+    /// Take a single IriString from the object, if that is what is contained
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{primitives::OneOrMany, uri};
+    /// # use activitystreams::{primitives::OneOrMany, iri};
     /// #
-    /// let one = OneOrMany::from_xsd_any_uri(uri!("https://example.com"));
+    /// let one = OneOrMany::from_xsd_any_uri(iri!("https://example.com"));
     ///
     /// assert!(one.single_xsd_any_uri().is_some());
     /// #
     /// # Ok(())
     /// # }
     /// ```
-    pub fn single_xsd_any_uri(self) -> Option<Url> {
+    pub fn single_xsd_any_uri(self) -> Option<IriString> {
         self.one().and_then(|inner| inner.take_xsd_any_uri())
     }
 
@@ -1743,17 +1713,17 @@ impl OneOrMany<AnyBase> {
         self.one().and_then(|inner| inner.take_base())
     }
 
-    /// Create a `OneOrMany<AnyBase>` from a Url
+    /// Create a `OneOrMany<AnyBase>` from a IriString
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// use activitystreams::{primitives::OneOrMany, uri};
+    /// use activitystreams::{primitives::OneOrMany, iri};
     ///
-    /// let one = OneOrMany::from_xsd_any_uri(uri!("https://example.com"));
+    /// let one = OneOrMany::from_xsd_any_uri(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
-    pub fn from_xsd_any_uri(id: Url) -> Self {
+    pub fn from_xsd_any_uri(id: IriString) -> Self {
         OneOrMany(Either::Left([AnyBase::from_xsd_any_uri(id)]))
     }
 
@@ -1782,7 +1752,7 @@ impl OneOrMany<AnyBase> {
         OneOrMany(Either::Left([AnyBase::from_base(base)]))
     }
 
-    /// Overwrite the current object with a Url
+    /// Overwrite the current object with a IriString
     ///
     /// ```rust
     /// # use activitystreams::{base::Base, context, primitives::OneOrMany};
@@ -1794,7 +1764,7 @@ impl OneOrMany<AnyBase> {
     ///
     /// assert!(one.as_single_xsd_any_uri().is_some());
     /// ```
-    pub fn set_single_xsd_any_uri(&mut self, id: Url) -> &mut Self {
+    pub fn set_single_xsd_any_uri(&mut self, id: IriString) -> &mut Self {
         self.0 = Either::Left([AnyBase::from_xsd_any_uri(id)]);
         self
     }
@@ -1833,7 +1803,7 @@ impl OneOrMany<AnyBase> {
         self
     }
 
-    /// Append a Url to the current object
+    /// Append a IriString to the current object
     ///
     /// ```rust
     /// use activitystreams::{base::AnyBase, context, primitives::OneOrMany, security};
@@ -1843,7 +1813,7 @@ impl OneOrMany<AnyBase> {
     /// many.add_xsd_any_uri(security())
     ///     .add_xsd_any_uri(context());
     /// ```
-    pub fn add_xsd_any_uri(&mut self, id: Url) -> &mut Self {
+    pub fn add_xsd_any_uri(&mut self, id: IriString) -> &mut Self {
         self.add(AnyBase::from_xsd_any_uri(id))
     }
 
@@ -1922,8 +1892,8 @@ impl From<Base<serde_json::Value>> for AnyBase {
     }
 }
 
-impl From<Url> for AnyBase {
-    fn from(id: Url) -> Self {
+impl From<IriString> for AnyBase {
+    fn from(id: IriString) -> Self {
         Self::from_xsd_any_uri(id)
     }
 }
@@ -1940,8 +1910,8 @@ impl From<Base<serde_json::Value>> for OneOrMany<AnyBase> {
     }
 }
 
-impl From<Url> for OneOrMany<AnyBase> {
-    fn from(xsd_any_uri: Url) -> Self {
+impl From<IriString> for OneOrMany<AnyBase> {
+    fn from(xsd_any_uri: IriString) -> Self {
         Self::from_xsd_any_uri(xsd_any_uri)
     }
 }

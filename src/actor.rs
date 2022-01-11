@@ -5,31 +5,30 @@
 //! use activitystreams::{
 //!     actor::{ApActor, Person},
 //!     prelude::*,
-//!     uri,
+//!     iri,
 //! };
 //!
 //! let mut person = ApActor::new(
-//!     uri!("https://example.com/actor/inbox"),
+//!     iri!("https://example.com/actor/inbox"),
 //!     Person::new(),
 //! );
 //!
 //! person
-//!     .set_outbox(uri!("https://example.com/actor/outbox"))
-//!     .set_following(uri!("https://example.com/actor/following"))
-//!     .set_followers(uri!("https://example.com/actor/followers"));
+//!     .set_outbox(iri!("https://example.com/actor/outbox"))
+//!     .set_following(iri!("https://example.com/actor/following"))
+//!     .set_followers(iri!("https://example.com/actor/followers"));
 //! #
 //! # Ok(())
 //! # }
 //! ```
 use crate::{
-    base::{AsBase, Base, BaseExt, Extends},
-    error::DomainError,
+    base::{AsBase, Base, Extends},
     markers,
     object::{ApObject, AsApObject, AsObject, Object},
     primitives::OneOrMany,
     unparsed::{Unparsed, UnparsedMut, UnparsedMutExt},
 };
-use url::Url;
+use iri_string::types::IriString;
 
 pub use activitystreams_kinds::actor as kind;
 
@@ -52,36 +51,6 @@ pub trait AsApActor<Inner>: markers::Actor {
 ///
 /// Documentation for the fields related to these methods can be found on the `ApActor` struct
 pub trait ApActorExt<Inner>: AsApActor<Inner> {
-    /// Fetch the inbox for the current actor, erroring if the inbox's domain does not match the
-    /// ID's domain
-    ///
-    /// ```
-    /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{actor::{ApActor, Person}, context};
-    /// # let mut person = ApActor::new(context(), Person::new());
-    /// # person.set_id(context());
-    /// use activitystreams::prelude::*;
-    ///
-    /// let inbox = person.inbox()?;
-    /// println!("{:?}", inbox);
-    /// # Ok(())
-    /// # }
-    /// ```
-    fn inbox<'a, Kind>(&'a self) -> Result<&'a Url, DomainError>
-    where
-        Self: BaseExt<Kind> + 'a,
-        Inner: 'a,
-        Kind: 'a,
-    {
-        let unchecked = self.inbox_unchecked();
-
-        if unchecked.domain() != self.id_unchecked().and_then(|id| id.domain()) {
-            return Err(DomainError);
-        }
-
-        Ok(unchecked)
-    }
-
     /// Fetch the inbox for the current actor
     ///
     /// ```rust
@@ -89,9 +58,9 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # let mut person = ApActor::new(context(), Person::new());
     /// use activitystreams::prelude::*;
     ///
-    /// let inbox_ref = person.inbox_unchecked();
+    /// let inbox_ref = person.inbox();
     /// ```
-    fn inbox_unchecked<'a>(&'a self) -> &'a Url
+    fn inbox<'a>(&'a self) -> &'a IriString
     where
         Inner: 'a,
     {
@@ -106,9 +75,8 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// use activitystreams::prelude::*;
     ///
     /// let inbox_mut = person.inbox_mut();
-    /// inbox_mut.set_path("/inbox");
     /// ```
-    fn inbox_mut<'a>(&'a mut self) -> &'a mut Url
+    fn inbox_mut<'a>(&'a mut self) -> &'a mut IriString
     where
         Inner: 'a,
     {
@@ -119,47 +87,17 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{actor::{ApActor, Person}, context, uri};
+    /// # use activitystreams::{actor::{ApActor, Person}, context, iri};
     /// # let mut person = ApActor::new(context(), Person::new());
     /// use activitystreams::prelude::*;
     ///
-    /// person.set_inbox(uri!("https://example.com/inbox"));
+    /// person.set_inbox(iri!("https://example.com/inbox"));
     /// # Ok(())
     /// # }
     /// ```
-    fn set_inbox(&mut self, inbox: Url) -> &mut Self {
+    fn set_inbox(&mut self, inbox: IriString) -> &mut Self {
         self.ap_actor_mut().inbox = inbox;
         self
-    }
-
-    /// Fetch the outbox for the current user, erroring if the oubox's domain does not match the
-    /// ID's domain
-    ///
-    /// ```rust
-    /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{actor::{ApActor, Person}, context};
-    /// # let mut person = ApActor::new(context(), Person::new());
-    /// use activitystreams::prelude::*;
-    ///
-    /// let outbox_ref = person.outbox()?;
-    /// # Ok(())
-    /// # }
-    /// ```
-    fn outbox<'a, Kind>(&'a self) -> Result<Option<&'a Url>, DomainError>
-    where
-        Self: BaseExt<Kind>,
-        Inner: 'a,
-        Kind: 'a,
-    {
-        if let Some(unchecked) = self.outbox_unchecked() {
-            if unchecked.domain() != self.id_unchecked().and_then(|id| id.domain()) {
-                return Err(DomainError);
-            }
-
-            return Ok(Some(unchecked));
-        }
-
-        Ok(None)
     }
 
     /// Fetch the outbox for the current actor
@@ -169,9 +107,9 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # let mut person = ApActor::new(context(), Person::new());
     /// use activitystreams::prelude::*;
     ///
-    /// let outbox_ref = person.outbox_unchecked();
+    /// let outbox_ref = person.outbox();
     /// ```
-    fn outbox_unchecked<'a>(&'a self) -> Option<&'a Url>
+    fn outbox<'a>(&'a self) -> Option<&'a IriString>
     where
         Inner: 'a,
     {
@@ -186,11 +124,10 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// use activitystreams::prelude::*;
     ///
     /// if let Some(outbox) = person.outbox_mut() {
-    ///     outbox.set_path("/outbox");
     ///     println!("{:?}", outbox);
     /// }
     /// ```
-    fn outbox_mut<'a>(&'a mut self) -> Option<&'a mut Url>
+    fn outbox_mut<'a>(&'a mut self) -> Option<&'a mut IriString>
     where
         Inner: 'a,
     {
@@ -201,15 +138,15 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{actor::{ApActor, Person}, context, uri};
+    /// # use activitystreams::{actor::{ApActor, Person}, context, iri};
     /// # let mut person = ApActor::new(context(), Person::new());
     /// use activitystreams::prelude::*;
     ///
-    /// person.set_outbox(uri!("https://example.com/outbox"));
+    /// person.set_outbox(iri!("https://example.com/outbox"));
     /// # Ok(())
     /// # }
     /// ```
-    fn set_outbox(&mut self, outbox: Url) -> &mut Self {
+    fn set_outbox(&mut self, outbox: IriString) -> &mut Self {
         self.ap_actor_mut().outbox = Some(outbox);
         self
     }
@@ -225,7 +162,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///     println!("{:?}", outbox);
     /// }
     /// ```
-    fn take_outbox(&mut self) -> Option<Url> {
+    fn take_outbox(&mut self) -> Option<IriString> {
         self.ap_actor_mut().outbox.take()
     }
 
@@ -233,52 +170,20 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{actor::{ApActor, Person}, context, uri};
+    /// # use activitystreams::{actor::{ApActor, Person}, context, iri};
     /// # let mut person = ApActor::new(context(), Person::new());
-    /// # person.set_outbox(uri!("https://example.com/outbox"));
+    /// # person.set_outbox(iri!("https://example.com/outbox"));
     /// use activitystreams::prelude::*;
     ///
-    /// assert!(person.outbox_unchecked().is_some());
+    /// assert!(person.outbox().is_some());
     /// person.delete_outbox();
-    /// assert!(person.outbox_unchecked().is_none());
+    /// assert!(person.outbox().is_none());
     /// # Ok(())
     /// # }
     /// ```
     fn delete_outbox(&mut self) -> &mut Self {
         self.ap_actor_mut().outbox = None;
         self
-    }
-
-    /// Fetch the following link for the current user, erroring if the following link's domain does
-    /// not match the ID's domain
-    ///
-    /// ```rust
-    /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{actor::{ApActor, Person}, context};
-    /// # let mut person = ApActor::new(context(), Person::new());
-    /// use activitystreams::prelude::*;
-    ///
-    /// if let Some(following) = person.following()? {
-    ///     println!("{:?}", following);
-    /// }
-    /// # Ok(())
-    /// # }
-    /// ```
-    fn following<'a, Kind>(&'a self) -> Result<Option<&'a Url>, DomainError>
-    where
-        Self: BaseExt<Kind>,
-        Inner: 'a,
-        Kind: 'a,
-    {
-        if let Some(unchecked) = self.following_unchecked() {
-            if unchecked.domain() != self.id_unchecked().and_then(|id| id.domain()) {
-                return Err(DomainError);
-            }
-
-            return Ok(Some(unchecked));
-        }
-
-        Ok(None)
     }
 
     /// Fetch the following link for the current actor
@@ -288,11 +193,11 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # let mut person = ApActor::new(context(), Person::new());
     /// use activitystreams::prelude::*;
     ///
-    /// if let Some(following) = person.following_unchecked() {
+    /// if let Some(following) = person.following() {
     ///     println!("{:?}", following);
     /// }
     /// ```
-    fn following_unchecked<'a>(&'a self) -> Option<&'a Url>
+    fn following<'a>(&'a self) -> Option<&'a IriString>
     where
         Inner: 'a,
     {
@@ -307,11 +212,10 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// use activitystreams::prelude::*;
     ///
     /// if let Some(following) = person.following_mut() {
-    ///     following.set_path("/following");
     ///     println!("{:?}", following);
     /// }
     /// ```
-    fn following_mut<'a>(&'a mut self) -> Option<&'a mut Url>
+    fn following_mut<'a>(&'a mut self) -> Option<&'a mut IriString>
     where
         Inner: 'a,
     {
@@ -322,15 +226,15 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{actor::{ApActor, Person}, context, uri};
+    /// # use activitystreams::{actor::{ApActor, Person}, context, iri};
     /// # let mut person = ApActor::new(context(), Person::new());
     /// use activitystreams::prelude::*;
     ///
-    /// person.set_following(uri!("https://example.com/following"));
+    /// person.set_following(iri!("https://example.com/following"));
     /// # Ok(())
     /// # }
     /// ```
-    fn set_following(&mut self, following: Url) -> &mut Self {
+    fn set_following(&mut self, following: IriString) -> &mut Self {
         self.ap_actor_mut().following = Some(following);
         self
     }
@@ -346,7 +250,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///     println!("{:?}", following);
     /// }
     /// ```
-    fn take_following(&mut self) -> Option<Url> {
+    fn take_following(&mut self) -> Option<IriString> {
         self.ap_actor_mut().following.take()
     }
 
@@ -354,52 +258,20 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{actor::{ApActor, Person}, context, uri};
+    /// # use activitystreams::{actor::{ApActor, Person}, context, iri};
     /// # let mut person = ApActor::new(context(), Person::new());
-    /// # person.set_following(uri!("https://example.com/following"));
+    /// # person.set_following(iri!("https://example.com/following"));
     /// use activitystreams::prelude::*;
     ///
-    /// assert!(person.following_unchecked().is_some());
+    /// assert!(person.following().is_some());
     /// person.delete_following();
-    /// assert!(person.following_unchecked().is_none());
+    /// assert!(person.following().is_none());
     /// # Ok(())
     /// # }
     /// ```
     fn delete_following(&mut self) -> &mut Self {
         self.ap_actor_mut().following = None;
         self
-    }
-
-    /// Fetch the followers link for the current actor, erroring if the followers link's domain
-    /// does not match the ID's domain
-    ///
-    /// ```rust
-    /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{actor::{ApActor, Person}, context};
-    /// # let mut person = ApActor::new(context(), Person::new());
-    /// use activitystreams::prelude::*;
-    ///
-    /// if let Some(followers) = person.followers()? {
-    ///     println!("{:?}", followers);
-    /// }
-    /// # Ok(())
-    /// # }
-    /// ```
-    fn followers<'a, Kind>(&'a self) -> Result<Option<&'a Url>, DomainError>
-    where
-        Self: BaseExt<Kind>,
-        Inner: 'a,
-        Kind: 'a,
-    {
-        if let Some(unchecked) = self.followers_unchecked() {
-            if unchecked.domain() != self.id_unchecked().and_then(|id| id.domain()) {
-                return Err(DomainError);
-            }
-
-            return Ok(Some(unchecked));
-        }
-
-        Ok(None)
     }
 
     /// Fetch the followers link for the current actor
@@ -409,11 +281,11 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # let mut person = ApActor::new(context(), Person::new());
     /// use activitystreams::prelude::*;
     ///
-    /// if let Some(followers) = person.followers_unchecked() {
+    /// if let Some(followers) = person.followers() {
     ///     println!("{:?}", followers);
     /// }
     /// ```
-    fn followers_unchecked<'a>(&'a self) -> Option<&'a Url>
+    fn followers<'a>(&'a self) -> Option<&'a IriString>
     where
         Inner: 'a,
     {
@@ -428,11 +300,10 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// use activitystreams::prelude::*;
     ///
     /// if let Some(followers) = person.followers_mut() {
-    ///     followers.set_path("/followers");
     ///     println!("{:?}", followers);
     /// }
     /// ```
-    fn followers_mut<'a>(&'a mut self) -> Option<&'a mut Url>
+    fn followers_mut<'a>(&'a mut self) -> Option<&'a mut IriString>
     where
         Inner: 'a,
     {
@@ -443,15 +314,15 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{actor::{ApActor, Person}, context, uri};
+    /// # use activitystreams::{actor::{ApActor, Person}, context, iri};
     /// # let mut person = ApActor::new(context(), Person::new());
     /// use activitystreams::prelude::*;
     ///
-    /// person.set_followers(uri!("https://example.com/followers"));
+    /// person.set_followers(iri!("https://example.com/followers"));
     /// # Ok(())
     /// # }
     /// ```
-    fn set_followers(&mut self, followers: Url) -> &mut Self {
+    fn set_followers(&mut self, followers: IriString) -> &mut Self {
         self.ap_actor_mut().followers = Some(followers);
         self
     }
@@ -467,7 +338,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///     println!("{:?}", followers);
     /// }
     /// ```
-    fn take_followers(&mut self) -> Option<Url> {
+    fn take_followers(&mut self) -> Option<IriString> {
         self.ap_actor_mut().followers.take()
     }
 
@@ -475,52 +346,20 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{actor::{ApActor, Person}, context, uri};
+    /// # use activitystreams::{actor::{ApActor, Person}, context, iri};
     /// # let mut person = ApActor::new(context(), Person::new());
-    /// # person.set_followers(uri!("https://example.com/followers"));
+    /// # person.set_followers(iri!("https://example.com/followers"));
     /// use activitystreams::prelude::*;
     ///
-    /// assert!(person.followers_unchecked().is_some());
+    /// assert!(person.followers().is_some());
     /// person.delete_followers();
-    /// assert!(person.followers_unchecked().is_none());
+    /// assert!(person.followers().is_none());
     /// # Ok(())
     /// # }
     /// ```
     fn delete_followers(&mut self) -> &mut Self {
         self.ap_actor_mut().followers = None;
         self
-    }
-
-    /// Fetch the liked link for the current actor, erroring if the liked link's domain does not
-    /// match the ID's domain
-    ///
-    /// ```rust
-    /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{actor::{ApActor, Person}, context};
-    /// # let mut person = ApActor::new(context(), Person::new());
-    /// use activitystreams::prelude::*;
-    ///
-    /// if let Some(liked) = person.liked()? {
-    ///     println!("{:?}", liked);
-    /// }
-    /// # Ok(())
-    /// # }
-    /// ```
-    fn liked<'a, Kind>(&'a self) -> Result<Option<&'a Url>, DomainError>
-    where
-        Self: BaseExt<Kind>,
-        Inner: 'a,
-        Kind: 'a,
-    {
-        if let Some(unchecked) = self.liked_unchecked() {
-            if unchecked.domain() != self.id_unchecked().and_then(|id| id.domain()) {
-                return Err(DomainError);
-            }
-
-            return Ok(Some(unchecked));
-        }
-
-        Ok(None)
     }
 
     /// Fetch the liked link for the current actor
@@ -530,11 +369,11 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # let mut person = ApActor::new(context(), Person::new());
     /// use activitystreams::prelude::*;
     ///
-    /// if let Some(liked) = person.liked_unchecked() {
+    /// if let Some(liked) = person.liked() {
     ///     println!("{:?}", liked);
     /// }
     /// ```
-    fn liked_unchecked<'a>(&'a self) -> Option<&'a Url>
+    fn liked<'a>(&'a self) -> Option<&'a IriString>
     where
         Inner: 'a,
     {
@@ -549,11 +388,10 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// use activitystreams::prelude::*;
     ///
     /// if let Some(liked) = person.liked_mut() {
-    ///     liked.set_path("/liked");
     ///     println!("{:?}", liked);
     /// }
     /// ```
-    fn liked_mut<'a>(&'a mut self) -> Option<&'a mut Url>
+    fn liked_mut<'a>(&'a mut self) -> Option<&'a mut IriString>
     where
         Inner: 'a,
     {
@@ -564,15 +402,15 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{actor::{ApActor, Person}, context, uri};
+    /// # use activitystreams::{actor::{ApActor, Person}, context, iri};
     /// # let mut person = ApActor::new(context(), Person::new());
     /// use activitystreams::prelude::*;
     ///
-    /// person.set_stream(uri!("https://example.com/liked"));
+    /// person.set_stream(iri!("https://example.com/liked"));
     /// # Ok(())
     /// # }
     /// ```
-    fn set_liked(&mut self, liked: Url) -> &mut Self {
+    fn set_liked(&mut self, liked: IriString) -> &mut Self {
         self.ap_actor_mut().liked = Some(liked);
         self
     }
@@ -588,7 +426,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///     println!("{:?}", liked);
     /// }
     /// ```
-    fn take_liked(&mut self) -> Option<Url> {
+    fn take_liked(&mut self) -> Option<IriString> {
         self.ap_actor_mut().liked.take()
     }
 
@@ -596,64 +434,20 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{actor::{ApActor, Person}, context, uri};
+    /// # use activitystreams::{actor::{ApActor, Person}, context, iri};
     /// # let mut person = ApActor::new(context(), Person::new());
-    /// # person.set_liked(uri!("https://example.com/liked"));
+    /// # person.set_liked(iri!("https://example.com/liked"));
     /// use activitystreams::prelude::*;
     ///
-    /// assert!(person.liked_unchecked().is_some());
+    /// assert!(person.liked().is_some());
     /// person.delete_liked();
-    /// assert!(person.liked_unchecked().is_none());
+    /// assert!(person.liked().is_none());
     /// # Ok(())
     /// # }
     /// ```
     fn delete_liked(&mut self) -> &mut Self {
         self.ap_actor_mut().liked = None;
         self
-    }
-
-    /// Fetch the streams links for the current actor, erroring if the streams links's domains do
-    /// not match the ID's domains
-    ///
-    /// ```rust
-    /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{actor::{ApActor, Person}, context};
-    /// # let mut person = ApActor::new(context(), Person::new());
-    /// # person.set_id(context()).add_stream(context()).add_stream(context());
-    /// use activitystreams::prelude::*;
-    ///
-    /// if let Some(streams) = person.streams()? {
-    ///     println!("{:?}", streams);
-    /// }
-    /// # Ok(())
-    /// # }
-    /// ```
-    fn streams<'a, Kind>(&'a self) -> Result<Option<OneOrMany<&'a Url>>, DomainError>
-    where
-        Self: BaseExt<Kind>,
-        Inner: 'a,
-        Kind: 'a,
-    {
-        if let Some(unchecked) = self.streams_unchecked() {
-            let domain_opt = self.id_unchecked().and_then(|id| id.domain());
-
-            let one = unchecked
-                .as_one()
-                .map(|url| url.domain() == domain_opt)
-                .unwrap_or(false);
-            let many = unchecked
-                .as_many()
-                .map(|urls| urls.iter().all(|url| url.domain() == domain_opt))
-                .unwrap_or(false);
-
-            if !one && !many {
-                return Err(DomainError);
-            }
-
-            return Ok(Some(unchecked));
-        }
-
-        Ok(None)
     }
 
     /// Fetch the streams links for the current actor
@@ -663,11 +457,11 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # let mut person = ApActor::new(context(), Person::new());
     /// use activitystreams::prelude::*;
     ///
-    /// if let Some(streams) = person.streams_unchecked() {
+    /// if let Some(streams) = person.streams() {
     ///     println!("{:?}", streams);
     /// }
     /// ```
-    fn streams_unchecked<'a>(&'a self) -> Option<OneOrMany<&'a Url>>
+    fn streams<'a>(&'a self) -> Option<OneOrMany<&'a IriString>>
     where
         Inner: 'a,
     {
@@ -682,16 +476,13 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// use activitystreams::prelude::*;
     ///
     /// if let Some(mut streams) = person.streams_mut() {
-    ///     streams.one_mut().map(|url| url.set_path("/streams"));
-    ///     streams.many_mut().map(|urls| {
-    ///         for url in urls.iter_mut() {
-    ///             url.set_path("/streams");
-    ///         }
-    ///     });
+    ///     for url in streams.iter_mut() {
+    ///         // whatever
+    ///     }
     ///     println!("{:?}", streams);
     /// }
     /// ```
-    fn streams_mut<'a>(&'a mut self) -> Option<OneOrMany<&'a mut Url>>
+    fn streams_mut<'a>(&'a mut self) -> Option<OneOrMany<&'a mut IriString>>
     where
         Inner: 'a,
     {
@@ -702,15 +493,15 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{actor::{ApActor, Person}, context, uri};
+    /// # use activitystreams::{actor::{ApActor, Person}, context, iri};
     /// # let mut person = ApActor::new(context(), Person::new());
     /// use activitystreams::prelude::*;
     ///
-    /// person.set_stream(uri!("https://example.com/streams"));
+    /// person.set_stream(iri!("https://example.com/streams"));
     /// # Ok(())
     /// # }
     /// ```
-    fn set_stream(&mut self, streams: Url) -> &mut Self {
+    fn set_stream(&mut self, streams: IriString) -> &mut Self {
         self.ap_actor_mut().streams = Some(streams.into());
         self
     }
@@ -719,13 +510,13 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{actor::{ApActor, Person}, context, uri};
+    /// # use activitystreams::{actor::{ApActor, Person}, context, iri};
     /// # let mut person = ApActor::new(context(), Person::new());
     /// use activitystreams::prelude::*;
     ///
     /// person.set_many_streams(vec![
-    ///     uri!("https://example.com/streams1"),
-    ///     uri!("https://example.com/streams2"),
+    ///     iri!("https://example.com/streams1"),
+    ///     iri!("https://example.com/streams2"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -733,9 +524,9 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     fn set_many_streams<I, U>(&mut self, items: I) -> &mut Self
     where
         I: IntoIterator<Item = U>,
-        U: Into<Url>,
+        U: Into<IriString>,
     {
-        let v: Vec<Url> = items.into_iter().map(|u| u.into()).collect();
+        let v: Vec<IriString> = items.into_iter().map(|u| u.into()).collect();
         self.ap_actor_mut().streams = Some(v.into());
         self
     }
@@ -744,17 +535,17 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{actor::{ApActor, Person}, context, uri};
+    /// # use activitystreams::{actor::{ApActor, Person}, context, iri};
     /// # let mut person = ApActor::new(context(), Person::new());
     /// use activitystreams::prelude::*;
     ///
     /// person
-    ///     .add_stream(uri!("https://example.com/streams1"))
-    ///     .add_stream(uri!("https://example.com/streams2"));
+    ///     .add_stream(iri!("https://example.com/streams1"))
+    ///     .add_stream(iri!("https://example.com/streams2"));
     /// # Ok(())
     /// # }
     /// ```
-    fn add_stream(&mut self, stream: Url) -> &mut Self {
+    fn add_stream(&mut self, stream: IriString) -> &mut Self {
         let v = match self.ap_actor_mut().streams.take() {
             Some(mut v) => {
                 v.add(stream);
@@ -777,7 +568,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///     println!("{:?}", streams);
     /// }
     /// ```
-    fn take_streams(&mut self) -> Option<OneOrMany<Url>> {
+    fn take_streams(&mut self) -> Option<OneOrMany<IriString>> {
         self.ap_actor_mut().streams.take()
     }
 
@@ -785,14 +576,14 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{actor::{ApActor, Person}, context, uri};
+    /// # use activitystreams::{actor::{ApActor, Person}, context, iri};
     /// # let mut person = ApActor::new(context(), Person::new());
-    /// # person.set_stream(uri!("https://example.com/streams"));
+    /// # person.set_stream(iri!("https://example.com/streams"));
     /// use activitystreams::prelude::*;
     ///
-    /// assert!(person.streams_unchecked().is_some());
+    /// assert!(person.streams().is_some());
     /// person.delete_streams();
-    /// assert!(person.streams_unchecked().is_none());
+    /// assert!(person.streams().is_none());
     /// # Ok(())
     /// # }
     /// ```
@@ -871,71 +662,6 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
         self
     }
 
-    /// Fetch the endpoints for the current actor, erroring if the Endpoints' domains do not
-    /// match the ID's domain
-    ///
-    /// ```rust
-    /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{actor::{ApActor, Endpoints, Person}, context};
-    /// # let mut person = ApActor::new(context(), Person::new());
-    /// # person.set_id(context()).set_endpoints(Endpoints {
-    /// #   shared_inbox: Some(context()),
-    /// #   ..Default::default()
-    /// # });
-    /// use activitystreams::prelude::*;
-    ///
-    /// if let Some(endpoints) = person.endpoints()? {
-    ///     println!("{:?}", endpoints);
-    /// }
-    /// # Ok(())
-    /// # }
-    /// ```
-    fn endpoints<'a, Kind>(&'a self) -> Result<Option<Endpoints<&'a Url>>, DomainError>
-    where
-        Self: BaseExt<Kind>,
-        Inner: 'a,
-        Kind: 'a,
-    {
-        if let Some(endpoints) = self.endpoints_unchecked() {
-            let domain_opt = self.id_unchecked().and_then(|id| id.domain());
-
-            let mut any_failed = false;
-
-            any_failed |= endpoints
-                .proxy_url
-                .map(|u| u.domain() != domain_opt)
-                .unwrap_or(false);
-            any_failed |= endpoints
-                .oauth_authorization_endpoint
-                .map(|u| u.domain() != domain_opt)
-                .unwrap_or(false);
-            any_failed |= endpoints
-                .oauth_token_endpoint
-                .map(|u| u.domain() != domain_opt)
-                .unwrap_or(false);
-            any_failed |= endpoints
-                .provide_client_key
-                .map(|u| u.domain() != domain_opt)
-                .unwrap_or(false);
-            any_failed |= endpoints
-                .sign_client_key
-                .map(|u| u.domain() != domain_opt)
-                .unwrap_or(false);
-            any_failed |= endpoints
-                .shared_inbox
-                .map(|u| u.domain() != domain_opt)
-                .unwrap_or(false);
-
-            if any_failed {
-                return Err(DomainError);
-            }
-
-            return Ok(Some(endpoints));
-        }
-
-        Ok(None)
-    }
-
     /// Fetch the endpoints for the current actor
     ///
     /// ```rust
@@ -943,11 +669,11 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # let mut person = ApActor::new(context(), Person::new());
     /// use activitystreams::prelude::*;
     ///
-    /// if let Some(endpoints) = person.endpoints_unchecked() {
+    /// if let Some(endpoints) = person.endpoints() {
     ///     println!("{:?}", endpoints);
     /// }
     /// ```
-    fn endpoints_unchecked<'a>(&'a self) -> Option<Endpoints<&'a Url>>
+    fn endpoints<'a>(&'a self) -> Option<Endpoints<&'a IriString>>
     where
         Inner: 'a,
     {
@@ -962,11 +688,13 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// use activitystreams::prelude::*;
     ///
     /// if let Some(mut endpoints) = person.endpoints_mut() {
-    ///     endpoints.shared_inbox.as_mut().map(|url| url.set_path("/inbox"));
+    ///     if let Some(url) = endpoints.shared_inbox.as_mut() {
+    ///         // whatever
+    ///     }
     ///     println!("{:?}", endpoints);
     /// }
     /// ```
-    fn endpoints_mut<'a>(&'a mut self) -> Option<Endpoints<&'a mut Url>>
+    fn endpoints_mut<'a>(&'a mut self) -> Option<Endpoints<&'a mut IriString>>
     where
         Inner: 'a,
     {
@@ -977,18 +705,18 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{actor::{ApActor, Endpoints, Person}, context, uri};
+    /// # use activitystreams::{actor::{ApActor, Endpoints, Person}, context, iri};
     /// # let mut person = ApActor::new(context(), Person::new());
     /// use activitystreams::prelude::*;
     ///
     /// person.set_endpoints(Endpoints {
-    ///     shared_inbox: Some(uri!("https://example.com/inbox")),
+    ///     shared_inbox: Some(iri!("https://example.com/inbox")),
     ///     ..Default::default()
     /// });
     /// # Ok(())
     /// # }
     /// ```
-    fn set_endpoints(&mut self, endpoints: Endpoints<Url>) -> &mut Self {
+    fn set_endpoints(&mut self, endpoints: Endpoints<IriString>) -> &mut Self {
         self.ap_actor_mut().endpoints = Some(endpoints);
         self
     }
@@ -1004,7 +732,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///     println!("{:?}", endpoints);
     /// }
     /// ```
-    fn take_endpoints(&mut self) -> Option<Endpoints<Url>> {
+    fn take_endpoints(&mut self) -> Option<Endpoints<IriString>> {
         self.ap_actor_mut().endpoints.take()
     }
 
@@ -1016,9 +744,9 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # person.set_endpoints(Default::default());
     /// use activitystreams::prelude::*;
     ///
-    /// assert!(person.endpoints_unchecked().is_some());
+    /// assert!(person.endpoints().is_some());
     /// person.delete_endpoints();
-    /// assert!(person.endpoints_unchecked().is_none());
+    /// assert!(person.endpoints().is_none());
     /// ```
     fn delete_endpoints(&mut self) -> &mut Self {
         self.ap_actor_mut().endpoints = None;
@@ -1081,42 +809,42 @@ pub struct ApActor<Inner> {
     ///
     /// - Range: xsd:anyUri
     /// - Functional: true
-    inbox: Url,
+    inbox: IriString,
 
     /// An ActivityStreams] OrderedCollection comprised of all the messages produced by the actor.
     ///
     /// - Range: xsd:anyUri
     /// - Functional: true
     #[serde(skip_serializing_if = "Option::is_none")]
-    outbox: Option<Url>,
+    outbox: Option<IriString>,
 
     /// A link to an [ActivityStreams] collection of the actors that this actor is following.
     ///
     /// - Range: xsd:anyUri
     /// - Functional: true
     #[serde(skip_serializing_if = "Option::is_none")]
-    following: Option<Url>,
+    following: Option<IriString>,
 
     /// A link to an [ActivityStreams] collection of the actors that follow this actor.
     ///
     /// - Range: xsd:anyUri
     /// - Functional: true
     #[serde(skip_serializing_if = "Option::is_none")]
-    followers: Option<Url>,
+    followers: Option<IriString>,
 
     /// A link to an [ActivityStreams] collection of objects this actor has liked.
     ///
     /// - Range: xsd:anyUri
     /// - Functional: true
     #[serde(skip_serializing_if = "Option::is_none")]
-    liked: Option<Url>,
+    liked: Option<IriString>,
 
     /// A list of supplementary Collections which may be of interest.
     ///
     /// - Range: xsd:anyUri
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
-    streams: Option<OneOrMany<Url>>,
+    streams: Option<OneOrMany<IriString>>,
 
     /// A short username which may be used to refer to the actor, with no uniqueness guarantees.
     ///
@@ -1134,7 +862,7 @@ pub struct ApActor<Inner> {
     /// - Range: Endpoint
     /// - Functional: true
     #[serde(skip_serializing_if = "Option::is_none")]
-    endpoints: Option<Endpoints<Url>>,
+    endpoints: Option<Endpoints<IriString>>,
 
     /// base fields and unparsed json ends up here
     #[serde(flatten)]
@@ -1265,16 +993,16 @@ impl<Inner> ApActor<Inner> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// use activitystreams::{actor::{ApActor, Person}, uri};
+    /// use activitystreams::{actor::{ApActor, Person}, iri};
     ///
     /// let actor = ApActor::new(
-    ///     uri!("https://example.com/inbox"),
+    ///     iri!("https://example.com/inbox"),
     ///     Person::new(),
     /// );
     /// # Ok(())
     /// # }
     /// ```
-    pub fn new(inbox: Url, inner: Inner) -> Self
+    pub fn new(inbox: IriString, inner: Inner) -> Self
     where
         Inner: markers::Actor,
     {
@@ -1291,13 +1019,14 @@ impl<Inner> ApActor<Inner> {
         }
     }
 
+    #[allow(clippy::type_complexity)]
     /// Deconstruct the ApActor into its parts
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// use activitystreams::{actor::{ApActor, Person}, uri};
+    /// use activitystreams::{actor::{ApActor, Person}, iri};
     ///
-    /// let actor = ApActor::new(uri!("https://inbox.url"), Person::new());
+    /// let actor = ApActor::new(iri!("https://inbox.url"), Person::new());
     ///
     /// let (
     ///     inbox,
@@ -1316,14 +1045,14 @@ impl<Inner> ApActor<Inner> {
     pub fn into_parts(
         self,
     ) -> (
-        Url,
-        Option<Url>,
-        Option<Url>,
-        Option<Url>,
-        Option<Url>,
-        Option<OneOrMany<Url>>,
+        IriString,
+        Option<IriString>,
+        Option<IriString>,
+        Option<IriString>,
+        Option<IriString>,
+        Option<OneOrMany<IriString>>,
         Option<String>,
-        Option<Endpoints<Url>>,
+        Option<Endpoints<IriString>>,
         Inner,
     ) {
         (
@@ -1400,12 +1129,12 @@ impl<T> Endpoints<T> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// use activitystreams::{actor::Endpoints, uri};
-    /// use url::Url;
+    /// use activitystreams::{actor::Endpoints, iri};
+    /// use iri_string::types::IriString;
     ///
-    /// let uri = uri!("https://example.com");
+    /// let uri = iri!("https://example.com");
     ///
-    /// let endpoints: Endpoints<Url> = Endpoints {
+    /// let endpoints: Endpoints<IriString> = Endpoints {
     ///     shared_inbox: Some(uri.clone()),
     ///     ..Default::default()
     /// };
@@ -1441,17 +1170,17 @@ impl<T> Endpoints<T> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// use activitystreams::{actor::Endpoints, uri};
-    /// use url::Url;
+    /// use activitystreams::{actor::Endpoints, iri};
+    /// use iri_string::types::IriString;
     ///
-    /// let endpoints: Endpoints<Url> = Endpoints {
-    ///     shared_inbox: Some(uri!("https://example.com")),
+    /// let endpoints: Endpoints<IriString> = Endpoints {
+    ///     shared_inbox: Some(iri!("https://example.com")),
     ///     ..Default::default()
     /// };
     ///
     /// let endpoint_strings = endpoints.map(|u| u.to_string());
     ///
-    /// assert_eq!(endpoint_strings.shared_inbox, Some(String::from("https://example.com/")));
+    /// assert_eq!(endpoint_strings.shared_inbox, Some(String::from("https://example.com")));
     /// # Ok(())
     /// # }
     /// ```

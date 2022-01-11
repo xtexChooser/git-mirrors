@@ -31,56 +31,56 @@
 /// UTC, is represented as -05:00. If no time zone value is present, it is considered unknown; it
 /// is not assumed to be UTC.
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
-pub struct XsdDateTime(pub chrono::DateTime<chrono::FixedOffset>);
+pub struct XsdDateTime(pub time::OffsetDateTime);
 
 impl XsdDateTime {
-    /// Create a XsdDateTime from a chrono::DateTime
-    pub fn new(d: chrono::DateTime<chrono::FixedOffset>) -> Self {
+    /// Create a XsdDateTime from a time::OffsetDateTime
+    pub fn new(d: time::OffsetDateTime) -> Self {
         XsdDateTime(d)
     }
 
-    /// Extract the chrono::DateTime from XsdDateTime
-    pub fn into_inner(self) -> chrono::DateTime<chrono::FixedOffset> {
+    /// Extract the time::OffsetDateTime from XsdDateTime
+    pub fn into_inner(self) -> time::OffsetDateTime {
         self.0
     }
 
-    /// Borrow the underlying `chrono::DateTime<chrono::FixedOffset>`
-    pub fn as_datetime(&self) -> &chrono::DateTime<chrono::FixedOffset> {
+    /// Borrow the underlying `time::OffsetDateTime`
+    pub fn as_datetime(&self) -> &time::OffsetDateTime {
         self.as_ref()
     }
 
-    /// Mutably borrow the underlying `chrono::DateTime<chrono::FixedOffset>`
-    pub fn as_datetime_mut(&mut self) -> &mut chrono::DateTime<chrono::FixedOffset> {
+    /// Mutably borrow the underlying `time::OffsetDateTime`
+    pub fn as_datetime_mut(&mut self) -> &mut time::OffsetDateTime {
         self.as_mut()
     }
 }
 
-impl From<chrono::DateTime<chrono::FixedOffset>> for XsdDateTime {
-    fn from(d: chrono::DateTime<chrono::FixedOffset>) -> Self {
+impl From<time::OffsetDateTime> for XsdDateTime {
+    fn from(d: time::OffsetDateTime) -> Self {
         XsdDateTime(d)
     }
 }
 
-impl From<XsdDateTime> for chrono::DateTime<chrono::FixedOffset> {
+impl From<XsdDateTime> for time::OffsetDateTime {
     fn from(d: XsdDateTime) -> Self {
         d.0
     }
 }
 
-impl AsRef<chrono::DateTime<chrono::FixedOffset>> for XsdDateTime {
-    fn as_ref(&self) -> &chrono::DateTime<chrono::FixedOffset> {
+impl AsRef<time::OffsetDateTime> for XsdDateTime {
+    fn as_ref(&self) -> &time::OffsetDateTime {
         &self.0
     }
 }
 
-impl AsMut<chrono::DateTime<chrono::FixedOffset>> for XsdDateTime {
-    fn as_mut(&mut self) -> &mut chrono::DateTime<chrono::FixedOffset> {
+impl AsMut<time::OffsetDateTime> for XsdDateTime {
+    fn as_mut(&mut self) -> &mut time::OffsetDateTime {
         &mut self.0
     }
 }
 
 impl std::convert::TryFrom<String> for XsdDateTime {
-    type Error = chrono::format::ParseError;
+    type Error = time::error::Parse;
 
     fn try_from(s: String) -> Result<Self, Self::Error> {
         s.parse()
@@ -88,7 +88,7 @@ impl std::convert::TryFrom<String> for XsdDateTime {
 }
 
 impl std::convert::TryFrom<&str> for XsdDateTime {
-    type Error = chrono::format::ParseError;
+    type Error = time::error::Parse;
 
     fn try_from(s: &str) -> Result<Self, Self::Error> {
         s.parse()
@@ -96,7 +96,7 @@ impl std::convert::TryFrom<&str> for XsdDateTime {
 }
 
 impl std::convert::TryFrom<&mut str> for XsdDateTime {
-    type Error = chrono::format::ParseError;
+    type Error = time::error::Parse;
 
     fn try_from(s: &mut str) -> Result<Self, Self::Error> {
         s.parse()
@@ -104,16 +104,22 @@ impl std::convert::TryFrom<&mut str> for XsdDateTime {
 }
 
 impl std::str::FromStr for XsdDateTime {
-    type Err = chrono::format::ParseError;
+    type Err = time::error::Parse;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(XsdDateTime(chrono::DateTime::parse_from_rfc3339(s)?))
+        Ok(XsdDateTime(time::OffsetDateTime::parse(
+            s,
+            &time::format_description::well_known::Rfc3339,
+        )?))
     }
 }
 
 impl std::fmt::Display for XsdDateTime {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        let s = self.0.to_rfc3339();
+        let s = self
+            .0
+            .format(&time::format_description::well_known::Rfc3339)
+            .map_err(|_| std::fmt::Error)?;
         std::fmt::Display::fmt(&s, f)
     }
 }

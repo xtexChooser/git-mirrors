@@ -6,18 +6,18 @@
 //!     collection::OrderedCollection,
 //!     context,
 //!     prelude::*,
-//!     uri,
+//!     iri,
 //! };
 //!
 //! let mut collection = OrderedCollection::new();
 //!
 //! collection
-//!     .set_item(uri!("https://example.com/notes/1234"))
+//!     .set_item(iri!("https://example.com/notes/1234"))
 //!     .set_total_items(1u64)
-//!     .set_current(uri!("https://example.com/notes/1234"))
-//!     .set_first(uri!("https://example.com/notes/1234"))
-//!     .set_last(uri!("https://example.com/notes/1234"))
-//!     .set_id(uri!("https://example.com/collections/1234"))
+//!     .set_current(iri!("https://example.com/notes/1234"))
+//!     .set_first(iri!("https://example.com/notes/1234"))
+//!     .set_last(iri!("https://example.com/notes/1234"))
+//!     .set_id(iri!("https://example.com/collections/1234"))
 //!     .set_context(context());
 //! # Ok(())
 //! # }
@@ -92,10 +92,10 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{collection::UnorderedCollection, uri};
+    /// # use activitystreams::{collection::UnorderedCollection, iri};
     /// # let mut collection = UnorderedCollection::new();
     ///
-    /// collection.set_item(uri!("https://example.com"));
+    /// collection.set_item(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -114,12 +114,12 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{collection::UnorderedCollection, uri};
+    /// # use activitystreams::{collection::UnorderedCollection, iri};
     /// # let mut collection = UnorderedCollection::new();
     ///
     /// collection.set_many_items(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -141,12 +141,12 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{collection::UnorderedCollection, uri};
+    /// # use activitystreams::{collection::UnorderedCollection, iri};
     /// # let mut collection = UnorderedCollection::new();
     ///
     /// collection
-    ///     .add_item(uri!("https://example.com/one"))
-    ///     .add_item(uri!("https://example.com/two"));
+    ///     .add_item(iri!("https://example.com/one"))
+    ///     .add_item(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -221,10 +221,10 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{collection::OrderedCollection, uri};
+    /// # use activitystreams::{collection::OrderedCollection, iri};
     /// # let mut collection = OrderedCollection::new();
     ///
-    /// collection.set_ordered_item(uri!("https://example.com"));
+    /// collection.set_ordered_item(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -243,12 +243,12 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{collection::OrderedCollection, uri};
+    /// # use activitystreams::{collection::OrderedCollection, iri};
     /// # let mut collection = OrderedCollection::new();
     ///
     /// collection.set_many_ordered_items(vec![
-    ///     uri!("https://example.com/one"),
-    ///     uri!("https://example.com/two"),
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
     /// ]);
     /// # Ok(())
     /// # }
@@ -270,12 +270,12 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
     /// use activitystreams::prelude::*;
-    /// # use activitystreams::{collection::OrderedCollection, uri};
+    /// # use activitystreams::{collection::OrderedCollection, iri};
     /// # let mut collection = OrderedCollection::new();
     ///
     /// collection
-    ///     .add_ordered_item(uri!("https://example.com/one"))
-    ///     .add_ordered_item(uri!("https://example.com/two"));
+    ///     .add_ordered_item(iri!("https://example.com/one"))
+    ///     .add_ordered_item(iri!("https://example.com/two"));
     /// # Ok(())
     /// # }
     /// ```
@@ -419,12 +419,12 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     ///
     /// ```rust
     /// # fn main() -> Result<(), anyhow::Error> {
-    /// # use activitystreams::{collection::UnorderedCollection, uri};
+    /// # use activitystreams::{collection::UnorderedCollection, iri};
     /// # let mut collection = UnorderedCollection::new();
     /// #
     /// use activitystreams::prelude::*;
     ///
-    /// collection.set_current(uri!("https://example.com"));
+    /// collection.set_current(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -498,9 +498,9 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// # use activitystreams::{collection::UnorderedCollection};
     /// # let mut collection = UnorderedCollection::new();
     /// #
-    /// use activitystreams::{prelude::*, uri};
+    /// use activitystreams::{prelude::*, iri};
     ///
-    /// collection.set_first(uri!("https://example.com"));
+    /// collection.set_first(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -574,9 +574,9 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// # use activitystreams::{collection::UnorderedCollection};
     /// # let mut collection = UnorderedCollection::new();
     /// #
-    /// use activitystreams::{prelude::*, uri};
+    /// use activitystreams::{prelude::*, iri};
     ///
-    /// collection.set_last(uri!("https://example.com"));
+    /// collection.set_last(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -658,9 +658,9 @@ pub trait CollectionPageExt<Kind>: AsCollectionPage<Kind> {
     /// # use activitystreams::{collection::UnorderedCollectionPage};
     /// # let mut collection = UnorderedCollectionPage::new();
     /// #
-    /// use activitystreams::{prelude::*, uri};
+    /// use activitystreams::{prelude::*, iri};
     ///
-    /// collection.set_part_of(uri!("https://example.com"));
+    /// collection.set_part_of(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -734,9 +734,9 @@ pub trait CollectionPageExt<Kind>: AsCollectionPage<Kind> {
     /// # use activitystreams::{collection::UnorderedCollectionPage};
     /// # let mut collection = UnorderedCollectionPage::new();
     /// #
-    /// use activitystreams::{prelude::*, uri};
+    /// use activitystreams::{prelude::*, iri};
     ///
-    /// collection.set_next(uri!("https://example.com"));
+    /// collection.set_next(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```
@@ -810,9 +810,9 @@ pub trait CollectionPageExt<Kind>: AsCollectionPage<Kind> {
     /// # use activitystreams::{collection::UnorderedCollectionPage};
     /// # let mut collection = UnorderedCollectionPage::new();
     /// #
-    /// use activitystreams::{prelude::*, uri};
+    /// use activitystreams::{prelude::*, iri};
     ///
-    /// collection.set_prev(uri!("https://example.com"));
+    /// collection.set_prev(iri!("https://example.com"));
     /// # Ok(())
     /// # }
     /// ```

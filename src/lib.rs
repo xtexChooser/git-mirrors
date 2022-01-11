@@ -143,9 +143,9 @@
 //!
 //! For fields with more specific bounds, like `id`,
 //! ```rust,ignore
-//! fn id(&self) -> Option<&Url>;
-//! fn set_id(&mut self, Url) -> &mut Self;
-//! fn take_id(&self) -> Option<Url>;
+//! fn id(&self) -> Option<&IriString>;
+//! fn set_id(&mut self, IriString) -> &mut Self;
+//! fn take_id(&self) -> Option<IriString>;
 //! fn delete_id(&mut self) -> &mut Self;
 //! ```
 //!
@@ -164,14 +164,14 @@
 //! bound the function like so:
 //!
 //! ```rust
-//! use activitystreams::{base::BaseExt, context, markers::Activity, uri};
+//! use activitystreams::{base::BaseExt, context, markers::Activity, iri};
 //!
 //! fn manipulator<T, Kind>(mut activity: T) -> Result<(), anyhow::Error>
 //! where
 //!     T: Activity + BaseExt<Kind>,
 //! {
 //!     activity
-//!         .set_id(uri!("https://example.com"))
+//!         .set_id(iri!("https://example.com"))
 //!         .set_context(context());
 //!     Ok(())
 //! }
@@ -205,21 +205,21 @@
 //!     context,
 //!     object::{ApObject, Video},
 //!     prelude::*,
-//!     uri,
+//!     iri,
 //! };
-//! use chrono::Duration;
+//! use time::Duration;
 //!
 //! fn main() -> Result<(), anyhow::Error> {
 //!     let mut video = ApObject::new(Video::new());
 //!
 //!     video
 //!         .set_context(context())
-//!         .set_id(uri!("https://example.com/@example/lions"))
+//!         .set_id(iri!("https://example.com/@example/lions"))
 //!         .set_media_type("video/webm".parse()?)
-//!         .set_url(uri!("https://example.com/@example/lions/video.webm"))
+//!         .set_url(iri!("https://example.com/@example/lions/video.webm"))
 //!         .set_summary("A cool video")
 //!         .set_duration(Duration::minutes(4) + Duration::seconds(20))
-//!         .set_shares(uri!("https://example.com/@example/lions/video.webm#shares"));
+//!         .set_shares(iri!("https://example.com/@example/lions/video.webm#shares"));
 //!
 //!     println!("Video, {:#?}", video);
 //!
@@ -300,7 +300,6 @@ pub mod actor;
 pub mod base;
 pub mod collection;
 mod either;
-pub mod error;
 pub mod link;
 mod macros;
 pub mod markers;
@@ -308,11 +307,13 @@ pub mod object;
 pub mod primitives;
 pub mod unparsed;
 
-pub extern crate chrono;
+pub extern crate iri_string;
 pub extern crate mime;
-pub extern crate url;
+pub extern crate time;
 
-pub use activitystreams_kinds::{context, kind, public, security};
+pub use activitystreams_kinds::{
+    context_iri as context, kind, public_iri as public, security_iri as security,
+};
 
 pub mod prelude {
     //! Extension traits that provide the majority of the helper methods of the crate
@@ -327,38 +328,38 @@ pub mod prelude {
     //!     public,
     //!     object::{ApObject, Image, Video},
     //!     security,
-    //!     uri,
+    //!     iri,
     //! };
-    //! use chrono::Duration;
+    //! use time::Duration;
     //!
     //! let mut person = ApActor::new(
-    //!     uri!("http://localhost:8080/inbox"),
+    //!     iri!("http://localhost:8080/inbox"),
     //!     Person::new(),
     //! );
     //! person
-    //!     .set_outbox(uri!("http:/localhost:8080/outbox"))
+    //!     .set_outbox(iri!("http:/localhost:8080/outbox"))
     //!     .set_name("Demo Account")
     //!     .set_preferred_username("demo")
-    //!     .set_id(uri!("https://localhost:8080/actor"))
-    //!     .set_url(uri!("https://localhost:8080/actor"));
+    //!     .set_id(iri!("https://localhost:8080/actor"))
+    //!     .set_url(iri!("https://localhost:8080/actor"));
     //!
     //! let mut preview = Image::new();
     //!
     //! preview
-    //!     .set_url(uri!("https://localhost:8080/preview.png"))
+    //!     .set_url(iri!("https://localhost:8080/preview.png"))
     //!     .set_media_type("image/png".parse()?)
-    //!     .set_id(uri!("https://localhostst:8080/preview.png"));
+    //!     .set_id(iri!("https://localhostst:8080/preview.png"));
     //!
     //! let mut video = ApObject::new(Video::new());
     //!
     //! video
-    //!     .set_id(uri!("http://localhost:8080/video.webm"))
-    //!     .set_url(uri!("http://localhost:8080/video.webm"))
+    //!     .set_id(iri!("http://localhost:8080/video.webm"))
+    //!     .set_url(iri!("http://localhost:8080/video.webm"))
     //!     .set_media_type("video/webm".parse()?)
     //!     .set_summary("A cool video")
     //!     .set_preview(preview.into_any_base()?)
     //!     .set_duration(Duration::minutes(4) + Duration::seconds(20))
-    //!     .set_shares(uri!("http://localhost:8080/video.webm#shares"));
+    //!     .set_shares(iri!("http://localhost:8080/video.webm#shares"));
     //!
     //! let mut activity = Create::new(
     //!     person.into_any_base()?,

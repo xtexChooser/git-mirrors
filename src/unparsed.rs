@@ -23,7 +23,7 @@
 //!     prelude::*,
 //!     primitives::*,
 //!     unparsed::*,
-//!     url::Url,
+//!     iri_string::types::IriString,
 //! };
 //!
 //! /// First, we'll define our public key types
@@ -31,8 +31,8 @@
 //! #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 //! #[serde(rename_all = "camelCase")]
 //! pub struct PublicKeyValues {
-//!     pub id: Url,
-//!     pub owner: Url,
+//!     pub id: IriString,
+//!     pub owner: IriString,
 //!     pub public_key_pem: String,
 //! }
 //!
@@ -168,7 +168,7 @@
 //! /// And now create helper methods
 //! pub trait PublicKeyExt<Inner>: AsPublicKey<Inner> {
 //!     /// Borrow the public key's ID
-//!     fn key_id<'a>(&'a self) -> &'a Url
+//!     fn key_id<'a>(&'a self) -> &'a IriString
 //!     where
 //!         Inner: 'a,
 //!     {
@@ -176,13 +176,13 @@
 //!     }
 //!
 //!     /// Set the public key's ID
-//!     fn set_key_id(&mut self, id: Url) -> &mut Self {
+//!     fn set_key_id(&mut self, id: IriString) -> &mut Self {
 //!         self.public_key_mut().public_key.id = id;
 //!         self
 //!     }
 //!
 //!     /// Borrow the public key's Owner
-//!     fn key_owner<'a>(&'a self) -> &'a Url
+//!     fn key_owner<'a>(&'a self) -> &'a IriString
 //!     where
 //!         Inner: 'a,
 //!     {
@@ -190,7 +190,7 @@
 //!     }
 //!
 //!     /// Set the public key's Owner
-//!     fn set_key_owner(&mut self, owner: Url) -> &mut Self {
+//!     fn set_key_owner(&mut self, owner: IriString) -> &mut Self {
 //!         self.public_key_mut().public_key.owner = owner;
 //!         self
 //!     }
@@ -221,30 +221,30 @@
 //!
 //!
 //! /// Now that eveything is implemented, we can use it like so:
-//! use activitystreams::{actor::{kind::PersonType, Person}, uri};
+//! use activitystreams::{actor::{kind::PersonType, Person}, fragment, iri};
 //!
 //! pub type ExtendedPerson = PublicKey<ApActor<Person>>;
 //!
 //! impl ExtendedPerson {
-//!     pub fn new(inbox: Url, mut owner: Url) -> Self {
+//!     pub fn new(inbox: IriString, mut owner: IriString) -> Result<Self, anyhow::Error> {
 //!         let id = owner.clone();
-//!         owner.set_fragment(Some("main-key"));
-//!         PublicKey {
+//!         owner.set_fragment(Some(fragment!("main-key").as_ref()));
+//!         Ok(PublicKey {
 //!             public_key: PublicKeyValues {
 //!                 id,
 //!                 owner,
 //!                 public_key_pem: String::new(),
 //!             },
 //!             inner: ApActor::new(inbox, Person::new()),
-//!         }
+//!         })
 //!     }
 //! }
 //!
 //! fn main() -> Result<(), anyhow::Error> {
 //!     let mut extended_person = ExtendedPerson::new(
-//!         uri!("https://example.com/user/inbox"),
-//!         uri!("https://example.com/user"),
-//!     );
+//!         iri!("https://example.com/user/inbox"),
+//!         iri!("https://example.com/user"),
+//!     )?;
 //!
 //!     extended_person
 //!         .set_kind(PersonType::Person)

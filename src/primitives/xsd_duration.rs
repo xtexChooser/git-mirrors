@@ -42,7 +42,7 @@
 /// multiplying by 365. If this is an issue for your application, look into specifying days
 /// directly.
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
-pub struct XsdDuration(pub chrono::Duration);
+pub struct XsdDuration(pub time::Duration);
 
 /// The error type produced when an XsdDuration cannot be parsed
 #[derive(Clone, Debug, thiserror::Error)]
@@ -50,47 +50,47 @@ pub struct XsdDuration(pub chrono::Duration);
 pub struct XsdDurationError;
 
 impl XsdDuration {
-    /// Create a new XsdDuration from a chrono::Duration
-    pub fn new(duration: chrono::Duration) -> Self {
+    /// Create a new XsdDuration from a time::Duration
+    pub fn new(duration: time::Duration) -> Self {
         XsdDuration(duration)
     }
 
-    /// Extract the chrono::Duration from an XsdDuration
-    pub fn into_inner(self) -> chrono::Duration {
+    /// Extract the time::Duration from an XsdDuration
+    pub fn into_inner(self) -> time::Duration {
         self.0
     }
 
-    /// Borrow the underlying `chrono::Duration`
-    pub fn as_duration(&self) -> &chrono::Duration {
+    /// Borrow the underlying `time::Duration`
+    pub fn as_duration(&self) -> &time::Duration {
         self.as_ref()
     }
 
-    /// Mutably borrow the underlying `chrono::Duration`
-    pub fn as_duration_mut(&mut self) -> &mut chrono::Duration {
+    /// Mutably borrow the underlying `time::Duration`
+    pub fn as_duration_mut(&mut self) -> &mut time::Duration {
         self.as_mut()
     }
 }
 
-impl From<chrono::Duration> for XsdDuration {
-    fn from(d: chrono::Duration) -> Self {
+impl From<time::Duration> for XsdDuration {
+    fn from(d: time::Duration) -> Self {
         XsdDuration(d)
     }
 }
 
-impl From<XsdDuration> for chrono::Duration {
+impl From<XsdDuration> for time::Duration {
     fn from(d: XsdDuration) -> Self {
         d.0
     }
 }
 
-impl AsRef<chrono::Duration> for XsdDuration {
-    fn as_ref(&self) -> &chrono::Duration {
+impl AsRef<time::Duration> for XsdDuration {
+    fn as_ref(&self) -> &time::Duration {
         &self.0
     }
 }
 
-impl AsMut<chrono::Duration> for XsdDuration {
-    fn as_mut(&mut self) -> &mut chrono::Duration {
+impl AsMut<time::Duration> for XsdDuration {
+    fn as_mut(&mut self) -> &mut time::Duration {
         &mut self.0
     }
 }
@@ -147,12 +147,12 @@ impl std::str::FromStr for XsdDuration {
         let (minutes, small) = parse_next(small, 'M')?;
         let (seconds, _) = parse_next(small, 'S')?;
 
-        let mut duration = chrono::Duration::days(365 * years);
-        duration = duration + chrono::Duration::days(31 * months);
-        duration = duration + chrono::Duration::days(days);
-        duration = duration + chrono::Duration::hours(hours);
-        duration = duration + chrono::Duration::minutes(minutes);
-        duration = duration + chrono::Duration::seconds(seconds);
+        let mut duration = time::Duration::days(365 * years);
+        duration += time::Duration::days(31 * months);
+        duration += time::Duration::days(days);
+        duration += time::Duration::hours(hours);
+        duration += time::Duration::minutes(minutes);
+        duration += time::Duration::seconds(seconds);
 
         duration = if negative { duration * -1 } else { duration };
 
@@ -174,44 +174,44 @@ fn parse_next(s: &str, c: char) -> Result<(i64, &str), XsdDurationError> {
 
 impl std::fmt::Display for XsdDuration {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        let (s, mut duration) = if chrono::Duration::seconds(0) > self.0 {
+        let (s, mut duration) = if time::Duration::seconds(0) > self.0 {
             ("P-".to_string(), self.0 * -1)
         } else {
             ("P".to_string(), self.0)
         };
 
-        let s = if duration.num_days() > 0 {
-            format!("{}{}D", s, duration.num_days())
+        let s = if duration.whole_days() > 0 {
+            format!("{}{}D", s, duration.whole_days())
         } else {
             s
         };
 
-        duration = duration - chrono::Duration::days(duration.num_days());
+        duration -= time::Duration::days(duration.whole_days());
 
-        let s = if duration.num_seconds() > 0 {
+        let s = if duration.whole_seconds() > 0 {
             format!("{}T", s)
         } else {
             s
         };
 
-        let s = if duration.num_hours() > 0 {
-            format!("{}{}H", s, duration.num_hours())
+        let s = if duration.whole_hours() > 0 {
+            format!("{}{}H", s, duration.whole_hours())
         } else {
             s
         };
 
-        duration = duration - chrono::Duration::hours(duration.num_hours());
+        duration -= time::Duration::hours(duration.whole_hours());
 
-        let s = if duration.num_minutes() > 0 {
-            format!("{}{}M", s, duration.num_minutes())
+        let s = if duration.whole_minutes() > 0 {
+            format!("{}{}M", s, duration.whole_minutes())
         } else {
             s
         };
 
-        duration = duration - chrono::Duration::minutes(duration.num_minutes());
+        duration -= time::Duration::minutes(duration.whole_minutes());
 
-        let s = if duration.num_seconds() > 0 {
-            format!("{}{}S", s, duration.num_seconds())
+        let s = if duration.whole_seconds() > 0 {
+            format!("{}{}S", s, duration.whole_seconds())
         } else {
             s
         };
