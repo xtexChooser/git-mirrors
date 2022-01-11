@@ -1,5 +1,9 @@
 # Unreleased
 
+# 0.7.0-alpha.14
+- switch to iri-string from url
+- remove `checked` variations of methods, rename `unchecked`
+
 # 0.7.0-alpha.13
 - re-export url functions, kind macro from activitystreams-kinds library
 
