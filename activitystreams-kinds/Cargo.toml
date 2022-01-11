@@ -1,7 +1,7 @@
 [package]
 name = "activitystreams-kinds"
 description = "Type-safe activitystreams 'type' values"
-version = "0.1.2"
+version = "0.1.3"
 license = "GPL-3.0"
 authors = ["asonix <asonix@asonix.dog>"]
 repository = "https://git.asonix.dog/asonix/activitystreams"
