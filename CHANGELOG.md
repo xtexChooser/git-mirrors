@@ -1,4 +1,6 @@
 # Unreleased
+
+# 0.7.0-alpha.16
 - implement `IntoIterator` for `&OneOrMany<T>` and `&mut OneOrMany<T>`
 - add `check` function for verifying an IRI's authority
 - add `BaseExt::check_authority` for verifying an IRI's authority against an object's ID
@@ -6,7 +8,7 @@
   `Actor::outbox`, `Actor::following`, `Actor::followers`, `Actor::liked`, `Actor::streams`,
   `Actor::endpoints`
 
-# 0.7.0-alpha.14
+# 0.7.0-alpha.15
 - switch to iri-string from url
 - remove `checked` variations of methods, rename `unchecked`
 
