@@ -44,20 +44,9 @@ name: tests-amd64
 platform:
   arch: amd64
 
-clone:
-  disable: true
-
 steps:
-- name: clone
-  image: alpine/git:latest
-  user: root
-  commands:
-  - git clone $DRONE_GIT_HTTP_URL .
-  - git checkout $DRONE_COMMIT
-  - chown -R 991:991 .
-
 - name: tests
-  image: asonix/rust-builder:latest-linux-amd64
+  image: rust:1-alpine
   pull: always
   commands:
   - cargo test
@@ -77,20 +66,9 @@ name: tests-arm64v8
 platform:
   arch: arm64
 
-clone:
-  disable: true
-
 steps:
-- name: clone
-  image: alpine/git:latest
-  user: root
-  commands:
-  - git clone $DRONE_GIT_HTTP_URL .
-  - git checkout $DRONE_COMMIT
-  - chown -R 991:991 .
-
 - name: tests
-  image: asonix/rust-builder:latest-linux-amd64
+  image: rust:1-alpine
   pull: always
   commands:
   - cargo test
