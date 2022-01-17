@@ -23,8 +23,10 @@
 //! ```
 use crate::{
     base::{AsBase, Base, Extends},
+    checked::CheckError,
     markers,
     object::{ApObject, AsApObject, AsObject, Object},
+    prelude::BaseExt,
     primitives::OneOrMany,
     unparsed::{Unparsed, UnparsedMut, UnparsedMutExt},
 };
@@ -60,7 +62,25 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///
     /// let inbox_ref = person.inbox();
     /// ```
-    fn inbox<'a>(&'a self) -> &'a IriString
+    fn inbox<'a, Kind>(&'a self) -> Result<&'a IriString, CheckError>
+    where
+        Inner: 'a,
+        Self: BaseExt<Kind>,
+    {
+        let inbox = self.inbox_unchecked();
+        self.check_authority(inbox)
+    }
+
+    /// Fetch the inbox for the current actor
+    ///
+    /// ```rust
+    /// # use activitystreams::{actor::{ApActor, Person}, context};
+    /// # let mut person = ApActor::new(context(), Person::new());
+    /// use activitystreams::prelude::*;
+    ///
+    /// let inbox_ref = person.inbox_unchecked();
+    /// ```
+    fn inbox_unchecked<'a>(&'a self) -> &'a IriString
     where
         Inner: 'a,
     {
@@ -109,7 +129,26 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///
     /// let outbox_ref = person.outbox();
     /// ```
-    fn outbox<'a>(&'a self) -> Option<&'a IriString>
+    fn outbox<'a, Kind>(&'a self) -> Result<Option<&'a IriString>, CheckError>
+    where
+        Inner: 'a,
+        Self: BaseExt<Kind>,
+    {
+        self.outbox_unchecked()
+            .map(|outbox| self.check_authority(outbox))
+            .transpose()
+    }
+
+    /// Fetch the outbox for the current actor
+    ///
+    /// ```rust
+    /// # use activitystreams::{actor::{ApActor, Person}, context};
+    /// # let mut person = ApActor::new(context(), Person::new());
+    /// use activitystreams::prelude::*;
+    ///
+    /// let outbox_ref = person.outbox_unchecked();
+    /// ```
+    fn outbox_unchecked<'a>(&'a self) -> Option<&'a IriString>
     where
         Inner: 'a,
     {
@@ -175,9 +214,9 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # person.set_outbox(iri!("https://example.com/outbox"));
     /// use activitystreams::prelude::*;
     ///
-    /// assert!(person.outbox().is_some());
+    /// assert!(person.outbox_unchecked().is_some());
     /// person.delete_outbox();
-    /// assert!(person.outbox().is_none());
+    /// assert!(person.outbox_unchecked().is_none());
     /// # Ok(())
     /// # }
     /// ```
@@ -193,11 +232,32 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # let mut person = ApActor::new(context(), Person::new());
     /// use activitystreams::prelude::*;
     ///
-    /// if let Some(following) = person.following() {
+    /// if let Ok(following) = person.following() {
     ///     println!("{:?}", following);
     /// }
     /// ```
-    fn following<'a>(&'a self) -> Option<&'a IriString>
+    fn following<'a, Kind>(&'a self) -> Result<Option<&'a IriString>, CheckError>
+    where
+        Inner: 'a,
+        Self: BaseExt<Kind>,
+    {
+        self.following_unchecked()
+            .map(|following| self.check_authority(following))
+            .transpose()
+    }
+
+    /// Fetch the following link for the current actor
+    ///
+    /// ```rust
+    /// # use activitystreams::{actor::{ApActor, Person}, context};
+    /// # let mut person = ApActor::new(context(), Person::new());
+    /// use activitystreams::prelude::*;
+    ///
+    /// if let Some(following) = person.following_unchecked() {
+    ///     println!("{:?}", following);
+    /// }
+    /// ```
+    fn following_unchecked<'a>(&'a self) -> Option<&'a IriString>
     where
         Inner: 'a,
     {
@@ -263,9 +323,9 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # person.set_following(iri!("https://example.com/following"));
     /// use activitystreams::prelude::*;
     ///
-    /// assert!(person.following().is_some());
+    /// assert!(person.following_unchecked().is_some());
     /// person.delete_following();
-    /// assert!(person.following().is_none());
+    /// assert!(person.following_unchecked().is_none());
     /// # Ok(())
     /// # }
     /// ```
@@ -281,11 +341,32 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # let mut person = ApActor::new(context(), Person::new());
     /// use activitystreams::prelude::*;
     ///
-    /// if let Some(followers) = person.followers() {
+    /// if let Ok(followers) = person.followers() {
     ///     println!("{:?}", followers);
     /// }
     /// ```
-    fn followers<'a>(&'a self) -> Option<&'a IriString>
+    fn followers<'a, Kind>(&'a self) -> Result<Option<&'a IriString>, CheckError>
+    where
+        Inner: 'a,
+        Self: BaseExt<Kind>,
+    {
+        self.followers_unchecked()
+            .map(|followers| self.check_authority(followers))
+            .transpose()
+    }
+
+    /// Fetch the followers link for the current actor
+    ///
+    /// ```rust
+    /// # use activitystreams::{actor::{ApActor, Person}, context};
+    /// # let mut person = ApActor::new(context(), Person::new());
+    /// use activitystreams::prelude::*;
+    ///
+    /// if let Some(followers) = person.followers_unchecked() {
+    ///     println!("{:?}", followers);
+    /// }
+    /// ```
+    fn followers_unchecked<'a>(&'a self) -> Option<&'a IriString>
     where
         Inner: 'a,
     {
@@ -351,9 +432,9 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # person.set_followers(iri!("https://example.com/followers"));
     /// use activitystreams::prelude::*;
     ///
-    /// assert!(person.followers().is_some());
+    /// assert!(person.followers_unchecked().is_some());
     /// person.delete_followers();
-    /// assert!(person.followers().is_none());
+    /// assert!(person.followers_unchecked().is_none());
     /// # Ok(())
     /// # }
     /// ```
@@ -369,11 +450,32 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # let mut person = ApActor::new(context(), Person::new());
     /// use activitystreams::prelude::*;
     ///
-    /// if let Some(liked) = person.liked() {
+    /// if let Ok(liked) = person.liked() {
     ///     println!("{:?}", liked);
     /// }
     /// ```
-    fn liked<'a>(&'a self) -> Option<&'a IriString>
+    fn liked<'a, Kind>(&'a self) -> Result<Option<&'a IriString>, CheckError>
+    where
+        Inner: 'a,
+        Self: BaseExt<Kind>,
+    {
+        self.liked_unchecked()
+            .map(|liked| self.check_authority(liked))
+            .transpose()
+    }
+
+    /// Fetch the liked link for the current actor
+    ///
+    /// ```rust
+    /// # use activitystreams::{actor::{ApActor, Person}, context};
+    /// # let mut person = ApActor::new(context(), Person::new());
+    /// use activitystreams::prelude::*;
+    ///
+    /// if let Some(liked) = person.liked_unchecked() {
+    ///     println!("{:?}", liked);
+    /// }
+    /// ```
+    fn liked_unchecked<'a>(&'a self) -> Option<&'a IriString>
     where
         Inner: 'a,
     {
@@ -439,9 +541,9 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # person.set_liked(iri!("https://example.com/liked"));
     /// use activitystreams::prelude::*;
     ///
-    /// assert!(person.liked().is_some());
+    /// assert!(person.liked_unchecked().is_some());
     /// person.delete_liked();
-    /// assert!(person.liked().is_none());
+    /// assert!(person.liked_unchecked().is_none());
     /// # Ok(())
     /// # }
     /// ```
@@ -457,11 +559,38 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # let mut person = ApActor::new(context(), Person::new());
     /// use activitystreams::prelude::*;
     ///
-    /// if let Some(streams) = person.streams() {
+    /// if let Ok(streams) = person.streams() {
     ///     println!("{:?}", streams);
     /// }
     /// ```
-    fn streams<'a>(&'a self) -> Option<OneOrMany<&'a IriString>>
+    fn streams<'a, Kind>(&'a self) -> Result<Option<OneOrMany<&'a IriString>>, CheckError>
+    where
+        Inner: 'a,
+        Self: BaseExt<Kind>,
+    {
+        if let Some(streams) = self.streams_unchecked() {
+            for id in &streams {
+                self.check_authority(id)?;
+            }
+
+            Ok(Some(streams))
+        } else {
+            Ok(None)
+        }
+    }
+
+    /// Fetch the streams links for the current actor
+    ///
+    /// ```rust
+    /// # use activitystreams::{actor::{ApActor, Person}, context};
+    /// # let mut person = ApActor::new(context(), Person::new());
+    /// use activitystreams::prelude::*;
+    ///
+    /// if let Some(streams) = person.streams_unchecked() {
+    ///     println!("{:?}", streams);
+    /// }
+    /// ```
+    fn streams_unchecked<'a>(&'a self) -> Option<OneOrMany<&'a IriString>>
     where
         Inner: 'a,
     {
@@ -581,9 +710,9 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # person.set_stream(iri!("https://example.com/streams"));
     /// use activitystreams::prelude::*;
     ///
-    /// assert!(person.streams().is_some());
+    /// assert!(person.streams_unchecked().is_some());
     /// person.delete_streams();
-    /// assert!(person.streams().is_none());
+    /// assert!(person.streams_unchecked().is_none());
     /// # Ok(())
     /// # }
     /// ```
@@ -662,6 +791,71 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
         self
     }
 
+    /// Fetch the endpoints for the current actor, erroring if the Endpoints' domains do not
+    /// match the ID's domain
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// # use activitystreams::{actor::{ApActor, Endpoints, Person}, context};
+    /// # let mut person = ApActor::new(context(), Person::new());
+    /// # person.set_id(context()).set_endpoints(Endpoints {
+    /// #   shared_inbox: Some(context()),
+    /// #   ..Default::default()
+    /// # });
+    /// use activitystreams::prelude::*;
+    ///
+    /// if let Some(endpoints) = person.endpoints()? {
+    ///     println!("{:?}", endpoints);
+    /// }
+    /// # Ok(())
+    /// # }
+    /// ```
+    fn endpoints<'a, Kind>(&'a self) -> Result<Option<Endpoints<&'a IriString>>, CheckError>
+    where
+        Self: BaseExt<Kind>,
+        Inner: 'a,
+        Kind: 'a,
+    {
+        if let Some(endpoints) = self.endpoints_unchecked() {
+            let authority_opt = self.id_unchecked().and_then(|id| id.authority_components());
+
+            let mut any_failed = false;
+
+            any_failed |= endpoints
+                .proxy_url
+                .map(|u| u.authority_components() != authority_opt)
+                .unwrap_or(false);
+            any_failed |= endpoints
+                .oauth_authorization_endpoint
+                .map(|u| u.authority_components() != authority_opt)
+                .unwrap_or(false);
+            any_failed |= endpoints
+                .oauth_token_endpoint
+                .map(|u| u.authority_components() != authority_opt)
+                .unwrap_or(false);
+            any_failed |= endpoints
+                .provide_client_key
+                .map(|u| u.authority_components() != authority_opt)
+                .unwrap_or(false);
+            any_failed |= endpoints
+                .sign_client_key
+                .map(|u| u.authority_components() != authority_opt)
+                .unwrap_or(false);
+            any_failed |= endpoints
+                .shared_inbox
+                .map(|u| u.authority_components() != authority_opt)
+                .unwrap_or(false);
+
+            if any_failed {
+                return Err(CheckError);
+            }
+
+            return Ok(Some(endpoints));
+        }
+
+        Ok(None)
+    }
+
     /// Fetch the endpoints for the current actor
     ///
     /// ```rust
@@ -669,11 +863,11 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # let mut person = ApActor::new(context(), Person::new());
     /// use activitystreams::prelude::*;
     ///
-    /// if let Some(endpoints) = person.endpoints() {
+    /// if let Some(endpoints) = person.endpoints_unchecked() {
     ///     println!("{:?}", endpoints);
     /// }
     /// ```
-    fn endpoints<'a>(&'a self) -> Option<Endpoints<&'a IriString>>
+    fn endpoints_unchecked<'a>(&'a self) -> Option<Endpoints<&'a IriString>>
     where
         Inner: 'a,
     {
@@ -744,9 +938,9 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # person.set_endpoints(Default::default());
     /// use activitystreams::prelude::*;
     ///
-    /// assert!(person.endpoints().is_some());
+    /// assert!(person.endpoints_unchecked().is_some());
     /// person.delete_endpoints();
-    /// assert!(person.endpoints().is_none());
+    /// assert!(person.endpoints_unchecked().is_none());
     /// ```
     fn delete_endpoints(&mut self) -> &mut Self {
         self.ap_actor_mut().endpoints = None;

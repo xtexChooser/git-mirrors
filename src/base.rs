@@ -28,12 +28,13 @@
 //! # }
 //! ```
 use crate::{
+    checked::{check, CheckError},
     either::Either,
     markers,
     primitives::{AnyString, MimeMediaType, OneOrMany},
     unparsed::{Unparsed, UnparsedMut},
 };
-use iri_string::types::IriString;
+use iri_string::types::{IriStr, IriString};
 use mime::Mime;
 
 /// Implements conversion between `Base<Kind>` and other ActivityStreams objects defined in this
@@ -245,6 +246,24 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
         self
     }
 
+    /// Check the authority of a given IRI matches this object's ID
+    ///
+    /// ```rust
+    /// # use activitystreams::{base::BaseExt, object::Video, iri};
+    /// # fn main() -> anyhow::Result<()> {
+    /// # let video = Video::new();
+    /// let res = video.check_authority(&iri!("https://example.com"));
+    /// # Ok(())
+    /// # }
+    /// ```
+    fn check_authority<'a, T: AsRef<IriStr>>(&self, iri: T) -> Result<T, CheckError> {
+        let authority = self
+            .id_unchecked()
+            .and_then(|id| id.authority_components())
+            .ok_or(CheckError)?;
+        check(iri, authority.host(), authority.port())
+    }
+
     /// Fetch the id for the current object
     ///
     /// ```rust
@@ -253,11 +272,40 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     /// #
     /// use activitystreams::prelude::*;
     ///
-    /// if let Some(id) = video.id() {
+    /// if let Ok(Some(id)) = video.id("exmaple.com", Some("443")) {
     ///     println!("{:?}", id);
     /// }
     /// ```
-    fn id<'a>(&'a self) -> Option<&'a IriString>
+    fn id<'a>(&'a self, host: &str, port: Option<&str>) -> Result<Option<&'a IriString>, CheckError>
+    where
+        Kind: 'a,
+    {
+        self.id_unchecked()
+            .and_then(|id| {
+                let authority = id.authority_components()?;
+
+                if authority.host() == host && authority.port() == port {
+                    Some(Ok(id))
+                } else {
+                    Some(Err(CheckError))
+                }
+            })
+            .transpose()
+    }
+
+    /// Fetch the id for the current object
+    ///
+    /// ```rust
+    /// # use activitystreams::object::Video;
+    /// # let mut video = Video::new();
+    /// #
+    /// use activitystreams::prelude::*;
+    ///
+    /// if let Some(id) = video.id_unchecked() {
+    ///     println!("{:?}", id);
+    /// }
+    /// ```
+    fn id_unchecked<'a>(&'a self) -> Option<&'a IriString>
     where
         Kind: 'a,
     {
@@ -272,11 +320,44 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     /// #
     /// use activitystreams::prelude::*;
     ///
-    /// if let Some(id) = video.id_mut() {
+    /// if let Ok(Some(id)) = video.id_mut("example.com", Some("443")) {
     ///     println!("{:?}", id);
     /// }
     /// ```
-    fn id_mut<'a>(&'a mut self) -> Option<&'a mut IriString>
+    fn id_mut<'a>(
+        &'a mut self,
+        host: &str,
+        port: Option<&str>,
+    ) -> Result<Option<&'a mut IriString>, CheckError>
+    where
+        Kind: 'a,
+    {
+        self.id_mut_unchecked()
+            .and_then(|id| {
+                let authority = id.authority_components()?;
+
+                if authority.host() == host && authority.port() == port {
+                    Some(Ok(id))
+                } else {
+                    Some(Err(CheckError))
+                }
+            })
+            .transpose()
+    }
+
+    /// Mutably borrow the ID from the current object
+    ///
+    /// ```rust
+    /// # use activitystreams::object::Video;
+    /// # let mut video = Video::new();
+    /// #
+    /// use activitystreams::prelude::*;
+    ///
+    /// if let Some(id) = video.id_mut_unchecked() {
+    ///     println!("{:?}", id);
+    /// }
+    /// ```
+    fn id_mut_unchecked<'a>(&'a mut self) -> Option<&'a mut IriString>
     where
         Kind: 'a,
     {
@@ -296,7 +377,7 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     /// # }
     /// ```
     fn is_id(&self, id: &IriString) -> bool {
-        self.id() == Some(id)
+        self.id_unchecked() == Some(id)
     }
 
     /// Set the id for the current object
@@ -344,9 +425,9 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     /// #
     /// use activitystreams::prelude::*;
     ///
-    /// assert!(video.id().is_some());
+    /// assert!(video.id_unchecked().is_some());
     /// video.delete_id();
-    /// assert!(video.id().is_none());
+    /// assert!(video.id_unchecked().is_none());
     /// ```
     fn delete_id(&mut self) -> &mut Self {
         self.base_mut().id = None;

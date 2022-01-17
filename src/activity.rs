@@ -24,8 +24,10 @@
 //! ```
 use crate::{
     base::{AnyBase, AsBase, Base, Extends},
+    checked::CheckError,
     markers,
     object::{ApObject, AsObject, Object},
+    prelude::BaseExt,
     primitives::OneOrMany,
     unparsed::{Unparsed, UnparsedMut, UnparsedMutExt},
 };
@@ -420,7 +422,32 @@ pub trait ActorAndObjectRefExt: ActorAndObjectRef {
     /// let actor_ref = create.actor();
     /// println!("{:?}", actor_ref);
     /// ```
-    fn actor(&self) -> &OneOrMany<AnyBase> {
+    fn actor<Kind>(&self) -> Result<&OneOrMany<AnyBase>, CheckError>
+    where
+        Self: BaseExt<Kind>,
+    {
+        let actor = self.actor_unchecked();
+
+        for any_base in actor {
+            let id = any_base.id().ok_or(CheckError)?;
+            self.check_authority(id)?;
+        }
+
+        Ok(actor)
+    }
+
+    /// Fetch the actor for the current activity
+    ///
+    /// ```rust
+    /// # use activitystreams::{context, activity::Create};
+    /// # let mut create = Create::new(context(), context());
+    /// #
+    /// use activitystreams::prelude::*;
+    ///
+    /// let actor_ref = create.actor_unchecked();
+    /// println!("{:?}", actor_ref);
+    /// ```
+    fn actor_unchecked(&self) -> &OneOrMany<AnyBase> {
         self.actor_field_ref()
     }
 
@@ -439,7 +466,7 @@ pub trait ActorAndObjectRefExt: ActorAndObjectRef {
     /// # }
     /// ```
     fn actor_is(&self, id: &IriString) -> bool {
-        self.actor().is_single_id(id)
+        self.actor_unchecked().is_single_id(id)
     }
 
     /// Set the actor for the current activity
@@ -526,7 +553,32 @@ pub trait ActorAndObjectRefExt: ActorAndObjectRef {
     /// let object_ref = create.object();
     /// println!("{:?}", object_ref);
     /// ```
-    fn object(&self) -> &OneOrMany<AnyBase> {
+    fn object<Kind>(&self) -> Result<&OneOrMany<AnyBase>, CheckError>
+    where
+        Self: BaseExt<Kind>,
+    {
+        let object = self.object_unchecked();
+
+        for any_base in object {
+            let id = any_base.id().ok_or(CheckError)?;
+            self.check_authority(id)?;
+        }
+
+        Ok(object)
+    }
+
+    /// Fetch the object for the current activity
+    ///
+    /// ```rust
+    /// # use activitystreams::{context, activity::Create};
+    /// # let mut create = Create::new(context(), context());
+    /// #
+    /// use activitystreams::prelude::*;
+    ///
+    /// let object_ref = create.object_unchecked();
+    /// println!("{:?}", object_ref);
+    /// ```
+    fn object_unchecked(&self) -> &OneOrMany<AnyBase> {
         self.object_field_ref()
     }
 
@@ -545,7 +597,7 @@ pub trait ActorAndObjectRefExt: ActorAndObjectRef {
     /// # }
     /// ```
     fn object_is(&self, id: &IriString) -> bool {
-        self.object().is_single_id(id)
+        self.object_unchecked().is_single_id(id)
     }
 
     /// Set the object for the current activity

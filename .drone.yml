@@ -39,10 +39,43 @@ trigger:
 
 kind: pipeline
 type: docker
-name: tests
+name: tests-amd64
 
 platform:
   arch: amd64
+
+clone:
+  disable: true
+
+steps:
+- name: clone
+  image: alpine/git:latest
+  user: root
+  commands:
+  - git clone $DRONE_GIT_HTTP_URL .
+  - git checkout $DRONE_COMMIT
+  - chown -R 991:991 .
+
+- name: tests
+  image: asonix/rust-builder:latest-linux-amd64
+  pull: always
+  commands:
+  - cargo test
+
+trigger:
+  event:
+    - tag
+    - push
+    - pull_request
+
+---
+
+kind: pipeline
+type: docker
+name: tests-arm64v8
+
+platform:
+  arch: arm64
 
 clone:
   disable: true
@@ -210,6 +243,11 @@ trigger:
   event:
     - tag
 
+depends_on:
+- clippy
+- tests-amd64
+- tests-arm64v8
+
 ---
 
 kind: pipeline
@@ -242,6 +280,11 @@ trigger:
   event:
     - tag
 
+depends_on:
+- clippy
+- tests-amd64
+- tests-arm64v8
+
 ---
 
 kind: pipeline
@@ -273,6 +316,11 @@ steps:
 trigger:
   event:
     - tag
+
+depends_on:
+- clippy
+- tests-amd64
+- tests-arm64v8
 
 ---
 
@@ -328,8 +376,6 @@ steps:
   - cargo publish -p activitystreams-ext --token $CRATES_IO_TOKEN
 
 depends_on:
-- clippy
-- tests
 - build-amd64
 - build-arm64v8
 - build-arm32v7

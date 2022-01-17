@@ -298,6 +298,7 @@
 pub mod activity;
 pub mod actor;
 pub mod base;
+pub mod checked;
 pub mod collection;
 mod either;
 pub mod link;

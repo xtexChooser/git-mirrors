@@ -19,8 +19,8 @@ members = [
 ]
 
 [dependencies]
-activitystreams-kinds = { version = "0.1.0", path = "./activitystreams-kinds/", default-features = false, features = ["iri-string"] }
-iri-string = { version = "0.4.1", features = ["serde", "serde-std"] }
+activitystreams-kinds = { version = "0.2.0", path = "./activitystreams-kinds/", default-features = false, features = ["iri-string"] }
+iri-string = { version = "0.5.0-beta.1", features = ["alloc", "serde", "serde-alloc", "serde-std", "std"] }
 mime = "0.3"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
