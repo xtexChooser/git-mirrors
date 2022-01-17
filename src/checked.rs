@@ -11,7 +11,7 @@ impl std::fmt::Display for CheckError {
 
 impl std::error::Error for CheckError {}
 
-pub(crate) fn check<'a, T: AsRef<IriStr>>(
+pub(crate) fn check<T: AsRef<IriStr>>(
     iri: T,
     host: &str,
     port: Option<&str>,

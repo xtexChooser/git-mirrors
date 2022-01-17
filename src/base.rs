@@ -256,7 +256,7 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     /// # Ok(())
     /// # }
     /// ```
-    fn check_authority<'a, T: AsRef<IriStr>>(&self, iri: T) -> Result<T, CheckError> {
+    fn check_authority<T: AsRef<IriStr>>(&self, iri: T) -> Result<T, CheckError> {
         let authority = self
             .id_unchecked()
             .and_then(|id| id.authority_components())
