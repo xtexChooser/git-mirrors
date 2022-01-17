@@ -24,7 +24,6 @@ iri-string = { version = "0.5.0-beta.1", features = ["alloc", "serde", "serde-al
 mime = "0.3"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-thiserror = "1.0"
 time = { version = "0.3.5", features = ["formatting", "parsing"] }
 
 [dev-dependencies]

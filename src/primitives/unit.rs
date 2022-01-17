@@ -242,10 +242,17 @@ enum Length {
     Meters,
 }
 
-#[derive(Clone, Debug, thiserror::Error)]
-#[error("Could not parse units")]
+#[derive(Clone, Debug)]
 /// The error type produced when a Length cannot be parsed
 struct LengthError;
+
+impl std::fmt::Display for LengthError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Could not parse units")
+    }
+}
+
+impl std::error::Error for LengthError {}
 
 impl Length {
     fn is_centimeters(&self) -> bool {

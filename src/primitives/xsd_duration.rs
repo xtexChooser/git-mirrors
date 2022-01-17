@@ -45,9 +45,16 @@
 pub struct XsdDuration(pub time::Duration);
 
 /// The error type produced when an XsdDuration cannot be parsed
-#[derive(Clone, Debug, thiserror::Error)]
-#[error("Error parsing Duration")]
+#[derive(Clone, Debug)]
 pub struct XsdDurationError;
+
+impl std::fmt::Display for XsdDurationError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Could not parse Duration")
+    }
+}
+
+impl std::error::Error for XsdDurationError {}
 
 impl XsdDuration {
     /// Create a new XsdDuration from a time::Duration
