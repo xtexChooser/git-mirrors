@@ -46,9 +46,10 @@ platform:
 
 steps:
 - name: tests
-  image: rust:1-alpine
+  image: alpine:edge
   pull: always
   commands:
+  - apk add rust cargo
   - cargo test
 
 trigger:
@@ -68,9 +69,10 @@ platform:
 
 steps:
 - name: tests
-  image: rust:1-alpine
+  image: alpine:edge
   pull: always
   commands:
+  - apk add rust cargo
   - cargo test
 
 trigger:
