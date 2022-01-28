@@ -25,14 +25,16 @@
 use crate::{
     base::{AnyBase, AsBase, Base, Extends},
     checked::CheckError,
+    either::Either,
     markers,
     object::{ApObject, AsObject, Object},
     prelude::BaseExt,
-    primitives::OneOrMany,
+    primitives::{OneOrMany, XsdBoolean, XsdDateTime},
     unparsed::{Unparsed, UnparsedMut, UnparsedMutExt},
 };
 use iri_string::types::IriString;
 use std::convert::TryFrom;
+use time::OffsetDateTime;
 
 pub use activitystreams_kinds::activity as kind;
 
@@ -1418,6 +1420,185 @@ pub trait QuestionExt: AsQuestion {
         self.question_mut().any_of = None;
         self
     }
+
+    /// Fetch the closed field for the current activity
+    ///
+    /// ```rust
+    /// # use activitystreams::activity::Question;
+    /// # let mut question = Question::new();
+    /// #
+    /// use activitystreams::prelude::*;
+    ///
+    /// if let Some(closed) = question.closed() {
+    ///     println!("{:?}", closed);
+    /// }
+    /// ```
+    fn closed(&self) -> Option<Either<&OneOrMany<AnyBase>, Either<OffsetDateTime, bool>>> {
+        self.question_ref().closed.as_ref().map(|either| {
+            either
+                .as_ref()
+                .map(|l| l, |r| r.as_ref().map(|l| *l.as_datetime(), |r| r.0))
+        })
+    }
+
+    /// Set the closed field for the current activity
+    ///
+    /// This overwrites the contents of any_of
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// use activitystreams::prelude::*;
+    /// # use activitystreams::{activity::Question, iri};
+    /// # let mut question = Question::new();
+    ///
+    /// question.set_closed_base(iri!("https://example.com/one"));
+    /// # Ok(())
+    /// # }
+    /// ```
+    fn set_closed_base<T>(&mut self, closed: T) -> &mut Self
+    where
+        T: Into<AnyBase>,
+    {
+        self.question_mut().closed = Some(Either::Left(OneOrMany::from_one(closed.into())));
+        self
+    }
+
+    /// Set many closed items for the current activity
+    ///
+    /// This overwrites the contents of any_of
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// use activitystreams::prelude::*;
+    /// # use activitystreams::{activity::Question, iri};
+    /// # let mut question = Question::new();
+    ///
+    /// question.set_many_closed_bases(vec![
+    ///     iri!("https://example.com/one"),
+    ///     iri!("https://example.com/two"),
+    /// ]);
+    /// # Ok(())
+    /// # }
+    /// ```
+    fn set_many_closed_bases<I, T>(&mut self, closed: I) -> &mut Self
+    where
+        I: IntoIterator<Item = T>,
+        T: Into<AnyBase>,
+    {
+        let many = OneOrMany::from_many(closed.into_iter().map(|t| t.into()).collect());
+        self.question_mut().closed = Some(Either::Left(many));
+        self
+    }
+
+    /// Set the closed field as a date
+    ///
+    /// This overwrites the contents of any_of
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// use activitystreams::prelude::*;
+    /// # use activitystreams::{activity::Question, iri};
+    /// # let mut question = Question::new();
+    ///
+    /// question.set_closed_date(time::OffsetDateTime::now_utc());
+    /// # Ok(())
+    /// # }
+    /// ```
+    fn set_closed_date(&mut self, closed: OffsetDateTime) -> &mut Self {
+        self.question_mut().closed = Some(Either::Right(Either::Left(closed.into())));
+        self
+    }
+
+    /// Set the closed field as a boolean
+    ///
+    /// This overwrites the contents of any_of
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// use activitystreams::prelude::*;
+    /// # use activitystreams::{activity::Question, iri};
+    /// # let mut question = Question::new();
+    ///
+    /// question.set_closed_bool(true);
+    /// # Ok(())
+    /// # }
+    /// ```
+    fn set_closed_bool(&mut self, closed: bool) -> &mut Self {
+        self.question_mut().closed = Some(Either::Right(Either::Right(closed.into())));
+        self
+    }
+
+    /// Add an object or link to the closed field
+    ///
+    /// This overwrites the contents of any_of
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// use activitystreams::prelude::*;
+    /// # use activitystreams::{activity::Question, iri};
+    /// # let mut question = Question::new();
+    ///
+    /// question
+    ///     .add_closed_base(iri!("https://example.com/one"))
+    ///     .add_closed_base(iri!("https://example.com/two"));
+    /// # Ok(())
+    /// # }
+    /// ```
+    fn add_closed_base<T>(&mut self, closed: T) -> &mut Self
+    where
+        T: Into<AnyBase>,
+    {
+        let one_or_many = match self.question_mut().closed.take() {
+            Some(Either::Left(mut one_or_many)) => {
+                one_or_many.add(closed.into());
+                one_or_many
+            }
+            _ => OneOrMany::from_one(closed.into()),
+        };
+
+        self.question_mut().closed = Some(Either::Left(one_or_many));
+        self
+    }
+
+    /// Take the closed field from the current activity
+    ///
+    /// ```rust
+    /// # use activitystreams::activity::Question;
+    /// # let mut question = Question::new();
+    /// #
+    /// use activitystreams::prelude::*;
+    ///
+    /// if let Some(closed) = question.take_closed() {
+    ///     println!("{:?}", closed);
+    /// }
+    /// ```
+    fn take_closed(&mut self) -> Option<Either<OneOrMany<AnyBase>, Either<OffsetDateTime, bool>>> {
+        self.question_mut()
+            .closed
+            .take()
+            .map(|either| either.map(|l| l, |r| r.map(|date| date.into(), |b| b.into())))
+    }
+
+    /// Remove the closed field from the current activity
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// # use activitystreams::{activity::Question, iri};
+    /// # let mut question = Question::new();
+    /// # question.set_closed_bool(true);
+    /// #
+    /// use activitystreams::prelude::*;
+    ///
+    /// assert!(question.closed().is_some());
+    /// question.delete_closed();
+    /// assert!(question.closed().is_none());
+    /// # Ok(())
+    /// # }
+    /// ```
+    fn delete_closed(&mut self) -> &mut Self {
+        self.question_mut().closed = None;
+        self
+    }
 }
 
 /// Indicates that the actor accepts the object.
@@ -1939,6 +2120,13 @@ pub struct Question {
     /// - Functional: false
     #[serde(skip_serializing_if = "Option::is_none")]
     any_of: Option<OneOrMany<AnyBase>>,
+
+    /// Indicates that a question has been closed, and answers are no longer accepted.
+    ///
+    /// - Range: Object | Link | xsd:datetime | xsd:boolean
+    /// - Functional: false
+    #[serde(skip_serializing_if = "Option::is_none")]
+    closed: Option<Either<OneOrMany<AnyBase>, Either<XsdDateTime, XsdBoolean>>>,
 
     /// base fields and unparsed json ends up here
     #[serde(flatten)]
@@ -2619,6 +2807,7 @@ impl Question {
         Question {
             one_of: None,
             any_of: None,
+            closed: None,
             inner: Activity::new(),
         }
     }
@@ -2647,10 +2836,12 @@ impl Question {
 
         let one_of = inner.remove("oneOf")?;
         let any_of = inner.remove("anyOf")?;
+        let closed = inner.remove("closed")?;
 
         Ok(Question {
             one_of,
             any_of,
+            closed,
             inner,
         })
     }
@@ -2659,10 +2850,14 @@ impl Question {
         let Question {
             one_of,
             any_of,
+            closed,
             mut inner,
         } = self;
 
-        inner.insert("oneOf", one_of)?.insert("anyOf", any_of)?;
+        inner
+            .insert("oneOf", one_of)?
+            .insert("anyOf", any_of)?
+            .insert("closed", closed)?;
 
         inner.retracting()
     }

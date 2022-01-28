@@ -1,7 +1,7 @@
 [package]
 name = "activitystreams"
 description = "A set of core types and traits for activitystreams data"
-version = "0.7.0-alpha.16"
+version = "0.7.0-alpha.17"
 license = "GPL-3.0"
 authors = ["asonix <asonix@asonix.dog>"]
 repository = "https://git.asonix.dog/Aardwolf/activitystreams"
@@ -13,14 +13,17 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [workspace]
-members = [
-    "activitystreams-ext",
-    "activitystreams-kinds"
-]
+members = ["activitystreams-ext", "activitystreams-kinds"]
 
 [dependencies]
-activitystreams-kinds = { version = "0.2.0", path = "./activitystreams-kinds/", default-features = false, features = ["iri-string"] }
-iri-string = { version = "0.5.0-beta.1", features = ["serde", "serde-std", "std"] }
+activitystreams-kinds = { version = "0.2.0", path = "./activitystreams-kinds/", default-features = false, features = [
+  "iri-string",
+] }
+iri-string = { version = "0.5.0-beta.1", features = [
+  "serde",
+  "serde-std",
+  "std",
+] }
 mime = "0.3"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"

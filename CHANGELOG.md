@@ -1,5 +1,10 @@
 # Unreleased
 
+# 0.7.0-alpha.17
+- add `XsdBoolean` for `xsd:boolean` serde compatibility
+- add `closed` field for `Question` (range Object | Link | xsd:datetime | xsd:boolean), and related
+  getters and setters
+
 # 0.7.0-alpha.16
 - implement `IntoIterator` for `&OneOrMany<T>` and `&mut OneOrMany<T>`
 - add `check` function for verifying an IRI's authority

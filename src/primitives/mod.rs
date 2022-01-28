@@ -18,6 +18,7 @@ mod one_or_many;
 mod rdf_lang_string;
 mod serde_parse;
 mod unit;
+mod xsd_boolean;
 mod xsd_datetime;
 mod xsd_duration;
 
@@ -26,6 +27,7 @@ pub use self::{
     one_or_many::OneOrMany,
     rdf_lang_string::RdfLangString,
     unit::Unit,
+    xsd_boolean::XsdBoolean,
     xsd_datetime::XsdDateTime,
     xsd_duration::{XsdDuration, XsdDurationError},
 };
