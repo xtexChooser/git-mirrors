@@ -1,5 +1,8 @@
 # Unreleased
 
+# 0.7.0-alpha.18
+- expose `Either` type publicly
+
 # 0.7.0-alpha.17
 - add `XsdBoolean` for `xsd:boolean` serde compatibility
 - add `closed` field for `Question` (range Object | Link | xsd:datetime | xsd:boolean), and related

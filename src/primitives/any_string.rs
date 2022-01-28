@@ -1,7 +1,4 @@
-use crate::{
-    either::Either,
-    primitives::{OneOrMany, RdfLangString},
-};
+use crate::primitives::{Either, OneOrMany, RdfLangString};
 
 /// A type representing any kind of string
 ///

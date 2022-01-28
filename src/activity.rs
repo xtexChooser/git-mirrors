@@ -25,11 +25,10 @@
 use crate::{
     base::{AnyBase, AsBase, Base, Extends},
     checked::CheckError,
-    either::Either,
     markers,
     object::{ApObject, AsObject, Object},
     prelude::BaseExt,
-    primitives::{OneOrMany, XsdBoolean, XsdDateTime},
+    primitives::{Either, OneOrMany, XsdBoolean, XsdDateTime},
     unparsed::{Unparsed, UnparsedMut, UnparsedMutExt},
 };
 use iri_string::types::IriString;
@@ -1437,7 +1436,7 @@ pub trait QuestionExt: AsQuestion {
         self.question_ref().closed.as_ref().map(|either| {
             either
                 .as_ref()
-                .map(|l| l, |r| r.as_ref().map(|l| *l.as_datetime(), |r| r.0))
+                .map_right(|r| r.as_ref().map_left(|l| *l.as_datetime()).map_right(|r| r.0))
         })
     }
 
@@ -1576,7 +1575,7 @@ pub trait QuestionExt: AsQuestion {
         self.question_mut()
             .closed
             .take()
-            .map(|either| either.map(|l| l, |r| r.map(|date| date.into(), |b| b.into())))
+            .map(|either| either.map_right(|r| r.map(|date| date.into(), |b| b.into())))
     }
 
     /// Remove the closed field from the current activity

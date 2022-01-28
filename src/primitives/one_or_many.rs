@@ -1,4 +1,4 @@
-use crate::either::Either;
+use crate::primitives::Either;
 
 /// A type representing at least one value
 ///

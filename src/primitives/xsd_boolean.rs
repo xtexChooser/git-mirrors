@@ -1,4 +1,4 @@
-use crate::either::Either;
+use crate::primitives::Either;
 use serde::{Deserialize, Serialize};
 use std::ops::{Deref, DerefMut};
 

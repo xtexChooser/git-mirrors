@@ -29,9 +29,8 @@
 //! ```
 use crate::{
     checked::{check, CheckError},
-    either::Either,
     markers,
-    primitives::{AnyString, MimeMediaType, OneOrMany},
+    primitives::{AnyString, Either, MimeMediaType, OneOrMany},
     unparsed::{Unparsed, UnparsedMut},
 };
 use iri_string::types::{IriStr, IriString};

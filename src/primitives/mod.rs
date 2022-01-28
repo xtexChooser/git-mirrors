@@ -14,6 +14,7 @@
 //! ```
 
 mod any_string;
+mod either;
 mod one_or_many;
 mod rdf_lang_string;
 mod serde_parse;
@@ -24,6 +25,7 @@ mod xsd_duration;
 
 pub use self::{
     any_string::AnyString,
+    either::Either,
     one_or_many::OneOrMany,
     rdf_lang_string::RdfLangString,
     unit::Unit,
