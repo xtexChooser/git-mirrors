@@ -11,7 +11,7 @@
 	"license-name": "GPL-2.0-or-later",
 	"type": "other",
 	"requires": {
-		"MediaWiki": ">= 1.27.4"
+		"MediaWiki": ">= 1.29.0"
 	},
 	"AutoloadClasses": {
 		"CategoryWatch\\EchoEventPresentationModel": "src/EchoEventPresentationModel.php",

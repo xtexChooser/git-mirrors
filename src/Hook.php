@@ -168,7 +168,7 @@ class Hook {
 	 * @return bool
 	 */
 	private static function addUserBatchForWatch( array $watchers, Title $target ) {
-		if ( wfReadOnly() ) {
+		if ( MediaWikiServices::getInstance()->getReadOnlyMode()->isReadOnly() ) {
 			return false;
 		}
 
