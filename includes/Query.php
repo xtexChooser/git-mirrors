@@ -315,9 +315,9 @@ class Query {
 
 			if ( $calcRows ) {
 				$calcRowsResult = $this->DB->query( 'SELECT FOUND_ROWS() AS rowcount', __METHOD__ );
-				$total = $this->DB->fetchRow( $calcRowsResult );
+				$total = $calcRowsResult->fetchRow();
 				$this->foundRows = intval( $total['rowcount'] );
-				$this->DB->freeResult( $calcRowsResult );
+				$calcRowsResult->free();
 			}
 		} catch ( Exception $e ) {
 			$queryError = true;
@@ -653,7 +653,7 @@ class Query {
 		}
 
 		$categories = array_unique( $categories );
-		$DB->freeResult( $result );
+		$result->free();
 
 		return $categories;
 	}
@@ -1993,23 +1993,25 @@ class Query {
 	 * @param mixed $option
 	 */
 	private function _titlegt( $option ) {
-		$where = '(';
-
-		if ( substr( $option, 0, 2 ) == '=_' ) {
-			if ( $this->parameters->getParameter( 'openreferences' ) ) {
-				$where .= 'pl_title >= ' . $this->DB->addQuotes( substr( $option, 2 ) );
-			} else {
-				$where .= $this->tableNames['page'] . '.page_title >= ' . $this->DB->addQuotes( substr( $option, 2 ) );
-			}
-		} else {
-			if ( $this->parameters->getParameter( 'openreferences' ) ) {
-				$where .= 'pl_title > ' . $this->DB->addQuotes( $option );
-			} else {
-				$where .= $this->tableNames['page'] . '.page_title > ' . $this->DB->addQuotes( $option );
-			}
+		$operator = '>';
+		if ( substr( $option, 0, 2 ) === '=_' ) {
+			$option = substr( $option, 2 );
+			$operator = '>=';
 		}
 
-		$where .= ')';
+		if ( $option === '' ) {
+			$operator = 'LIKE';
+			$option = '%';
+		} else {
+			$option = $this->DB->addQuotes( $option );
+		}
+
+		if ( $this->parameters->getParameter( 'openreferences' ) ) {
+			$where = "(pl_title {$operator} {$option})";
+		} else {
+			$where = "({$this->tableNames['page']}.page_title {$operator} {$option})";
+		}
+
 		$this->addWhere( $where );
 	}
 
@@ -2019,23 +2021,25 @@ class Query {
 	 * @param mixed $option
 	 */
 	private function _titlelt( $option ) {
-		$where = '(';
-
-		if ( substr( $option, 0, 2 ) == '=_' ) {
-			if ( $this->parameters->getParameter( 'openreferences' ) ) {
-				$where .= 'pl_title <= ' . $this->DB->addQuotes( substr( $option, 2 ) );
-			} else {
-				$where .= $this->tableNames['page'] . '.page_title <= ' . $this->DB->addQuotes( substr( $option, 2 ) );
-			}
-		} else {
-			if ( $this->parameters->getParameter( 'openreferences' ) ) {
-				$where .= 'pl_title < ' . $this->DB->addQuotes( $option );
-			} else {
-				$where .= $this->tableNames['page'] . '.page_title < ' . $this->DB->addQuotes( $option );
-			}
+		$operator = '<';
+		if ( substr( $option, 0, 2 ) === '=_' ) {
+			$option = substr( $option, 2 );
+			$operator = '<=';
 		}
 
-		$where .= ')';
+		if ( $option === '' ) {
+			$operator = 'LIKE';
+			$option = '%';
+		} else {
+			$option = $this->DB->addQuotes( $option );
+		}
+
+		if ( $this->parameters->getParameter( 'openreferences' ) ) {
+			$where = "(pl_title {$operator} {$option})";
+		} else {
+			$where = "({$this->tableNames['page']}.page_title {$operator} {$option})";
+		}
+
 		$this->addWhere( $where );
 	}
 

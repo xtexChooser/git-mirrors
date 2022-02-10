@@ -1,17 +1,17 @@
 {
 	"name": "DynamicPageList3",
-	"version": "3.3.7",
+	"version": "3.3.9",
 	"author": [
+		"'''Universal Omega'''",
 		"Alexia E. Smith",
-		"[https://meta.miraheze.org/wiki/User:Universal_Omega Universal Omega]",
-		"[https://de.wikipedia.org/wiki/Benutzer:Algorithmix Gero Scholz]"
+		"Gero Scholz"
 	],
 	"url": "https://www.mediawiki.org/wiki/Extension:DynamicPageList3",
 	"descriptionmsg": "dpl-desc",
 	"license-name": "GPL-3.0-or-later",
 	"type": "parserhook",
 	"requires": {
-		"MediaWiki": ">= 1.36.0"
+		"MediaWiki": ">= 1.35.0"
 	},
 	"GroupPermissions": {
 		"sysop": {

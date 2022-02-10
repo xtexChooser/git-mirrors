@@ -286,7 +286,7 @@ class Parameters extends ParametersData {
 
 		$parameters = $this->getParametersForRichness();
 		foreach ( $parameters as $parameter ) {
-			if ( $this->getData( $parameter )['default'] !== null && !( $this->getData( $parameter )['default'] === false && $this->getData( $parameter )['boolean'] === true ) ) {
+			if ( $this->getData( $parameter )['default'] !== null && !( $this->getData( $parameter )['default'] === false && ( $this->getData( $parameter )['boolean'] ?? false ) === true ) ) {
 				if ( $parameter == 'debug' ) {
 					DynamicPageListHooks::setDebugLevel( $this->getData( $parameter )['default'] );
 				}
@@ -407,8 +407,8 @@ class Parameters extends ParametersData {
 			// would throw an error due to a bad regex from user input.
 
 			// phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
-			if ( @preg_match( $regex, null ) === false ) {
-				// @phan-suppress-previous-line PhanParamSuspiciousOrder, PhanTypeMismatchArgumentInternalProbablyReal
+			if ( @preg_match( $regex, '' ) === false ) {
+				// @phan-suppress-previous-line PhanParamSuspiciousOrder
 				return false;
 			}
 		}
@@ -724,7 +724,9 @@ class Parameters extends ParametersData {
 	 * @return bool
 	 */
 	public function _openreferences( $option ) {
-		$option = $this->filterBoolean( $option );
+		if ( $option !== 'missing' ) {
+			$option = $this->filterBoolean( $option );
+		}
 
 		if ( $option === null ) {
 			return false;
