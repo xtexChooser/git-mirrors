@@ -1,5 +1,8 @@
 # Unreleased
 
+# 0.7.0-alpha.19
+- Add `.as_str()`, `.language()` and `impl AsRef<str>` for `AnyString`
+
 # 0.7.0-alpha.18
 - expose `Either` type publicly
 

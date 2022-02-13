@@ -11,7 +11,7 @@
 //! First, add ActivityStreams to your dependencies
 //! ```toml
 //! [dependencies]
-//! activitystreams = "0.7.0-alpha.11"
+//! activitystreams = "0.7.0-alpha.19"
 //! ```
 //!
 //! ### Types

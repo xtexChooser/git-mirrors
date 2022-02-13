@@ -11,7 +11,7 @@ _A set of Traits and Types that make up the ActivityStreams and ActivityPub spec
 First, add ActivityStreams to your dependencies
 ```toml
 [dependencies]
-activitystreams = "0.7.0-alpha.11"
+activitystreams = "0.7.0-alpha.19"
 ```
 
 ### Types
@@ -164,14 +164,14 @@ If you want to make a function that manipulates an Activity, but not a normal ob
 bound the function like so:
 
 ```rust
-use activitystreams::{base::BaseExt, context, markers::Activity, uri};
+use activitystreams::{base::BaseExt, context, markers::Activity, iri};
 
 fn manipulator<T, Kind>(mut activity: T) -> Result<(), anyhow::Error>
 where
     T: Activity + BaseExt<Kind>,
 {
     activity
-        .set_id(uri!("https://example.com"))
+        .set_id(iri!("https://example.com"))
         .set_context(context());
     Ok(())
 }
@@ -205,7 +205,7 @@ use activitystreams::{
     context,
     object::{ApObject, Video},
     prelude::*,
-    uri,
+    iri,
 };
 
 fn main() -> Result<(), anyhow::Error> {
@@ -213,12 +213,12 @@ fn main() -> Result<(), anyhow::Error> {
 
     video
         .set_context(context())
-        .set_id(uri!("https://example.com/@example/lions"))
+        .set_id(iri!("https://example.com/@example/lions"))
         .set_media_type("video/webm".parse()?)
-        .set_url(uri!("https://example.com/@example/lions/video.webm"))
+        .set_url(iri!("https://example.com/@example/lions/video.webm"))
         .set_summary("A cool video")
         .set_duration("PT4M20S".parse()?)
-        .set_shares(uri!("https://example.com/@example/lions/video.webm#shares"));
+        .set_shares(iri!("https://example.com/@example/lions/video.webm#shares"));
 
     println!("Video, {:#?}", video);
 

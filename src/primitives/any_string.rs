@@ -155,6 +155,56 @@ impl AnyString {
     {
         self.0 = Either::Right(string.into());
     }
+
+    /// Borrow the inner str
+    ///
+    /// ```rust
+    /// use activitystreams::primitives::{AnyString, RdfLangString};
+    /// let any_string = AnyString::from_xsd_string("hi");
+    ///
+    /// assert_eq!(any_string.as_str(), "hi");
+    ///
+    /// let any_string = AnyString::from_rdf_lang_string(RdfLangString {
+    ///     value: "hi".into(),
+    ///     language: "en".into(),
+    /// });
+    ///
+    /// assert_eq!(any_string.as_str(), "hi");
+    /// ```
+    pub fn as_str(&self) -> &str {
+        match self.0 {
+            Either::Left(ref s) => s,
+            Either::Right(ref lang_str) => &lang_str.value,
+        }
+    }
+
+    /// Borrow the inner language
+    ///
+    /// ```rust
+    /// use activitystreams::primitives::{AnyString, RdfLangString};
+    /// let any_string = AnyString::from_xsd_string("hi");
+    ///
+    /// assert_eq!(any_string.language(), None);
+    ///
+    /// let any_string = AnyString::from_rdf_lang_string(RdfLangString {
+    ///     value: "hi".into(),
+    ///     language: "en".into(),
+    /// });
+    ///
+    /// assert_eq!(any_string.language(), Some("en"));
+    /// ```
+    pub fn language(&self) -> Option<&str> {
+        match self.0 {
+            Either::Left(_) => None,
+            Either::Right(ref lang_str) => Some(&lang_str.language),
+        }
+    }
+}
+
+impl AsRef<str> for AnyString {
+    fn as_ref(&self) -> &str {
+        self.as_str()
+    }
 }
 
 impl OneOrMany<AnyString> {
