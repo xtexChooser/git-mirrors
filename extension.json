@@ -1,6 +1,6 @@
 {
 	"name": "DynamicPageList3",
-	"version": "3.3.9",
+	"version": "3.3.10",
 	"author": [
 		"'''Universal Omega'''",
 		"Alexia E. Smith",
@@ -24,7 +24,7 @@
 		"dpl_param_delete_rules"
 	],
 	"MessagesDirs": {
-		"DynamicPageList": [
+		"DynamicPageList3": [
 			"i18n"
 		]
 	},
