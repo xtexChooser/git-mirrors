@@ -49,8 +49,7 @@ fn main() -> Result<(), Error> {
     let v: Vec<ApObject<Page>> = collection
         .take_items()
         .into_iter()
-        .map(|o| o.into_iter())
-        .flatten()
+        .flat_map(|o| o.into_iter())
         .filter_map(|any_base| any_base.take_base())
         .map(|base| base.solidify().and_then(|o| o.extend()))
         .collect::<Result<Vec<_>, _>>()?;
