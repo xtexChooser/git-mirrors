@@ -1,14 +1,24 @@
 name: Backport
 on:
   pull_request_target:
-    types: [opened, closed, labeled, unlabeled, synchronize]
+    types:
+      - labeled
+      - closed
 
 jobs:
   backport:
     name: Backport Action
     runs-on: ubuntu-latest
+    if: |
+      github.event.pull_request.merged == true
+      && contains(github.event.pull_request.labels.*.name, 'auto-backport')
+      && (
+        (github.event.action == 'labeled' && github.event.label.name == 'auto-backport')
+        || (github.event.action == 'closed')
+      )
     steps:
       - name: Backport
-        uses: sqren/backport-github-action@v7.3.2
+        uses: sqren/backport-github-action@v7.4.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          auto_backport_label_prefix: backport-to-
