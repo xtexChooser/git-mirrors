@@ -138,6 +138,13 @@ class Query {
 	private $foundRows = 0;
 
 	/**
+	 * Was the revision auxiliary table select added for firstedit and lastedit?
+	 *
+	 * @var bool
+	 */
+	private $revisionAuxWhereAdded = false;
+
+	/**
 	 * UserFactory object
 	 *
 	 * @var UserFactory
@@ -713,13 +720,12 @@ class Query {
 		// Addauthor can not be used with addlasteditor.
 		if ( !isset( $this->parametersProcessed['addlasteditor'] ) || !$this->parametersProcessed['addlasteditor'] ) {
 			$this->addTable( 'revision', 'rev' );
-			$this->addSelect( [ 'min_timestamp' => 'MIN(rev.rev_timestamp)' ] );
 			$this->addWhere(
 				[
-					$this->tableNames['page'] . '.page_id = rev.rev_page'
+					$this->tableNames['page'] . '.page_id = rev.rev_page',
+					'rev.rev_timestamp = (SELECT MIN(rev_aux_min.rev_timestamp) FROM ' . $this->tableNames['revision'] . ' AS rev_aux_min WHERE rev_aux_min.rev_page = rev.rev_page)'
 				]
 			);
-			$this->addGroupBy( $this->tableNames['page'] . '.page_id' );
 
 			$this->_adduser( null, 'rev' );
 		}
@@ -812,13 +818,13 @@ class Query {
 		// Addlasteditor can not be used with addauthor.
 		if ( !isset( $this->parametersProcessed['addauthor'] ) || !$this->parametersProcessed['addauthor'] ) {
 			$this->addTable( 'revision', 'rev' );
-			$this->addSelect( [ 'max_timestamp' => 'MAX(rev.rev_timestamp)' ] );
+
 			$this->addWhere(
 				[
-					$this->tableNames['page'] . '.page_id = rev.rev_page'
+					$this->tableNames['page'] . '.page_id = rev.rev_page',
+					'rev.rev_timestamp = (SELECT MAX(rev_aux_max.rev_timestamp) FROM ' . $this->tableNames['revision'] . ' AS rev_aux_max WHERE rev_aux_max.rev_page = rev.rev_page)'
 				]
 			);
-			$this->addGroupBy( $this->tableNames['page'] . '.page_id' );
 
 			$this->_adduser( null, 'rev' );
 		}
@@ -1092,14 +1098,27 @@ class Query {
 	 */
 	private function _firstrevisionsince( $option ) {
 		$this->addTable( 'revision', 'rev' );
-		$this->addSelect( [ 'rev.rev_id', 'rev.rev_timestamp', 'min_timestamp' => 'MIN(rev.rev_timestamp)' ] );
+		$this->addSelect(
+			[
+				'rev.rev_id',
+				'rev.rev_timestamp'
+			]
+		);
+
+		// tell the query optimizer not to look at rows that the following subquery will filter out anyway
 		$this->addWhere(
 			[
 				$this->tableNames['page'] . '.page_id = rev.rev_page',
-				'min_timestamp >= ' . $this->convertTimestamp( $option )
+				'rev.rev_timestamp >= ' . $this->DB->addQuotes( $option )
 			]
 		);
-		$this->addGroupBy( $this->tableNames['page'] . '.page_id' );
+
+		$this->addWhere(
+			[
+				$this->tableNames['page'] . '.page_id = rev.rev_page',
+				'rev.rev_timestamp = (SELECT MIN(rev_aux_snc.rev_timestamp) FROM ' . $this->tableNames['revision'] . ' AS rev_aux_snc WHERE rev_aux_snc.rev_page=rev.rev_page AND rev_aux_snc.rev_timestamp >= ' . $this->convertTimestamp( $option ) . ')'
+			]
+		);
 	}
 
 	/**
@@ -1204,14 +1223,22 @@ class Query {
 	 */
 	private function _lastrevisionbefore( $option ) {
 		$this->addTable( 'revision', 'rev' );
-		$this->addSelect( [ 'rev.rev_id', 'rev.rev_timestamp', 'max_timestamp' => 'MAX(rev.rev_timestamp)' ] );
+		$this->addSelect( [ 'rev.rev_id', 'rev.rev_timestamp' ] );
+
+		// tell the query optimizer not to look at rows that the following subquery will filter out anyway
 		$this->addWhere(
 			[
 				$this->tableNames['page'] . '.page_id = rev.rev_page',
-				'max_timestamp < ' . $this->convertTimestamp( $option )
+				'rev.rev_timestamp < ' . $this->convertTimestamp( $option )
 			]
 		);
-		$this->addGroupBy( $this->tableNames['page'] . '.page_id' );
+
+		$this->addWhere(
+			[
+				$this->tableNames['page'] . '.page_id = rev.rev_page',
+				'rev.rev_timestamp = (SELECT MAX(rev_aux_bef.rev_timestamp) FROM ' . $this->tableNames['revision'] . ' AS rev_aux_bef WHERE rev_aux_bef.rev_page=rev.rev_page AND rev_aux_bef.rev_timestamp < ' . $this->convertTimestamp( $option ) . ')'
+			]
+		);
 	}
 
 	/**
@@ -1715,22 +1742,45 @@ class Query {
 					}
 					break;
 				case 'firstedit':
+					$this->addOrderBy( 'rev.rev_timestamp' );
 					$this->addTable( 'revision', 'rev' );
-					$this->addSelect( [ 'min_timestamp' => 'MIN(rev.rev_timestamp)' ] );
-					$this->addWhere( [ "{$this->tableNames['page']}.page_id = rev.rev_page" ] );
-					$this->addGroupBy( $this->tableNames['page'] . '.page_id' );
-					$this->addOrderBy( 'min_timestamp' );
+
+					$this->addSelect(
+						[
+							'rev.rev_timestamp'
+						]
+					);
+
+					if ( !$this->revisionAuxWhereAdded ) {
+						$this->addWhere(
+							[
+								"{$this->tableNames['page']}.page_id = rev.rev_page",
+								"rev.rev_timestamp = (SELECT MIN(rev_aux.rev_timestamp) FROM {$this->tableNames['revision']} AS rev_aux WHERE rev_aux.rev_page=rev.rev_page)"
+							]
+						);
+					}
+
+					$this->revisionAuxWhereAdded = true;
 					break;
 				case 'lastedit':
 					if ( DynamicPageListHooks::isLikeIntersection() ) {
 						$this->addSelect( [ 'page_touched' => "{$this->tableNames['page']}.page_touched" ] );
 						$this->addOrderBy( 'page_touched' );
 					} else {
+						$this->addOrderBy( 'rev.rev_timestamp' );
 						$this->addTable( 'revision', 'rev' );
-						$this->addSelect( [ 'max_timestamp' => 'MAX(rev.rev_timestamp)' ] );
-						$this->addWhere( [ "{$this->tableNames['page']}.page_id = rev.rev_page" ] );
-						$this->addGroupBy( $this->tableNames['page'] . '.page_id' );
-						$this->addOrderBy( 'max_timestamp' );
+						$this->addSelect( [ 'rev.rev_timestamp' ] );
+
+						if ( !$this->revisionAuxWhereAdded ) {
+							$this->addWhere(
+								[
+									"{$this->tableNames['page']}.page_id = rev.rev_page",
+									"rev.rev_timestamp = (SELECT MAX(rev_aux.rev_timestamp) FROM {$this->tableNames['revision']} AS rev_aux WHERE rev_aux.rev_page = rev.rev_page)"
+								]
+							);
+						}
+
+						$this->revisionAuxWhereAdded = true;
 					}
 					break;
 				case 'pagesel':
