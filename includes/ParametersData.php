@@ -296,7 +296,7 @@ class ParametersData {
 		 * shall the result set be distinct (=default) or not?
 		 */
 		'distinct' => [
-			'default' => true,
+			'default' => false,
 			'values' => [ 'strict' ]
 		],
 		'cacheperiod' => [
