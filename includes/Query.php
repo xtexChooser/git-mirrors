@@ -121,7 +121,7 @@ class Query {
 	 *
 	 * @var bool
 	 */
-	private $distinct = true;
+	private $distinct = false;
 
 	/**
 	 * Character Set Collation
