@@ -1817,14 +1817,14 @@ class Query {
 						if ( in_array( 'category', $this->parameters->getParameter( 'ordermethod' ) ) ) {
 							$this->addSelect(
 								[
-									'sortkey' => "IFNULL(cl_head.cl_sortkey, {$replaceConcat}) " . $this->getCollateSQL()
+									'sortkey' => 'cl_head.cl_sortkey'
 								]
 							);
 						} else {
 							// This runs on the assumption that at least one category parameter was used and that numbering starts at 1.
 							$this->addSelect(
 								[
-									'sortkey' => "IFNULL(cl1.cl_sortkey, {$replaceConcat}) " . $this->getCollateSQL()
+									'sortkey' => 'cl1.cl_sortkey'
 								]
 							);
 						}
