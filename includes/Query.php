@@ -265,9 +265,9 @@ class Query {
 				$options[] = 'SQL_CALC_FOUND_ROWS';
 			}
 
-			if ( $this->distinct ) {
-				$options[] = 'DISTINCT';
-			}
+			// if ( $this->distinct ) {
+			// 	$options[] = 'DISTINCT';
+			// }
 
 			$categoriesGoal = false;
 			$select = $this->select;
