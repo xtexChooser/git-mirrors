@@ -229,6 +229,10 @@ class Parse {
 			$this->addOutput( $query->getSqlQuery() . "\n" );
 		}
 
+		// WGL - Temporary query logging.
+		$logger = \MediaWiki\Logger\LoggerFactory::getInstance( 'dpl-query' );
+		$logger->warning( $query->getSqlQuery() . "\n" );
+
 		$this->addOutput( '{{Extension DPL}}' );
 
 		// Preset these to defaults.
