@@ -724,7 +724,7 @@ class Query {
 			$this->addWhere(
 				[
 					$this->tableNames['page'] . '.page_id = rev.rev_page',
-					'rev.rev_timestamp = (SELECT MIN(rev_aux_min.rev_timestamp) FROM ' . $this->tableNames['revision'] . ' AS rev_aux_min WHERE rev_aux_min.rev_page = rev.rev_page)'
+					'rev.rev_timestamp = (SELECT MIN(rev_aux_min.rev_timestamp) FROM ' . $this->tableNames['revision'] . ' AS rev_aux_min WHERE rev_aux_min.rev_page = page_id)'
 				]
 			);
 
@@ -823,7 +823,7 @@ class Query {
 			$this->addWhere(
 				[
 					$this->tableNames['page'] . '.page_id = rev.rev_page',
-					'rev.rev_timestamp = (SELECT MAX(rev_aux_max.rev_timestamp) FROM ' . $this->tableNames['revision'] . ' AS rev_aux_max WHERE rev_aux_max.rev_page = rev.rev_page)'
+					'rev.rev_timestamp = (SELECT MAX(rev_aux_max.rev_timestamp) FROM ' . $this->tableNames['revision'] . ' AS rev_aux_max WHERE rev_aux_max.rev_page = page_id)'
 				]
 			);
 
@@ -1117,7 +1117,7 @@ class Query {
 		$this->addWhere(
 			[
 				$this->tableNames['page'] . '.page_id = rev.rev_page',
-				'rev.rev_timestamp = (SELECT MIN(rev_aux_snc.rev_timestamp) FROM ' . $this->tableNames['revision'] . ' AS rev_aux_snc WHERE rev_aux_snc.rev_page=rev.rev_page AND rev_aux_snc.rev_timestamp >= ' . $this->convertTimestamp( $option ) . ')'
+				'rev.rev_timestamp = (SELECT MIN(rev_aux_snc.rev_timestamp) FROM ' . $this->tableNames['revision'] . ' AS rev_aux_snc WHERE rev_aux_snc.rev_page=page_id AND rev_aux_snc.rev_timestamp >= ' . $this->convertTimestamp( $option ) . ')'
 			]
 		);
 	}
@@ -1237,7 +1237,7 @@ class Query {
 		$this->addWhere(
 			[
 				$this->tableNames['page'] . '.page_id = rev.rev_page',
-				'rev.rev_timestamp = (SELECT MAX(rev_aux_bef.rev_timestamp) FROM ' . $this->tableNames['revision'] . ' AS rev_aux_bef WHERE rev_aux_bef.rev_page=rev.rev_page AND rev_aux_bef.rev_timestamp < ' . $this->convertTimestamp( $option ) . ')'
+				'rev.rev_timestamp = (SELECT MAX(rev_aux_bef.rev_timestamp) FROM ' . $this->tableNames['revision'] . ' AS rev_aux_bef WHERE rev_aux_bef.rev_page=page_id AND rev_aux_bef.rev_timestamp < ' . $this->convertTimestamp( $option ) . ')'
 			]
 		);
 	}
@@ -1759,7 +1759,7 @@ class Query {
 						$this->addWhere(
 							[
 								"{$this->tableNames['page']}.page_id = rev.rev_page",
-								"rev.rev_timestamp = (SELECT MIN(rev_aux.rev_timestamp) FROM {$this->tableNames['revision']} AS rev_aux WHERE rev_aux.rev_page=rev.rev_page)"
+								"rev.rev_timestamp = (SELECT MIN(rev_aux.rev_timestamp) FROM {$this->tableNames['revision']} AS rev_aux WHERE rev_aux.rev_page=page_id)"
 							]
 						);
 					}
@@ -1779,7 +1779,7 @@ class Query {
 							$this->addWhere(
 								[
 									"{$this->tableNames['page']}.page_id = rev.rev_page",
-									"rev.rev_timestamp = (SELECT MAX(rev_aux.rev_timestamp) FROM {$this->tableNames['revision']} AS rev_aux WHERE rev_aux.rev_page = rev.rev_page)"
+									"rev.rev_timestamp = (SELECT MAX(rev_aux.rev_timestamp) FROM {$this->tableNames['revision']} AS rev_aux WHERE rev_aux.rev_page = page_id)"
 								]
 							);
 						}
