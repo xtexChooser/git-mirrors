@@ -121,7 +121,7 @@ class Query {
 	 *
 	 * @var bool
 	 */
-	private $distinct = false;
+	private $distinct = true;
 
 	/**
 	 * Character Set Collation
@@ -265,9 +265,9 @@ class Query {
 				$options[] = 'SQL_CALC_FOUND_ROWS';
 			}
 
-			// if ( $this->distinct ) {
-			// 	$options[] = 'DISTINCT';
-			// }
+			if ( $this->distinct ) {
+				$options[] = 'DISTINCT';
+			}
 
 			$categoriesGoal = false;
 			$select = $this->select;
