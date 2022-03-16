@@ -275,7 +275,6 @@ class Query {
 
 		$queryError = false;
 		try {
-			$this->where = array_unique( $this->where );
 			if ( $categoriesGoal ) {
 				$result = $this->DB->select(
 					$tables,
