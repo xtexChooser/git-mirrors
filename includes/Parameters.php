@@ -1,11 +1,12 @@
 <?php
 
-namespace DPL;
+namespace MediaWiki\Extension\DynamicPageList3;
 
 use MediaWiki\MediaWikiServices;
 use MWException;
 use PermissionsError;
 use RequestContext;
+use StringUtils;
 use Title;
 
 class Parameters extends ParametersData {
@@ -288,7 +289,7 @@ class Parameters extends ParametersData {
 		foreach ( $parameters as $parameter ) {
 			if ( $this->getData( $parameter )['default'] !== null && !( $this->getData( $parameter )['default'] === false && ( $this->getData( $parameter )['boolean'] ?? false ) === true ) ) {
 				if ( $parameter == 'debug' ) {
-					DynamicPageListHooks::setDebugLevel( $this->getData( $parameter )['default'] );
+					Hooks::setDebugLevel( $this->getData( $parameter )['default'] );
 				}
 
 				$this->setParameter( $parameter, $this->getData( $parameter )['default'] );
@@ -390,11 +391,7 @@ class Parameters extends ParametersData {
 	 * @return bool
 	 */
 	private function isRegexValid( $regexes, $forDb = false ) {
-		if ( !is_array( $regexes ) ) {
-			$regexes = [ $regexes ];
-		}
-
-		foreach ( $regexes as $regex ) {
+		foreach ( (array)$regexes as $regex ) {
 			if ( empty( trim( $regex ) ) ) {
 				continue;
 			}
@@ -403,12 +400,7 @@ class Parameters extends ParametersData {
 				$regex = '#' . str_replace( '#', '\#', $regex ) . '#';
 			}
 
-			// Purposely silencing the errors here since we are testing if preg_match
-			// would throw an error due to a bad regex from user input.
-
-			// phpcs:ignore Generic.PHP.NoSilencedErrors.Discouraged
-			if ( @preg_match( $regex, '' ) === false ) {
-				// @phan-suppress-previous-line PhanParamSuspiciousOrder
+			if ( !StringUtils::isValidPCRERegex( $regex ) ) {
 				return false;
 			}
 		}
@@ -1053,7 +1045,7 @@ class Parameters extends ParametersData {
 	 */
 	public function _debug( $option ) {
 		if ( in_array( $option, $this->getData( 'debug' )['values'] ) ) {
-			DynamicPageListHooks::setDebugLevel( $option );
+			Hooks::setDebugLevel( $option );
 		} else {
 			return false;
 		}
@@ -1317,7 +1309,7 @@ class Parameters extends ParametersData {
 	 * @return bool
 	 */
 	public function _fixcategory( $option ) {
-		DynamicPageListHooks::fixCategory( $option );
+		Hooks::fixCategory( $option );
 
 		return true;
 	}

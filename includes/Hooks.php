@@ -1,12 +1,13 @@
 <?php
 
-namespace DPL;
+namespace MediaWiki\Extension\DynamicPageList3;
 
 use DatabaseUpdater;
+use MediaWiki\Extension\DynamicPageList3\Maintenance\CreateTemplate;
 use Parser;
 use PPFrame;
 
-class DynamicPageListHooks {
+class Hooks {
 
 	public const FATAL_WRONGNS = 1001;
 
@@ -32,9 +33,11 @@ class DynamicPageListHooks {
 
 	public const FATAL_MISSINGPARAMFUNCTION = 1022;
 
-	public const FATAL_NOTPROTECTED = 1023;
+	public const FATAL_POOLCOUNTER = 1023;
 
-	public const FATAL_SQLBUILDERROR = 1024;
+	public const FATAL_NOTPROTECTED = 1024;
+
+	public const FATAL_SQLBUILDERROR = 1025;
 
 	public const WARN_UNKNOWNPARAM = 2013;
 
@@ -490,11 +493,6 @@ class DynamicPageListHooks {
 		echo '</pre>';
 	}
 
-	// remove section markers in case the LabeledSectionTransclusion extension is not installed.
-	public static function removeSectionMarkers( $in, $assocArgs = [], $parser = null ) {
-		return '';
-	}
-
 	public static function fixCategory( $cat ) {
 		if ( $cat != '' ) {
 			self::$fixedCategories[$cat] = 1;
@@ -599,7 +597,7 @@ class DynamicPageListHooks {
 	public static function onLoadExtensionSchemaUpdates( DatabaseUpdater $updater ) {
 		$extDir = __DIR__;
 
-		$updater->addPostDatabaseUpdateMaintenance( 'DPL\\Maintenance\\CreateTemplate' );
+		$updater->addPostDatabaseUpdateMaintenance( CreateTemplate::class );
 
 		$db = $updater->getDB();
 		if ( !$db->tableExists( 'dpl_clview' ) ) {
