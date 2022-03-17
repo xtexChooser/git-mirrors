@@ -750,3 +750,13 @@ Many thanks to GreenReaper on GitHub for reporting and finding issues with core 
 * Bumped MediaWiki requirement to 1.35.3
 * Migrate extension.json to `manifest_version` 2
 * Some additional minor cleanup
+
+# Version 3.4.1
+* Used `StringUtils::isValidPCRERegex()` for checking valid regex
+* Fixed query error due to not adding quotes to '%'
+* Removed unused `Hooks::removeSectionMarkers()` function
+* Removed some unused code
+* Removed unimplimented configuration options (`behavingLikeIntersection` and `fixedCategories`)
+* Removed unused parameters from `UpdateArticle::editTemplateCall()`
+* Added `$wgDplSettings['alwaysCacheResults']` to README
+* Properly implemented `titlemaxlength` and `includemaxlength`

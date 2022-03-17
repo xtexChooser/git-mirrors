@@ -46,7 +46,6 @@ class UpdateArticle {
 		$optional = [];
 
 		$lastCmd = '';
-		$message = '';
 		$summary = '';
 		$editForm = false;
 		$action = '';
@@ -281,7 +280,6 @@ class UpdateArticle {
 							$myFormat = $format[$nr];
 						}
 
-						$myOptional = array_key_exists( $nr, $optional );
 						if ( $legendText != '' && $myToolTip == '' ) {
 							$myToolTip = preg_replace( '/^.*\<section\s+begin\s*=\s*' . preg_quote( $parm, '/' ) . '\s*\/\>/s', '', $legendText );
 
@@ -297,7 +295,7 @@ class UpdateArticle {
 							$myValue = $tpv[$call][$parm];
 						}
 
-						$form .= self::editTemplateCall( $text, $template, $call, $parm, $myType, $myValue, $myFormat, $myToolTip, $myInstruction, $myOptional, $fieldFormat );
+						$form .= self::editTemplateCall( $call, $parm, $myType, $myValue, $myFormat, $myToolTip, $myInstruction, $fieldFormat );
 					}
 
 					$form .= "</table>\n<br/><br/>";
@@ -323,7 +321,7 @@ class UpdateArticle {
 					foreach ( $parameter as $nr => $parm ) {
 						// set parameters to values specified in the dpl source or get them from the http request
 						if ( $exec == 'set' ) {
-							$myvalue = $value[$nr];
+							$myValue = $value[$nr];
 						} else {
 							if ( $call >= $matchCount ) {
 								break;
@@ -420,7 +418,7 @@ class UpdateArticle {
 		}
 	}
 
-	private static function editTemplateCall( $text, $template, $call, $parameter, $type, $value, $format, $legend, $instruction, $optional, $fieldFormat ) {
+	private static function editTemplateCall( $call, $parameter, $type, $value, $format, $legend, $instruction, $fieldFormat ) {
 		$matches = [];
 		$nlCount = preg_match_all( '/\n/', $value, $matches );
 

@@ -739,7 +739,6 @@ class Parameters extends ParametersData {
 	 */
 	public function _ordermethod( $option ) {
 		$methods = explode( ',', $option );
-		$success = true;
 
 		foreach ( $methods as $method ) {
 			if ( !in_array( $method, $this->getData( 'ordermethod' )['values'] ) ) {
@@ -876,6 +875,18 @@ class Parameters extends ParametersData {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Clean and test 'titlemaxlength' parameter.
+	 *
+	 * @param string|int $option
+	 * @return bool
+	 */
+	public function _titlemaxlength( $option ) {
+		$this->setParameter( 'titlemaxlen', intval( $option ) );
+
+		return true;
 	}
 
 	/**
@@ -1093,6 +1104,18 @@ class Parameters extends ParametersData {
 		}
 
 		$this->setParameter( 'seclabelsmatch', $regexes );
+
+		return true;
+	}
+
+	/**
+	 * Clean and test 'includemaxlength' parameter.
+	 *
+	 * @param string|int $option
+	 * @return bool
+	 */
+	public function _includemaxlength( $option ) {
+		$this->setParameter( 'includemaxlen', intval( $option ) );
 
 		return true;
 	}
