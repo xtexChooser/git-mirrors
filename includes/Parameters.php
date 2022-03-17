@@ -936,7 +936,7 @@ class Parameters extends ParametersData {
 	public function _nottitleregexp( $option ) {
 		$data = $this->getParameter( 'nottitle' );
 
-		if ( !is_array( $data['regexp'] ) ) {
+		if ( !is_array( $data['regexp'] ?? false ) ) {
 			$data['regexp'] = [];
 		}
 
