@@ -48,6 +48,10 @@ class LST {
 	 * @suppress PhanUndeclaredProperty Use of Parser::mTemplatePath
 	 */
 	public static function open( $parser, $part1 ) {
+		if ( !isset( $parser->mTemplatePath ) ) {
+			$parser->mTemplatePath = [];
+		}
+
 		// Infinite loop test
 		if ( isset( $parser->mTemplatePath[$part1] ) ) {
 			wfDebug( __METHOD__ . ": template loop broken at '$part1'\n" );
