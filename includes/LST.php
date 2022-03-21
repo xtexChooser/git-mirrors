@@ -368,7 +368,7 @@ class LST {
 		}
 	}
 
-	public static function includeHeading( $parser, $page = '', $sec = '', $to = '', &$sectionHeading, $recursionCheck = true, $maxLength = -1, $link = 'default', $trim = false, $skipPattern = [] ) {
+	public static function includeHeading( $parser, $page, $sec, $to, &$sectionHeading, $recursionCheck, $maxLength, $link, $trim, $skipPattern ) {
 		// @phan-suppress-previous-line PhanParamReqAfterOpt
 
 		$output = [];
@@ -386,7 +386,7 @@ class LST {
 	}
 
 	// section inclusion - include all matching sections (return array)
-	public static function extractHeadingFromText( $parser, $page, $title, $text, $sec = '', $to = '', &$sectionHeading, $recursionCheck = true, $maxLength = -1, $cLink = 'default', $trim = false, $skipPattern = [] ) {
+	public static function extractHeadingFromText( $parser, $page, $title, $text, $sec, $to, &$sectionHeading, $recursionCheck, $maxLength, $cLink, $trim, $skipPattern = [] ) {
 		// @phan-suppress-previous-line PhanParamReqAfterOpt
 
 		$continueSearch = true;
@@ -555,7 +555,7 @@ class LST {
 	// we return an array containing all occurences of the template call which match the condition "$mustMatch"
 	// and do NOT match the condition "$mustNotMatch" (if specified)
 	// we use a callback function to format retrieved parameters, accessible via $lister->formatTemplateArg()
-	public static function includeTemplate( $parser, Lister $lister, $dplNr, $article, $template1 = '', $template2 = '', $defaultTemplate, $mustMatch, $mustNotMatch, $matchParsed, $catlist ) {
+	public static function includeTemplate( $parser, Lister $lister, $dplNr, $article, $template1, $template2, $defaultTemplate, $mustMatch, $mustNotMatch, $matchParsed, $catlist ) {
 		// @phan-suppress-previous-line PhanParamReqAfterOpt
 
 		$page = $article->mTitle->getPrefixedText();
