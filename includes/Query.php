@@ -5,6 +5,7 @@ namespace MediaWiki\Extension\DynamicPageList3;
 use DateInterval;
 use DateTime;
 use Exception;
+use ExtensionRegistry;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\User\UserFactory;
 use MWException;
@@ -175,7 +176,7 @@ class Query {
 	 * @return array|bool
 	 */
 	public function buildAndSelect( bool $calcRows = false ) {
-		global $wgNonincludableNamespaces;
+		global $wgNonincludableNamespaces, $wgDebugDumpSql;
 
 		$options = [];
 
@@ -222,26 +223,60 @@ class Query {
 
 		if ( $this->limit !== false ) {
 			$options['LIMIT'] = $this->limit;
-		} elseif ( $this->offset !== false && !Config::getSetting( 'allowUnlimitedResults' ) ) {
+		} elseif ( $this->offset !== false ) {
 			$options['LIMIT'] = $this->parameters->getParameter( 'count' );
 		}
 
 		if ( $this->parameters->getParameter( 'openreferences' ) ) {
-			if ( count( $this->parameters->getParameter( 'imagecontainer' ) ) > 0 ) {
+			if ( count( $this->parameters->getParameter( 'imagecontainer' ) ?? [] ) > 0 ) {
 				$tables = [
 					'ic' => 'imagelinks'
 				];
 			} else {
-				$this->addSelect(
-					[
-						'pl_namespace',
-						'pl_title'
-					]
-				);
+				if ( $this->parameters->getParameter( 'openreferences' ) === 'missing' ) {
+					$this->addSelect(
+						[
+							'page_namespace',
+							'page_id',
+							'page_title',
+							'pl_namespace',
+							'pl_title',
+						]
+					);
 
-				$tables = [
-					'pagelinks'
-				];
+					$this->addWhere(
+						[
+							'page_namespace' => null,
+						]
+					);
+
+					$this->addJoin(
+						'page',
+						[
+							'LEFT JOIN',
+							[
+								'page_namespace = pl_namespace',
+								'page_title = pl_title',
+							],
+						]
+					);
+
+					$tables = [
+						'page',
+						'pagelinks',
+					];
+				} else {
+					$this->addSelect(
+						[
+							'pl_namespace',
+							'pl_title',
+						]
+					);
+
+					$tables = [
+						'pagelinks',
+					];
+				}
 			}
 		} else {
 			$tables = $this->tables;
@@ -319,7 +354,9 @@ class Query {
 				);
 			}
 
-			$this->sqlQuery = $query;
+			if ( Hooks::getDebugLevel() >= 4 && $wgDebugDumpSql ) {
+				$this->sqlQuery = $query;
+			}
 
 			if ( $calcRows ) {
 				$calcRowsResult = $this->dbr->query( 'SELECT FOUND_ROWS() AS rowcount', __METHOD__ );
@@ -885,7 +922,7 @@ class Query {
 	 * @param mixed $option
 	 */
 	private function _addpagecounter( $option ) {
-		if ( class_exists( '\\HitCounters\\Hooks' ) ) {
+		if ( ExtensionRegistry::getInstance()->isLoaded( 'HitCounters' ) ) {
 			$this->addTable( 'hit_counter', 'hit_counter' );
 			$this->addSelect(
 				[
@@ -1540,8 +1577,8 @@ class Query {
 	 */
 	private function _minoredits( $option ) {
 		if ( isset( $option ) && $option == 'exclude' ) {
-			$this->addTable( 'revision', 'rev' );
-			$this->addWhere( 'rev.rev_minor_edit = 0' );
+			$this->addTable( 'revision', 'revision' );
+			$this->addWhere( 'revision.rev_minor_edit = 0' );
 		}
 	}
 
@@ -1774,7 +1811,7 @@ class Query {
 					$this->addSelect( [ 'cl1.cl_timestamp' ] );
 					break;
 				case 'counter':
-					if ( class_exists( '\\HitCounters\\Hooks' ) ) {
+					if ( ExtensionRegistry::getInstance()->isLoaded( 'HitCounters' ) ) {
 						// If the "addpagecounter" parameter was not used the table and join need to be added now.
 						if ( !array_key_exists( 'hit_counter', $this->tables ) ) {
 							$this->addTable( 'hit_counter', 'hit_counter' );

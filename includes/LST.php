@@ -369,8 +369,6 @@ class LST {
 	}
 
 	public static function includeHeading( $parser, $page, $sec, $to, &$sectionHeading, $recursionCheck, $maxLength, $link, $trim, $skipPattern ) {
-		// @phan-suppress-previous-line PhanParamReqAfterOpt
-
 		$output = [];
 
 		if ( self::text( $parser, $page, $title, $text ) == false ) {
@@ -387,8 +385,6 @@ class LST {
 
 	// section inclusion - include all matching sections (return array)
 	public static function extractHeadingFromText( $parser, $page, $title, $text, $sec, $to, &$sectionHeading, $recursionCheck, $maxLength, $cLink, $trim, $skipPattern = [] ) {
-		// @phan-suppress-previous-line PhanParamReqAfterOpt
-
 		$continueSearch = true;
 		$output = [];
 
@@ -556,8 +552,6 @@ class LST {
 	// and do NOT match the condition "$mustNotMatch" (if specified)
 	// we use a callback function to format retrieved parameters, accessible via $lister->formatTemplateArg()
 	public static function includeTemplate( $parser, Lister $lister, $dplNr, $article, $template1, $template2, $defaultTemplate, $mustMatch, $mustNotMatch, $matchParsed, $catlist ) {
-		// @phan-suppress-previous-line PhanParamReqAfterOpt
-
 		$page = $article->mTitle->getPrefixedText();
 		$date = $article->myDate;
 		$user = $article->mUserLink;

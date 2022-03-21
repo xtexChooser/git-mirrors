@@ -5,6 +5,7 @@ namespace MediaWiki\Extension\DynamicPageList3\Tests;
 /**
  * @group DynamicPageList3
  * @group Database
+ * @covers \MediaWiki\Extension\DynamicPageList3\Query
  */
 class DPLQueryIntegrationTest extends DPLIntegrationTestCase {
 
@@ -31,8 +32,10 @@ class DPLQueryIntegrationTest extends DPLIntegrationTestCase {
 
 	public function testFindPagesNotInCategory(): void {
 		$results = $this->getDPLQueryResults( [
-			'namespace' => '', // NS_MAIN
-			'notcategory' => 'DPLTestCategory'
+			// NS_MAIN
+			'namespace' => '',
+			'notcategory' => 'DPLTestCategory',
+			'nottitle' => 'DPLTestOpenReferences'
 		] );
 
 		$this->assertContains( 'DPLTestArticleNoCategory', $results );
@@ -43,13 +46,14 @@ class DPLQueryIntegrationTest extends DPLIntegrationTestCase {
 
 	public function testFindPagesNotInCategoryByPrefix(): void {
 		$results = $this->getDPLQueryResults( [
-			'namespace' => '', // NS_MAIN
+			// NS_MAIN
+			'namespace' => '',
 			'titlematch' => 'DPLTest%',
 			'notcategory' => 'DPLTestCategory'
 		] );
 
 		$this->assertArrayEquals(
-			[ 'DPLTestArticleNoCategory', 'DPLTestArticleOtherCategoryWithInfobox' ],
+			[ 'DPLTestArticleNoCategory', 'DPLTestArticleOtherCategoryWithInfobox', 'DPLTestOpenReferences' ],
 			$results,
 			true
 		);
@@ -57,7 +61,8 @@ class DPLQueryIntegrationTest extends DPLIntegrationTestCase {
 
 	public function testFindPagesByPrefix(): void {
 		$results = $this->getDPLQueryResults( [
-			'namespace' => '', // NS_MAIN
+			// NS_MAIN
+			'namespace' => '',
 			'titlematch' => 'DPLTest%',
 		] );
 
@@ -124,7 +129,8 @@ class DPLQueryIntegrationTest extends DPLIntegrationTestCase {
 		$this->assertArrayEquals(
 			[ 'DPLTestArticle 1', 'DPLTestArticle 2' ],
 			$this->getDPLQueryResults( [
-				'namespace' => '', // NS_MAIN
+				// NS_MAIN
+				'namespace' => '',
 				'titleregexp' => 'DPLTestArticle [12]'
 			] )
 		);
@@ -329,5 +335,22 @@ class DPLQueryIntegrationTest extends DPLIntegrationTestCase {
 			'DPLTestArticle 3 DPLTestAdmin',
 			'DPLTestArticleMultipleCategories DPLTestAdmin',
 		], $results );
+	}
+
+	public function testOpenReferencesMissing(): void {
+		$results = $this->getDPLQueryResults( [
+			// NS_MAIN
+			'namespace' => '',
+			'openreferences' => 'missing',
+			'count' => 1
+		] );
+
+		$this->assertArrayEquals(
+			[
+				'RedLink',
+			],
+			$results,
+			true
+		);
 	}
 }
