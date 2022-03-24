@@ -191,11 +191,9 @@ class Parse {
 		}
 
 		$calcRows = false;
-		/* WGL - Determining found row count is currently broken, so avoid producing a less than optimal query, and it'll fall back to the regular row count.
 		if ( !Config::getSetting( 'allowUnlimitedResults' ) && $this->parameters->getParameter( 'goal' ) != 'categories' && strpos( $this->parameters->getParameter( 'resultsheader' ) . $this->parameters->getParameter( 'noresultsheader' ) . $this->parameters->getParameter( 'resultsfooter' ), '%TOTALPAGES%' ) !== false ) {
 			$calcRows = true;
 		}
-		*/
 
 		/*********/
 		/* Query */
