@@ -19,6 +19,6 @@
 	"categorywatch-notification-categorywatch-remove-body": "[[User:$1|$1]] [[:$3|$3]] را از [[:$4|$4]] حذف کرد",
 	"categorywatch-add-title": "عنوان به ردهٔ در حال پی‌گیری افزوده شد.",
 	"categorywatch-remove-title": "عنوان از ردهٔ در حال پی‌گیری حذف شد.",
-	"categorywatch-page-watch-pref": "وقتی رده‌ای را بهفهرست پیگیری‌‌تان می‌افزایید، همهٔ صفحه‌های موجود در آن رده هم به این فهرست افزوده شوند",
+	"categorywatch-page-watch-pref": "وقتی رده‌ای را به فهرست پیگیری‌‌تان می‌افزایید، همهٔ صفحه‌های موجود در آن رده هم به این فهرست افزوده شوند",
 	"echo-category-title-categorywatch": "پی‌گیری رده"
 }
