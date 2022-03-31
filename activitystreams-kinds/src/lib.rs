@@ -108,6 +108,7 @@ pub mod activity {
 
     use crate::kind;
 
+    kind!(ActivityType, Activity);
     kind!(AcceptType, Accept);
     kind!(AddType, Add);
     kind!(AnnounceType, Announce);
@@ -175,6 +176,7 @@ pub mod link {
 
     use crate::kind;
 
+    kind!(LinkType, Link);
     kind!(MentionType, Mention);
 }
 
@@ -186,6 +188,7 @@ pub mod object {
 
     use crate::kind;
 
+    kind!(ObjectType, Object);
     kind!(ArticleType, Article);
     kind!(AudioType, Audio);
     kind!(DocumentType, Document);
