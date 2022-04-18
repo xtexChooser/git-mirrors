@@ -1,0 +1,27 @@
+name: 'Sync with upstream'
+
+on:
+  schedule:
+  - cron:  '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  repo-sync:
+    name: Repo Sync
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: repo-sync/github-sync@v2
+      name: Sync repo to branch
+      with:
+        source_repo: Universal-Omega/DynamicPageList3
+        source_branch: master
+        destination_branch: weirdgloop/repo-sync
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+    - uses: repo-sync/pull-request@v2
+      name: Create pull request
+      with:
+        source_branch: weirdgloop/repo-sync
+        destination_branch: ${{ github.ref_name }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        pr_title: "Sync with upstream"
