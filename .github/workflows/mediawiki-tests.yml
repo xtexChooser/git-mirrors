@@ -398,7 +398,7 @@ jobs:
               --color
           elif [ "${{ matrix.stage }}" == 'coverage' ] && [ -d src/extensions/"${{ github.event.repository.name }}"/tests/phpunit ]; then
             docker run \
-              --entrypoint quibble-with-apache \
+              --entrypoint quibble-with-supervisord \
               -e ZUUL_PROJECT=mediawiki/extensions/"${{ github.event.repository.name }}" \
               -v "$(pwd)"/cache:/cache \
               -v "$(pwd)"/src:/workspace/src \
@@ -409,7 +409,7 @@ jobs:
               -c mwext-phpunit-coverage
           elif [ "${{ matrix.stage }}" != 'coverage' ]; then
             docker run \
-              --entrypoint quibble-with-apache \
+              --entrypoint quibble-with-supervisord \
               -e ZUUL_PROJECT=mediawiki/extensions/"${{ github.event.repository.name }}" \
               -v "$(pwd)"/cache:/cache \
               -v "$(pwd)"/src:/workspace/src \
@@ -422,7 +422,7 @@ jobs:
 
       - name: Upload coverage to Codecov
         if: ${{ matrix.stage == 'coverage' }}
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           directory: /home/runner/cover
 
