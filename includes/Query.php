@@ -1270,15 +1270,14 @@ class Query {
 		);
 
 		$where[] = $this->tableNames['page'] . '.page_id = il.il_from';
-		$ors = [];
-
+		$values = [];
 		foreach ( $option as $linkGroup ) {
 			foreach ( $linkGroup as $link ) {
-				$ors[] = 'il.il_to = ' . $this->dbr->addQuotes( $link->getDBkey() );
+				$values[] = $link->getDBkey();
 			}
 		}
 
-		$where[] = '(' . implode( ' OR ', $ors ) . ')';
+		$where[] = $this->dbr->makeList( [ 'il.il_to' => $values ], IDatabase::LIST_OR );
 		$this->addWhere( $where );
 	}
 
