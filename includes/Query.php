@@ -1239,14 +1239,14 @@ class Query {
 			];
 		}
 
-		$ors = [];
+		$values = [];
 		foreach ( $option as $linkGroup ) {
 			foreach ( $linkGroup as $link ) {
-				$ors[] = 'ic.il_from = ' . $this->dbr->addQuotes( $link->getArticleID() );
+				$values[] = $link->getArticleID();
 			}
 		}
 
-		$where[] = '(' . implode( ' OR ', $ors ) . ')';
+		$where[] = $this->dbr->makeList( [ 'ic.il_from' => $values ], IDatabase::LIST_OR );
 		$this->addWhere( $where );
 	}
 
