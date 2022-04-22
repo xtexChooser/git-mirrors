@@ -2160,31 +2160,27 @@ class Query {
 	 * @param mixed $option
 	 */
 	private function _usedby( $option ) {
-		if ( $this->parameters->getParameter( 'openreferences' ) ) {
-			$ors = [];
+		$values = [];
+		$where = [];
 
-			foreach ( $option as $linkGroup ) {
-				foreach ( $linkGroup as $link ) {
-					$ors[] = 'tpl_from = ' . intval( $link->getArticleID() );
-				}
+		foreach ( $option as $linkGroup ) {
+			foreach ( $linkGroup as $link ) {
+				$values[] = $link->getArticleID();
 			}
+		}
 
-			$where = '(' . implode( ' OR ', $ors ) . ')';
+		if ( $this->parameters->getParameter( 'openreferences' ) ) {
+			$where[] = $this->dbr->makeList( [ 'tpl_from' => $values ], IDatabase::LIST_OR );
 		} else {
 			$this->addTable( 'templatelinks', 'tpl' );
 			$this->addTable( 'page', 'tplsrc' );
 			$this->addSelect( [ 'tpl_sel_title' => 'tplsrc.page_title', 'tpl_sel_ns' => 'tplsrc.page_namespace' ] );
-			$where = $this->tableNames['page'] . '.page_namespace = tpl.tl_namespace AND ' .
-					 $this->tableNames['page'] . '.page_title = tpl.tl_title AND tplsrc.page_id = tpl.tl_from AND ';
-			$ors = [];
-
-			foreach ( $option as $linkGroup ) {
-				foreach ( $linkGroup as $link ) {
-					$ors[] = 'tpl.tl_from = ' . intval( $link->getArticleID() );
-				}
-			}
-
-			$where .= '(' . implode( ' OR ', $ors ) . ')';
+			$where = [
+				$this->tableNames['page'] . '.page_namespace = tpl.tl_namespace',
+				$this->tableNames['page'] . '.page_title = tpl.tl_title',
+				'tplsrc.page_id = tpl.tl_from',
+				$this->dbr->makeList( [ 'tpl.tl_from' => $values ], IDatabase::LIST_OR )
+			];
 		}
 
 		$this->addWhere( $where );
