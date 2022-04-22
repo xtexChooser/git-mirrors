@@ -1327,15 +1327,15 @@ class Query {
 			$this->addGroupBy( 'page_title' );
 		}
 
-		if ( $this->parameters->getParameter( 'openreferences' ) ) {
-			$ors = [];
-			foreach ( $option as $linkGroup ) {
-				foreach ( $linkGroup as $link ) {
-					$ors[] = '(pl_from = ' . $link->getArticleID() . ')';
-				}
+		$values = [];
+		foreach ( $option as $linkGroup ) {
+			foreach ( $linkGroup as $link ) {
+				$values[] = $link->getArticleID();
 			}
+		}
 
-			$where[] = '(' . implode( ' OR ', $ors ) . ')';
+		if ( $this->parameters->getParameter( 'openreferences' ) ) {
+			$where[] = $this->dbr->makeList( [ 'pl_from' => $values ], IDatabase::LIST_OR );
 		} else {
 			$this->addTable( 'pagelinks', 'plf' );
 			$this->addTable( 'page', 'pagesrc' );
@@ -1349,17 +1349,9 @@ class Query {
 			$where = [
 				$this->tableNames['page'] . '.page_namespace = plf.pl_namespace',
 				$this->tableNames['page'] . '.page_title = plf.pl_title',
-				'pagesrc.page_id = plf.pl_from'
+				'pagesrc.page_id = plf.pl_from',
+				$this->dbr->makeList( [ 'plf.pl_from' => $values ], IDatabase::LIST_OR )
 			];
-
-			$ors = [];
-			foreach ( $option as $linkGroup ) {
-				foreach ( $linkGroup as $link ) {
-					$ors[] = 'plf.pl_from = ' . $link->getArticleID();
-				}
-			}
-
-			$where[] = '(' . implode( ' OR ', $ors ) . ')';
 		}
 
 		$this->addWhere( $where );
