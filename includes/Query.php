@@ -2186,19 +2186,34 @@ class Query {
 		$this->addTable( 'templatelinks', 'tl' );
 		$where = $this->tableNames['page'] . '.page_id=tl.tl_from AND (';
 		$ors = [];
+		$linksByNS = [];
 
 		foreach ( $option as $linkGroup ) {
 			foreach ( $linkGroup as $link ) {
-				$_or = '(tl.tl_namespace=' . intval( $link->getNamespace() );
-
 				if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-					$_or .= ' AND LOWER(CONVERT(tl.tl_title USING utf8mb4)) = LOWER(' . $this->dbr->addQuotes( $link->getDBkey() ) . '))';
+					$linksByNS[intval( $link->getNamespace() )][] = 'LOWER(' . $this->dbr->addQuotes( $link->getDBkey() ) . ')';
 				} else {
-					$_or .= ' AND tl.tl_title = ' . $this->dbr->addQuotes( $link->getDBkey() ) . ')';
+					$linksByNS[intval( $link->getNamespace() )][] = $this->dbr->addQuotes( $link->getDBkey() );
 				}
-
-				$ors[] = $_or;
 			}
+		}
+
+		foreach ( $linksByNS as $ns => $values ) {
+			$_or = '(tl.tl_namespace=' . $ns;
+
+			if ( $this->parameters->getParameter( 'ignorecase' ) ) {
+				$_or .= ' AND LOWER(CONVERT(tl.tl_title USING utf8mb4))';
+			} else {
+				$_or .= ' AND tl.tl_title';
+			}
+
+			if ( count( $values ) == 1 ) {
+				$_or .= ' = ' . $values[0] . ')';
+			} else {
+				$_or .= ' IN (' . implode( ',', $values ) . '))';
+			}
+
+			$ors[] = $_or;
 		}
 
 		$where .= implode( ' OR ', $ors ) . ')';
