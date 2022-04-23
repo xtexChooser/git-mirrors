@@ -1378,16 +1378,11 @@ class Query {
 
 					foreach ( $linkGroup as $link ) {
 						$_or = '(pl.pl_namespace=' . intval( $link->getNamespace() );
-						if ( strpos( $link->getDBkey(), '%' ) >= 0 ) {
-							$operator = 'LIKE';
-						} else {
-							$operator = '=';
-						}
 
 						if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-							$_or .= ' AND LOWER(CONVERT(pl.pl_title USING utf8mb4)) ' . $operator . ' LOWER(' . $this->dbr->addQuotes( $link->getDBkey() ) . ')';
+							$_or .= ' AND LOWER(CONVERT(pl.pl_title USING utf8mb4)) LIKE LOWER(' . $this->dbr->addQuotes( $link->getDBkey() ) . ')';
 						} else {
-							$_or .= ' AND pl.pl_title ' . $operator . ' ' . $this->dbr->addQuotes( $link->getDBkey() );
+							$_or .= ' AND pl.pl_title LIKE ' . $this->dbr->addQuotes( $link->getDBkey() );
 						}
 
 						$_or .= ')';
@@ -1401,16 +1396,11 @@ class Query {
 
 					foreach ( $linkGroup as $link ) {
 						$_or = '(' . $this->tableNames['pagelinks'] . '.pl_namespace=' . intval( $link->getNamespace() );
-						if ( strpos( $link->getDBkey(), '%' ) >= 0 ) {
-							$operator = 'LIKE';
-						} else {
-							$operator = '=';
-						}
 
 						if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-							$_or .= ' AND LOWER(CONVERT(' . $this->tableNames['pagelinks'] . '.pl_title USING utf8mb4)) ' . $operator . ' LOWER(' . $this->dbr->addQuotes( $link->getDBkey() ) . ')';
+							$_or .= ' AND LOWER(CONVERT(' . $this->tableNames['pagelinks'] . '.pl_title USING utf8mb4)) LIKE LOWER(' . $this->dbr->addQuotes( $link->getDBkey() ) . ')';
 						} else {
-							$_or .= ' AND ' . $this->tableNames['pagelinks'] . '.pl_title ' . $operator . ' ' . $this->dbr->addQuotes( $link->getDBkey() );
+							$_or .= ' AND ' . $this->tableNames['pagelinks'] . '.pl_title LIKE ' . $this->dbr->addQuotes( $link->getDBkey() );
 						}
 
 						$_or .= ')';
@@ -1478,16 +1468,11 @@ class Query {
 			foreach ( $option as $linkGroup ) {
 				foreach ( $linkGroup as $link ) {
 					$_or = '(' . $this->tableNames['pagelinks'] . '.pl_namespace=' . intval( $link->getNamespace() );
-					if ( strpos( $link->getDBkey(), '%' ) >= 0 ) {
-						$operator = 'LIKE';
-					} else {
-						$operator = '=';
-					}
 
 					if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-						$_or .= ' AND LOWER(CONVERT(' . $this->tableNames['pagelinks'] . '.pl_title USING utf8mb4)) ' . $operator . ' LOWER(' . $this->dbr->addQuotes( $link->getDBkey() ) . '))';
+						$_or .= ' AND LOWER(CONVERT(' . $this->tableNames['pagelinks'] . '.pl_title USING utf8mb4)) LIKE LOWER(' . $this->dbr->addQuotes( $link->getDBkey() ) . '))';
 					} else {
-						$_or .= ' AND ' . $this->tableNames['pagelinks'] . '.pl_title ' . $operator . ' ' . $this->dbr->addQuotes( $link->getDBkey() ) . ')';
+						$_or .= ' AND ' . $this->tableNames['pagelinks'] . '.pl_title LIKE ' . $this->dbr->addQuotes( $link->getDBkey() ) . ')';
 					}
 
 					$ors[] = $_or;
