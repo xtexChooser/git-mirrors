@@ -2033,20 +2033,18 @@ class Query {
 	private function _title( $option ) {
 		$ors = [];
 
+		if ( $this->parameters->getParameter( 'openreferences' ) ) {
+			$field = 'pl_title';
+		} else {
+			$field = $this->tableNames['page'] . '.page_title';
+		}
+
 		foreach ( $option as $comparisonType => $titles ) {
 			foreach ( $titles as $title ) {
-				if ( $this->parameters->getParameter( 'openreferences' ) ) {
-					if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-						$_or = "LOWER(CONVERT(pl_title USING utf8mb4)) {$comparisonType} LOWER(" . $this->dbr->addQuotes( $title ) . ')';
-					} else {
-						$_or = "pl_title {$comparisonType} " . $this->dbr->addQuotes( $title );
-					}
+				if ( $this->parameters->getParameter( 'ignorecase' ) ) {
+					$_or = "LOWER(CONVERT({$field} USING utf8mb4)) {$comparisonType} LOWER(" . $this->dbr->addQuotes( $title ) . ')';
 				} else {
-					if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-						$_or = "LOWER(CONVERT({$this->tableNames['page']}.page_title USING utf8mb4)) {$comparisonType} LOWER(" . $this->dbr->addQuotes( $title ) . ')';
-					} else {
-						$_or = "{$this->tableNames['page']}.page_title {$comparisonType}" . $this->dbr->addQuotes( $title );
-					}
+					$_or = "{$field} {$comparisonType} " . $this->dbr->addQuotes( $title );
 				}
 
 				$ors[] = $_or;
@@ -2065,20 +2063,18 @@ class Query {
 	private function _nottitle( $option ) {
 		$ors = [];
 
+		if ( $this->parameters->getParameter( 'openreferences' ) ) {
+			$field = 'pl_title';
+		} else {
+			$field = $this->tableNames['page'] . '.page_title';
+		}
+
 		foreach ( $option as $comparisonType => $titles ) {
 			foreach ( $titles as $title ) {
-				if ( $this->parameters->getParameter( 'openreferences' ) ) {
-					if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-						$_or = "LOWER(CONVERT(pl_title USING utf8mb4)) {$comparisonType} LOWER(" . $this->dbr->addQuotes( $title ) . ')';
-					} else {
-						$_or = "pl_title {$comparisonType} " . $this->dbr->addQuotes( $title );
-					}
+				if ( $this->parameters->getParameter( 'ignorecase' ) ) {
+					$_or = "LOWER(CONVERT({$field} USING utf8mb4)) {$comparisonType} LOWER(" . $this->dbr->addQuotes( $title ) . ')';
 				} else {
-					if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-						$_or = "LOWER(CONVERT({$this->tableNames['page']}.page_title USING utf8mb4)) {$comparisonType} LOWER(" . $this->dbr->addQuotes( $title ) . ')';
-					} else {
-						$_or = "{$this->tableNames['page']}.page_title {$comparisonType}" . $this->dbr->addQuotes( $title );
-					}
+					$_or = "{$field} {$comparisonType} " . $this->dbr->addQuotes( $title );
 				}
 
 				$ors[] = $_or;
