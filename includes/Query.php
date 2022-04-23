@@ -1436,26 +1436,26 @@ class Query {
 			$this->addGroupBy( 'page_title' );
 		}
 
-		if ( $this->parameters->getParameter( 'openreferences' ) ) {
-			$ands = [];
-			foreach ( $option as $linkGroup ) {
-				foreach ( $linkGroup as $link ) {
-					$ands[] = 'pl_from <> ' . intval( $link->getArticleID() ) . ' ';
-				}
+		$values = [];
+		foreach ( $option as $linkGroup ) {
+			foreach ( $linkGroup as $link ) {
+				$values[] = $link->getArticleID();
 			}
+		}
 
-			$where = '(' . implode( ' AND ', $ands ) . ')';
+		if ( $this->parameters->getParameter( 'openreferences' ) ) {
+			if ( count( $values ) == 1 ) {
+				$where = 'pl_from != ' . $values[0];
+			} else {
+				$where = 'pl_from NOT IN (' . $this->dbr->makeList( $values ) . ')';
+			}
 		} else {
 			$where = 'CONCAT(page_namespace,page_title) NOT IN (SELECT CONCAT(' . $this->tableNames['pagelinks'] . '.pl_namespace,' . $this->tableNames['pagelinks'] . '.pl_title) FROM ' . $this->tableNames['pagelinks'] . ' WHERE ';
-			$ors = [];
-
-			foreach ( $option as $linkGroup ) {
-				foreach ( $linkGroup as $link ) {
-					$ors[] = $this->tableNames['pagelinks'] . '.pl_from = ' . intval( $link->getArticleID() );
-				}
+			if ( count( $values ) == 1 ) {
+				$where .= $this->tableNames['pagelinks'] . '.pl_from = ' . $values[0] . ')';
+			} else {
+				$where .= $this->tableNames['pagelinks'] . '.pl_from IN (' . $this->dbr->makeList( $values ) . '))';
 			}
-
-			$where .= implode( ' OR ', $ors ) . ')';
 		}
 
 		$this->addWhere( $where );
