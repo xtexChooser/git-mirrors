@@ -23,6 +23,7 @@
 
 namespace CategoryWatch;
 
+use MediaWiki\MediaWikiServices;
 use Message;
 use Title;
 use WikiPage;
@@ -119,7 +120,13 @@ class EchoEventPresentationModel extends \EchoEventPresentationModel {
 	 */
 	public function getPageTitle() {
 		wfDebugLog( 'CategoryWatch', __METHOD__ );
-		$page = WikiPage::newFromId( $this->event->getExtraParam( "pageid" ) );
+		if ( method_exists( MediaWikiServices::class, 'getWikiPageFactory' ) ) {
+			// MediaWiki 1.36+
+			$page = MediaWikiServices::getInstance()->getWikiPageFactory()
+				->newFromID( $this->event->getExtraParam( "pageid" ) );
+		} else {
+			$page = WikiPage::newFromId( $this->event->getExtraParam( "pageid" ) );
+		}
 		return $page ? $page->getTitle() : Title::makeTitle( NS_SPECIAL, 'Badtitle/' . __METHOD__ );
 	}
 
