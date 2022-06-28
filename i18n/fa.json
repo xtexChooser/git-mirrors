@@ -2,9 +2,12 @@
 	"@metadata": {
 		"authors": [
 			"Beginneruser",
-			"FarsiNevis"
+			"FarsiNevis",
+			"Jeeputer"
 		]
 	},
+	"categorywatch-desc": "عملکرد فهرست پیگیری را به‌گونه‌ای گسترش می‌دهد که اعلان‌هایی پیرامون تغییر اعضای رده‌های پیگیری‌شده را نیز شامل شود",
+	"categorywatch-emailsubject": "فعالیتی شامل ردهٔ پیگیری‌شدهٔ «$1»",
 	"categorywatch-catmovein": "$1 به $2 منتقل شد از $3",
 	"categorywatch-catmoveout": "$1 از $2 به $3 منتقل شد",
 	"categorywatch-catadd": "$1 به $2 افزوده شد",
@@ -17,8 +20,10 @@
 	"categorywatch-notification-categorywatch-remove-header": "[[:$1|$2]] از [[:$3|$4]] حذف شد",
 	"categorywatch-notification-categorywatch-remove-summary": "[[:$3|$4]] از [[:$5|$6]] حذف شد",
 	"categorywatch-notification-categorywatch-remove-body": "[[User:$1|$1]] [[:$3|$3]] را از [[:$4|$4]] حذف کرد",
+	"categorywatch-notification-bundle": "$1 تغییر در رده‌بندی در {{SITENAME}}",
 	"categorywatch-add-title": "عنوان به ردهٔ در حال پی‌گیری افزوده شد.",
 	"categorywatch-remove-title": "عنوان از ردهٔ در حال پی‌گیری حذف شد.",
 	"categorywatch-page-watch-pref": "وقتی رده‌ای را به فهرست پیگیری‌‌تان می‌افزایید، همهٔ صفحه‌های موجود در آن رده هم به این فهرست افزوده شوند",
-	"echo-category-title-categorywatch": "پیگیری رده"
+	"echo-category-title-categorywatch": "پیگیری رده",
+	"echo-pref-tooltip-categorywatch": "هرگاه صفحه‌ای به یکی از رده‌هایی که پیگری می‌کنم افزوده یا از آن حذف شد، مرا آگاه کن."
 }
