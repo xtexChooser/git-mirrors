@@ -220,7 +220,7 @@ jobs:
 
     steps:
       - name: Cancel Previous Runs
-        uses: styfle/cancel-workflow-action@0.9.1
+        uses: styfle/cancel-workflow-action@0.10.0
         with:
           access_token: ${{ github.token }}
 
@@ -304,16 +304,6 @@ jobs:
 
               git clone --recurse-submodules -b "${branch:-${MEDIAWIKI_VERSION}}" --depth 1 "${repository:-https://gerrit.wikimedia.org/r/${dependency}}" src/"$(echo $dependency | cut -d'/' -f2,3)"
             done
-          fi
-
-          # REPLACE SETUP.PHP FOR CREATEWIKI DEPENDANT EXTENSIONS ON REL1_36.
-          # FIXES A BUG PRESENT ON REL1_36, WHEN DOING DATABASE STUFF BEFORE THIS WAS DONE, REQUEST INFO WAS ALREADY SET FOR DBLoadBalancerFactory,
-          # RESULTING IN "LogicException: ChronologyProtector already initialized". THIS HACK REMOVES
-          # MediaWikiServices::getInstance()->getDBLoadBalancerFactory()->setRequestInfo(). THIS IS ALREADY FIXED FOR REL1_37 AND LATER.
-          # WITH https://github.com/wikimedia/mediawiki/commit/29827d
-
-          if [ -d src/extensions/CreateWiki ] || [ "${{ github.event.repository.name }}" == 'CreateWiki' ] && [ "${MEDIAWIKI_VERSION}" == 'REL1_36' ]; then
-            curl -sL https://raw.githubusercontent.com/Universal-Omega/scripts/master/mediawiki/hacks/Setup-REL1_36.php > src/includes/Setup.php
           fi
 
           if [ -e "$GITHUB_WORKSPACE"/.github/workflows/globals.php ]; then
