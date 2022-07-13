@@ -2,11 +2,12 @@
 	"@metadata": {
 		"authors": [
 			"Ilimanaq29",
-			"Matěj Grabovský"
+			"Matěj Grabovský",
+			"Patrik L."
 		]
 	},
 	"categorywatch-desc": "Rozšiřuje možnosti seznamu sledovaných stránek na upozornění o změně členství sledovaných kategorií",
-	"categorywatch-emailsubject": "Aktivita týkající se sledování kategorie „$1”",
+	"categorywatch-emailsubject": "Aktivita týkající se sledování kategorie „$1“",
 	"categorywatch-catmovein": "přesunul $1 do kategorie $2 z $3",
 	"categorywatch-catmoveout": "přesunul $1 z kategorie $2 do $3",
 	"categorywatch-catadd": "přidal $1 do kategorie $2",
