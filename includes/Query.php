@@ -1340,12 +1340,14 @@ class Query {
 		} else {
 			$this->addTable( 'pagelinks', 'plf' );
 			$this->addTable( 'page', 'pagesrc' );
-			$this->addSelect(
-				[
-					'sel_title' => 'pagesrc.page_title',
-					'sel_ns' => 'pagesrc.page_namespace'
-				]
-			);
+			if ( !isset( $this->parametersProcessed['linksto'] ) || !$this->parametersProcessed['linksto'] ) {
+				$this->addSelect(
+					[
+						'sel_title' => 'pagesrc.page_title',
+						'sel_ns' => 'pagesrc.page_namespace'
+					]
+				);
+			}
 
 			$where = [
 				$this->tableNames['page'] . '.page_namespace = plf.pl_namespace',
@@ -1370,7 +1372,9 @@ class Query {
 
 		if ( count( $option ) > 0 ) {
 			$this->addTable( 'pagelinks', 'pl' );
-			$this->addSelect( [ 'sel_title' => 'pl.pl_title', 'sel_ns' => 'pl.pl_namespace' ] );
+			if ( !isset( $this->parametersProcessed['linksfrom'] ) || !$this->parametersProcessed['linksfrom'] ) {
+				$this->addSelect( [ 'sel_title' => 'pl.pl_title', 'sel_ns' => 'pl.pl_namespace' ] );
+			}
 
 			foreach ( $option as $index => $linkGroup ) {
 				if ( $index == 0 ) {
