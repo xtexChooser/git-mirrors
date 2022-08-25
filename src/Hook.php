@@ -137,8 +137,17 @@ class Hook {
 		}
 		$watchers = [];
 		foreach ( self::getWatchers( $cat->getTitle() ) as $watcher ) {
-			if ( $watcher->getOption( 'catwatch-watch-pages' ) ) {
-				$watchers[] = $watcher;
+			if ( method_exists( MediaWikiServices::class, 'getUserOptionsLookup' ) ) {
+				// MediaWiki 1.35+
+				if ( MediaWikiServices::getInstance()->getUserOptionsLookup()
+					->getOption( $watcher, 'catwatch-watch-pages' )
+				) {
+					$watchers[] = $watcher;
+				}
+			} else {
+				if ( $watcher->getOption( 'catwatch-watch-pages' ) ) {
+					$watchers[] = $watcher;
+				}
 			}
 		}
 		self::addUserBatchForWatch( $watchers, $cat->getTitle() );
