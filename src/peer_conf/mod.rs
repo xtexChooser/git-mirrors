@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use anyhow::{anyhow, Context, Result};
 use lazy_static::lazy_static;
 use may::sync::Mutex;
@@ -5,12 +7,20 @@ use serde::Deserialize;
 
 use crate::peer_source::reader::READERS;
 
+use self::tunnel::TunnelConfig;
+
+pub mod tunnel;
+
 lazy_static! {
-    pub static ref PEERS: Mutex<Vec<PeerConfig>> = Mutex::new(Vec::new());
+    pub static ref PEERS: Mutex<HashMap<String, PeerConfig>> = Mutex::new(HashMap::new());
 }
 
-#[derive(Debug, Deserialize)]
-pub struct PeerConfig {}
+#[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]
+pub struct PeerConfig {
+    pub id: String,
+    #[serde(default)]
+    pub tunnel: TunnelConfig,
+}
 
 impl PeerConfig {
     pub fn new(file: String) -> Result<PeerConfig> {
@@ -30,12 +40,13 @@ impl PeerConfig {
                     .context("collect peer configs")?
                     .into_iter()
                     .for_each(|c| {
-                        peers.push(c);
+                        peers.insert(c.id.clone(), c);
                     });
                 Ok(())
             })
             .context("load peers")?;
         println!("Loaded {} peers", peers.len());
+        println!("{:?}", peers.clone());
         Ok(())
     }
 }

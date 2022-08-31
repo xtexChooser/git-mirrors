@@ -4,7 +4,7 @@ use serde::Deserialize;
 
 pub mod reader;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]
 pub struct PeerSource {
     pub file: PathBuf,
     #[serde(default = "default_watch")]

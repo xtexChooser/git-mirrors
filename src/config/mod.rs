@@ -5,8 +5,13 @@ use serde::Deserialize;
 
 use crate::peer_source::PeerSource;
 
+use self::{routing::RoutingConfig, tunnel::TunnelConfig};
+
+pub mod routing;
+pub mod tunnel;
+
 lazy_static! {
-    pub static ref CONFIG: Config = {
+    pub static ref CONFIG: Box<Config> = {
         let default_file = PathBuf::from("peerd.toml");
         let default_file_etc = PathBuf::from("/etc/peerd.toml");
         let mut file_path = crate::args::ARGS
@@ -17,11 +22,13 @@ lazy_static! {
             file_path = &default_file_etc;
         }
         println!("Reading config from {}", file_path.display());
-        return toml::from_str(read_to_string(file_path).unwrap().as_str()).unwrap();
+        return Box::new(toml::from_str(read_to_string(file_path).unwrap().as_str()).unwrap());
     };
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]
 pub struct Config {
     pub peer_source: Vec<PeerSource>,
+    pub tunnel: TunnelConfig,
+    pub routing: RoutingConfig,
 }
