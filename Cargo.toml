@@ -15,3 +15,4 @@ tar = "0.4.38"
 may = "0.3.22"
 inotify = "0.10.0"
 wireguard-uapi = { version = "2.0.5", features = ["xplatform"] }
+base64 = "0.13.0"

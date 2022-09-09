@@ -18,7 +18,7 @@ pub fn start_watching_all() -> Result<()> {
     READERS
         .lock()?
         .iter_mut()
-        .filter(|r| r.get_config().watch)
+        .filter(|r| r.get_zone().watch)
         .try_for_each(|r| r.start_watching())
 }
 

@@ -26,19 +26,19 @@ lazy_static! {
 }
 
 pub trait Reader: Display {
-    fn get_config(&self) -> &'static Zone;
+    fn get_zone(&self) -> &'static Zone;
     fn collect(&self) -> Result<Vec<PeerConfig>>;
     fn start_watching(&mut self) -> Result<()>;
 }
 
 impl dyn Reader {
-    fn new(source: &'static Zone) -> Result<Box<(dyn Reader + Send + Sync)>> {
-        if !source.path.exists() {
-            return Err(anyhow!("file not exists: {}", source.path.display()));
-        } else if source.path.is_file() {
-            return Ok(Box::new(TarReader::new(source)));
+    fn new(zone: &'static Zone) -> Result<Box<(dyn Reader + Send + Sync)>> {
+        if !zone.path.exists() {
+            return Err(anyhow!("file not exists: {}", zone.path.display()));
+        } else if zone.path.is_file() {
+            return Ok(Box::new(TarReader::new(zone)));
         } else {
-            return Ok(Box::new(DirReader::new(source)));
+            return Ok(Box::new(DirReader::new(zone)));
         }
     }
 }

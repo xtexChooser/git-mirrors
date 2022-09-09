@@ -40,6 +40,12 @@ impl PeerConfig {
                     .context("collect peer configs")?
                     .into_iter()
                     .for_each(|c| {
+                        let tun = crate::tunnel::Tunnel {
+                            name: "test".to_string(),
+                            zone: r.get_zone(),
+                            config: Box::new(c.tunnel.wireguard.first().unwrap().to_owned()),
+                        };
+                        tun.get_manager().unwrap().add(&tun).unwrap();
                         peers.insert(c.id.clone(), c);
                     });
                 Ok(())

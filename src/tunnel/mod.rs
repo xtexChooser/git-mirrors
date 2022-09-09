@@ -11,7 +11,7 @@ pub trait TunnelConfig: Sized {
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Hash)]
 pub struct Tunnel<CONF: TunnelConfig> {
     pub name: String,
-    pub zone: Zone,
+    pub zone: &'static Zone,
     pub config: Box<CONF>,
 }
 
@@ -20,13 +20,13 @@ impl<CONF: TunnelConfig> Tunnel<CONF> {
         self.config.get_manager()
     }
     pub fn to_qualified_name(&self) -> String {
-        String::from("_")
+        format!("{}_{}", self.zone.name, self.name)
     }
 }
 
 pub trait TunManager<CONF: TunnelConfig> {
     fn list(&self) -> Result<Vec<String>>;
-    fn add(&mut self, tun: &Tunnel<CONF>) -> Result<()>;
-    fn update(&mut self, tun: &Tunnel<CONF>) -> Result<()>;
-    fn remove(&mut self, name: &str) -> Result<()>;
+    fn add(&self, tun: &Tunnel<CONF>) -> Result<()>;
+    fn update(&self, tun: &Tunnel<CONF>) -> Result<()>;
+    fn remove(&self, name: &str) -> Result<()>;
 }

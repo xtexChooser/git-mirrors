@@ -1,4 +1,4 @@
-#![feature(io_read_to_string)]
+#![feature(addr_parse_ascii)]
 
 pub mod action;
 pub mod args;
