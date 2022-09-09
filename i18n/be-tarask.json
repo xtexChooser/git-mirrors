@@ -3,6 +3,7 @@
 		"authors": [
 			"EugeneZelenko",
 			"Jim-by",
+			"Vlad5250",
 			"W"
 		]
 	},
@@ -13,5 +14,6 @@
 	"categorywatch-catadd": "$1 дададзеная ў катэгорыю $2",
 	"categorywatch-catsub": "$1 выдаленая з катэгорыі $2",
 	"categorywatch-autocat": "Аўтаматычна назіраецца $1",
-	"categorywatch-notification-link": "Катэгорыя: [[:$1]]"
+	"categorywatch-notification-link": "Катэгорыя: [[:$1]]",
+	"echo-category-title-categorywatch": "Назіраньне катэгорыяў"
 }
