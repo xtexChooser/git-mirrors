@@ -30,7 +30,7 @@ impl Reader for DirReader {
             .read_dir()
             .context("read dir for peer configs")?;
         read_dir.try_fold(Vec::new(), |mut peers, peer_file| {
-            peers.push(PeerConfig::new(
+            peers.push(PeerConfig::from(
                 read_to_string(
                     File::open(peer_file.context("resolve dir entry path")?.path())
                         .context("open peer config file in dir")?,

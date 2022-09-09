@@ -4,7 +4,7 @@ use serde::Deserialize;
 
 pub mod reader;
 
-#[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]
+#[derive(Debug, Deserialize, PartialEq, Eq, PartialOrd, Ord, Clone, Hash)]
 pub struct Zone {
     pub path: PathBuf,
     #[serde(default = "default_watch")]

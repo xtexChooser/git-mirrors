@@ -29,7 +29,7 @@ impl Reader for TarReader {
             .entries()
             .context("list files in tar")?
             .try_fold(Vec::new(), |mut peers, peer_file| {
-                peers.push(PeerConfig::new(
+                peers.push(PeerConfig::from(
                     read_to_string(peer_file.context("resolve tar entry")?)
                         .context("read tar entry to str")?,
                 )?);

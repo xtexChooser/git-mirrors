@@ -7,7 +7,7 @@ use serde::Deserialize;
 
 use crate::zone::reader::READERS;
 
-use self::tunnel::TunnelConfig;
+use self::tunnel::PeerTunnelConfig;
 
 pub mod tunnel;
 
@@ -19,11 +19,11 @@ lazy_static! {
 pub struct PeerConfig {
     pub id: String,
     #[serde(default)]
-    pub tunnel: TunnelConfig,
+    pub tunnel: PeerTunnelConfig,
 }
 
 impl PeerConfig {
-    pub fn new(file: String) -> Result<PeerConfig> {
+    pub fn from(file: String) -> Result<PeerConfig> {
         toml::from_str(file.as_str())
             .map_err(|e| anyhow!(format!("parse TOML peer conf: {}", e.to_string())))
     }
@@ -31,7 +31,6 @@ impl PeerConfig {
     pub fn reload() -> Result<()> {
         println!("Reloading peer configs");
         let mut peers = PEERS.lock()?;
-        let old_peers = peers.clone();
         peers.clear();
         READERS
             .lock()?
