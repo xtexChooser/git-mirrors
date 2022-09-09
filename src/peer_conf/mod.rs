@@ -5,7 +5,7 @@ use lazy_static::lazy_static;
 use may::sync::Mutex;
 use serde::Deserialize;
 
-use crate::peer_source::reader::READERS;
+use crate::zone::reader::READERS;
 
 use self::tunnel::TunnelConfig;
 
@@ -31,6 +31,7 @@ impl PeerConfig {
     pub fn reload() -> Result<()> {
         println!("Reloading peer configs");
         let mut peers = PEERS.lock()?;
+        let old_peers = peers.clone();
         peers.clear();
         READERS
             .lock()?
@@ -46,7 +47,6 @@ impl PeerConfig {
             })
             .context("load peers")?;
         println!("Loaded {} peers", peers.len());
-        println!("{:?}", peers.clone());
         Ok(())
     }
 }

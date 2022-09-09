@@ -1,6 +1,6 @@
 use crate::{
     peer_conf::PeerConfig,
-    peer_source::reader::file_watcher::{start_watcher, start_watching_all},
+    zone::reader::file_watcher::{start_watcher, start_watching_all},
 };
 
 pub fn daemon() {

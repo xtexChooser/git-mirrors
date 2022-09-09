@@ -3,7 +3,7 @@ use std::{fs::read_to_string, path::PathBuf};
 use lazy_static::lazy_static;
 use serde::Deserialize;
 
-use crate::peer_source::PeerSource;
+use crate::zone::Zone;
 
 use self::{routing::RoutingConfig, tunnel::TunnelConfig};
 
@@ -28,7 +28,7 @@ lazy_static! {
 
 #[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]
 pub struct Config {
-    pub peer_source: Vec<PeerSource>,
+    pub zone: Vec<Zone>,
     pub tunnel: TunnelConfig,
     pub routing: RoutingConfig,
 }

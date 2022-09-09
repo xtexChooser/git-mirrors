@@ -4,5 +4,5 @@ pub mod action;
 pub mod args;
 pub mod config;
 pub mod peer_conf;
-pub mod peer_source;
+pub mod zone;
 pub mod tunnel;

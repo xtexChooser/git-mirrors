@@ -4,28 +4,28 @@ use anyhow::{Context, Result};
 use inotify::WatchMask;
 use tar::Archive;
 
-use crate::{peer_conf::PeerConfig, peer_source::PeerSource};
+use crate::{peer_conf::PeerConfig, zone::Zone};
 
 use super::{file_watcher::FILE_WATCHER, Reader};
 
 #[derive(Debug)]
 pub struct TarReader {
-    config: &'static PeerSource,
+    config: &'static Zone,
 }
 
 impl TarReader {
-    pub fn new(config: &'static PeerSource) -> TarReader {
+    pub fn new(config: &'static Zone) -> TarReader {
         TarReader { config }
     }
 }
 
 impl Reader for TarReader {
-    fn get_config(&self) -> &'static PeerSource {
+    fn get_config(&self) -> &'static Zone {
         self.config
     }
 
     fn collect(&self) -> Result<Vec<PeerConfig>> {
-        Archive::new(File::open(&self.config.file).context("open tar file")?)
+        Archive::new(File::open(&self.config.path).context("open tar file")?)
             .entries()
             .context("list files in tar")?
             .try_fold(Vec::new(), |mut peers, peer_file| {
@@ -40,7 +40,7 @@ impl Reader for TarReader {
     fn start_watching(&mut self) -> Result<()> {
         FILE_WATCHER
             .lock()?
-            .add_watch(&self.config.file, WatchMask::CLOSE_WRITE)?;
+            .add_watch(&self.config.path, WatchMask::CLOSE_WRITE)?;
         Ok(())
     }
 }
