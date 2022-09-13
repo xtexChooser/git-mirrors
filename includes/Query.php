@@ -647,7 +647,7 @@ class Query {
 	 */
 	public function setLimit( $limit ) {
 		if ( is_numeric( $limit ) ) {
-			$this->limit = intval( $limit );
+			$this->limit = (int)$limit;
 		} else {
 			$this->limit = false;
 		}
@@ -663,7 +663,7 @@ class Query {
 	 */
 	public function setOffset( $offset ) {
 		if ( is_numeric( $offset ) ) {
-			$this->offset = intval( $offset );
+			$this->offset = (int)$offset;
 		} else {
 			$this->offset = false;
 		}
@@ -721,7 +721,7 @@ class Query {
 			[ 'page', 'categorylinks' ],
 			[ 'page_title' ],
 			[
-				'page_namespace' => intval( NS_CATEGORY ),
+				'page_namespace' => NS_CATEGORY,
 				'cl_to' => str_replace( ' ', '_', $categoryName )
 			],
 			__METHOD__,
@@ -1046,11 +1046,11 @@ class Query {
 	 */
 	private function _categoriesminmax( $option ) {
 		if ( is_numeric( $option[0] ) ) {
-			$this->addWhere( intval( $option[0] ) . ' <= (SELECT count(*) FROM ' . $this->tableNames['categorylinks'] . ' WHERE ' . $this->tableNames['categorylinks'] . '.cl_from=page_id)' );
+			$this->addWhere( (int)$option[0] . ' <= (SELECT count(*) FROM ' . $this->tableNames['categorylinks'] . ' WHERE ' . $this->tableNames['categorylinks'] . '.cl_from=page_id)' );
 		}
 
 		if ( isset( $option[1] ) && is_numeric( $option[1] ) ) {
-			$this->addWhere( intval( $option[1] ) . ' >= (SELECT count(*) FROM ' . $this->tableNames['categorylinks'] . ' WHERE ' . $this->tableNames['categorylinks'] . '.cl_from=page_id)' );
+			$this->addWhere( (int)$option[1] . ' >= (SELECT count(*) FROM ' . $this->tableNames['categorylinks'] . ' WHERE ' . $this->tableNames['categorylinks'] . '.cl_from=page_id)' );
 		}
 	}
 
@@ -1241,7 +1241,7 @@ class Query {
 
 		if ( !$this->parameters->getParameter( 'openreferences' ) ) {
 			$where = [
-				"{$this->tableNames['page']}.page_namespace = " . intval( NS_FILE ),
+				"{$this->tableNames['page']}.page_namespace = " . NS_FILE,
 				"{$this->tableNames['page']}.page_title = ic.il_to"
 			];
 		}
@@ -1388,7 +1388,7 @@ class Query {
 					$ors = [];
 
 					foreach ( $linkGroup as $link ) {
-						$_or = '(pl.pl_namespace=' . intval( $link->getNamespace() );
+						$_or = '(pl.pl_namespace=' . (int)$link->getNamespace();
 
 						if ( $this->parameters->getParameter( 'ignorecase' ) ) {
 							$_or .= ' AND LOWER(CONVERT(pl.pl_title USING utf8mb4)) LIKE LOWER(' . $this->dbr->addQuotes( $link->getDBkey() ) . ')';
@@ -1406,7 +1406,7 @@ class Query {
 					$ors = [];
 
 					foreach ( $linkGroup as $link ) {
-						$_or = '(' . $this->tableNames['pagelinks'] . '.pl_namespace=' . intval( $link->getNamespace() );
+						$_or = '(' . $this->tableNames['pagelinks'] . '.pl_namespace=' . (int)$link->getNamespace();
 
 						if ( $this->parameters->getParameter( 'ignorecase' ) ) {
 							$_or .= ' AND LOWER(CONVERT(' . $this->tableNames['pagelinks'] . '.pl_title USING utf8mb4)) LIKE LOWER(' . $this->dbr->addQuotes( $link->getDBkey() ) . ')';
@@ -1478,7 +1478,7 @@ class Query {
 
 			foreach ( $option as $linkGroup ) {
 				foreach ( $linkGroup as $link ) {
-					$_or = '(' . $this->tableNames['pagelinks'] . '.pl_namespace=' . intval( $link->getNamespace() );
+					$_or = '(' . $this->tableNames['pagelinks'] . '.pl_namespace=' . (int)$link->getNamespace();
 
 					if ( $this->parameters->getParameter( 'ignorecase' ) ) {
 						$_or .= ' AND LOWER(CONVERT(' . $this->tableNames['pagelinks'] . '.pl_title USING utf8mb4)) LIKE LOWER(' . $this->dbr->addQuotes( $link->getDBkey() ) . '))';
@@ -1736,7 +1736,7 @@ class Query {
 		$_namespaceIdToText .= " WHEN 0 THEN ''";
 
 		foreach ( $namespaces as $id => $name ) {
-			$_namespaceIdToText .= ' WHEN ' . intval( $id ) . ' THEN ' . $this->dbr->addQuotes( $name . ':' );
+			$_namespaceIdToText .= ' WHEN ' . (int)$id . ' THEN ' . $this->dbr->addQuotes( $name . ':' );
 		}
 
 		$_namespaceIdToText .= ' END';
@@ -2183,9 +2183,9 @@ class Query {
 		foreach ( $option as $linkGroup ) {
 			foreach ( $linkGroup as $link ) {
 				if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-					$linksByNS[intval( $link->getNamespace() )][] = 'LOWER(' . $this->dbr->addQuotes( $link->getDBkey() ) . ')';
+					$linksByNS[(int)$link->getNamespace()][] = 'LOWER(' . $this->dbr->addQuotes( $link->getDBkey() ) . ')';
 				} else {
-					$linksByNS[intval( $link->getNamespace() )][] = $this->dbr->addQuotes( $link->getDBkey() );
+					$linksByNS[(int)$link->getNamespace()][] = $this->dbr->addQuotes( $link->getDBkey() );
 				}
 			}
 		}
@@ -2226,9 +2226,9 @@ class Query {
 			foreach ( $option as $linkGroup ) {
 				foreach ( $linkGroup as $link ) {
 					if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-						$linksByNS[intval( $link->getNamespace() )][] = 'LOWER(' . $this->dbr->addQuotes( $link->getDBkey() ) . ')';
+						$linksByNS[(int)$link->getNamespace()][] = 'LOWER(' . $this->dbr->addQuotes( $link->getDBkey() ) . ')';
 					} else {
-						$linksByNS[intval( $link->getNamespace() )][] = $this->dbr->addQuotes( $link->getDBkey() );
+						$linksByNS[(int)$link->getNamespace()][] = $this->dbr->addQuotes( $link->getDBkey() );
 					}
 				}
 			}
