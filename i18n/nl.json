@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Mainframe98",
+			"McDutchie",
 			"Romaine",
 			"Siebrand"
 		]
@@ -20,5 +21,10 @@
 	"categorywatch-notification-categorywatch-remove-header": "[[:$1|$2]] verwijderd van [[:$3|$4]]",
 	"categorywatch-notification-categorywatch-remove-summary": "[[:$3|$4]] verwijderd van [[:$5|$6]]",
 	"categorywatch-notification-categorywatch-remove-body": "[[User:$1|$1]] heeft [[:$3|$3]] verwijderd van [[:$4|$4]]",
-	"echo-category-title-categorywatch": "Categorie volgen"
+	"categorywatch-notification-bundle": "$1 wijzigingen in categorisatie op {{SITENAME}}",
+	"categorywatch-add-title": "Titel toegevoegd aan gevolgde categorie",
+	"categorywatch-remove-title": "Titel verwijderd uit gevolgde categorie",
+	"categorywatch-page-watch-pref": "Alle pagina's in de categorie toevoegen aan uw volglijst wanneer u er een categorie aan toevoegt",
+	"echo-category-title-categorywatch": "Categorie volgen",
+	"echo-pref-tooltip-categorywatch": "Mij op de hoogte stellen wanneer iemand een pagina toevoegt aan of verwijdert uit een categorie die ik volg."
 }
