@@ -19,6 +19,7 @@
 	"categorywatch-notification-categorywatch-add-body": "[[User:$1|$1]] tilføjede [[:$3|$3]] til [[:$4|$4]]",
 	"categorywatch-notification-categorywatch-remove-header": "[[:$1|$2]] fjernet fra [[:$3|$4]]",
 	"categorywatch-notification-categorywatch-remove-summary": "[[:$3|$4]] fjernet fra [[:$5|$6]]",
+	"categorywatch-notification-categorywatch-remove-body": "[[User:$1|$1]] fjernede [[:$3|$3]] fra [[:$4|$4]]",
 	"categorywatch-notification-bundle": "$1 ændringer i kategorisering på {{SITENAME}}",
 	"categorywatch-add-title": "Titel tilføjet til overvåget kategori",
 	"categorywatch-remove-title": "Titel fjernet fra overvåget kategori"
