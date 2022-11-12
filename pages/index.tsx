@@ -6,7 +6,7 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <Head>
-        <title>xtex's Home</title>
+        <title>xtex&apos;s Home</title>
         <meta name="description" content="xtex's Home" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
