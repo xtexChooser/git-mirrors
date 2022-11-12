@@ -1,0 +1,5 @@
+node_modules
+.next
+build
+.vercel
+next-env.d.ts
