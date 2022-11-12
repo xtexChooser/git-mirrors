@@ -5,8 +5,8 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: '/about',
-        destination: '/',
+        source: '/blog/:path',
+        destination: 'https://blog.xtexx.ml/:path',
         permanent: true,
       },
     ]
