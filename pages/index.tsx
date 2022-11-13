@@ -15,8 +15,8 @@ export default function Home() {
           <p className={styles.description}>初三，学生</p>
           <div className='links'>
             <ul>
-              <li><a href="https://blog.xtexx.ml/about" target="_blank">About</a></li>
-              <li><a href="https://blog.xtexx.ml/about/contact.html" target="_blank">Contact</a></li>
+              <li><a href="https://blog.xtexx.ml/about" target="_blank" rel="noreferrer">About</a></li>
+              <li><a href="https://blog.xtexx.ml/about/contact.html" target="_blank" rel="noreferrer">Contact</a></li>
             </ul>
           </div>
         </div>
@@ -26,13 +26,13 @@ export default function Home() {
         <h3 id="links">Links<a href="#links"></a></h3>
         <div className='links'>
           <ul>
-            <li><a href="https://blog.xtexx.ml/" target="_blank">Blog</a></li>
-            <li><a href="https://status.xtexx.ml/" target="_blank">Status</a></li>
+            <li><a href="https://blog.xtexx.ml/" target="_blank" rel="noreferrer">Blog</a></li>
+            <li><a href="https://status.xtexx.ml/" target="_blank" rel="noreferrer">Status</a></li>
           </ul>
         </div>
         <div className='links'>
           <ul>
-            <li><a href="https://github.com/xtexChooser" target="_blank">GitHub</a></li>
+            <li><a href="https://github.com/xtexChooser" target="_blank" rel="noreferrer">GitHub</a></li>
           </ul>
         </div>
       </footer>
