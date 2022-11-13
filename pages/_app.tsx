@@ -1,3 +1,4 @@
+import 'node_modules/spcss/sp.css'
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 
