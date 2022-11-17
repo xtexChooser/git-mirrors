@@ -41,7 +41,7 @@ class PresentationModel extends EchoEventPresentationModel {
 			case 'login-fail-new':
 				$msg = $this->msg( 'notification-loginnotify-login-fail-email-subject' );
 				$msg->params( $this->getUser()->getName() );
-				$msg->params( $this->event->getExtraParam( 'count', 0 ) );
+				$msg->numParams( $this->event->getExtraParam( 'count', 0 ) );
 				break;
 			default:
 				$msg = $this->msg( 'notification-loginnotify-login-success-email-subject' );
@@ -61,7 +61,7 @@ class PresentationModel extends EchoEventPresentationModel {
 			// Known IP? Don't bundle because we issue notifications after every 5 attempts anyway
 			case 'login-fail-known':
 				$msg = $this->msg( 'notification-known-header-login-fail' );
-				$msg->params( $this->event->getExtraParam( 'count', 0 ) );
+				$msg->numParams( $this->event->getExtraParam( 'count', 0 ) );
 				break;
 			// New IP?
 			case 'login-fail-new':
@@ -75,12 +75,12 @@ class PresentationModel extends EchoEventPresentationModel {
 						},
 						0
 					);
-					$msg->params( $totalAttempts );
+					$msg->numParams( $totalAttempts );
 				} else {
 					// If the bundle is read or user goes to Special:Notifications, show
 					// one notification per attempt (aligned with how unbundled bundles work)
 					$msg = $this->msg( 'notification-new-unbundled-header-login-fail' );
-					$msg->params( $this->event->getExtraParam( 'count', 0 ) );
+					$msg->numParams( $this->event->getExtraParam( 'count', 0 ) );
 				}
 				break;
 			default:
