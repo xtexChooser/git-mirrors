@@ -1,0 +1,38 @@
+{
+    "version": "2.1",
+    "software": {
+        "name": "xtex-home",
+        "version": "1.0",
+        "repository": "https://github.com/xtexChooser/home",
+        "homepage": "https://xtexx.ml/"
+    },
+    "protocols": [
+        "activitypub"
+    ],
+    "services": {
+        "inbound": [],
+        "outbound": [
+            "atom1.0",
+            "rss2.0"
+        ]
+    },
+    "openRegistrations": false,
+    "usage": {
+        "users": {
+            "total": 1,
+            "activeHalfyear": 1,
+            "activeMonth": 1
+        }
+    },
+    "metadata": {
+        "nodeName": "xtex's Home",
+        "nodeDescription": "The xtex's Home\n",
+        "maintainer": {
+            "name": "xtex",
+            "email": "xtex@xtexx.ml"
+        },
+        "langs": [],
+        "repositoryUrl": "https://github.com/xtexChooser/home",
+        "feedbackUrl": "https://github.com/xtexChooser/home/issues/new"
+    }
+}

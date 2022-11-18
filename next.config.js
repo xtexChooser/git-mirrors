@@ -11,6 +11,28 @@ const nextConfig = {
       },
     ]
   },
+  async headers() {
+    return [
+      {
+        source: '/.well-known/nodeinfo',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/json; profile="http://nodeinfo.diaspora.software/ns/schema/2.1#"',
+          },
+        ],
+      },
+      {
+        source: '/nodeinfo.json',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/json; profile="http://nodeinfo.diaspora.software/ns/schema/2.1#"',
+          },
+        ],
+      },
+    ]
+  },
 }
 
 module.exports = nextConfig
