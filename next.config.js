@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  poweredByHeader: false,
   async redirects() {
     return [
       {
@@ -30,6 +31,23 @@ const nextConfig = {
             value: 'application/json; profile="http://nodeinfo.diaspora.software/ns/schema/2.1#"',
           },
         ],
+      },
+      {
+        source: '/.well-known/host-meta',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/xrd+xml',
+          },
+        ],
+      },
+    ]
+  },
+  async rewrites() {
+    return [
+      {
+        source: '/.well-known/host-meta.json',
+        destination: '/api/host-meta.json',
       },
     ]
   },
