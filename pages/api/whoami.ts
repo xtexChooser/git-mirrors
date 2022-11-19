@@ -11,11 +11,8 @@ type Data = {
   userAgent: string | undefined,
 }
 
-export default function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<Data>
-) {
-  res.status(200).json({
+export function collect(req: NextApiRequest): Data {
+  return {
     httpVersion: req.httpVersion,
     headers: req.headers,
     address: req.socket.remoteAddress!,
@@ -23,5 +20,12 @@ export default function handler(
     ipv6: req.socket.remoteFamily == 'IPv6',
     method: req.method!,
     userAgent: req.headers["user-agent"],
-  })
+  }
+}
+
+export default function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<Data>
+) {
+  res.status(200).json(collect(req))
 }

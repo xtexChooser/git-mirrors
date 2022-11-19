@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import Link from 'next/link'
 
 export default function SiteAbout() {
     return (
@@ -16,13 +16,27 @@ export default function SiteAbout() {
                     Source code is available at <a href='git://github.com/xtexChooser/home.git'>git://github.com/xtexChooser/home.git</a> (<a href='#license'>more about the license</a>).
                 </p>
 
-                <h2 id="services">Services<a href="#services"></a></h2>
+                <div>
+                    <h2 id="services">Services<a href="#services"></a></h2>
+
+                    <div>
+                        <h3 id="services.technical">Technical:<a href="#services.technical"></a></h3>
+                        <ul>
+                            <li><Link href="/.well-known/nodeinfo">nodeinfo</Link>(<Link href="https://github.com/jhass/nodeinfo">spec</Link>, <Link href="/nodeinfo.json">json</Link>)</li>
+                            <li><Link href="/.well-known/host-meta">host-meta</Link>(<Link href="https://www.rfc-editor.org/rfc/rfc6415.html">spec</Link>, <Link href="/.well-known/host-meta.json">json</Link>)</li>
+                            <li>WebFinger(<Link href="https://www.rfc-editor.org/rfc/rfc7033">spec</Link>)</li>
+                        </ul>
+                    </div>
+                </div>
+
                 <h2 id="web-finger">Web Finger<a href="#web-finger"></a></h2>
 
-                <h2 id="license">License<a href="#license"></a></h2>
-                <p>
-                    This site is open-sourced under GNU Affero General Public License.<br />
-                    A copy is attached in the git repository with the filename &quot;LICENSE&quot;.<br />
+                <div>
+                    <h2 id="license">License<a href="#license"></a></h2>
+                    <p>
+                        This site is open-sourced under GNU Affero General Public License.<br />
+                        A copy is attached in the git repository with the filename &quot;LICENSE&quot;.<br />
+                    </p>
                     <code>
                         xtex&apos;s Home<br />
                         Copyright (C) 2022 - {new Date().getUTCFullYear()}  xtex<br />
@@ -40,7 +54,7 @@ export default function SiteAbout() {
                         You should have received a copy of the GNU Affero General Public License<br />
                         along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.<br />
                     </code>
-                </p>
+                </div>
             </main>
         </div>
     )

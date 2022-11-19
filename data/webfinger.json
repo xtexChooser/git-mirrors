@@ -1,0 +1,28 @@
+{
+    "xtex": {
+        "aliases": [
+            "https://xtexx.ml",
+            "mailto:xtex@xtexx.ml",
+            "mailto:xtexchooser@duck.com"
+        ],
+        "links": [
+            {
+                "rel": "http://webfinger.net/rel/profile-page",
+                "type": "text/html",
+                "href": "https://xtexx.ml/"
+            },
+            {
+                "rel": "http://webfinger.net/rel/avatar",
+                "href": "https://blog.xtexx.ml/icon.png"
+            },
+            {
+                "rel": "self",
+                "type": "application/activity+json",
+                "href": "https://neko.ci/users/8pjo5pvnqn"
+            }
+        ]
+    },
+    "xtexchooser": {
+        "aliasTo": "xtex"
+    }
+}

@@ -49,6 +49,10 @@ const nextConfig = {
         source: '/.well-known/host-meta.json',
         destination: '/api/host-meta.json',
       },
+      {
+        source: '/.well-known/webfinger',
+        destination: '/api/webfinger',
+      },
     ]
   },
 }
