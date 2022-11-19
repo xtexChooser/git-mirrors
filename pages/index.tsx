@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Link from 'next/link'
 import styles from '../styles/Home.module.css'
 
 export default function Home() {
@@ -35,6 +36,9 @@ export default function Home() {
             <li><a href="https://github.com/xtexChooser" target="_blank" rel="noreferrer">GitHub</a></li>
           </ul>
         </div>
+        <p>
+          <Link href="/site_about" target="_blank" rel="noreferrer">About this site</Link>
+        </p>
       </footer>
     </div>
   )
