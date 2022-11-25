@@ -24,5 +24,17 @@
     },
     "xtexchooser": {
         "aliasTo": "xtex"
+    },
+    "misskey9199": {
+        "aliases": [
+            "acct:xtex@xtexx.ml"
+        ],
+        "links": [
+            {
+                "rel": "self",
+                "type": "application/activity+json",
+                "href": "https://social.boiledscript.com/users/9801tdnnmh"
+            }
+        ]
     }
 }
