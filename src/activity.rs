@@ -58,10 +58,10 @@ pub trait ActorAndObjectRef: markers::Activity {
     /// Immutable borrow of actor field
     fn actor_field_ref(&self) -> &OneOrMany<AnyBase>;
 
-    /// Mutable borrow of actor field
+    /// Immutable borrow of object field
     fn object_field_ref(&self) -> &OneOrMany<AnyBase>;
 
-    /// Immutable borrow of object field
+    /// Mutable borrow of actor field
     fn actor_field_mut(&mut self) -> &mut OneOrMany<AnyBase>;
 
     /// Mutable borrow of object field
