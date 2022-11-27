@@ -400,13 +400,7 @@ impl<'a, T> Iterator for Iter<'a, T> {
 
     fn count(self) -> usize {
         match self.0 {
-            Either::Left(opt) => {
-                if opt.is_some() {
-                    1
-                } else {
-                    0
-                }
-            }
+            Either::Left(opt) => opt.map_or(0, |_| 1),
             Either::Right(iter) => iter.count(),
         }
     }
@@ -466,13 +460,7 @@ impl<'a, T> Iterator for IterMut<'a, T> {
 
     fn count(self) -> usize {
         match self.0 {
-            Either::Left(opt) => {
-                if opt.is_some() {
-                    1
-                } else {
-                    0
-                }
-            }
+            Either::Left(opt) => opt.map_or(0, |_| 1),
             Either::Right(iter) => iter.count(),
         }
     }
@@ -532,13 +520,7 @@ impl<T> Iterator for IntoIter<T> {
 
     fn count(self) -> usize {
         match self.0 {
-            Either::Left(opt) => {
-                if opt.is_some() {
-                    1
-                } else {
-                    0
-                }
-            }
+            Either::Left(opt) => opt.map_or(0, |_| 1),
             Either::Right(iter) => iter.count(),
         }
     }
