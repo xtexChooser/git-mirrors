@@ -1,0 +1,23 @@
+{
+  "name": "@xvnet/registry-toolkit",
+  "version": "0.0.1",
+  "description": "Toolkit to work with the XTEX-VNET registry",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc --build",
+    "watch": "tsc --watch",
+    "lint": "eslint src/**.ts",
+    "start": "node dist/index.js"
+  },
+  "keywords": [],
+  "author": "XTEX-VNET",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/node": "^18.11.10",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "eslint": "^8.28.0",
+    "typescript": "*"
+  }
+}

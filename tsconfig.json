@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "target": "es2022",
+        "lib": [],
+        "strict": true,
+        "incremental": true,
+        "outDir": "dist",
+        "sourceMap": true
+    },
+    "include": [
+        "src/**.ts"
+    ]
+}
