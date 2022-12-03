@@ -7,9 +7,6 @@
       inetnum: {
         type: "string",
       },
-      mnt_by: {
-        type: "string",
-      },
       net: {
         type: "string",
       },

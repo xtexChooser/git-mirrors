@@ -1,7 +1,6 @@
 {
   descr: "The XTEX Virtual Network",
   inetnum: "10.160.0.0/20",
-  mnt_by: "XTEX-MNT",
   net: "XTEX-VNET",
   nserver: [
     "ns.xvn",

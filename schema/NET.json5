@@ -4,8 +4,10 @@
       descr: {
         type: "string",
       },
-      mnt_by: {
-        type: "string",
+      mnter: {
+        elements: {
+          type: "string",
+        },
       },
       net: {
         type: "string",
