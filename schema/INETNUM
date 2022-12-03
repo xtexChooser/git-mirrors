@@ -1,0 +1,23 @@
+{
+  jtd: {
+    properties: {
+      inetnum: {
+        type: "string",
+      },
+      mnt_by: {
+        type: "string",
+      },
+      descr: {
+        type: "string",
+      },
+      net: {
+        type: "string",
+      },
+      nserver: {
+        elements: {
+          type: "string",
+        },
+      },
+    },
+  },
+}

@@ -1,1 +1,7 @@
-// WIP
+{
+  inetnum: "10.160.0.0/20",
+  mnt_by: "XTEX-MNT",
+  descr: "The XTEX Virtual Network",
+  net: "XTEX-VNET",
+  nserver: ["ns.xtexx.xvn"],
+}
