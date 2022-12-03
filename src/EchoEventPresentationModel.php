@@ -172,6 +172,7 @@ class EchoEventPresentationModel extends \EchoEventPresentationModel {
 	 * @return array
 	 * @throws TimestampException
 	 */
+	#[\ReturnTypeWillChange]
 	public function jsonSerialize() {
 		wfDebugLog( 'CategoryWatch', __METHOD__ );
 		$body = $this->getBodyMessage();
