@@ -1,8 +1,6 @@
 {
+  aut_num: 4244314431,
   descr: "The XTEX Virtual Network",
-  mnter: [
-    "XTEX-XVNET-MNT",
-  ],
   net: "XTEX-VNET",
   source: "XTEX-VNET",
 }

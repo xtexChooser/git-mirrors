@@ -1,9 +1,11 @@
 {
   jtd: {
-    properties: {
+    optionalProperties: {
       descr: {
         type: "string",
       },
+    },
+    properties: {
       inet6num: {
         type: "string",
       },
@@ -14,6 +16,9 @@
         elements: {
           type: "string",
         },
+      },
+      source: {
+        type: "string",
       },
     },
   },

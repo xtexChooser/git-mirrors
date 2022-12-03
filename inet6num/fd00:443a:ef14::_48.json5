@@ -5,4 +5,5 @@
   nserver: [
     "ns.xvn",
   ],
+  source: "XTEX-VNET",
 }

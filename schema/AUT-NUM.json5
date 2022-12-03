@@ -6,10 +6,8 @@
       },
     },
     properties: {
-      mnter: {
-        elements: {
-          type: "string",
-        },
+      aut_num: {
+        type: "uint32",
       },
       net: {
         type: "string",
