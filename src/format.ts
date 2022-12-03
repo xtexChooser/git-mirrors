@@ -17,10 +17,15 @@ export async function formatSchema(schema: string) {
 
 export async function formatObject(schema: string, key: string) {
     logger.trace({ schema, key }, 'Format object')
-    const content = await readObjectContent(schema, key)
-    const formatted = serializeObject(deserializeObject(content))
-    if (formatted != content) {
-        logger.info({ schema, key }, 'Formatted')
-        writeObject(schema, key, deserializeObject(content))
+
+    try {
+        const content = await readObjectContent(schema, key)
+        const formatted = serializeObject(deserializeObject(content))
+        if (formatted != content) {
+            logger.info({ schema, key }, 'Formatted')
+            writeObject(schema, key, deserializeObject(content))
+        }
+    } catch (e: any) {
+        logger.error({ schema, key, e })
     }
 }

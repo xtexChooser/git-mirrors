@@ -2,16 +2,17 @@ import Ajv, { JTDSchemaType, ValidateFunction } from "ajv/dist/jtd.js";
 import { readdir, readFile, writeFile } from "fs/promises";
 import json5 from "json5";
 import sortKeys from "sort-keys";
+import logger from "./logger.js";
 
 const ajv = new Ajv()
 export { ajv }
 
 export async function listObjects(type: string): Promise<string[]> {
-    return (await readdir(type.toLowerCase())).map((key) => key.replace('_', '/'))
+    return (await readdir(type.toLowerCase())).map((key) => key.replace('_', '/').substring(0, key.length - 6))
 }
 
 export function getObjectPath(type: string, key: string): string {
-    return `${type.toLowerCase()}/${key.replace('/', '_')}`;
+    return `${type.toLowerCase()}/${key.replace('/', '_')}.json5`;
 }
 
 export function serializeObject(obj: object): string {
@@ -27,7 +28,12 @@ export async function readObjectContent(type: string, key: string): Promise<stri
 }
 
 export async function readObject(type: string, key: string): Promise<object> {
-    return deserializeObject(await readObjectContent(type, key))
+    try {
+        return deserializeObject(await readObjectContent(type, key))
+    } catch (e: any) {
+        logger.error({ type, key, e }, "Failed to read object")
+        throw e
+    }
 }
 
 export async function writeObject(type: string, key: string, obj: object) {
@@ -39,5 +45,10 @@ export type Schema = {
 }
 
 export async function loadSchema(schema: string): Promise<ValidateFunction<object>> {
-    return ajv.compile((await readObject('schema', schema) as Schema).jtd)
+    try {
+        return ajv.compile((await readObject('schema', schema) as Schema).jtd)
+    } catch (e: any) {
+        logger.error({ schema, e }, "Failed to load schema")
+        throw e
+    }
 }
