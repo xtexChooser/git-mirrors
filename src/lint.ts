@@ -23,3 +23,13 @@ export async function lintSchema(schema: string) {
         }
     }
 }
+
+export async function lintObject(schema: string, key: string) {
+    logger.trace({ schema, key }, "Check object")
+
+    const jtd = await loadSchema(schema)
+    const obj = await readObject(schema, key)
+    if (!jtd(obj)) {
+        logger.error({ schema, key, obj, error: jtd.errors })
+    }
+}

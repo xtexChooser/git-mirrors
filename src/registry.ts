@@ -6,11 +6,11 @@ const ajv = new Ajv()
 export { ajv }
 
 export async function readObject(type: string, key: string): Promise<object> {
-    return json5.parse(await readFile(`${type.toLowerCase()}/${key}`, 'utf-8'))
+    return json5.parse(await readFile(`${type.toLowerCase()}/${key.replace('/', '_')}`, 'utf-8'))
 }
 
 export async function listObjects(type: string): Promise<string[]> {
-    return readdir(type.toLowerCase())
+    return (await readdir(type.toLowerCase())).map((key) => key.replace('_', '/'))
 }
 
 export type Schema = {
