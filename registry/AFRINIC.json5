@@ -1,0 +1,10 @@
+{
+  mnter: [
+    "XTEX-MNT-XVNET",
+  ],
+  registry: "AFRINIC",
+  source: "XTEX-VNET",
+  url: [
+    "whois://whois.afrinic.net",
+  ],
+}

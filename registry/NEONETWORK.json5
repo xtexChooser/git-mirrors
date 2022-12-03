@@ -1,0 +1,10 @@
+{
+  mnter: [
+    "XTEX-MNT-XVNET",
+  ],
+  registry: "NEONETWORK",
+  source: "XTEX-VNET",
+  url: [
+    "https://github.com/NeoCloud/NeoNetwork",
+  ],
+}

@@ -1,0 +1,10 @@
+{
+  mnter: [
+    "XTEX-MNT-XVNET",
+  ],
+  registry: "ARIN",
+  source: "XTEX-VNET",
+  url: [
+    "whois://whois.apnic.net",
+  ],
+}

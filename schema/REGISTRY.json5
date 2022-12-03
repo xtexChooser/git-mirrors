@@ -1,0 +1,28 @@
+{
+  jtd: {
+    optionalProperties: {
+      descr: {
+        type: "string",
+      },
+    },
+    properties: {
+      mnter: {
+        elements: {
+          type: "string",
+        },
+      },
+      registry: {
+        type: "string",
+      },
+      source: {
+        type: "string",
+      },
+      url: {
+        elements: {
+          type: "string",
+        },
+      },
+    },
+  },
+  schema: "REGISTRY",
+}

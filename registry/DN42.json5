@@ -1,0 +1,10 @@
+{
+  mnter: [
+    "XTEX-MNT-XVNET",
+  ],
+  registry: "DN42",
+  source: "XTEX-VNET",
+  url: [
+    "https://git.dn42.dev/dn42/registry",
+  ],
+}

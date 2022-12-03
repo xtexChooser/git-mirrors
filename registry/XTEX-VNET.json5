@@ -1,0 +1,10 @@
+{
+  mnter: [
+    "XTEX-MNT-XVNET",
+  ],
+  registry: "XTEX-VNET",
+  source: "XTEX-VNET",
+  url: [
+    "https://source.moe/XTEX-VNET/registry",
+  ],
+}
