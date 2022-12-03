@@ -15,7 +15,7 @@ export function getObjectPath(type: string, key: string): string {
 }
 
 export function serializeObject(obj: object): string {
-    return json5.stringify(sortKeys(obj, { deep: true }), { space: 2 })
+    return json5.stringify(sortKeys(obj, { deep: true }), { space: 2, quote: '"' })
 }
 
 export function deserializeObject(obj: string): object {
