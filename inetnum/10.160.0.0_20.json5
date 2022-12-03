@@ -4,6 +4,6 @@
   mnt_by: "XTEX-MNT",
   net: "XTEX-VNET",
   nserver: [
-    "ns.xtexx.xvn",
+    "ns.xvn",
   ],
 }

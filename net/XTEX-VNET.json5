@@ -1,0 +1,5 @@
+{
+  descr: "The XTEX Virtual Network",
+  mnt_by: "XTEX-MNT",
+  net: "XTEX-VNET",
+}

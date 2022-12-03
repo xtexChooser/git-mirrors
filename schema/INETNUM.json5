@@ -1,13 +1,13 @@
 {
   jtd: {
     properties: {
+      descr: {
+        type: "string",
+      },
       inetnum: {
         type: "string",
       },
       mnt_by: {
-        type: "string",
-      },
-      descr: {
         type: "string",
       },
       net: {
