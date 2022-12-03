@@ -30,7 +30,7 @@ export async function readObjectContent(type: string, key: string): Promise<stri
 export async function readObject(type: string, key: string): Promise<object> {
     try {
         return deserializeObject(await readObjectContent(type, key))
-    } catch (e: any) {
+    } catch (e) {
         logger.error({ type, key, e }, "Failed to read object")
         throw e
     }
@@ -47,7 +47,7 @@ export type Schema = {
 export async function loadSchema(schema: string): Promise<ValidateFunction<object>> {
     try {
         return ajv.compile((await readObject('schema', schema) as Schema).jtd)
-    } catch (e: any) {
+    } catch (e) {
         logger.error({ schema, e }, "Failed to load schema")
         throw e
     }

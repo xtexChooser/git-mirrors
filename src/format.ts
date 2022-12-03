@@ -25,7 +25,7 @@ export async function formatObject(schema: string, key: string) {
             logger.info({ schema, key }, 'Formatted')
             writeObject(schema, key, deserializeObject(content))
         }
-    } catch (e: any) {
+    } catch (e) {
         logger.error({ schema, key, e })
     }
 }
