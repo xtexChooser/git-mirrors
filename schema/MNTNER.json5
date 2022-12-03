@@ -6,13 +6,17 @@
       },
     },
     properties: {
-      asn: {
-        type: "uint32",
+      auth: {
+        elements: {
+          type: "string",
+        },
       },
-      aut_num: {
-        type: "string",
+      mail: {
+        elements: {
+          type: "string",
+        },
       },
-      net: {
+      mntner: {
         type: "string",
       },
       source: {
@@ -20,5 +24,5 @@
       },
     },
   },
-  schema: "AUT-NUM",
+  schema: "MNTNER",
 }

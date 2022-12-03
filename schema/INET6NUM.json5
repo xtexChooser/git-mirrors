@@ -22,4 +22,5 @@
       },
     },
   },
+  schema: "INET6NUM",
 }

@@ -1,7 +1,7 @@
 {
   descr: "The XTEX Virtual Network",
   mnter: [
-    "XTEX-XVNET-MNT",
+    "XTEX-MNT-XVNET",
   ],
   net: "XTEX-VNET",
   source: "XTEX-VNET",

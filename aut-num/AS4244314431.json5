@@ -1,5 +1,6 @@
 {
-  aut_num: 4244314431,
+  asn: 4244314431,
+  aut_num: "AS4244314431",
   descr: "The XTEX Virtual Network",
   net: "XTEX-VNET",
   source: "XTEX-VNET",
