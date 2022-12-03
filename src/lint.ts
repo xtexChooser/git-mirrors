@@ -1,20 +1,19 @@
-import { readdir } from "fs/promises";
-import logger from "./logger.js";
-import { ajv, listObjects, loadSchema, readObject } from "./registry.js";
+import logger from './logger.js';
+import { listObjects, loadSchema, readObject } from './registry.js';
 
 export async function lintAllSchema() {
-    for (const schema of await readdir('./schema')) {
+    for (const schema of await listObjects('SCHEMA')) {
         await lintSchema(schema)
     }
 }
 
 export async function lintSchema(schema: string) {
-    logger.trace({ schema }, "Check schema")
+    logger.trace({ schema }, 'Check schema')
 
     const jtd = await loadSchema(schema)
 
     for (const key of await listObjects(schema)) {
-        logger.trace({ schema, key }, "Check object")
+        logger.trace({ schema, key }, 'Check object')
 
         const obj = await readObject(schema, key)
 
@@ -25,7 +24,7 @@ export async function lintSchema(schema: string) {
 }
 
 export async function lintObject(schema: string, key: string) {
-    logger.trace({ schema, key }, "Check object")
+    logger.trace({ schema, key }, 'Check object')
 
     const jtd = await loadSchema(schema)
     const obj = await readObject(schema, key)
