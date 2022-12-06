@@ -38,22 +38,24 @@ use mime::Mime;
 
 /// Implements conversion between `Base<Kind>` and other ActivityStreams objects defined in this
 /// crate
-pub trait Extends<Kind>: Sized {
+pub trait Extends: Sized {
+    type Kind;
+
     /// The erro produced must be a StdError
     type Error: std::error::Error;
 
     /// Produce an object from the Base
-    fn extends(base: Base<Kind>) -> Result<Self, Self::Error>;
+    fn extends(base: Base<Self::Kind>) -> Result<Self, Self::Error>;
 
     /// Produce a base from the object
-    fn retracts(self) -> Result<Base<Kind>, Self::Error>;
+    fn retracts(self) -> Result<Base<Self::Kind>, Self::Error>;
 }
 
 /// A helper function implemented for all Extends types to easily produce an AnyBase from a given
 /// object.
 ///
 /// This is important because many APIs in this crate deal with AnyBases.
-pub trait ExtendsExt<Kind>: Extends<Kind> {
+pub trait ExtendsExt: Extends {
     /// Create an AnyBase from the given object
     ///
     /// ```rust
@@ -68,7 +70,7 @@ pub trait ExtendsExt<Kind>: Extends<Kind> {
     /// ```
     fn into_any_base(self) -> Result<AnyBase, Self::Error>
     where
-        Kind: serde::ser::Serialize,
+        Self::Kind: serde::ser::Serialize,
         Self::Error: From<serde_json::Error>,
     {
         AnyBase::from_extended(self)
@@ -91,7 +93,7 @@ pub trait ExtendsExt<Kind>: Extends<Kind> {
     /// ```
     fn from_any_base(any_base: AnyBase) -> Result<Option<Self>, Self::Error>
     where
-        Kind: serde::de::DeserializeOwned,
+        Self::Kind: serde::de::DeserializeOwned,
         Self::Error: From<serde_json::Error>,
     {
         if let Some(base) = any_base.take_base() {
@@ -108,12 +110,14 @@ pub trait ExtendsExt<Kind>: Extends<Kind> {
 /// Implementation trait for deriving Base methods for a type
 ///
 /// Any type implementating AsBase will automatically gain methods provided by BaseExt
-pub trait AsBase<Kind>: markers::Base {
+pub trait AsBase: markers::Base {
+    type Kind;
+
     /// Immutable borrow of `Base<Kind>`
-    fn base_ref(&self) -> &Base<Kind>;
+    fn base_ref(&self) -> &Base<Self::Kind>;
 
     /// Mutable borrow of Base<Kind>
-    fn base_mut(&mut self) -> &mut Base<Kind>;
+    fn base_mut(&mut self) -> &mut Base<Self::Kind>;
 }
 
 /// Helper methods for interacting with Base types
@@ -122,7 +126,7 @@ pub trait AsBase<Kind>: markers::Base {
 /// Link or an Object.
 ///
 /// Documentation for the fields related to these methods can be found on the `Base` struct
-pub trait BaseExt<Kind>: AsBase<Kind> {
+pub trait BaseExt: AsBase {
     /// Fetch the context for the current object
     ///
     /// ```rust
@@ -135,7 +139,7 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     /// ```
     fn context<'a>(&'a self) -> Option<&'a OneOrMany<AnyBase>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.base_ref().context.as_ref()
     }
@@ -277,7 +281,7 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     /// ```
     fn id<'a>(&'a self, host: &str, port: Option<&str>) -> Result<Option<&'a IriString>, CheckError>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.id_unchecked()
             .and_then(|id| {
@@ -306,7 +310,7 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     /// ```
     fn id_unchecked<'a>(&'a self) -> Option<&'a IriString>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.base_ref().id.as_ref()
     }
@@ -329,7 +333,7 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
         port: Option<&str>,
     ) -> Result<Option<&'a mut IriString>, CheckError>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.id_mut_unchecked()
             .and_then(|id| {
@@ -358,7 +362,7 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     /// ```
     fn id_mut_unchecked<'a>(&'a mut self) -> Option<&'a mut IriString>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.base_mut().id.as_mut()
     }
@@ -445,9 +449,9 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     ///     println!("{:?}", kind);
     /// }
     /// ```
-    fn kind<'a>(&'a self) -> Option<&'a Kind>
+    fn kind<'a>(&'a self) -> Option<&'a Self::Kind>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.base_ref().kind.as_ref()
     }
@@ -470,9 +474,9 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     /// # Ok(())
     /// # }
     /// ```
-    fn is_kind(&self, kind: &Kind) -> bool
+    fn is_kind(&self, kind: &Self::Kind) -> bool
     where
-        Kind: PartialEq,
+        Self::Kind: PartialEq,
     {
         self.kind() == Some(kind)
     }
@@ -488,7 +492,7 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     ///
     /// video.set_kind(VideoType::Video);
     /// ```
-    fn set_kind(&mut self, kind: Kind) -> &mut Self {
+    fn set_kind(&mut self, kind: Self::Kind) -> &mut Self {
         self.base_mut().kind = Some(kind);
         self
     }
@@ -505,7 +509,7 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     ///     println!("{:?}", kind);
     /// }
     /// ```
-    fn take_kind(&mut self) -> Option<Kind> {
+    fn take_kind(&mut self) -> Option<Self::Kind> {
         self.base_mut().kind.take()
     }
 
@@ -541,7 +545,7 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     /// ```
     fn name<'a>(&'a self) -> Option<OneOrMany<&'a AnyString>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.base_ref().name.as_ref().map(|o| o.as_ref())
     }
@@ -662,7 +666,7 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     /// ```
     fn media_type<'a>(&'a self) -> Option<&'a Mime>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.base_ref().media_type.as_ref().map(|m| m.as_ref())
     }
@@ -737,7 +741,7 @@ pub trait BaseExt<Kind>: AsBase<Kind> {
     /// ```
     fn preview<'a>(&'a self) -> Option<OneOrMany<&'a AnyBase>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.base_ref().preview.as_ref().map(|o| o.as_ref())
     }
@@ -1047,7 +1051,7 @@ impl<Kind> Base<Kind> {
     /// ```
     pub fn extend<T>(self) -> Result<T, T::Error>
     where
-        T: Extends<Kind>,
+        T: Extends<Kind = Kind>,
     {
         T::extends(self)
     }
@@ -1066,7 +1070,7 @@ impl<Kind> Base<Kind> {
     /// ```
     pub fn retract<T>(t: T) -> Result<Self, T::Error>
     where
-        T: Extends<Kind>,
+        T: Extends<Kind = Kind>,
     {
         t.retracts()
     }
@@ -1170,7 +1174,7 @@ impl AnyBase {
         Ok(base.into())
     }
 
-    /// Extend this AnyBase into a kind T where T implements Extends<Kind>
+    /// Extend this AnyBase into a kind T where T implements Extends
     ///
     /// This method returns Ok(None) when the AnyBase does not contain an extensible object, i.e.
     /// it's just an IRI
@@ -1186,8 +1190,8 @@ impl AnyBase {
     /// ```
     pub fn extend<T, Kind>(self) -> Result<Option<T>, T::Error>
     where
-        T: ExtendsExt<Kind>,
-        <T as Extends<Kind>>::Error: From<serde_json::Error>,
+        T: ExtendsExt<Kind = Kind>,
+        <T as Extends>::Error: From<serde_json::Error>,
         for<'de> Kind: serde::Deserialize<'de>,
     {
         T::from_any_base(self)
@@ -1205,7 +1209,7 @@ impl AnyBase {
     /// ```
     pub fn from_extended<T, Kind>(extended: T) -> Result<Self, T::Error>
     where
-        T: Extends<Kind>,
+        T: Extends<Kind = Kind>,
         T::Error: From<serde_json::Error>,
         Kind: serde::ser::Serialize,
     {
@@ -1936,35 +1940,38 @@ impl<Kind> UnparsedMut for Base<Kind> {
     }
 }
 
-impl<Kind> AsBase<Kind> for Base<Kind> {
-    fn base_ref(&self) -> &Base<Kind> {
+impl<Kind> AsBase for Base<Kind> {
+    type Kind = Kind;
+
+    fn base_ref(&self) -> &Base<Self::Kind> {
         self
     }
 
-    fn base_mut(&mut self) -> &mut Base<Kind> {
+    fn base_mut(&mut self) -> &mut Base<Self::Kind> {
         self
     }
 }
 
-impl<Kind> Extends<Kind> for Base<Kind> {
+impl<Kind> Extends for Base<Kind> {
+    type Kind = Kind;
     type Error = std::convert::Infallible;
 
-    fn extends(base: Base<Kind>) -> Result<Self, Self::Error> {
+    fn extends(base: Base<Self::Kind>) -> Result<Self, Self::Error> {
         Ok(base)
     }
 
-    fn retracts(self) -> Result<Base<Kind>, Self::Error> {
+    fn retracts(self) -> Result<Base<Self::Kind>, Self::Error> {
         Ok(self)
     }
 }
 
-impl<T, Kind> ExtendsExt<Kind> for T
+impl<T> ExtendsExt for T
 where
-    T: Extends<Kind>,
+    T: Extends,
     T::Error: From<serde_json::Error>,
 {
 }
-impl<T, Kind> BaseExt<Kind> for T where T: AsBase<Kind> {}
+impl<T> BaseExt for T where T: AsBase {}
 
 impl From<Base<serde_json::Value>> for AnyBase {
     fn from(o: Base<serde_json::Value>) -> Self {

@@ -36,12 +36,13 @@ use self::kind::MentionType;
 /// Implementation trait for deriving Link methods for a type
 ///
 /// Any type implementing AsLink will automatically gain methods provided by LinkExt
-pub trait AsLink<Kind>: markers::Link {
+pub trait AsLink: markers::Link {
+    type Kind;
     /// Immutable borrow of `Link<Kind>`
-    fn link_ref(&self) -> &Link<Kind>;
+    fn link_ref(&self) -> &Link<Self::Kind>;
 
     /// Mutable borrow of `Link<Kind>`
-    fn link_mut(&mut self) -> &mut Link<Kind>;
+    fn link_mut(&mut self) -> &mut Link<Self::Kind>;
 }
 
 /// Helper methods for interacting with Link types
@@ -49,7 +50,7 @@ pub trait AsLink<Kind>: markers::Link {
 /// This trait represents methods valid for any ActivityStreams Link.
 ///
 /// Documentation for the fields related to these methods can be found on the `Link` struct
-pub trait LinkExt<Kind>: AsLink<Kind> {
+pub trait LinkExt: AsLink {
     /// Fetch the href for the current object
     ///
     /// ```rust
@@ -62,7 +63,7 @@ pub trait LinkExt<Kind>: AsLink<Kind> {
     /// ```
     fn href<'a>(&'a self) -> Option<&'a IriString>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.link_ref().href.as_ref()
     }
@@ -136,7 +137,7 @@ pub trait LinkExt<Kind>: AsLink<Kind> {
     /// ```
     fn hreflang<'a>(&'a self) -> Option<&'a str>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.link_ref().hreflang.as_deref()
     }
@@ -210,7 +211,7 @@ pub trait LinkExt<Kind>: AsLink<Kind> {
     /// ```
     fn rel<'a>(&'a self) -> Option<&'a OneOrMany<String>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.link_ref().rel.as_ref()
     }
@@ -330,7 +331,7 @@ pub trait LinkExt<Kind>: AsLink<Kind> {
     /// ```
     fn height<'a>(&'a self) -> Option<u64>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.link_ref().height
     }
@@ -403,7 +404,7 @@ pub trait LinkExt<Kind>: AsLink<Kind> {
     /// ```
     fn width<'a>(&'a self) -> Option<u64>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.link_ref().width
     }
@@ -618,14 +619,16 @@ impl<Kind> Link<Kind> {
 impl<Kind> markers::Base for Link<Kind> {}
 impl<Kind> markers::Link for Link<Kind> {}
 
-impl<Kind> Extends<Kind> for Link<Kind> {
+impl<Kind> Extends for Link<Kind> {
+    type Kind = Kind;
+
     type Error = serde_json::Error;
 
-    fn extends(base: Base<Kind>) -> Result<Self, Self::Error> {
+    fn extends(base: Base<Self::Kind>) -> Result<Self, Self::Error> {
         Self::extending(base)
     }
 
-    fn retracts(self) -> Result<Base<Kind>, Self::Error> {
+    fn retracts(self) -> Result<Base<Self::Kind>, Self::Error> {
         self.retracting()
     }
 }
@@ -658,27 +661,31 @@ impl<Kind> UnparsedMut for Link<Kind> {
     }
 }
 
-impl<Kind> AsBase<Kind> for Link<Kind> {
-    fn base_ref(&self) -> &Base<Kind> {
+impl<Kind> AsBase for Link<Kind> {
+    type Kind = Kind;
+
+    fn base_ref(&self) -> &Base<Self::Kind> {
         &self.inner
     }
 
-    fn base_mut(&mut self) -> &mut Base<Kind> {
+    fn base_mut(&mut self) -> &mut Base<Self::Kind> {
         &mut self.inner
     }
 }
 
-impl<Kind> AsLink<Kind> for Link<Kind> {
-    fn link_ref(&self) -> &Link<Kind> {
+impl<Kind> AsLink for Link<Kind> {
+    type Kind = Kind;
+
+    fn link_ref(&self) -> &Link<Self::Kind> {
         self
     }
 
-    fn link_mut(&mut self) -> &mut Link<Kind> {
+    fn link_mut(&mut self) -> &mut Link<Self::Kind> {
         self
     }
 }
 
-impl<T, Kind> LinkExt<Kind> for T where T: AsLink<Kind> {}
+impl<T> LinkExt for T where T: AsLink {}
 
 impl<Kind> Default for Link<Kind>
 where

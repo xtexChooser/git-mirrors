@@ -62,10 +62,10 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///
     /// let inbox_ref = person.inbox();
     /// ```
-    fn inbox<'a, Kind>(&'a self) -> Result<&'a IriString, CheckError>
+    fn inbox<'a>(&'a self) -> Result<&'a IriString, CheckError>
     where
         Inner: 'a,
-        Self: BaseExt<Kind>,
+        Self: BaseExt,
     {
         let inbox = self.inbox_unchecked();
         self.check_authority(inbox)
@@ -129,10 +129,10 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///
     /// let outbox_ref = person.outbox();
     /// ```
-    fn outbox<'a, Kind>(&'a self) -> Result<Option<&'a IriString>, CheckError>
+    fn outbox<'a>(&'a self) -> Result<Option<&'a IriString>, CheckError>
     where
         Inner: 'a,
-        Self: BaseExt<Kind>,
+        Self: BaseExt,
     {
         self.outbox_unchecked()
             .map(|outbox| self.check_authority(outbox))
@@ -236,10 +236,10 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///     println!("{:?}", following);
     /// }
     /// ```
-    fn following<'a, Kind>(&'a self) -> Result<Option<&'a IriString>, CheckError>
+    fn following<'a>(&'a self) -> Result<Option<&'a IriString>, CheckError>
     where
         Inner: 'a,
-        Self: BaseExt<Kind>,
+        Self: BaseExt,
     {
         self.following_unchecked()
             .map(|following| self.check_authority(following))
@@ -345,10 +345,10 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///     println!("{:?}", followers);
     /// }
     /// ```
-    fn followers<'a, Kind>(&'a self) -> Result<Option<&'a IriString>, CheckError>
+    fn followers<'a>(&'a self) -> Result<Option<&'a IriString>, CheckError>
     where
         Inner: 'a,
-        Self: BaseExt<Kind>,
+        Self: BaseExt,
     {
         self.followers_unchecked()
             .map(|followers| self.check_authority(followers))
@@ -454,10 +454,10 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///     println!("{:?}", liked);
     /// }
     /// ```
-    fn liked<'a, Kind>(&'a self) -> Result<Option<&'a IriString>, CheckError>
+    fn liked<'a>(&'a self) -> Result<Option<&'a IriString>, CheckError>
     where
         Inner: 'a,
-        Self: BaseExt<Kind>,
+        Self: BaseExt,
     {
         self.liked_unchecked()
             .map(|liked| self.check_authority(liked))
@@ -563,10 +563,10 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     ///     println!("{:?}", streams);
     /// }
     /// ```
-    fn streams<'a, Kind>(&'a self) -> Result<Option<OneOrMany<&'a IriString>>, CheckError>
+    fn streams<'a>(&'a self) -> Result<Option<OneOrMany<&'a IriString>>, CheckError>
     where
         Inner: 'a,
-        Self: BaseExt<Kind>,
+        Self: BaseExt,
     {
         if let Some(streams) = self.streams_unchecked() {
             for id in &streams {
@@ -810,11 +810,10 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// # Ok(())
     /// # }
     /// ```
-    fn endpoints<'a, Kind>(&'a self) -> Result<Option<Endpoints<&'a IriString>>, CheckError>
+    fn endpoints<'a>(&'a self) -> Result<Option<Endpoints<&'a IriString>>, CheckError>
     where
-        Self: BaseExt<Kind>,
+        Self: BaseExt,
         Inner: 'a,
-        Kind: 'a,
     {
         if let Some(endpoints) = self.endpoints_unchecked() {
             let authority_opt = self.id_unchecked().and_then(|id| id.authority_components());
@@ -1416,19 +1415,20 @@ impl<Inner> markers::Actor for ApActor<Inner> where Inner: markers::Actor {}
 
 impl<Inner> markers::Actor for ApObject<Inner> where Inner: markers::Actor {}
 
-impl<Inner, Kind, Error> Extends<Kind> for ApActor<Inner>
+impl<Inner, Error> Extends for ApActor<Inner>
 where
-    Inner: Extends<Kind, Error = Error> + UnparsedMut + markers::Actor,
+    Inner: Extends<Error = Error> + UnparsedMut + markers::Actor,
     Error: From<serde_json::Error> + std::error::Error,
 {
+    type Kind = Inner::Kind;
     type Error = Error;
 
-    fn extends(base: Base<Kind>) -> Result<Self, Self::Error> {
+    fn extends(base: Base<Self::Kind>) -> Result<Self, Self::Error> {
         let inner = Inner::extends(base)?;
         Ok(Self::extending(inner)?)
     }
 
-    fn retracts(self) -> Result<Base<Kind>, Self::Error> {
+    fn retracts(self) -> Result<Base<Self::Kind>, Self::Error> {
         let inner = self.retracting()?;
         inner.retracts()
     }
@@ -1443,28 +1443,32 @@ where
     }
 }
 
-impl<Inner, Kind> AsBase<Kind> for ApActor<Inner>
+impl<Inner> AsBase for ApActor<Inner>
 where
-    Inner: AsBase<Kind>,
+    Inner: AsBase,
 {
-    fn base_ref(&self) -> &Base<Kind> {
+    type Kind = Inner::Kind;
+
+    fn base_ref(&self) -> &Base<Self::Kind> {
         self.inner.base_ref()
     }
 
-    fn base_mut(&mut self) -> &mut Base<Kind> {
+    fn base_mut(&mut self) -> &mut Base<Self::Kind> {
         self.inner.base_mut()
     }
 }
 
-impl<Inner, Kind> AsObject<Kind> for ApActor<Inner>
+impl<Inner> AsObject for ApActor<Inner>
 where
-    Inner: AsObject<Kind>,
+    Inner: AsObject,
 {
-    fn object_ref(&self) -> &Object<Kind> {
+    type Kind = Inner::Kind;
+
+    fn object_ref(&self) -> &Object<Self::Kind> {
         self.inner.object_ref()
     }
 
-    fn object_mut(&mut self) -> &mut Object<Kind> {
+    fn object_mut(&mut self) -> &mut Object<Self::Kind> {
         self.inner.object_mut()
     }
 }
@@ -1495,14 +1499,16 @@ where
     }
 }
 
-impl<Kind> Extends<Kind> for Actor<Kind> {
+impl<Kind> Extends for Actor<Kind> {
+    type Kind = Kind;
+
     type Error = serde_json::Error;
 
-    fn extends(base: Base<Kind>) -> Result<Self, Self::Error> {
+    fn extends(base: Base<Self::Kind>) -> Result<Self, Self::Error> {
         Object::extends(base).map(Actor)
     }
 
-    fn retracts(self) -> Result<Base<Kind>, Self::Error> {
+    fn retracts(self) -> Result<Base<Self::Kind>, Self::Error> {
         self.0.retracts()
     }
 }
@@ -1513,22 +1519,26 @@ impl<Kind> UnparsedMut for Actor<Kind> {
     }
 }
 
-impl<Kind> AsBase<Kind> for Actor<Kind> {
-    fn base_ref(&self) -> &Base<Kind> {
+impl<Kind> AsBase for Actor<Kind> {
+    type Kind = Kind;
+
+    fn base_ref(&self) -> &Base<Self::Kind> {
         self.0.base_ref()
     }
 
-    fn base_mut(&mut self) -> &mut Base<Kind> {
+    fn base_mut(&mut self) -> &mut Base<Self::Kind> {
         self.0.base_mut()
     }
 }
 
-impl<Kind> AsObject<Kind> for Actor<Kind> {
-    fn object_ref(&self) -> &Object<Kind> {
+impl<Kind> AsObject for Actor<Kind> {
+    type Kind = Kind;
+
+    fn object_ref(&self) -> &Object<Self::Kind> {
         self.0.object_ref()
     }
 
-    fn object_mut(&mut self) -> &mut Object<Kind> {
+    fn object_mut(&mut self) -> &mut Object<Self::Kind> {
         self.0.object_mut()
     }
 }

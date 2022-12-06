@@ -1,10 +1,10 @@
 //! # ActivityStreams New
 //! _A set of Traits and Types that make up the ActivityStreams and ActivityPub specifications_
 //!
-//! - Find the code on [git.asonix.dog](https://git.asonix.dog/Aardwolf/activitystreams)
+//! - Find the code on [git.asonix.dog](https://git.asonix.dog/asonix/activitystreams)
 //! - Read the docs on [docs.rs](https://docs.rs/activitystreams)
-//! - Join the matrix channel at [#activitypub:asonix.dog](https://matrix.to/#/!fAEcHyTUdAaKCzIKCt:asonix.dog?via=asonix.dog&via=matrix.org&via=t2bot.io)
-//! - Hit me up on [mastodon](https://asonix.dog/@asonix)
+//! - Join the matrix channel at [#activitypub:matrix.asonix.dog](https://matrix.to/#/!fAEcHyTUdAaKCzIKCt:asonix.dog?via=asonix.dog&via=matrix.org&via=t2bot.io)
+//! - Hit me up on [mastodon](https://masto.asonix.dog/@asonix)
 //!
 //! ## Usage
 //!
@@ -166,9 +166,9 @@
 //! ```rust
 //! use activitystreams::{base::BaseExt, context, markers::Activity, iri};
 //!
-//! fn manipulator<T, Kind>(mut activity: T) -> Result<(), anyhow::Error>
+//! fn manipulator<T>(mut activity: T) -> Result<(), anyhow::Error>
 //! where
-//!     T: Activity + BaseExt<Kind>,
+//!     T: Activity + BaseExt,
 //! {
 //!     activity
 //!         .set_id(iri!("https://example.com"))
@@ -375,8 +375,8 @@ pub mod prelude {
 
     pub use crate::{
         activity::{
-            ActivityExt, ActorAndObjectRefExt, OptOriginRefExt, OptTargetRefExt, OriginRefExt,
-            QuestionExt, TargetRefExt,
+            ActivityExt, AsActivityActorExt, AsActivityObjectExt, AsOptOriginExt, AsOptTargetExt,
+            AsOriginExt, AsTargetExt, QuestionExt,
         },
         actor::ApActorExt,
         base::{BaseExt, ExtendsExt},

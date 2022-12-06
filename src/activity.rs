@@ -42,77 +42,85 @@ use self::kind::*;
 /// Implementation trait for deriving Activity methods for a type
 ///
 /// Any type implementing AsObject will automatically gain methods provided by ActivityExt
-pub trait AsActivity<Kind>: markers::Activity {
+pub trait AsActivity: markers::Activity {
+    type Kind;
+
     /// Immutable borrow of `Activity<Kind>`
-    fn activity_ref(&self) -> &Activity<Kind>;
+    fn activity_ref(&self) -> &Activity<Self::Kind>;
 
     /// Mutable borrow of `Activity<Kind>`
-    fn activity_mut(&mut self) -> &mut Activity<Kind>;
+    fn activity_mut(&mut self) -> &mut Activity<Self::Kind>;
 }
 
 /// Implementation trait for deriving Actor and Object methods for a type
 ///
-/// Any type implementing ActorAndObjectRef will automatically gain methods provided by
-/// `ActorAndObjectRefExt`
-pub trait ActorAndObjectRef: markers::Activity {
-    /// Immutable borrow of actor field
-    fn actor_field_ref(&self) -> &OneOrMany<AnyBase>;
+/// Any type implementing AsActivityActor will automatically gain methods provided by
+/// `AsActivityActorExt`
+pub trait AsActivityActor: markers::Activity {
+    type Inner;
 
-    /// Immutable borrow of object field
-    fn object_field_ref(&self) -> &OneOrMany<AnyBase>;
+    fn activity_actor_ref(&self) -> &ActivityActor<Self::Inner>;
 
-    /// Mutable borrow of actor field
-    fn actor_field_mut(&mut self) -> &mut OneOrMany<AnyBase>;
+    fn activity_actor_mut(&mut self) -> &mut ActivityActor<Self::Inner>;
+}
 
-    /// Mutable borrow of object field
-    fn object_field_mut(&mut self) -> &mut OneOrMany<AnyBase>;
+/// Implementation trait for deriving Actor and Object methods for a type
+///
+/// Any type implementing AsActivityObject will automatically gain methods provided by
+/// `AsActivityObjectExt`
+pub trait AsActivityObject: markers::Activity {
+    type Inner;
+
+    fn activity_object_ref(&self) -> &ActivityObject<Self::Inner>;
+
+    fn activity_object_mut(&mut self) -> &mut ActivityObject<Self::Inner>;
 }
 
 /// Implementation trait for deriving Target methods for a type
 ///
-/// Any type implementing TargetRef will automatically gain methods provided by `TargetRefExt`
-pub trait TargetRef: markers::Activity {
-    /// Immutable borrow of target field
-    fn target_field_ref(&self) -> &OneOrMany<AnyBase>;
+/// Any type implementing AsTarget will automatically gain methods provided by `AsTargetExt`
+pub trait AsTarget: markers::Activity {
+    type Inner;
 
-    /// Mutable borrow of target field
-    fn target_field_mut(&mut self) -> &mut OneOrMany<AnyBase>;
+    fn target_ref(&self) -> &Target<Self::Inner>;
+
+    fn target_mut(&mut self) -> &mut Target<Self::Inner>;
 }
 
 /// Implementation trait for deriving Origin methods for a type
 ///
-/// Any type implementing OriginRef will automatically gain methods provided by
-/// `OriginRefExt`
-pub trait OriginRef: markers::Activity {
-    /// Immutable borrow of origin field
-    fn origin_field_ref(&self) -> &OneOrMany<AnyBase>;
+/// Any type implementing AsOrigin will automatically gain methods provided by
+/// `AsOriginExt`
+pub trait AsOrigin: markers::Activity {
+    type Inner;
 
-    /// Mutable borrow of origin field
-    fn origin_field_mut(&mut self) -> &mut OneOrMany<AnyBase>;
+    fn origin_ref(&self) -> &Origin<Self::Inner>;
+
+    fn origin_mut(&mut self) -> &mut Origin<Self::Inner>;
 }
 
 /// Implementation trait for deriving Target methods for a type
 ///
-/// Any type implementing OptTargetRef will automatically gain methods provided by
-/// `OptTargetRefExt`
-pub trait OptTargetRef: markers::Activity {
-    /// Immutable borrow of target field
-    fn target_field_ref(&self) -> &Option<OneOrMany<AnyBase>>;
+/// Any type implementing AsOptTarget will automatically gain methods provided by
+/// `AsOptTargetExt`
+pub trait AsOptTarget: markers::Activity {
+    type Inner;
 
-    /// Mutable borrow of target field
-    fn target_field_mut(&mut self) -> &mut Option<OneOrMany<AnyBase>>;
+    fn opt_target_ref(&self) -> &OptTarget<Self::Inner>;
+
+    fn opt_target_mut(&mut self) -> &mut OptTarget<Self::Inner>;
 }
 
 /// Implementation trait for deriving Origin methods for a type
 ///
-/// Any type implementing OptOriginRef will automatically gain methods provided by
-/// `OptOriginRefExt`
-pub trait OptOriginRef: markers::Activity {
-    /// Immutable borrow of origin field
-    fn origin_field_ref(&self) -> &Option<OneOrMany<AnyBase>>;
+/// Any type implementing AsOptOrigin will automatically gain methods provided by
+/// `AsOptOriginExt`
+pub trait AsOptOrigin: markers::Activity {
+    type Inner;
 
-    /// Mutable borrow of origin field
-    fn origin_field_mut(&mut self) -> &mut Option<OneOrMany<AnyBase>>;
+    fn opt_origin_ref(&self) -> &OptOrigin<Self::Inner>;
+
+    fn opt_origin_mut(&mut self) -> &mut OptOrigin<Self::Inner>;
 }
 
 /// Implementation trait for deriving Question methods for a type
@@ -133,7 +141,7 @@ pub trait AsQuestion: markers::Activity {
 ///
 /// Documentation for the fields related to these methods can be found on the `Activity`
 /// struct
-pub trait ActivityExt<Kind>: AsActivity<Kind> {
+pub trait ActivityExt: AsActivity {
     /// Fetch the result for the current activity
     ///
     /// ```rust
@@ -148,7 +156,7 @@ pub trait ActivityExt<Kind>: AsActivity<Kind> {
     /// ```
     fn result<'a>(&'a self) -> Option<&'a OneOrMany<AnyBase>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.activity_ref().result.as_ref()
     }
@@ -284,7 +292,7 @@ pub trait ActivityExt<Kind>: AsActivity<Kind> {
     /// ```
     fn instrument<'a>(&'a self) -> Option<&'a OneOrMany<AnyBase>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.activity_ref().instrument.as_ref()
     }
@@ -411,7 +419,7 @@ pub trait ActivityExt<Kind>: AsActivity<Kind> {
 ///
 /// Documentation for the fields related to these methods can be found on the
 /// `ActorAndObject` struct
-pub trait ActorAndObjectRefExt: ActorAndObjectRef {
+pub trait AsActivityActorExt: AsActivityActor {
     /// Fetch the actor for the current activity
     ///
     /// ```rust
@@ -423,9 +431,9 @@ pub trait ActorAndObjectRefExt: ActorAndObjectRef {
     /// let actor_ref = create.actor();
     /// println!("{:?}", actor_ref);
     /// ```
-    fn actor<Kind>(&self) -> Result<&OneOrMany<AnyBase>, CheckError>
+    fn actor(&self) -> Result<&OneOrMany<AnyBase>, CheckError>
     where
-        Self: BaseExt<Kind>,
+        Self: BaseExt,
     {
         let actor = self.actor_unchecked();
 
@@ -449,7 +457,7 @@ pub trait ActorAndObjectRefExt: ActorAndObjectRef {
     /// println!("{:?}", actor_ref);
     /// ```
     fn actor_unchecked(&self) -> &OneOrMany<AnyBase> {
-        self.actor_field_ref()
+        &self.activity_actor_ref().actor
     }
 
     /// Check if the actor's ID is `id`
@@ -488,7 +496,7 @@ pub trait ActorAndObjectRefExt: ActorAndObjectRef {
     where
         T: Into<AnyBase>,
     {
-        *self.actor_field_mut() = actor.into().into();
+        self.activity_actor_mut().actor = actor.into().into();
         self
     }
 
@@ -515,7 +523,7 @@ pub trait ActorAndObjectRefExt: ActorAndObjectRef {
         T: Into<AnyBase>,
     {
         let v: Vec<_> = items.into_iter().map(Into::into).collect();
-        *self.actor_field_mut() = v.into();
+        self.activity_actor_mut().actor = v.into();
         self
     }
 
@@ -539,10 +547,12 @@ pub trait ActorAndObjectRefExt: ActorAndObjectRef {
     where
         T: Into<AnyBase>,
     {
-        self.actor_field_mut().add(actor.into());
+        self.activity_actor_mut().actor.add(actor.into());
         self
     }
+}
 
+pub trait AsActivityObjectExt: AsActivityObject {
     /// Fetch the object for the current activity
     ///
     /// ```rust
@@ -554,9 +564,9 @@ pub trait ActorAndObjectRefExt: ActorAndObjectRef {
     /// let object_ref = create.object();
     /// println!("{:?}", object_ref);
     /// ```
-    fn object<Kind>(&self) -> Result<&OneOrMany<AnyBase>, CheckError>
+    fn object(&self) -> Result<&OneOrMany<AnyBase>, CheckError>
     where
-        Self: BaseExt<Kind>,
+        Self: BaseExt,
     {
         let object = self.object_unchecked();
 
@@ -580,7 +590,7 @@ pub trait ActorAndObjectRefExt: ActorAndObjectRef {
     /// println!("{:?}", object_ref);
     /// ```
     fn object_unchecked(&self) -> &OneOrMany<AnyBase> {
-        self.object_field_ref()
+        &self.activity_object_ref().object
     }
 
     /// Check if the object's ID is `id`
@@ -619,7 +629,7 @@ pub trait ActorAndObjectRefExt: ActorAndObjectRef {
     where
         T: Into<AnyBase>,
     {
-        *self.object_field_mut() = object.into().into();
+        self.activity_object_mut().object = object.into().into();
         self
     }
 
@@ -646,7 +656,7 @@ pub trait ActorAndObjectRefExt: ActorAndObjectRef {
         T: Into<AnyBase>,
     {
         let v: Vec<_> = items.into_iter().map(Into::into).collect();
-        *self.object_field_mut() = v.into();
+        self.activity_object_mut().object = v.into();
         self
     }
 
@@ -670,7 +680,7 @@ pub trait ActorAndObjectRefExt: ActorAndObjectRef {
     where
         T: Into<AnyBase>,
     {
-        self.object_field_mut().add(object.into());
+        self.activity_object_mut().object.add(object.into());
         self
     }
 }
@@ -678,7 +688,7 @@ pub trait ActorAndObjectRefExt: ActorAndObjectRef {
 /// Helper methods for interacting with Activity types with a target field
 ///
 /// Documentation for the target field can be found on the `Invite` struct
-pub trait TargetRefExt: TargetRef {
+pub trait AsTargetExt: AsTarget {
     /// Fetch the target for the current activity
     ///
     /// ```rust
@@ -691,7 +701,7 @@ pub trait TargetRefExt: TargetRef {
     /// println!("{:?}", target_ref);
     /// ```
     fn target(&self) -> &OneOrMany<AnyBase> {
-        self.target_field_ref()
+        &self.target_ref().target
     }
 
     /// Set the target for the current activity
@@ -712,7 +722,7 @@ pub trait TargetRefExt: TargetRef {
     where
         T: Into<AnyBase>,
     {
-        *self.target_field_mut() = target.into().into();
+        self.target_mut().target = target.into().into();
         self
     }
 
@@ -739,7 +749,7 @@ pub trait TargetRefExt: TargetRef {
         T: Into<AnyBase>,
     {
         let v: Vec<_> = items.into_iter().map(Into::into).collect();
-        *self.target_field_mut() = v.into();
+        self.target_mut().target = v.into();
         self
     }
 
@@ -763,7 +773,7 @@ pub trait TargetRefExt: TargetRef {
     where
         T: Into<AnyBase>,
     {
-        self.target_field_mut().add(target.into());
+        self.target_mut().target.add(target.into());
         self
     }
 }
@@ -771,7 +781,7 @@ pub trait TargetRefExt: TargetRef {
 /// Helper methods for interacting with Activity types with an origin
 ///
 /// Documentation for the origin field can be found on the `Arrive` struct
-pub trait OriginRefExt: OriginRef {
+pub trait AsOriginExt: AsOrigin {
     /// Fetch the origin for the current activity
     ///
     /// ```rust
@@ -784,7 +794,7 @@ pub trait OriginRefExt: OriginRef {
     /// println!("{:?}", origin_ref);
     /// ```
     fn origin(&self) -> &OneOrMany<AnyBase> {
-        self.origin_field_ref()
+        &self.origin_ref().origin
     }
 
     /// Set the origin for the current activity
@@ -805,7 +815,7 @@ pub trait OriginRefExt: OriginRef {
     where
         T: Into<AnyBase>,
     {
-        *self.origin_field_mut() = origin.into().into();
+        self.origin_mut().origin = origin.into().into();
         self
     }
 
@@ -832,7 +842,7 @@ pub trait OriginRefExt: OriginRef {
         T: Into<AnyBase>,
     {
         let v: Vec<_> = items.into_iter().map(Into::into).collect();
-        *self.origin_field_mut() = v.into();
+        self.origin_mut().origin = v.into();
         self
     }
 
@@ -856,7 +866,7 @@ pub trait OriginRefExt: OriginRef {
     where
         T: Into<AnyBase>,
     {
-        self.origin_field_mut().add(origin.into());
+        self.origin_mut().origin.add(origin.into());
         self
     }
 }
@@ -864,8 +874,8 @@ pub trait OriginRefExt: OriginRef {
 /// Helper methods for interacting with Activity types with an optional target field
 ///
 /// Documentation for the target field can be found on the
-/// `ActorAndObjectOptTarget` struct
-pub trait OptTargetRefExt: OptTargetRef {
+/// `OptTarget` struct
+pub trait AsOptTargetExt: AsOptTarget {
     /// Fetch the target for the current activity
     ///
     /// ```rust
@@ -879,7 +889,7 @@ pub trait OptTargetRefExt: OptTargetRef {
     /// }
     /// ```
     fn target(&self) -> Option<&OneOrMany<AnyBase>> {
-        self.target_field_ref().as_ref()
+        self.opt_target_ref().target.as_ref()
     }
 
     /// Set the target for the current activity
@@ -900,7 +910,7 @@ pub trait OptTargetRefExt: OptTargetRef {
     where
         T: Into<AnyBase>,
     {
-        *self.target_field_mut() = Some(target.into().into());
+        self.opt_target_mut().target = Some(target.into().into());
         self
     }
 
@@ -927,7 +937,7 @@ pub trait OptTargetRefExt: OptTargetRef {
         T: Into<AnyBase>,
     {
         let v: Vec<_> = items.into_iter().map(Into::into).collect();
-        *self.target_field_mut() = Some(v.into());
+        self.opt_target_mut().target = Some(v.into());
         self
     }
 
@@ -951,14 +961,14 @@ pub trait OptTargetRefExt: OptTargetRef {
     where
         T: Into<AnyBase>,
     {
-        let c = match self.target_field_mut().take() {
+        let c = match self.opt_target_mut().target.take() {
             Some(mut c) => {
                 c.add(target.into());
                 c
             }
             None => vec![target.into()].into(),
         };
-        *self.target_field_mut() = Some(c);
+        self.opt_target_mut().target = Some(c);
         self
     }
 
@@ -980,7 +990,7 @@ pub trait OptTargetRefExt: OptTargetRef {
     /// # }
     /// ```
     fn take_target(&mut self) -> Option<OneOrMany<AnyBase>> {
-        self.target_field_mut().take()
+        self.opt_target_mut().target.take()
     }
 
     /// Delete a target from the current activity
@@ -1002,7 +1012,7 @@ pub trait OptTargetRefExt: OptTargetRef {
     /// # }
     /// ```
     fn delete_target(&mut self) -> &mut Self {
-        *self.target_field_mut() = None;
+        self.opt_target_mut().target = None;
         self
     }
 }
@@ -1011,7 +1021,7 @@ pub trait OptTargetRefExt: OptTargetRef {
 ///
 /// Documentation for the origin field can be found on the
 /// `Delete` struct
-pub trait OptOriginRefExt: OptOriginRef {
+pub trait AsOptOriginExt: AsOptOrigin {
     /// Fetch the origin for the current activity
     ///
     /// ```rust
@@ -1025,7 +1035,7 @@ pub trait OptOriginRefExt: OptOriginRef {
     /// }
     /// ```
     fn origin(&self) -> Option<&OneOrMany<AnyBase>> {
-        self.origin_field_ref().as_ref()
+        self.opt_origin_ref().origin.as_ref()
     }
 
     /// Set the origin for the current activity
@@ -1046,7 +1056,7 @@ pub trait OptOriginRefExt: OptOriginRef {
     where
         T: Into<AnyBase>,
     {
-        *self.origin_field_mut() = Some(origin.into().into());
+        self.opt_origin_mut().origin = Some(origin.into().into());
         self
     }
 
@@ -1073,7 +1083,7 @@ pub trait OptOriginRefExt: OptOriginRef {
         T: Into<AnyBase>,
     {
         let v: Vec<_> = items.into_iter().map(Into::into).collect();
-        *self.origin_field_mut() = Some(v.into());
+        self.opt_origin_mut().origin = Some(v.into());
         self
     }
 
@@ -1097,14 +1107,14 @@ pub trait OptOriginRefExt: OptOriginRef {
     where
         T: Into<AnyBase>,
     {
-        let c = match self.origin_field_mut().take() {
+        let c = match self.opt_origin_mut().origin.take() {
             Some(mut c) => {
                 c.add(origin.into());
                 c
             }
             None => vec![origin.into()].into(),
         };
-        *self.origin_field_mut() = Some(c);
+        self.opt_origin_mut().origin = Some(c);
         self
     }
 
@@ -1123,7 +1133,7 @@ pub trait OptOriginRefExt: OptOriginRef {
     /// # }
     /// ```
     fn take_origin(&mut self) -> Option<OneOrMany<AnyBase>> {
-        self.origin_field_mut().take()
+        self.opt_origin_mut().origin.take()
     }
 
     /// Delete a origin from the current activity
@@ -1142,7 +1152,7 @@ pub trait OptOriginRefExt: OptOriginRef {
     /// # }
     /// ```
     fn delete_origin(&mut self) -> &mut Self {
-        *self.origin_field_mut() = None;
+        self.opt_origin_mut().origin = None;
         self
     }
 }
@@ -1605,7 +1615,7 @@ pub trait QuestionExt: AsQuestion {
 /// The target property can be used in certain circumstances to indicate the context into which the
 /// object has been accepted.
 ///
-/// This is just an alias for `Object<AcceptType>` because there's no fields inherent to
+/// This is just an alias for `ActorAndObject<AcceptType>` because there's no fields inherent to
 /// Accept that aren't already present on an ActorAndObject.
 pub type Accept = ActorAndObject<AcceptType>;
 
@@ -1614,8 +1624,8 @@ pub type Accept = ActorAndObject<AcceptType>;
 /// If the target property is not explicitly specified, the target would need to be determined
 /// implicitly by context. The origin can be used to identify the context from which the object originated.
 ///
-/// This is just an alias for `Object<AddType>` because there's no fields inherent to
-/// Add that aren't already present on an ActorAndObjectOptOriginAndTarget.
+/// This is just an alias for `ActorAndObjectOptOriginAndTarget<AddType>` because there's no fields inherent to
+/// Add that aren't already present on an OptOrigin.
 pub type Add = ActorAndObjectOptOriginAndTarget<AddType>;
 
 /// Indicates that the actor is blocking the object.
@@ -1624,19 +1634,19 @@ pub type Add = ActorAndObjectOptOriginAndTarget<AddType>;
 /// one user to block activities or content of other users. The target and origin typically have no
 /// defined meaning.
 ///
-/// This is just an alias for `Object<BlockType>` because there's no fields inherent to
+/// This is just an alias for `ActorAndObject<BlockType>` because there's no fields inherent to
 /// Block that aren't already present on an ActorAndObject.
 pub type Block = ActorAndObject<BlockType>;
 
 /// Indicates that the actor has created the object.
 ///
-/// This is just an alias for `Object<CreateType>` because there's no fields inherent to
+/// This is just an alias for `ActorAndObject<CreateType>` because there's no fields inherent to
 /// Create that aren't already present on an ActorAndObject.
 pub type Create = ActorAndObject<CreateType>;
 
 /// Indicates that the actor dislikes the object.
 ///
-/// This is just an alias for `Object<DislikeType>` because there's no fields inherent to
+/// This is just an alias for `ActorAndObject<DislikeType>` because there's no fields inherent to
 /// Dislike that aren't already present on an ActorAndObject.
 pub type Dislike = ActorAndObject<DislikeType>;
 
@@ -1645,7 +1655,7 @@ pub type Dislike = ActorAndObject<DislikeType>;
 /// Flagging is defined in the sense common to many social platforms as reporting content as being
 /// inappropriate for any number of reasons.
 ///
-/// This is just an alias for `Object<FlagType>` because there's no fields inherent to
+/// This is just an alias for `ActorAndObject<FlagType>` because there's no fields inherent to
 /// Flag that aren't already present on an ActorAndObject.
 pub type Flag = ActorAndObject<FlagType>;
 
@@ -1655,7 +1665,7 @@ pub type Flag = ActorAndObject<FlagType>;
 /// interested in any activity performed by or on the object. The target and origin typically have
 /// no defined meaning.
 ///
-/// This is just an alias for `Object<FollowType>` because there's no fields inherent to Follow
+/// This is just an alias for `ActorAndObject<FollowType>` because there's no fields inherent to Follow
 /// that aren't already present on an ActorAndObject.
 pub type Follow = ActorAndObject<FollowType>;
 
@@ -1663,7 +1673,7 @@ pub type Follow = ActorAndObject<FollowType>;
 ///
 /// The target and origin typically have no defined meaning.
 ///
-/// This is just an alias for `Object<IgnoreType>` because there's no fields inherent to Ignore
+/// This is just an alias for `ActorAndObject<IgnoreType>` because there's no fields inherent to Ignore
 /// that aren't already present on an ActorAndObject.
 pub type Ignore = ActorAndObject<IgnoreType>;
 
@@ -1671,7 +1681,7 @@ pub type Ignore = ActorAndObject<IgnoreType>;
 ///
 /// The target and origin typically have no defined meaning
 ///
-/// This is just an alias for `Object<JoinType>` because there's no fields inherent to Join that
+/// This is just an alias for `ActorAndObject<JoinType>` because there's no fields inherent to Join that
 /// aren't already present on an ActorAndObject.
 pub type Join = ActorAndObject<JoinType>;
 
@@ -1679,7 +1689,7 @@ pub type Join = ActorAndObject<JoinType>;
 ///
 /// The target and origin typically have no meaning.
 ///
-/// This is just an alias for `Object<LeaveType>` because there's no fields inherent to Leave that
+/// This is just an alias for `ActorAndObject<LeaveType>` because there's no fields inherent to Leave that
 /// aren't already present on an ActorAndObject.
 pub type Leave = ActorAndObject<LeaveType>;
 
@@ -1687,19 +1697,19 @@ pub type Leave = ActorAndObject<LeaveType>;
 ///
 /// The target and origin typically have no defined meaning.
 ///
-/// This is just an alias for `Object<LikeType>` because there's no fields inherent to Like that
+/// This is just an alias for `ActorAndObject<LikeType>` because there's no fields inherent to Like that
 /// aren't already present on an ActorAndObject.
 pub type Like = ActorAndObject<LikeType>;
 
 /// Indicates that the actor has listened to the object.
 ///
-/// This is just an alias for `Object<ListenType>` because there's no fields inherent to Listen
+/// This is just an alias for `ActorAndObject<ListenType>` because there's no fields inherent to Listen
 /// that aren't already present on an ActorAndObject.
 pub type Listen = ActorAndObject<ListenType>;
 
 /// Indicates that the actor has read the object.
 ///
-/// This is just an alias for `Object<ReadType>` because there's no fields inherent to Read that
+/// This is just an alias for `ActorAndObject<ReadType>` because there's no fields inherent to Read that
 /// aren't already present on an ActorAndObject.
 pub type Read = ActorAndObject<ReadType>;
 
@@ -1707,19 +1717,19 @@ pub type Read = ActorAndObject<ReadType>;
 ///
 /// The target and origin typically have no defined meaning.
 ///
-/// This is just an alias for `Object<RejectType>` because there's no fields inherent to Reject
+/// This is just an alias for `ActorAndObject<RejectType>` because there's no fields inherent to Reject
 /// that aren't already present on an ActorAndObject.
 pub type Reject = ActorAndObject<RejectType>;
 
 /// A specialization of Accept indicating that the acceptance is tentative.
 ///
-/// This is just an alias for `Object<TentativeAcceptType>` because there's no fields inherent to
+/// This is just an alias for `ActorAndObject<TentativeAcceptType>` because there's no fields inherent to
 /// TentativeAccept that aren't already present on an ActorAndObject.
 pub type TentativeAccept = ActorAndObject<TentativeAcceptType>;
 
 /// A specialization of Reject in which the rejection is considered tentative.
 ///
-/// This is just an alias for `Object<TentativeRejectType>` because there's no fields inherent to
+/// This is just an alias for `ActorAndObject<TentativeRejectType>` because there's no fields inherent to
 /// TentativeReject that aren't already present on an ActorAndObject.
 pub type TentativeReject = ActorAndObject<TentativeRejectType>;
 
@@ -1731,7 +1741,7 @@ pub type TentativeReject = ActorAndObject<TentativeRejectType>;
 ///
 /// The target and origin typically have no defined meaning.
 ///
-/// This is just an alias for `Object<UndoType>` because there's no fields inherent to
+/// This is just an alias for `ActorAndObject<UndoType>` because there's no fields inherent to
 /// Undo that aren't already present on an ActorAndObject.
 pub type Undo = ActorAndObject<UndoType>;
 
@@ -1742,13 +1752,13 @@ pub type Undo = ActorAndObject<UndoType>;
 ///
 /// The target and origin typically have no defined meaning.
 ///
-/// This is just an alias for `Object<UpdateType>` because there's no fields inherent to
+/// This is just an alias for `ActorAndObject<UpdateType>` because there's no fields inherent to
 /// Update that aren't already present on an ActorAndObject.
 pub type Update = ActorAndObject<UpdateType>;
 
 /// Indicates that the actor has viewed the object.
 ///
-/// This is just an alias for `Object<ViewType>` because there's no fields inherent to
+/// This is just an alias for `ActorAndObject<ViewType>` because there's no fields inherent to
 /// View that aren't already present on an ActorAndObject.
 pub type View = ActorAndObject<ViewType>;
 
@@ -1756,338 +1766,54 @@ pub type View = ActorAndObject<ViewType>;
 ///
 /// The origin typically has no defined meaning.
 ///
-/// This is just an alias for `Object<AnnounceType>` because there's no fields inherent to
-/// Announce that aren't already present on an ActorAndObjectOptTarget.
+/// This is just an alias for `ActorAndObjectOptTarget<AnnounceType>` because there's no fields inherent to
+/// Announce that aren't already present on an OptTarget.
 pub type Announce = ActorAndObjectOptTarget<AnnounceType>;
 
 /// Indicates that the actor is offering the object.
 ///
 /// If specified, the target indicates the entity to which the object is being offered.
 ///
-/// This is just an alias for `Object<OfferType>` because there's no fields inherent to
-/// Offer that aren't already present on an ActorAndObjectOptTarget.
+/// This is just an alias for `ActorAndObjectOptTarget<OfferType>` because there's no fields inherent to
+/// Offer that aren't already present on an OptTarget.
 pub type Offer = ActorAndObjectOptTarget<OfferType>;
 
 /// Indicates that the actor has moved object from origin to target.
 ///
 /// If the origin or target are not specified, either can be determined by context.
 ///
-/// This is just an alias for `Object<MoveType>` because there's no fields inherent to
-/// Move that aren't already present on an ActorAndObjectOptOriginAndTarget.
-pub type Move = ActorAndObjectOptOriginAndTarget<MoveType>;
+/// This is just an alias for `ActorAndObject<MoveType>` because there's no fields inherent to
+/// Move that aren't already present on an OptOrigin.
+pub type Move = ActorAndObjectOptOrigin<MoveType>;
 
 /// Indicates that the actor is removing the object.
 ///
 /// If specified, the origin indicates the context from which the object is being removed.
 ///
-/// This is just an alias for `Object<RemoveType>` because there's no fields inherent to
-/// Remove that aren't already present on an ActorAndObjectOptOriginAndTarget.
-pub type Remove = ActorAndObjectOptOriginAndTarget<RemoveType>;
-
-/// Activity objects are specializations of the base Object type that provide information about
-/// actions that have either already occurred, are in the process of occurring, or may occur in the
-/// future.
-#[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Activity<Kind> {
-    /// Describes the result of the activity.
-    ///
-    /// For instance, if a particular action results in the creation of a new resource, the result
-    /// property can be used to describe that new resource.
-    ///
-    /// - Range: Object | Link
-    /// - Funcitonal: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    result: Option<OneOrMany<AnyBase>>,
-
-    /// Identifies one or more objects used (or to be used) in the completion of an Activity.
-    ///
-    /// - Range: Object | Link
-    /// - Funcitonal: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    instrument: Option<OneOrMany<AnyBase>>,
-
-    /// base fields and unparsed json ends up here
-    #[serde(flatten)]
-    inner: Object<Kind>,
-}
-
-/// Activity with actor and object properties
-#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct ActorAndObject<Kind> {
-    /// Describes one or more entities that either performed or are expected to perform the
-    /// activity.
-    ///
-    /// Any single activity can have multiple actors. The actor MAY be specified using an indirect
-    /// Link.
-    ///
-    /// - Range: Object | Link
-    /// - Functional: false
-    actor: OneOrMany<AnyBase>,
-
-    /// When used within an Activity, describes the direct object of the activity.
-    ///
-    /// For instance, in the activity "John added a movie to his wishlist", the object of the
-    /// activity is the movie added.
-    ///
-    /// - Range: Object | Link
-    /// - Functional: false
-    object: OneOrMany<AnyBase>,
-
-    /// base fields and unparsed json ends up here
-    #[serde(flatten)]
-    inner: Activity<Kind>,
-}
+/// This is just an alias for `ActorAndObject<RemoveType>` because there's no fields inherent to
+/// Remove that aren't already present on an OptOrigin.
+pub type Remove = ActorAndObjectOptOrigin<RemoveType>;
 
 /// An IntransitiveActivity that indicates that the actor has arrived at the location.
 ///
 /// The origin can be used to identify the context from which the actor originated. The target
 /// typically has no defined meaning.
-#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Arrive {
-    /// Describes one or more entities that either performed or are expected to perform the
-    /// activity.
-    ///
-    /// Any single activity can have multiple actors. The actor MAY be specified using an indirect
-    /// Link.
-    ///
-    /// - Range: Object | Link
-    /// - Functional: false
-    actor: OneOrMany<AnyBase>,
-
-    /// Describes an indirect object of the activity from which the activity is directed.
-    ///
-    /// The precise meaning of the origin is the object of the English preposition "from". For
-    /// instance, in the activity "John moved an item to List B from List A", the origin of the
-    /// activity is "List A".
-    ///
-    /// - Range: Object | Link
-    /// - Functional: false
-    origin: OneOrMany<AnyBase>,
-
-    /// base fields and unparsed json ends up here
-    #[serde(flatten)]
-    inner: Activity<ArriveType>,
-}
+pub type Arrive = ActorAndOrigin<ArriveType>;
 
 /// A specialization of Offer in which the actor is extending an invitation for the object to the
 /// target.
-#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Invite {
-    /// Describes one or more entities that either performed or are expected to perform the
-    /// activity.
-    ///
-    /// Any single activity can have multiple actors. The actor MAY be specified using an indirect
-    /// Link.
-    ///
-    /// - Range: Object | Link
-    /// - Functional: false
-    actor: OneOrMany<AnyBase>,
-
-    /// When used within an Activity, describes the direct object of the activity.
-    ///
-    /// For instance, in the activity "John added a movie to his wishlist", the object of the
-    /// activity is the movie added.
-    ///
-    /// - Range: Object | Link
-    /// - Functional: false
-    object: OneOrMany<AnyBase>,
-
-    /// Describes the indirect object, or target, of the activity.
-    ///
-    /// The precise meaning of the target is largely dependent on the type of action being
-    /// described but will often be the object of the English preposition "to". For instance, in
-    /// the activity "John added a movie to his wishlist", the target of the activity is John's
-    /// wishlist. An activity can have more than one target
-    ///
-    /// - Range: Object | Link
-    /// - Functional: false
-    target: OneOrMany<AnyBase>,
-
-    /// base fields and unparsed json ends up here
-    #[serde(flatten)]
-    inner: Activity<InviteType>,
-}
+pub type Invite = Target<ActorAndObject<InviteType>>;
 
 /// Indicates that the actor has deleted the object.
 ///
 /// If specified, the origin indicates the context from which the object was deleted.
-#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Delete {
-    /// Describes one or more entities that either performed or are expected to perform the
-    /// activity.
-    ///
-    /// Any single activity can have multiple actors. The actor MAY be specified using an indirect
-    /// Link.
-    ///
-    /// - Range: Object | Link
-    /// - Functional: false
-    actor: OneOrMany<AnyBase>,
-
-    /// When used within an Activity, describes the direct object of the activity.
-    ///
-    /// For instance, in the activity "John added a movie to his wishlist", the object of the
-    /// activity is the movie added.
-    ///
-    /// - Range: Object | Link
-    /// - Functional: false
-    object: OneOrMany<AnyBase>,
-
-    /// Describes an indirect object of the activity from which the activity is directed.
-    ///
-    /// The precise meaning of the origin is the object of the English preposition "from". For
-    /// instance, in the activity "John moved an item to List B from List A", the origin of the
-    /// activity is "List A".
-    ///
-    /// - Range: Object | Link
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    origin: Option<OneOrMany<AnyBase>>,
-
-    /// base fields and unparsed json ends up here
-    #[serde(flatten)]
-    inner: Activity<DeleteType>,
-}
-
-/// Activity with actor, object, and optional origin and target properties
-#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct ActorAndObjectOptOriginAndTarget<Kind> {
-    /// Describes one or more entities that either performed or are expected to perform the
-    /// activity.
-    ///
-    /// Any single activity can have multiple actors. The actor MAY be specified using an indirect
-    /// Link.
-    ///
-    /// - Range: Object | Link
-    /// - Functional: false
-    actor: OneOrMany<AnyBase>,
-
-    /// When used within an Activity, describes the direct object of the activity.
-    ///
-    /// For instance, in the activity "John added a movie to his wishlist", the object of the
-    /// activity is the movie added.
-    ///
-    /// - Range: Object | Link
-    /// - Functional: false
-    object: OneOrMany<AnyBase>,
-
-    /// Describes an indirect object of the activity from which the activity is directed.
-    ///
-    /// The precise meaning of the origin is the object of the English preposition "from". For
-    /// instance, in the activity "John moved an item to List B from List A", the origin of the
-    /// activity is "List A".
-    ///
-    /// - Range: Object | Link
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    origin: Option<OneOrMany<AnyBase>>,
-
-    /// Describes the indirect object, or target, of the activity.
-    ///
-    /// The precise meaning of the target is largely dependent on the type of action being
-    /// described but will often be the object of the English preposition "to". For instance, in
-    /// the activity "John added a movie to his wishlist", the target of the activity is John's
-    /// wishlist. An activity can have more than one target
-    ///
-    /// - Range: Object | Link
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    target: Option<OneOrMany<AnyBase>>,
-
-    /// base fields and unparsed json ends up here
-    #[serde(flatten)]
-    inner: Activity<Kind>,
-}
-
-/// Activity with actor, object, and optional target properties
-#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct ActorAndObjectOptTarget<Kind> {
-    /// Describes one or more entities that either performed or are expected to perform the
-    /// activity.
-    ///
-    /// Any single activity can have multiple actors. The actor MAY be specified using an indirect
-    /// Link.
-    ///
-    /// - Range: Object | Link
-    /// - Functional: false
-    actor: OneOrMany<AnyBase>,
-
-    /// When used within an Activity, describes the direct object of the activity.
-    ///
-    /// For instance, in the activity "John added a movie to his wishlist", the object of the
-    /// activity is the movie added.
-    ///
-    /// - Range: Object | Link
-    /// - Functional: false
-    object: OneOrMany<AnyBase>,
-
-    /// Describes the indirect object, or target, of the activity.
-    ///
-    /// The precise meaning of the target is largely dependent on the type of action being
-    /// described but will often be the object of the English preposition "to". For instance, in
-    /// the activity "John added a movie to his wishlist", the target of the activity is John's
-    /// wishlist. An activity can have more than one target
-    ///
-    /// - Range: Object | Link
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    target: Option<OneOrMany<AnyBase>>,
-
-    /// base fields and unparsed json ends up here
-    #[serde(flatten)]
-    inner: Activity<Kind>,
-}
+pub type Delete = ActorAndObjectOptOrigin<DeleteType>;
 
 /// Indicates that the actor is traveling to target from origin.
 ///
 /// Travel is an IntransitiveObject whose actor specifies the direct object. If the target or
 /// origin are not specified, either can be determined by context.
-#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct Travel {
-    /// Describes one or more entities that either performed or are expected to perform the
-    /// activity.
-    ///
-    /// Any single activity can have multiple actors. The actor MAY be specified using an indirect
-    /// Link.
-    ///
-    /// - Range: Object | Link
-    /// - Functional: false
-    actor: OneOrMany<AnyBase>,
-
-    /// Describes an indirect object of the activity from which the activity is directed.
-    ///
-    /// The precise meaning of the origin is the object of the English preposition "from". For
-    /// instance, in the activity "John moved an item to List B from List A", the origin of the
-    /// activity is "List A".
-    ///
-    /// - Range: Object | Link
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    origin: Option<OneOrMany<AnyBase>>,
-
-    /// Describes the indirect object, or target, of the activity.
-    ///
-    /// The precise meaning of the target is largely dependent on the type of action being
-    /// described but will often be the object of the English preposition "to". For instance, in
-    /// the activity "John added a movie to his wishlist", the target of the activity is John's
-    /// wishlist. An activity can have more than one target
-    ///
-    /// - Range: Object | Link
-    /// - Functional: false
-    #[serde(skip_serializing_if = "Option::is_none")]
-    target: Option<OneOrMany<AnyBase>>,
-
-    /// base fields and unparsed json ends up here
-    #[serde(flatten)]
-    inner: Activity<TravelType>,
-}
+pub type Travel = OptOrigin<OptTarget<ActivityActor<Activity<TravelType>>>>;
 
 /// Represents a question being asked.
 ///
@@ -2130,6 +1856,151 @@ pub struct Question {
     /// base fields and unparsed json ends up here
     #[serde(flatten)]
     inner: Activity<QuestionType>,
+}
+
+/// Activity with actor and object properties
+pub type ActorAndObject<Kind> = ActivityActor<ActivityObject<Activity<Kind>>>;
+
+/// Activity with actor and origin properties
+pub type ActorAndOrigin<Kind> = Origin<ActivityActor<Activity<Kind>>>;
+
+/// Activity with actor and object properties, and optional origin and target properties
+pub type ActorAndObjectOptOriginAndTarget<Kind> = OptOrigin<OptTarget<ActorAndObject<Kind>>>;
+
+/// Activity with actor and object properties, and and optional origin property
+pub type ActorAndObjectOptOrigin<Kind> = OptOrigin<ActorAndObject<Kind>>;
+
+/// Activity with actor and object properties, and and optional target property
+pub type ActorAndObjectOptTarget<Kind> = OptTarget<ActorAndObject<Kind>>;
+
+/// Activity objects are specializations of the base Object type that provide information about
+/// actions that have either already occurred, are in the process of occurring, or may occur in the
+/// future.
+#[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Activity<Kind> {
+    /// Describes the result of the activity.
+    ///
+    /// For instance, if a particular action results in the creation of a new resource, the result
+    /// property can be used to describe that new resource.
+    ///
+    /// - Range: Object | Link
+    /// - Funcitonal: false
+    #[serde(skip_serializing_if = "Option::is_none")]
+    result: Option<OneOrMany<AnyBase>>,
+
+    /// Identifies one or more objects used (or to be used) in the completion of an Activity.
+    ///
+    /// - Range: Object | Link
+    /// - Funcitonal: false
+    #[serde(skip_serializing_if = "Option::is_none")]
+    instrument: Option<OneOrMany<AnyBase>>,
+
+    /// base fields and unparsed json ends up here
+    #[serde(flatten)]
+    inner: Object<Kind>,
+}
+
+/// Activity with an actor property
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ActivityActor<Inner> {
+    actor: OneOrMany<AnyBase>,
+
+    /// base fields and unparsed json ends up here
+    #[serde(flatten)]
+    inner: Inner,
+}
+
+/// Activity with an object property
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ActivityObject<Inner> {
+    object: OneOrMany<AnyBase>,
+
+    /// base fields and unparsed json ends up here
+    #[serde(flatten)]
+    inner: Inner,
+}
+
+/// Activity with an origin property
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Origin<Inner> {
+    /// Describes an indirect object of the activity from which the activity is directed.
+    ///
+    /// The precise meaning of the origin is the object of the English preposition "from". For
+    /// instance, in the activity "John moved an item to List B from List A", the origin of the
+    /// activity is "List A".
+    ///
+    /// - Range: Object | Link
+    /// - Functional: false
+    origin: OneOrMany<AnyBase>,
+
+    /// base fields and unparsed json ends up here
+    #[serde(flatten)]
+    inner: Inner,
+}
+
+/// Activity with an optional origin property
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct OptOrigin<Inner> {
+    /// Describes an indirect object of the activity from which the activity is directed.
+    ///
+    /// The precise meaning of the origin is the object of the English preposition "from". For
+    /// instance, in the activity "John moved an item to List B from List A", the origin of the
+    /// activity is "List A".
+    ///
+    /// - Range: Object | Link
+    /// - Functional: false
+    #[serde(skip_serializing_if = "Option::is_none")]
+    origin: Option<OneOrMany<AnyBase>>,
+
+    /// base fields and unparsed json ends up here
+    #[serde(flatten)]
+    inner: Inner,
+}
+
+/// Activity with a target property
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Target<Inner> {
+    /// Describes the indirect object, or target, of the activity.
+    ///
+    /// The precise meaning of the target is largely dependent on the type of action being
+    /// described but will often be the object of the English preposition "to". For instance, in
+    /// the activity "John added a movie to his wishlist", the target of the activity is John's
+    /// wishlist. An activity can have more than one target
+    ///
+    /// - Range: Object | Link
+    /// - Functional: false
+    target: OneOrMany<AnyBase>,
+
+    /// base fields and unparsed json ends up here
+    #[serde(flatten)]
+    inner: Inner,
+}
+
+/// Activity with an optional target property
+#[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct OptTarget<Inner> {
+    /// Describes the indirect object, or target, of the activity.
+    ///
+    /// The precise meaning of the target is largely dependent on the type of action being
+    /// described but will often be the object of the English preposition "to". For instance, in
+    /// the activity "John added a movie to his wishlist", the target of the activity is John's
+    /// wishlist. An activity can have more than one target
+    ///
+    /// - Range: Object | Link
+    /// - Functional: false
+    #[serde(skip_serializing_if = "Option::is_none")]
+    target: Option<OneOrMany<AnyBase>>,
+
+    /// base fields and unparsed json ends up here
+    #[serde(flatten)]
+    inner: Inner,
 }
 
 impl<Kind> Activity<Kind> {
@@ -2201,6 +2072,226 @@ impl<Kind> Activity<Kind> {
     }
 }
 
+impl<Inner> ActivityActor<Inner> {
+    fn extending(mut inner: Inner) -> Result<Self, serde_json::Error>
+    where
+        Inner: UnparsedMut,
+    {
+        let actor = inner.remove("actor")?;
+
+        Ok(ActivityActor { actor, inner })
+    }
+
+    fn retracting(self) -> Result<Inner, serde_json::Error>
+    where
+        Inner: UnparsedMut,
+    {
+        let ActivityActor { actor, mut inner } = self;
+
+        inner.insert("actor", actor)?;
+
+        Ok(inner)
+    }
+}
+
+impl<Inner> ActivityObject<Inner> {
+    fn extending(mut inner: Inner) -> Result<Self, serde_json::Error>
+    where
+        Inner: UnparsedMut,
+    {
+        let object = inner.remove("object")?;
+
+        Ok(ActivityObject { object, inner })
+    }
+
+    fn retracting(self) -> Result<Inner, serde_json::Error>
+    where
+        Inner: UnparsedMut,
+    {
+        let ActivityObject { object, mut inner } = self;
+
+        inner.insert("object", object)?;
+
+        Ok(inner)
+    }
+}
+
+impl Arrive {
+    pub fn new<T, U>(actor: T, origin: U) -> Self
+    where
+        T: Into<OneOrMany<AnyBase>>,
+        U: Into<OneOrMany<AnyBase>>,
+    {
+        Origin {
+            origin: origin.into(),
+            inner: ActivityActor {
+                actor: actor.into(),
+                inner: Activity::new(),
+            },
+        }
+    }
+
+    /// Deconstruct the Arrive into its parts
+    ///
+    /// ```rust
+    /// use activitystreams::activity::Arrive;
+    ///
+    /// let activity = Arrive::new(vec![], vec![]);
+    ///
+    /// let (actor, origin, activity) = activity.into_parts();
+    /// ```
+    pub fn into_parts(self) -> (OneOrMany<AnyBase>, OneOrMany<AnyBase>, Activity<ArriveType>) {
+        (self.inner.actor, self.origin, self.inner.inner)
+    }
+}
+
+impl Invite {
+    pub fn new<T, U, V>(actor: T, object: U, target: V) -> Self
+    where
+        T: Into<OneOrMany<AnyBase>>,
+        U: Into<OneOrMany<AnyBase>>,
+        V: Into<OneOrMany<AnyBase>>,
+    {
+        Target {
+            target: target.into(),
+            inner: ActivityActor {
+                actor: actor.into(),
+                inner: ActivityObject {
+                    object: object.into(),
+                    inner: Activity::new(),
+                },
+            },
+        }
+    }
+
+    /// Deconstruct the Invite into its parts
+    ///
+    /// ```rust
+    /// use activitystreams::activity::Invite;
+    ///
+    /// let activity = Invite::new(vec![], vec![], vec![]);
+    ///
+    /// let (actor, object, target, activity) = activity.into_parts();
+    /// ```
+    pub fn into_parts(
+        self,
+    ) -> (
+        OneOrMany<AnyBase>,
+        OneOrMany<AnyBase>,
+        OneOrMany<AnyBase>,
+        Activity<InviteType>,
+    ) {
+        (
+            self.inner.actor,
+            self.inner.inner.object,
+            self.target,
+            self.inner.inner.inner,
+        )
+    }
+}
+
+impl Delete {
+    /// Create a new Delete Activity
+    ///
+    /// ```rust
+    /// use activitystreams::activity::Delete;
+    ///
+    /// let activity = Delete::new(vec![], vec![]);
+    /// ```
+    pub fn new<T, U>(actor: T, object: U) -> Self
+    where
+        T: Into<OneOrMany<AnyBase>>,
+        U: Into<OneOrMany<AnyBase>>,
+    {
+        OptOrigin {
+            origin: None,
+            inner: ActivityActor {
+                actor: actor.into(),
+                inner: ActivityObject {
+                    object: object.into(),
+                    inner: Activity::new(),
+                },
+            },
+        }
+    }
+
+    /// Deconstruct the Delete into its parts
+    ///
+    /// ```rust
+    /// use activitystreams::activity::Delete;
+    ///
+    /// let activity = Delete::new(vec![], vec![]);
+    ///
+    /// let (actor, object, origin, activity) = activity.into_parts();
+    /// ```
+    pub fn into_parts(
+        self,
+    ) -> (
+        OneOrMany<AnyBase>,
+        OneOrMany<AnyBase>,
+        Option<OneOrMany<AnyBase>>,
+        Activity<DeleteType>,
+    ) {
+        (
+            self.inner.actor,
+            self.inner.inner.object,
+            self.origin,
+            self.inner.inner.inner,
+        )
+    }
+}
+
+impl Travel {
+    /// Create a new Travel Activity
+    ///
+    /// ```rust
+    /// use activitystreams::activity::Travel;
+    ///
+    /// let activity = Travel::new(vec![]);
+    /// ```
+    pub fn new<T>(actor: T) -> Self
+    where
+        T: Into<OneOrMany<AnyBase>>,
+    {
+        OptOrigin {
+            origin: None,
+            inner: OptTarget {
+                target: None,
+                inner: ActivityActor {
+                    actor: actor.into(),
+                    inner: Activity::new(),
+                },
+            },
+        }
+    }
+
+    #[allow(clippy::type_complexity)]
+    /// Deconstruct the Travel into its parts
+    ///
+    /// ```rust
+    /// use activitystreams::activity::Travel;
+    ///
+    /// let activity = Travel::new(vec![]);
+    ///
+    /// let (actor, origin, target, activity) = activity.into_parts();
+    /// ```
+    pub fn into_parts(
+        self,
+    ) -> (
+        OneOrMany<AnyBase>,
+        Option<OneOrMany<AnyBase>>,
+        Option<OneOrMany<AnyBase>>,
+        Activity<TravelType>,
+    ) {
+        (
+            self.inner.inner.actor,
+            self.origin,
+            self.inner.target,
+            self.inner.inner.inner,
+        )
+    }
+}
+
 impl<Kind> ActorAndObject<Kind> {
     /// Create a new ActorAndObject Activity
     ///
@@ -2215,10 +2306,12 @@ impl<Kind> ActorAndObject<Kind> {
         U: Into<OneOrMany<AnyBase>>,
         Kind: Default,
     {
-        ActorAndObject {
+        ActivityActor {
             actor: actor.into(),
-            object: object.into(),
-            inner: Activity::new(),
+            inner: ActivityObject {
+                object: object.into(),
+                inner: Activity::new(),
+            },
         }
     }
 
@@ -2243,10 +2336,12 @@ impl<Kind> ActorAndObject<Kind> {
         T: Into<OneOrMany<AnyBase>>,
         U: Into<OneOrMany<AnyBase>>,
     {
-        ActorAndObject {
+        ActivityActor {
             actor: actor.into(),
-            object: object.into(),
-            inner: Activity::new_none_type(),
+            inner: ActivityObject {
+                object: object.into(),
+                inner: Activity::new_none_type(),
+            },
         }
     }
 
@@ -2260,248 +2355,17 @@ impl<Kind> ActorAndObject<Kind> {
     /// let (actor, object, activity) = activity.into_parts();
     /// ```
     pub fn into_parts(self) -> (OneOrMany<AnyBase>, OneOrMany<AnyBase>, Activity<Kind>) {
-        (self.actor, self.object, self.inner)
-    }
-
-    fn extending(object: Object<Kind>) -> Result<Self, serde_json::Error> {
-        let mut inner = Activity::extending(object)?;
-
-        let actor = inner.remove("actor")?;
-        let object = inner.remove("object")?;
-
-        Ok(ActorAndObject {
-            actor,
-            object,
-            inner,
-        })
-    }
-
-    fn retracting(self) -> Result<Object<Kind>, serde_json::Error> {
-        let ActorAndObject {
-            actor,
-            object,
-            mut inner,
-        } = self;
-
-        inner.insert("actor", actor)?.insert("object", object)?;
-
-        inner.retracting()
+        (self.actor, self.inner.object, self.inner.inner)
     }
 }
 
-impl Arrive {
-    /// Create a new Arrive Activity
+impl<Kind> ActorAndObjectOptTarget<Kind> {
+    /// Create a new ActorAndObjectOptTarget Activity
     ///
     /// ```rust
-    /// use activitystreams::activity::Arrive;
+    /// use activitystreams::activity::ActorAndObjectOptTarget;
     ///
-    /// let activity = Arrive::new(vec![], vec![]);
-    /// ```
-    pub fn new<T, U>(actor: T, origin: U) -> Self
-    where
-        T: Into<OneOrMany<AnyBase>>,
-        U: Into<OneOrMany<AnyBase>>,
-    {
-        Arrive {
-            actor: actor.into(),
-            origin: origin.into(),
-            inner: Activity::new(),
-        }
-    }
-
-    /// Deconstruct the Arrive into its parts
-    ///
-    /// ```rust
-    /// use activitystreams::activity::Arrive;
-    ///
-    /// let activity = Arrive::new(vec![], vec![]);
-    ///
-    /// let (actor, origin, activity) = activity.into_parts();
-    /// ```
-    pub fn into_parts(self) -> (OneOrMany<AnyBase>, OneOrMany<AnyBase>, Activity<ArriveType>) {
-        (self.actor, self.origin, self.inner)
-    }
-
-    fn extending(object: Object<ArriveType>) -> Result<Self, serde_json::Error> {
-        let mut inner = Activity::extending(object)?;
-
-        let actor = inner.remove("actor")?;
-        let origin = inner.remove("origin")?;
-
-        Ok(Arrive {
-            actor,
-            origin,
-            inner,
-        })
-    }
-
-    fn retracting(self) -> Result<Object<ArriveType>, serde_json::Error> {
-        let Arrive {
-            actor,
-            origin,
-            mut inner,
-        } = self;
-
-        inner.insert("actor", actor)?.insert("origin", origin)?;
-
-        inner.retracting()
-    }
-}
-
-impl Invite {
-    /// Create a new Invite Activity
-    ///
-    /// ```rust
-    /// use activitystreams::activity::Invite;
-    ///
-    /// let activity = Invite::new(vec![], vec![], vec![]);
-    /// ```
-    pub fn new<T, U, V>(actor: T, object: U, target: V) -> Self
-    where
-        T: Into<OneOrMany<AnyBase>>,
-        U: Into<OneOrMany<AnyBase>>,
-        V: Into<OneOrMany<AnyBase>>,
-    {
-        Invite {
-            actor: actor.into(),
-            object: object.into(),
-            target: target.into(),
-            inner: Activity::new(),
-        }
-    }
-
-    /// Deconstruct the Invite into its parts
-    ///
-    /// ```rust
-    /// use activitystreams::activity::Invite;
-    ///
-    /// let activity = Invite::new(vec![], vec![], vec![]);
-    ///
-    /// let (actor, object, target, activity) = activity.into_parts();
-    /// ```
-    pub fn into_parts(
-        self,
-    ) -> (
-        OneOrMany<AnyBase>,
-        OneOrMany<AnyBase>,
-        OneOrMany<AnyBase>,
-        Activity<InviteType>,
-    ) {
-        (self.actor, self.object, self.target, self.inner)
-    }
-
-    fn extending(object: Object<InviteType>) -> Result<Self, serde_json::Error> {
-        let mut inner = Activity::extending(object)?;
-
-        let actor = inner.remove("actor")?;
-        let object = inner.remove("object")?;
-        let target = inner.remove("target")?;
-
-        Ok(Invite {
-            actor,
-            object,
-            target,
-            inner,
-        })
-    }
-
-    fn retracting(self) -> Result<Object<InviteType>, serde_json::Error> {
-        let Invite {
-            actor,
-            object,
-            target,
-            mut inner,
-        } = self;
-
-        inner
-            .insert("actor", actor)?
-            .insert("object", object)?
-            .insert("target", target)?;
-
-        inner.retracting()
-    }
-}
-
-impl Delete {
-    /// Create a new Delete Activity
-    ///
-    /// ```rust
-    /// use activitystreams::activity::Delete;
-    ///
-    /// let activity = Delete::new(vec![], vec![]);
-    /// ```
-    pub fn new<T, U>(actor: T, object: U) -> Self
-    where
-        T: Into<OneOrMany<AnyBase>>,
-        U: Into<OneOrMany<AnyBase>>,
-    {
-        Delete {
-            actor: actor.into(),
-            object: object.into(),
-            origin: None,
-            inner: Activity::new(),
-        }
-    }
-
-    /// Deconstruct the Delete into its parts
-    ///
-    /// ```rust
-    /// use activitystreams::activity::Delete;
-    ///
-    /// let activity = Delete::new(vec![], vec![]);
-    ///
-    /// let (actor, object, origin, activity) = activity.into_parts();
-    /// ```
-    pub fn into_parts(
-        self,
-    ) -> (
-        OneOrMany<AnyBase>,
-        OneOrMany<AnyBase>,
-        Option<OneOrMany<AnyBase>>,
-        Activity<DeleteType>,
-    ) {
-        (self.actor, self.object, self.origin, self.inner)
-    }
-
-    fn extending(object: Object<DeleteType>) -> Result<Self, serde_json::Error> {
-        let mut inner = Activity::extending(object)?;
-
-        let actor = inner.remove("actor")?;
-        let object = inner.remove("object")?;
-        let origin = inner.remove("origin")?;
-
-        Ok(Delete {
-            actor,
-            object,
-            origin,
-            inner,
-        })
-    }
-
-    fn retracting(self) -> Result<Object<DeleteType>, serde_json::Error> {
-        let Delete {
-            actor,
-            object,
-            origin,
-            mut inner,
-        } = self;
-
-        inner
-            .insert("actor", actor)?
-            .insert("object", object)?
-            .insert("origin", origin)?;
-
-        inner.retracting()
-    }
-}
-
-impl<Kind> ActorAndObjectOptOriginAndTarget<Kind> {
-    /// Create a new ActorAndObjectOptOriginAndTarget Activity
-    ///
-    /// ```rust
-    /// use activitystreams::activity::ActorAndObjectOptOriginAndTarget;
-    ///
-    /// let activity = ActorAndObjectOptOriginAndTarget::<String>::new(
+    /// let activity = ActorAndObjectOptTarget::<String>::new(
     ///     vec![],
     ///     vec![]
     /// );
@@ -2512,16 +2376,108 @@ impl<Kind> ActorAndObjectOptOriginAndTarget<Kind> {
         U: Into<OneOrMany<AnyBase>>,
         Kind: Default,
     {
-        ActorAndObjectOptOriginAndTarget {
-            actor: actor.into(),
-            object: object.into(),
-            origin: None,
+        OptTarget {
             target: None,
-            inner: Activity::new(),
+            inner: ActivityActor {
+                actor: actor.into(),
+                inner: ActivityObject {
+                    object: object.into(),
+                    inner: Activity::new(),
+                },
+            },
         }
     }
 
-    /// Create a new ActorAndObjectOptOriginAndTarget with `None` for it's `kind` property
+    /// Create a new ActorAndObject with `None` for it's `kind` property
+    ///
+    /// This means that no `type` field will be present in serialized JSON
+    ///
+    /// ```rust
+    /// # fn main() -> Result<(), anyhow::Error> {
+    /// use activitystreams::activity::ActorAndObjectOptTarget;
+    ///
+    /// let activity = ActorAndObjectOptTarget::<()>::new_none_type(vec![], vec![]);
+    ///
+    /// let s = serde_json::to_string(&activity)?;
+    ///
+    /// assert_eq!(s, r#"{"actor":[],"object":[]}"#);
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn new_none_type<T, U>(actor: T, object: U) -> Self
+    where
+        T: Into<OneOrMany<AnyBase>>,
+        U: Into<OneOrMany<AnyBase>>,
+    {
+        OptTarget {
+            target: None,
+            inner: ActivityActor {
+                actor: actor.into(),
+                inner: ActivityObject {
+                    object: object.into(),
+                    inner: Activity::new_none_type(),
+                },
+            },
+        }
+    }
+
+    #[allow(clippy::type_complexity)]
+    /// Deconstruct the ActorAndObjectOptTarget into its parts
+    ///
+    /// ```rust
+    /// use activitystreams::activity::ActorAndObjectOptTarget;
+    ///
+    /// let activity = ActorAndObjectOptTarget::<String>::new(vec![], vec![]);
+    ///
+    /// let (actor, object, target, activity) = activity.into_parts();
+    /// ```
+    pub fn into_parts(
+        self,
+    ) -> (
+        OneOrMany<AnyBase>,
+        OneOrMany<AnyBase>,
+        Option<OneOrMany<AnyBase>>,
+        Activity<Kind>,
+    ) {
+        (
+            self.inner.actor,
+            self.inner.inner.object,
+            self.target,
+            self.inner.inner.inner,
+        )
+    }
+}
+
+impl<Kind> ActorAndObjectOptOriginAndTarget<Kind> {
+    /// Create a new ActorAndObject Activity
+    ///
+    /// ```rust
+    /// use activitystreams::activity::ActorAndObjectOptOriginAndTarget;
+    ///
+    /// let activity = ActorAndObjectOptOriginAndTarget::<String>::new(vec![], vec![]);
+    /// ```
+    pub fn new<T, U>(actor: T, object: U) -> Self
+    where
+        T: Into<OneOrMany<AnyBase>>,
+        U: Into<OneOrMany<AnyBase>>,
+        Kind: Default,
+    {
+        OptOrigin {
+            origin: None,
+            inner: OptTarget {
+                target: None,
+                inner: ActivityActor {
+                    actor: actor.into(),
+                    inner: ActivityObject {
+                        object: object.into(),
+                        inner: Activity::new(),
+                    },
+                },
+            },
+        }
+    }
+
+    /// Create a new ActorAndObject with `None` for it's `kind` property
     ///
     /// This means that no `type` field will be present in serialized JSON
     ///
@@ -2542,12 +2498,18 @@ impl<Kind> ActorAndObjectOptOriginAndTarget<Kind> {
         T: Into<OneOrMany<AnyBase>>,
         U: Into<OneOrMany<AnyBase>>,
     {
-        ActorAndObjectOptOriginAndTarget {
-            actor: actor.into(),
-            object: object.into(),
+        OptOrigin {
             origin: None,
-            target: None,
-            inner: Activity::new_none_type(),
+            inner: OptTarget {
+                target: None,
+                inner: ActivityActor {
+                    actor: actor.into(),
+                    inner: ActivityObject {
+                        object: object.into(),
+                        inner: Activity::new_none_type(),
+                    },
+                },
+            },
         }
     }
 
@@ -2571,226 +2533,100 @@ impl<Kind> ActorAndObjectOptOriginAndTarget<Kind> {
         Activity<Kind>,
     ) {
         (
-            self.actor,
-            self.object,
+            self.inner.inner.actor,
+            self.inner.inner.inner.object,
             self.origin,
-            self.target,
-            self.inner,
+            self.inner.target,
+            self.inner.inner.inner.inner,
         )
     }
+}
 
-    fn extending(object: Object<Kind>) -> Result<Self, serde_json::Error> {
-        let mut inner = Activity::extending(object)?;
-
-        let actor = inner.remove("actor")?;
-        let object = inner.remove("object")?;
+impl<Inner> Origin<Inner> {
+    fn extending(mut inner: Inner) -> Result<Self, serde_json::Error>
+    where
+        Inner: UnparsedMut,
+    {
         let origin = inner.remove("origin")?;
-        let target = inner.remove("target")?;
 
-        Ok(ActorAndObjectOptOriginAndTarget {
-            actor,
-            object,
-            origin,
-            target,
-            inner,
-        })
+        Ok(Origin { origin, inner })
     }
 
-    fn retracting(self) -> Result<Object<Kind>, serde_json::Error> {
-        let ActorAndObjectOptOriginAndTarget {
-            actor,
-            object,
-            origin,
-            target,
-            mut inner,
-        } = self;
+    fn retracting(self) -> Result<Inner, serde_json::Error>
+    where
+        Inner: UnparsedMut,
+    {
+        let Origin { origin, mut inner } = self;
 
-        inner
-            .insert("actor", actor)?
-            .insert("object", object)?
-            .insert("origin", origin)?
-            .insert("target", target)?;
+        inner.insert("origin", origin)?;
 
-        inner.retracting()
+        Ok(inner)
     }
 }
 
-impl<Kind> ActorAndObjectOptTarget<Kind> {
-    /// Create a new ActorAndObjectOptTarget Activity
-    ///
-    /// ```rust
-    /// use activitystreams::activity::ActorAndObjectOptTarget;
-    ///
-    /// let activity = ActorAndObjectOptTarget::<String>::new(
-    ///     vec![],
-    ///     vec![]
-    /// );
-    /// ```
-    pub fn new<T, U>(actor: T, object: U) -> Self
+impl<Inner> OptOrigin<Inner> {
+    fn extending(mut inner: Inner) -> Result<Self, serde_json::Error>
     where
-        T: Into<OneOrMany<AnyBase>>,
-        U: Into<OneOrMany<AnyBase>>,
-        Kind: Default,
+        Inner: UnparsedMut,
     {
-        ActorAndObjectOptTarget {
-            actor: actor.into(),
-            object: object.into(),
-            target: None,
-            inner: Activity::new(),
-        }
+        let origin = inner.remove("origin")?;
+
+        Ok(OptOrigin { origin, inner })
     }
 
-    /// Create a new ActorAndObjectOptTarget with `None` for it's `kind` property
-    ///
-    /// This means that no `type` field will be present in serialized JSON
-    ///
-    /// ```rust
-    /// # fn main() -> Result<(), anyhow::Error> {
-    /// use activitystreams::activity::ActorAndObjectOptTarget;
-    ///
-    /// let activity = ActorAndObjectOptTarget::<()>::new_none_type(vec![], vec![]);
-    ///
-    /// let s = serde_json::to_string(&activity)?;
-    ///
-    /// assert_eq!(s, r#"{"actor":[],"object":[]}"#);
-    /// # Ok(())
-    /// # }
-    /// ```
-    pub fn new_none_type<T, U>(actor: T, object: U) -> Self
+    fn retracting(self) -> Result<Inner, serde_json::Error>
     where
-        T: Into<OneOrMany<AnyBase>>,
-        U: Into<OneOrMany<AnyBase>>,
+        Inner: UnparsedMut,
     {
-        ActorAndObjectOptTarget {
-            actor: actor.into(),
-            object: object.into(),
-            target: None,
-            inner: Activity::new_none_type(),
-        }
-    }
+        let OptOrigin { origin, mut inner } = self;
 
-    /// Deconstruct the ActorAndObjectOptTarget into its parts
-    ///
-    /// ```rust
-    /// use activitystreams::activity::ActorAndObjectOptTarget;
-    ///
-    /// let activity = ActorAndObjectOptTarget::<String>::new(vec![], vec![]);
-    ///
-    /// let (actor, object, target, activity) = activity.into_parts();
-    /// ```
-    pub fn into_parts(
-        self,
-    ) -> (
-        OneOrMany<AnyBase>,
-        OneOrMany<AnyBase>,
-        Option<OneOrMany<AnyBase>>,
-        Activity<Kind>,
-    ) {
-        (self.actor, self.object, self.target, self.inner)
-    }
+        inner.insert("origin", origin)?;
 
-    fn extending(object: Object<Kind>) -> Result<Self, serde_json::Error> {
-        let mut inner = Activity::extending(object)?;
-
-        let actor = inner.remove("actor")?;
-        let object = inner.remove("object")?;
-        let target = inner.remove("target")?;
-
-        Ok(ActorAndObjectOptTarget {
-            actor,
-            object,
-            target,
-            inner,
-        })
-    }
-
-    fn retracting(self) -> Result<Object<Kind>, serde_json::Error> {
-        let ActorAndObjectOptTarget {
-            actor,
-            object,
-            target,
-            mut inner,
-        } = self;
-
-        inner
-            .insert("actor", actor)?
-            .insert("object", object)?
-            .insert("target", target)?;
-
-        inner.retracting()
+        Ok(inner)
     }
 }
 
-impl Travel {
-    /// Create a new Travel Activity
-    ///
-    /// ```rust
-    /// use activitystreams::activity::Travel;
-    ///
-    /// let activity = Travel::new(vec![]);
-    /// ```
-    pub fn new<T>(actor: T) -> Self
+impl<Inner> Target<Inner> {
+    fn extending(mut inner: Inner) -> Result<Self, serde_json::Error>
     where
-        T: Into<OneOrMany<AnyBase>>,
+        Inner: UnparsedMut,
     {
-        Travel {
-            actor: actor.into(),
-            origin: None,
-            target: None,
-            inner: Activity::new(),
-        }
-    }
-
-    #[allow(clippy::type_complexity)]
-    /// Deconstruct the Travel into its parts
-    ///
-    /// ```rust
-    /// use activitystreams::activity::Travel;
-    ///
-    /// let activity = Travel::new(vec![]);
-    ///
-    /// let (actor, origin, target, activity) = activity.into_parts();
-    /// ```
-    pub fn into_parts(
-        self,
-    ) -> (
-        OneOrMany<AnyBase>,
-        Option<OneOrMany<AnyBase>>,
-        Option<OneOrMany<AnyBase>>,
-        Activity<TravelType>,
-    ) {
-        (self.actor, self.origin, self.target, self.inner)
-    }
-
-    fn extending(object: Object<TravelType>) -> Result<Self, serde_json::Error> {
-        let mut inner = Activity::extending(object)?;
-
-        let actor = inner.remove("actor")?;
-        let origin = inner.remove("origin")?;
         let target = inner.remove("target")?;
 
-        Ok(Travel {
-            actor,
-            origin,
-            target,
-            inner,
-        })
+        Ok(Target { target, inner })
     }
 
-    fn retracting(self) -> Result<Object<TravelType>, serde_json::Error> {
-        let Travel {
-            actor,
-            origin,
-            target,
-            mut inner,
-        } = self;
+    fn retracting(self) -> Result<Inner, serde_json::Error>
+    where
+        Inner: UnparsedMut,
+    {
+        let Target { target, mut inner } = self;
 
-        inner
-            .insert("actor", actor)?
-            .insert("origin", origin)?
-            .insert("target", target)?;
+        inner.insert("target", target)?;
 
-        inner.retracting()
+        Ok(inner)
+    }
+}
+
+impl<Inner> OptTarget<Inner> {
+    fn extending(mut inner: Inner) -> Result<Self, serde_json::Error>
+    where
+        Inner: UnparsedMut,
+    {
+        let target = inner.remove("target")?;
+
+        Ok(OptTarget { target, inner })
+    }
+
+    fn retracting(self) -> Result<Inner, serde_json::Error>
+    where
+        Inner: UnparsedMut,
+    {
+        let OptTarget { target, mut inner } = self;
+
+        inner.insert("target", target)?;
+
+        Ok(inner)
     }
 }
 
@@ -2866,39 +2702,60 @@ impl<Kind> markers::Base for Activity<Kind> {}
 impl<Kind> markers::Object for Activity<Kind> {}
 impl<Kind> markers::Activity for Activity<Kind> {}
 
-impl<Kind> markers::Base for ActorAndObject<Kind> {}
-impl<Kind> markers::Object for ActorAndObject<Kind> {}
-impl<Kind> markers::Activity for ActorAndObject<Kind> {}
+impl<Inner> markers::Base for ActivityActor<Inner> where Inner: markers::Base {}
+impl<Inner> markers::Object for ActivityActor<Inner> where Inner: markers::Object {}
+impl<Inner> markers::Activity for ActivityActor<Inner> where Inner: markers::Activity {}
+impl<Inner> markers::IntransitiveActivity for ActivityActor<Inner> where
+    Inner: markers::IntransitiveActivity
+{
+}
 
-impl<Kind> markers::Base for ActorAndObjectOptTarget<Kind> {}
-impl<Kind> markers::Object for ActorAndObjectOptTarget<Kind> {}
-impl<Kind> markers::Activity for ActorAndObjectOptTarget<Kind> {}
+impl<Inner> markers::Base for ActivityObject<Inner> where Inner: markers::Base {}
+impl<Inner> markers::Object for ActivityObject<Inner> where Inner: markers::Object {}
+impl<Inner> markers::Activity for ActivityObject<Inner> where Inner: markers::Activity {}
+impl<Inner> markers::IntransitiveActivity for ActivityObject<Inner> where
+    Inner: markers::IntransitiveActivity
+{
+}
 
-impl<Kind> markers::Base for ActorAndObjectOptOriginAndTarget<Kind> {}
-impl<Kind> markers::Object for ActorAndObjectOptOriginAndTarget<Kind> {}
-impl<Kind> markers::Activity for ActorAndObjectOptOriginAndTarget<Kind> {}
+impl<Inner> markers::Base for Target<Inner> where Inner: markers::Base {}
+impl<Inner> markers::Object for Target<Inner> where Inner: markers::Object {}
+impl<Inner> markers::Activity for Target<Inner> where Inner: markers::Activity {}
+impl<Inner> markers::IntransitiveActivity for Target<Inner> where
+    Inner: markers::IntransitiveActivity
+{
+}
 
-impl markers::Base for Arrive {}
-impl markers::Object for Arrive {}
-impl markers::Activity for Arrive {}
-impl markers::IntransitiveActivity for Arrive {}
+impl<Inner> markers::Base for OptTarget<Inner> where Inner: markers::Base {}
+impl<Inner> markers::Object for OptTarget<Inner> where Inner: markers::Object {}
+impl<Inner> markers::Activity for OptTarget<Inner> where Inner: markers::Activity {}
+impl<Inner> markers::IntransitiveActivity for OptTarget<Inner> where
+    Inner: markers::IntransitiveActivity
+{
+}
 
-impl markers::Base for Invite {}
-impl markers::Object for Invite {}
-impl markers::Activity for Invite {}
+impl<Inner> markers::Base for Origin<Inner> where Inner: markers::Base {}
+impl<Inner> markers::Object for Origin<Inner> where Inner: markers::Object {}
+impl<Inner> markers::Activity for Origin<Inner> where Inner: markers::Activity {}
+impl<Inner> markers::IntransitiveActivity for Origin<Inner> where
+    Inner: markers::IntransitiveActivity
+{
+}
 
-impl markers::Base for Delete {}
-impl markers::Object for Delete {}
-impl markers::Activity for Delete {}
-
-impl markers::Base for Travel {}
-impl markers::Object for Travel {}
-impl markers::Activity for Travel {}
-impl markers::IntransitiveActivity for Travel {}
+impl<Inner> markers::Base for OptOrigin<Inner> where Inner: markers::Base {}
+impl<Inner> markers::Object for OptOrigin<Inner> where Inner: markers::Object {}
+impl<Inner> markers::Activity for OptOrigin<Inner> where Inner: markers::Activity {}
+impl<Inner> markers::IntransitiveActivity for OptOrigin<Inner> where
+    Inner: markers::IntransitiveActivity
+{
+}
 
 impl markers::Base for Question {}
 impl markers::Object for Question {}
 impl markers::Activity for Question {}
+
+impl markers::IntransitiveActivity for Arrive {}
+impl markers::IntransitiveActivity for Travel {}
 impl markers::IntransitiveActivity for Question {}
 
 impl<Inner> markers::Activity for ApObject<Inner> where Inner: markers::Activity {}
@@ -2907,15 +2764,17 @@ impl<Inner> markers::IntransitiveActivity for ApObject<Inner> where
 {
 }
 
-impl<Kind> Extends<Kind> for Activity<Kind> {
+impl<Kind> Extends for Activity<Kind> {
+    type Kind = Kind;
+
     type Error = serde_json::Error;
 
-    fn extends(base: Base<Kind>) -> Result<Self, Self::Error> {
+    fn extends(base: Base<Self::Kind>) -> Result<Self, Self::Error> {
         let inner = Object::extends(base)?;
         Self::extending(inner)
     }
 
-    fn retracts(self) -> Result<Base<Kind>, Self::Error> {
+    fn retracts(self) -> Result<Base<Self::Kind>, Self::Error> {
         let inner = self.retracting()?;
         inner.retracts()
     }
@@ -2937,217 +2796,273 @@ impl<Kind> TryFrom<Activity<Kind>> for Object<Kind> {
     }
 }
 
-impl<Kind> Extends<Kind> for ActorAndObject<Kind> {
+impl<Inner> Extends for ActivityActor<Inner>
+where
+    Inner: Extends<Error = serde_json::Error> + UnparsedMut,
+{
+    type Kind = Inner::Kind;
+
     type Error = serde_json::Error;
 
-    fn extends(base: Base<Kind>) -> Result<Self, Self::Error> {
-        let inner = Object::extends(base)?;
+    fn extends(base: Base<Self::Kind>) -> Result<Self, Self::Error> {
+        let inner = Inner::extends(base)?;
         Self::extending(inner)
     }
 
-    fn retracts(self) -> Result<Base<Kind>, Self::Error> {
+    fn retracts(self) -> Result<Base<Self::Kind>, Self::Error> {
         let inner = self.retracting()?;
         inner.retracts()
     }
 }
 
-impl<Kind> TryFrom<Object<Kind>> for ActorAndObject<Kind> {
+impl<Inner, Kind> TryFrom<Object<Kind>> for ActivityActor<Inner>
+where
+    Inner: TryFrom<Object<Kind>, Error = serde_json::Error> + UnparsedMut,
+{
     type Error = serde_json::Error;
 
     fn try_from(object: Object<Kind>) -> Result<Self, Self::Error> {
-        Self::extending(object)
+        let inner = Inner::try_from(object)?;
+        Self::extending(inner)
     }
 }
 
-impl<Kind> TryFrom<ActorAndObject<Kind>> for Object<Kind> {
+impl<Inner, Kind> TryFrom<ActivityActor<Inner>> for Object<Kind>
+where
+    Object<Kind>: TryFrom<Inner, Error = serde_json::Error>,
+    Inner: UnparsedMut,
+{
     type Error = serde_json::Error;
 
-    fn try_from(activity: ActorAndObject<Kind>) -> Result<Self, Self::Error> {
-        activity.retracting()
+    fn try_from(activity: ActivityActor<Inner>) -> Result<Self, Self::Error> {
+        let inner = activity.retracting()?;
+        TryFrom::try_from(inner)
     }
 }
 
-impl Extends<ArriveType> for Arrive {
+impl<Inner> Extends for ActivityObject<Inner>
+where
+    Inner: Extends<Error = serde_json::Error> + UnparsedMut,
+{
+    type Kind = Inner::Kind;
+
     type Error = serde_json::Error;
 
-    fn extends(base: Base<ArriveType>) -> Result<Self, Self::Error> {
-        let inner = Object::extends(base)?;
+    fn extends(base: Base<Self::Kind>) -> Result<Self, Self::Error> {
+        let inner = Inner::extends(base)?;
         Self::extending(inner)
     }
 
-    fn retracts(self) -> Result<Base<ArriveType>, Self::Error> {
+    fn retracts(self) -> Result<Base<Self::Kind>, Self::Error> {
         let inner = self.retracting()?;
         inner.retracts()
     }
 }
 
-impl TryFrom<Object<ArriveType>> for Arrive {
-    type Error = serde_json::Error;
-
-    fn try_from(object: Object<ArriveType>) -> Result<Self, Self::Error> {
-        Self::extending(object)
-    }
-}
-
-impl TryFrom<Arrive> for Object<ArriveType> {
-    type Error = serde_json::Error;
-
-    fn try_from(arrive: Arrive) -> Result<Self, Self::Error> {
-        arrive.retracting()
-    }
-}
-
-impl Extends<InviteType> for Invite {
-    type Error = serde_json::Error;
-
-    fn extends(base: Base<InviteType>) -> Result<Self, Self::Error> {
-        let inner = Object::extends(base)?;
-        Self::extending(inner)
-    }
-
-    fn retracts(self) -> Result<Base<InviteType>, Self::Error> {
-        let inner = self.retracting()?;
-        inner.retracts()
-    }
-}
-
-impl TryFrom<Object<InviteType>> for Invite {
-    type Error = serde_json::Error;
-
-    fn try_from(object: Object<InviteType>) -> Result<Self, Self::Error> {
-        Self::extending(object)
-    }
-}
-
-impl TryFrom<Invite> for Object<InviteType> {
-    type Error = serde_json::Error;
-
-    fn try_from(invite: Invite) -> Result<Self, Self::Error> {
-        invite.retracting()
-    }
-}
-
-impl Extends<DeleteType> for Delete {
-    type Error = serde_json::Error;
-
-    fn extends(base: Base<DeleteType>) -> Result<Self, Self::Error> {
-        let inner = Object::extends(base)?;
-        Self::extending(inner)
-    }
-
-    fn retracts(self) -> Result<Base<DeleteType>, Self::Error> {
-        let inner = self.retracting()?;
-        inner.retracts()
-    }
-}
-
-impl TryFrom<Object<DeleteType>> for Delete {
-    type Error = serde_json::Error;
-
-    fn try_from(object: Object<DeleteType>) -> Result<Self, Self::Error> {
-        Self::extending(object)
-    }
-}
-
-impl TryFrom<Delete> for Object<DeleteType> {
-    type Error = serde_json::Error;
-
-    fn try_from(delete: Delete) -> Result<Self, Self::Error> {
-        delete.retracting()
-    }
-}
-
-impl<Kind> Extends<Kind> for ActorAndObjectOptOriginAndTarget<Kind> {
-    type Error = serde_json::Error;
-
-    fn extends(base: Base<Kind>) -> Result<Self, Self::Error> {
-        let inner = Object::extends(base)?;
-        Self::extending(inner)
-    }
-
-    fn retracts(self) -> Result<Base<Kind>, Self::Error> {
-        let inner = self.retracting()?;
-        inner.retracts()
-    }
-}
-
-impl<Kind> TryFrom<Object<Kind>> for ActorAndObjectOptOriginAndTarget<Kind> {
+impl<Inner, Kind> TryFrom<Object<Kind>> for ActivityObject<Inner>
+where
+    Inner: TryFrom<Object<Kind>, Error = serde_json::Error> + UnparsedMut,
+{
     type Error = serde_json::Error;
 
     fn try_from(object: Object<Kind>) -> Result<Self, Self::Error> {
-        Self::extending(object)
+        let inner = Inner::try_from(object)?;
+        Self::extending(inner)
     }
 }
 
-impl<Kind> TryFrom<ActorAndObjectOptOriginAndTarget<Kind>> for Object<Kind> {
+impl<Inner, Kind> TryFrom<ActivityObject<Inner>> for Object<Kind>
+where
+    Object<Kind>: TryFrom<Inner, Error = serde_json::Error>,
+    Inner: UnparsedMut,
+{
     type Error = serde_json::Error;
 
-    fn try_from(activity: ActorAndObjectOptOriginAndTarget<Kind>) -> Result<Self, Self::Error> {
-        activity.retracting()
+    fn try_from(activity: ActivityObject<Inner>) -> Result<Self, Self::Error> {
+        let inner = activity.retracting()?;
+        TryFrom::try_from(inner)
     }
 }
 
-impl<Kind> Extends<Kind> for ActorAndObjectOptTarget<Kind> {
+impl<Inner> Extends for Origin<Inner>
+where
+    Inner: Extends<Error = serde_json::Error> + UnparsedMut,
+{
+    type Kind = Inner::Kind;
+
     type Error = serde_json::Error;
 
-    fn extends(base: Base<Kind>) -> Result<Self, Self::Error> {
-        let inner = Object::extends(base)?;
+    fn extends(base: Base<Self::Kind>) -> Result<Self, Self::Error> {
+        let inner = Inner::extends(base)?;
         Self::extending(inner)
     }
 
-    fn retracts(self) -> Result<Base<Kind>, Self::Error> {
+    fn retracts(self) -> Result<Base<Self::Kind>, Self::Error> {
         let inner = self.retracting()?;
         inner.retracts()
     }
 }
 
-impl<Kind> TryFrom<Object<Kind>> for ActorAndObjectOptTarget<Kind> {
+impl<Inner, Kind> TryFrom<Object<Kind>> for Origin<Inner>
+where
+    Inner: TryFrom<Object<Kind>, Error = serde_json::Error> + UnparsedMut,
+{
     type Error = serde_json::Error;
 
     fn try_from(object: Object<Kind>) -> Result<Self, Self::Error> {
-        Self::extending(object)
+        let inner = Inner::try_from(object)?;
+        Self::extending(inner)
     }
 }
 
-impl<Kind> TryFrom<ActorAndObjectOptTarget<Kind>> for Object<Kind> {
+impl<Inner, Kind> TryFrom<Origin<Inner>> for Object<Kind>
+where
+    Object<Kind>: TryFrom<Inner, Error = serde_json::Error>,
+    Inner: UnparsedMut,
+{
     type Error = serde_json::Error;
 
-    fn try_from(activity: ActorAndObjectOptTarget<Kind>) -> Result<Self, Self::Error> {
-        activity.retracting()
+    fn try_from(activity: Origin<Inner>) -> Result<Self, Self::Error> {
+        let inner = activity.retracting()?;
+        TryFrom::try_from(inner)
     }
 }
 
-impl Extends<TravelType> for Travel {
+impl<Inner> Extends for OptOrigin<Inner>
+where
+    Inner: Extends<Error = serde_json::Error> + UnparsedMut,
+{
+    type Kind = Inner::Kind;
+
     type Error = serde_json::Error;
 
-    fn extends(base: Base<TravelType>) -> Result<Self, Self::Error> {
-        let inner = Object::extends(base)?;
+    fn extends(base: Base<Self::Kind>) -> Result<Self, Self::Error> {
+        let inner = Inner::extends(base)?;
         Self::extending(inner)
     }
 
-    fn retracts(self) -> Result<Base<TravelType>, Self::Error> {
+    fn retracts(self) -> Result<Base<Self::Kind>, Self::Error> {
         let inner = self.retracting()?;
         inner.retracts()
     }
 }
 
-impl TryFrom<Object<TravelType>> for Travel {
+impl<Inner, Kind> TryFrom<Object<Kind>> for OptOrigin<Inner>
+where
+    Inner: TryFrom<Object<Kind>, Error = serde_json::Error> + UnparsedMut,
+{
     type Error = serde_json::Error;
 
-    fn try_from(object: Object<TravelType>) -> Result<Self, Self::Error> {
-        Self::extending(object)
+    fn try_from(object: Object<Kind>) -> Result<Self, Self::Error> {
+        let inner = Inner::try_from(object)?;
+        Self::extending(inner)
     }
 }
 
-impl TryFrom<Travel> for Object<TravelType> {
+impl<Inner, Kind> TryFrom<OptOrigin<Inner>> for Object<Kind>
+where
+    Object<Kind>: TryFrom<Inner, Error = serde_json::Error>,
+    Inner: UnparsedMut,
+{
     type Error = serde_json::Error;
 
-    fn try_from(travel: Travel) -> Result<Self, Self::Error> {
-        travel.retracting()
+    fn try_from(activity: OptOrigin<Inner>) -> Result<Self, Self::Error> {
+        let inner = activity.retracting()?;
+        TryFrom::try_from(inner)
     }
 }
 
-impl Extends<QuestionType> for Question {
+impl<Inner> Extends for Target<Inner>
+where
+    Inner: Extends<Error = serde_json::Error> + UnparsedMut,
+{
+    type Kind = Inner::Kind;
+
+    type Error = serde_json::Error;
+
+    fn extends(base: Base<Self::Kind>) -> Result<Self, Self::Error> {
+        let inner = Inner::extends(base)?;
+        Self::extending(inner)
+    }
+
+    fn retracts(self) -> Result<Base<Self::Kind>, Self::Error> {
+        let inner = self.retracting()?;
+        inner.retracts()
+    }
+}
+
+impl<Inner, Kind> TryFrom<Object<Kind>> for Target<Inner>
+where
+    Inner: TryFrom<Object<Kind>, Error = serde_json::Error> + UnparsedMut,
+{
+    type Error = serde_json::Error;
+
+    fn try_from(object: Object<Kind>) -> Result<Self, Self::Error> {
+        let inner = Inner::try_from(object)?;
+        Self::extending(inner)
+    }
+}
+
+impl<Inner, Kind> TryFrom<Target<Inner>> for Object<Kind>
+where
+    Object<Kind>: TryFrom<Inner, Error = serde_json::Error>,
+    Inner: UnparsedMut,
+{
+    type Error = serde_json::Error;
+
+    fn try_from(activity: Target<Inner>) -> Result<Self, Self::Error> {
+        let inner = activity.retracting()?;
+        TryFrom::try_from(inner)
+    }
+}
+
+impl<Inner> Extends for OptTarget<Inner>
+where
+    Inner: Extends<Error = serde_json::Error> + UnparsedMut,
+{
+    type Kind = Inner::Kind;
+
+    type Error = serde_json::Error;
+
+    fn extends(base: Base<Self::Kind>) -> Result<Self, Self::Error> {
+        let inner = Inner::extends(base)?;
+        Self::extending(inner)
+    }
+
+    fn retracts(self) -> Result<Base<Self::Kind>, Self::Error> {
+        let inner = self.retracting()?;
+        inner.retracts()
+    }
+}
+
+impl<Inner, Kind> TryFrom<Object<Kind>> for OptTarget<Inner>
+where
+    Inner: TryFrom<Object<Kind>, Error = serde_json::Error> + UnparsedMut,
+{
+    type Error = serde_json::Error;
+
+    fn try_from(object: Object<Kind>) -> Result<Self, Self::Error> {
+        let inner = Inner::try_from(object)?;
+        Self::extending(inner)
+    }
+}
+
+impl<Inner, Kind> TryFrom<OptTarget<Inner>> for Object<Kind>
+where
+    Object<Kind>: TryFrom<Inner, Error = serde_json::Error>,
+    Inner: UnparsedMut,
+{
+    type Error = serde_json::Error;
+
+    fn try_from(activity: OptTarget<Inner>) -> Result<Self, Self::Error> {
+        let inner = activity.retracting()?;
+        TryFrom::try_from(inner)
+    }
+}
+
+impl Extends for Question {
+    type Kind = QuestionType;
+
     type Error = serde_json::Error;
 
     fn extends(base: Base<QuestionType>) -> Result<Self, Self::Error> {
@@ -3183,43 +3098,55 @@ impl<Kind> UnparsedMut for Activity<Kind> {
     }
 }
 
-impl<Kind> UnparsedMut for ActorAndObject<Kind> {
+impl<Inner> UnparsedMut for ActivityActor<Inner>
+where
+    Inner: UnparsedMut,
+{
     fn unparsed_mut(&mut self) -> &mut Unparsed {
         self.inner.unparsed_mut()
     }
 }
 
-impl UnparsedMut for Arrive {
+impl<Inner> UnparsedMut for ActivityObject<Inner>
+where
+    Inner: UnparsedMut,
+{
     fn unparsed_mut(&mut self) -> &mut Unparsed {
         self.inner.unparsed_mut()
     }
 }
 
-impl UnparsedMut for Invite {
+impl<Inner> UnparsedMut for Origin<Inner>
+where
+    Inner: UnparsedMut,
+{
     fn unparsed_mut(&mut self) -> &mut Unparsed {
         self.inner.unparsed_mut()
     }
 }
 
-impl UnparsedMut for Delete {
+impl<Inner> UnparsedMut for OptOrigin<Inner>
+where
+    Inner: UnparsedMut,
+{
     fn unparsed_mut(&mut self) -> &mut Unparsed {
         self.inner.unparsed_mut()
     }
 }
 
-impl<Kind> UnparsedMut for ActorAndObjectOptOriginAndTarget<Kind> {
+impl<Inner> UnparsedMut for Target<Inner>
+where
+    Inner: UnparsedMut,
+{
     fn unparsed_mut(&mut self) -> &mut Unparsed {
         self.inner.unparsed_mut()
     }
 }
 
-impl<Kind> UnparsedMut for ActorAndObjectOptTarget<Kind> {
-    fn unparsed_mut(&mut self) -> &mut Unparsed {
-        self.inner.unparsed_mut()
-    }
-}
-
-impl UnparsedMut for Travel {
+impl<Inner> UnparsedMut for OptTarget<Inner>
+where
+    Inner: UnparsedMut,
+{
     fn unparsed_mut(&mut self) -> &mut Unparsed {
         self.inner.unparsed_mut()
     }
@@ -3231,437 +3158,795 @@ impl UnparsedMut for Question {
     }
 }
 
-impl<Kind> AsBase<Kind> for Activity<Kind> {
-    fn base_ref(&self) -> &Base<Kind> {
+impl<Kind> AsBase for Activity<Kind> {
+    type Kind = Kind;
+
+    fn base_ref(&self) -> &Base<Self::Kind> {
         self.inner.base_ref()
     }
 
-    fn base_mut(&mut self) -> &mut Base<Kind> {
+    fn base_mut(&mut self) -> &mut Base<Self::Kind> {
         self.inner.base_mut()
     }
 }
 
-impl<Kind> AsObject<Kind> for Activity<Kind> {
-    fn object_ref(&self) -> &Object<Kind> {
-        &self.inner
+impl<Kind> AsObject for Activity<Kind> {
+    type Kind = Kind;
+
+    fn object_ref(&self) -> &Object<Self::Kind> {
+        self.inner.object_ref()
     }
 
-    fn object_mut(&mut self) -> &mut Object<Kind> {
-        &mut self.inner
+    fn object_mut(&mut self) -> &mut Object<Self::Kind> {
+        self.inner.object_mut()
     }
 }
 
-impl<Kind> AsActivity<Kind> for Activity<Kind> {
-    fn activity_ref(&self) -> &Activity<Kind> {
+impl<Kind> AsActivity for Activity<Kind> {
+    type Kind = Kind;
+
+    fn activity_ref(&self) -> &Activity<Self::Kind> {
         self
     }
 
-    fn activity_mut(&mut self) -> &mut Activity<Kind> {
+    fn activity_mut(&mut self) -> &mut Activity<Self::Kind> {
         self
     }
 }
 
-impl<Kind> AsBase<Kind> for ActorAndObject<Kind> {
-    fn base_ref(&self) -> &Base<Kind> {
+impl<Inner> AsBase for ActivityActor<Inner>
+where
+    Inner: AsBase,
+{
+    type Kind = Inner::Kind;
+
+    fn base_ref(&self) -> &Base<Self::Kind> {
         self.inner.base_ref()
     }
 
-    fn base_mut(&mut self) -> &mut Base<Kind> {
+    fn base_mut(&mut self) -> &mut Base<Self::Kind> {
         self.inner.base_mut()
     }
 }
 
-impl<Kind> AsObject<Kind> for ActorAndObject<Kind> {
-    fn object_ref(&self) -> &Object<Kind> {
+impl<Inner> AsObject for ActivityActor<Inner>
+where
+    Inner: AsObject,
+{
+    type Kind = Inner::Kind;
+
+    fn object_ref(&self) -> &Object<Self::Kind> {
         self.inner.object_ref()
     }
 
-    fn object_mut(&mut self) -> &mut Object<Kind> {
+    fn object_mut(&mut self) -> &mut Object<Self::Kind> {
         self.inner.object_mut()
     }
 }
 
-impl<Kind> AsActivity<Kind> for ActorAndObject<Kind> {
-    fn activity_ref(&self) -> &Activity<Kind> {
-        &self.inner
-    }
-
-    fn activity_mut(&mut self) -> &mut Activity<Kind> {
-        &mut self.inner
-    }
-}
-
-impl<Kind> ActorAndObjectRef for ActorAndObject<Kind> {
-    fn actor_field_ref(&self) -> &OneOrMany<AnyBase> {
-        &self.actor
-    }
-
-    fn object_field_ref(&self) -> &OneOrMany<AnyBase> {
-        &self.object
-    }
-
-    fn actor_field_mut(&mut self) -> &mut OneOrMany<AnyBase> {
-        &mut self.actor
-    }
-
-    fn object_field_mut(&mut self) -> &mut OneOrMany<AnyBase> {
-        &mut self.object
-    }
-}
-
-impl<Kind> AsBase<Kind> for ActorAndObjectOptTarget<Kind> {
-    fn base_ref(&self) -> &Base<Kind> {
-        self.inner.base_ref()
-    }
-
-    fn base_mut(&mut self) -> &mut Base<Kind> {
-        self.inner.base_mut()
-    }
-}
-
-impl<Kind> AsObject<Kind> for ActorAndObjectOptTarget<Kind> {
-    fn object_ref(&self) -> &Object<Kind> {
-        self.inner.object_ref()
-    }
-
-    fn object_mut(&mut self) -> &mut Object<Kind> {
-        self.inner.object_mut()
-    }
-}
-
-impl<Kind> AsActivity<Kind> for ActorAndObjectOptTarget<Kind> {
-    fn activity_ref(&self) -> &Activity<Kind> {
-        &self.inner
-    }
-
-    fn activity_mut(&mut self) -> &mut Activity<Kind> {
-        &mut self.inner
-    }
-}
-
-impl<Kind> ActorAndObjectRef for ActorAndObjectOptTarget<Kind> {
-    fn actor_field_ref(&self) -> &OneOrMany<AnyBase> {
-        &self.actor
-    }
-
-    fn object_field_ref(&self) -> &OneOrMany<AnyBase> {
-        &self.object
-    }
-
-    fn actor_field_mut(&mut self) -> &mut OneOrMany<AnyBase> {
-        &mut self.actor
-    }
-
-    fn object_field_mut(&mut self) -> &mut OneOrMany<AnyBase> {
-        &mut self.object
-    }
-}
-
-impl<Kind> OptTargetRef for ActorAndObjectOptTarget<Kind> {
-    fn target_field_ref(&self) -> &Option<OneOrMany<AnyBase>> {
-        &self.target
-    }
-
-    fn target_field_mut(&mut self) -> &mut Option<OneOrMany<AnyBase>> {
-        &mut self.target
-    }
-}
-
-impl<Kind> AsBase<Kind> for ActorAndObjectOptOriginAndTarget<Kind> {
-    fn base_ref(&self) -> &Base<Kind> {
-        self.inner.base_ref()
-    }
-
-    fn base_mut(&mut self) -> &mut Base<Kind> {
-        self.inner.base_mut()
-    }
-}
-
-impl<Kind> AsObject<Kind> for ActorAndObjectOptOriginAndTarget<Kind> {
-    fn object_ref(&self) -> &Object<Kind> {
-        self.inner.object_ref()
-    }
-
-    fn object_mut(&mut self) -> &mut Object<Kind> {
-        self.inner.object_mut()
-    }
-}
-
-impl<Kind> AsActivity<Kind> for ActorAndObjectOptOriginAndTarget<Kind> {
-    fn activity_ref(&self) -> &Activity<Kind> {
-        &self.inner
-    }
-
-    fn activity_mut(&mut self) -> &mut Activity<Kind> {
-        &mut self.inner
-    }
-}
-
-impl<Kind> ActorAndObjectRef for ActorAndObjectOptOriginAndTarget<Kind> {
-    fn actor_field_ref(&self) -> &OneOrMany<AnyBase> {
-        &self.actor
-    }
-
-    fn object_field_ref(&self) -> &OneOrMany<AnyBase> {
-        &self.object
-    }
-
-    fn actor_field_mut(&mut self) -> &mut OneOrMany<AnyBase> {
-        &mut self.actor
-    }
-
-    fn object_field_mut(&mut self) -> &mut OneOrMany<AnyBase> {
-        &mut self.object
-    }
-}
-
-impl<Kind> OptTargetRef for ActorAndObjectOptOriginAndTarget<Kind> {
-    fn target_field_ref(&self) -> &Option<OneOrMany<AnyBase>> {
-        &self.target
-    }
-
-    fn target_field_mut(&mut self) -> &mut Option<OneOrMany<AnyBase>> {
-        &mut self.target
-    }
-}
-
-impl<Kind> OptOriginRef for ActorAndObjectOptOriginAndTarget<Kind> {
-    fn origin_field_ref(&self) -> &Option<OneOrMany<AnyBase>> {
-        &self.origin
-    }
-
-    fn origin_field_mut(&mut self) -> &mut Option<OneOrMany<AnyBase>> {
-        &mut self.origin
-    }
-}
-
-impl AsBase<ArriveType> for Arrive {
-    fn base_ref(&self) -> &Base<ArriveType> {
-        self.inner.base_ref()
-    }
-
-    fn base_mut(&mut self) -> &mut Base<ArriveType> {
-        self.inner.base_mut()
-    }
-}
-
-impl AsObject<ArriveType> for Arrive {
-    fn object_ref(&self) -> &Object<ArriveType> {
-        self.inner.object_ref()
-    }
-
-    fn object_mut(&mut self) -> &mut Object<ArriveType> {
-        self.inner.object_mut()
-    }
-}
-
-impl AsActivity<ArriveType> for Arrive {
-    fn activity_ref(&self) -> &Activity<ArriveType> {
-        &self.inner
-    }
-
-    fn activity_mut(&mut self) -> &mut Activity<ArriveType> {
-        &mut self.inner
-    }
-}
-
-impl OriginRef for Arrive {
-    fn origin_field_ref(&self) -> &OneOrMany<AnyBase> {
-        &self.origin
-    }
-
-    fn origin_field_mut(&mut self) -> &mut OneOrMany<AnyBase> {
-        &mut self.origin
-    }
-}
-
-impl AsBase<InviteType> for Invite {
-    fn base_ref(&self) -> &Base<InviteType> {
-        self.inner.base_ref()
-    }
-
-    fn base_mut(&mut self) -> &mut Base<InviteType> {
-        self.inner.base_mut()
-    }
-}
-
-impl AsObject<InviteType> for Invite {
-    fn object_ref(&self) -> &Object<InviteType> {
-        self.inner.object_ref()
-    }
-
-    fn object_mut(&mut self) -> &mut Object<InviteType> {
-        self.inner.object_mut()
-    }
-}
-
-impl AsActivity<InviteType> for Invite {
-    fn activity_ref(&self) -> &Activity<InviteType> {
-        &self.inner
-    }
-
-    fn activity_mut(&mut self) -> &mut Activity<InviteType> {
-        &mut self.inner
-    }
-}
-
-impl ActorAndObjectRef for Invite {
-    fn actor_field_ref(&self) -> &OneOrMany<AnyBase> {
-        &self.actor
-    }
-
-    fn object_field_ref(&self) -> &OneOrMany<AnyBase> {
-        &self.object
-    }
-
-    fn actor_field_mut(&mut self) -> &mut OneOrMany<AnyBase> {
-        &mut self.actor
-    }
-
-    fn object_field_mut(&mut self) -> &mut OneOrMany<AnyBase> {
-        &mut self.object
-    }
-}
-
-impl TargetRef for Invite {
-    fn target_field_ref(&self) -> &OneOrMany<AnyBase> {
-        &self.target
-    }
-
-    fn target_field_mut(&mut self) -> &mut OneOrMany<AnyBase> {
-        &mut self.target
-    }
-}
-
-impl AsBase<DeleteType> for Delete {
-    fn base_ref(&self) -> &Base<DeleteType> {
-        self.inner.base_ref()
-    }
-
-    fn base_mut(&mut self) -> &mut Base<DeleteType> {
-        self.inner.base_mut()
-    }
-}
-
-impl AsObject<DeleteType> for Delete {
-    fn object_ref(&self) -> &Object<DeleteType> {
-        self.inner.object_ref()
-    }
-
-    fn object_mut(&mut self) -> &mut Object<DeleteType> {
-        self.inner.object_mut()
-    }
-}
-
-impl AsActivity<DeleteType> for Delete {
-    fn activity_ref(&self) -> &Activity<DeleteType> {
-        &self.inner
-    }
-
-    fn activity_mut(&mut self) -> &mut Activity<DeleteType> {
-        &mut self.inner
-    }
-}
-
-impl ActorAndObjectRef for Delete {
-    fn actor_field_ref(&self) -> &OneOrMany<AnyBase> {
-        &self.actor
-    }
-
-    fn object_field_ref(&self) -> &OneOrMany<AnyBase> {
-        &self.object
-    }
-
-    fn actor_field_mut(&mut self) -> &mut OneOrMany<AnyBase> {
-        &mut self.actor
-    }
-
-    fn object_field_mut(&mut self) -> &mut OneOrMany<AnyBase> {
-        &mut self.object
-    }
-}
-
-impl OptOriginRef for Delete {
-    fn origin_field_ref(&self) -> &Option<OneOrMany<AnyBase>> {
-        &self.origin
-    }
-
-    fn origin_field_mut(&mut self) -> &mut Option<OneOrMany<AnyBase>> {
-        &mut self.origin
-    }
-}
-
-impl AsBase<TravelType> for Travel {
-    fn base_ref(&self) -> &Base<TravelType> {
-        self.inner.base_ref()
-    }
-
-    fn base_mut(&mut self) -> &mut Base<TravelType> {
-        self.inner.base_mut()
-    }
-}
-
-impl AsObject<TravelType> for Travel {
-    fn object_ref(&self) -> &Object<TravelType> {
-        self.inner.object_ref()
-    }
-
-    fn object_mut(&mut self) -> &mut Object<TravelType> {
-        self.inner.object_mut()
-    }
-}
-
-impl AsActivity<TravelType> for Travel {
-    fn activity_ref(&self) -> &Activity<TravelType> {
+impl<Inner> AsActivity for ActivityActor<Inner>
+where
+    Inner: AsActivity,
+{
+    type Kind = Inner::Kind;
+
+    fn activity_ref(&self) -> &Activity<Self::Kind> {
         self.inner.activity_ref()
     }
 
-    fn activity_mut(&mut self) -> &mut Activity<TravelType> {
+    fn activity_mut(&mut self) -> &mut Activity<Self::Kind> {
         self.inner.activity_mut()
     }
 }
 
-impl OptTargetRef for Travel {
-    fn target_field_ref(&self) -> &Option<OneOrMany<AnyBase>> {
-        &self.target
+impl<Inner> AsActivityActor for ActivityActor<Inner>
+where
+    Inner: markers::Activity,
+{
+    type Inner = Inner;
+
+    fn activity_actor_ref(&self) -> &ActivityActor<Self::Inner> {
+        self
     }
 
-    fn target_field_mut(&mut self) -> &mut Option<OneOrMany<AnyBase>> {
-        &mut self.target
-    }
-}
-
-impl OptOriginRef for Travel {
-    fn origin_field_ref(&self) -> &Option<OneOrMany<AnyBase>> {
-        &self.origin
-    }
-
-    fn origin_field_mut(&mut self) -> &mut Option<OneOrMany<AnyBase>> {
-        &mut self.origin
+    fn activity_actor_mut(&mut self) -> &mut ActivityActor<Self::Inner> {
+        self
     }
 }
 
-impl AsBase<QuestionType> for Question {
-    fn base_ref(&self) -> &Base<QuestionType> {
+impl<Inner> AsActivityObject for ActivityActor<Inner>
+where
+    Inner: AsActivityObject,
+{
+    type Inner = Inner::Inner;
+
+    fn activity_object_ref(&self) -> &ActivityObject<Self::Inner> {
+        self.inner.activity_object_ref()
+    }
+
+    fn activity_object_mut(&mut self) -> &mut ActivityObject<Self::Inner> {
+        self.inner.activity_object_mut()
+    }
+}
+
+impl<Inner> AsTarget for ActivityActor<Inner>
+where
+    Inner: AsTarget,
+{
+    type Inner = Inner::Inner;
+
+    fn target_ref(&self) -> &Target<Self::Inner> {
+        self.inner.target_ref()
+    }
+
+    fn target_mut(&mut self) -> &mut Target<Self::Inner> {
+        self.inner.target_mut()
+    }
+}
+
+impl<Inner> AsOptTarget for ActivityActor<Inner>
+where
+    Inner: AsOptTarget,
+{
+    type Inner = Inner::Inner;
+
+    fn opt_target_ref(&self) -> &OptTarget<Self::Inner> {
+        self.inner.opt_target_ref()
+    }
+
+    fn opt_target_mut(&mut self) -> &mut OptTarget<Self::Inner> {
+        self.inner.opt_target_mut()
+    }
+}
+
+impl<Inner> AsOrigin for ActivityActor<Inner>
+where
+    Inner: AsOrigin,
+{
+    type Inner = Inner::Inner;
+
+    fn origin_ref(&self) -> &Origin<Self::Inner> {
+        self.inner.origin_ref()
+    }
+
+    fn origin_mut(&mut self) -> &mut Origin<Self::Inner> {
+        self.inner.origin_mut()
+    }
+}
+
+impl<Inner> AsOptOrigin for ActivityActor<Inner>
+where
+    Inner: AsOptOrigin,
+{
+    type Inner = Inner::Inner;
+
+    fn opt_origin_ref(&self) -> &OptOrigin<Self::Inner> {
+        self.inner.opt_origin_ref()
+    }
+
+    fn opt_origin_mut(&mut self) -> &mut OptOrigin<Self::Inner> {
+        self.inner.opt_origin_mut()
+    }
+}
+
+impl<Inner> AsBase for ActivityObject<Inner>
+where
+    Inner: AsBase,
+{
+    type Kind = Inner::Kind;
+
+    fn base_ref(&self) -> &Base<Self::Kind> {
         self.inner.base_ref()
     }
 
-    fn base_mut(&mut self) -> &mut Base<QuestionType> {
+    fn base_mut(&mut self) -> &mut Base<Self::Kind> {
         self.inner.base_mut()
     }
 }
 
-impl AsObject<QuestionType> for Question {
-    fn object_ref(&self) -> &Object<QuestionType> {
+impl<Inner> AsObject for ActivityObject<Inner>
+where
+    Inner: AsObject,
+{
+    type Kind = Inner::Kind;
+
+    fn object_ref(&self) -> &Object<Self::Kind> {
         self.inner.object_ref()
     }
 
-    fn object_mut(&mut self) -> &mut Object<QuestionType> {
+    fn object_mut(&mut self) -> &mut Object<Self::Kind> {
         self.inner.object_mut()
     }
 }
 
-impl AsActivity<QuestionType> for Question {
+impl<Inner> AsActivity for ActivityObject<Inner>
+where
+    Inner: AsActivity,
+{
+    type Kind = Inner::Kind;
+
+    fn activity_ref(&self) -> &Activity<Self::Kind> {
+        self.inner.activity_ref()
+    }
+
+    fn activity_mut(&mut self) -> &mut Activity<Self::Kind> {
+        self.inner.activity_mut()
+    }
+}
+
+impl<Inner> AsActivityObject for ActivityObject<Inner>
+where
+    Inner: markers::Activity,
+{
+    type Inner = Inner;
+
+    fn activity_object_ref(&self) -> &ActivityObject<Self::Inner> {
+        self
+    }
+
+    fn activity_object_mut(&mut self) -> &mut ActivityObject<Self::Inner> {
+        self
+    }
+}
+
+impl<Inner> AsActivityActor for ActivityObject<Inner>
+where
+    Inner: AsActivityActor,
+{
+    type Inner = Inner::Inner;
+
+    fn activity_actor_ref(&self) -> &ActivityActor<Self::Inner> {
+        self.inner.activity_actor_ref()
+    }
+
+    fn activity_actor_mut(&mut self) -> &mut ActivityActor<Self::Inner> {
+        self.inner.activity_actor_mut()
+    }
+}
+
+impl<Inner> AsTarget for ActivityObject<Inner>
+where
+    Inner: AsTarget,
+{
+    type Inner = Inner::Inner;
+
+    fn target_ref(&self) -> &Target<Self::Inner> {
+        self.inner.target_ref()
+    }
+
+    fn target_mut(&mut self) -> &mut Target<Self::Inner> {
+        self.inner.target_mut()
+    }
+}
+
+impl<Inner> AsOptTarget for ActivityObject<Inner>
+where
+    Inner: AsOptTarget,
+{
+    type Inner = Inner::Inner;
+
+    fn opt_target_ref(&self) -> &OptTarget<Self::Inner> {
+        self.inner.opt_target_ref()
+    }
+
+    fn opt_target_mut(&mut self) -> &mut OptTarget<Self::Inner> {
+        self.inner.opt_target_mut()
+    }
+}
+
+impl<Inner> AsOrigin for ActivityObject<Inner>
+where
+    Inner: AsOrigin,
+{
+    type Inner = Inner::Inner;
+
+    fn origin_ref(&self) -> &Origin<Self::Inner> {
+        self.inner.origin_ref()
+    }
+
+    fn origin_mut(&mut self) -> &mut Origin<Self::Inner> {
+        self.inner.origin_mut()
+    }
+}
+
+impl<Inner> AsOptOrigin for ActivityObject<Inner>
+where
+    Inner: AsOptOrigin,
+{
+    type Inner = Inner::Inner;
+
+    fn opt_origin_ref(&self) -> &OptOrigin<Self::Inner> {
+        self.inner.opt_origin_ref()
+    }
+
+    fn opt_origin_mut(&mut self) -> &mut OptOrigin<Self::Inner> {
+        self.inner.opt_origin_mut()
+    }
+}
+
+impl<Inner> AsBase for Target<Inner>
+where
+    Inner: AsBase,
+{
+    type Kind = Inner::Kind;
+
+    fn base_ref(&self) -> &Base<Self::Kind> {
+        self.inner.base_ref()
+    }
+
+    fn base_mut(&mut self) -> &mut Base<Self::Kind> {
+        self.inner.base_mut()
+    }
+}
+
+impl<Inner> AsObject for Target<Inner>
+where
+    Inner: AsObject,
+{
+    type Kind = Inner::Kind;
+
+    fn object_ref(&self) -> &Object<Self::Kind> {
+        self.inner.object_ref()
+    }
+
+    fn object_mut(&mut self) -> &mut Object<Self::Kind> {
+        self.inner.object_mut()
+    }
+}
+
+impl<Inner> AsActivity for Target<Inner>
+where
+    Inner: AsActivity,
+{
+    type Kind = Inner::Kind;
+
+    fn activity_ref(&self) -> &Activity<Self::Kind> {
+        self.inner.activity_ref()
+    }
+
+    fn activity_mut(&mut self) -> &mut Activity<Self::Kind> {
+        self.inner.activity_mut()
+    }
+}
+
+impl<Inner> AsActivityObject for Target<Inner>
+where
+    Inner: AsActivityObject,
+{
+    type Inner = Inner::Inner;
+
+    fn activity_object_ref(&self) -> &ActivityObject<Self::Inner> {
+        self.inner.activity_object_ref()
+    }
+
+    fn activity_object_mut(&mut self) -> &mut ActivityObject<Self::Inner> {
+        self.inner.activity_object_mut()
+    }
+}
+
+impl<Inner> AsActivityActor for Target<Inner>
+where
+    Inner: AsActivityActor,
+{
+    type Inner = Inner::Inner;
+
+    fn activity_actor_ref(&self) -> &ActivityActor<Self::Inner> {
+        self.inner.activity_actor_ref()
+    }
+
+    fn activity_actor_mut(&mut self) -> &mut ActivityActor<Self::Inner> {
+        self.inner.activity_actor_mut()
+    }
+}
+
+impl<Inner> AsTarget for Target<Inner>
+where
+    Inner: markers::Activity,
+{
+    type Inner = Inner;
+
+    fn target_ref(&self) -> &Target<Self::Inner> {
+        self
+    }
+
+    fn target_mut(&mut self) -> &mut Target<Self::Inner> {
+        self
+    }
+}
+
+impl<Inner> AsOrigin for Target<Inner>
+where
+    Inner: AsOrigin,
+{
+    type Inner = Inner::Inner;
+
+    fn origin_ref(&self) -> &Origin<Self::Inner> {
+        self.inner.origin_ref()
+    }
+
+    fn origin_mut(&mut self) -> &mut Origin<Self::Inner> {
+        self.inner.origin_mut()
+    }
+}
+
+impl<Inner> AsOptOrigin for Target<Inner>
+where
+    Inner: AsOptOrigin,
+{
+    type Inner = Inner::Inner;
+
+    fn opt_origin_ref(&self) -> &OptOrigin<Self::Inner> {
+        self.inner.opt_origin_ref()
+    }
+
+    fn opt_origin_mut(&mut self) -> &mut OptOrigin<Self::Inner> {
+        self.inner.opt_origin_mut()
+    }
+}
+
+impl<Inner> AsBase for OptTarget<Inner>
+where
+    Inner: AsBase,
+{
+    type Kind = Inner::Kind;
+
+    fn base_ref(&self) -> &Base<Self::Kind> {
+        self.inner.base_ref()
+    }
+
+    fn base_mut(&mut self) -> &mut Base<Self::Kind> {
+        self.inner.base_mut()
+    }
+}
+
+impl<Inner> AsObject for OptTarget<Inner>
+where
+    Inner: AsObject,
+{
+    type Kind = Inner::Kind;
+
+    fn object_ref(&self) -> &Object<Self::Kind> {
+        self.inner.object_ref()
+    }
+
+    fn object_mut(&mut self) -> &mut Object<Self::Kind> {
+        self.inner.object_mut()
+    }
+}
+
+impl<Inner> AsActivity for OptTarget<Inner>
+where
+    Inner: AsActivity,
+{
+    type Kind = Inner::Kind;
+
+    fn activity_ref(&self) -> &Activity<Self::Kind> {
+        self.inner.activity_ref()
+    }
+
+    fn activity_mut(&mut self) -> &mut Activity<Self::Kind> {
+        self.inner.activity_mut()
+    }
+}
+
+impl<Inner> AsActivityObject for OptTarget<Inner>
+where
+    Inner: AsActivityObject,
+{
+    type Inner = Inner::Inner;
+
+    fn activity_object_ref(&self) -> &ActivityObject<Self::Inner> {
+        self.inner.activity_object_ref()
+    }
+
+    fn activity_object_mut(&mut self) -> &mut ActivityObject<Self::Inner> {
+        self.inner.activity_object_mut()
+    }
+}
+
+impl<Inner> AsActivityActor for OptTarget<Inner>
+where
+    Inner: AsActivityActor,
+{
+    type Inner = Inner::Inner;
+
+    fn activity_actor_ref(&self) -> &ActivityActor<Self::Inner> {
+        self.inner.activity_actor_ref()
+    }
+
+    fn activity_actor_mut(&mut self) -> &mut ActivityActor<Self::Inner> {
+        self.inner.activity_actor_mut()
+    }
+}
+
+impl<Inner> AsOptTarget for OptTarget<Inner>
+where
+    Inner: markers::Activity,
+{
+    type Inner = Inner;
+
+    fn opt_target_ref(&self) -> &OptTarget<Self::Inner> {
+        self
+    }
+
+    fn opt_target_mut(&mut self) -> &mut OptTarget<Self::Inner> {
+        self
+    }
+}
+
+impl<Inner> AsOrigin for OptTarget<Inner>
+where
+    Inner: AsOrigin,
+{
+    type Inner = Inner::Inner;
+
+    fn origin_ref(&self) -> &Origin<Self::Inner> {
+        self.inner.origin_ref()
+    }
+
+    fn origin_mut(&mut self) -> &mut Origin<Self::Inner> {
+        self.inner.origin_mut()
+    }
+}
+
+impl<Inner> AsOptOrigin for OptTarget<Inner>
+where
+    Inner: AsOptOrigin,
+{
+    type Inner = Inner::Inner;
+
+    fn opt_origin_ref(&self) -> &OptOrigin<Self::Inner> {
+        self.inner.opt_origin_ref()
+    }
+
+    fn opt_origin_mut(&mut self) -> &mut OptOrigin<Self::Inner> {
+        self.inner.opt_origin_mut()
+    }
+}
+
+impl<Inner> AsActivity for Origin<Inner>
+where
+    Inner: AsActivity,
+{
+    type Kind = Inner::Kind;
+
+    fn activity_ref(&self) -> &Activity<Self::Kind> {
+        self.inner.activity_ref()
+    }
+
+    fn activity_mut(&mut self) -> &mut Activity<Self::Kind> {
+        self.inner.activity_mut()
+    }
+}
+
+impl<Inner> AsBase for Origin<Inner>
+where
+    Inner: AsBase,
+{
+    type Kind = Inner::Kind;
+
+    fn base_ref(&self) -> &Base<Self::Kind> {
+        self.inner.base_ref()
+    }
+
+    fn base_mut(&mut self) -> &mut Base<Self::Kind> {
+        self.inner.base_mut()
+    }
+}
+
+impl<Inner> AsObject for Origin<Inner>
+where
+    Inner: AsObject,
+{
+    type Kind = Inner::Kind;
+
+    fn object_ref(&self) -> &Object<Self::Kind> {
+        self.inner.object_ref()
+    }
+
+    fn object_mut(&mut self) -> &mut Object<Self::Kind> {
+        self.inner.object_mut()
+    }
+}
+
+impl<Inner> AsActivityObject for Origin<Inner>
+where
+    Inner: AsActivityObject,
+{
+    type Inner = Inner::Inner;
+
+    fn activity_object_ref(&self) -> &ActivityObject<Self::Inner> {
+        self.inner.activity_object_ref()
+    }
+
+    fn activity_object_mut(&mut self) -> &mut ActivityObject<Self::Inner> {
+        self.inner.activity_object_mut()
+    }
+}
+
+impl<Inner> AsActivityActor for Origin<Inner>
+where
+    Inner: AsActivityActor,
+{
+    type Inner = Inner::Inner;
+
+    fn activity_actor_ref(&self) -> &ActivityActor<Self::Inner> {
+        self.inner.activity_actor_ref()
+    }
+
+    fn activity_actor_mut(&mut self) -> &mut ActivityActor<Self::Inner> {
+        self.inner.activity_actor_mut()
+    }
+}
+
+impl<Inner> AsTarget for Origin<Inner>
+where
+    Inner: AsTarget,
+{
+    type Inner = Inner::Inner;
+
+    fn target_ref(&self) -> &Target<Self::Inner> {
+        self.inner.target_ref()
+    }
+
+    fn target_mut(&mut self) -> &mut Target<Self::Inner> {
+        self.inner.target_mut()
+    }
+}
+
+impl<Inner> AsOptTarget for Origin<Inner>
+where
+    Inner: AsOptTarget,
+{
+    type Inner = Inner::Inner;
+
+    fn opt_target_ref(&self) -> &OptTarget<Self::Inner> {
+        self.inner.opt_target_ref()
+    }
+
+    fn opt_target_mut(&mut self) -> &mut OptTarget<Self::Inner> {
+        self.inner.opt_target_mut()
+    }
+}
+
+impl<Inner> AsOrigin for Origin<Inner>
+where
+    Inner: markers::Activity,
+{
+    type Inner = Inner;
+
+    fn origin_ref(&self) -> &Origin<Self::Inner> {
+        self
+    }
+
+    fn origin_mut(&mut self) -> &mut Origin<Self::Inner> {
+        self
+    }
+}
+
+impl<Inner> AsBase for OptOrigin<Inner>
+where
+    Inner: AsBase,
+{
+    type Kind = Inner::Kind;
+
+    fn base_ref(&self) -> &Base<Self::Kind> {
+        self.inner.base_ref()
+    }
+
+    fn base_mut(&mut self) -> &mut Base<Self::Kind> {
+        self.inner.base_mut()
+    }
+}
+
+impl<Inner> AsObject for OptOrigin<Inner>
+where
+    Inner: AsObject,
+{
+    type Kind = Inner::Kind;
+
+    fn object_ref(&self) -> &Object<Self::Kind> {
+        self.inner.object_ref()
+    }
+
+    fn object_mut(&mut self) -> &mut Object<Self::Kind> {
+        self.inner.object_mut()
+    }
+}
+
+impl<Inner> AsActivity for OptOrigin<Inner>
+where
+    Inner: AsActivity,
+{
+    type Kind = Inner::Kind;
+
+    fn activity_ref(&self) -> &Activity<Self::Kind> {
+        self.inner.activity_ref()
+    }
+
+    fn activity_mut(&mut self) -> &mut Activity<Self::Kind> {
+        self.inner.activity_mut()
+    }
+}
+
+impl<Inner> AsActivityObject for OptOrigin<Inner>
+where
+    Inner: AsActivityObject,
+{
+    type Inner = Inner::Inner;
+
+    fn activity_object_ref(&self) -> &ActivityObject<Self::Inner> {
+        self.inner.activity_object_ref()
+    }
+
+    fn activity_object_mut(&mut self) -> &mut ActivityObject<Self::Inner> {
+        self.inner.activity_object_mut()
+    }
+}
+
+impl<Inner> AsActivityActor for OptOrigin<Inner>
+where
+    Inner: AsActivityActor,
+{
+    type Inner = Inner::Inner;
+
+    fn activity_actor_ref(&self) -> &ActivityActor<Self::Inner> {
+        self.inner.activity_actor_ref()
+    }
+
+    fn activity_actor_mut(&mut self) -> &mut ActivityActor<Self::Inner> {
+        self.inner.activity_actor_mut()
+    }
+}
+
+impl<Inner> AsTarget for OptOrigin<Inner>
+where
+    Inner: AsTarget,
+{
+    type Inner = Inner::Inner;
+
+    fn target_ref(&self) -> &Target<Self::Inner> {
+        self.inner.target_ref()
+    }
+
+    fn target_mut(&mut self) -> &mut Target<Self::Inner> {
+        self.inner.target_mut()
+    }
+}
+
+impl<Inner> AsOptTarget for OptOrigin<Inner>
+where
+    Inner: AsOptTarget,
+{
+    type Inner = Inner::Inner;
+
+    fn opt_target_ref(&self) -> &OptTarget<Self::Inner> {
+        self.inner.opt_target_ref()
+    }
+
+    fn opt_target_mut(&mut self) -> &mut OptTarget<Self::Inner> {
+        self.inner.opt_target_mut()
+    }
+}
+
+impl<Inner> AsOptOrigin for OptOrigin<Inner>
+where
+    Inner: markers::Activity,
+{
+    type Inner = Inner;
+
+    fn opt_origin_ref(&self) -> &OptOrigin<Self::Inner> {
+        self
+    }
+
+    fn opt_origin_mut(&mut self) -> &mut OptOrigin<Self::Inner> {
+        self
+    }
+}
+
+impl AsActivity for Question {
+    type Kind = QuestionType;
+
     fn activity_ref(&self) -> &Activity<QuestionType> {
         &self.inner
     }
@@ -3681,89 +3966,108 @@ impl AsQuestion for Question {
     }
 }
 
-impl<Inner, Kind> AsActivity<Kind> for ApObject<Inner>
+impl<Inner> AsActivity for ApObject<Inner>
 where
-    Inner: AsActivity<Kind>,
+    Inner: AsActivity,
 {
-    fn activity_ref(&self) -> &Activity<Kind> {
+    type Kind = Inner::Kind;
+
+    fn activity_ref(&self) -> &Activity<Self::Kind> {
         self.inner().activity_ref()
     }
 
-    fn activity_mut(&mut self) -> &mut Activity<Kind> {
+    fn activity_mut(&mut self) -> &mut Activity<Self::Kind> {
         self.inner_mut().activity_mut()
     }
 }
 
-impl<Inner> ActorAndObjectRef for ApObject<Inner>
+impl<Inner> AsActivityActor for ApObject<Inner>
 where
-    Inner: ActorAndObjectRef,
+    Inner: AsActivityActor,
 {
-    fn actor_field_ref(&self) -> &OneOrMany<AnyBase> {
-        self.inner().actor_field_ref()
+    type Inner = Inner::Inner;
+
+    fn activity_actor_ref(&self) -> &ActivityActor<Self::Inner> {
+        self.inner().activity_actor_ref()
     }
 
-    fn object_field_ref(&self) -> &OneOrMany<AnyBase> {
-        self.inner().object_field_ref()
-    }
-
-    fn actor_field_mut(&mut self) -> &mut OneOrMany<AnyBase> {
-        self.inner_mut().actor_field_mut()
-    }
-
-    fn object_field_mut(&mut self) -> &mut OneOrMany<AnyBase> {
-        self.inner_mut().object_field_mut()
+    fn activity_actor_mut(&mut self) -> &mut ActivityActor<Self::Inner> {
+        self.inner_mut().activity_actor_mut()
     }
 }
 
-impl<Inner> TargetRef for ApObject<Inner>
+impl<Inner> AsActivityObject for ApObject<Inner>
 where
-    Inner: TargetRef,
+    Inner: AsActivityObject,
 {
-    fn target_field_ref(&self) -> &OneOrMany<AnyBase> {
-        self.inner().target_field_ref()
+    type Inner = Inner::Inner;
+
+    fn activity_object_ref(&self) -> &ActivityObject<Self::Inner> {
+        self.inner().activity_object_ref()
     }
 
-    fn target_field_mut(&mut self) -> &mut OneOrMany<AnyBase> {
-        self.inner_mut().target_field_mut()
+    fn activity_object_mut(&mut self) -> &mut ActivityObject<Self::Inner> {
+        self.inner_mut().activity_object_mut()
     }
 }
 
-impl<Inner> OriginRef for ApObject<Inner>
+impl<Inner> AsTarget for ApObject<Inner>
 where
-    Inner: OriginRef,
+    Inner: AsTarget,
 {
-    fn origin_field_ref(&self) -> &OneOrMany<AnyBase> {
-        self.inner().origin_field_ref()
+    type Inner = Inner::Inner;
+
+    fn target_ref(&self) -> &Target<Self::Inner> {
+        self.inner().target_ref()
     }
 
-    fn origin_field_mut(&mut self) -> &mut OneOrMany<AnyBase> {
-        self.inner_mut().origin_field_mut()
+    fn target_mut(&mut self) -> &mut Target<Self::Inner> {
+        self.inner_mut().target_mut()
     }
 }
 
-impl<Inner> OptTargetRef for ApObject<Inner>
+impl<Inner> AsOrigin for ApObject<Inner>
 where
-    Inner: OptTargetRef,
+    Inner: AsOrigin,
 {
-    fn target_field_ref(&self) -> &Option<OneOrMany<AnyBase>> {
-        self.inner().target_field_ref()
+    type Inner = Inner::Inner;
+
+    fn origin_ref(&self) -> &Origin<Self::Inner> {
+        self.inner().origin_ref()
     }
 
-    fn target_field_mut(&mut self) -> &mut Option<OneOrMany<AnyBase>> {
-        self.inner_mut().target_field_mut()
+    fn origin_mut(&mut self) -> &mut Origin<Self::Inner> {
+        self.inner_mut().origin_mut()
     }
 }
 
-impl<Inner> OptOriginRef for ApObject<Inner>
+impl<Inner> AsOptTarget for ApObject<Inner>
 where
-    Inner: OptOriginRef,
+    Inner: AsOptTarget,
 {
-    fn origin_field_ref(&self) -> &Option<OneOrMany<AnyBase>> {
-        self.inner().origin_field_ref()
+    type Inner = Inner::Inner;
+
+    fn opt_target_ref(&self) -> &OptTarget<Self::Inner> {
+        self.inner().opt_target_ref()
     }
 
-    fn origin_field_mut(&mut self) -> &mut Option<OneOrMany<AnyBase>> {
-        self.inner_mut().origin_field_mut()
+    fn opt_target_mut(&mut self) -> &mut OptTarget<Self::Inner> {
+        self.inner_mut().opt_target_mut()
+    }
+}
+
+impl<Inner> AsOptOrigin for ApObject<Inner>
+where
+    Inner: AsOptOrigin,
+{
+    type Inner = Inner::Inner;
+
+    fn opt_origin_ref(&self) -> &OptOrigin<Self::Inner> {
+        self.inner().opt_origin_ref()
+    }
+
+    fn opt_origin_mut(&mut self) -> &mut OptOrigin<Self::Inner> {
+        self.inner_mut().opt_origin_mut()
     }
 }
 
@@ -3780,12 +4084,13 @@ where
     }
 }
 
-impl<T, Kind> ActivityExt<Kind> for T where T: AsActivity<Kind> {}
-impl<T> ActorAndObjectRefExt for T where T: ActorAndObjectRef {}
-impl<T> TargetRefExt for T where T: TargetRef {}
-impl<T> OriginRefExt for T where T: OriginRef {}
-impl<T> OptTargetRefExt for T where T: OptTargetRef {}
-impl<T> OptOriginRefExt for T where T: OptOriginRef {}
+impl<T> ActivityExt for T where T: AsActivity {}
+impl<T> AsActivityActorExt for T where T: AsActivityActor {}
+impl<T> AsActivityObjectExt for T where T: AsActivityObject {}
+impl<T> AsTargetExt for T where T: AsTarget {}
+impl<T> AsOriginExt for T where T: AsOrigin {}
+impl<T> AsOptTargetExt for T where T: AsOptTarget {}
+impl<T> AsOptOriginExt for T where T: AsOptOrigin {}
 impl<T> QuestionExt for T where T: AsQuestion {}
 
 impl<Kind> Default for Activity<Kind>

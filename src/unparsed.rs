@@ -46,13 +46,14 @@
 //!
 //! /// Then, we'll implement Extends so we can produce a PublicKey<Object> from an AnyBase.
 //!
-//! impl<Inner, Kind> Extends<Kind> for PublicKey<Inner>
+//! impl<Inner> Extends for PublicKey<Inner>
 //! where
-//!     Inner: Extends<Kind, Error=serde_json::Error> + UnparsedMut,
+//!     Inner: Extends<Error=serde_json::Error> + UnparsedMut,
 //! {
+//!     type Kind = Inner::Kind;
 //!     type Error = serde_json::Error;
 //!
-//!     fn extends(base: Base<Kind>) -> Result<Self, Self::Error> {
+//!     fn extends(base: Base<Self::Kind>) -> Result<Self, Self::Error> {
 //!         let mut inner = Inner::extends(base)?;
 //!
 //!         Ok(PublicKey {
@@ -61,7 +62,7 @@
 //!         })
 //!     }
 //!
-//!     fn retracts(self) -> Result<Base<Kind>, Self::Error> {
+//!     fn retracts(self) -> Result<Base<Self::Kind>, Self::Error> {
 //!         let PublicKey {
 //!             public_key,
 //!             mut inner,
@@ -87,15 +88,17 @@
 //! ///
 //! /// This allows us to access methods related to `context`, `id`, `kind`, `name`,
 //! /// `media_type`, and `preview` directly from the PublicKey struct
-//! impl<Inner, Kind> AsBase<Kind> for PublicKey<Inner>
+//! impl<Inner> AsBase for PublicKey<Inner>
 //! where
-//!     Inner: AsBase<Kind>,
+//!     Inner: AsBase,
 //! {
-//!     fn base_ref(&self) -> &Base<Kind> {
+//!     type Kind = Inner::Kind;
+//!
+//!     fn base_ref(&self) -> &Base<Self::Kind> {
 //!         self.inner.base_ref()
 //!     }
 //!
-//!     fn base_mut(&mut self) -> &mut Base<Kind> {
+//!     fn base_mut(&mut self) -> &mut Base<Self::Kind> {
 //!         self.inner.base_mut()
 //!     }
 //! }
@@ -104,15 +107,17 @@
 //! ///
 //! /// This allows us to access methods related to `url`, `generator`, `start_time`, `duration`,
 //! /// and more directly from the PublicKey struct
-//! impl<Inner, Kind> AsObject<Kind> for PublicKey<Inner>
+//! impl<Inner> AsObject for PublicKey<Inner>
 //! where
-//!     Inner: AsObject<Kind>,
+//!     Inner: AsObject,
 //! {
-//!     fn object_ref(&self) -> &Object<Kind> {
+//!     type Kind = Inner::Kind;
+//!
+//!     fn object_ref(&self) -> &Object<Self::Kind> {
 //!         self.inner.object_ref()
 //!     }
 //!
-//!     fn object_mut(&mut self) -> &mut Object<Kind> {
+//!     fn object_mut(&mut self) -> &mut Object<Self::Kind> {
 //!         self.inner.object_mut()
 //!     }
 //! }

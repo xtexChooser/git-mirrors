@@ -1,10 +1,10 @@
 use activitystreams::{
     actor::{ApActor, Person},
     context,
+    iri_string::types::IriString,
     prelude::*,
     security,
     unparsed::UnparsedMutExt,
-    url::Url,
 };
 use activitystreams_ext::{Ext1, UnparsedExtension};
 
@@ -17,8 +17,8 @@ pub struct PublicKey {
 #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PublicKeyInner {
-    id: Url,
-    owner: Url,
+    id: IriString,
+    owner: IriString,
     public_key_pem: String,
 }
 

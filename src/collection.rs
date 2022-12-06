@@ -38,17 +38,21 @@ use self::kind::*;
 /// Implementation trait for deriving Collection methods for a type
 ///
 /// Any type implementing AsCollection will automatically gain methods provided by CollectionExt
-pub trait AsCollection<Kind>: markers::Collection {
-    fn collection_ref(&self) -> &Collection<Kind>;
-    fn collection_mut(&mut self) -> &mut Collection<Kind>;
+pub trait AsCollection: markers::Collection {
+    type Kind;
+
+    fn collection_ref(&self) -> &Collection<Self::Kind>;
+    fn collection_mut(&mut self) -> &mut Collection<Self::Kind>;
 }
 
 /// Implementation trait for deriving Collection methods for a type
 ///
 /// Any type implementing AsCollectionPage will automatically gain methods provided by CollectionPageExt
-pub trait AsCollectionPage<Kind>: markers::CollectionPage {
-    fn collection_page_ref(&self) -> &CollectionPage<Kind>;
-    fn collection_page_mut(&mut self) -> &mut CollectionPage<Kind>;
+pub trait AsCollectionPage: markers::CollectionPage {
+    type Kind;
+
+    fn collection_page_ref(&self) -> &CollectionPage<Self::Kind>;
+    fn collection_page_mut(&mut self) -> &mut CollectionPage<Self::Kind>;
 }
 
 /// Implementation trait for deriving Collection methods for a type
@@ -66,7 +70,7 @@ pub trait AsOrderedCollectionPage: markers::CollectionPage {
 ///
 /// Documentation for the fields related to these methods can be found on the
 /// `Collection` struct
-pub trait CollectionExt<Kind>: AsCollection<Kind> {
+pub trait CollectionExt: AsCollection {
     /// Fetch the items for the current activity
     ///
     /// ```rust
@@ -80,7 +84,7 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// ```
     fn items<'a>(&'a self) -> Option<&'a OneOrMany<AnyBase>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.collection_ref().items.as_ref()
     }
@@ -209,7 +213,7 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// ```
     fn ordered_items<'a>(&'a self) -> Option<&'a OneOrMany<AnyBase>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.collection_ref().ordered_items.as_ref()
     }
@@ -338,7 +342,7 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// ```
     fn total_items<'a>(&'a self) -> Option<u64>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.collection_ref().total_items
     }
@@ -408,7 +412,7 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// ```
     fn current<'a>(&'a self) -> Option<&'a AnyBase>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.collection_ref().current.as_ref()
     }
@@ -484,7 +488,7 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// ```
     fn first<'a>(&'a self) -> Option<&'a AnyBase>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.collection_ref().first.as_ref()
     }
@@ -560,7 +564,7 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
     /// ```
     fn last<'a>(&'a self) -> Option<&'a AnyBase>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.collection_ref().last.as_ref()
     }
@@ -629,7 +633,7 @@ pub trait CollectionExt<Kind>: AsCollection<Kind> {
 ///
 /// Documentation for the fields related to these methods can be found on the
 /// `CollectionPage` struct
-pub trait CollectionPageExt<Kind>: AsCollectionPage<Kind> {
+pub trait CollectionPageExt: AsCollectionPage {
     /// Fetch the part_of field for the current object
     ///
     /// ```rust
@@ -644,7 +648,7 @@ pub trait CollectionPageExt<Kind>: AsCollectionPage<Kind> {
     /// ```
     fn part_of<'a>(&'a self) -> Option<&'a AnyBase>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.collection_page_ref().part_of.as_ref()
     }
@@ -720,7 +724,7 @@ pub trait CollectionPageExt<Kind>: AsCollectionPage<Kind> {
     /// ```
     fn next<'a>(&'a self) -> Option<&'a AnyBase>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.collection_page_ref().next.as_ref()
     }
@@ -796,7 +800,7 @@ pub trait CollectionPageExt<Kind>: AsCollectionPage<Kind> {
     /// ```
     fn prev<'a>(&'a self) -> Option<&'a AnyBase>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.collection_page_ref().prev.as_ref()
     }
@@ -1281,15 +1285,17 @@ impl markers::CollectionPage for OrderedCollectionPage {}
 impl<Inner> markers::Collection for ApObject<Inner> where Inner: markers::Collection {}
 impl<Inner> markers::CollectionPage for ApObject<Inner> where Inner: markers::CollectionPage {}
 
-impl<Kind> Extends<Kind> for Collection<Kind> {
+impl<Kind> Extends for Collection<Kind> {
+    type Kind = Kind;
+
     type Error = serde_json::Error;
 
-    fn extends(base: Base<Kind>) -> Result<Self, Self::Error> {
+    fn extends(base: Base<Self::Kind>) -> Result<Self, Self::Error> {
         let inner = Object::extends(base)?;
         Self::extending(inner)
     }
 
-    fn retracts(self) -> Result<Base<Kind>, Self::Error> {
+    fn retracts(self) -> Result<Base<Self::Kind>, Self::Error> {
         let inner = self.retracting()?;
         inner.retracts()
     }
@@ -1311,15 +1317,17 @@ impl<Kind> TryFrom<Object<Kind>> for Collection<Kind> {
     }
 }
 
-impl<Kind> Extends<Kind> for CollectionPage<Kind> {
+impl<Kind> Extends for CollectionPage<Kind> {
+    type Kind = Kind;
+
     type Error = serde_json::Error;
 
-    fn extends(base: Base<Kind>) -> Result<Self, Self::Error> {
+    fn extends(base: Base<Self::Kind>) -> Result<Self, Self::Error> {
         let inner = Object::extends(base)?;
         Self::extending(inner)
     }
 
-    fn retracts(self) -> Result<Base<Kind>, Self::Error> {
+    fn retracts(self) -> Result<Base<Self::Kind>, Self::Error> {
         let inner = self.retracting()?;
         inner.retracts()
     }
@@ -1341,7 +1349,9 @@ impl<Kind> TryFrom<CollectionPage<Kind>> for Object<Kind> {
     }
 }
 
-impl Extends<OrderedCollectionPageType> for OrderedCollectionPage {
+impl Extends for OrderedCollectionPage {
+    type Kind = OrderedCollectionPageType;
+
     type Error = serde_json::Error;
 
     fn extends(base: Base<OrderedCollectionPageType>) -> Result<Self, Self::Error> {
@@ -1389,77 +1399,93 @@ impl UnparsedMut for OrderedCollectionPage {
     }
 }
 
-impl<Kind> AsBase<Kind> for Collection<Kind> {
-    fn base_ref(&self) -> &Base<Kind> {
+impl<Kind> AsBase for Collection<Kind> {
+    type Kind = Kind;
+
+    fn base_ref(&self) -> &Base<Self::Kind> {
         self.inner.base_ref()
     }
 
-    fn base_mut(&mut self) -> &mut Base<Kind> {
+    fn base_mut(&mut self) -> &mut Base<Self::Kind> {
         self.inner.base_mut()
     }
 }
 
-impl<Kind> AsObject<Kind> for Collection<Kind> {
-    fn object_ref(&self) -> &Object<Kind> {
+impl<Kind> AsObject for Collection<Kind> {
+    type Kind = Kind;
+
+    fn object_ref(&self) -> &Object<Self::Kind> {
         &self.inner
     }
 
-    fn object_mut(&mut self) -> &mut Object<Kind> {
+    fn object_mut(&mut self) -> &mut Object<Self::Kind> {
         &mut self.inner
     }
 }
 
-impl<Kind> AsCollection<Kind> for Collection<Kind> {
-    fn collection_ref(&self) -> &Collection<Kind> {
+impl<Kind> AsCollection for Collection<Kind> {
+    type Kind = Kind;
+
+    fn collection_ref(&self) -> &Collection<Self::Kind> {
         self
     }
 
-    fn collection_mut(&mut self) -> &mut Collection<Kind> {
+    fn collection_mut(&mut self) -> &mut Collection<Self::Kind> {
         self
     }
 }
 
-impl<Kind> AsBase<Kind> for CollectionPage<Kind> {
-    fn base_ref(&self) -> &Base<Kind> {
+impl<Kind> AsBase for CollectionPage<Kind> {
+    type Kind = Kind;
+
+    fn base_ref(&self) -> &Base<Self::Kind> {
         self.inner.base_ref()
     }
 
-    fn base_mut(&mut self) -> &mut Base<Kind> {
+    fn base_mut(&mut self) -> &mut Base<Self::Kind> {
         self.inner.base_mut()
     }
 }
 
-impl<Kind> AsObject<Kind> for CollectionPage<Kind> {
-    fn object_ref(&self) -> &Object<Kind> {
+impl<Kind> AsObject for CollectionPage<Kind> {
+    type Kind = Kind;
+
+    fn object_ref(&self) -> &Object<Self::Kind> {
         self.inner.object_ref()
     }
 
-    fn object_mut(&mut self) -> &mut Object<Kind> {
+    fn object_mut(&mut self) -> &mut Object<Self::Kind> {
         self.inner.object_mut()
     }
 }
 
-impl<Kind> AsCollection<Kind> for CollectionPage<Kind> {
-    fn collection_ref(&self) -> &Collection<Kind> {
+impl<Kind> AsCollection for CollectionPage<Kind> {
+    type Kind = Kind;
+
+    fn collection_ref(&self) -> &Collection<Self::Kind> {
         &self.inner
     }
 
-    fn collection_mut(&mut self) -> &mut Collection<Kind> {
+    fn collection_mut(&mut self) -> &mut Collection<Self::Kind> {
         &mut self.inner
     }
 }
 
-impl<Kind> AsCollectionPage<Kind> for CollectionPage<Kind> {
-    fn collection_page_ref(&self) -> &CollectionPage<Kind> {
+impl<Kind> AsCollectionPage for CollectionPage<Kind> {
+    type Kind = Kind;
+
+    fn collection_page_ref(&self) -> &CollectionPage<Self::Kind> {
         self
     }
 
-    fn collection_page_mut(&mut self) -> &mut CollectionPage<Kind> {
+    fn collection_page_mut(&mut self) -> &mut CollectionPage<Self::Kind> {
         self
     }
 }
 
-impl AsBase<OrderedCollectionPageType> for OrderedCollectionPage {
+impl AsBase for OrderedCollectionPage {
+    type Kind = OrderedCollectionPageType;
+
     fn base_ref(&self) -> &Base<OrderedCollectionPageType> {
         self.inner.base_ref()
     }
@@ -1469,7 +1495,9 @@ impl AsBase<OrderedCollectionPageType> for OrderedCollectionPage {
     }
 }
 
-impl AsObject<OrderedCollectionPageType> for OrderedCollectionPage {
+impl AsObject for OrderedCollectionPage {
+    type Kind = OrderedCollectionPageType;
+
     fn object_ref(&self) -> &Object<OrderedCollectionPageType> {
         self.inner.object_ref()
     }
@@ -1479,7 +1507,9 @@ impl AsObject<OrderedCollectionPageType> for OrderedCollectionPage {
     }
 }
 
-impl AsCollection<OrderedCollectionPageType> for OrderedCollectionPage {
+impl AsCollection for OrderedCollectionPage {
+    type Kind = OrderedCollectionPageType;
+
     fn collection_ref(&self) -> &Collection<OrderedCollectionPageType> {
         self.inner.collection_ref()
     }
@@ -1489,7 +1519,9 @@ impl AsCollection<OrderedCollectionPageType> for OrderedCollectionPage {
     }
 }
 
-impl AsCollectionPage<OrderedCollectionPageType> for OrderedCollectionPage {
+impl AsCollectionPage for OrderedCollectionPage {
+    type Kind = OrderedCollectionPageType;
+
     fn collection_page_ref(&self) -> &CollectionPage<OrderedCollectionPageType> {
         &self.inner
     }
@@ -1509,28 +1541,32 @@ impl AsOrderedCollectionPage for OrderedCollectionPage {
     }
 }
 
-impl<Inner, Kind> AsCollection<Kind> for ApObject<Inner>
+impl<Inner> AsCollection for ApObject<Inner>
 where
-    Inner: AsCollection<Kind>,
+    Inner: AsCollection,
 {
-    fn collection_ref(&self) -> &Collection<Kind> {
+    type Kind = Inner::Kind;
+
+    fn collection_ref(&self) -> &Collection<Self::Kind> {
         self.inner().collection_ref()
     }
 
-    fn collection_mut(&mut self) -> &mut Collection<Kind> {
+    fn collection_mut(&mut self) -> &mut Collection<Self::Kind> {
         self.inner_mut().collection_mut()
     }
 }
 
-impl<Inner, Kind> AsCollectionPage<Kind> for ApObject<Inner>
+impl<Inner> AsCollectionPage for ApObject<Inner>
 where
-    Inner: AsCollectionPage<Kind>,
+    Inner: AsCollectionPage,
 {
-    fn collection_page_ref(&self) -> &CollectionPage<Kind> {
+    type Kind = Inner::Kind;
+
+    fn collection_page_ref(&self) -> &CollectionPage<Self::Kind> {
         self.inner().collection_page_ref()
     }
 
-    fn collection_page_mut(&mut self) -> &mut CollectionPage<Kind> {
+    fn collection_page_mut(&mut self) -> &mut CollectionPage<Self::Kind> {
         self.inner_mut().collection_page_mut()
     }
 }
@@ -1548,8 +1584,8 @@ where
     }
 }
 
-impl<T, Kind> CollectionExt<Kind> for T where T: AsCollection<Kind> {}
-impl<T, Kind> CollectionPageExt<Kind> for T where T: AsCollectionPage<Kind> {}
+impl<T> CollectionExt for T where T: AsCollection {}
+impl<T> CollectionPageExt for T where T: AsCollectionPage {}
 impl<T> OrderedCollectionPageExt for T where T: AsOrderedCollectionPage {}
 
 impl<Kind> Default for Collection<Kind>

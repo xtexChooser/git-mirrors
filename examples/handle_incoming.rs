@@ -33,7 +33,7 @@ pub fn handle_activity(activity: AcceptedActivity) -> Result<(), anyhow::Error> 
     Ok(())
 }
 
-static EXAMPLE_JSON: &str = r#"{"actor":"https://asonix.dog/users/asonix","object":"https://asonix.dog/users/asonix/posts/1","type":"Announce"}"#;
+static EXAMPLE_JSON: &str = r#"{"id":"https://asonix.dog/activities/1","actor":"https://asonix.dog/users/asonix","object":"https://asonix.dog/users/asonix/posts/1","type":"Announce"}"#;
 
 fn main() -> Result<(), anyhow::Error> {
     handle_activity(serde_json::from_str(EXAMPLE_JSON)?)

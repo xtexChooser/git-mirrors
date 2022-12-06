@@ -4,9 +4,9 @@
 //! use activitystreams::{base::BaseExt, markers::Activity};
 //!
 //! /// Applies the name "hi" to any given activity
-//! fn manipulator<T, Kind>(mut some_type: T) -> T
+//! fn manipulator<T>(mut some_type: T) -> T
 //! where
-//!     T: Activity + BaseExt<Kind>,
+//!     T: Activity + BaseExt,
 //! {
 //!     some_type.set_name("hi");
 //!

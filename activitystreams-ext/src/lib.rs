@@ -1,10 +1,10 @@
 //! # An extension API for activitystreams
 //! _This crate provides Ext1, Ext2, Ext3, and Ext4 for adding extensions to ActivityStreams types_
 //!
-//! - Find the code on [git.asonix.dog](https://git.asonix.dog/Aardwolf/activitystreams)
+//! - Find the code on [git.asonix.dog](https://git.asonix.dog/asonix/activitystreams)
 //! - Read the docs on [docs.rs](https://docs.rs/activitystreams-ext)
 //! - Join the matrix channel at [#activitypub:asonix.dog](https://matrix.to/#/!fAEcHyTUdAaKCzIKCt:asonix.dog?via=asonix.dog&via=matrix.org&via=t2bot.io)
-//! - Hit me up on [mastodon](https://asonix.dog/@asonix)
+//! - Hit me up on [mastodon](https://masto.asonix.dog/@asonix)
 //!
 //! ## Usage
 //!
@@ -23,7 +23,7 @@
 //!     prelude::*,
 //!     security,
 //!     unparsed::UnparsedMutExt,
-//!     url::Url,
+//!     iri_string::types::IriString,
 //! };
 //! use activitystreams_ext::{Ext1, UnparsedExtension};
 //!
@@ -36,8 +36,8 @@
 //! #[derive(Clone, Debug, serde::Deserialize, serde::Serialize)]
 //! #[serde(rename_all = "camelCase")]
 //! pub struct PublicKeyInner {
-//!     id: Url,
-//!     owner: Url,
+//!     id: IriString,
+//!     owner: IriString,
 //!     public_key_pem: String,
 //! }
 //!
@@ -264,22 +264,24 @@ impl<Inner, A, B, C, D> Ext4<Inner, A, B, C, D> {
     }
 }
 
-impl<Inner, A, Kind, Error> Extends<Kind> for Ext1<Inner, A>
+impl<Inner, A, Error> Extends for Ext1<Inner, A>
 where
-    Inner: Extends<Kind, Error = Error> + UnparsedMut,
+    Inner: Extends<Error = Error> + UnparsedMut,
     A: UnparsedExtension<Inner, Error = Error>,
     Error: From<serde_json::Error> + std::error::Error,
 {
+    type Kind = Inner::Kind;
+
     type Error = Error;
 
-    fn extends(base: Base<Kind>) -> Result<Self, Self::Error> {
+    fn extends(base: Base<Self::Kind>) -> Result<Self, Self::Error> {
         let mut inner = Inner::extends(base)?;
         let ext_one = A::try_from_unparsed(&mut inner)?;
 
         Ok(Ext1 { inner, ext_one })
     }
 
-    fn retracts(self) -> Result<Base<Kind>, Self::Error> {
+    fn retracts(self) -> Result<Base<Self::Kind>, Self::Error> {
         let Ext1 { mut inner, ext_one } = self;
 
         ext_one.try_into_unparsed(&mut inner)?;
@@ -287,16 +289,18 @@ where
     }
 }
 
-impl<Inner, A, B, Kind, Error> Extends<Kind> for Ext2<Inner, A, B>
+impl<Inner, A, B, Error> Extends for Ext2<Inner, A, B>
 where
-    Inner: Extends<Kind, Error = Error> + UnparsedMut,
+    Inner: Extends<Error = Error> + UnparsedMut,
     A: UnparsedExtension<Inner, Error = Error>,
     B: UnparsedExtension<Inner, Error = Error>,
     Error: From<serde_json::Error> + std::error::Error,
 {
+    type Kind = Inner::Kind;
+
     type Error = Error;
 
-    fn extends(base: Base<Kind>) -> Result<Self, Self::Error> {
+    fn extends(base: Base<Self::Kind>) -> Result<Self, Self::Error> {
         let mut inner = Inner::extends(base)?;
         let ext_one = A::try_from_unparsed(&mut inner)?;
         let ext_two = B::try_from_unparsed(&mut inner)?;
@@ -308,7 +312,7 @@ where
         })
     }
 
-    fn retracts(self) -> Result<Base<Kind>, Self::Error> {
+    fn retracts(self) -> Result<Base<Self::Kind>, Self::Error> {
         let Ext2 {
             mut inner,
             ext_one,
@@ -321,17 +325,19 @@ where
     }
 }
 
-impl<Inner, A, B, C, Kind, Error> Extends<Kind> for Ext3<Inner, A, B, C>
+impl<Inner, A, B, C, Error> Extends for Ext3<Inner, A, B, C>
 where
-    Inner: Extends<Kind, Error = Error> + UnparsedMut,
+    Inner: Extends<Error = Error> + UnparsedMut,
     A: UnparsedExtension<Inner, Error = Error>,
     B: UnparsedExtension<Inner, Error = Error>,
     C: UnparsedExtension<Inner, Error = Error>,
     Error: From<serde_json::Error> + std::error::Error,
 {
+    type Kind = Inner::Kind;
+
     type Error = Error;
 
-    fn extends(base: Base<Kind>) -> Result<Self, Self::Error> {
+    fn extends(base: Base<Self::Kind>) -> Result<Self, Self::Error> {
         let mut inner = Inner::extends(base)?;
         let ext_one = A::try_from_unparsed(&mut inner)?;
         let ext_two = B::try_from_unparsed(&mut inner)?;
@@ -345,7 +351,7 @@ where
         })
     }
 
-    fn retracts(self) -> Result<Base<Kind>, Self::Error> {
+    fn retracts(self) -> Result<Base<Self::Kind>, Self::Error> {
         let Ext3 {
             mut inner,
             ext_one,
@@ -360,18 +366,20 @@ where
     }
 }
 
-impl<Inner, A, B, C, D, Kind, Error> Extends<Kind> for Ext4<Inner, A, B, C, D>
+impl<Inner, A, B, C, D, Error> Extends for Ext4<Inner, A, B, C, D>
 where
-    Inner: Extends<Kind, Error = Error> + UnparsedMut,
+    Inner: Extends<Error = Error> + UnparsedMut,
     A: UnparsedExtension<Inner, Error = Error>,
     B: UnparsedExtension<Inner, Error = Error>,
     C: UnparsedExtension<Inner, Error = Error>,
     D: UnparsedExtension<Inner, Error = Error>,
     Error: From<serde_json::Error> + std::error::Error,
 {
+    type Kind = Inner::Kind;
+
     type Error = Error;
 
-    fn extends(base: Base<Kind>) -> Result<Self, Self::Error> {
+    fn extends(base: Base<Self::Kind>) -> Result<Self, Self::Error> {
         let mut inner = Inner::extends(base)?;
         let ext_one = A::try_from_unparsed(&mut inner)?;
         let ext_two = B::try_from_unparsed(&mut inner)?;
@@ -387,7 +395,7 @@ where
         })
     }
 
-    fn retracts(self) -> Result<Base<Kind>, Self::Error> {
+    fn retracts(self) -> Result<Base<Self::Kind>, Self::Error> {
         let Ext4 {
             mut inner,
             ext_one,

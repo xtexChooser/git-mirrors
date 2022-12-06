@@ -1,15 +1,15 @@
 use crate::Ext2;
 use activitystreams::{
     activity::{
-        Activity, ActorAndObjectRef, AsActivity, AsQuestion, OptOriginRef, OptTargetRef, OriginRef,
-        Question, TargetRef,
+        Activity, ActivityActor, ActivityObject, AsActivity, AsActivityActor, AsActivityObject,
+        AsOptOrigin, AsOptTarget, AsOrigin, AsQuestion, AsTarget, OptOrigin, OptTarget, Origin,
+        Question, Target,
     },
     actor::{ApActor, AsApActor},
-    base::{AnyBase, AsBase, Base},
+    base::{AsBase, Base},
     collection::{AsCollection, AsCollectionPage, Collection, CollectionPage},
     markers,
     object::{ApObject, AsApObject, AsObject, Object},
-    primitives::OneOrMany,
 };
 
 impl<Inner, A, B> markers::Base for Ext2<Inner, A, B> where Inner: markers::Base {}
@@ -23,28 +23,32 @@ impl<Inner, A, B> markers::IntransitiveActivity for Ext2<Inner, A, B> where
 {
 }
 
-impl<Inner, A, B, Kind> AsBase<Kind> for Ext2<Inner, A, B>
+impl<Inner, A, B> AsBase for Ext2<Inner, A, B>
 where
-    Inner: AsBase<Kind>,
+    Inner: AsBase,
 {
-    fn base_ref(&self) -> &Base<Kind> {
+    type Kind = Inner::Kind;
+
+    fn base_ref(&self) -> &Base<Self::Kind> {
         self.inner.base_ref()
     }
 
-    fn base_mut(&mut self) -> &mut Base<Kind> {
+    fn base_mut(&mut self) -> &mut Base<Self::Kind> {
         self.inner.base_mut()
     }
 }
 
-impl<Inner, A, B, Kind> AsObject<Kind> for Ext2<Inner, A, B>
+impl<Inner, A, B> AsObject for Ext2<Inner, A, B>
 where
-    Inner: AsObject<Kind>,
+    Inner: AsObject,
 {
-    fn object_ref(&self) -> &Object<Kind> {
+    type Kind = Inner::Kind;
+
+    fn object_ref(&self) -> &Object<Self::Kind> {
         self.inner.object_ref()
     }
 
-    fn object_mut(&mut self) -> &mut Object<Kind> {
+    fn object_mut(&mut self) -> &mut Object<Self::Kind> {
         self.inner.object_mut()
     }
 }
@@ -62,28 +66,32 @@ where
     }
 }
 
-impl<Inner, A, B, Kind> AsCollection<Kind> for Ext2<Inner, A, B>
+impl<Inner, A, B> AsCollection for Ext2<Inner, A, B>
 where
-    Inner: AsCollection<Kind>,
+    Inner: AsCollection,
 {
-    fn collection_ref(&self) -> &Collection<Kind> {
+    type Kind = Inner::Kind;
+
+    fn collection_ref(&self) -> &Collection<Self::Kind> {
         self.inner.collection_ref()
     }
 
-    fn collection_mut(&mut self) -> &mut Collection<Kind> {
+    fn collection_mut(&mut self) -> &mut Collection<Self::Kind> {
         self.inner.collection_mut()
     }
 }
 
-impl<Inner, A, B, Kind> AsCollectionPage<Kind> for Ext2<Inner, A, B>
+impl<Inner, A, B> AsCollectionPage for Ext2<Inner, A, B>
 where
-    Inner: AsCollectionPage<Kind>,
+    Inner: AsCollectionPage,
 {
-    fn collection_page_ref(&self) -> &CollectionPage<Kind> {
+    type Kind = Inner::Kind;
+
+    fn collection_page_ref(&self) -> &CollectionPage<Self::Kind> {
         self.inner.collection_page_ref()
     }
 
-    fn collection_page_mut(&mut self) -> &mut CollectionPage<Kind> {
+    fn collection_page_mut(&mut self) -> &mut CollectionPage<Self::Kind> {
         self.inner.collection_page_mut()
     }
 }
@@ -101,89 +109,108 @@ where
     }
 }
 
-impl<Inner, A, B, Kind> AsActivity<Kind> for Ext2<Inner, A, B>
+impl<Inner, A, B> AsActivity for Ext2<Inner, A, B>
 where
-    Inner: AsActivity<Kind>,
+    Inner: AsActivity,
 {
-    fn activity_ref(&self) -> &Activity<Kind> {
+    type Kind = Inner::Kind;
+
+    fn activity_ref(&self) -> &Activity<Self::Kind> {
         self.inner.activity_ref()
     }
 
-    fn activity_mut(&mut self) -> &mut Activity<Kind> {
+    fn activity_mut(&mut self) -> &mut Activity<Self::Kind> {
         self.inner.activity_mut()
     }
 }
 
-impl<Inner, A, B> ActorAndObjectRef for Ext2<Inner, A, B>
+impl<Inner, A, B> AsActivityActor for Ext2<Inner, A, B>
 where
-    Inner: ActorAndObjectRef,
+    Inner: AsActivityActor,
 {
-    fn actor_field_ref(&self) -> &OneOrMany<AnyBase> {
-        self.inner.actor_field_ref()
+    type Inner = Inner::Inner;
+
+    fn activity_actor_ref(&self) -> &ActivityActor<Self::Inner> {
+        self.inner.activity_actor_ref()
     }
 
-    fn actor_field_mut(&mut self) -> &mut OneOrMany<AnyBase> {
-        self.inner.actor_field_mut()
-    }
-
-    fn object_field_ref(&self) -> &OneOrMany<AnyBase> {
-        self.inner.object_field_ref()
-    }
-
-    fn object_field_mut(&mut self) -> &mut OneOrMany<AnyBase> {
-        self.inner.object_field_mut()
+    fn activity_actor_mut(&mut self) -> &mut ActivityActor<Self::Inner> {
+        self.inner.activity_actor_mut()
     }
 }
 
-impl<Inner, A, B> TargetRef for Ext2<Inner, A, B>
+impl<Inner, A, B> AsActivityObject for Ext2<Inner, A, B>
 where
-    Inner: TargetRef,
+    Inner: AsActivityObject,
 {
-    fn target_field_ref(&self) -> &OneOrMany<AnyBase> {
-        self.inner.target_field_ref()
+    type Inner = Inner::Inner;
+
+    fn activity_object_ref(&self) -> &ActivityObject<Self::Inner> {
+        self.inner.activity_object_ref()
     }
 
-    fn target_field_mut(&mut self) -> &mut OneOrMany<AnyBase> {
-        self.inner.target_field_mut()
+    fn activity_object_mut(&mut self) -> &mut ActivityObject<Self::Inner> {
+        self.inner.activity_object_mut()
     }
 }
 
-impl<Inner, A, B> OriginRef for Ext2<Inner, A, B>
+impl<Inner, A, B> AsTarget for Ext2<Inner, A, B>
 where
-    Inner: OriginRef,
+    Inner: AsTarget,
 {
-    fn origin_field_ref(&self) -> &OneOrMany<AnyBase> {
-        self.inner.origin_field_ref()
+    type Inner = Inner::Inner;
+
+    fn target_ref(&self) -> &Target<Self::Inner> {
+        self.inner.target_ref()
     }
 
-    fn origin_field_mut(&mut self) -> &mut OneOrMany<AnyBase> {
-        self.inner.origin_field_mut()
+    fn target_mut(&mut self) -> &mut Target<Self::Inner> {
+        self.inner.target_mut()
     }
 }
 
-impl<Inner, A, B> OptTargetRef for Ext2<Inner, A, B>
+impl<Inner, A, B> AsOrigin for Ext2<Inner, A, B>
 where
-    Inner: OptTargetRef,
+    Inner: AsOrigin,
 {
-    fn target_field_ref(&self) -> &Option<OneOrMany<AnyBase>> {
-        self.inner.target_field_ref()
+    type Inner = Inner::Inner;
+
+    fn origin_ref(&self) -> &Origin<Self::Inner> {
+        self.inner.origin_ref()
     }
 
-    fn target_field_mut(&mut self) -> &mut Option<OneOrMany<AnyBase>> {
-        self.inner.target_field_mut()
+    fn origin_mut(&mut self) -> &mut Origin<Self::Inner> {
+        self.inner.origin_mut()
     }
 }
 
-impl<Inner, A, B> OptOriginRef for Ext2<Inner, A, B>
+impl<Inner, A, B> AsOptTarget for Ext2<Inner, A, B>
 where
-    Inner: OptOriginRef,
+    Inner: AsOptTarget,
 {
-    fn origin_field_ref(&self) -> &Option<OneOrMany<AnyBase>> {
-        self.inner.origin_field_ref()
+    type Inner = Inner::Inner;
+
+    fn opt_target_ref(&self) -> &OptTarget<Self::Inner> {
+        self.inner.opt_target_ref()
     }
 
-    fn origin_field_mut(&mut self) -> &mut Option<OneOrMany<AnyBase>> {
-        self.inner.origin_field_mut()
+    fn opt_target_mut(&mut self) -> &mut OptTarget<Self::Inner> {
+        self.inner.opt_target_mut()
+    }
+}
+
+impl<Inner, A, B> AsOptOrigin for Ext2<Inner, A, B>
+where
+    Inner: AsOptOrigin,
+{
+    type Inner = Inner::Inner;
+
+    fn opt_origin_ref(&self) -> &OptOrigin<Self::Inner> {
+        self.inner.opt_origin_ref()
+    }
+
+    fn opt_origin_mut(&mut self) -> &mut OptOrigin<Self::Inner> {
+        self.inner.opt_origin_mut()
     }
 }
 

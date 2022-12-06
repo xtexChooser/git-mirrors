@@ -36,12 +36,14 @@ use self::kind::*;
 /// Implementation trait for deriving Object methods for a type
 ///
 /// Any type implementing AsObject will automatically gain methods provided by ObjectExt
-pub trait AsObject<Kind>: markers::Object {
+pub trait AsObject: markers::Object {
+    type Kind;
+
     /// Immutable borrow of `Object<Kind>`
-    fn object_ref(&self) -> &Object<Kind>;
+    fn object_ref(&self) -> &Object<Self::Kind>;
 
     /// Mutable borrow of `Object<Kind>`
-    fn object_mut(&mut self) -> &mut Object<Kind>;
+    fn object_mut(&mut self) -> &mut Object<Self::Kind>;
 }
 
 /// Implementation trait for deriving ActivityPub Object methods for a type
@@ -105,7 +107,7 @@ pub trait AsTombstone: markers::Object {
 /// This trait represents methods valid for any ActivityStreams Object.
 ///
 /// Documentation for the fields related to these methods can be found on the `Object` struct
-pub trait ObjectExt<Kind>: AsObject<Kind> {
+pub trait ObjectExt: AsObject {
     /// Fetch the attachment for the current object
     ///
     /// ```rust
@@ -120,7 +122,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```
     fn attachment<'a>(&'a self) -> Option<&'a OneOrMany<AnyBase>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.object_ref().attachment.as_ref()
     }
@@ -256,7 +258,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```
     fn attributed_to<'a>(&'a self) -> Option<&'a OneOrMany<AnyBase>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.object_ref().attributed_to.as_ref()
     }
@@ -392,7 +394,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```
     fn audience<'a>(&'a self) -> Option<&'a OneOrMany<AnyBase>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.object_ref().audience.as_ref()
     }
@@ -526,7 +528,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```
     fn content<'a>(&'a self) -> Option<OneOrMany<&'a AnyString>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.object_ref().content.as_ref().map(|o| o.as_ref())
     }
@@ -647,7 +649,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```
     fn summary<'a>(&'a self) -> Option<OneOrMany<&'a AnyString>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.object_ref().summary.as_ref().map(|o| o.as_ref())
     }
@@ -768,7 +770,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```
     fn url<'a>(&'a self) -> Option<&'a OneOrMany<AnyBase>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.object_ref().url.as_ref()
     }
@@ -904,7 +906,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```
     fn generator<'a>(&'a self) -> Option<&'a OneOrMany<AnyBase>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.object_ref().generator.as_ref()
     }
@@ -1040,7 +1042,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```
     fn icon<'a>(&'a self) -> Option<&'a OneOrMany<AnyBase>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.object_ref().icon.as_ref()
     }
@@ -1176,7 +1178,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```
     fn image<'a>(&'a self) -> Option<&'a OneOrMany<AnyBase>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.object_ref().image.as_ref()
     }
@@ -1312,7 +1314,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```
     fn location<'a>(&'a self) -> Option<&'a OneOrMany<AnyBase>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.object_ref().location.as_ref()
     }
@@ -1448,7 +1450,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```
     fn tag<'a>(&'a self) -> Option<&'a OneOrMany<AnyBase>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.object_ref().tag.as_ref()
     }
@@ -1584,7 +1586,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```
     fn start_time<'a>(&'a self) -> Option<OffsetDateTime>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.object_ref()
             .start_time
@@ -1662,7 +1664,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```
     fn end_time<'a>(&'a self) -> Option<OffsetDateTime>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.object_ref()
             .end_time
@@ -1740,7 +1742,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```
     fn duration<'a>(&'a self) -> Option<Duration>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.object_ref()
             .duration
@@ -1820,7 +1822,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```
     fn published<'a>(&'a self) -> Option<OffsetDateTime>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.object_ref()
             .published
@@ -1898,7 +1900,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```
     fn updated<'a>(&'a self) -> Option<OffsetDateTime>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.object_ref()
             .updated
@@ -1976,7 +1978,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```
     fn in_reply_to<'a>(&'a self) -> Option<&'a OneOrMany<AnyBase>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.object_ref().in_reply_to.as_ref()
     }
@@ -2112,7 +2114,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```
     fn replies<'a>(&'a self) -> Option<&'a OneOrMany<AnyBase>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.object_ref().replies.as_ref()
     }
@@ -2248,7 +2250,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```
     fn to<'a>(&'a self) -> Option<&'a OneOrMany<AnyBase>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.object_ref().to.as_ref()
     }
@@ -2384,7 +2386,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```
     fn bto<'a>(&'a self) -> Option<&'a OneOrMany<AnyBase>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.object_ref().bto.as_ref()
     }
@@ -2520,7 +2522,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```
     fn cc<'a>(&'a self) -> Option<&'a OneOrMany<AnyBase>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.object_ref().cc.as_ref()
     }
@@ -2656,7 +2658,7 @@ pub trait ObjectExt<Kind>: AsObject<Kind> {
     /// ```
     fn bcc<'a>(&'a self) -> Option<&'a OneOrMany<AnyBase>>
     where
-        Kind: 'a,
+        Self::Kind: 'a,
     {
         self.object_ref().bcc.as_ref()
     }
@@ -5131,14 +5133,16 @@ impl Tombstone {
     }
 }
 
-impl<Kind> Extends<Kind> for Object<Kind> {
+impl<Kind> Extends for Object<Kind> {
+    type Kind = Kind;
+
     type Error = serde_json::Error;
 
-    fn extends(base: Base<Kind>) -> Result<Self, Self::Error> {
+    fn extends(base: Base<Self::Kind>) -> Result<Self, Self::Error> {
         Self::extending(base)
     }
 
-    fn retracts(self) -> Result<Base<Kind>, Self::Error> {
+    fn retracts(self) -> Result<Base<Self::Kind>, Self::Error> {
         self.retracting()
     }
 }
@@ -5159,24 +5163,26 @@ impl<Kind> TryFrom<Object<Kind>> for Base<Kind> {
     }
 }
 
-impl<Inner, Kind> Extends<Kind> for ApObject<Inner>
+impl<Inner> Extends for ApObject<Inner>
 where
-    Inner: Extends<Kind, Error = serde_json::Error> + UnparsedMut + markers::Object,
+    Inner: Extends<Error = serde_json::Error> + UnparsedMut + markers::Object,
 {
+    type Kind = Inner::Kind;
     type Error = serde_json::Error;
 
-    fn extends(base: Base<Kind>) -> Result<Self, Self::Error> {
+    fn extends(base: Base<Self::Kind>) -> Result<Self, Self::Error> {
         let inner = Inner::extends(base)?;
         Self::extending(inner)
     }
 
-    fn retracts(self) -> Result<Base<Kind>, Self::Error> {
+    fn retracts(self) -> Result<Base<Self::Kind>, Self::Error> {
         let inner = self.retracting()?;
         inner.retracts()
     }
 }
 
-impl Extends<PlaceType> for Place {
+impl Extends for Place {
+    type Kind = PlaceType;
     type Error = serde_json::Error;
 
     fn extends(base: Base<PlaceType>) -> Result<Self, Self::Error> {
@@ -5206,7 +5212,8 @@ impl TryFrom<Place> for Object<PlaceType> {
     }
 }
 
-impl Extends<ProfileType> for Profile {
+impl Extends for Profile {
+    type Kind = ProfileType;
     type Error = serde_json::Error;
 
     fn extends(base: Base<ProfileType>) -> Result<Self, Self::Error> {
@@ -5236,7 +5243,8 @@ impl TryFrom<Profile> for Object<ProfileType> {
     }
 }
 
-impl Extends<RelationshipType> for Relationship {
+impl Extends for Relationship {
+    type Kind = RelationshipType;
     type Error = serde_json::Error;
 
     fn extends(base: Base<RelationshipType>) -> Result<Self, Self::Error> {
@@ -5266,7 +5274,9 @@ impl TryFrom<Relationship> for Object<RelationshipType> {
     }
 }
 
-impl Extends<TombstoneType> for Tombstone {
+impl Extends for Tombstone {
+    type Kind = TombstoneType;
+
     type Error = serde_json::Error;
 
     fn extends(base: Base<TombstoneType>) -> Result<Self, Self::Error> {
@@ -5353,55 +5363,63 @@ impl markers::Object for Relationship {}
 impl markers::Base for Tombstone {}
 impl markers::Object for Tombstone {}
 
-impl<T, Kind> ObjectExt<Kind> for T where T: AsObject<Kind> {}
+impl<T, Kind> ObjectExt for T where T: AsObject<Kind = Kind> {}
 impl<T, Inner> ApObjectExt<Inner> for T where T: AsApObject<Inner> {}
 impl<T> PlaceExt for T where T: AsPlace {}
 impl<T> ProfileExt for T where T: AsProfile {}
 impl<T> RelationshipExt for T where T: AsRelationship {}
 impl<T> TombstoneExt for T where T: AsTombstone {}
 
-impl<Kind> AsBase<Kind> for Object<Kind> {
-    fn base_ref(&self) -> &Base<Kind> {
+impl<Kind> AsBase for Object<Kind> {
+    type Kind = Kind;
+
+    fn base_ref(&self) -> &Base<Self::Kind> {
         &self.inner
     }
 
-    fn base_mut(&mut self) -> &mut Base<Kind> {
+    fn base_mut(&mut self) -> &mut Base<Self::Kind> {
         &mut self.inner
     }
 }
 
-impl<Kind> AsObject<Kind> for Object<Kind> {
-    fn object_ref(&self) -> &Object<Kind> {
+impl<Kind> AsObject for Object<Kind> {
+    type Kind = Kind;
+
+    fn object_ref(&self) -> &Object<Self::Kind> {
         self
     }
 
-    fn object_mut(&mut self) -> &mut Object<Kind> {
+    fn object_mut(&mut self) -> &mut Object<Self::Kind> {
         self
     }
 }
 
-impl<Inner, Kind> AsBase<Kind> for ApObject<Inner>
+impl<Inner> AsBase for ApObject<Inner>
 where
-    Inner: AsBase<Kind>,
+    Inner: AsBase,
 {
-    fn base_ref(&self) -> &Base<Kind> {
+    type Kind = Inner::Kind;
+
+    fn base_ref(&self) -> &Base<Self::Kind> {
         self.inner.base_ref()
     }
 
-    fn base_mut(&mut self) -> &mut Base<Kind> {
+    fn base_mut(&mut self) -> &mut Base<Self::Kind> {
         self.inner.base_mut()
     }
 }
 
-impl<Inner, Kind> AsObject<Kind> for ApObject<Inner>
+impl<Inner> AsObject for ApObject<Inner>
 where
-    Inner: AsObject<Kind>,
+    Inner: AsObject,
 {
-    fn object_ref(&self) -> &Object<Kind> {
+    type Kind = Inner::Kind;
+
+    fn object_ref(&self) -> &Object<Self::Kind> {
         self.inner.object_ref()
     }
 
-    fn object_mut(&mut self) -> &mut Object<Kind> {
+    fn object_mut(&mut self) -> &mut Object<Self::Kind> {
         self.inner.object_mut()
     }
 }
@@ -5471,7 +5489,9 @@ where
     }
 }
 
-impl AsBase<PlaceType> for Place {
+impl AsBase for Place {
+    type Kind = PlaceType;
+
     fn base_ref(&self) -> &Base<PlaceType> {
         self.inner.base_ref()
     }
@@ -5481,7 +5501,9 @@ impl AsBase<PlaceType> for Place {
     }
 }
 
-impl AsObject<PlaceType> for Place {
+impl AsObject for Place {
+    type Kind = PlaceType;
+
     fn object_ref(&self) -> &Object<PlaceType> {
         &self.inner
     }
@@ -5501,7 +5523,9 @@ impl AsPlace for Place {
     }
 }
 
-impl AsBase<ProfileType> for Profile {
+impl AsBase for Profile {
+    type Kind = ProfileType;
+
     fn base_ref(&self) -> &Base<ProfileType> {
         self.inner.base_ref()
     }
@@ -5511,7 +5535,9 @@ impl AsBase<ProfileType> for Profile {
     }
 }
 
-impl AsObject<ProfileType> for Profile {
+impl AsObject for Profile {
+    type Kind = ProfileType;
+
     fn object_ref(&self) -> &Object<ProfileType> {
         &self.inner
     }
@@ -5531,7 +5557,9 @@ impl AsProfile for Profile {
     }
 }
 
-impl AsBase<RelationshipType> for Relationship {
+impl AsBase for Relationship {
+    type Kind = RelationshipType;
+
     fn base_ref(&self) -> &Base<RelationshipType> {
         self.inner.base_ref()
     }
@@ -5541,7 +5569,9 @@ impl AsBase<RelationshipType> for Relationship {
     }
 }
 
-impl AsObject<RelationshipType> for Relationship {
+impl AsObject for Relationship {
+    type Kind = RelationshipType;
+
     fn object_ref(&self) -> &Object<RelationshipType> {
         &self.inner
     }
@@ -5561,7 +5591,9 @@ impl AsRelationship for Relationship {
     }
 }
 
-impl AsBase<TombstoneType> for Tombstone {
+impl AsBase for Tombstone {
+    type Kind = TombstoneType;
+
     fn base_ref(&self) -> &Base<TombstoneType> {
         self.inner.base_ref()
     }
@@ -5571,7 +5603,9 @@ impl AsBase<TombstoneType> for Tombstone {
     }
 }
 
-impl AsObject<TombstoneType> for Tombstone {
+impl AsObject for Tombstone {
+    type Kind = TombstoneType;
+
     fn object_ref(&self) -> &Object<TombstoneType> {
         &self.inner
     }
