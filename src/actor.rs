@@ -39,12 +39,14 @@ use self::kind::*;
 /// Implementation trait for deriving ActivityPub Actor methods for a type
 ///
 /// Any type implementing AsObject will automatically gain methods provided by ApActorExt
-pub trait AsApActor<Inner>: markers::Actor {
+pub trait AsApActor: markers::Actor {
+    type Inner;
+
     /// Immutable borrow of `ApActor<Inner>`
-    fn ap_actor_ref(&self) -> &ApActor<Inner>;
+    fn ap_actor_ref(&self) -> &ApActor<Self::Inner>;
 
     /// Mutable borrow of `ApActor<Inner>`
-    fn ap_actor_mut(&mut self) -> &mut ApActor<Inner>;
+    fn ap_actor_mut(&mut self) -> &mut ApActor<Self::Inner>;
 }
 
 /// Helper methods for interacting with ActivityPub Actor types
@@ -52,7 +54,7 @@ pub trait AsApActor<Inner>: markers::Actor {
 /// This trait represents methods valid for any ActivityPub Actor.
 ///
 /// Documentation for the fields related to these methods can be found on the `ApActor` struct
-pub trait ApActorExt<Inner>: AsApActor<Inner> {
+pub trait ApActorExt: AsApActor {
     /// Fetch the inbox for the current actor
     ///
     /// ```rust
@@ -64,7 +66,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// ```
     fn inbox<'a>(&'a self) -> Result<&'a IriString, CheckError>
     where
-        Inner: 'a,
+        Self::Inner: 'a,
         Self: BaseExt,
     {
         let inbox = self.inbox_unchecked();
@@ -82,7 +84,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// ```
     fn inbox_unchecked<'a>(&'a self) -> &'a IriString
     where
-        Inner: 'a,
+        Self::Inner: 'a,
     {
         &self.ap_actor_ref().inbox
     }
@@ -98,7 +100,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// ```
     fn inbox_mut<'a>(&'a mut self) -> &'a mut IriString
     where
-        Inner: 'a,
+        Self::Inner: 'a,
     {
         &mut self.ap_actor_mut().inbox
     }
@@ -131,7 +133,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// ```
     fn outbox<'a>(&'a self) -> Result<Option<&'a IriString>, CheckError>
     where
-        Inner: 'a,
+        Self::Inner: 'a,
         Self: BaseExt,
     {
         self.outbox_unchecked()
@@ -150,7 +152,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// ```
     fn outbox_unchecked<'a>(&'a self) -> Option<&'a IriString>
     where
-        Inner: 'a,
+        Self::Inner: 'a,
     {
         self.ap_actor_ref().outbox.as_ref()
     }
@@ -168,7 +170,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// ```
     fn outbox_mut<'a>(&'a mut self) -> Option<&'a mut IriString>
     where
-        Inner: 'a,
+        Self::Inner: 'a,
     {
         self.ap_actor_mut().outbox.as_mut()
     }
@@ -238,7 +240,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// ```
     fn following<'a>(&'a self) -> Result<Option<&'a IriString>, CheckError>
     where
-        Inner: 'a,
+        Self::Inner: 'a,
         Self: BaseExt,
     {
         self.following_unchecked()
@@ -259,7 +261,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// ```
     fn following_unchecked<'a>(&'a self) -> Option<&'a IriString>
     where
-        Inner: 'a,
+        Self::Inner: 'a,
     {
         self.ap_actor_ref().following.as_ref()
     }
@@ -277,7 +279,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// ```
     fn following_mut<'a>(&'a mut self) -> Option<&'a mut IriString>
     where
-        Inner: 'a,
+        Self::Inner: 'a,
     {
         self.ap_actor_mut().following.as_mut()
     }
@@ -347,7 +349,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// ```
     fn followers<'a>(&'a self) -> Result<Option<&'a IriString>, CheckError>
     where
-        Inner: 'a,
+        Self::Inner: 'a,
         Self: BaseExt,
     {
         self.followers_unchecked()
@@ -368,7 +370,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// ```
     fn followers_unchecked<'a>(&'a self) -> Option<&'a IriString>
     where
-        Inner: 'a,
+        Self::Inner: 'a,
     {
         self.ap_actor_ref().followers.as_ref()
     }
@@ -386,7 +388,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// ```
     fn followers_mut<'a>(&'a mut self) -> Option<&'a mut IriString>
     where
-        Inner: 'a,
+        Self::Inner: 'a,
     {
         self.ap_actor_mut().followers.as_mut()
     }
@@ -456,7 +458,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// ```
     fn liked<'a>(&'a self) -> Result<Option<&'a IriString>, CheckError>
     where
-        Inner: 'a,
+        Self::Inner: 'a,
         Self: BaseExt,
     {
         self.liked_unchecked()
@@ -477,7 +479,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// ```
     fn liked_unchecked<'a>(&'a self) -> Option<&'a IriString>
     where
-        Inner: 'a,
+        Self::Inner: 'a,
     {
         self.ap_actor_ref().liked.as_ref()
     }
@@ -495,7 +497,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// ```
     fn liked_mut<'a>(&'a mut self) -> Option<&'a mut IriString>
     where
-        Inner: 'a,
+        Self::Inner: 'a,
     {
         self.ap_actor_mut().liked.as_mut()
     }
@@ -565,7 +567,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// ```
     fn streams<'a>(&'a self) -> Result<Option<OneOrMany<&'a IriString>>, CheckError>
     where
-        Inner: 'a,
+        Self::Inner: 'a,
         Self: BaseExt,
     {
         if let Some(streams) = self.streams_unchecked() {
@@ -592,7 +594,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// ```
     fn streams_unchecked<'a>(&'a self) -> Option<OneOrMany<&'a IriString>>
     where
-        Inner: 'a,
+        Self::Inner: 'a,
     {
         self.ap_actor_ref().streams.as_ref().map(|o| o.as_ref())
     }
@@ -613,7 +615,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// ```
     fn streams_mut<'a>(&'a mut self) -> Option<OneOrMany<&'a mut IriString>>
     where
-        Inner: 'a,
+        Self::Inner: 'a,
     {
         self.ap_actor_mut().streams.as_mut().map(|o| o.as_mut())
     }
@@ -734,7 +736,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// ```
     fn preferred_username<'a>(&'a self) -> Option<&'a str>
     where
-        Inner: 'a,
+        Self::Inner: 'a,
     {
         self.ap_actor_ref().preferred_username.as_deref()
     }
@@ -813,7 +815,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     fn endpoints<'a>(&'a self) -> Result<Option<Endpoints<&'a IriString>>, CheckError>
     where
         Self: BaseExt,
-        Inner: 'a,
+        Self::Inner: 'a,
     {
         if let Some(endpoints) = self.endpoints_unchecked() {
             let authority_opt = self.id_unchecked().and_then(|id| id.authority_components());
@@ -868,7 +870,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// ```
     fn endpoints_unchecked<'a>(&'a self) -> Option<Endpoints<&'a IriString>>
     where
-        Inner: 'a,
+        Self::Inner: 'a,
     {
         self.ap_actor_ref().endpoints.as_ref().map(|e| e.as_ref())
     }
@@ -889,7 +891,7 @@ pub trait ApActorExt<Inner>: AsApActor<Inner> {
     /// ```
     fn endpoints_mut<'a>(&'a mut self) -> Option<Endpoints<&'a mut IriString>>
     where
-        Inner: 'a,
+        Self::Inner: 'a,
     {
         self.ap_actor_mut().endpoints.as_mut().map(|e| e.as_mut())
     }
@@ -1473,28 +1475,32 @@ where
     }
 }
 
-impl<Inner> AsApActor<Inner> for ApActor<Inner>
+impl<Inner> AsApActor for ApActor<Inner>
 where
     Inner: markers::Actor,
 {
-    fn ap_actor_ref(&self) -> &ApActor<Inner> {
+    type Inner = Inner;
+
+    fn ap_actor_ref(&self) -> &ApActor<Self::Inner> {
         self
     }
 
-    fn ap_actor_mut(&mut self) -> &mut ApActor<Inner> {
+    fn ap_actor_mut(&mut self) -> &mut ApActor<Self::Inner> {
         self
     }
 }
 
-impl<Inner1, Inner2> AsApObject<Inner2> for ApActor<Inner1>
+impl<Inner> AsApObject for ApActor<Inner>
 where
-    Inner1: AsApObject<Inner2>,
+    Inner: AsApObject,
 {
-    fn ap_object_ref(&self) -> &ApObject<Inner2> {
+    type Inner = Inner::Inner;
+
+    fn ap_object_ref(&self) -> &ApObject<Self::Inner> {
         self.inner.ap_object_ref()
     }
 
-    fn ap_object_mut(&mut self) -> &mut ApObject<Inner2> {
+    fn ap_object_mut(&mut self) -> &mut ApObject<Self::Inner> {
         self.inner.ap_object_mut()
     }
 }
@@ -1543,17 +1549,19 @@ impl<Kind> AsObject for Actor<Kind> {
     }
 }
 
-impl<T, Inner> ApActorExt<Inner> for T where T: AsApActor<Inner> {}
+impl<T> ApActorExt for T where T: AsApActor {}
 
-impl<Inner1, Inner2> AsApActor<Inner2> for ApObject<Inner1>
+impl<Inner> AsApActor for ApObject<Inner>
 where
-    Inner1: AsApActor<Inner2>,
+    Inner: AsApActor,
 {
-    fn ap_actor_ref(&self) -> &ApActor<Inner2> {
+    type Inner = Inner::Inner;
+
+    fn ap_actor_ref(&self) -> &ApActor<Self::Inner> {
         self.inner().ap_actor_ref()
     }
 
-    fn ap_actor_mut(&mut self) -> &mut ApActor<Inner2> {
+    fn ap_actor_mut(&mut self) -> &mut ApActor<Self::Inner> {
         self.inner_mut().ap_actor_mut()
     }
 }

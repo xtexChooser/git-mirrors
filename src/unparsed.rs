@@ -126,15 +126,17 @@
 //! ///
 //! /// This allows us to access methods related to `inbox`, `outbox`, `following`, `followers`,
 //! /// `liked`, `streams`, `endpoints`, and more directly from the PublicKey struct
-//! impl<Inner1, Inner2> AsApActor<Inner2> for PublicKey<Inner1>
+//! impl<Inner> AsApActor for PublicKey<Inner>
 //! where
-//!     Inner1: AsApActor<Inner2>,
+//!     Inner: AsApActor,
 //! {
-//!     fn ap_actor_ref(&self) -> &ApActor<Inner2> {
+//!     type Inner = Inner::Inner;
+//!
+//!     fn ap_actor_ref(&self) -> &ApActor<Self::Inner> {
 //!         self.inner.ap_actor_ref()
 //!     }
 //!
-//!     fn ap_actor_mut(&mut self) -> &mut ApActor<Inner2> {
+//!     fn ap_actor_mut(&mut self) -> &mut ApActor<Self::Inner> {
 //!         self.inner.ap_actor_mut()
 //!     }
 //! }

@@ -59,15 +59,17 @@ where
     }
 }
 
-impl<Inner, A, B, C, D, ApInner> AsApObject<ApInner> for Ext4<Inner, A, B, C, D>
+impl<Inner, A, B, C, D> AsApObject for Ext4<Inner, A, B, C, D>
 where
-    Inner: AsApObject<ApInner>,
+    Inner: AsApObject,
 {
-    fn ap_object_ref(&self) -> &ApObject<ApInner> {
+    type Inner = Inner::Inner;
+
+    fn ap_object_ref(&self) -> &ApObject<Self::Inner> {
         self.inner.ap_object_ref()
     }
 
-    fn ap_object_mut(&mut self) -> &mut ApObject<ApInner> {
+    fn ap_object_mut(&mut self) -> &mut ApObject<Self::Inner> {
         self.inner.ap_object_mut()
     }
 }
@@ -102,15 +104,17 @@ where
     }
 }
 
-impl<Inner, A, B, C, D, ApInner> AsApActor<ApInner> for Ext4<Inner, A, B, C, D>
+impl<Inner, A, B, C, D> AsApActor for Ext4<Inner, A, B, C, D>
 where
-    Inner: AsApActor<ApInner>,
+    Inner: AsApActor,
 {
-    fn ap_actor_ref(&self) -> &ApActor<ApInner> {
+    type Inner = Inner::Inner;
+
+    fn ap_actor_ref(&self) -> &ApActor<Self::Inner> {
         self.inner.ap_actor_ref()
     }
 
-    fn ap_actor_mut(&mut self) -> &mut ApActor<ApInner> {
+    fn ap_actor_mut(&mut self) -> &mut ApActor<Self::Inner> {
         self.inner.ap_actor_mut()
     }
 }

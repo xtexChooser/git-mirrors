@@ -49,12 +49,14 @@ pub trait AsObject: markers::Object {
 /// Implementation trait for deriving ActivityPub Object methods for a type
 ///
 /// Any type implementing AsApObject will automatically gain methods provided by ApObjectExt
-pub trait AsApObject<Inner>: markers::Object {
+pub trait AsApObject: markers::Object {
+    type Inner;
+
     /// Immutable borrow of `ApObject<Inner>`
-    fn ap_object_ref(&self) -> &ApObject<Inner>;
+    fn ap_object_ref(&self) -> &ApObject<Self::Inner>;
 
     /// Mutable borrow of `ApObject<Inner>`
-    fn ap_object_mut(&mut self) -> &mut ApObject<Inner>;
+    fn ap_object_mut(&mut self) -> &mut ApObject<Self::Inner>;
 }
 
 /// Implementation trait for deriving Place methods for a type
@@ -2786,7 +2788,7 @@ pub trait ObjectExt: AsObject {
 /// This trait represents methods valid for any ActivityPub Object.
 ///
 /// Documentation for the fields related to these methods can be found on the `ApObject` struct
-pub trait ApObjectExt<Inner>: AsApObject<Inner> {
+pub trait ApObjectExt: AsApObject {
     /// Fetch the shares for the current object
     ///
     /// ```rust
@@ -2801,7 +2803,7 @@ pub trait ApObjectExt<Inner>: AsApObject<Inner> {
     /// ```
     fn shares<'a>(&'a self) -> Option<&'a IriString>
     where
-        Inner: 'a,
+        Self::Inner: 'a,
     {
         self.ap_object_ref().shares.as_ref()
     }
@@ -2874,7 +2876,7 @@ pub trait ApObjectExt<Inner>: AsApObject<Inner> {
     /// ```
     fn likes<'a>(&'a self) -> Option<&'a IriString>
     where
-        Inner: 'a,
+        Self::Inner: 'a,
     {
         self.ap_object_ref().likes.as_ref()
     }
@@ -2947,7 +2949,7 @@ pub trait ApObjectExt<Inner>: AsApObject<Inner> {
     /// ```
     fn source<'a>(&'a self) -> Option<&'a AnyBase>
     where
-        Inner: 'a,
+        Self::Inner: 'a,
     {
         self.ap_object_ref().source.as_ref()
     }
@@ -3023,7 +3025,7 @@ pub trait ApObjectExt<Inner>: AsApObject<Inner> {
     /// ```
     fn upload_media<'a>(&'a self) -> Option<OneOrMany<&'a IriString>>
     where
-        Inner: 'a,
+        Self::Inner: 'a,
     {
         self.ap_object_ref()
             .upload_media
@@ -5364,7 +5366,7 @@ impl markers::Base for Tombstone {}
 impl markers::Object for Tombstone {}
 
 impl<T, Kind> ObjectExt for T where T: AsObject<Kind = Kind> {}
-impl<T, Inner> ApObjectExt<Inner> for T where T: AsApObject<Inner> {}
+impl<T> ApObjectExt for T where T: AsApObject {}
 impl<T> PlaceExt for T where T: AsPlace {}
 impl<T> ProfileExt for T where T: AsProfile {}
 impl<T> RelationshipExt for T where T: AsRelationship {}
@@ -5424,15 +5426,17 @@ where
     }
 }
 
-impl<Inner> AsApObject<Inner> for ApObject<Inner>
+impl<Inner> AsApObject for ApObject<Inner>
 where
     Inner: markers::Object,
 {
-    fn ap_object_ref(&self) -> &ApObject<Inner> {
+    type Inner = Inner;
+
+    fn ap_object_ref(&self) -> &ApObject<Self::Inner> {
         self
     }
 
-    fn ap_object_mut(&mut self) -> &mut ApObject<Inner> {
+    fn ap_object_mut(&mut self) -> &mut ApObject<Self::Inner> {
         self
     }
 }
