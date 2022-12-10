@@ -8,7 +8,7 @@
     ],
     "type": "Service",
     "id": "https://xtexx.ml/ap/actor.json",
-    "preferredUsername": "xtex-home",
+    "preferredUsername": "@instance@xtexx.ml",
     "name": "xtex's Home",
     "summary": "The Instance Actor of xtex's Home. Just only represents xtexx.ml for Fediverse interactive operations.",
     "url": "https://xtexx.ml/",
