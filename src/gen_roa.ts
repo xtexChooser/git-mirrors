@@ -37,13 +37,14 @@ export async function collectROAv6(): Promise<ROARecord[]> {
     }))
 }
 
-export async function printROA(type: 'json' | 'bird2' | 'bird1' | 'grtr') {
+export async function printROA(type: 'json' | 'bird2' | 'bird1' | 'grtr' | 'obgpd') {
     const roas = await collectROA()
     switch (type) {
         case 'json': await printROAToJson(roas); break;
         case 'bird2': await printROAToBIRD2(roas); break;
         case 'bird1': await printROAToBIRD1(roas); break;
         case 'grtr': await printROAToGoRTRJson(roas); break;
+        case 'obgpd': await printROAToOBGPD(roas); break;
         default: logger.error({ type }, 'unknown ROA type')
     }
 }
@@ -97,4 +98,14 @@ export async function printROAToGoRTRJson(roas: ROARecord[]) {
             }
         })
     } as GoRTRJson))
+}
+
+export async function printROAToOBGPD(roas: ROARecord[]) {
+    console.log('# XTEX-VNET ROA Generator for OpenBGPD')
+    console.log(`# Updated on ${new Date().toISOString()}`)
+    console.log('roa-set {')
+    for (const roa of roas) {
+        console.log(`  ${roa.prefix} maxlen ${roa.maxLength} source-as ${roa.asn}`)
+    }
+    console.log('}')
 }
