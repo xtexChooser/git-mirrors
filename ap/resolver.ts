@@ -26,5 +26,10 @@ export async function getApDocument(url: URL): Promise<BaseEntity> {
     })
     console.log(`resolved AP doc ${url}: ${result.status}`)
     const json = await result.text()
-    return JSON.parse(json) as BaseEntity
+    try {
+        return JSON.parse(json) as BaseEntity
+    } catch (e) {
+        console.error(json)
+        throw e
+    }
 }
