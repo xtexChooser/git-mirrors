@@ -3,7 +3,7 @@
     "software": {
         "name": "xtex-home",
         "version": "1.0",
-        "repository": "https://github.com/xtexChooser/home",
+        "repository": "https://source.moe/xtex/home",
         "homepage": "https://xtexx.ml/"
     },
     "protocols": [
@@ -32,7 +32,7 @@
             "email": "xtex@xtexx.ml"
         },
         "langs": [],
-        "repositoryUrl": "https://github.com/xtexChooser/home",
-        "feedbackUrl": "https://github.com/xtexChooser/home/issues/new"
+        "repositoryUrl": "https://source.moe/xtex/home",
+        "feedbackUrl": "https://source.moe/xtex/home/issues/new"
     }
 }

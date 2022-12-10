@@ -13,7 +13,7 @@ export default function SiteAbout() {
                 <h1>xtex&apos;s Home :: Site About</h1>
                 <p>
                     This site hosts as the personal homepage for xtex.<br />
-                    Source code is available at <a href='git://github.com/xtexChooser/home.git'>git://github.com/xtexChooser/home.git</a> (<a href='#license'>more about the license</a>).
+                    Source code is available at <a href='git@source.moe:xtex/home.git'>git@source.moe:xtex/home.git</a> (<a href='#license'>more about the license</a>).
                 </p>
 
                 <div>
