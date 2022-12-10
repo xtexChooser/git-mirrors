@@ -6,6 +6,16 @@
       },
     },
     properties: {
+      as_block: {
+        elements: {
+          type: "string",
+        },
+      },
+      inetnum: {
+        elements: {
+          type: "string",
+        },
+      },
       mnter: {
         elements: {
           type: "string",
