@@ -2,7 +2,7 @@
 
 import { createCommand } from "commander"
 import { formatAllSchema, formatObject, formatSchema } from "./format.js"
-import { printROA } from "./gen_roa.js"
+import { printROA } from "./roa/gen.js"
 import { lintAll, lintObject, lintSchema } from "./lint.js"
 
 const program = createCommand('xvnet-registry')
@@ -18,7 +18,8 @@ program.command('format [schema] [key]')
     .action((schema, key) => schema ? (key ? formatObject(schema, key) : formatSchema(schema)) : formatAllSchema())
 
 program.command('roa <type>')
+    .option('-e, --external', 'Include ROA from external', false)
     .description('print ROA')
-    .action((type) => printROA(type))
+    .action((type, opts) => printROA(type, opts.external))
 
 program.parse(process.argv)

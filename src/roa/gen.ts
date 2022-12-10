@@ -1,44 +1,9 @@
-import logger from './logger.js'
-import { listObjects, readObject } from './registry.js';
-import ip from 'ip'
+import logger from '../logger.js'
+import { collectROA } from './collector.js'
+import { ROARecord } from './types.js';
 
-export type ROARecord = {
-    asn: number,
-    prefix: string,
-    maxLength: number,
-    inetFamily: 'ipv4' | 'ipv6',
-}
-
-export async function collectROA(): Promise<ROARecord[]> {
-    return (await collectROAv4()).concat(await collectROAv6())
-}
-
-export async function collectROAv4(): Promise<ROARecord[]> {
-    return Promise.all((await listObjects('ROUTE')).map(async key => {
-        const obj = await readObject('ROUTE', key)
-        return {
-            asn: obj['origin'] as number,
-            prefix: obj['route'] as string,
-            maxLength: ip.cidrSubnet(obj['route'] as string).subnetMaskLength,
-            inetFamily: 'ipv4'
-        }
-    }))
-}
-
-export async function collectROAv6(): Promise<ROARecord[]> {
-    return Promise.all((await listObjects('ROUTE6')).map(async key => {
-        const obj = await readObject('ROUTE6', key)
-        return {
-            asn: obj['origin'] as number,
-            prefix: obj['route6'] as string,
-            maxLength: ip.cidrSubnet(obj['route6'] as string).subnetMaskLength,
-            inetFamily: 'ipv6'
-        }
-    }))
-}
-
-export async function printROA(type: 'json' | 'bird2' | 'bird1' | 'grtr' | 'obgpd') {
-    const roas = await collectROA()
+export async function printROA(type: 'json' | 'bird2' | 'bird1' | 'grtr' | 'obgpd', external: boolean) {
+    const roas = await collectROA(external)
     switch (type) {
         case 'json': await printROAToJson(roas); break;
         case 'bird2': await printROAToBIRD2(roas); break;
