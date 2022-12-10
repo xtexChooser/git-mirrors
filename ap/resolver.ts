@@ -16,7 +16,7 @@ export async function resolveApEntity(ref: EntityReference): Promise<Entity> {
 }
 
 export async function getApDocument(url: URL): Promise<BaseEntity> {
-    console.log(`resolving AP document ${url}`)
+    console.log(`resolving AP document ${url}, UA: ${USER_AGENT}`)
     const result = await fetch(url, {
         method: 'GET',
         headers: {
@@ -26,6 +26,5 @@ export async function getApDocument(url: URL): Promise<BaseEntity> {
     })
     console.log(`resolved AP doc ${url}: ${result.status}`)
     const json = await result.text()
-    console.log(json)
     return JSON.parse(json) as BaseEntity
 }
