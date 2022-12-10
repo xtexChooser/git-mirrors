@@ -9,11 +9,11 @@ export default async function handler(
     res: NextApiResponse
 ) {
     const signature = req.headers['signature']
-    const activity = req.body as Activity
+    const activity = JSON.parse(req.body) as Activity
     if (signature == null) {
         return res.status(400).send('no signature')
     }
-    if (activity.actor instanceof Array) {
+    if (activity.actor instanceof Array || !activity.actor) {
         return res.status(400).send('actor is more than one AS entity ref')
     }
     const actor = (await resolveApEntity(activity.actor) as Actor)
