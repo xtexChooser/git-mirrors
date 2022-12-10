@@ -32,5 +32,18 @@
         "owner": "https://xtexx.ml/ap/actor.json",
         "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5+4/pwu49x8Bszd7wFZt\nTalkS0PFnXhPgpaDZ8itVkTWUmPaI7+FBKKftCT+gclhmhlrlpla2MFFaBvJJuXr\nKmBd6yCkoi0mWT3w+9WHaUYCh1LBY0q5smRfdw8PRr8cvXvnrJKyv3lzLHky6MQs\nHjlRKsctOxXE9F1ivzwzRHcxC6dca+FPqMD8YbDVhx9tp0dUbcIpmfTzwJiEhYpW\nsH0gblDzq3sYzRo09o/6ut9Am9fbAuqkQCkUEYMux36c8gKghIFXHKBYRs4tub3c\nrhf02tvjkUxvvlPdwQCCNIzcn6PppFuAGCnSdBSiTTXWgF1L8PToi6X4mxRVKXCl\n0QIDAQAB\n-----END PUBLIC KEY-----\n"
     },
-    "manuallyApprovesFollowers": true
+    "discoverable": false,
+    "manuallyApprovesFollowers": true,
+    "attachment": [
+        {
+            "type": "PropertyValue",
+            "name": "Owner",
+            "value": "@xtexChooser@neko.ci"
+        },
+        {
+            "type": "PropertyValue",
+            "name": "Web Site",
+            "value": "<a href=\"https://xtexx.ml/\" rel=\"me nofollow noopener\" target=\"_blank\">https://xtexx.ml/</a>"
+        }
+    ]
 }
