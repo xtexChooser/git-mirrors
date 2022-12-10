@@ -25,6 +25,28 @@
     "xtexchooser": {
         "aliasTo": "xtex"
     },
+    "instance": {
+        "aliases": [
+            "https://xtexx.ml",
+            "mailto:xtex@xtexx.ml"
+        ],
+        "links": [
+            {
+                "rel": "http://webfinger.net/rel/profile-page",
+                "type": "text/html",
+                "href": "https://xtexx.ml/"
+            },
+            {
+                "rel": "http://webfinger.net/rel/avatar",
+                "href": "https://blog.xtexx.ml/icon.png"
+            },
+            {
+                "rel": "self",
+                "type": "application/activity+json",
+                "href": "https://xtexx.ml/ap/actor.json"
+            }
+        ]
+    },
     "misskey9199": {
         "aliases": [
             "acct:xtex@xtexx.ml"
