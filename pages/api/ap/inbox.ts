@@ -9,7 +9,7 @@ export default async function handler(
     res: NextApiResponse
 ) {
     const signature = req.headers['signature']
-    const activity = JSON.parse(req.body) as Activity
+    const activity = req.body as Activity
     if (signature == null) {
         return res.status(400).send('no signature')
     }
