@@ -29,7 +29,7 @@ export default async function handler(
         }
         await deliveryAPActivity(actor.inbox as unknown as URL, {
             type: ActivityTypes.REJECT,
-            id: new URL(`https://xtexx.ml/ap/reject_follows/${encodeURI(actor.id?.toString())}`),
+            id: new URL(`https://xtexx.ml/ap/reject_follows/${encodeURI(actor.id!!.toString())}`),
             actor: new URL('https://xtexx.ml/ap/actor.json'),
             object: activity.id,
             target: actor.id,
