@@ -51,12 +51,16 @@ export async function printROAToJson() {
 }
 
 export async function printROAToBIRD2() {
+    console.log('# XTEX-VNET ROA Generator for BIRD2')
+    console.log(`# Updated on ${new Date().toISOString()}`)
     for (const roa of await collectROA()) {
         console.log(`route ${roa.prefix} max ${roa.maxLength} as ${roa.asn};`)
     }
 }
 
 export async function printROAToBIRD1() {
+    console.log('# XTEX-VNET ROA Generator for BIRD1')
+    console.log(`# Updated on ${new Date().toISOString()}`)
     for (const roa of await collectROA()) {
         console.log(`roa ${roa.prefix} max ${roa.maxLength} as ${roa.asn};`)
     }
