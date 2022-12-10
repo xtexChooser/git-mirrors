@@ -7,5 +7,7 @@ export default function handler(
     req: NextApiRequest,
     res: NextApiResponse<Data>
 ) {
-    res.status(200)
+    console.log(req)
+    console.log(JSON.stringify(req))
+    res.status(200).end()
 }
