@@ -37,31 +37,64 @@ export async function collectROAv6(): Promise<ROARecord[]> {
     }))
 }
 
-export async function printROA(type: 'json' | 'bird2' | 'bird1') {
+export async function printROA(type: 'json' | 'bird2' | 'bird1' | 'grtr') {
+    const roas = await collectROA()
     switch (type) {
-        case 'json': await printROAToJson(); break;
-        case 'bird2': await printROAToBIRD2(); break;
-        case 'bird1': await printROAToBIRD1(); break;
+        case 'json': await printROAToJson(roas); break;
+        case 'bird2': await printROAToBIRD2(roas); break;
+        case 'bird1': await printROAToBIRD1(roas); break;
+        case 'grtr': await printROAToGoRTRJson(roas); break;
         default: logger.error({ type }, 'unknown ROA type')
     }
 }
 
-export async function printROAToJson() {
-    console.log(JSON.stringify(await collectROA()))
+export async function printROAToJson(roas: ROARecord[]) {
+    console.log(JSON.stringify(roas))
 }
 
-export async function printROAToBIRD2() {
+export async function printROAToBIRD2(roas: ROARecord[]) {
     console.log('# XTEX-VNET ROA Generator for BIRD2')
     console.log(`# Updated on ${new Date().toISOString()}`)
-    for (const roa of await collectROA()) {
+    for (const roa of roas) {
         console.log(`route ${roa.prefix} max ${roa.maxLength} as ${roa.asn};`)
     }
 }
 
-export async function printROAToBIRD1() {
+export async function printROAToBIRD1(roas: ROARecord[]) {
     console.log('# XTEX-VNET ROA Generator for BIRD1')
     console.log(`# Updated on ${new Date().toISOString()}`)
-    for (const roa of await collectROA()) {
+    for (const roa of roas) {
         console.log(`roa ${roa.prefix} max ${roa.maxLength} as ${roa.asn};`)
     }
+}
+
+type GoRTRJson = {
+    metadata: {
+        counts: number,
+        generated: number,
+        valid: number,
+    }
+    roas: {
+        prefix: string,
+        maxLength: number,
+        asn: string,
+    }[]
+}
+
+export async function printROAToGoRTRJson(roas: ROARecord[]) {
+    const timestamp = Math.floor(Date.now() / 1000)
+    console.log(JSON.stringify({
+        metadata: {
+            counts: roas.length,
+            generated: timestamp,
+            valid: timestamp + (60 * 15)
+        },
+        roas: roas.map(roa => {
+            return {
+                prefix: roa.prefix,
+                maxLength: roa.maxLength,
+                asn: `AS${roa.asn}`
+            }
+        })
+    } as GoRTRJson))
 }
