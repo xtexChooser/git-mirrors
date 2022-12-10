@@ -36,7 +36,7 @@ const nextConfig = {
         ],
       },
       {
-        source: '/ap',
+        source: '/ap/:path*',
         headers: [
           {
             key: 'Content-Type',
@@ -55,6 +55,10 @@ const nextConfig = {
       {
         source: '/.well-known/webfinger',
         destination: '/api/webfinger',
+      },
+      {
+        source: '/ap/api/:path*',
+        destination: '/api/ap/:path',
       },
     ]
   },

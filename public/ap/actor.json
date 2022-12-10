@@ -22,10 +22,11 @@
         "url": "https://blog.xtexx.ml/icon.png",
         "name": "xtex's Avatar"
     },
+    "inbox": "https://xtexx.ml/ap/api/inbox",
+    "sharedInbox": "https://xtexx.ml/ap/api/shared_inbox",
     "endpoints": {
         "sharedInbox": "https://xtexx.ml/ap/api/shared_inbox"
     },
-    "inbox": "https://xtexx.ml/ap/api/inbox",
     "publicKey": {
         "id": "https://xtexx.ml/ap/actor.json#main-key",
         "type": "Key",
