@@ -12,25 +12,19 @@ const nextConfig = {
       },
     ]
   },
-  async headers() {
+  async headers() {//application/ld+json; profile="https://www.w3.org/ns/activitystreams"
+    const nodeinfo = {
+      key: 'Content-Type',
+      value: 'application/json; profile="http://nodeinfo.diaspora.software/ns/schema/2.1#"',
+    }
     return [
       {
         source: '/.well-known/nodeinfo',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'application/json; profile="http://nodeinfo.diaspora.software/ns/schema/2.1#"',
-          },
-        ],
+        headers: [nodeinfo],
       },
       {
         source: '/nodeinfo.json',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'application/json; profile="http://nodeinfo.diaspora.software/ns/schema/2.1#"',
-          },
-        ],
+        headers: [nodeinfo],
       },
       {
         source: '/.well-known/host-meta',
@@ -38,6 +32,15 @@ const nextConfig = {
           {
             key: 'Content-Type',
             value: 'application/xrd+xml',
+          },
+        ],
+      },
+      {
+        source: '/ap',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8',
           },
         ],
       },
