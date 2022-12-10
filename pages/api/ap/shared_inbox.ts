@@ -1,11 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
-type Data = {
-}
-
 export default function handler(
     req: NextApiRequest,
-    res: NextApiResponse<Data>
+    res: NextApiResponse
 ) {
     console.log(req.body)
     console.log(JSON.stringify(req.body))
