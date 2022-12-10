@@ -58,7 +58,7 @@ const nextConfig = {
       },
       {
         source: '/ap/api/:path*',
-        destination: '/api/ap/:path',
+        destination: '/api/ap/:path*',
       },
     ]
   },
