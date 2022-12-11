@@ -1,6 +1,7 @@
 import logger from '../logger.js'
 import { collectROA } from './collector.js'
 import { ROARecord } from './types.js';
+import { printROAToGoRTRJson } from './gortr.js'
 
 export async function printROA(type: 'json' | 'bird2' | 'bird1' | 'grtr' | 'obgpd', external: boolean) {
     const roas = await collectROA(external)
@@ -32,37 +33,6 @@ export async function printROAToBIRD1(roas: ROARecord[]) {
     for (const roa of roas) {
         console.log(`roa ${roa.prefix} max ${roa.maxLength} as ${roa.asn};`)
     }
-}
-
-type GoRTRJson = {
-    metadata: {
-        counts: number,
-        generated: number,
-        valid: number,
-    }
-    roas: {
-        prefix: string,
-        maxLength: number,
-        asn: string,
-    }[]
-}
-
-export async function printROAToGoRTRJson(roas: ROARecord[]) {
-    const timestamp = Math.floor(Date.now() / 1000)
-    console.log(JSON.stringify({
-        metadata: {
-            counts: roas.length,
-            generated: timestamp,
-            valid: timestamp + (60 * 15)
-        },
-        roas: roas.map(roa => {
-            return {
-                prefix: roa.prefix,
-                maxLength: roa.maxLength,
-                asn: `AS${roa.asn}`
-            }
-        })
-    } as GoRTRJson))
 }
 
 export async function printROAToOBGPD(roas: ROARecord[]) {
