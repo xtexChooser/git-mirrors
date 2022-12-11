@@ -26,7 +26,8 @@ export async function printROAToGoRTRJson(roas: ROARecord[]) {
             return {
                 prefix: roa.prefix,
                 maxLength: roa.maxLength,
-                asn: `AS${roa.asn}`
+                asn: `AS${roa.asn}`,
+                ta: roa.source,
             }
         })
     } as GoRTRJson))

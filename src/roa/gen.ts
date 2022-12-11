@@ -23,7 +23,7 @@ export async function printROAToBIRD2(roas: ROARecord[]) {
     console.log('# XTEX-VNET ROA Generator for BIRD2')
     console.log(`# Updated on ${new Date().toISOString()}`)
     for (const roa of roas) {
-        console.log(`route ${roa.prefix} max ${roa.maxLength} as ${roa.asn};`)
+        console.log(`route ${roa.prefix} max ${roa.maxLength} as ${roa.asn}; # ${roa.source}`)
     }
 }
 
@@ -31,7 +31,7 @@ export async function printROAToBIRD1(roas: ROARecord[]) {
     console.log('# XTEX-VNET ROA Generator for BIRD1')
     console.log(`# Updated on ${new Date().toISOString()}`)
     for (const roa of roas) {
-        console.log(`roa ${roa.prefix} max ${roa.maxLength} as ${roa.asn};`)
+        console.log(`roa ${roa.prefix} max ${roa.maxLength} as ${roa.asn}; # ${roa.source}`)
     }
 }
 
@@ -40,7 +40,7 @@ export async function printROAToOBGPD(roas: ROARecord[]) {
     console.log(`# Updated on ${new Date().toISOString()}`)
     console.log('roa-set {')
     for (const roa of roas) {
-        console.log(`  ${roa.prefix} maxlen ${roa.maxLength} source-as ${roa.asn}`)
+        console.log(`  ${roa.prefix} maxlen ${roa.maxLength} source-as ${roa.asn} # ${roa.source}`)
     }
     console.log('}')
 }
