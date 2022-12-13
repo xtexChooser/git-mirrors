@@ -157,7 +157,7 @@ class Query {
 
 		$this->tableNames = self::getTableNames();
 
-		$this->dbr = wfGetDB( DB_REPLICA, 'dpl' );
+		$this->dbr = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_REPLICA, 'dpl' );
 
 		$this->userFactory = MediaWikiServices::getInstance()->getUserFactory();
 	}
@@ -440,7 +440,7 @@ class Query {
 	 * @return array
 	 */
 	public static function getTableNames() {
-		$dbr = wfGetDB( DB_REPLICA, 'dpl' );
+		$dbr = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_REPLICA, 'dpl' );
 
 		$tables = [
 			'categorylinks',
@@ -448,6 +448,7 @@ class Query {
 			'externallinks',
 			'flaggedpages',
 			'imagelinks',
+			'linktarget',
 			'page',
 			'pagelinks',
 			'recentchanges',
@@ -709,7 +710,7 @@ class Query {
 	 * @return array
 	 */
 	public static function getSubcategories( $categoryName, $depth = 1 ) {
-		$dbr = wfGetDB( DB_REPLICA, 'dpl' );
+		$dbr = MediaWikiServices::getInstance()->getDBLoadBalancer()->getConnection( DB_REPLICA, 'dpl' );
 
 		if ( $depth > 2 ) {
 			// Hard constrain depth because lots of recursion is bad.
@@ -2155,12 +2156,19 @@ class Query {
 		if ( $this->parameters->getParameter( 'openreferences' ) ) {
 			$where[] = $this->dbr->makeList( [ 'tpl_from' => $values ], IDatabase::LIST_OR );
 		} else {
-			$this->addTable( 'templatelinks', 'tpl' );
-			$this->addTable( 'page', 'tplsrc' );
+			$this->addTables( [
+				'linktarget' => 'lt',
+				'page' => 'tplsrc',
+				'templatelinks' => 'tpl',
+			] );
+
+			$linksMigration = MediaWikiServices::getInstance()->getLinksMigration();
+			list( $nsField, $titleField ) = $linksMigration->getTitleFields( 'templatelinks' );
+
 			$this->addSelect( [ 'tpl_sel_title' => 'tplsrc.page_title', 'tpl_sel_ns' => 'tplsrc.page_namespace' ] );
 			$where = [
-				$this->tableNames['page'] . '.page_namespace = tpl.tl_namespace',
-				$this->tableNames['page'] . '.page_title = tpl.tl_title',
+				$this->tableNames['page'] . '.page_namespace = lt.' . $nsField,
+				$this->tableNames['page'] . '.page_title = lt.' . $titleField,
 				'tplsrc.page_id = tpl.tl_from',
 				$this->dbr->makeList( [ 'tpl.tl_from' => $values ], IDatabase::LIST_OR )
 			];
@@ -2175,10 +2183,17 @@ class Query {
 	 * @param mixed $option
 	 */
 	private function _uses( $option ) {
-		$this->addTable( 'templatelinks', 'tl' );
-		$where = $this->tableNames['page'] . '.page_id=tl.tl_from AND (';
+		$this->addTables( [
+			'linktarget' => 'lt',
+			'templatelinks' => 'tl',
+		] );
+
+		$where = $this->tableNames['page'] . '.page_id=tl.tl_from AND lt.lt_id = tl.tl_target_id AND (';
 		$ors = [];
 		$linksByNS = [];
+
+		$linksMigration = MediaWikiServices::getInstance()->getLinksMigration();
+		list( $nsField, $titleField ) = $linksMigration->getTitleFields( 'templatelinks' );
 
 		foreach ( $option as $linkGroup ) {
 			foreach ( $linkGroup as $link ) {
@@ -2191,12 +2206,12 @@ class Query {
 		}
 
 		foreach ( $linksByNS as $ns => $values ) {
-			$_or = '(tl.tl_namespace=' . $ns;
+			$_or = '(lt.' . $nsField . '=' . $ns;
 
 			if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-				$_or .= ' AND LOWER(CONVERT(tl.tl_title USING utf8mb4))';
+				$_or .= ' AND LOWER(CONVERT(lt.' . $titleField . ' USING utf8mb4))';
 			} else {
-				$_or .= ' AND tl.tl_title';
+				$_or .= ' AND ' . $titleField;
 			}
 
 			if ( count( $values ) == 1 ) {
@@ -2223,6 +2238,9 @@ class Query {
 			$ors = [];
 			$linksByNS = [];
 
+			$linksMigration = MediaWikiServices::getInstance()->getLinksMigration();
+			list( $nsField, $titleField ) = $linksMigration->getTitleFields( 'templatelinks' );
+
 			foreach ( $option as $linkGroup ) {
 				foreach ( $linkGroup as $link ) {
 					if ( $this->parameters->getParameter( 'ignorecase' ) ) {
@@ -2234,12 +2252,12 @@ class Query {
 			}
 
 			foreach ( $linksByNS as $ns => $values ) {
-				$_or = '(' . $this->tableNames['templatelinks'] . '.tl_namespace=' . $ns;
+				$_or = '(' . $this->tableNames['linktarget'] . '.' . $nsField . '=' . $ns;
 
 				if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-					$_or .= ' AND LOWER(CONVERT(' . $this->tableNames['templatelinks'] . '.tl_title USING utf8mb4))';
+					$_or .= ' AND LOWER(CONVERT(' . $this->tableNames['linktarget'] . '.' . $titleField . ' USING utf8mb4))';
 				} else {
-					$_or .= ' AND ' . $this->tableNames['templatelinks'] . '.tl_title';
+					$_or .= ' AND ' . $this->tableNames['linktarget'] . '.' . $titleField;
 				}
 
 				if ( count( $values ) == 1 ) {

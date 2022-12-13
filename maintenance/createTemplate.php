@@ -8,7 +8,6 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\SlotRecord;
 use Title;
 use User;
-use WikiPage;
 
 $IP = getenv( 'MW_INSTALL_PATH' );
 if ( $IP === false ) {
@@ -53,9 +52,10 @@ class CreateTemplate extends LoggedUpdateMaintenance {
 
 		// Make sure template does not already exist
 		if ( !$title->exists() ) {
-			$wikiPageFactory = MediaWikiServices::getInstance()->getWikiPageFactory();
-
+			$services = MediaWikiServices::getInstance();
+			$wikiPageFactory = $services->getWikiPageFactory();
 			$page = $wikiPageFactory->newFromTitle( $title );
+
 			$updater = $page->newPageUpdater( User::newSystemUser( 'DynamicPageList3 extension' ) );
 			$content = $page->getContentHandler()->makeContent( '<noinclude>This page was automatically created. It serves as an anchor page for all \'\'\'[[Special:WhatLinksHere/Template:Extension_DPL|invocations]]\'\'\' of [https://www.mediawiki.org/wiki/Special:MyLanguage/Extension:DynamicPageList3 Extension:DynamicPageList3].</noinclude>', $title );
 			$updater->setContent( SlotRecord::MAIN, $content );
