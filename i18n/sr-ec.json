@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Milicevic01",
 			"Михајло Анђелковић"
 		]
 	},
@@ -10,5 +11,6 @@
 	"categorywatch-catmoveout": "$1 је премештен из $2 у $3",
 	"categorywatch-catadd": "$1 је додат у $2",
 	"categorywatch-catsub": "$1 је избачен из $2",
-	"categorywatch-autocat": "Аутоматски надгледано од $1"
+	"categorywatch-autocat": "Аутоматски надгледано од $1",
+	"categorywatch-notification-link": "Категорија: [[:$1]]"
 }
