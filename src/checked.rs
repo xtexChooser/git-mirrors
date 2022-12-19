@@ -23,7 +23,7 @@ pub(crate) fn check<T: AsRef<IriStr>>(
     let authority = iri
         .as_ref()
         .authority_components()
-        .ok_or(CheckError(Some(iri.as_ref().to_owned())))?;
+        .ok_or_else(|| CheckError(Some(iri.as_ref().to_owned())))?;
 
     if authority.host() != host || authority.port() != port {
         return Err(CheckError(Some(iri.as_ref().to_owned())));

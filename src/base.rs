@@ -263,7 +263,7 @@ pub trait BaseExt: AsBase {
         let authority = self
             .id_unchecked()
             .and_then(|id| id.authority_components())
-            .ok_or(CheckError(Some(iri.as_ref().to_owned())))?;
+            .ok_or_else(|| CheckError(Some(iri.as_ref().to_owned())))?;
         check(iri, authority.host(), authority.port())
     }
 
