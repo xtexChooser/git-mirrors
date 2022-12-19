@@ -263,7 +263,7 @@ pub trait BaseExt: AsBase {
         let authority = self
             .id_unchecked()
             .and_then(|id| id.authority_components())
-            .ok_or(CheckError)?;
+            .ok_or(CheckError(Some(iri.as_ref().to_owned())))?;
         check(iri, authority.host(), authority.port())
     }
 
@@ -290,7 +290,7 @@ pub trait BaseExt: AsBase {
                 if authority.host() == host && authority.port() == port {
                     Some(Ok(id))
                 } else {
-                    Some(Err(CheckError))
+                    Some(Err(CheckError(Some(id.clone()))))
                 }
             })
             .transpose()
@@ -342,7 +342,7 @@ pub trait BaseExt: AsBase {
                 if authority.host() == host && authority.port() == port {
                     Some(Ok(id))
                 } else {
-                    Some(Err(CheckError))
+                    Some(Err(CheckError(Some(id.clone()))))
                 }
             })
             .transpose()

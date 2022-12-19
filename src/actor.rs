@@ -30,11 +30,22 @@ use crate::{
     primitives::OneOrMany,
     unparsed::{Unparsed, UnparsedMut, UnparsedMutExt},
 };
-use iri_string::types::IriString;
+use iri_string::{components::AuthorityComponents, types::IriString};
 
 pub use activitystreams_kinds::actor as kind;
 
 use self::kind::*;
+
+fn check_opt(
+    iri: &IriString,
+    authority_components: Option<&AuthorityComponents>,
+) -> Result<(), CheckError> {
+    if iri.authority_components().as_ref() == authority_components {
+        Ok(())
+    } else {
+        Err(CheckError(Some(iri.clone())))
+    }
+}
 
 /// Implementation trait for deriving ActivityPub Actor methods for a type
 ///
@@ -820,36 +831,30 @@ pub trait ApActorExt: AsApActor {
         if let Some(endpoints) = self.endpoints_unchecked() {
             let authority_opt = self.id_unchecked().and_then(|id| id.authority_components());
 
-            let mut any_failed = false;
-
-            any_failed |= endpoints
+            endpoints
                 .proxy_url
-                .map(|u| u.authority_components() != authority_opt)
-                .unwrap_or(false);
-            any_failed |= endpoints
+                .map(|i| check_opt(i, authority_opt.as_ref()))
+                .transpose()?;
+            endpoints
                 .oauth_authorization_endpoint
-                .map(|u| u.authority_components() != authority_opt)
-                .unwrap_or(false);
-            any_failed |= endpoints
+                .map(|i| check_opt(i, authority_opt.as_ref()))
+                .transpose()?;
+            endpoints
                 .oauth_token_endpoint
-                .map(|u| u.authority_components() != authority_opt)
-                .unwrap_or(false);
-            any_failed |= endpoints
+                .map(|i| check_opt(i, authority_opt.as_ref()))
+                .transpose()?;
+            endpoints
                 .provide_client_key
-                .map(|u| u.authority_components() != authority_opt)
-                .unwrap_or(false);
-            any_failed |= endpoints
+                .map(|i| check_opt(i, authority_opt.as_ref()))
+                .transpose()?;
+            endpoints
                 .sign_client_key
-                .map(|u| u.authority_components() != authority_opt)
-                .unwrap_or(false);
-            any_failed |= endpoints
+                .map(|i| check_opt(i, authority_opt.as_ref()))
+                .transpose()?;
+            endpoints
                 .shared_inbox
-                .map(|u| u.authority_components() != authority_opt)
-                .unwrap_or(false);
-
-            if any_failed {
-                return Err(CheckError);
-            }
+                .map(|i| check_opt(i, authority_opt.as_ref()))
+                .transpose()?;
 
             return Ok(Some(endpoints));
         }

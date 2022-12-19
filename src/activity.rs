@@ -438,7 +438,7 @@ pub trait AsActivityActorExt: AsActivityActor {
         let actor = self.actor_unchecked();
 
         for any_base in actor {
-            let id = any_base.id().ok_or(CheckError)?;
+            let id = any_base.id().ok_or(CheckError(None))?;
             self.check_authority(id)?;
         }
 
@@ -571,7 +571,7 @@ pub trait AsActivityObjectExt: AsActivityObject {
         let object = self.object_unchecked();
 
         for any_base in object {
-            let id = any_base.id().ok_or(CheckError)?;
+            let id = any_base.id().ok_or(CheckError(None))?;
             self.check_authority(id)?;
         }
 
