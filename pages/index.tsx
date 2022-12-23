@@ -14,7 +14,7 @@ export default function Home() {
         <div className={styles.header}>
           <h1 className={styles.title}>xtex</h1>
           <p className={styles.description}>初三，学生</p>
-          <p className={styles.description}>Student in Mainland, China</p>
+          <p className={styles.description}>Humanoid Carbon-Based Organism</p>
           <div className='links'>
             <ul>
               <li><a href="https://blog.xtexx.ml/about" target="_blank" rel="noreferrer">About</a></li>
