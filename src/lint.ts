@@ -4,8 +4,6 @@ import ip from 'ip'
 
 export async function lintAll() {
     await lintAllSchema()
-    await lintIPAddrs('INETNUM')
-    await lintIPAddrs('INET6NUM')
     await lintIPAddrs('ROUTE')
     await lintIPAddrs('ROUTE6')
 }
