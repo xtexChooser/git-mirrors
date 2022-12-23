@@ -1,0 +1,6 @@
+jtd:
+  properties:
+    jtd: {}
+    schema:
+      type: string
+schema: SCHEMA

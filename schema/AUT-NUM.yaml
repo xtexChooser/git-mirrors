@@ -1,0 +1,14 @@
+jtd:
+  optionalProperties:
+    descr:
+      type: string
+  properties:
+    asn:
+      type: uint32
+    aut_num:
+      type: string
+    net:
+      type: string
+    source:
+      type: string
+schema: AUT-NUM

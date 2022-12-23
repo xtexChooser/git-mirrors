@@ -1,0 +1,6 @@
+mnter:
+  - XTEX-MNT-XVNET
+registry: LACNIC
+source: XTEX-VNET
+url:
+  - whois://whois.lacnic.net

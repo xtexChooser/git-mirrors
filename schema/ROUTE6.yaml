@@ -1,0 +1,14 @@
+jtd:
+  optionalProperties:
+    descr:
+      type: string
+  properties:
+    net:
+      type: string
+    origin:
+      type: uint32
+    route6:
+      type: string
+    source:
+      type: string
+schema: ROUTE6

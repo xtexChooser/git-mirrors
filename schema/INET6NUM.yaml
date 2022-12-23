@@ -1,0 +1,15 @@
+jtd:
+  optionalProperties:
+    descr:
+      type: string
+  properties:
+    inet6num:
+      type: string
+    net:
+      type: string
+    nserver:
+      elements:
+        type: string
+    source:
+      type: string
+schema: INET6NUM

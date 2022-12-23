@@ -1,0 +1,6 @@
+descr: Per-Server Unicast Address
+inet6num: fd00:443a:ef14:1::/64
+net: XTEX-VNET
+nserver:
+  - ns.xvn
+source: XTEX-VNET

@@ -1,0 +1,16 @@
+jtd:
+  optionalProperties:
+    descr:
+      type: string
+  properties:
+    auth:
+      elements:
+        type: string
+    mail:
+      elements:
+        type: string
+    mntner:
+      type: string
+    source:
+      type: string
+schema: MNTNER
