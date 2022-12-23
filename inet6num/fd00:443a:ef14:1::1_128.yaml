@@ -1,5 +1,4 @@
 descr: XTEX-VNET nl-alk1
+inet6num: fd00:443a:ef14:1::1/128
 net: XTEX-VNET
-origin: 4244310001
-route: 10.160.0.1/32
 source: XTEX-VNET
