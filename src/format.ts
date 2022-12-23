@@ -1,5 +1,11 @@
 import logger from './logger.js'
-import { deserializeObject, listObjects, readObjectContent, serializeObject, writeObject } from './registry.js'
+import {
+    deserializeObject,
+    listObjects,
+    readObjectContent,
+    serializeObject,
+    writeObject,
+} from './registry.js'
 
 export async function formatAllSchema() {
     for (const schema of await listObjects('SCHEMA')) {

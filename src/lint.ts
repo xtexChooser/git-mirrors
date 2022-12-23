@@ -1,5 +1,5 @@
-import logger from './logger.js';
-import { listObjects, loadSchema, readObject } from './registry.js';
+import logger from './logger.js'
+import { listObjects, loadSchema, readObject } from './registry.js'
 import ip from 'ip'
 
 export async function lintAll() {
@@ -35,7 +35,10 @@ export async function lintObject(schema: string, key: string) {
 
         const schemaSelfRefKey = schema.replace('-', '_').toLowerCase()
         if (obj[schemaSelfRefKey] != key) {
-            logger.error({ schema, key, value: obj[schemaSelfRefKey]?.toString() }, 'Object does not have a self-reference')
+            logger.error(
+                { schema, key, value: obj[schemaSelfRefKey]?.toString() },
+                'Object does not have a self-reference'
+            )
         }
     } catch (e) {
         logger.error({ schema, key, e })
@@ -50,7 +53,10 @@ export async function lintIPAddrs(schema: string) {
         for (const other of nets) {
             const otherNet = ip.cidrSubnet(other)
             if (net != other) {
-                if (netNet.contains(otherNet.firstAddress) || netNet.contains(otherNet.lastAddress)) {
+                if (
+                    netNet.contains(otherNet.firstAddress) ||
+                    netNet.contains(otherNet.lastAddress)
+                ) {
                     logger.error({ schema, net, other }, 'IP subnets conflict')
                 }
             }

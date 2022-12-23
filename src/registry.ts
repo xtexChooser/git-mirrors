@@ -1,14 +1,16 @@
-import Ajv, { JTDSchemaType, ValidateFunction } from "ajv/dist/jtd.js";
-import { readdir, readFile, writeFile } from "fs/promises";
-import yaml from 'yaml';
-import sortKeys from "sort-keys";
-import logger from "./logger.js";
+import Ajv, { JTDSchemaType, ValidateFunction } from 'ajv/dist/jtd.js'
+import { readdir, readFile, writeFile } from 'fs/promises'
+import yaml from 'yaml'
+import sortKeys from 'sort-keys'
+import logger from './logger.js'
 
 const ajv = new Ajv()
 export { ajv }
 
 export async function listObjects(type: string): Promise<string[]> {
-    return (await readdir(type.toLowerCase())).map((key) => key.replace('_', '/').substring(0, key.length - 5))
+    return (await readdir(type.toLowerCase())).map((key) =>
+        key.replace('_', '/').substring(0, key.length - 5)
+    )
 }
 
 export function getObjectPath(type: string, key: string): string {
@@ -23,7 +25,10 @@ export function deserializeObject(obj: string): object {
     return yaml.parse(obj)
 }
 
-export async function readObjectContent(type: string, key: string): Promise<string> {
+export async function readObjectContent(
+    type: string,
+    key: string
+): Promise<string> {
     return await readFile(getObjectPath(type, key), 'utf-8')
 }
 
@@ -31,7 +36,7 @@ export async function readObject(type: string, key: string): Promise<object> {
     try {
         return deserializeObject(await readObjectContent(type, key))
     } catch (e) {
-        logger.error({ type, key, e }, "Failed to read object")
+        logger.error({ type, key, e }, 'Failed to read object')
         throw e
     }
 }
@@ -41,14 +46,16 @@ export async function writeObject(type: string, key: string, obj: object) {
 }
 
 export type Schema = {
-    jtd: JTDSchemaType<object>,
+    jtd: JTDSchemaType<object>
 }
 
-export async function loadSchema(schema: string): Promise<ValidateFunction<object>> {
+export async function loadSchema(
+    schema: string
+): Promise<ValidateFunction<object>> {
     try {
-        return ajv.compile((await readObject('schema', schema) as Schema).jtd)
+        return ajv.compile(((await readObject('schema', schema)) as Schema).jtd)
     } catch (e) {
-        logger.error({ schema, e }, "Failed to load schema")
+        logger.error({ schema, e }, 'Failed to load schema')
         throw e
     }
 }

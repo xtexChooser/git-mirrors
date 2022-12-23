@@ -9,7 +9,8 @@
     "build": "tsc --build",
     "watch": "tsc --watch",
     "lint": "eslint src/**.ts",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "format": "prettier --write src/**"
   },
   "keywords": [],
   "author": "XTEX-VNET",
@@ -31,6 +32,8 @@
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.45.0",
     "eslint": "^8.28.0",
+    "eslint-config-prettier": "^8.5.0",
+    "prettier": "^2.8.1",
     "typescript": "*"
   },
   "dependencies": {
