@@ -44,16 +44,18 @@ export async function lintObject(schema: string, key: string) {
             )
         }
 
-        for (const ref of schemaObj.ref ?? []) {
-            try {
-                const k = jsonpath.query(obj, ref.path)
-                if (k == null) continue
-                await readObject(ref.schema, k as unknown as string)
-            } catch (e) {
-                logger.error(
-                    { schema, key, ref, e },
-                    'Failed to resolve object reference'
-                )
+        for (const reference of schemaObj.ref ?? []) {
+            const refs = jsonpath.query(obj, reference.path)
+            if (refs.length == 0) continue
+            for (const ref of refs) {
+                try {
+                    await readObject(reference.schema, ref.toString())
+                } catch (e) {
+                    logger.error(
+                        { schema, key, ref, reference, e },
+                        'Failed to resolve object reference'
+                    )
+                }
             }
         }
     } catch (e) {
