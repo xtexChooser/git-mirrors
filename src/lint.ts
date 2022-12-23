@@ -46,10 +46,9 @@ export async function lintObject(schema: string, key: string) {
 
         for (const ref of schemaObj.ref ?? []) {
             try {
-                await readObject(
-                    ref.schema,
-                    jsonpath.query(obj, ref.path) as unknown as string
-                )
+                const k = jsonpath.query(obj, ref.path)
+                if (k == null) continue
+                await readObject(ref.schema, k as unknown as string)
             } catch (e) {
                 logger.error(
                     { schema, key, ref, e },
