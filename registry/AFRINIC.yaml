@@ -4,3 +4,4 @@ registry: AFRINIC
 source: XTEX-VNET
 url:
   - whois://whois.afrinic.net
+  - rdap://rdap.afrinic.net/rdap/

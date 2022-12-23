@@ -4,3 +4,4 @@ registry: LACNIC
 source: XTEX-VNET
 url:
   - whois://whois.lacnic.net
+  - rdap://rdap.lacnic.net/rdap/

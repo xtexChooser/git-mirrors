@@ -4,3 +4,4 @@ registry: RIPE
 source: XTEX-VNET
 url:
   - whois://whois.ripe.net
+  - rdap://rdap.db.ripe.net/

@@ -4,3 +4,4 @@ registry: ARIN
 source: XTEX-VNET
 url:
   - whois://whois.apnic.net
+  - rdap://rdap.arin.net/registry
