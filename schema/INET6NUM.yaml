@@ -12,4 +12,9 @@ jtd:
       type: string
     source:
       type: string
+ref:
+  - path: source
+    schema: REGISTRY
+  - path: net
+    schema: NET
 schema: INET6NUM

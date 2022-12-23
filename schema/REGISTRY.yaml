@@ -13,4 +13,9 @@ jtd:
     url:
       elements:
         type: string
+ref:
+  - path: source
+    schema: REGISTRY
+  - path: mntner
+    schema: MNTNER
 schema: REGISTRY

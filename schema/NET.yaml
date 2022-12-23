@@ -16,4 +16,9 @@ jtd:
       type: string
     source:
       type: string
+ref:
+  - path: source
+    schema: REGISTRY
+  - path: mnter
+    schema: MNTNER
 schema: NET

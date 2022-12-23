@@ -11,4 +11,11 @@ jtd:
       type: string
     source:
       type: string
+ref:
+  - path: source
+    schema: REGISTRY
+  - path: asn
+    schema: AUT-NUM
+  - path: net
+    schema: NET
 schema: AUT-NUM
