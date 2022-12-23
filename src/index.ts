@@ -17,9 +17,9 @@ program.command('format [schema] [key]')
     .description('format objects')
     .action((schema, key) => schema ? (key ? formatObject(schema, key) : formatSchema(schema)) : formatAllSchema())
 
-program.command('roa <type>')
+program.command('roa <type> <inetFamily>')
     .option('-e, --external', 'Include ROA from external', false)
     .description('print ROA')
-    .action((type, opts) => printROA(type, opts.external))
+    .action((type, inetFamily, opts) => printROA(type, opts.external, inetFamily))
 
 program.parse(process.argv)
