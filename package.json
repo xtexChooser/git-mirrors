@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@types/ip": "^1.1.0",
+    "@types/jsonpath": "^0.2.0",
     "@types/node": "^18.11.10",
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.45.0",
@@ -41,6 +42,7 @@
     "axios": "^1.2.1",
     "commander": "^9.4.1",
     "ip": "^1.1.8",
+    "jsonpath": "^1.1.1",
     "pino": "^8.7.0",
     "pino-pretty": "^9.1.1",
     "sort-keys": "^5.0.0",

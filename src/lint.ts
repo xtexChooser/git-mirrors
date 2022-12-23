@@ -1,6 +1,8 @@
 import logger from './logger.js'
 import { listObjects, loadSchema, readObject } from './registry.js'
 import ip from 'ip'
+import { Schema } from './registry.js'
+import jsonpath from 'jsonpath'
 
 export async function lintAll() {
     await lintAllSchema()
@@ -28,7 +30,8 @@ export async function lintObject(schema: string, key: string) {
     try {
         const obj = await readObject(schema, key)
 
-        const jtd = await loadSchema(schema)
+        const schemaObj = (await readObject('SCHEMA', schema)) as Schema
+        const jtd = await loadSchema(schemaObj)
         if (!jtd(obj)) {
             logger.error({ schema, key, obj, error: jtd.errors })
         }
@@ -39,6 +42,20 @@ export async function lintObject(schema: string, key: string) {
                 { schema, key, value: obj[schemaSelfRefKey]?.toString() },
                 'Object does not have a self-reference'
             )
+        }
+
+        for (const ref of schemaObj.ref ?? []) {
+            try {
+                await readObject(
+                    ref.schema,
+                    jsonpath.query(obj, ref.path) as unknown as string
+                )
+            } catch (e) {
+                logger.error(
+                    { schema, key, ref, e },
+                    'Failed to resolve object reference'
+                )
+            }
         }
     } catch (e) {
         logger.error({ schema, key, e })

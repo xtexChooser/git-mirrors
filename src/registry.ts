@@ -47,15 +47,21 @@ export async function writeObject(type: string, key: string, obj: object) {
 
 export type Schema = {
     jtd: JTDSchemaType<object>
+    ref?: ObjectReferenceRecord[]
+}
+
+export type ObjectReferenceRecord = {
+    path: string
+    schema: string
 }
 
 export async function loadSchema(
-    schema: string
+    schema: Schema
 ): Promise<ValidateFunction<object>> {
     try {
-        return ajv.compile(((await readObject('schema', schema)) as Schema).jtd)
+        return ajv.compile(schema.jtd)
     } catch (e) {
-        logger.error({ schema, e }, 'Failed to load schema')
+        logger.error({ schema, e }, 'Failed to parse schema JTD')
         throw e
     }
 }
