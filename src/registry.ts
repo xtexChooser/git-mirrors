@@ -1,6 +1,6 @@
 import Ajv, { JTDSchemaType, ValidateFunction } from "ajv/dist/jtd.js";
 import { readdir, readFile, writeFile } from "fs/promises";
-import json5 from "json5";
+import yaml from 'yaml';
 import sortKeys from "sort-keys";
 import logger from "./logger.js";
 
@@ -8,19 +8,19 @@ const ajv = new Ajv()
 export { ajv }
 
 export async function listObjects(type: string): Promise<string[]> {
-    return (await readdir(type.toLowerCase())).map((key) => key.replace('_', '/').substring(0, key.length - 6))
+    return (await readdir(type.toLowerCase())).map((key) => key.replace('_', '/').substring(0, key.length - 5))
 }
 
 export function getObjectPath(type: string, key: string): string {
-    return `${type.toLowerCase()}/${key.replace('/', '_')}.json5`;
+    return `${type.toLowerCase()}/${key.replace('/', '_')}.yaml`
 }
 
 export function serializeObject(obj: object): string {
-    return json5.stringify(sortKeys(obj, { deep: true }), { space: 2, quote: '"' }) + '\n'
+    return yaml.stringify(sortKeys(obj, { deep: true }))
 }
 
 export function deserializeObject(obj: string): object {
-    return json5.parse(obj)
+    return yaml.parse(obj)
 }
 
 export async function readObjectContent(type: string, key: string): Promise<string> {
