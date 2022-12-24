@@ -1,0 +1,9 @@
+- name: Update BIRD config
+  ansible.builtin.template:
+    src: ../../../bird/bird.conf.j2
+    dest: /etc/bird/bird.conf
+    owner: bird
+    group: bird
+    mode: "0666"
+    validate: bird -c %s -p
+    backup: false

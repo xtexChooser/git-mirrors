@@ -1,0 +1,78 @@
+{# Static Routes #}
+protocol static static_roa4 {
+    roa4 { table master_roa4; };
+    route 172.20.206.64/26 max 26 as 4242420361;
+};
+protocol static static_roa6 {
+    roa6 { table master_roa6; };
+    route fd00:443a:ef14::/48 max 48 as 4242420361;
+};
+protocol static static4 {
+    route 172.20.206.64/26 reject;
+
+    ipv4 { import all; export none; };
+};
+
+{# RPKI #}
+protocol rpki rpki_dn42_sunnet {
+  roa4 { table master_roa4; };
+  roa6 { table master_roa6; };
+
+  remote "rpki.dn42.6700.cc" port 8282;
+
+  retry keep 90;
+  refresh keep 1800;
+  expire keep 172800;
+}
+
+{# Filter #}
+function dn42_filter_import() {
+    if !is_dn42_prefix() then reject;
+    if bgp_path.len > 10 then {
+        print "[dn42] BGP path too long ", net, " len ", bgp_path.len, " proto ", proto, bgp_path;
+        reject;
+    }
+    if (do_roa_check() != ROA_VALID) then {
+        print "[dn42] ROA check failed for ", net, " ASN ", bgp_path.last, " proto ", proto;
+        reject;
+    }
+}
+
+function dn42_filter_export() {
+    if !is_dn42_prefix() then reject;
+    if is_xvnet_internal() then reject;
+}
+
+filter dn42_import { dn42_filter_import(); accept; }
+filter dn42_export { dn42_filter_export(); accept; }
+
+{# Template #}
+template bgp dn42_peers {
+    local as 4242420361;
+    path metric 1;
+
+    ipv4 {
+{% if dn42_ipv4 is defined %}
+        import filter dn42_import;
+        export filter dn42_export;
+        import limit 1000 action block;
+        rpki reload on;
+        import table on;
+        extended next hop on;
+{% else %}
+        import none;
+        export none;
+{% endif %}
+    };
+
+    ipv6 {
+        import filter dn42_import;
+        export filter dn42_export;
+        import limit 1000 action block; 
+        rpki reload on;
+        import table on;
+    };
+}
+
+include "/etc/bird/dn42_grc.conf";
+include "/etc/bird/dn42_peers.conf";
