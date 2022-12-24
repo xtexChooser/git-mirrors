@@ -1,0 +1,19 @@
+define DN42_PREFIXES_V4 = [
+    172.20.0.0/14{21,29}, # dn42
+    172.20.0.0/24{28,32}, # dn42 Anycast
+    172.21.0.0/24{28,32}, # dn42 Anycast
+    172.22.0.0/24{28,32}, # dn42 Anycast
+    172.23.0.0/24{28,32}, # dn42 Anycast
+    172.31.0.0/16+,       # ChaosVPN
+    10.100.0.0/14+,       # ChaosVPN
+    10.127.0.0/16{16,32}, # neonetwork
+    10.0.0.0/8{15,24}     # Freifunk.net
+];
+
+function is_dn42_prefix() {
+    case net.type {
+        NET_IP4: return net ~ DN42_PREFIXES_V4;
+        NET_IP6: return net ~ [ fd00::/8+ ];
+        else: print "is_dn42_prefix: unexpected net.type ", net.type, " ", net; return false;
+    }
+}

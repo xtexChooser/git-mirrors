@@ -9,101 +9,20 @@ define XVNET_SELF_IP = {{ xvnet_ipv6 }};
 
 protocol device {}
 
-define BOGON_ASNS = [
-    0,                      # RFC 7607
-    23456,                  # RFC 4893 AS_TRANS
-    64496..64511,           # RFC 5398 and documentation/example ASNs
-    64512..65534,           # RFC 6996 Private ASNs
-    65535,                  # RFC 7300 Last 16 bit ASN
-    65536..65551,           # RFC 5398 and documentation/example ASNs
-    65552..131071,          # RFC IANA reserved ASNs
-#   4200000000..4294967294, # RFC 6996 Private ASNs
-    4294967295              # RFC 7300 Last 32 bit ASN
-];
-define BOGON_PREFIXES_V4 = [
-    0.0.0.0/8+,             # RFC 1122 'this' network
-#   10.0.0.0/8+,            # RFC 1918 private space
-    100.64.0.0/10+,         # RFC 6598 Carrier grade nat space
-    127.0.0.0/8+,           # RFC 1122 localhost
-    169.254.0.0/16+,        # RFC 3927 link local
-#   172.16.0.0/12+,         # RFC 1918 private space 
-    192.0.2.0/24+,          # RFC 5737 TEST-NET-1
-    192.88.99.0/24+,        # RFC 7526 deprecated 6to4 relay anycast. If you wish to allow this, change `24+` to `24{25,32}`(no more specific)
-    192.168.0.0/16+,        # RFC 1918 private space
-    198.18.0.0/15+,         # RFC 2544 benchmarking
-    198.51.100.0/24+,       # RFC 5737 TEST-NET-2
-    203.0.113.0/24+,        # RFC 5737 TEST-NET-3
-    224.0.0.0/4+,           # multicast
-    240.0.0.0/4+            # reserved
-];
-define BOGON_PREFIXES_V6 = [
-    ::/8+,                  # RFC 4291 IPv4-compatible, loopback, et al
-    0064:ff9b::/96+,        # RFC 6052 IPv4/IPv6 Translation
-    0064:ff9b:1::/48+,      # RFC 8215 Local-Use IPv4/IPv6 Translation
-    0100::/64+,             # RFC 6666 Discard-Only
-    2001::/32{33,128},      # RFC 4380 Teredo, no more specific
-    2001:2::/48+,           # RFC 5180 BMWG
-    2001:10::/28+,          # RFC 4843 ORCHID
-    2001:db8::/32+,         # RFC 3849 documentation
-    2002::/16+,             # RFC 7526 deprecated 6to4 relay anycast. If you wish to allow this, change `16+` to `16{17,128}`(no more specific)
-    3ffe::/16+, 5f00::/8+,  # RFC 3701 old 6bone
-#   fc00::/7+,              # RFC 4193 unique local unicast
-    fe80::/10+,             # RFC 4291 link local unicast
-    fec0::/10+,             # RFC 3879 old site local unicast
-    ff00::/8+               # RFC 4291 multicast
-];
-
-function is_bogon_prefix() {
-    case net.type {
-        NET_IP4: return net ~ BOGON_PREFIXES_V4;
-        NET_IP6: return net ~ BOGON_PREFIXES_V6;
-        else: print "is_bogon_prefix: unexpected net.type ", net.type, " ", net; return false;
-    }
-}
-
-function is_bogon_asn() {
-    if bgp_path ~ BOGON_ASNS then return true;
-    return false;
-}
-
-define DN42_PREFIXES_V4 = [
-    172.20.0.0/14{21,29}, # dn42
-    172.20.0.0/24{28,32}, # dn42 Anycast
-    172.21.0.0/24{28,32}, # dn42 Anycast
-    172.22.0.0/24{28,32}, # dn42 Anycast
-    172.23.0.0/24{28,32}, # dn42 Anycast
-    172.31.0.0/16+,       # ChaosVPN
-    10.100.0.0/14+,       # ChaosVPN
-    10.127.0.0/16{16,32}, # neonetwork
-    10.0.0.0/8{15,24}     # Freifunk.net
-];
-define DN42_PREFIXES_V6 = [ fd00::/8+ ];
-function is_dn42_prefix() {
-    case net.type {
-        NET_IP4: return net ~ DN42_PREFIXES_V4;
-        NET_IP6: return net ~ DN42_PREFIXES_V6;
-        else: print "is_dn42_prefix: unexpected net.type ", net.type, " ", net; return false;
-    }
-}
-function is_xvnet_internal() {
-    case net.type {
-        NET_IP4: return net ~ [172.20.206.64/26{27,32}];
-        NET_IP6: return net ~ [fd00:443a:ef14::/48{49,128}];
-        else: print "is_xvnet_internal: unexpected net.type ", net.type, " ", net; return false;
-    }
-}
+{% include 'prefixes.conf.j2' %}
 
 protocol kernel kernel4 {
     ipv4 {
         import none;
         export filter {
-            {% if dn42_ipv4 is defined %}
+{% if dn42_ipv4 is defined %}
             if is_dn42_prefix() then krt_prefsrc = DN42_SELF_IP;
-            {% endif %}
+{% endif %}
             accept;
         };
     };
 };
+
 protocol kernel kernel6 {
     ipv6 {
         import none;
@@ -120,5 +39,4 @@ protocol static static6 {
     ipv6 { import all; export none; };
 }
 
-{% include 'roa.conf.j2' %}
 {% include 'dn42.conf.j2' %}

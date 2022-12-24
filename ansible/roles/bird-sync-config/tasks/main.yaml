@@ -1,3 +1,8 @@
+- name: Dump BIRD config
+  ansible.builtin.template:
+    src: ../../../bird/bird.conf.j2
+    dest: /tmp/bird.conf.tmp
+
 - name: Update BIRD config
   ansible.builtin.template:
     src: ../../../bird/bird.conf.j2
