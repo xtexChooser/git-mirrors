@@ -13,8 +13,8 @@ export default function Home() {
       <main className={styles.main}>
         <div className={styles.header}>
           <h1 className={styles.title}>xtex</h1>
-          <p className={styles.description}>初三，学生</p>
-          <p className={styles.description}>Humanoid Carbon-Based Organism</p>
+          <p className={styles.description}>碳基的，一个人</p>
+          <p className={styles.description}>Carbon-Based Humanoid Entity</p>
           <div className='links'>
             <ul>
               <li><a href="https://blog.xtexx.ml/about" target="_blank" rel="noreferrer">About</a></li>
