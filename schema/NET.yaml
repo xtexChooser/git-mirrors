@@ -19,6 +19,6 @@ jtd:
 ref:
   - path: source
     schema: REGISTRY
-  - path: mnter
+  - path: mnter.*
     schema: MNTNER
 schema: NET
