@@ -2,9 +2,6 @@ jtd:
   optionalProperties:
     descr:
       type: string
-    nserver:
-      elements:
-        type: string
   properties:
     inetnum:
       type: string
