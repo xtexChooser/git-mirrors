@@ -37,7 +37,7 @@ jobs:
           path: distrib/registry
 
       - name: Commit
-        working-directory: ./registry
+        working-directory: ./distrib
         run: |
           git config user.name "XTEX-VNET Registry Distrib Bot"
           git config user.email "bot@xvnet.ga"
