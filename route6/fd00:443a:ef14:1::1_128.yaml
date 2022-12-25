@@ -1,5 +1,6 @@
 descr: XTEX-VNET nl-alk1
 net: XTEX-VNET
-origin: 4244310001
+origin:
+  - 4244310001
 route6: fd00:443a:ef14:1::1/128
 source: XTEX-VNET
