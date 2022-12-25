@@ -48,6 +48,11 @@ export async function lintObject(schema: string, key: string) {
             const refs = jsonpath.query(obj, reference.path)
             if (refs.length == 0) continue
             for (const ref of refs) {
+                if (!(typeof ref == 'number' || typeof ref == 'string'))
+                    logger.error(
+                        { schema, key, ref, reference, type: typeof ref },
+                        'Unexpected ref type'
+                    )
                 try {
                     await readObject(reference.schema, ref.toString())
                 } catch (e) {
