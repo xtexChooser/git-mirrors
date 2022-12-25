@@ -42,5 +42,5 @@ jobs:
           git config user.name "XTEX-VNET Registry Distrib Bot"
           git config user.email "bot@xvnet.ga"
           git add .
-          git commit -m "Update $(date -u +"%Y %m %d %H:%M:%S")"
+          git commit -m "Update $(date -u +"%Y %m %d %H:%M:%S")" | true
           git push
