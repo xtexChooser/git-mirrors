@@ -12,18 +12,23 @@ export async function collectROA(external = false): Promise<ROARecord[]> {
 }
 
 export async function collectLocalROA(schema: string): Promise<ROARecord[]> {
-    return Promise.all(
+    const roas: ROARecord[] = []
+    await Promise.all(
         (await listObjects(schema)).map(async (key) => {
             const obj = await readObject(schema, key)
+            const origins = obj['origin'] as number[]
             const subnet = obj[schema.toLowerCase()] as string
-            return {
-                asn: obj['origin'] as number,
-                prefix: subnet,
-                maxLength: ip.cidrSubnet(subnet).subnetMaskLength,
-                source: `XTEX-VNET Registry ${schema}`,
-            }
+            origins.forEach(asn => {
+                roas.push({
+                    asn,
+                    prefix: subnet,
+                    maxLength: ip.cidrSubnet(subnet).subnetMaskLength,
+                    source: `XTEX-VNET ${schema}`,
+                })
+            })
         })
     )
+    return roas
 }
 
 export async function collectRemoteROA(): Promise<ROARecord[]> {
