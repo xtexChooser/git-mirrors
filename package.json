@@ -1,6 +1,6 @@
 {
   "name": "@xvnet/registry-toolkit",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "description": "Toolkit to work with the XTEX-VNET registry",
   "type": "module",
   "main": "dist/index.js",

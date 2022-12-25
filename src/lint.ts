@@ -1,13 +1,10 @@
 import logger from './logger.js'
 import { listObjects, loadSchema, readObject } from './registry.js'
-import ip from 'ip'
 import { Schema } from './registry.js'
 import jsonpath from 'jsonpath'
 
 export async function lintAll() {
     await lintAllSchema()
-    await lintIPAddrs('ROUTE')
-    await lintIPAddrs('ROUTE6')
 }
 
 export async function lintAllSchema() {
@@ -66,23 +63,5 @@ export async function lintObject(schema: string, key: string) {
     } catch (e) {
         logger.error({ schema, key, e })
         throw e
-    }
-}
-
-export async function lintIPAddrs(schema: string) {
-    const nets = await listObjects(schema)
-    for (const net of nets) {
-        const netNet = ip.cidrSubnet(net)
-        for (const other of nets) {
-            const otherNet = ip.cidrSubnet(other)
-            if (net != other) {
-                if (
-                    netNet.contains(otherNet.firstAddress) ||
-                    netNet.contains(otherNet.lastAddress)
-                ) {
-                    logger.error({ schema, net, other }, 'IP subnets conflict')
-                }
-            }
-        }
     }
 }
