@@ -1,6 +1,0 @@
-descr: Authority Name Servers
-net: XTEX-VNET
-origin:
-  - 4244310001
-route6: fd00:443a:ef14:3:1::/80
-source: XTEX-VNET

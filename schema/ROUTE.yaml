@@ -2,6 +2,8 @@ jtd:
   optionalProperties:
     descr:
       type: string
+    max_len:
+      type: uint16
   properties:
     net:
       type: string
