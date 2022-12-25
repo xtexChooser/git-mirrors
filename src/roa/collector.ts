@@ -14,15 +14,19 @@ export async function collectROA(external = false): Promise<ROARecord[]> {
 export async function collectLocalROA(schema: string): Promise<ROARecord[]> {
     const roas: ROARecord[] = []
     await Promise.all(
-        (await listObjects(schema)).map(async (key) => {
+        (
+            await listObjects(schema)
+        ).map(async (key) => {
             const obj = await readObject(schema, key)
             const origins = obj['origin'] as number[]
             const subnet = obj[schema.toLowerCase()] as string
-            origins.forEach(asn => {
+            origins.forEach((asn) => {
                 roas.push({
                     asn,
                     prefix: subnet,
-                    maxLength: ip.cidrSubnet(subnet).subnetMaskLength,
+                    maxLength:
+                        obj['max_len'] ||
+                        ip.cidrSubnet(subnet).subnetMaskLength,
                     source: `XTEX-VNET ${schema}`,
                 })
             })
