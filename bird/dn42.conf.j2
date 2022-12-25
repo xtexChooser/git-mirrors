@@ -47,6 +47,7 @@ function dn42_filter_import() {
 function dn42_filter_export() {
     if !is_dn42_prefix() then reject;
     if is_xvnet_internal_prefix() then reject;
+    strip_confed_as()
 }
 
 filter dn42_import { dn42_filter_import(); accept; }

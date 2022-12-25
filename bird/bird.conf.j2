@@ -44,4 +44,6 @@ protocol static static6 {
     ipv6 { import all; export none; };
 }
 
+{% include 'confed.conf.j2' %}
+
 {% include 'dn42.conf.j2' %}
