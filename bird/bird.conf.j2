@@ -9,6 +9,11 @@ define XVNET_SELF_IP = {{ xvnet_ipv6 }};
 
 protocol device {}
 
+protocol direct {
+    ipv4;
+    ipv6;
+}
+
 {% include 'prefixes.conf.j2' %}
 
 protocol kernel kernel4 {
