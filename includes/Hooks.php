@@ -10,6 +10,7 @@ namespace LoginNotify;
 
 use EchoAttributeManager;
 use EchoEvent;
+use EchoUserLocator;
 use MediaWiki\Auth\AuthenticationResponse;
 use User;
 
@@ -40,7 +41,7 @@ class Hooks {
 
 		$loginBase = [
 			EchoAttributeManager::ATTR_LOCATORS => [
-				'EchoUserLocator::locateEventAgent'
+				[ [ EchoUserLocator::class, 'locateArticleCreator' ] ],
 			],
 			'canNotifyAgent' => true,
 			'category' => 'login-fail',
