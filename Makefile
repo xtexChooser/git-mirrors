@@ -1,7 +1,7 @@
 TOOLKIT 		= pnpx @xvnet/registry-toolkit
 
-.PHONY: default roa
-default: dist roa
+.PHONY: all roa
+all: dist roa
 
 dist:
 	mkdir dist
