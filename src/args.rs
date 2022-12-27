@@ -1,11 +1,8 @@
-use std::path::PathBuf;
+use std::{cell::LazyCell, path::PathBuf, sync::Mutex};
 
-use clap::{Parser, Subcommand};
-use lazy_static::lazy_static;
+use clap::Parser;
 
-lazy_static! {
-    pub static ref ARGS: Args = Args::parse();
-}
+pub static ARGS: Mutex<LazyCell<Args>> = Mutex::new(LazyCell::new(|| Args::parse()));
 
 #[derive(Parser, Debug)]
 #[clap(author, version, about = "Manage BGP peers with etcd")]
