@@ -1,9 +1,7 @@
-use simple_logger::SimpleLogger;
+#![feature(imported_main)]
 
 #[macro_use]
 extern crate log;
 
-fn main() {
-    SimpleLogger::new().init().unwrap();
-    info!("hello")
-}
+pub mod entry;
+pub use entry::main;

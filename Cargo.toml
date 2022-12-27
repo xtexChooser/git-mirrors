@@ -1,11 +1,12 @@
 [package]
-name = "peer42d"
+name = "peerd"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
 anyhow = { version = "1.0.68", features = ["backtrace"] }
 clap = { version = "4.0.32", features = ["derive"] }
+etcd-client = { version = "0.10.2", features = ["tls"] }
 log = "0.4.17"
 netlink-packet-wireguard = "0.2.1"
 serde = { version = "1.0.152", features = ["derive"] }
