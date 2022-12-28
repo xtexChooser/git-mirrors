@@ -1,6 +1,7 @@
 #![feature(imported_main)]
 #![feature(once_cell)]
 #![feature(is_some_and)]
+#![feature(let_chains)]
 
 #[macro_use]
 extern crate log;

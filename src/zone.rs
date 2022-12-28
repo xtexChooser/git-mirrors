@@ -1,49 +1,32 @@
-use std::{
-    collections::BTreeMap,
-    sync::{Mutex, MutexGuard},
-};
-
-use anyhow::{anyhow, Ok, Result};
+use anyhow::{Ok, Result};
 use serde::Deserialize;
 
-use crate::config::get_config;
-
-pub static mut ZONES: Mutex<BTreeMap<String, Zone>> = Mutex::new(BTreeMap::new());
+use crate::{config::get_config, peer::PeerConfig};
 
 #[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]
-pub struct ZoneConfig {
+pub struct Zone {
     pub name: String,
     pub etcd_prefix: String,
+    pub wireguard: Option<WireGuardConfig>,
+    #[serde(skip)]
+    pub peers: Vec<PeerConfig>,
 }
 
-#[derive(Debug, PartialEq, Eq)]
-pub struct Zone {
-    pub config: ZoneConfig,
-}
-
-impl Zone {
-    pub fn new(config: ZoneConfig) -> Zone {
-        Zone { config }
-    }
-}
-
-pub fn get_zones() -> Result<MutexGuard<'static, BTreeMap<String, Zone>>> {
-    unsafe { ZONES.lock() }.map_err(|e| anyhow!("failed to lock ZONES {:?}", e))
+#[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]
+pub struct WireGuardConfig {
+    pub ifname_prefix: String,
 }
 
 pub async fn init_zones() -> Result<()> {
     let zones = &get_config()?.zone;
     for config in zones {
-        init_zone(config.clone()).await?;
+        init_zone(config).await?;
     }
     Ok(())
 }
 
-pub async fn init_zone(config: ZoneConfig) -> Result<()> {
-    info!("initializing zone {}", config.name);
-    let name = config.name.clone();
-    let zone = Zone::new(config);
+pub async fn init_zone(zone: &Zone) -> Result<()> {
+    info!("initializing zone {}", zone.name);
     //zone.sync_peers();
-    get_zones()?.insert(name, zone);
     Ok(())
 }
