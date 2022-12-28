@@ -6,6 +6,7 @@ use std::{
 
 use anyhow::{anyhow, bail, Result};
 use etcd_client::{Certificate, Client, ConnectOptions, Identity, TlsOptions};
+use serde::Deserialize;
 
 use crate::config::get_config;
 
@@ -35,10 +36,10 @@ pub async fn init_etcd() -> Result<()> {
                     pem::parse(read_to_string(PathBuf::from(key_file)).unwrap())?.contents,
                 ))
             } else {
-                bail!("Client cert file defined but no key file")
+                bail!("client cert file defined but no key file")
             }
         } else if let Some(_) = tls.client_key_file {
-            bail!("Client key file defined but no cert file")
+            bail!("client key file defined but no cert file")
         }
         options = options.with_tls(tls_config);
     }
@@ -55,4 +56,25 @@ pub fn get_etcd_client() -> Result<MutexGuard<'static, Client>> {
         .ok_or(anyhow!("etcd client not initialized"))?
         .lock()
         .map_err(|e| anyhow!("failed to lock etcd client {}", e))?)
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]
+pub struct EtcdConfig {
+    pub endpoints: Vec<String>,
+    pub auth: Option<EtcdAuthConfig>,
+    pub tls: Option<EtcdTlsConfig>,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]
+pub struct EtcdAuthConfig {
+    pub user: String,
+    pub password: String,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]
+pub struct EtcdTlsConfig {
+    pub domain: Option<String>,
+    pub ca_cert_file: Option<String>,
+    pub client_cert_file: Option<String>,
+    pub client_key_file: Option<String>,
 }

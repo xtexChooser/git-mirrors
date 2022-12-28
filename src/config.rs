@@ -8,7 +8,7 @@ use std::{
 use anyhow::{anyhow, bail, Result};
 use serde::Deserialize;
 
-use crate::args::get_args;
+use crate::{args::get_args, etcd::EtcdConfig, zone::ZoneConfig};
 
 pub static mut CONFIG: OnceCell<Mutex<Config>> = OnceCell::new();
 
@@ -45,25 +45,5 @@ pub fn get_config() -> Result<MutexGuard<'static, Config>> {
 #[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]
 pub struct Config {
     pub etcd: EtcdConfig,
-}
-
-#[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]
-pub struct EtcdConfig {
-    pub endpoints: Vec<String>,
-    pub auth: Option<EtcdAuthConfig>,
-    pub tls: Option<EtcdTlsConfig>,
-}
-
-#[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]
-pub struct EtcdAuthConfig {
-    pub user: String,
-    pub password: String,
-}
-
-#[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]
-pub struct EtcdTlsConfig {
-    pub domain: Option<String>,
-    pub ca_cert_file: Option<String>,
-    pub client_cert_file: Option<String>,
-    pub client_key_file: Option<String>,
+    pub zone: Vec<ZoneConfig>,
 }
