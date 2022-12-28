@@ -747,6 +747,7 @@ dependencies = [
  "etcd-client",
  "log",
  "netlink-packet-wireguard",
+ "once_cell",
  "pem",
  "serde",
  "simple_logger",

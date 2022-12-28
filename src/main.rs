@@ -9,5 +9,7 @@ pub mod args;
 pub mod config;
 pub mod entry;
 pub mod etcd;
+pub mod peer;
+pub mod tunnel;
 
 pub use entry::main;

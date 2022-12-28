@@ -1,15 +1,18 @@
-use std::{cell::OnceCell, fs::read_to_string, path::PathBuf, sync::Mutex};
+use std::{
+    fs::read_to_string,
+    path::PathBuf,
+    sync::{Mutex, MutexGuard},
+};
 
-use anyhow::{bail, Result};
+use anyhow::{anyhow, bail, Result};
 use etcd_client::{Certificate, Client, ConnectOptions, Identity, TlsOptions};
 
-use crate::config::CONFIG;
+use crate::config::get_config;
 
-pub static ETCD_CLIENT: Mutex<OnceCell<Client>> = Mutex::new(OnceCell::new());
+pub static mut ETCD_CLIENT: Option<Mutex<Client>> = None;
 
 pub async fn init_etcd() -> Result<()> {
-    let config_lock = CONFIG.lock().unwrap();
-    let config = &config_lock.get().unwrap().etcd;
+    let config = &get_config()?.etcd;
     let endpoints = config.endpoints.clone();
     let mut options = ConnectOptions::new();
     if let Some(auth) = config.auth.clone() {
@@ -41,11 +44,15 @@ pub async fn init_etcd() -> Result<()> {
     }
     info!("connecting to etcd, endpoints: {:?}", endpoints);
     info!("etcd options: {:?}", options);
-    ETCD_CLIENT
-        .lock()
-        .unwrap()
-        .set(Client::connect(endpoints, Some(options)).await?)
-        .ok()
-        .unwrap();
+    unsafe {
+        ETCD_CLIENT = Some(Mutex::new(Client::connect(endpoints, Some(options)).await?));
+    }
     Ok(())
+}
+
+pub fn get_etcd_client() -> Result<MutexGuard<'static, Client>> {
+    Ok(unsafe { ETCD_CLIENT.as_mut() }
+        .ok_or(anyhow!("etcd client not initialized"))?
+        .lock()
+        .map_err(|e| anyhow!("failed to lock etcd client {}", e))?)
 }
