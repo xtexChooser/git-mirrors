@@ -38,7 +38,7 @@ pub async fn init_etcd() -> Result<()> {
             } else {
                 bail!("client cert file defined but no key file")
             }
-        } else if let Some(_) = tls.client_key_file {
+        } else if tls.client_key_file.is_some() {
             bail!("client key file defined but no cert file")
         }
         options = options.with_tls(tls_config);
@@ -52,10 +52,10 @@ pub async fn init_etcd() -> Result<()> {
 }
 
 pub fn get_etcd_client() -> Result<MutexGuard<'static, Client>> {
-    Ok(unsafe { ETCD_CLIENT.as_mut() }
+    unsafe { ETCD_CLIENT.as_mut() }
         .ok_or(anyhow!("etcd client not initialized"))?
         .lock()
-        .map_err(|e| anyhow!("failed to lock etcd client {}", e))?)
+        .map_err(|e| anyhow!("failed to lock etcd client {}", e))
 }
 
 #[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]

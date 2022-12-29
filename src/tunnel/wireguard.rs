@@ -69,11 +69,11 @@ impl WireGuardConfig {
         Ok(conf)
     }
 
-    pub fn update(self: &Self, peer: &PeerInfo) -> Result<()> {
+    pub fn update(&self, _peer: &PeerInfo) -> Result<()> {
         todo!();
     }
 
-    pub fn del(self: &Self, peer: &PeerInfo) -> Result<()> {
+    pub fn del(&self, _peer: &PeerInfo) -> Result<()> {
         todo!();
     }
 }
@@ -97,7 +97,7 @@ pub fn to_ifname(peer: &PeerInfo) -> Result<String> {
         .as_ref()
         .ok_or(anyhow!("no WG configured for zone"))?
         .ifname_prefix;
-    Ok(format!("{}{}", ifname_prefix, name))
+    Ok(format!("{ifname_prefix}{name}"))
 }
 
 pub fn select_endpoint(endpoints: &mut Vec<SocketAddr>) -> Result<SocketAddr> {

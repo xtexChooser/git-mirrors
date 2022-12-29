@@ -28,19 +28,19 @@ impl TunnelConfig {
         Ok(conf)
     }
 
-    pub async fn create(self: &Self, peer: &PeerInfo) -> Result<()> {
+    pub async fn create(&self, peer: &PeerInfo) -> Result<()> {
         match self {
             Self::WireGuard(v) => v.update(peer),
         }
     }
 
-    pub async fn update(self: &Self, peer: &PeerInfo) -> Result<()> {
+    pub async fn update(&self, peer: &PeerInfo) -> Result<()> {
         match self {
             Self::WireGuard(v) => v.update(peer),
         }
     }
 
-    pub async fn del(self: &Self, peer: &PeerInfo) -> Result<()> {
+    pub async fn del(&self, peer: &PeerInfo) -> Result<()> {
         match self {
             Self::WireGuard(v) => v.del(peer),
         }

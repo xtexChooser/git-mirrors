@@ -7,7 +7,7 @@ use std::{
 use anyhow::{anyhow, Result};
 use clap::Parser;
 
-pub static ARGS: Mutex<LazyCell<Args>> = Mutex::new(LazyCell::new(|| Args::parse()));
+pub static ARGS: Mutex<LazyCell<Args>> = Mutex::new(LazyCell::new(Args::parse));
 
 #[derive(Parser, Debug)]
 #[clap(author, version, about = "Manage BGP peers with etcd")]
@@ -18,7 +18,7 @@ pub struct Args {
 }
 
 pub fn get_args() -> Result<MutexGuard<'static, LazyCell<Args>>> {
-    Ok(ARGS
+    ARGS
         .lock()
-        .map_err(|e| anyhow!("failed to lock config {}", e))?)
+        .map_err(|e| anyhow!("failed to lock config {}", e))
 }

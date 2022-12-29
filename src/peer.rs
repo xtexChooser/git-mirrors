@@ -33,17 +33,17 @@ impl PeerConfig {
         Self::try_from(PeerInfo::new(zone, name, props)?)
     }
 
-    pub async fn create(self: &Self) -> Result<()> {
+    pub async fn create(&self) -> Result<()> {
         self.tun.create(&self.info).await?;
         Ok(())
     }
 
-    pub async fn update(self: &Self) -> Result<()> {
+    pub async fn update(&self) -> Result<()> {
         self.tun.update(&self.info).await?;
         Ok(())
     }
 
-    pub async fn del(self: &Self) -> Result<()> {
+    pub async fn del(&self) -> Result<()> {
         self.tun.del(&self.info).await?;
         Ok(())
     }

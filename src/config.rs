@@ -37,10 +37,10 @@ pub fn locate_config() -> Result<PathBuf> {
 }
 
 pub fn get_config() -> Result<MutexGuard<'static, Config>> {
-    Ok(unsafe { CONFIG.get() }
+    unsafe { CONFIG.get() }
         .ok_or(anyhow!("config not initialized"))?
         .lock()
-        .map_err(|e| anyhow!("failed to lock config {}", e))?)
+        .map_err(|e| anyhow!("failed to lock config {}", e))
 }
 
 #[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]
@@ -89,10 +89,8 @@ pub fn check_zone_wg_prefix_conflict() -> Result<()> {
     let config = get_config()?;
     for zone1 in &config.zone {
         for zone2 in &config.zone {
-            if let Some(wg1) = &zone1.wireguard && let Some(wg2) = &zone2.wireguard {
-                if !std::ptr::eq(zone1, zone2) && (wg1.ifname_prefix.starts_with(&wg2.ifname_prefix) || wg2.ifname_prefix.starts_with(&wg1.ifname_prefix)) {
-                    bail!("WG if name prefix in zone {} ({}), {} ({}) conflicted", zone1.name, wg1.ifname_prefix, zone2.name, wg2.ifname_prefix);
-                }
+            if let Some(wg1) = &zone1.wireguard && let Some(wg2) = &zone2.wireguard && !std::ptr::eq(zone1, zone2) && (wg1.ifname_prefix.starts_with(&wg2.ifname_prefix) || wg2.ifname_prefix.starts_with(&wg1.ifname_prefix)) {
+                bail!("WG if name prefix in zone {} ({}), {} ({}) conflicted", zone1.name, wg1.ifname_prefix, zone2.name, wg2.ifname_prefix);
             }
         }
     }

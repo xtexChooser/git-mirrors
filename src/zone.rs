@@ -1,4 +1,5 @@
 use anyhow::{Ok, Result};
+
 use serde::Deserialize;
 
 use crate::{config::get_config, peer::PeerConfig};
