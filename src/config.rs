@@ -55,9 +55,15 @@ pub struct WireGuardConfig {
     pub xplatform_exec: Option<String>,
     #[serde(default = "default_crc_if_peer_name")]
     pub crc_if_peer_name: bool,
+    #[serde(default = "default_prefer_ipv6")]
+    pub prefer_ipv6: bool,
 }
 
 fn default_crc_if_peer_name() -> bool {
+    true
+}
+
+fn default_prefer_ipv6() -> bool {
     true
 }
 

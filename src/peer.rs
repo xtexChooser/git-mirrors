@@ -1,33 +1,60 @@
+use std::collections::BTreeMap;
+
 use anyhow::Result;
-use serde::{Deserialize, Serialize};
 
 use crate::{tunnel::TunnelConfig, zone::Zone};
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone, Hash)]
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
+pub struct PeerInfo {
+    pub zone: &'static Zone,
+    pub name: String,
+    pub props: BTreeMap<String, String>,
+}
+
+impl PeerInfo {
+    pub fn new(
+        zone: &'static Zone,
+        name: String,
+        props: BTreeMap<String, String>,
+    ) -> Result<PeerInfo> {
+        let conf = PeerInfo { zone, name, props };
+        Ok(conf)
+    }
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct PeerConfig {
-    #[serde(skip)]
-    pub zone: Option<&'static Zone>,
-    #[serde(skip)]
-    pub name: Option<String>,
+    pub info: PeerInfo,
     pub tun: TunnelConfig,
 }
 
 impl PeerConfig {
-    pub fn link(self: &mut Self, zone: &'static Zone, name: String) {
-        self.zone = Some(zone);
-        self.name = Some(name);
-        self.tun.link(self);
+    pub fn new(zone: &'static Zone, name: String, props: BTreeMap<String, String>) -> Result<Self> {
+        Self::try_from(PeerInfo::new(zone, name, props)?)
     }
 
     pub async fn create(self: &Self) -> Result<()> {
-        Ok(())
-    }
-
-    pub async fn delete(self: &Self) -> Result<()> {
+        self.tun.create(&self.info).await?;
         Ok(())
     }
 
     pub async fn update(self: &Self) -> Result<()> {
+        self.tun.update(&self.info).await?;
         Ok(())
+    }
+
+    pub async fn del(self: &Self) -> Result<()> {
+        self.tun.del(&self.info).await?;
+        Ok(())
+    }
+}
+
+impl TryFrom<PeerInfo> for PeerConfig {
+    type Error = anyhow::Error;
+
+    fn try_from(info: PeerInfo) -> Result<Self> {
+        let tun = TunnelConfig::new(&info)?;
+        let conf = PeerConfig { info, tun };
+        Ok(conf)
     }
 }
