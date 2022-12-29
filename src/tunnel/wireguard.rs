@@ -27,16 +27,19 @@ pub struct WireGuardConfig {
 }
 
 impl WireGuardConfig {
-    pub fn new(peer: &PeerInfo) -> Result<WireGuardConfig> {
+    pub async fn new(peer: &PeerInfo) -> Result<WireGuardConfig> {
         let conf = WireGuardConfig {
             endpoint: if let Some(endpoint) = peer.props.get(KEY_ENDPOINT) {
-                Some(select_endpoint(
-                    &mut endpoint
-                        .as_str()
-                        .to_socket_addrs()
-                        .map_err(|e| anyhow!("failed to resolve WG endpoint: {}", e))?
-                        .collect(),
-                )?)
+                Some(
+                    select_endpoint(
+                        &mut endpoint
+                            .as_str()
+                            .to_socket_addrs()
+                            .map_err(|e| anyhow!("failed to resolve WG endpoint: {}", e))?
+                            .collect(),
+                    )
+                    .await?,
+                )
             } else {
                 None
             },
@@ -78,17 +81,18 @@ impl WireGuardConfig {
     }
 }
 
-pub fn get_config() -> Result<config::WireGuardConfig> {
-    Ok(config::get_config()?
+pub async fn get_config() -> Result<config::WireGuardConfig> {
+    Ok(config::get_config()
+        .await?
         .wireguard
         .as_ref()
         .ok_or(anyhow!("no WG configured"))?
         .to_owned())
 }
 
-pub fn to_ifname(peer: &PeerInfo) -> Result<String> {
+pub async fn to_ifname(peer: &PeerInfo) -> Result<String> {
     let mut name = peer.name.to_owned();
-    if get_config()?.crc_if_peer_name {
+    if get_config().await?.crc_if_peer_name {
         name = format!("{:x}", crc32fast::hash(name.as_bytes()));
     }
     let ifname_prefix = &peer
@@ -100,8 +104,8 @@ pub fn to_ifname(peer: &PeerInfo) -> Result<String> {
     Ok(format!("{ifname_prefix}{name}"))
 }
 
-pub fn select_endpoint(endpoints: &mut Vec<SocketAddr>) -> Result<SocketAddr> {
-    let prefer_ipv6 = get_config()?.prefer_ipv6;
+pub async fn select_endpoint(endpoints: &mut Vec<SocketAddr>) -> Result<SocketAddr> {
+    let prefer_ipv6 = get_config().await?.prefer_ipv6;
     endpoints.sort_by(|p1, p2| {
         let mut score = 0;
         if prefer_ipv6 {
@@ -147,12 +151,12 @@ pub async fn delete_unknown_if() -> Result<()> {
             }
         }
         if let Some(ifname) = ifname {
-            for zone in &config::get_config()?.zone {
+            for zone in &config::get_config().await?.zone {
                 if let Some(wg) = &zone.wireguard && ifname.starts_with(&wg.ifname_prefix) {
                         info!("find if '{}'({}) with the wg ifname prefix of zone {}", ifname, ifindex, zone.name);
                         let mut found = false;
                         for peer in &zone.peers {
-                            if let TunnelConfig::WireGuard(_) = &peer.tun && to_ifname(&peer.info)? == ifname{
+                            if let TunnelConfig::WireGuard(_) = &peer.tun && to_ifname(&peer.info).await? == ifname{
                                 found = true;
                                 break;
                             }

@@ -29,8 +29,18 @@ pub struct PeerConfig {
 }
 
 impl PeerConfig {
-    pub fn new(zone: &'static Zone, name: String, props: BTreeMap<String, String>) -> Result<Self> {
-        Self::try_from(PeerInfo::new(zone, name, props)?)
+    pub async fn new(
+        zone: &'static Zone,
+        name: String,
+        props: BTreeMap<String, String>,
+    ) -> Result<Self> {
+        Self::try_from(PeerInfo::new(zone, name, props)?).await
+    }
+
+    pub async fn try_from(info: PeerInfo) -> Result<Self> {
+        let tun = TunnelConfig::new(&info).await?;
+        let conf = PeerConfig { info, tun };
+        Ok(conf)
     }
 
     pub async fn create(&self) -> Result<()> {
@@ -46,15 +56,5 @@ impl PeerConfig {
     pub async fn del(&self) -> Result<()> {
         self.tun.del(&self.info).await?;
         Ok(())
-    }
-}
-
-impl TryFrom<PeerInfo> for PeerConfig {
-    type Error = anyhow::Error;
-
-    fn try_from(info: PeerInfo) -> Result<Self> {
-        let tun = TunnelConfig::new(&info)?;
-        let conf = PeerConfig { info, tun };
-        Ok(conf)
     }
 }

@@ -19,7 +19,7 @@ pub struct WireGuardConfig {
 }
 
 pub async fn init_zones() -> Result<()> {
-    let zones = &get_config()?.zone;
+    let zones = &get_config().await?.zone;
     for config in zones {
         init_zone(config).await?;
     }

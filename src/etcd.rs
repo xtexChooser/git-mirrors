@@ -1,11 +1,8 @@
-use std::{
-    fs::read_to_string,
-    path::PathBuf,
-    sync::{Mutex, MutexGuard},
-};
+use std::{fs::read_to_string, path::PathBuf};
 
 use anyhow::{anyhow, bail, Result};
 use etcd_client::{Certificate, Client, ConnectOptions, Identity, TlsOptions};
+use futures::lock::{Mutex, MutexGuard};
 use serde::Deserialize;
 
 use crate::config::get_config;
@@ -13,7 +10,7 @@ use crate::config::get_config;
 pub static mut ETCD_CLIENT: Option<Mutex<Client>> = None;
 
 pub async fn init_etcd() -> Result<()> {
-    let config = &get_config()?.etcd;
+    let config = &get_config().await?.etcd;
     let endpoints = config.endpoints.clone();
     let mut options = ConnectOptions::new();
     if let Some(auth) = config.auth.clone() {
@@ -51,11 +48,11 @@ pub async fn init_etcd() -> Result<()> {
     Ok(())
 }
 
-pub fn get_etcd_client() -> Result<MutexGuard<'static, Client>> {
-    unsafe { ETCD_CLIENT.as_mut() }
+pub async fn get_etcd_client() -> Result<MutexGuard<'static, Client>> {
+    Ok(unsafe { ETCD_CLIENT.as_mut() }
         .ok_or(anyhow!("etcd client not initialized"))?
         .lock()
-        .map_err(|e| anyhow!("failed to lock etcd client {}", e))
+        .await)
 }
 
 #[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]

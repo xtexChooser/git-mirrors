@@ -16,7 +16,7 @@ pub async fn main() -> Result<()> {
         .init()
         .unwrap();
     info!("peer42d version {}", env!("CARGO_PKG_VERSION"));
-    init_config()?;
+    init_config().await?;
     init_etcd().await?;
     init_zones().await?;
     tunnel::wireguard::delete_unknown_if().await?;

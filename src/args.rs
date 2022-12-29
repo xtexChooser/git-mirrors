@@ -1,13 +1,11 @@
-use std::{
-    cell::LazyCell,
-    path::PathBuf,
-    sync::{Mutex, MutexGuard},
-};
+use std::{cell::LazyCell, path::PathBuf};
 
-use anyhow::{anyhow, Result};
+use anyhow::Result;
 use clap::Parser;
 
-pub static ARGS: Mutex<LazyCell<Args>> = Mutex::new(LazyCell::new(Args::parse));
+use once_cell::sync::Lazy;
+
+pub static ARGS: Lazy<Args> = Lazy::new(Args::parse);
 
 #[derive(Parser, Debug)]
 #[clap(author, version, about = "Manage BGP peers with etcd")]
@@ -17,8 +15,6 @@ pub struct Args {
     pub config: Option<PathBuf>,
 }
 
-pub fn get_args() -> Result<MutexGuard<'static, LazyCell<Args>>> {
-    ARGS
-        .lock()
-        .map_err(|e| anyhow!("failed to lock config {}", e))
+pub async fn get_args() -> Result<&'static Args> {
+    Ok(&*ARGS)
 }
