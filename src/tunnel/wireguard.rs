@@ -2,10 +2,7 @@ use anyhow::{anyhow, Result};
 use futures::TryStreamExt;
 use netlink_packet_route::nlas::link::Nla;
 use rtnetlink::new_connection;
-use std::{
-    cmp::Ordering,
-    net::{SocketAddr, ToSocketAddrs},
-};
+use std::net::{SocketAddr, ToSocketAddrs};
 
 use crate::{config, peer::PeerInfo, tunnel::TunnelConfig};
 
@@ -32,7 +29,7 @@ impl WireGuardConfig {
             endpoint: if let Some(endpoint) = peer.props.get(KEY_ENDPOINT) {
                 Some(
                     select_endpoint(
-                        &mut endpoint
+                        endpoint
                             .as_str()
                             .to_socket_addrs()
                             .map_err(|e| anyhow!("failed to resolve WG endpoint: {}", e))?
@@ -123,13 +120,7 @@ pub async fn select_endpoint(endpoints: &mut [SocketAddr]) -> Result<SocketAddr>
                 score -= 100;
             }
         }
-        if score == 0 {
-            Ordering::Equal
-        } else if score > 0 {
-            Ordering::Greater
-        } else {
-            Ordering::Less
-        }
+        score.cmp(&0)
     });
     Ok(endpoints
         .last()
@@ -145,9 +136,9 @@ pub async fn delete_unknown_if() -> Result<()> {
         let ifindex = link.header.index;
         let mut ifname: Option<String> = None;
         for nla in link.nlas.into_iter() {
-            match nla {
-                Nla::IfName(name) => ifname = Some(name),
-                _ => (),
+            if let Nla::IfName(name) = nla {
+                ifname = Some(name);
+                break;
             }
         }
         if let Some(ifname) = ifname {
