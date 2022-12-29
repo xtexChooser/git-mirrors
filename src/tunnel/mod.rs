@@ -42,7 +42,7 @@ impl TunnelConfig {
 
     pub async fn del(&self, peer: &PeerInfo) -> Result<()> {
         match self {
-            Self::WireGuard(v) => v.del(peer),
+            Self::WireGuard(v) => v.del(peer).await,
         }
     }
 }

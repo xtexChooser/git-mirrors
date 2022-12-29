@@ -73,8 +73,21 @@ impl WireGuardConfig {
         todo!();
     }
 
-    pub fn del(&self, _peer: &PeerInfo) -> Result<()> {
-        todo!();
+    pub async fn del(&self, peer: &PeerInfo) -> Result<()> {
+        let ifname = to_ifname(peer).await?;
+        let (connection, handle, _) =
+            new_connection().map_err(|e| anyhow!("failed to connect to rtnl: {}", e))?;
+        tokio::spawn(connection);
+        info!("deleting WG if '{}'", ifname);
+        let mut ifreq = handle.link().get().match_name(ifname.clone()).execute();
+        let ifresp = ifreq.try_next().await?;
+        assert!(ifreq.try_next().await?.is_none());
+        if let Some(ifinfo) = ifresp {
+            handle.link().del(ifinfo.header.index);
+        } else {
+            warn!("WG if with name '{}' not found", ifname);
+        }
+        Ok(())
     }
 }
 
@@ -129,7 +142,8 @@ pub async fn select_endpoint(endpoints: &mut [SocketAddr]) -> Result<SocketAddr>
 }
 
 pub async fn delete_unknown_if() -> Result<()> {
-    let (connection, handle, _) = new_connection().unwrap();
+    let (connection, handle, _) =
+        new_connection().map_err(|e| anyhow!("failed to connect to rtnl: {}", e))?;
     tokio::spawn(connection);
     let mut links = handle.link().get().execute();
     while let Some(link) = links.try_next().await? {
