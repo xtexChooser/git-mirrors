@@ -7,10 +7,18 @@ use crate::{tunnel::TunnelConfig, zone::Zone};
 pub struct PeerConfig {
     #[serde(skip)]
     pub zone: Option<&'static Zone>,
+    #[serde(skip)]
+    pub name: Option<String>,
     pub tun: TunnelConfig,
 }
 
 impl PeerConfig {
+    pub fn link(self: &mut Self, zone: &'static Zone, name: String) {
+        self.zone = Some(zone);
+        self.name = Some(name);
+        self.tun.link(self);
+    }
+
     pub async fn create(self: &Self) -> Result<()> {
         Ok(())
     }

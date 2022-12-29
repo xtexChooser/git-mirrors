@@ -15,6 +15,12 @@ pub enum TunnelConfig {
 }
 
 impl TunnelConfig {
+    pub fn link(self: &mut Self, peer: *const PeerConfig) {
+        match self {
+            Self::WireGuard(config) => config.link(peer),
+        }
+    }
+
     pub async fn create(peer: &PeerConfig) -> Result<()> {
         match &peer.tun {
             Self::WireGuard(config) => config.create(peer).await,

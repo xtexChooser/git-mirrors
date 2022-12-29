@@ -47,7 +47,7 @@ pub fn get_config() -> Result<MutexGuard<'static, Config>> {
 pub struct Config {
     pub etcd: EtcdConfig,
     pub zone: Vec<Zone>,
-    pub wireguard: WireGuardConfig,
+    pub wireguard: Option<WireGuardConfig>,
 }
 
 #[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]
