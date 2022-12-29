@@ -36,7 +36,7 @@ impl WireGuardConfig {
                             .as_str()
                             .to_socket_addrs()
                             .map_err(|e| anyhow!("failed to resolve WG endpoint: {}", e))?
-                            .collect(),
+                            .as_mut_slice(),
                     )
                     .await?,
                 )
@@ -104,7 +104,7 @@ pub async fn to_ifname(peer: &PeerInfo) -> Result<String> {
     Ok(format!("{ifname_prefix}{name}"))
 }
 
-pub async fn select_endpoint(endpoints: &mut Vec<SocketAddr>) -> Result<SocketAddr> {
+pub async fn select_endpoint(endpoints: &mut [SocketAddr]) -> Result<SocketAddr> {
     let prefer_ipv6 = get_config().await?.prefer_ipv6;
     endpoints.sort_by(|p1, p2| {
         let mut score = 0;
@@ -156,7 +156,7 @@ pub async fn delete_unknown_if() -> Result<()> {
                         info!("find if '{}'({}) with the wg ifname prefix of zone {}", ifname, ifindex, zone.name);
                         let mut found = false;
                         for peer in &zone.peers {
-                            if let TunnelConfig::WireGuard(_) = &peer.tun && to_ifname(&peer.info).await? == ifname{
+                            if matches!(&peer.tun, TunnelConfig::WireGuard(_)) && to_ifname(&peer.info).await? == ifname{
                                 found = true;
                                 break;
                             }
