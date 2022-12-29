@@ -876,6 +876,7 @@ dependencies = [
  "futures",
  "genetlink",
  "log",
+ "netlink-packet-generic",
  "netlink-packet-route",
  "netlink-packet-wireguard",
  "once_cell",

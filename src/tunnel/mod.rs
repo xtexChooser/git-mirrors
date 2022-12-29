@@ -30,13 +30,13 @@ impl TunnelConfig {
 
     pub async fn create(&self, peer: &PeerInfo) -> Result<()> {
         match self {
-            Self::WireGuard(v) => v.update(peer),
+            Self::WireGuard(v) => v.update(peer).await,
         }
     }
 
     pub async fn update(&self, peer: &PeerInfo) -> Result<()> {
         match self {
-            Self::WireGuard(v) => v.update(peer),
+            Self::WireGuard(v) => v.update(peer).await,
         }
     }
 
