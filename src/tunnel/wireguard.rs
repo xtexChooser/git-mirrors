@@ -1,9 +1,9 @@
-use anyhow::{anyhow, bail, Result};
+use anyhow::{anyhow, Result};
 use futures::TryStreamExt;
 use netlink_packet_generic::GenlMessage;
 use netlink_packet_route::{
     nlas::link::{Info, InfoKind, Nla},
-    NetlinkMessage, NetlinkPayload, AF_INET6, NLM_F_ACK, NLM_F_REQUEST,
+    NetlinkMessage, AF_INET6, NLM_F_ACK, NLM_F_REQUEST,
 };
 use netlink_packet_wireguard::{
     constants::{AF_INET, WGDEVICE_F_REPLACE_PEERS, WGPEER_F_REPLACE_ALLOWEDIPS},
@@ -147,7 +147,8 @@ impl WireGuardConfig {
             wg_nlmsg.header.flags = NLM_F_REQUEST | NLM_F_ACK;
             let mut wg_req = handle.request(wg_nlmsg).await?;
 
-            let wg_resp = wg_req
+            // @TODO: https://github.com/rust-netlink/netlink-proto/pull/4
+            /*let wg_resp = wg_req
                 .try_next()
                 .await?
                 .ok_or(anyhow!("WG set req get no ACK"))?;
@@ -156,7 +157,7 @@ impl WireGuardConfig {
                 bail!("WG set req failed, err code: {}", err.code);
             } else if !matches!(wg_resp_payload, NetlinkPayload::Ack(_)) {
                 bail!("WG set req get not ACK and not err");
-            }
+            }*/
             debug_assert!(wg_req.try_next().await?.is_none());
         }
 
@@ -232,9 +233,9 @@ pub async fn select_endpoint(endpoints: &mut [SocketAddr]) -> Result<SocketAddr>
 }
 
 pub fn decode_key(key: &str) -> Result<[u8; 32]> {
-    Ok(base64::decode(key)?
+    base64::decode(key)?
         .try_into()
-        .map_err(|e| anyhow!("incorrect decoded WG key len: {:?}", e))?)
+        .map_err(|e| anyhow!("incorrect decoded WG key len: {:?}", e))
 }
 
 pub async fn delete_unknown_if() -> Result<()> {
