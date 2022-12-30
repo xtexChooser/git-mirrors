@@ -1,4 +1,4 @@
-use std::{cell::OnceCell, collections::VecDeque, fs::read_to_string, path::PathBuf};
+use std::{cell::OnceCell, fs::read_to_string, path::PathBuf};
 
 use anyhow::{anyhow, bail, Result};
 use futures::lock::{Mutex, MutexGuard};
@@ -43,7 +43,7 @@ pub async fn get_config() -> Result<MutexGuard<'static, Config>> {
 #[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]
 pub struct Config {
     pub etcd: EtcdConfig,
-    pub zone: VecDeque<ZoneConfig>,
+    pub zone: Vec<ZoneConfig>,
     pub wireguard: Option<WireGuardConfig>,
 }
 

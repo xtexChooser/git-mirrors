@@ -1,4 +1,7 @@
-use std::{collections::BTreeMap, pin::Pin};
+use std::{
+    collections::{BTreeMap, VecDeque},
+    pin::Pin,
+};
 
 use anyhow::{Ok, Result};
 
@@ -28,8 +31,11 @@ pub struct Zone {
 }
 
 pub async fn init_zones() -> Result<()> {
-    let mut config = get_config().await?;
-    let zones = &mut config.zone;
+    let mut zones = get_config()
+        .await?
+        .zone
+        .drain(..)
+        .collect::<VecDeque<ZoneConfig>>();
     while let Some(config) = zones.pop_front() {
         init_zone(config).await?;
     }
@@ -45,5 +51,23 @@ pub async fn init_zone(conf: ZoneConfig) -> Result<()> {
     let zone = unsafe { ZONES.last() }.unwrap();
     //zone.sync_peers();
 
+    PeerConfig::new(
+        Pin::new(zone),
+        "test".to_string(),
+        BTreeMap::from([
+            ("tun_type".to_string(), "wireguard".to_string()),
+            (
+                "wg_private_key".to_string(),
+                "QMTsMxn1RRMlUcEGp+yC6T8ue7fAyvUncy3RU8uha1c=".to_string(),
+            ),
+            (
+                "wg_remote_public_key".to_string(),
+                "8VItif1ki24i+k2wcx+FOeA0/DPB3qv5ST3xhubLJEw=".to_string(),
+            ),
+        ]),
+    )
+    .await?
+    .create()
+    .await?;
     Ok(())
 }

@@ -3,10 +3,14 @@ use futures::TryStreamExt;
 use netlink_packet_generic::GenlMessage;
 use netlink_packet_route::{
     nlas::link::{Info, InfoKind, Nla},
-    NetlinkMessage, NetlinkPayload, NLM_F_ACK, NLM_F_REQUEST,
+    NetlinkMessage, NetlinkPayload, AF_INET6, NLM_F_ACK, NLM_F_REQUEST,
 };
-use netlink_packet_wireguard::{nlas::WgDeviceAttrs, Wireguard, WireguardCmd};
-use std::net::{SocketAddr, ToSocketAddrs};
+use netlink_packet_wireguard::{
+    constants::{AF_INET, WGDEVICE_F_REPLACE_PEERS, WGPEER_F_REPLACE_ALLOWEDIPS},
+    nlas::{WgAllowedIp, WgAllowedIpAttrs, WgDeviceAttrs, WgPeer, WgPeerAttrs},
+    Wireguard, WireguardCmd,
+};
+use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr, ToSocketAddrs};
 
 use crate::{config, peer::PeerInfo, tunnel::TunnelConfig};
 
@@ -74,52 +78,87 @@ impl WireGuardConfig {
     }
 
     pub async fn update(&self, peer: &PeerInfo) -> Result<()> {
-        let (connection, handle, _) =
-            rtnetlink::new_connection().map_err(|e| anyhow!("failed to connect to rtnl: {}", e))?;
-        tokio::spawn(connection);
         let ifname = to_ifname(peer).await?;
         info!("updating WG if '{}'", ifname);
 
-        let mut ifgetreq = handle.link().get().match_name(ifname.clone()).execute();
-        if ifgetreq.try_next().await?.is_none() {
-            info!("WG if '{}' not found, adding", ifname);
-            let mut ifaddreq = handle.link().add();
-            ifaddreq
-                .message_mut()
-                .nlas
-                .push(Nla::IfName(ifname.clone()));
-            ifaddreq
-                .message_mut()
-                .nlas
-                .push(Nla::Info(vec![Info::Kind(InfoKind::Wireguard)]));
-            ifaddreq.execute().await?;
-        }
-        debug_assert!(ifgetreq.try_next().await?.is_none());
+        {
+            let (connection, handle, _) = rtnetlink::new_connection()
+                .map_err(|e| anyhow!("failed to connect to rtnl: {}", e))?;
+            tokio::spawn(connection);
 
-        let (connection, mut handle, _) =
-            genetlink::new_connection().map_err(|e| anyhow!("failed to connect to genl: {}", e))?;
-        tokio::spawn(connection);
-
-        let wg_genlmsg = GenlMessage::from_payload(Wireguard {
-            cmd: WireguardCmd::SetDevice,
-            nlas: vec![WgDeviceAttrs::IfName(ifname.clone())],
-        });
-        let mut wg_nlmsg = NetlinkMessage::from(wg_genlmsg);
-        wg_nlmsg.header.flags = NLM_F_REQUEST | NLM_F_ACK;
-        let mut wg_req = handle.request(wg_nlmsg).await?;
-
-        let wg_resp = wg_req
-            .try_next()
-            .await?
-            .ok_or(anyhow!("WG set req get no ACK"))?;
-        if let NetlinkPayload::Ack(ack) = wg_resp.payload {
-            if ack.code != 0 {
-                bail!("WG set req failed, ACK code: {}", ack.code);
+            let mut ifgetreq = handle.link().get().match_name(ifname.clone()).execute();
+            if ifgetreq.try_next().await.ok().is_none() {
+                info!("WG if '{}' not found, adding", ifname);
+                let mut ifaddreq = handle.link().add();
+                let nlas = &mut ifaddreq.message_mut().nlas;
+                nlas.push(Nla::IfName(ifname.clone()));
+                nlas.push(Nla::Info(vec![Info::Kind(InfoKind::Wireguard)]));
+                ifaddreq.execute().await?;
             }
-        } else {
-            bail!("WG set req get not ACK");
+            debug_assert!(ifgetreq.try_next().await?.is_none());
         }
-        debug_assert!(wg_req.try_next().await?.is_none());
+
+        {
+            let (connection, mut handle, _) = genetlink::new_connection()
+                .map_err(|e| anyhow!("failed to connect to genl: {}", e))?;
+            tokio::spawn(connection);
+
+            let mut wg_peer_nlas = vec![
+                WgPeerAttrs::PublicKey(decode_key(self.remote_public_key.as_str())?),
+                WgPeerAttrs::AllowedIps(vec![
+                    WgAllowedIp(vec![
+                        WgAllowedIpAttrs::Family(AF_INET),
+                        WgAllowedIpAttrs::IpAddr(IpAddr::V4("0.0.0.0".parse::<Ipv4Addr>()?)),
+                        WgAllowedIpAttrs::Cidr(0),
+                    ]),
+                    WgAllowedIp(vec![
+                        WgAllowedIpAttrs::Family(AF_INET6),
+                        WgAllowedIpAttrs::IpAddr(IpAddr::V6("::".parse::<Ipv6Addr>()?)),
+                        WgAllowedIpAttrs::Cidr(0),
+                    ]),
+                ]),
+                WgPeerAttrs::Flags(WGPEER_F_REPLACE_ALLOWEDIPS),
+            ];
+            if let Some(psk) = &self.preshared_key {
+                wg_peer_nlas.push(WgPeerAttrs::PresharedKey(decode_key(psk.as_str())?));
+            }
+            if let Some(endpoint) = &self.endpoint {
+                wg_peer_nlas.push(WgPeerAttrs::Endpoint(endpoint.to_owned()));
+            }
+            if let Some(endpoint) = &self.endpoint {
+                wg_peer_nlas.push(WgPeerAttrs::Endpoint(endpoint.to_owned()));
+            }
+            //   @TODO: PersistentKeepalive(u16),
+
+            let wg_nlas = vec![
+                WgDeviceAttrs::IfName(ifname.clone()),
+                WgDeviceAttrs::PrivateKey(decode_key(self.private_key.as_str())?),
+                WgDeviceAttrs::ListenPort(self.listen_port.unwrap_or(0)),
+                WgDeviceAttrs::Fwmark(self.fw_mark.unwrap_or(0)),
+                WgDeviceAttrs::Flags(WGDEVICE_F_REPLACE_PEERS),
+                WgDeviceAttrs::Peers(vec![WgPeer(wg_peer_nlas)]),
+            ];
+
+            let wg_genlmsg = GenlMessage::from_payload(Wireguard {
+                cmd: WireguardCmd::SetDevice,
+                nlas: wg_nlas,
+            });
+            let mut wg_nlmsg = NetlinkMessage::from(wg_genlmsg);
+            wg_nlmsg.header.flags = NLM_F_REQUEST | NLM_F_ACK;
+            let mut wg_req = handle.request(wg_nlmsg).await?;
+
+            let wg_resp = wg_req
+                .try_next()
+                .await?
+                .ok_or(anyhow!("WG set req get no ACK"))?;
+            let wg_resp_payload = wg_resp.payload;
+            if let NetlinkPayload::Error(err) = wg_resp_payload {
+                bail!("WG set req failed, err code: {}", err.code);
+            } else if !matches!(wg_resp_payload, NetlinkPayload::Ack(_)) {
+                bail!("WG set req get not ACK and not err");
+            }
+            debug_assert!(wg_req.try_next().await?.is_none());
+        }
 
         Ok(())
     }
@@ -190,6 +229,12 @@ pub async fn select_endpoint(endpoints: &mut [SocketAddr]) -> Result<SocketAddr>
         .last()
         .ok_or(anyhow!("no WG endpoints found"))?
         .to_owned())
+}
+
+pub fn decode_key(key: &str) -> Result<[u8; 32]> {
+    Ok(base64::decode(key)?
+        .try_into()
+        .map_err(|e| anyhow!("incorrect decoded WG key len: {:?}", e))?)
 }
 
 pub async fn delete_unknown_if() -> Result<()> {
