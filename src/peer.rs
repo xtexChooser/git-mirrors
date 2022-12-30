@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+use std::{collections::BTreeMap, pin::Pin};
 
 use anyhow::Result;
 
@@ -6,14 +6,14 @@ use crate::{tunnel::TunnelConfig, zone::Zone};
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct PeerInfo {
-    pub zone: &'static Zone,
+    pub zone: Pin<&'static Zone>,
     pub name: String,
     pub props: BTreeMap<String, String>,
 }
 
 impl PeerInfo {
     pub fn new(
-        zone: &'static Zone,
+        zone: Pin<&'static Zone>,
         name: String,
         props: BTreeMap<String, String>,
     ) -> Result<PeerInfo> {
@@ -30,7 +30,7 @@ pub struct PeerConfig {
 
 impl PeerConfig {
     pub async fn new(
-        zone: &'static Zone,
+        zone: Pin<&'static Zone>,
         name: String,
         props: BTreeMap<String, String>,
     ) -> Result<Self> {

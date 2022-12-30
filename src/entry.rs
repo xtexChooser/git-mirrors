@@ -1,12 +1,7 @@
 use anyhow::Result;
 use simple_logger::SimpleLogger;
 
-use crate::{
-    config::init_config,
-    etcd::init_etcd,
-    tunnel::{self},
-    zone::init_zones,
-};
+use crate::{config::init_config, etcd::init_etcd, tunnel, zone::init_zones};
 
 #[tokio::main]
 pub async fn main() -> Result<()> {

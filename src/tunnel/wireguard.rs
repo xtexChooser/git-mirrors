@@ -157,6 +157,7 @@ pub async fn to_ifname(peer: &PeerInfo) -> Result<String> {
     }
     let ifname_prefix = &peer
         .zone
+        .conf
         .wireguard
         .as_ref()
         .ok_or(anyhow!("no WG configured for zone"))?

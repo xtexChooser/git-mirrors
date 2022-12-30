@@ -1,10 +1,10 @@
-use std::{cell::OnceCell, fs::read_to_string, path::PathBuf};
+use std::{cell::OnceCell, collections::VecDeque, fs::read_to_string, path::PathBuf};
 
 use anyhow::{anyhow, bail, Result};
 use futures::lock::{Mutex, MutexGuard};
 use serde::Deserialize;
 
-use crate::{args::get_args, etcd::EtcdConfig, zone::Zone};
+use crate::{args::get_args, etcd::EtcdConfig, zone::ZoneConfig};
 
 pub static mut CONFIG: OnceCell<Mutex<Config>> = OnceCell::new();
 
@@ -43,7 +43,7 @@ pub async fn get_config() -> Result<MutexGuard<'static, Config>> {
 #[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]
 pub struct Config {
     pub etcd: EtcdConfig,
-    pub zone: Vec<Zone>,
+    pub zone: VecDeque<ZoneConfig>,
     pub wireguard: Option<WireGuardConfig>,
 }
 
