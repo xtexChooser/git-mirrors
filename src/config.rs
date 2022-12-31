@@ -34,10 +34,8 @@ pub async fn locate_config() -> Result<PathBuf> {
 }
 
 pub async fn get_config() -> Result<MutexGuard<'static, Config>> {
-    Ok(unsafe { CONFIG.get() }
-        .ok_or(anyhow!("config not initialized"))?
-        .lock()
-        .await)
+    let conf = unsafe { CONFIG.get() };
+    Ok(conf.ok_or(anyhow!("config not initialized"))?.lock().await)
 }
 
 #[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]

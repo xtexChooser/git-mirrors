@@ -13,6 +13,7 @@ pub mod entry;
 pub mod etcd;
 pub mod peer;
 pub mod tunnel;
+pub mod watcher;
 pub mod zone;
 
 pub use entry::main;

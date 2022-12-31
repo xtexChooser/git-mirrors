@@ -8,9 +8,9 @@ use anyhow::{anyhow, bail, Ok, Result};
 use etcd_client::GetOptions;
 use serde::Deserialize;
 use serde_json::Value;
-use tokio::sync::Mutex;
+use tokio::{sync::Mutex, task::JoinHandle};
 
-use crate::{config::get_config, etcd::get_etcd_client, peer::PeerConfig};
+use crate::{config::get_config, etcd::get_etcd_client, peer::PeerConfig, watcher};
 
 pub static mut ZONES: Vec<Zone> = Vec::new();
 
@@ -65,6 +65,21 @@ pub async fn init_zone(conf: ZoneConfig) -> Result<()> {
     let zone = unsafe { ZONES.last_mut() }.unwrap();
     zone.sync_all_peers().await?;
     Ok(())
+}
+
+pub async fn watch_zones() -> Result<Vec<JoinHandle<()>>> {
+    let mut iter = unsafe { ZONES.iter_mut() };
+    let mut handles: Vec<JoinHandle<()>> = Vec::new();
+    while let Some(zone) = iter.next() {
+        let name = zone.conf.name.to_owned();
+        handles.push(tokio::spawn(async move {
+            if let Err(err) = watcher::watch_zone(zone).await {
+                error!("error watching changes in zone {}: {}", name, err)
+            }
+            warn!("watcher for {} stopped", name)
+        }));
+    }
+    Ok(handles)
 }
 
 pub fn get_zones() -> IterMut<'static, Zone> {
@@ -169,6 +184,32 @@ impl Zone {
             peer.update().await?;
         }
 
+        Ok(())
+    }
+
+    pub async fn remove_peer(&mut self, name: &str) -> Result<()> {
+        if name.starts_with('_') {
+            return Ok(());
+        }
+
+        let mut peers = self.peers.lock().await;
+        let mut index = 0;
+        let mut found = false;
+        for peer in peers.iter() {
+            if peer.info.name.as_str() == name {
+                found = true;
+                break;
+            }
+            index += 1;
+        }
+        if found {
+            let peer = &peers[index];
+            let res = peer.del().await;
+            peers.remove(index);
+            res?;
+        } else {
+            bail!("peer with the given name not found")
+        }
         Ok(())
     }
 }
