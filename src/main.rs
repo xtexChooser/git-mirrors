@@ -3,6 +3,7 @@
 #![feature(is_some_and)]
 #![feature(async_closure)]
 #![feature(let_chains)]
+#![feature(error_generic_member_access)]
 
 #[macro_use]
 extern crate log;
@@ -13,6 +14,7 @@ pub mod entry;
 pub mod etcd;
 pub mod peer;
 pub mod tunnel;
+pub mod util;
 pub mod watcher;
 pub mod zone;
 

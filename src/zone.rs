@@ -1,16 +1,20 @@
 use std::{
     collections::{BTreeMap, VecDeque},
     slice::IterMut,
+    str::FromStr,
 };
 
-use anyhow::{anyhow, bail, Ok, Result};
+use anyhow::{anyhow, bail, Context, Ok, Result};
 
+use cidr::IpInet;
 use etcd_client::GetOptions;
 use serde::Deserialize;
 use serde_json::Value;
 use tokio::{sync::Mutex, task::JoinHandle};
 
-use crate::{config::get_config, etcd::get_etcd_client, peer::PeerConfig, watcher};
+use crate::{
+    config::get_config, etcd::get_etcd_client, peer::PeerConfig, util::soft_err::SoftError, watcher,
+};
 
 pub static mut ZONES: Vec<Zone> = Vec::new();
 
@@ -18,6 +22,7 @@ pub static mut ZONES: Vec<Zone> = Vec::new();
 pub struct ZoneConfig {
     pub name: String,
     pub etcd_prefix: String,
+    pub ip_prefixes: Vec<String>,
     pub wireguard: Option<WireGuardConfig>,
 }
 
@@ -31,6 +36,7 @@ pub struct Zone {
     pub conf: ZoneConfig,
     pub index: usize,
     pub peers: Mutex<Vec<PeerConfig>>,
+    pub parsed_ip_prefixes: Vec<IpInet>,
 }
 
 impl PartialEq for Zone {
@@ -54,10 +60,16 @@ pub async fn init_zones() -> Result<()> {
 
 pub async fn init_zone(conf: ZoneConfig) -> Result<()> {
     info!("initializing zone {}", conf.name);
+    let mut parsed_ip_prefixes = vec![];
+    for ip_prefix in &conf.ip_prefixes {
+        parsed_ip_prefixes
+            .push(IpInet::from_str(ip_prefix.as_str()).with_context(|| ip_prefix.to_owned())?);
+    }
     let zone = Zone {
         conf,
         index: unsafe { ZONES.len() },
         peers: Mutex::new(vec![]),
+        parsed_ip_prefixes,
     };
     unsafe {
         ZONES.push(zone);
@@ -114,21 +126,28 @@ impl Zone {
             key.drain(0..prefix.len());
             info!("found exist peer {} in {}", key, zone_name);
             if let Err(err) = self.handle_peer(key.as_str()).await {
-                error!(
-                    "failed to import peer {} in {}, disabling: {}",
-                    key, zone_name, err
-                );
-                let mut etcd = get_etcd_client().await?;
-                let val = etcd
-                    .get(full_key.as_str(), None)
-                    .await?
-                    .kvs()
-                    .first()
-                    .unwrap()
-                    .value_str()?
-                    .to_owned();
-                etcd.delete(full_key.as_str(), None).await?;
-                etcd.put(prefix.clone() + r"_" + &key, val, None).await?;
+                if err.downcast_ref::<SoftError>().is_some() {
+                    error!(
+                        "failed to import peer {} in {}, fail soft: {}",
+                        key, zone_name, err
+                    );
+                } else {
+                    error!(
+                        "failed to import peer {} in {}, disabling: {}",
+                        key, zone_name, err
+                    );
+                    let mut etcd = get_etcd_client().await?;
+                    let val = etcd
+                        .get(full_key.as_str(), None)
+                        .await?
+                        .kvs()
+                        .first()
+                        .unwrap()
+                        .value_str()?
+                        .to_owned();
+                    etcd.delete(full_key.as_str(), None).await?;
+                    etcd.put(prefix.clone() + r"_" + &key, val, None).await?;
+                }
             }
         }
         Ok(())
@@ -181,7 +200,7 @@ impl Zone {
                 peers.last().unwrap()
             };
             info!("updating peer {}", name);
-            peer.update().await?;
+            SoftError::wrap(peer.update().await)?;
         }
 
         Ok(())

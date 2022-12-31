@@ -1,8 +1,10 @@
-use anyhow::{anyhow, Result};
+use anyhow::{anyhow, bail, Result};
+use cidr::{IpInet, Ipv4Inet, Ipv6Inet};
 use futures::TryStreamExt;
 use netlink_packet_generic::GenlMessage;
 use netlink_packet_route::{
-    nlas::link::{Info, InfoKind, Nla},
+    address, link,
+    nlas::link::{Info, InfoKind},
     NetlinkMessage, AF_INET6, NLM_F_ACK, NLM_F_REQUEST,
 };
 use netlink_packet_wireguard::{
@@ -81,25 +83,35 @@ impl WireGuardConfig {
         let ifname = to_ifname(peer).await?;
         info!("updating WG if '{}'", ifname);
 
-        {
-            let (connection, handle, _) = rtnetlink::new_connection()
-                .map_err(|e| anyhow!("failed to connect to rtnl: {}", e))?;
-            tokio::spawn(connection);
+        let (connection, rtnl, _) =
+            rtnetlink::new_connection().map_err(|e| anyhow!("failed to connect to rtnl: {}", e))?;
+        tokio::spawn(connection);
 
-            let mut ifgetreq = handle.link().get().match_name(ifname.clone()).execute();
-            if ifgetreq.try_next().await.ok().is_none() {
-                info!("WG if '{}' not found, adding", ifname);
-                let mut ifaddreq = handle.link().add();
-                let nlas = &mut ifaddreq.message_mut().nlas;
-                nlas.push(Nla::IfName(ifname.clone()));
-                nlas.push(Nla::Info(vec![Info::Kind(InfoKind::Wireguard)]));
-                ifaddreq.execute().await?;
+        let mut ifgetreq = rtnl.link().get().match_name(ifname.clone()).execute();
+        let ifindex = if let Some(Some(ifinfo)) = ifgetreq.try_next().await.ok() {
+            ifinfo.header.index
+        } else {
+            info!("WG if '{}' not found, adding", ifname);
+            let mut ifaddreq = rtnl.link().add();
+            let nlas = &mut ifaddreq.message_mut().nlas;
+            nlas.push(link::nlas::Nla::IfName(ifname.clone()));
+            nlas.push(link::nlas::Nla::Info(vec![Info::Kind(InfoKind::Wireguard)]));
+            ifaddreq.execute().await?;
+
+            let mut ifgetreq2 = rtnl.link().get().match_name(ifname.clone()).execute();
+            if let Some(ifinfo) = ifgetreq2.try_next().await? {
+                ifinfo.header.index
+            } else {
+                bail!(
+                    "if with name {} added successfully, but could not get back",
+                    ifname
+                )
             }
-            debug_assert!(ifgetreq.try_next().await?.is_none());
-        }
+        };
+        debug_assert!(ifgetreq.try_next().await?.is_none());
 
         {
-            let (connection, mut handle, _) = genetlink::new_connection()
+            let (connection, mut genl, _) = genetlink::new_connection()
                 .map_err(|e| anyhow!("failed to connect to genl: {}", e))?;
             tokio::spawn(connection);
 
@@ -131,7 +143,7 @@ impl WireGuardConfig {
             //   @TODO: PersistentKeepalive(u16),
 
             let wg_nlas = vec![
-                WgDeviceAttrs::IfName(ifname.clone()),
+                WgDeviceAttrs::IfIndex(ifindex),
                 WgDeviceAttrs::PrivateKey(decode_key(self.private_key.as_str())?),
                 WgDeviceAttrs::ListenPort(self.listen_port.unwrap_or(0)),
                 WgDeviceAttrs::Fwmark(self.fw_mark.unwrap_or(0)),
@@ -145,7 +157,7 @@ impl WireGuardConfig {
             });
             let mut wg_nlmsg = NetlinkMessage::from(wg_genlmsg);
             wg_nlmsg.header.flags = NLM_F_REQUEST | NLM_F_ACK;
-            let mut wg_req = handle.request(wg_nlmsg).await?;
+            let mut wg_req = genl.request(wg_nlmsg).await?;
 
             // @TODO: https://github.com/rust-netlink/netlink-proto/pull/4
             /*let wg_resp = wg_req
@@ -159,6 +171,46 @@ impl WireGuardConfig {
                 bail!("WG set req get not ACK and not err");
             }*/
             debug_assert!(wg_req.try_next().await?.is_none());
+        }
+        {
+            let expected_prefixes = &peer.get_zone().parsed_ip_prefixes;
+            let mut addrs = rtnl
+                .address()
+                .get()
+                .set_link_index_filter(ifindex)
+                .execute();
+            let mut exist_addrs = vec![];
+            'outer: while let Some(addr_msg) = addrs.try_next().await? {
+                let mut addr = None;
+                for nla in &addr_msg.nlas {
+                    if let address::Nla::Address(addr_vec) = nla {
+                        addr = Some(match addr_msg.header.family.into() {
+                            AF_INET => IpInet::V4(Ipv4Inet::new(
+                                Ipv4Addr::from(TryInto::<[u8; 4]>::try_into(addr_vec.as_slice())?),
+                                addr_msg.header.prefix_len,
+                            )?),
+                            AF_INET6 => IpInet::V6(Ipv6Inet::new(
+                                Ipv6Addr::from(TryInto::<[u8; 16]>::try_into(addr_vec.as_slice())?),
+                                addr_msg.header.prefix_len,
+                            )?),
+                            _ => continue 'outer,
+                        });
+                    }
+                }
+                let addr = addr.unwrap();
+                exist_addrs.push(addr.clone());
+                if !expected_prefixes.contains(&addr) {
+                    rtnl.address().del(addr_msg).execute().await?;
+                }
+            }
+            for addr in expected_prefixes {
+                if !exist_addrs.contains(addr) {
+                    rtnl.address()
+                        .add(ifindex, addr.address(), addr.network_length())
+                        .execute()
+                        .await?;
+                }
+            }
         }
 
         Ok(())
@@ -249,7 +301,7 @@ pub async fn delete_unknown_if() -> Result<()> {
         let ifindex = link.header.index;
         let mut ifname: Option<String> = None;
         for nla in link.nlas.into_iter() {
-            if let Nla::IfName(name) = nla {
+            if let link::nlas::Nla::IfName(name) = nla {
                 ifname = Some(name);
                 break;
             }
