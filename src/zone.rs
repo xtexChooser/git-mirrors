@@ -8,6 +8,7 @@ use anyhow::{anyhow, bail, Ok, Result};
 use etcd_client::GetOptions;
 use serde::Deserialize;
 use serde_json::Value;
+use tokio::sync::Mutex;
 
 use crate::{config::get_config, etcd::get_etcd_client, peer::PeerConfig};
 
@@ -25,12 +26,19 @@ pub struct WireGuardConfig {
     pub ifname_prefix: String,
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
+#[derive(Debug)]
 pub struct Zone {
     pub conf: ZoneConfig,
     pub index: usize,
-    pub peers: Vec<PeerConfig>,
+    pub peers: Mutex<Vec<PeerConfig>>,
 }
+
+impl PartialEq for Zone {
+    fn eq(&self, other: &Self) -> bool {
+        self.index == other.index
+    }
+}
+impl Eq for Zone {}
 
 pub async fn init_zones() -> Result<()> {
     let mut zones = get_config()
@@ -49,7 +57,7 @@ pub async fn init_zone(conf: ZoneConfig) -> Result<()> {
     let zone = Zone {
         conf,
         index: 0,
-        peers: vec![],
+        peers: Mutex::new(vec![]),
     };
     unsafe {
         ZONES.push(zone);
@@ -140,6 +148,7 @@ impl Zone {
         }
 
         let peer = PeerConfig::new(self.index, key.clone(), conf_kvs).await?;
+        {}
         {
             info!("updating peer {}", name);
             peer.update().await?;

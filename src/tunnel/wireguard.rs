@@ -258,7 +258,8 @@ pub async fn delete_unknown_if() -> Result<()> {
             for zone in zone::get_zones() {
                 if let Some(wg) = &zone.conf.wireguard && ifname.starts_with(&wg.ifname_prefix) {
                     let mut found = false;
-                    for peer in &zone.peers {
+                    let peers = zone.peers.lock().await;
+                    for peer in peers.iter() {
                         info!("matching {peer:?}");
                         if matches!(&peer.tun, TunnelConfig::WireGuard(_)) && to_ifname(&peer.info).await? == ifname {
                             found = true;

@@ -22,7 +22,7 @@ impl PeerInfo {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct PeerConfig {
     pub info: PeerInfo,
     pub tun: TunnelConfig,
