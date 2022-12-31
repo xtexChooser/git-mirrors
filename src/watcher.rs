@@ -9,7 +9,7 @@ pub async fn watch_zone(zone: &mut Zone) -> Result<()> {
             .await?
             .watch(
                 zone.conf.etcd_prefix.as_str(),
-                Some(WatchOptions::new().with_prefix()),
+                Some(WatchOptions::new().with_prefix().with_prev_key()),
             )
             .await?
     };
@@ -17,12 +17,17 @@ pub async fn watch_zone(zone: &mut Zone) -> Result<()> {
     while let Some(resp) = stream.message().await? {
         for event in resp.events() {
             info!(
-                "etcd watcher event, msg id: {}, type: {:?}, key: {:?}, prev key: {:?}",
+                "etcd watcher event, watch id: {}, type: {:?}, key: {:?}, prev key: {:?}",
                 resp.watch_id(),
                 event.event_type(),
                 event.kv().and_then(|kv| kv.key_str().ok()),
                 event.prev_kv().and_then(|kv| kv.key_str().ok()),
             );
+
+            if let Some(kv) = event.kv() && let Some(prev_kv) = event.prev_kv() && kv.key() == prev_kv.key() {
+                info!("content in {} is the same as before, skipping update", kv.key_str().unwrap_or("(None)"));
+                continue;
+            }
 
             if let Err(err) = handle_event(zone, event).await {
                 error!(
