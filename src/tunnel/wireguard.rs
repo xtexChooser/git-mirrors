@@ -172,7 +172,7 @@ impl WireGuardConfig {
         info!("deleting WG if '{}'", ifname);
         let mut ifreq = handle.link().get().match_name(ifname.clone()).execute();
         if let Some(ifinfo) = ifreq.try_next().await? {
-            handle.link().del(ifinfo.header.index);
+            handle.link().del(ifinfo.header.index).execute().await?;
         } else {
             warn!("WG if with name '{}' not found", ifname);
         }
