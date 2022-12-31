@@ -22,11 +22,18 @@ impl PeerInfo {
     }
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug)]
 pub struct PeerConfig {
     pub info: PeerInfo,
     pub tun: TunnelConfig,
 }
+
+impl PartialEq for PeerConfig {
+    fn eq(&self, other: &Self) -> bool {
+        self.info == other.info
+    }
+}
+impl Eq for PeerConfig {}
 
 impl PeerConfig {
     pub async fn new(zone: usize, name: String, props: BTreeMap<String, String>) -> Result<Self> {

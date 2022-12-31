@@ -56,14 +56,13 @@ pub async fn init_zone(conf: ZoneConfig) -> Result<()> {
     info!("initializing zone {}", conf.name);
     let zone = Zone {
         conf,
-        index: 0,
+        index: unsafe { ZONES.len() },
         peers: Mutex::new(vec![]),
     };
     unsafe {
         ZONES.push(zone);
     }
-    let mut zone = unsafe { ZONES.last_mut() }.unwrap();
-    zone.index = unsafe { ZONES.len() } - 1;
+    let zone = unsafe { ZONES.last_mut() }.unwrap();
     zone.sync_all_peers().await?;
     Ok(())
 }
@@ -114,7 +113,7 @@ impl Zone {
                     .value_str()?
                     .to_owned();
                 etcd.delete(full_key.as_str(), None).await?;
-                etcd.put(r".".to_string() + &full_key, val, None).await?;
+                etcd.put(prefix.clone() + r"_" + &key, val, None).await?;
             }
         }
         Ok(())
@@ -147,9 +146,25 @@ impl Zone {
             }
         }
 
-        let peer = PeerConfig::new(self.index, key.clone(), conf_kvs).await?;
-        {}
+        let peer = PeerConfig::new(self.index, name.to_string(), conf_kvs).await?;
         {
+            let mut peers = self.peers.lock().await;
+            let peer = {
+                let mut index = 0;
+                let mut found = false;
+                for exist_peer in peers.iter() {
+                    if exist_peer == &peer {
+                        found = true;
+                        break;
+                    }
+                    index += 1;
+                }
+                if found {
+                    peers.remove(index);
+                }
+                peers.push(peer);
+                peers.last().unwrap()
+            };
             info!("updating peer {}", name);
             peer.update().await?;
         }
