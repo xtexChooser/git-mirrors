@@ -1,4 +1,4 @@
-use std::{collections::BTreeMap, pin::Pin};
+use std::collections::BTreeMap;
 
 use anyhow::Result;
 
@@ -6,19 +6,19 @@ use crate::{tunnel::TunnelConfig, zone::Zone};
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct PeerInfo {
-    pub zone: Pin<&'static Zone>,
+    pub zone: usize,
     pub name: String,
     pub props: BTreeMap<String, String>,
 }
 
 impl PeerInfo {
-    pub fn new(
-        zone: Pin<&'static Zone>,
-        name: String,
-        props: BTreeMap<String, String>,
-    ) -> Result<PeerInfo> {
+    pub fn new(zone: usize, name: String, props: BTreeMap<String, String>) -> Result<PeerInfo> {
         let conf = PeerInfo { zone, name, props };
         Ok(conf)
+    }
+
+    pub fn get_zone(&self) -> &'static Zone {
+        Zone::get(self.zone)
     }
 }
 
@@ -29,11 +29,7 @@ pub struct PeerConfig {
 }
 
 impl PeerConfig {
-    pub async fn new(
-        zone: Pin<&'static Zone>,
-        name: String,
-        props: BTreeMap<String, String>,
-    ) -> Result<Self> {
+    pub async fn new(zone: usize, name: String, props: BTreeMap<String, String>) -> Result<Self> {
         Self::try_from(PeerInfo::new(zone, name, props)?).await
     }
 
@@ -41,11 +37,6 @@ impl PeerConfig {
         let tun = TunnelConfig::new(&info).await?;
         let conf = PeerConfig { info, tun };
         Ok(conf)
-    }
-
-    pub async fn create(&self) -> Result<()> {
-        self.tun.create(&self.info).await?;
-        Ok(())
     }
 
     pub async fn update(&self) -> Result<()> {

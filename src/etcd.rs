@@ -2,8 +2,8 @@ use std::{fs::read_to_string, path::PathBuf};
 
 use anyhow::{anyhow, bail, Result};
 use etcd_client::{Certificate, Client, ConnectOptions, Identity, TlsOptions};
-use futures::lock::{Mutex, MutexGuard};
 use serde::Deserialize;
+use tokio::sync::{Mutex, MutexGuard};
 
 use crate::config::get_config;
 

@@ -1,8 +1,8 @@
 use std::{cell::OnceCell, fs::read_to_string, path::PathBuf};
 
 use anyhow::{anyhow, bail, Result};
-use futures::lock::{Mutex, MutexGuard};
 use serde::Deserialize;
+use tokio::sync::{Mutex, MutexGuard};
 
 use crate::{args::get_args, etcd::EtcdConfig, zone::ZoneConfig};
 

@@ -12,7 +12,7 @@ use netlink_packet_wireguard::{
 };
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr, ToSocketAddrs};
 
-use crate::{config, peer::PeerInfo, tunnel::TunnelConfig};
+use crate::{config, peer::PeerInfo, tunnel::TunnelConfig, zone};
 
 pub const KEY_ENDPOINT: &str = "wg_endpoint";
 pub const KEY_PRIVATE_KEY: &str = "wg_private_key";
@@ -192,11 +192,13 @@ pub async fn get_config() -> Result<config::WireGuardConfig> {
 
 pub async fn to_ifname(peer: &PeerInfo) -> Result<String> {
     let mut name = peer.name.to_owned();
-    if get_config().await?.crc_if_peer_name {
-        name = format!("{:x}", crc32fast::hash(name.as_bytes()));
+    {
+        if get_config().await?.crc_if_peer_name {
+            name = format!("{:x}", crc32fast::hash(name.as_bytes()));
+        }
     }
-    let ifname_prefix = &peer
-        .zone
+    let zone = peer.get_zone();
+    let ifname_prefix = &zone
         .conf
         .wireguard
         .as_ref()
@@ -253,21 +255,21 @@ pub async fn delete_unknown_if() -> Result<()> {
             }
         }
         if let Some(ifname) = ifname {
-            for zone in &config::get_config().await?.zone {
-                if let Some(wg) = &zone.wireguard && ifname.starts_with(&wg.ifname_prefix) {
-                        info!("find if '{}'({}) with the wg ifname prefix of zone {}", ifname, ifindex, zone.name);
-                        let mut found = false;
-                        for peer in &zone.peers {
-                            if matches!(&peer.tun, TunnelConfig::WireGuard(_)) && to_ifname(&peer.info).await? == ifname{
-                                found = true;
-                                break;
-                            }
-                        }
-                        if !found {
-                            warn!("if {} found but no peer info recorded, trying to remove", ifindex);
-                            handle.link().del(ifindex).execute().await?;
+            for zone in zone::get_zones() {
+                if let Some(wg) = &zone.conf.wireguard && ifname.starts_with(&wg.ifname_prefix) {
+                    let mut found = false;
+                    for peer in &zone.peers {
+                        info!("matching {peer:?}");
+                        if matches!(&peer.tun, TunnelConfig::WireGuard(_)) && to_ifname(&peer.info).await? == ifname {
+                            found = true;
+                            break;
                         }
                     }
+                    if !found {
+                        warn!("if {} found but no peer info is recorded, trying to remove", ifindex);
+                        handle.link().del(ifindex).execute().await?;
+                    }
+                }
             }
         }
     }
