@@ -13,6 +13,7 @@ pub mod config;
 pub mod entry;
 pub mod etcd;
 pub mod peer;
+pub mod route;
 pub mod tunnel;
 pub mod util;
 pub mod watcher;

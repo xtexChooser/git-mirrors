@@ -43,23 +43,47 @@ pub struct Config {
     pub etcd: EtcdConfig,
     pub zone: Vec<ZoneConfig>,
     pub wireguard: Option<WireGuardConfig>,
+    pub bird: Option<BIRDConfig>,
 }
 
 #[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]
 pub struct WireGuardConfig {
+    // @TODO: xplatform WG
     pub xplatform_exec: Option<String>,
-    #[serde(default = "default_crc_if_peer_name")]
+    #[serde(default = "default_wg_crc_if_peer_name")]
     pub crc_if_peer_name: bool,
-    #[serde(default = "default_prefer_ipv6")]
+    #[serde(default = "default_wg_prefer_ipv6")]
     pub prefer_ipv6: bool,
 }
 
-fn default_crc_if_peer_name() -> bool {
+fn default_wg_crc_if_peer_name() -> bool {
+    false
+}
+
+fn default_wg_prefer_ipv6() -> bool {
     true
 }
 
-fn default_prefer_ipv6() -> bool {
+#[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]
+pub struct BIRDConfig {
+    #[serde(default = "default_bird_generated_conf")]
+    pub generated_conf: String,
+    #[serde(default = "default_bird_do_reconfigure")]
+    pub do_reconfigure: bool,
+    #[serde(default = "default_bird_control_sock")]
+    pub control_sock: String,
+}
+
+fn default_bird_generated_conf() -> String {
+    "/etc/bird/.peerd.generated.conf".to_string()
+}
+
+fn default_bird_do_reconfigure() -> bool {
     true
+}
+
+fn default_bird_control_sock() -> String {
+    "/var/run/bird.ctl".to_string()
 }
 
 pub async fn check_config() -> Result<()> {

@@ -24,11 +24,18 @@ pub struct ZoneConfig {
     pub etcd_prefix: String,
     pub ip_prefixes: Vec<String>,
     pub wireguard: Option<WireGuardConfig>,
+    pub bird: Option<BIRDConfig>,
 }
 
 #[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]
 pub struct WireGuardConfig {
     pub ifname_prefix: String,
+}
+
+#[derive(Debug, Deserialize, PartialEq, Eq, Clone, Hash)]
+pub struct BIRDConfig {
+    pub protocol_prefix: String,
+    pub bgp_template: String,
 }
 
 #[derive(Debug)]
@@ -222,10 +229,9 @@ impl Zone {
             index += 1;
         }
         if found {
-            let peer = &peers[index];
-            let res = peer.del().await;
+            let peer = peers[index].clone();
             peers.remove(index);
-            res?;
+            peer.del().await?;
         } else {
             bail!("peer with the given name not found")
         }

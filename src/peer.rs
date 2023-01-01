@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 
 use anyhow::Result;
 
-use crate::{tunnel::TunnelConfig, zone::Zone};
+use crate::{route::RouteConfig, tunnel::TunnelConfig, zone::Zone};
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct PeerInfo {
@@ -22,10 +22,11 @@ impl PeerInfo {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct PeerConfig {
     pub info: PeerInfo,
     pub tun: TunnelConfig,
+    pub route: RouteConfig,
 }
 
 impl PartialEq for PeerConfig {
@@ -42,17 +43,25 @@ impl PeerConfig {
 
     pub async fn try_from(info: PeerInfo) -> Result<Self> {
         let tun = TunnelConfig::new(&info).await?;
-        let conf = PeerConfig { info, tun };
+        let route = RouteConfig::new(&info).await?;
+        let conf = PeerConfig { info, tun, route };
         Ok(conf)
     }
 
     pub async fn update(&self) -> Result<()> {
         self.tun.update(&self.info).await?;
+        self.route.update(&self.info).await?;
         Ok(())
     }
 
     pub async fn del(&self) -> Result<()> {
         self.tun.del(&self.info).await?;
+        self.route.del(&self.info).await?;
         Ok(())
+    }
+
+    #[inline]
+    pub async fn get_ifname(&self) -> Result<Option<String>> {
+        self.tun.get_ifname(&self.info).await
     }
 }

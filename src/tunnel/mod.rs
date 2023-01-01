@@ -44,4 +44,11 @@ impl TunnelConfig {
             Self::WireGuard(v) => v.del(peer).await,
         }
     }
+
+    pub async fn get_ifname(&self, peer: &PeerInfo) -> Result<Option<String>> {
+        match self {
+            Self::None => Ok(None),
+            Self::WireGuard(_) => Ok(Some(wireguard::to_ifname(peer).await?)),
+        }
+    }
 }
