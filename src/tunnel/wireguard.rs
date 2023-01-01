@@ -22,6 +22,7 @@ pub const KEY_LISTEN_PORT: &str = "wg_listen_port";
 pub const KEY_FORWARD_MARK: &str = "wg_fw_mark";
 pub const KEY_PUBLIC_KEY: &str = "wg_remote_public_key";
 pub const KEY_PRESHARED_KEY: &str = "wg_preshared_key";
+pub const KEY_PERSISTENT_KEEP_ALIVE: &str = "wg_persistent_keep_alive";
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct WireGuardConfig {
@@ -31,6 +32,7 @@ pub struct WireGuardConfig {
     fw_mark: Option<u32>,
     remote_public_key: String,
     preshared_key: Option<String>,
+    persistent_keep_alive: Option<u16>,
 }
 
 impl WireGuardConfig {
@@ -70,8 +72,13 @@ impl WireGuardConfig {
                 .get(KEY_PUBLIC_KEY)
                 .ok_or(anyhow!("no WG pub key"))?
                 .to_owned(),
-            preshared_key: if let Some(preshared) = peer.props.get(KEY_PRESHARED_KEY) {
-                Some(preshared.as_str().parse()?)
+            preshared_key: if let Some(psk) = peer.props.get(KEY_PRESHARED_KEY) {
+                Some(psk.as_str().parse()?)
+            } else {
+                None
+            },
+            persistent_keep_alive: if let Some(pka) = peer.props.get(KEY_PERSISTENT_KEEP_ALIVE) {
+                Some(pka.as_str().parse()?)
             } else {
                 None
             },
@@ -137,10 +144,9 @@ impl WireGuardConfig {
             if let Some(endpoint) = &self.endpoint {
                 wg_peer_nlas.push(WgPeerAttrs::Endpoint(endpoint.to_owned()));
             }
-            if let Some(endpoint) = &self.endpoint {
-                wg_peer_nlas.push(WgPeerAttrs::Endpoint(endpoint.to_owned()));
+            if let Some(pka) = &self.persistent_keep_alive {
+                wg_peer_nlas.push(WgPeerAttrs::PersistentKeepalive(*pka));
             }
-            //   @TODO: PersistentKeepalive(u16),
 
             let wg_nlas = vec![
                 WgDeviceAttrs::IfIndex(ifindex),
