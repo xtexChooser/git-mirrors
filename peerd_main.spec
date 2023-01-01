@@ -25,6 +25,6 @@ cargo install
 %check
 
 %files
-%{_bindir}/hellorust
+%{_bindir}/peerd
 
 %changelog
