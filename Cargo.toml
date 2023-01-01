@@ -1,7 +1,12 @@
 [package]
 name = "peerd"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
+description = "Manage BGP peers with etcd"
+license = "Apache-2.0"
+homepage = "https://source.moe/XTEX-VNET/peerd"
+documentation = "https://docs.rs/peerd"
+repository = "https://source.moe/XTEX-VNET/peerd.git"
 
 [dependencies]
 anyhow = { version = "1.0.68", features = ["backtrace"] }
