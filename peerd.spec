@@ -28,7 +28,7 @@ cargo build --profile=release
 %install
 source "$HOME/.cargo/env"
 cargo install --path . --root=%{buildroot}%{_prefix}
-mkdir -p %{buildroot}%{_prefix}/etc/
+mkdir -p %{buildroot}/etc/
 install -m 655 %{SOURCE1} %{buildroot}/etc/peerd.toml
 
 %check
