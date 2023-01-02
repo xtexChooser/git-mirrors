@@ -11,6 +11,8 @@ BuildRequires:  protobuf-devel
 BuildRequires:  curl
 BuildRequires:  gcc
 
+%define debug_package %{nil}
+
 %description
 Manage BGP peers with etcd
 
