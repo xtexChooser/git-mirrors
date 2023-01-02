@@ -5,13 +5,14 @@ Summary:        Manage BGP peers with etcd
 License:        Apache-2.0
 Group:          Productivity/Networking/Other
 Url:            https://source.moe/XTEX-VNET/peerd
-Source0:        https://source.moe/XTEX-VNET/peerd/archive/main.tar.gz
+Source0:        https://source.moe/XTEX-VNET/peerd/archive/%{version}.tar.gz
 BuildRequires:  cargo
 
 %description
 Manage BGP peers with etcd
 
 %prep
+%setup -q
 rm -rf .cargo
 
 %build
