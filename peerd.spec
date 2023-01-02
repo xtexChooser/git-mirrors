@@ -32,6 +32,7 @@ mkdir -p %{buildroot}/etc/
 install -m 655 %{SOURCE1} %{buildroot}/etc/peerd.toml
 
 %check
+source "$HOME/.cargo/env"
 cargo test
 
 %files
