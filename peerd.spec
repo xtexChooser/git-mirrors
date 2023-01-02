@@ -6,12 +6,12 @@ License:        Apache-2.0
 Group:          Productivity/Networking/Other
 Url:            https://source.moe/XTEX-VNET/peerd
 Source0:        https://source.moe/XTEX-VNET/peerd/archive/main.tar.gz
+BuildRequires:  cargo
 
 %description
 Manage BGP peers with etcd
 
 %prep
-%autosetup
 rm -rf .cargo
 
 %build
