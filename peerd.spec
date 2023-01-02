@@ -23,7 +23,7 @@ cargo --version
 
 %build
 source "$HOME/.cargo/env"
-cargo build
+cargo build --profile=release
 
 %install
 source "$HOME/.cargo/env"
@@ -37,6 +37,6 @@ install -m 655 %{SOURCE1} %{buildroot}%{_prefix}/etc/peerd.toml
 
 %files
 %{_bindir}/peerd
-/etc/peerd.toml
+etc/peerd.toml
 
 %changelog
