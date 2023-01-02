@@ -25,7 +25,7 @@ cargo --version
 
 %build
 source "$HOME/.cargo/env"
-cargo build --profile=package
+cargo build --profile=release
 
 %install
 source "$HOME/.cargo/env"
