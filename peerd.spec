@@ -8,6 +8,7 @@ Url:            https://source.moe/XTEX-VNET/peerd
 Source0:        https://source.moe/XTEX-VNET/peerd/archive/%{version}.tar.gz
 BuildRequires:  protobuf-compiler
 BuildRequires:  curl
+BuildRequires:  gcc
 
 %description
 Manage BGP peers with etcd
