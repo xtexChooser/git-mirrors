@@ -24,7 +24,7 @@ jobs:
           args: --release --all-features
 
       - name: Publish
-        if: github.event_name == 'create'
+        if: github.event_name == 'create' && github.event.ref.prefix == 'refs/tags/'
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
         run: cargo publish
