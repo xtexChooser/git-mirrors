@@ -12,7 +12,7 @@ BuildRequires:  cargo
 Manage BGP peers with etcd
 
 %prep
-%setup -q -n %{version}
+%setup -q -n peerd
 rm -rf .cargo
 
 %build
