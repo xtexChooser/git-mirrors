@@ -1,6 +1,6 @@
 Name:           peerd
-Version:        0.1.1
-Release:        {{{ git_repo_version }}}
+Version:        0.1.2
+Release:        0
 Summary:        Manage BGP peers with etcd
 License:        Apache-2.0
 Group:          Productivity/Networking/Other
