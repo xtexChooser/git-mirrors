@@ -28,15 +28,15 @@ cargo build
 %install
 source "$HOME/.cargo/env"
 cargo install --path . --root=%{buildroot}%{_prefix}
-mkdir -p %{buildroot}/etc/
-install -m 655 %{SOURCE1} %{buildroot}/etc/peerd.toml
+mkdir -p %{buildroot}%{_prefix}/etc/
+install -m 655 %{SOURCE1} %{buildroot}%{_prefix}/etc/peerd.toml
 # install -D -d -m 0755 %{buildroot}%{_bindir}
 # install -m 0755 %{_builddir}/%{name}-%{version}/target/release/hellorust %{buildroot}%{_bindir}/hellorust
  
 %check
 
 %files
-%{_prefix}%{_bindir}/peerd
+%{_bindir}/peerd
 /etc/peerd.toml
 
 %changelog
