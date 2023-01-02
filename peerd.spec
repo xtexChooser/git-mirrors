@@ -41,3 +41,4 @@ rm %{buildroot}%{_prefix}/.crates.toml %{buildroot}%{_prefix}/.crates2.json
 /etc/peerd.toml
 
 %changelog
+{{{ git_repo_changelog }}}

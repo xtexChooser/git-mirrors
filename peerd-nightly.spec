@@ -1,6 +1,6 @@
 Name:           peerd-nightly
 Version:        0.0.0
-Release:        $(git rev-list --all --count)
+Release:        {{{ git_repo_version }}}
 Summary:        Manage BGP peers with etcd
 License:        Apache-2.0
 Group:          Productivity/Networking/Other
@@ -42,3 +42,4 @@ rm %{buildroot}%{_prefix}/.crates.toml %{buildroot}%{_prefix}/.crates2.json
 /etc/peerd.toml
 
 %changelog
+{{{ git_repo_changelog }}}
