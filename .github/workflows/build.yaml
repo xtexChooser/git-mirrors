@@ -16,7 +16,7 @@ jobs:
         with:
           toolchain: nightly
 
-      - run: sudo apt install protobuf-devel
+      - run: sudo apt install libprotobuf-dev
 
       - uses: actions-rs/cargo@v1
         with:
