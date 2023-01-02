@@ -1,15 +1,16 @@
-Name:           peerd
-Version:        0.1.1
-Release:        0
+Name:           peerd-nightly
+Version:        0.0.0
+Release:        $(git rev-list --all --count)
 Summary:        Manage BGP peers with etcd
 License:        Apache-2.0
 Group:          Productivity/Networking/Other
 Url:            https://source.moe/XTEX-VNET/peerd
-Source0:        https://source.moe/XTEX-VNET/peerd/archive/%{version}.tar.gz
+Source0:        https://source.moe/XTEX-VNET/peerd/archive/main.tar.gz
 Source1:        peerd.example.toml
 BuildRequires:  protobuf-devel
 BuildRequires:  curl
 BuildRequires:  gcc
+Provides:       peerd
 
 %define debug_package %{nil}
 
