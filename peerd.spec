@@ -11,7 +11,7 @@ Source0:        https://source.moe/XTEX-VNET/peerd/archive/main.tar.gz
 Manage BGP peers with etcd
 
 %prep
-%setup -qa1
+%autosetup -qa
 rm -rf .cargo
 
 %build
