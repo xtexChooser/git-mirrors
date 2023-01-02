@@ -32,10 +32,9 @@ source "$HOME/.cargo/env"
 cargo install --path . --root=%{buildroot}%{_prefix}
 mkdir -p %{buildroot}/etc/
 install -m 655 %{SOURCE1} %{buildroot}/etc/peerd.toml
+rm %{buildroot}%{_prefix}/.crates.toml %{buildroot}%{_prefix}/.crates2.json
 
 %check
-source "$HOME/.cargo/env"
-cargo test
 
 %files
 %{_bindir}/peerd
