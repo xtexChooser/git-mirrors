@@ -98,7 +98,7 @@ impl WireGuardConfig {
         let ifindex = if let Some(Some(ifinfo)) = ifgetreq.try_next().await.ok() {
             ifinfo.header.index
         } else {
-            info!("WG if '{}' not found, adding", ifname);
+            info!("WG iface '{}' not found, adding", ifname);
             let mut ifaddreq = rtnl.link().add();
             let nlas = &mut ifaddreq.message_mut().nlas;
             nlas.push(link::nlas::Nla::IfName(ifname.clone()));
@@ -227,12 +227,12 @@ impl WireGuardConfig {
         let (connection, handle, _) =
             rtnetlink::new_connection().map_err(|e| anyhow!("failed to connect to rtnl: {}", e))?;
         tokio::spawn(connection);
-        info!("deleting WG if '{}'", ifname);
+        info!("deleting WG iface '{}'", ifname);
         let mut ifreq = handle.link().get().match_name(ifname.clone()).execute();
         if let Some(ifinfo) = ifreq.try_next().await? {
             handle.link().del(ifinfo.header.index).execute().await?;
         } else {
-            warn!("WG if with name '{}' not found", ifname);
+            warn!("WG iface with name '{}' not found", ifname);
         }
         debug_assert!(ifreq.try_next().await?.is_none());
         Ok(())
@@ -298,7 +298,7 @@ pub fn decode_key(key: &str) -> Result<[u8; 32]> {
         .map_err(|e| anyhow!("incorrect decoded WG key len: {:?}", e))
 }
 
-pub async fn delete_unknown_if() -> Result<()> {
+pub async fn delete_unknown_ifaces() -> Result<()> {
     let (connection, handle, _) =
         rtnetlink::new_connection().map_err(|e| anyhow!("failed to connect to rtnl: {}", e))?;
     tokio::spawn(connection);

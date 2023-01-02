@@ -22,7 +22,7 @@ pub async fn main() {
         init_config().await?;
         init_etcd().await?;
         init_zones().await?;
-        tunnel::wireguard::delete_unknown_if().await?;
+        tunnel::wireguard::delete_unknown_ifaces().await?;
         join_all(watch_zones().await?).await;
         Ok(())
     })()
