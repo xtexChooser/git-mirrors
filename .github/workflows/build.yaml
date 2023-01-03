@@ -1,0 +1,30 @@
+name: Build
+
+on:
+  push:
+  workflow_dispatch:
+  create:
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: sudo apt install podman
+
+      - name: Login
+        run: podman login -u xtexChooser -p ${{ secrets.OCI_REGISTRY_TOKEN }} source.moe
+
+      - name: Build
+        run: |
+          podman build -t bird .
+
+      - name: Publish
+        if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/')
+        run: |
+          podman tag localhost/bird source.moe/xtex-vnet/bird:${{ github.ref_name }}
+          podman push source.moe/xtex-vnet/bird:${{ github.ref_name }}
+          podman tag localhost/bird source.moe/xtex-vnet/bird:latest
+          podman push source.moe/xtex-vnet/bird:latest
