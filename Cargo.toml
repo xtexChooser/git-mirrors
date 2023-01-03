@@ -1,6 +1,6 @@
 [package]
 name = "peerd"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 description = "Manage BGP peers with etcd"
 license = "Apache-2.0"

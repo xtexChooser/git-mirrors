@@ -1,5 +1,5 @@
 Name:           peerd
-Version:        0.2.0
+Version:        0.2.1
 Release:        0
 Summary:        Manage BGP peers with etcd
 License:        Apache-2.0
