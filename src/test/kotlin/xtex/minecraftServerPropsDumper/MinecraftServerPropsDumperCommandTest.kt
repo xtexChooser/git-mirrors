@@ -1,11 +1,10 @@
-package xtex;
+package xtex.minecraftServerPropsDumper
 
 import io.kotest.matchers.string.shouldContain
 import io.kotest.core.spec.style.BehaviorSpec
 import io.micronaut.configuration.picocli.PicocliRunner
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.env.Environment
-import xtex.minecraftServerPropsDumper.MinecraftServerPropsDumperCommand
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
