@@ -91,7 +91,7 @@ class Main : Runnable {
             ensureServerJar(version)
             measureTime {
                 val (klass, count) = ensureServerJar(version).findPropertiesClass()
-                println("$klass for $count fingerprint matched")
+                println("$klass for $count fingerprints matched")
             }.let { println("Took $it") }
         }
         return 0
