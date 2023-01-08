@@ -11,7 +11,7 @@ import java.util.jar.JarInputStream
 
 val KEY_FILTER_PATTERN = "[a-z\\-]+".toRegex()
 
-suspend fun File.extractKeys(klass: String): List<String> {
+suspend fun File.extractKeys(klass: String): List<String> =
     withContext(Dispatchers.IO) {
         val jis = JarInputStream(extractBundle())
         var entry: JarEntry?
@@ -21,9 +21,8 @@ suspend fun File.extractKeys(klass: String): List<String> {
                 return@withContext jis.extractStrings(klass).toList()
             }
         } while (entry != null)
-    }
-    error("Jar Entry $klass not found")
-}
+        return@withContext null
+    } ?: error("Jar Entry $klass not found")
 
 fun Iterable<String>.matchKeys(): List<String> = this
     .filter { it.utf8Size() == it.length.toLong() }
