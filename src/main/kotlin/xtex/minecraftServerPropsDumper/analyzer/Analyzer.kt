@@ -28,5 +28,7 @@ suspend fun analyze(version: String): AnalyzeReport {
 val REPORT_SERIALIZER = Json { prettyPrint = true }
 
 suspend fun doReport(version: String) = ensureFile("$version-report.json") {
+    ensureServerJar(version)
     it.writeText(REPORT_SERIALIZER.encodeToString(analyze(version)))
+    ensureServerJar(version).delete()
 }
