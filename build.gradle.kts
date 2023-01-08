@@ -1,11 +1,11 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.8.0"
-    id("org.jetbrains.kotlin.kapt") version "1.8.0"
-    id("org.jetbrains.kotlin.plugin.allopen") version "1.8.0"
+    kotlin("jvm") version "1.8.0"
+    kotlin("kapt") version "1.8.0"
+    kotlin("plugin.serialization") version "1.8.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("io.micronaut.application") version "3.6.7"
+    id("application")
 }
 
 version = "0.1"
@@ -16,30 +16,34 @@ repositories {
 }
 
 dependencies {
-    kapt("info.picocli:picocli-codegen")
-    kapt("io.micronaut:micronaut-http-validation")
-    kapt("io.micronaut.serde:micronaut-serde-processor")
-    implementation("info.picocli:picocli")
-    implementation("io.micronaut:micronaut-http-client")
-    implementation("io.micronaut:micronaut-jackson-databind")
-    implementation("io.micronaut.kotlin:micronaut-kotlin-extension-functions")
-    implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
-    implementation("io.micronaut.picocli:micronaut-picocli")
-    implementation("io.micronaut.serde:micronaut-serde-jackson")
-    implementation("jakarta.annotation:jakarta.annotation-api")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
-    runtimeOnly("org.slf4j:slf4j-simple")
-    compileOnly("org.graalvm.nativeimage:svm")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
 
-    implementation("io.micronaut:micronaut-validation")
+    implementation("info.picocli:picocli:4.7.0")
+    kapt("info.picocli:picocli-codegen:4.7.0")
 
-    runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.slf4j:slf4j-api:2.0.6")
+    runtimeOnly("org.slf4j:slf4j-simple:2.0.6")
+
+    implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.11")
+    implementation("com.squareup.okhttp3:okhttp-coroutines:5.0.0-alpha.11")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.4.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.1")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+
+    implementation("org.apache.bcel:bcel:6.7.0")
+
+    testImplementation("io.kotest:kotest-runner-junit5:5.5.4")
+    testImplementation("io.kotest:kotest-assertions-core:5.5.4")
+
+    implementation("commons-io:commons-io:2.11.0")
 }
 
-
 application {
-    mainClass.set("$group.MinecraftServerPropsDumperCommand")
+    mainClass.set("$group.main.Main")
+    executableDir = "run"
 }
 
 java {
@@ -52,17 +56,6 @@ tasks.withType<KotlinCompile>().configureEach {
     }
 }
 
-micronaut {
-    testRuntime("kotest")
-    processing {
-        incremental(true)
-        annotations("$group.*")
-    }
-}
-
-configurations.all {
-    resolutionStrategy.dependencySubstitution {
-        substitute(module("io.micronaut:micronaut-jackson-databind"))
-            .using(module("io.micronaut.serde:micronaut-serde-jackson:1.5.0"))
-    }
+tasks.withType<Test>().configureEach {
+    useJUnitPlatform()
 }
