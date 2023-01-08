@@ -11,6 +11,8 @@ import xtex.minecraftServerPropsDumper.mjapi.fetchClientJson
 import xtex.minecraftServerPropsDumper.mjapi.fetchGameVersion
 import xtex.minecraftServerPropsDumper.mjapi.fetchGameVersions
 import kotlin.system.exitProcess
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTime
 
 @Command(
     name = "minecraft-server-props-dumper",
@@ -82,11 +84,14 @@ class Main : Runnable {
         return 0
     }
 
+    @OptIn(ExperimentalTime::class)
     @Command(name = "matchClass")
     fun matchClass(@Parameters version: String): Int {
         runBlocking {
-            val (klass, count) = ensureServerJar(version).findPropertiesClass()
-            println("$klass for $count matches")
+            measureTime {
+                val (klass, count) = ensureServerJar(version).findPropertiesClass()
+                println("$klass for $count fingerprint matched")
+            }.let { println("Took $it") }
         }
         return 0
     }

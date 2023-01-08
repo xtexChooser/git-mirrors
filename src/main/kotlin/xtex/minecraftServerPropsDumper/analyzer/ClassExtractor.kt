@@ -10,7 +10,7 @@ suspend fun JarInputStream.extractClasses(handler: suspend (String, InputStream)
     withContext(Dispatchers.IO) {
         var entry: JarEntry? = nextJarEntry
         while (entry != null) {
-            if (entry.name.endsWith(".class")) {
+            if (entry.name.endsWith(".class") && (!entry.name.contains("/") || entry.name.startsWith("net/"))) {
                 handler(entry.name, this@extractClasses)
             }
             entry = nextJarEntry
