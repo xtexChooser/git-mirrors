@@ -1,6 +1,8 @@
+@file:OptIn(ExperimentalKotest::class)
+
 package xtex.minecraftServerPropsDumper.test
 
-import io.kotest.common.runBlocking
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.engine.test.logging.info
 import io.kotest.matchers.string.shouldContain

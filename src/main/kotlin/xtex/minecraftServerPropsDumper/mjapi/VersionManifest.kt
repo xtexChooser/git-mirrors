@@ -14,7 +14,8 @@ suspend fun fetchGameVersions() = MjAPIJson.decodeFromString<VersionManifest>(
     ).executeAsync().body.string()
 )
 
-suspend fun fetchGameVersion(version: String) = fetchGameVersions().versions.find { it.id == version }!!
+suspend fun fetchGameVersion(version: String) =
+    fetchGameVersions().versions.find { it.id == version } ?: error("Version $version not found")
 
 @Serializable
 data class VersionManifest(

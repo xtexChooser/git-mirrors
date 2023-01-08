@@ -2,15 +2,14 @@ package xtex.minecraftServerPropsDumper.main
 
 import kotlinx.coroutines.runBlocking
 import picocli.CommandLine
-
-import picocli.CommandLine.Command
-import picocli.CommandLine.Option
-import picocli.CommandLine.Parameters
-import xtex.minecraftServerPropsDumper.mjapi.downloadFileTo
+import picocli.CommandLine.*
+import xtex.minecraftServerPropsDumper.analyzer.extractBundle
+import xtex.minecraftServerPropsDumper.analyzer.extractClasses
+import xtex.minecraftServerPropsDumper.analyzer.findPropertiesClass
+import xtex.minecraftServerPropsDumper.mjapi.ensureServerJar
 import xtex.minecraftServerPropsDumper.mjapi.fetchClientJson
 import xtex.minecraftServerPropsDumper.mjapi.fetchGameVersion
 import xtex.minecraftServerPropsDumper.mjapi.fetchGameVersions
-import java.util.concurrent.Callable
 import kotlin.system.exitProcess
 
 @Command(
@@ -71,10 +70,23 @@ class Main : Runnable {
 
     @Command(name = "downloadServer")
     fun downloadServer(@Parameters version: String): Int {
+        runBlocking { ensureServerJar(version) }
+        return 0
+    }
+
+    @Command(name = "extractClasses")
+    fun extractClasses(@Parameters version: String): Int {
         runBlocking {
-            val url = fetchGameVersion(version).fetchClientJson().downloads.server.url
-            println("URL: $url")
-            downloadFileTo(url, "server-$version.jar")
+            ensureServerJar(version).extractBundle().extractClasses { name, _ -> println(name) }
+        }
+        return 0
+    }
+
+    @Command(name = "matchClass")
+    fun matchClass(@Parameters version: String): Int {
+        runBlocking {
+            val (klass, count) = ensureServerJar(version).findPropertiesClass()
+            println("$klass for $count matches")
         }
         return 0
     }

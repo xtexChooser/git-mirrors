@@ -43,7 +43,6 @@ dependencies {
 
 application {
     mainClass.set("$group.main.Main")
-    executableDir = "run"
 }
 
 java {
@@ -58,4 +57,9 @@ tasks.withType<KotlinCompile>().configureEach {
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
+}
+
+tasks.named<JavaExec>("run").configure {
+    mkdir("run")
+    workingDir("run")
 }

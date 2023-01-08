@@ -21,7 +21,7 @@ data class ClientJson(
 
     @Serializable
     data class Downloads(
-        val server: Download,
+        val server: Download? = null,
     )
 
     @Serializable
