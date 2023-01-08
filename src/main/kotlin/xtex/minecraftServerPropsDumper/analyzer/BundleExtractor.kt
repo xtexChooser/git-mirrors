@@ -17,7 +17,7 @@ fun JarInputStream.extractBundle(): InputStream? {
     return null
 }
 
-fun File.extractBundle(): JarInputStream {
-    return JarInputStream(FileInputStream(this)).extractBundle()?.let { JarInputStream(it) }
-        ?: JarInputStream(FileInputStream(this))
+fun File.extractBundle(): InputStream {
+    return JarInputStream(FileInputStream(this)).extractBundle()
+        ?: FileInputStream(this)
 }

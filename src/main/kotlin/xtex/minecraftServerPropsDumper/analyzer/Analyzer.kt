@@ -20,7 +20,7 @@ suspend fun analyze(version: String): AnalyzeReport {
     } catch (e: Throwable) {
         return AnalyzeReport(
             version = version,
-            error = e.message
+            error = if (e is IllegalStateException) e.message else e.stackTraceToString()
         )
     }
 }

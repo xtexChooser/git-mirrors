@@ -8,6 +8,7 @@ import xtex.minecraftServerPropsDumper.mjapi.ensureServerJar
 import xtex.minecraftServerPropsDumper.mjapi.fetchClientJson
 import xtex.minecraftServerPropsDumper.mjapi.fetchGameVersion
 import xtex.minecraftServerPropsDumper.mjapi.fetchGameVersions
+import java.util.jar.JarInputStream
 import kotlin.system.exitProcess
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTime
@@ -77,7 +78,7 @@ class Main : Runnable {
     @Command(name = "extractClasses")
     fun extractClasses(@Parameters version: String): Int {
         runBlocking {
-            ensureServerJar(version).extractBundle().extractClasses { name, _ -> println(name) }
+            JarInputStream(ensureServerJar(version).extractBundle()).extractClasses { name, _ -> println(name) }
         }
         return 0
     }

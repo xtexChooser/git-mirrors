@@ -2,6 +2,7 @@ package xtex.minecraftServerPropsDumper.analyzer
 
 import kotlinx.coroutines.flow.Flow
 import java.io.File
+import java.util.jar.JarInputStream
 
 val FINGERPRINT_STRINGS = arrayOf(
     "port",
@@ -35,7 +36,7 @@ suspend fun Flow<String>.matchStrings(): Int {
 suspend fun File.findPropertiesClass(): Pair<String, Int> {
     var maxClasses = mutableListOf<String>()
     var maxCount = -1;
-    extractBundle().extractClasses { name, input ->
+    JarInputStream(extractBundle()).extractClasses { name, input ->
         val count = input.extractStrings(name).matchStrings()
         if (count > maxCount) {
             maxCount = count
