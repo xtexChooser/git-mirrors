@@ -24,7 +24,10 @@ suspend fun File.extractKeys(klass: String): List<String> =
         return@withContext null
     } ?: error("Jar Entry $klass not found")
 
-fun Iterable<String>.matchKeys(): List<String> = this
+fun Iterable<String>.matchKeys(): Set<String> = this
+    .asSequence()
     .filter { it.utf8Size() == it.length.toLong() }
     .filter { it.isNotEmpty() }
     .filter { KEY_FILTER_PATTERN.matches(it) }
+    .sorted()
+    .toSet()
