@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.executeAsync
 import org.apache.commons.io.FileUtils
+import xtex.minecraftServerPropsDumper.util.ensureFile
 import java.io.File
 
 const val USER_AGENT = "xtex-minecraft-server-props-dumper/1 (https://source.moe/xtex/minecraft-server-props-dumper)"
@@ -38,13 +39,9 @@ suspend fun downloadFileTo(url: String, file: String) =
     }
 
 
-suspend fun ensureServerJar(version: String): File {
-    val file = "server-$version.jar"
-    if (!File(file).exists()) {
-        val url = (fetchGameVersion(version).fetchClientJson().downloads.server
-            ?: error("Version $version is too old(<= 1.2.4), no public server URL found")).url
-        println("Downloading: $url")
-        downloadFileTo(url, file)
-    }
-    return File(file)
+suspend fun ensureServerJar(version: String) = ensureFile("$version-server.jar") {
+    val url = (fetchGameVersion(version).fetchClientJson().downloads.server
+        ?: error("Version $version is too old(<= 1.2.4), no public server URL found")).url
+    println("Downloading: $url")
+    downloadFileTo(url, it.absolutePath)
 }

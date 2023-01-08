@@ -3,9 +3,7 @@ package xtex.minecraftServerPropsDumper.main
 import kotlinx.coroutines.runBlocking
 import picocli.CommandLine
 import picocli.CommandLine.*
-import xtex.minecraftServerPropsDumper.analyzer.extractBundle
-import xtex.minecraftServerPropsDumper.analyzer.extractClasses
-import xtex.minecraftServerPropsDumper.analyzer.findPropertiesClass
+import xtex.minecraftServerPropsDumper.analyzer.*
 import xtex.minecraftServerPropsDumper.mjapi.ensureServerJar
 import xtex.minecraftServerPropsDumper.mjapi.fetchClientJson
 import xtex.minecraftServerPropsDumper.mjapi.fetchGameVersion
@@ -93,6 +91,24 @@ class Main : Runnable {
                 val (klass, count) = ensureServerJar(version).findPropertiesClass()
                 println("$klass for $count fingerprints matched")
             }.let { println("Took $it") }
+        }
+        return 0
+    }
+
+    @OptIn(ExperimentalTime::class)
+    @Command(name = "analyze")
+    fun runAnalyze(@Parameters version: String): Int {
+        runBlocking {
+            println("Reported in ${measureTime { println(analyze(version).toString()) }}")
+        }
+        return 0
+    }
+
+    @OptIn(ExperimentalTime::class)
+    @Command(name = "report")
+    fun report(@Parameters version: String): Int {
+        runBlocking {
+            println("Reported in ${measureTime { doReport(version) }}")
         }
         return 0
     }
