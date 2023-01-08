@@ -88,6 +88,7 @@ class Main : Runnable {
     @Command(name = "matchClass")
     fun matchClass(@Parameters version: String): Int {
         runBlocking {
+            ensureServerJar(version)
             measureTime {
                 val (klass, count) = ensureServerJar(version).findPropertiesClass()
                 println("$klass for $count fingerprint matched")
