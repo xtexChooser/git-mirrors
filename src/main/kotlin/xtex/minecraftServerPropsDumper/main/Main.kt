@@ -1,6 +1,6 @@
 package xtex.minecraftServerPropsDumper.main
 
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import picocli.CommandLine
 import picocli.CommandLine.*
 import xtex.minecraftServerPropsDumper.analyzer.*
@@ -19,20 +19,13 @@ import kotlin.time.measureTime
     mixinStandardHelpOptions = true,
     subcommands = [CommandLine.HelpCommand::class]
 )
-class Main : Runnable {
+class Main {
 
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
             exitProcess(CommandLine(Main()).execute(*args))
         }
-    }
-
-    @Option(names = ["-v", "--verbose"], description = ["..."])
-    private var verbose: Boolean = false
-
-    override fun run() {
-        println("Hi!")
     }
 
     @Command(name = "getVersionManifest")
@@ -109,7 +102,38 @@ class Main : Runnable {
     @Command(name = "report")
     fun report(@Parameters version: String): Int {
         runBlocking {
+            ensureServerJar(version)
             println("Reported in ${measureTime { doReport(version) }}")
+        }
+        return 0
+    }
+
+    @OptIn(ExperimentalTime::class)
+    @Command(name = "summarize")
+    fun summarize(): Int {
+        runBlocking {
+            println("Summarized in ${measureTime { doSummarize() }}")
+        }
+        return 0
+    }
+
+    @OptIn(ExperimentalTime::class, ExperimentalCoroutinesApi::class)
+    @Command(name = "reportAll")
+    fun reportAll(): Int {
+        runBlocking {
+            val versions = fetchGameVersions().versions.map { it.id }
+            coroutineScope {
+                withContext(Dispatchers.Default.limitedParallelism(10)) {
+                    versions.forEach { version ->
+                        launch {
+                            println("Reporting $version")
+                            println("Reported $version in ${measureTime { report(version) }}")
+                        }
+                    }
+                }
+            }
+            println("Reported all, summarizing")
+            summarize()
         }
         return 0
     }

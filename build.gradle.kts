@@ -39,6 +39,7 @@ dependencies {
     testImplementation("io.kotest:kotest-assertions-core:5.5.4")
 
     implementation("commons-io:commons-io:2.11.0")
+    implementation("com.github.miachm.sods:SODS:1.5.2")
 }
 
 application {
