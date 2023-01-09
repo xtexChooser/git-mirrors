@@ -3,6 +3,7 @@ name: Build
 on:
   push:
   pull_request:
+  workflow_dispatch:
 
 jobs:
   build:
@@ -43,11 +44,20 @@ jobs:
       - name: Remove server jars
         run: rm run/*-server.jar
 
-      - uses: dtinth/markdown-report-action@v1
-        with:
-          name: Summary
-          title: Summary
-          body-file: run/summary.md
+      - name: Publish to Writee
+        if: github.event_name != "pull_request"
+        run: |
+          TOKEN=$(curl "https://writee.org/api/auth/login" -H "Content-Type: application/json" -X POST -d '${{ secrets.WRITEE_AUTH }}' | jq .data.access_token -r)
+          jo created=$(TZ="Asia/Beijing" date -Iseconds) title=Report body=@summary.md lang=zh slug=$(date -Iseconds -u) > data.json
+          RESULT=$(curl "https://writee.org/api/collections/minecraft-server-props-dumper/posts" \
+            -H "Content-Type: application/json" -H "Authorization: Token $TOKEN" \
+            -X POST -d '@data.json')
+          echo $RESULT
+          ID=$(echo -E $RESULT | jq .data.id -r)
+          curl "https://writee.org/api/collections/minecraft-server-props-dumper/pin" \
+            -H "Content-Type: application/json" -H "Authorization: Token $TOKEN" \
+            -X POST -d "$(jo $(jo id=$ID position=1) -a)"
+          rm data.json
 
       - uses: actions/upload-artifact@v3
         with:
