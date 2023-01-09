@@ -1,9 +1,6 @@
 package xtex.minecraftServerPropsDumper.analyzer
 
-import com.github.miachm.sods.Color
-import com.github.miachm.sods.Sheet
-import com.github.miachm.sods.SpreadSheet
-import com.github.miachm.sods.Style
+import com.github.miachm.sods.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.map
@@ -13,8 +10,15 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.io.File
 
-val STYLE_FOUND = Style().apply { backgroundColor = Color("#00ff00") }
-val STYLE_NOT_FOUND = Style().apply { backgroundColor = Color("#ff0000") }
+val STYLE_BORDERS = Borders(true)
+val STYLE_FOUND = Style().apply {
+    backgroundColor = Color("#00ff00")
+    borders = STYLE_BORDERS
+}
+val STYLE_NOT_FOUND = Style().apply {
+    backgroundColor = Color("#ff0000")
+    borders = STYLE_BORDERS
+}
 
 // @TODO: https://github.com/miachm/SODS/issues/55
 suspend fun doSummarize() {

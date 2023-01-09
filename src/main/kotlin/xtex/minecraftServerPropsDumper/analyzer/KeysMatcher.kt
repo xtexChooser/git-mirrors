@@ -6,10 +6,13 @@ import kotlinx.coroutines.withContext
 import okio.utf8Size
 import java.io.File
 import java.util.jar.JarEntry
-import java.util.jar.JarFile
 import java.util.jar.JarInputStream
 
 val KEY_FILTER_PATTERN = "[a-z\\-]+".toRegex()
+val KEY_DENYLIST = setOf(
+    "true",
+    "false"
+)
 
 suspend fun File.extractKeys(klass: String): List<String> =
     withContext(Dispatchers.IO) {
@@ -29,5 +32,6 @@ fun Iterable<String>.matchKeys(): Set<String> = this
     .filter { it.utf8Size() == it.length.toLong() }
     .filter { it.isNotEmpty() }
     .filter { KEY_FILTER_PATTERN.matches(it) }
+    .filter { it !in KEY_DENYLIST }
     .sorted()
     .toSet()

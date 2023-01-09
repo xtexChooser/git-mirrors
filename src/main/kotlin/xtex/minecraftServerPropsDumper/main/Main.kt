@@ -8,6 +8,7 @@ import xtex.minecraftServerPropsDumper.mjapi.ensureServerJar
 import xtex.minecraftServerPropsDumper.mjapi.fetchClientJson
 import xtex.minecraftServerPropsDumper.mjapi.fetchGameVersion
 import xtex.minecraftServerPropsDumper.mjapi.fetchGameVersions
+import java.io.File
 import java.util.jar.JarInputStream
 import kotlin.system.exitProcess
 import kotlin.time.ExperimentalTime
@@ -120,14 +121,27 @@ class Main {
     @OptIn(ExperimentalTime::class, ExperimentalCoroutinesApi::class)
     @Command(name = "reportAll")
     fun reportAll(): Int {
+        File(".")
+            .listFiles { _, name -> name.endsWith("-report.json") || name.endsWith(".ods") }
+            ?.forEach { it.delete() }
         runBlocking {
             val versions = fetchGameVersions().versions.map { it.id }
             coroutineScope {
                 withContext(Dispatchers.Default.limitedParallelism(10)) {
                     versions.forEach { version ->
                         launch {
-                            println("Reporting $version")
-                            println("Reported $version in ${measureTime { report(version) }}")
+                            for (i in 1..10) {
+                                try {
+                                    println("Reporting $version")
+                                    println("Reported $version in ${measureTime { report(version) }}")
+                                } catch (e: Throwable) {
+                                    println("Failed to report $version, retry $i")
+                                    File(".")
+                                        .listFiles { _, name -> name.startsWith("$version-") }
+                                        ?.forEach { it.delete() }
+                                    delay(5000)
+                                }
+                            }
                         }
                     }
                 }
