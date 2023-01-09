@@ -5,11 +5,17 @@ import java.io.File
 import java.util.jar.JarInputStream
 
 val FINGERPRINT_STRINGS = arrayOf(
+    "server.properties",
     "port",
     "max-players",
     "server-name",
     "motd",
+    "public",
     "pvp",
+    "no-animals",
+    "monsters",
+    "spawn-animals",
+    "verify-names",
     "view-distance",
     "max-connections",
     "grow-trees",
@@ -19,6 +25,7 @@ val FINGERPRINT_STRINGS = arrayOf(
     "spawn-protection",
     "spawn-npcs",
     "spawn-monsters",
+    "allow-nether",
     "online-mode",
     "prevent-proxy-connections",
 )
@@ -35,7 +42,7 @@ suspend fun Flow<String>.matchStrings(): Int {
 
 suspend fun File.findPropertiesClass(): Pair<String, Int> {
     var maxClasses = mutableListOf<String>()
-    var maxCount = -1;
+    var maxCount = 0
     JarInputStream(extractBundle()).extractClasses { name, input ->
         val count = input.extractStrings(name).matchStrings()
         if (count > maxCount) {
@@ -48,5 +55,5 @@ suspend fun File.findPropertiesClass(): Pair<String, Int> {
     if (maxClasses.size > 1) {
         error("Too many matches: $maxCount $maxClasses")
     }
-    return maxClasses.first() to maxCount
+    return (maxClasses.firstOrNull() ?: error("Nothing matched")) to maxCount
 }
