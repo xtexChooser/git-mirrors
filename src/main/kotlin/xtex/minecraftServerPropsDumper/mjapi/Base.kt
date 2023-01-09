@@ -74,8 +74,10 @@ suspend fun ensureServerJar(version: String) = ensureFile("$version-server.jar")
             println(e.toString())
             retries++
             if (retries > 3) {
+                println("Global download delay $retries from $version")
                 downloadDelayController.withLock { delay(retries * 3000L) }
             } else {
+                println("Local download delay $retries for $version")
                 delay(retries * 1000L)
             }
         }
