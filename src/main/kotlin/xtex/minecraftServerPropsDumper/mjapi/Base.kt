@@ -2,6 +2,7 @@ package xtex.minecraftServerPropsDumper.mjapi
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
@@ -28,7 +29,7 @@ val MjAPIJson = Json { ignoreUnknownKeys = true }
 val DownloadHTTPClient = GlobalHTTPClient.newBuilder().build()
 
 @OptIn(ExperimentalCoroutinesApi::class)
-val DownloadCoroutineScope = Dispatchers.IO.limitedParallelism(2)
+val DownloadCoroutineScope = Dispatchers.IO.limitedParallelism(4)
 
 suspend fun downloadFile(url: String) = withContext(DownloadCoroutineScope) {
     DownloadHTTPClient.newCall(
@@ -36,7 +37,7 @@ suspend fun downloadFile(url: String) = withContext(DownloadCoroutineScope) {
             .get()
             .url(url)
             .build()
-    ).executeAsync().body.byteStream()
+    ).executeAsync().body.byteStream().apply { delay(500) }
 }
 
 val LAUNCHER_MOJANG_COM_MIRRORS = arrayOf(
