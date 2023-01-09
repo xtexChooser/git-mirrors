@@ -42,7 +42,7 @@ suspend fun Flow<String>.matchStrings(): Int {
 
 suspend fun File.findPropertiesClass(): Pair<String, Int> {
     var maxClasses = mutableListOf<String>()
-    var maxCount = 0
+    var maxCount = 1
     JarInputStream(extractBundle()).extractClasses { name, input ->
         val count = input.extractStrings(name).matchStrings()
         if (count > maxCount) {
