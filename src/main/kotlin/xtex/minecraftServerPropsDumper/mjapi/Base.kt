@@ -3,6 +3,8 @@ package xtex.minecraftServerPropsDumper.mjapi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
@@ -54,6 +56,7 @@ suspend fun downloadFileTo(url: String, file: String) =
         FileUtils.copyToFile(downloadFile(url), File(file))
     }
 
+val downloadDelayController = Mutex()
 
 suspend fun ensureServerJar(version: String) = ensureFile("$version-server.jar") {
     val url = fetchGameVersion(version).fetchClientJson().downloads.server?.url
@@ -61,13 +64,20 @@ suspend fun ensureServerJar(version: String) = ensureFile("$version-server.jar")
             ?.apply { println("Resolved archived server jar: $version $this") })
         ?: error("Version $version is too old(<= 1.2.4), no public server URL found")
     println("Downloading: $url")
+    var retries = 0
     while (true) {
         try {
+            downloadDelayController.withLock(url) { }
             downloadFileTo(url, it.absolutePath)
             break
         } catch (e: IOException) {
-            e.printStackTrace()
-            delay(1000)
+            println(e.toString())
+            retries++
+            if (retries > 3) {
+                downloadDelayController.withLock { delay(retries * 3000L) }
+            } else {
+                delay(retries * 1000L)
+            }
         }
     }
 }
