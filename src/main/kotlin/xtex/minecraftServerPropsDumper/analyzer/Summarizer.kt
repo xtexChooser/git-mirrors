@@ -98,7 +98,7 @@ suspend fun doDiffSummarize() {
             val lastReport = reports[index - 1]
             if (report.error != null) {
                 appendLine("###### ${report.version}").appendLine()
-                appendLine("```").appendLine(report.error).appendLine("```")
+                appendLine("```").appendLine(report.error).appendLine("```").appendLine()
             } else {
                 if (lastReport.keys != null && report.keys != null && report.keys != lastReport.keys) {
                     appendLine("###### ${report.version}").appendLine()
@@ -121,10 +121,9 @@ suspend fun doDiffSummarize() {
                     }
                         .sortedBy { it.substring(2) }
                         .joinToString(separator = "\n"))
-                    appendLine("```")
+                    appendLine("```").appendLine()
                 }
             }
-            appendLine()
         }
     }
 
