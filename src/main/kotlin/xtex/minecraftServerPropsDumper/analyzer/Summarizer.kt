@@ -104,16 +104,16 @@ suspend fun doDiffSummarize() {
                     "Ver: `${report.version}` PV: `${lastReport.version}` RT: `${report.releaseTime}` " +
                             "PC: `${report.propertiesClass}` PFC: `${report.propertiesClassFingerprints}`"
                 ).appendLine()
-                if (report.keys != lastReport.keys) {
+                if (lastReport.keys != null && report.keys != null && report.keys != lastReport.keys) {
                     appendLine("```diff")
                     appendLine(buildList {
-                        report.keys!!.forEach {
-                            if (!lastReport.keys!!.contains(it)) {
+                        report.keys.forEach {
+                            if (it !in lastReport.keys) {
                                 add("+ $it")
                             }
                         }
-                        lastReport.keys!!.forEach {
-                            if (!report.keys.contains(it)) {
+                        lastReport.keys.forEach {
+                            if (it !in report.keys) {
                                 add("- $it")
                             }
                         }
