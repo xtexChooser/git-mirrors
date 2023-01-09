@@ -52,8 +52,10 @@ suspend fun downloadFileTo(url: String, file: String) =
 
 
 suspend fun ensureServerJar(version: String) = ensureFile("$version-server.jar") {
-    val url = (fetchGameVersion(version).fetchClientJson().downloads.server
-        ?: error("Version $version is too old(<= 1.2.4), no public server URL found")).url/*.useMirror()*/
+    val url = fetchGameVersion(version).fetchClientJson().downloads.server?.url
+        ?: (tryResolveArchiveDownloadURL(version)
+            ?.apply { println("Resolved archived server jar: $version $this") })
+        ?: error("Version $version is too old(<= 1.2.4), no public server URL found")
     println("Downloading: $url")
     downloadFileTo(url, it.absolutePath)
 }
