@@ -10,6 +10,31 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.io.File
 
+suspend fun doSummarize() {
+    doTableSummarize()
+    doDiffSummarize()
+}
+
+fun collectALlReportFiles() = File(".")
+    .listFiles { _, name -> name.endsWith("-report.json") }!!
+    .toSet()
+    .sortedDescending()
+
+suspend fun collectAllKeys() = collectAllReports()
+    .map { it.keys ?: emptySet() }
+    .toList()
+    .flatten()
+    .toSet()
+
+suspend fun collectAllReports() = channelFlow<AnalyzeReport> {
+    withContext(Dispatchers.IO) {
+        collectALlReportFiles()
+            .forEach {
+                send(Json.decodeFromString(it.readText()))
+            }
+    }
+}
+
 val STYLE_BORDERS = Borders(true)
 val STYLE_FOUND = Style().apply {
     backgroundColor = Color("#00ff00")
@@ -21,9 +46,9 @@ val STYLE_NOT_FOUND = Style().apply {
 }
 
 // @TODO: https://github.com/miachm/SODS/issues/55
-suspend fun doSummarize() {
+suspend fun doTableSummarize() {
     val allKeys = collectAllKeys().sorted()
-    println("Summarizing ${allKeys.size} keys")
+    println("Summarizing ${allKeys.size} keys as table")
     val allFiles = collectALlReportFiles()
 
     val tableFile = File("summary.ods")
@@ -59,24 +84,51 @@ suspend fun doSummarize() {
     withContext(Dispatchers.IO) {
         table.save(tableFile)
     }
+    println("Table summarized")
 }
 
-suspend fun collectAllReports() = channelFlow<AnalyzeReport> {
-    withContext(Dispatchers.IO) {
-        collectALlReportFiles()
-            .forEach {
-                send(Json.decodeFromString(it.readText()))
+suspend fun doDiffSummarize() {
+    println("Summarizing as diff")
+    val summary = buildString {
+        val reports = collectAllReports().toList()
+            .sortedBy { it.releaseTime }
+        reports.forEachIndexed { index, report ->
+            if (index == 0)
+                return@forEachIndexed
+            val lastReport = reports[index - 1]
+            appendLine("###### ${report.version}").appendLine()
+            if (report.error != null) {
+                appendLine("```").appendLine(report.error).appendLine("```")
+            } else {
+                appendLine(
+                    "Ver: `${report.version}` PV: `${lastReport.version}` RT: `${report.releaseTime}` " +
+                            "PC: `${report.propertiesClass}` PFC: `${report.propertiesClassFingerprints}`"
+                ).appendLine()
+                if (report.keys != lastReport.keys) {
+                    appendLine("```diff")
+                    appendLine(buildList {
+                        report.keys!!.forEach {
+                            if (!lastReport.keys!!.contains(it)) {
+                                add("+ $it")
+                            }
+                        }
+                        lastReport.keys!!.forEach {
+                            if (!report.keys.contains(it)) {
+                                add("- $it")
+                            }
+                        }
+                    }
+                        .sortedBy { it.substring(2) }
+                        .joinToString(separator = "\n"))
+                    appendLine("```")
+                }
             }
+            appendLine()
+        }
     }
+
+    withContext(Dispatchers.IO) {
+        File("summary.md").writeText(summary)
+    }
+    println("Diff summarized")
 }
-
-fun collectALlReportFiles() = File(".")
-    .listFiles { _, name -> name.endsWith("-report.json") }!!
-    .toSet()
-    .sortedDescending()
-
-suspend fun collectAllKeys() = collectAllReports()
-    .map { it.keys ?: emptySet() }
-    .toList()
-    .flatten()
-    .toSet()

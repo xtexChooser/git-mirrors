@@ -29,24 +29,32 @@ jobs:
         with:
           arguments: test
 
-      - name: Generate
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: run --args="reportAll"
-
-      - name: Collect Reports
-        run: |
-          mkdir report
-          cp run/*.json report
-          cp run/*.ods report
-
-      - uses: actions/upload-artifact@v3.1.0
-        with:
-          name: Reports
-          path: report
-
-      - uses: actions/upload-artifact@v3.1.0
+      - uses: actions/upload-artifact@v3
         with:
           name: Build Artifacts
           path: |
             **/build/reports
+
+      - name: Generate report
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: run --args="reportAll"
+
+      - name: Remove server jars
+        run: rm run/*-server.jar
+
+      - uses: dtinth/markdown-report-action@v1
+        with:
+          name: Summary
+          title: Summary
+          body-file: run/summary.md
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Reports
+          path: run
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: summary.ods
+          path: run/summary.ods
