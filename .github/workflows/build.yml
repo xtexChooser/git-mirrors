@@ -53,3 +53,9 @@ jobs:
         with:
           name: Summaries
           path: run/summary.*
+
+      - uses: dtinth/markdown-report-action@v1
+        with:
+          name: Summary
+          title: Summary
+          body-file: run/summary.md

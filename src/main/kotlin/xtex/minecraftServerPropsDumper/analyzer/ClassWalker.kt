@@ -7,7 +7,12 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import org.apache.bcel.classfile.ClassParser
 import org.apache.bcel.classfile.ConstantString
+import org.apache.bcel.util.SyntheticRepository
 import java.io.InputStream
+
+// fix the ConcurrentModificationException in HashMap#1221
+@Suppress("unused")
+val syntheticRepo: SyntheticRepository = SyntheticRepository.getInstance()
 
 fun InputStream.parseClass(name: String) = ClassParser(this, name).parse()
 

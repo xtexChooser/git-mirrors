@@ -1,6 +1,7 @@
 package xtex.minecraftServerPropsDumper.main
 
 import kotlinx.coroutines.*
+import org.apache.bcel.util.SyntheticRepository
 import picocli.CommandLine
 import picocli.CommandLine.*
 import xtex.minecraftServerPropsDumper.analyzer.*
