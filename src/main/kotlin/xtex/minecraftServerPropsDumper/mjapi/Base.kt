@@ -47,18 +47,15 @@ val LAUNCHER_MOJANG_COM_MIRRORS = arrayOf(
 
 suspend fun downloadFileTo(url: String, file: String) =
     withContext(Dispatchers.IO) {
-        FileUtils.copyToFile(
-            downloadFile(
-                url
-                    .replace("launcher.mojang.com", LAUNCHER_MOJANG_COM_MIRRORS.random())
-            ), File(file)
-        )
+        FileUtils.copyToFile(downloadFile(url), File(file))
     }
 
 
 suspend fun ensureServerJar(version: String) = ensureFile("$version-server.jar") {
     val url = (fetchGameVersion(version).fetchClientJson().downloads.server
-        ?: error("Version $version is too old(<= 1.2.4), no public server URL found")).url
+        ?: error("Version $version is too old(<= 1.2.4), no public server URL found")).url.useMirror()
     println("Downloading: $url")
     downloadFileTo(url, it.absolutePath)
 }
+
+fun String.useMirror() = replace("launcher.mojang.com", LAUNCHER_MOJANG_COM_MIRRORS.random())
