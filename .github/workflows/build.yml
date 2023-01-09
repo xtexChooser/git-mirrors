@@ -25,10 +25,15 @@ jobs:
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1
 
-      - name: Build with Gradle
+      - name: Build
         uses: gradle/gradle-build-action@v2
         with:
           arguments: build
+
+      - name: Test
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: test
 
       - name: Generate
         uses: gradle/gradle-build-action@v2

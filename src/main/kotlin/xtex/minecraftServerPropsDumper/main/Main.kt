@@ -127,20 +127,25 @@ class Main {
         runBlocking {
             val versions = fetchGameVersions().versions.map { it.id }
             coroutineScope {
-                withContext(Dispatchers.Unconfined.limitedParallelism(10)) {
+                withContext(Dispatchers.Default.limitedParallelism(10)) {
                     versions.forEach { version ->
                         launch {
-                            for (i in 1..10) {
+                            for (i in 1..15) {
                                 try {
                                     println("Reporting $version")
                                     println("Reported $version in ${measureTime { report(version) }}")
                                     break
                                 } catch (e: Throwable) {
                                     println("Failed to report $version, retry $i")
-                                    File(".")
-                                        .listFiles { _, name -> name.startsWith("$version-") }
-                                        ?.forEach { it.delete() }
-                                    delay(5000)
+                                    if (i == 15) {
+                                        println("Give up reporting $version")
+                                        e.printStackTrace()
+                                    } else {
+                                        File(".")
+                                            .listFiles { _, name -> name.startsWith("$version-") }
+                                            ?.forEach { it.delete() }
+                                        delay(5000)
+                                    }
                                 }
                             }
                         }
