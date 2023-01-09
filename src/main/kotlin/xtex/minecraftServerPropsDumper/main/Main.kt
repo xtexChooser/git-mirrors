@@ -104,7 +104,7 @@ class Main {
     fun report(@Parameters version: String): Int {
         runBlocking {
             ensureServerJar(version)
-            println("Reported in ${measureTime { doReport(version) }}")
+            println("Reported $version in ${measureTime { doReport(version) }}")
         }
         return 0
     }
