@@ -16,6 +16,10 @@ val KEY_DENYLIST = setOf(
     "nogui", // 1.2.5
     "world", // all ver, default value of level-name
     "vanilla", // 1.2.5, 1.13.x
+    "save-all", // b1.2_01- command
+    "save-off", // b1.2_01- command
+    "save-on", // b1.2_01- command
+    "stop", // b1.2_01- command
 )
 
 suspend fun File.extractKeys(klass: String): List<String> =
