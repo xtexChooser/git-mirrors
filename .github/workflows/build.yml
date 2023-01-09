@@ -49,7 +49,7 @@ jobs:
         run: |
           sudo apt install jo -y
           TOKEN=$(curl "https://writee.org/api/auth/login" -H "Content-Type: application/json" -X POST -d '${{ secrets.WRITEE_AUTH }}' | jq .data.access_token -r)
-          jo created=$(TZ="Asia/Beijing" date -Iseconds) title=Report body=@summary.md lang=zh slug=$(date -Iseconds -u) > data.json
+          jo created=$(TZ="Asia/Beijing" date -Iseconds) title=Report body=@run/summary.md lang=zh slug=$(date -Iseconds -u) > data.json
           RESULT=$(curl "https://writee.org/api/collections/minecraft-server-props-dumper/posts" \
             -H "Content-Type: application/json" -H "Authorization: Token $TOKEN" \
             -X POST -d '@data.json')
