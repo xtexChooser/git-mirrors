@@ -152,7 +152,7 @@ class Main {
                 }
             }
             println("Reported all, summarizing")
-            summarize()
+            println("Summarized in ${measureTime { doSummarize() }}")
         }
         return 0
     }
