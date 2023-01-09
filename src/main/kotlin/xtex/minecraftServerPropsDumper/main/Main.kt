@@ -127,7 +127,7 @@ class Main {
         runBlocking {
             val versions = fetchGameVersions().versions.map { it.id }
             coroutineScope {
-                withContext(Dispatchers.Default.limitedParallelism(10)) {
+                withContext(Dispatchers.Unconfined.limitedParallelism(10)) {
                     versions.forEach { version ->
                         launch {
                             for (i in 1..10) {

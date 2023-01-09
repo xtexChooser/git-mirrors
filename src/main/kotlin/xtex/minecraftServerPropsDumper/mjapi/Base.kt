@@ -39,9 +39,20 @@ suspend fun downloadFile(url: String) = withContext(DownloadCoroutineScope) {
     ).executeAsync().body.byteStream()
 }
 
+val LAUNCHER_MOJANG_COM_MIRRORS = arrayOf(
+    "launcher.mojang.com",
+    "bmclapi2.bangbang93.com",
+    "download.mcbbs.net"
+)
+
 suspend fun downloadFileTo(url: String, file: String) =
     withContext(Dispatchers.IO) {
-        FileUtils.copyToFile(downloadFile(url), File(file))
+        FileUtils.copyToFile(
+            downloadFile(
+                url
+                    .replace("launcher.mojang.com", LAUNCHER_MOJANG_COM_MIRRORS.random())
+            ), File(file)
+        )
     }
 
 
