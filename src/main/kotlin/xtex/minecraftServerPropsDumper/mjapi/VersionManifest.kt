@@ -5,14 +5,20 @@ import kotlinx.serialization.decodeFromString
 import okhttp3.Request
 import okhttp3.executeAsync
 
-suspend fun fetchGameVersions() = MjAPIJson.decodeFromString<VersionManifest>(
-    GlobalHTTPClient.newCall(
-        Request.Builder()
-            .get()
-            .url("https://piston-meta.mojang.com/mc/game/version_manifest_v2.json")
-            .build()
-    ).executeAsync().body.string()
-)
+var cachedManifest: VersionManifest? = null
+suspend fun fetchGameVersions(): VersionManifest {
+    if (cachedManifest == null) {
+        cachedManifest = MjAPIJson.decodeFromString<VersionManifest>(
+            GlobalHTTPClient.newCall(
+                Request.Builder()
+                    .get()
+                    .url("https://piston-meta.mojang.com/mc/game/version_manifest_v2.json")
+                    .build()
+            ).executeAsync().body.string()
+        )
+    }
+    return cachedManifest!!
+}
 
 suspend fun fetchGameVersion(version: String) =
     fetchGameVersions().versions.find { it.id == version } ?: error("Version $version not found")

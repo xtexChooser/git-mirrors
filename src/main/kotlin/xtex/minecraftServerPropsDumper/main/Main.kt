@@ -103,7 +103,6 @@ class Main {
     @Command(name = "report")
     fun report(@Parameters version: String): Int {
         runBlocking {
-            ensureServerJar(version)
             println("Reported $version in ${measureTime { doReport(version) }}")
         }
         return 0
