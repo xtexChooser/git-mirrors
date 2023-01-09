@@ -96,15 +96,16 @@ suspend fun doDiffSummarize() {
             if (index == 0)
                 return@forEachIndexed
             val lastReport = reports[index - 1]
-            appendLine("###### ${report.version}").appendLine()
             if (report.error != null) {
+                appendLine("###### ${report.version}").appendLine()
                 appendLine("```").appendLine(report.error).appendLine("```")
             } else {
-                appendLine(
-                    "Ver: `${report.version}` PV: `${lastReport.version}` RT: `${report.releaseTime}` " +
-                            "PC: `${report.propertiesClass}` PFC: `${report.propertiesClassFingerprints}`"
-                ).appendLine()
                 if (lastReport.keys != null && report.keys != null && report.keys != lastReport.keys) {
+                    appendLine("###### ${report.version}").appendLine()
+                    appendLine(
+                        "Ver: `${report.version}` PV: `${lastReport.version}` RT: `${report.releaseTime}` " +
+                                "PC: `${report.propertiesClass}` PFC: `${report.propertiesClassFingerprints}`"
+                    ).appendLine()
                     appendLine("```diff")
                     appendLine(buildList {
                         report.keys.forEach {
