@@ -11,7 +11,11 @@ import java.util.jar.JarInputStream
 val KEY_FILTER_PATTERN = "[a-z\\-]+".toRegex()
 val KEY_DENYLIST = setOf(
     "true",
-    "false"
+    "false",
+    "default", // 1.18.x
+    "nogui", // 1.2.5
+    "world", // all ver, default value of level-name
+    "vanilla", // 1.2.5, 1.13.x
 )
 
 suspend fun File.extractKeys(klass: String): List<String> =
