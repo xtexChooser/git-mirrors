@@ -92,6 +92,7 @@ suspend fun doDiffSummarize() {
     val summary = buildString {
         val reports = collectAllReports().toList()
             .sortedBy { it.releaseTime }
+        var errors = 0
         reports.forEachIndexed { index, report ->
             if (index == 0)
                 return@forEachIndexed
@@ -99,6 +100,7 @@ suspend fun doDiffSummarize() {
             if (report.error != null) {
                 appendLine("###### ${report.version}").appendLine()
                 appendLine("```").appendLine(report.error).appendLine("```").appendLine()
+                errors++
             } else {
                 if (lastReport.keys != null && report.keys != null && report.keys != lastReport.keys) {
                     appendLine("###### ${report.version}").appendLine()
@@ -125,6 +127,8 @@ suspend fun doDiffSummarize() {
                 }
             }
         }
+        appendLine("### Summary")
+        appendLine("Total ${reports.size} reports, $errors errors")
     }
 
     withContext(Dispatchers.IO) {

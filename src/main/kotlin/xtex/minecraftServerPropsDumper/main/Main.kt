@@ -129,21 +129,21 @@ class Main {
                 withContext(Dispatchers.Default.limitedParallelism(10)) {
                     versions.forEach { version ->
                         launch {
-                            for (i in 1..30) {
+                            for (i in 1..5) {
                                 try {
                                     println("Reporting $version")
                                     println("Reported $version in ${measureTime { doReport(version) }}")
                                     break
                                 } catch (e: Throwable) {
                                     println("Failed to report $version, retry $i")
-                                    if (i == 30) {
+                                    if (i == 5) {
                                         println("Give up reporting $version")
                                         e.printStackTrace()
                                     } else {
                                         File(".")
                                             .listFiles { _, name -> name.startsWith("$version-") }
                                             ?.forEach { it.delete() }
-                                        delay(15000)
+                                        delay(5000)
                                     }
                                 }
                             }
