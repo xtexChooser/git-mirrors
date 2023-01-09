@@ -132,7 +132,7 @@ class Main {
                             for (i in 1..15) {
                                 try {
                                     println("Reporting $version")
-                                    println("Reported $version in ${measureTime { report(version) }}")
+                                    println("Reported $version in ${measureTime { doReport(version) }}")
                                     break
                                 } catch (e: Throwable) {
                                     println("Failed to report $version, retry $i")
