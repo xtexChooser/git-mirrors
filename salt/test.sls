@@ -4,7 +4,7 @@ echo:
         - tag: latest
         - force: True
     docker_container.running:
-        - image: k8s.gcr.io/echoserver:latest
+        - image: k8s.gcr.io/echoserver
         - require:
             - docker_image: echo
         - port_bindings:
