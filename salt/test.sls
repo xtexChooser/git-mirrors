@@ -1,11 +1,7 @@
 echo:
-    docker_image.present:
+    docker_image.absent:
         - name: k8s.gcr.io/echoserver
         - tag: 1.4
         - force: True
-    docker_container.running:
-        - image: k8s.gcr.io/echoserver:1.4
-        - require:
-            - docker_image: echo
-        - port_bindings:
-            - 8081:8080
+    docker_container.absent:
+        - force: True
