@@ -1,10 +1,10 @@
 echo:
     docker_image.present:
         - name: k8s.gcr.io/echoserver
-        - tag: latest
+        - tag: 1.4
         - force: True
     docker_container.running:
-        - image: k8s.gcr.io/echoserver
+        - image: k8s.gcr.io/echoserver:1.4
         - require:
             - docker_image: echo
         - port_bindings:
