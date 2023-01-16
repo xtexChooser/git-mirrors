@@ -1,5 +1,5 @@
 echo:
-    docker_image.pulled:
+    docker_image.present:
         - name: k8s.gcr.io/echoserver
         - tag: 1.4
         - force: True
