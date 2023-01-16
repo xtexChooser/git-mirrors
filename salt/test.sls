@@ -1,2 +1,2 @@
 caddy: 
-    server.dead
+    service.dead
