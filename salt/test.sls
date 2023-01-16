@@ -1,7 +1,7 @@
 echo:
     docker_image.absent:
-        - name: k8s.gcr.io/echoserver
-        - tag: 1.4
+        - images:
+            - k8s.gcr.io/echoserver
         - force: True
     docker_container.absent:
         - force: True
