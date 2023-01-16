@@ -6,8 +6,8 @@
 #    docker_container.absent:
 #        - force: True
 
-#/home/xtex/foo.conf:
-#    file.absent
+/home/xtex/foo.conf:
+    file.absent
 
 #bird:
 #  file.managed:

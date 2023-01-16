@@ -1,0 +1,22 @@
+name: Update Deployment
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  deploy_salt:
+    name: Deploy with Salt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Deploy
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+        run: |
+          echo "$SSH_KEY" >> ssh_key
+          chmod 0600 ssh_key
+          SSH="ssh -i ssh_key -o StrictHostKeyChecking=no salt-master-cd@salt.infra.xvnet.eu.org"
+          bash -c "$SSH sudo salt-run fileserver.update"
+          bash -c "$SSH sudo salt '*' state.apply"
