@@ -1,2 +1,4 @@
 caddy: 
-    service.dead
+    service.running:
+        - reload: True
+        - enable: True
