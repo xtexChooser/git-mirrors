@@ -6,6 +6,6 @@ echo:
     docker_container.running:
         - image: k8s.gcr.io/echoserver
         - require:
-            - docker_image.pulled: echo
+            - docker_image: echo
         - port_bindings:
             - 8081:8080
