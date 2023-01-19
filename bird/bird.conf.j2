@@ -19,7 +19,7 @@ protocol direct {
     ipv6;
 }
 
-{% include './prefixes.conf.j2' %}
+{% include 'salt://bird/prefixes.conf.j2' %}
 
 protocol kernel kernel4 {
     ipv4 {
