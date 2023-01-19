@@ -1,3 +1,5 @@
+hostname: nl-alk1
+
 network:
     router_id: 5.255.109.94
     dn42:
