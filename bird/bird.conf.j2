@@ -1,14 +1,14 @@
 # XTEX-VNET Generated BIRD Configuration for {{ pillar['name'] }}
 
-{% set router_id    = pillar['network']['router_id'] %}
-{% set dn42_ipv4    = pillar['network']['dn42']['ipv4'] %}
-{% set xvnet_asn    = pillar['network']['xvnet']['asn'] %}
-{% set xvnet_ipv6   = pillar['network']['xvnet']['ipv6'] %}
+{% set router_id    = pillar['network']['router_id'] -%}
+{% set dn42_ipv4    = pillar['network']['dn42']['ipv4'] -%}
+{% set xvnet_asn    = pillar['network']['xvnet']['asn'] -%}
+{% set xvnet_ipv6   = pillar['network']['xvnet']['ipv6'] -%}
 
 router id {{ router_id }};
-{% if dn42_ipv4 is defined %}
+{% if dn42_ipv4 is defined -%}
 define DN42_SELF_IP = {{ dn42_ipv4 }};
-{% endif %}
+{% endif -%}
 define XVNET_ASN = {{ xvnet_asn }};
 define XVNET_SELF_IP = {{ xvnet_ipv6 }};
 
@@ -25,9 +25,9 @@ protocol kernel kernel4 {
     ipv4 {
         import none;
         export filter {
-{% if dn42_ipv4 is defined %}
+{% if dn42_ipv4 is defined -%}
             if is_dn42_prefix() then krt_prefsrc = DN42_SELF_IP;
-{% endif %}
+{% endif -%}
             accept;
         };
     };
