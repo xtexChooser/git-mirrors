@@ -8,7 +8,7 @@ jobs:
   deploy_salt:
     name: Deploy with Salt
     runs-on: ubuntu-latest
-    if: github.event == 'push'
+    if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v3
 
