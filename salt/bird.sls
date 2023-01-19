@@ -10,6 +10,8 @@ bird:
   file.managed:
     - name: /etc/bird/bird.conf
     - source: salt://bird/bird.conf.j2
+    - context:
+        tpldir: salt://bird/
     - template: jinja
     - user: bird
     - group: bird
