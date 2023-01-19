@@ -1,5 +1,5 @@
 {# ROA #}
-{% from 'macros.roa.conf.j2' import roa_table %}
+{% from './macros.roa.conf.j2' import roa_table %}
 {{ roa_table('dn42') }}
 
 protocol static dn42_roa_static4 {
@@ -80,6 +80,6 @@ template bgp dn42_peer {
     };
 }
 
-{% include 'dn42.grc.conf.j2' %}
+{% include './dn42.grc.conf.j2' %}
 
 include "/etc/bird/dn42_peers.conf";
