@@ -8,6 +8,7 @@
 # template_host router_id dn42_ipv4 xvnet_asn xvnet_ipv6
 bird:
   file.managed:
+    - name: /etc/bird/bird.conf
     - source: salt://bird/bird.conf.j2
     - template: jinja
     - user: bird
