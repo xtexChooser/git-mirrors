@@ -5,3 +5,4 @@ network:
     xvnet:
         asn: 4244310001
         ipv6: fd00:443a:ef14:1::1
+test: a
