@@ -1,4 +1,4 @@
-hostname: nl-alk1
+name: nl-alk1
 
 network:
     router_id: 5.255.109.94

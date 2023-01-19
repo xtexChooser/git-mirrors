@@ -1,4 +1,9 @@
-# XTEX-VNET Generated BIRD Configuration for {{ template_host }}
+# XTEX-VNET Generated BIRD Configuration for {{ pillar['name'] }}
+
+{% set router_id    = pillar['network']['router_id'] %}
+{% set dn42_ipv4    = pillar['network']['dn42']['ipv4'] %}
+{% set xvnet_asn    = pillar['network']['xvnet']['asn'] %}
+{% set xvnet_ipv6   = pillar['network']['xvnet']['ipv6'] %}
 
 router id {{ router_id }};
 {% if dn42_ipv4 is defined %}

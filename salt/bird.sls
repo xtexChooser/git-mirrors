@@ -6,13 +6,13 @@
 #    docker_container.absent:
 #        - force: True
 # template_host router_id dn42_ipv4 xvnet_asn xvnet_ipv6
-#bird:
-#  file.managed:
-#    - source: salt://bird/bird.conf.j2
-#    - template: jinja
-#    - user: bird
-#    - group: bird
-#    - mode: "0666"
+bird:
+  file.managed:
+    - source: salt://bird/bird.conf.j2
+    - template: jinja
+    - user: bird
+    - group: bird
+    - mode: "0666"
 #  service.running:
 #    - enable: True
 #    - reload: True
