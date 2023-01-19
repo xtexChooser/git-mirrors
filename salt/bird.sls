@@ -11,7 +11,7 @@ bird:
     - name: /etc/bird/bird.conf
     - source: salt://bird/bird.conf.j2
     - context:
-        tpldir: salt://bird/
+        tpldir: bird/
     - template: jinja
     - user: bird
     - group: bird
