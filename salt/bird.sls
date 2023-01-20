@@ -19,6 +19,6 @@ bird:
   docker_container.running:
     - image: source.moe/xtex-vnet/bird:{{ pillar['network']['routing']['bird_version'] }}
     - binds:
-      - /etc/bird/:/etc/bird/:ro
+      - /etc/bird:/etc/bird:ro
       - /var/run/bird:/var/run/bird:rw
     - publish_all_ports: True
