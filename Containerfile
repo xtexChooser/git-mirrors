@@ -10,7 +10,7 @@ WORKDIR /src
 RUN mkdir -p /dist
 ENV CC=clang
 RUN autoreconf
-RUN ./configure --prefix=/dist --sysconfdir=/etc/bird --runstatedir=/var/run/
+RUN ./configure --prefix=/dist --sysconfdir=/etc/bird --runstatedir=/var/run/bird
 RUN make
 RUN make install
 
