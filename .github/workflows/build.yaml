@@ -9,6 +9,8 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
       - uses: actions/checkout@v3
 
@@ -17,7 +19,7 @@ jobs:
       - name: Login
         run: |
           podman login -u xtexChooser -p ${{ secrets.OCI_REGISTRY_TOKEN }} source.moe
-          podman login -u xtexChooser -p $GITHUB_TOKEN ghcr.io
+          podman login -u xtexChooser -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
 
       - name: Build
         run: |
