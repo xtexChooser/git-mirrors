@@ -1,7 +1,7 @@
 FROM docker.io/library/alpine AS builder
 ARG VERSION=v2.0.11
 
-RUN apk add clang make autoconf binutils musl musl-dev gcc
+RUN apk add clang make autoconf binutils musl musl-dev gcc sudo libcap
 RUN apk add flex-dev bison m4 libssh-dev linux-headers ncurses-dev readline-dev git
 ADD https://gitlab.nic.cz/labs/bird/-/archive/$VERSION/bird-$VERSION.tar.gz /source.tar.gz
 RUN tar -xf source.tar.gz
@@ -13,7 +13,7 @@ RUN autoreconf
 RUN ./configure --prefix=/dist --sysconfdir=/etc/bird --runstatedir=/var/run/bird
 RUN make
 RUN make install
-RUN setcap CAP_NET_ADMIN=+eip /dist/sbin/bird
+RUN sudo setcap CAP_NET_ADMIN=+eip /dist/sbin/bird
 
 FROM docker.io/library/alpine
 RUN apk add libssh
