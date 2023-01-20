@@ -24,3 +24,5 @@ bird:
     - publish_all_ports: True
     - require:
       - docker_image: bird
+    - network_mode: host
+    - ipc_mode: host
