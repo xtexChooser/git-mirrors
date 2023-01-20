@@ -1,3 +1,3 @@
 network:
     routing:
-        bird_version: 2.0.11-4
+        bird_version: 2.0.11-5
