@@ -19,5 +19,5 @@ RUN apk add libssh
 COPY --from=builder /dist /
 RUN mkdir -p /var/run/
 WORKDIR /
-ENTRYPOINT [ "/sbin/bird" ]
+ENTRYPOINT [ "/sbin/bird", "-f" ]
 #VOLUME [ "/var/run/", "/etc/bird/" ]
