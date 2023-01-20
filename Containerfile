@@ -18,6 +18,7 @@ FROM docker.io/library/alpine
 RUN apk add libssh
 COPY --from=builder /dist /
 RUN mkdir -p /var/run/
+RUN setcap CAP_NET_ADMIN=+eip /sbin/bird
 WORKDIR /
 ENTRYPOINT [ "/sbin/bird", "-f" ]
 #VOLUME [ "/var/run/", "/etc/bird/" ]
