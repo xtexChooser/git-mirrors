@@ -20,4 +20,4 @@ COPY --from=builder /dist /
 RUN mkdir -p /var/run/
 WORKDIR /
 ENTRYPOINT [ "/sbin/bird" ]
-VOLUME [ "/var/run/", "/etc/bird/" ]
+#VOLUME [ "/var/run/", "/etc/bird/" ]
