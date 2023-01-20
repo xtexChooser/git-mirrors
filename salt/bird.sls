@@ -26,3 +26,4 @@ bird:
       - docker_image: bird
     - network_mode: host
     - ipc_mode: host
+    - cap_add: CAP_NET_ADMIN
