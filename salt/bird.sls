@@ -8,11 +8,11 @@ bird:
     - user: bird
     - group: bird
     - mode: "0666"
-  service.running:
-    - enable: True
-    - reload: True
-    - watch:
-      - file: bird
+  service.dead:
+    - enable: False
+#    - reload: True
+#    - watch:
+#      - file: bird
   docker_image.present:
     - name: source.moe/xtex-vnet/bird
     - tag: {{ pillar['network']['routing']['bird_version'] }}
@@ -22,3 +22,5 @@ bird:
       - /etc/bird:/etc/bird:ro
       - /var/run/bird:/var/run/bird:rw
     - publish_all_ports: True
+    - require:
+      - docker_image: bird
