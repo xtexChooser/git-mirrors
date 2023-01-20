@@ -13,12 +13,12 @@ RUN autoreconf
 RUN ./configure --prefix=/dist --sysconfdir=/etc/bird --runstatedir=/var/run/bird
 RUN make
 RUN make install
+RUN setcap CAP_NET_ADMIN=+eip /dist/sbin/bird
 
 FROM docker.io/library/alpine
 RUN apk add libssh
 COPY --from=builder /dist /
 RUN mkdir -p /var/run/
-RUN setcap CAP_NET_ADMIN=+eip /sbin/bird
 WORKDIR /
 ENTRYPOINT [ "/sbin/bird", "-f" ]
 #VOLUME [ "/var/run/", "/etc/bird/" ]
