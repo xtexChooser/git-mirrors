@@ -68,7 +68,7 @@ export default function handler(
     }
     res.status(200).json({
         subject: uri,
-        aliases: aliases.length == 0 ? undefined : aliases,
+        aliases: (aliases != undefined && aliases.length == 0) ? undefined : aliases,
         links,
     })
 }
