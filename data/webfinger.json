@@ -58,14 +58,5 @@
                 "href": "https://social.boiledscript.com/users/9801tdnnmh"
             }
         ]
-    },
-    "testwebfingernote": {
-        "links": [
-            {
-                "rel": "self",
-                "type": "application/activity+json",
-                "href": "https://neko.ci/notes/9aayv9vomk"
-            }
-        ]
     }
 }
