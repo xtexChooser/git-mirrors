@@ -59,7 +59,7 @@
             }
         ]
     },
-    "testWebFingerNote": {
+    "testwebfingernote": {
         "links": [
             {
                 "rel": "self",
