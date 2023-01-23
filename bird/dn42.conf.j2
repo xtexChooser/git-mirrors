@@ -22,18 +22,16 @@ protocol static dn42_static4 {
 };
 
 {# RPKI #}
-protocol rpki dn42_rpki_sunnet {
-  roa4 { table dn42_roa4; };
-  roa6 { table dn42_roa6; };
-
-  remote "rpki.dn42.6700.cc" port 8282;
-
-  retry keep 90;
-  refresh keep 1800;
-  expire keep 172800;
-
-  preference 90;
-}
+#protocol rpki dn42_rpki_sunnet {
+#  roa4 { table dn42_roa4; };
+#  roa6 { table dn42_roa6; };
+#
+#  remote "rpki.dn42.6700.cc" port 8282;
+#
+#  retry keep 90;
+#  refresh keep 1800;
+#  expire keep 172800;
+#}
 
 {# Filter #}
 function dn42_filter_import() {
