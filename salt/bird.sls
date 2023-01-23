@@ -16,9 +16,6 @@ bird:
   docker_image.present:
     - name: ghcr.io/xtex-vnet/bird
     - tag: {{ pillar['network']['routing']['bird_version'] }}
-  docker_image.absent:
-    - images:
-      - ghcr.io/xtex-vnet/bird:2.0.11-7
   docker_container.running:
     - image: ghcr.io/xtex-vnet/bird:{{ pillar['network']['routing']['bird_version'] }}
     - binds:
@@ -30,3 +27,8 @@ bird:
     - network_mode: host
     - ipc_mode: host
     - cap_add: CAP_NET_ADMIN
+
+remove old BIRD images:
+  docker_image.absent:
+    - images:
+      - ghcr.io/xtex-vnet/bird:2.0.11-7
