@@ -332,23 +332,25 @@ class LoginNotify implements LoggerAwareInterface {
 	 * @return string One of USER_* constants
 	 */
 	private function checkUserOneWiki( $userId, $ipFragment, IDatabase $dbr ) {
+		// TODO: Check wether this is still the case post-actor migration.
 		// For some unknown reason, the index is on
-		// (cuc_user, cuc_ip, cuc_timestamp), instead of
+		// (cuc_actor, cuc_ip, cuc_timestamp), instead of
 		// cuc_ip_hex which would be ideal.
 		// user-agent might also be good to look at,
 		// but no index on that.
-		$IPHasBeenUsedBefore = $dbr->selectField(
-			'cu_changes',
-			'1',
-			[
-				'cuc_user' => $userId,
+		$IPHasBeenUsedBefore = $dbr->newSelectQueryBuilder()
+			->select( '1' )
+			->from( 'cu_changes' )
+			->join( 'actor', null, 'actor_id = cuc_actor' )
+			->where( [
+				'actor_user' => $userId,
 				'cuc_ip ' . $dbr->buildLike(
 					$ipFragment,
 					$dbr->anyString()
 				)
-			],
-			__METHOD__
-		);
+			] )
+			->caller( __METHOD__ )
+			->fetchField();
 		return $IPHasBeenUsedBefore ? self::USER_KNOWN : self::USER_NO_INFO;
 	}
 
@@ -370,14 +372,13 @@ class LoginNotify implements LoggerAwareInterface {
 		// a certain number of checkuser entries for this
 		// user. Or maybe it should be if we have at least
 		// 2 different IPs for this user. Or something else.
-		$haveIPInfo = $dbr->selectField(
-			'cu_changes',
-			'1',
-			[
-				'cuc_user' => $userId
-			],
-			__METHOD__
-		);
+		$haveIPInfo = $dbr->newSelectQueryBuilder()
+			->select( '1' )
+			->from( 'cu_changes' )
+			->join( 'actor', null, 'actor_id = cuc_actor' )
+			->where( [ 'actor_user' => $userId ] )
+			->caller( __METHOD__ )
+			->fetchField();
 
 		return (bool)$haveIPInfo;
 	}
