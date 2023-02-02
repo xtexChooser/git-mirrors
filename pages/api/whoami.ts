@@ -1,15 +1,15 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
-import type { IncomingHttpHeaders } from 'node:http'
+import type { NextApiRequest, NextApiResponse } from "next";
+import type { IncomingHttpHeaders } from "node:http";
 
 type Data = {
-  httpVersion: string,
-  headers: IncomingHttpHeaders,
-  address: string,
-  port: number,
-  ipv6: boolean,
-  method: string,
-  userAgent: string | undefined,
-}
+  httpVersion: string;
+  headers: IncomingHttpHeaders;
+  address: string;
+  port: number;
+  ipv6: boolean;
+  method: string;
+  userAgent: string | undefined;
+};
 
 export function collect(req: NextApiRequest): Data {
   return {
@@ -17,15 +17,15 @@ export function collect(req: NextApiRequest): Data {
     headers: req.headers,
     address: req.socket.remoteAddress!,
     port: req.socket.remotePort!,
-    ipv6: req.socket.remoteFamily == 'IPv6',
+    ipv6: req.socket.remoteFamily == "IPv6",
     method: req.method!,
     userAgent: req.headers["user-agent"],
-  }
+  };
 }
 
 export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  res.status(200).json(collect(req))
+  res.status(200).json(collect(req));
 }

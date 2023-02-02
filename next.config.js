@@ -6,71 +6,95 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: '/blog/:path*',
-        destination: 'https://blog.xtexx.ml/:path*',
+        source: "/blog/:path*",
+        destination: "https://blog.xtexx.ml/:path*",
         permanent: true,
       },
-    ]
+    ];
   },
-  async headers() {//application/ld+json; profile="https://www.w3.org/ns/activitystreams"
+  async headers() {
     const nodeinfo = {
-      key: 'Content-Type',
-      value: 'application/json; profile="http://nodeinfo.diaspora.software/ns/schema/2.1#"',
-    }
+      key: "Content-Type",
+      value:
+        'application/json; profile="http://nodeinfo.diaspora.software/ns/schema/2.1#"',
+    };
+    const cors = [
+      {
+        key: "Access-Control-Allow-Origin",
+        value: "*",
+      },
+      {
+        key: "Access-Control-Expose-Headers",
+        value: "*",
+      },
+      {
+        key: "Access-Control-Max-Age",
+        value: "86400",
+      },
+      {
+        key: "Access-Control-Allow-Methods",
+        value: "*",
+      },
+      {
+        key: "Access-Control-Allow-Headers",
+        value: "*",
+      },
+    ];
     return [
       {
-        source: '/.well-known/nodeinfo',
+        source: "/.well-known/nodeinfo",
         headers: [nodeinfo],
       },
       {
-        source: '/nodeinfo.json',
+        source: "/nodeinfo.json",
         headers: [nodeinfo],
       },
       {
-        source: '/.well-known/host-meta',
+        source: "/.well-known/host-meta",
         headers: [
           {
-            key: 'Content-Type',
-            value: 'application/xrd+xml',
+            key: "Content-Type",
+            value: "application/xrd+xml",
           },
         ],
       },
       {
-        source: '/.well-known/matrix/:path*',
+        source: "/.well-known/matrix/:path*",
         headers: [
           {
-            key: 'Content-Type',
-            value: 'application/json; charset=utf-8',
+            key: "Content-Type",
+            value: "application/json; charset=utf-8",
           },
         ],
       },
       {
-        source: '/ap/:path*',
+        source: "/ap/:path*",
         headers: [
           {
-            key: 'Content-Type',
-            value: 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8',
+            key: "Content-Type",
+            value:
+              'application/ld+json; profile="https://www.w3.org/ns/activitystreams"; charset=utf-8',
           },
         ],
       },
-    ]
+    ];
   },
   async rewrites() {
     return [
       {
-        source: '/.well-known/host-meta.json',
-        destination: '/api/host-meta.json',
+        source: "/.well-known/host-meta.json",
+        destination: "/api/host-meta.json",
       },
       {
-        source: '/.well-known/webfinger',
-        destination: '/api/webfinger',
+        source: "/.well-known/webfinger",
+        destination: "/api/webfinger",
       },
       {
-        source: '/ap/api/:path*',
-        destination: '/api/ap/:path*',
+        source: "/ap/api/:path*",
+        destination: "/api/ap/:path*",
       },
-    ]
+    ];
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
