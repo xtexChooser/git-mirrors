@@ -1,6 +1,7 @@
 mw.loader.load('https://cdn.jsdelivr.net/npm/wikiplus-core');
 mw.loader.load('https://cdn.jsdelivr.net/npm/wikiplus-highlight');
 // mw.loader.load('https://xtexx.ml/scripts/mw/auto_minor.js');
+mw.loader.load('https://github.com/Frederisk/Wikitext-Extension-Gadget/releases/latest/download/index-vscode-insiders.js');
 
 // Fandom
 if (location.hostname.endsWith("fandom.com")) {
