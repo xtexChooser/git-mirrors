@@ -1,0 +1,10 @@
+[package]
+name = "wiki-bot"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+[[bin]]
+name = "archive"
+path = "src/maintaince/archive.rs"
