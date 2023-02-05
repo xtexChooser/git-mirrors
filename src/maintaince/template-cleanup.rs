@@ -7,6 +7,7 @@ use mwbot::{
 use regex::Regex;
 use wiki_bot::utils::{get_bot, init};
 
+// run with respect_nobots = false
 #[tokio::main]
 async fn main() -> Result<()> {
     init().await?;

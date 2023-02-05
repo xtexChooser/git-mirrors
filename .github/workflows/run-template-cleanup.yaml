@@ -3,7 +3,7 @@ name: Run archive
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 0 1 * *"
+    - cron: "0 1 1 * *"
 
 jobs:
   build_cargo:
@@ -24,9 +24,11 @@ jobs:
           echo [auth] >> mwbot.toml
           echo username = "XTEX-VNETBot" >> mwbot.toml
           echo password = "${{ secrets.MW_PASSWORD }}" >> mwbot.toml
+          echo [edit] >> mwbot.toml
+          echo respect_nobots = false >> mwbot.toml
           chmod 600 mwbot.toml
 
       - uses: actions-rs/cargo@v1
         with:
           command: run
-          args: --bin archive
+          args: --bin template-cleanup

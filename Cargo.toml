@@ -21,5 +21,5 @@ name = "archive"
 path = "src/maintaince/archive.rs"
 
 [[bin]]
-name = "2023-template-cleanup"
-path = "src/2023/template-cleanup.rs"
+name = "template-cleanup"
+path = "src/maintaince/template-cleanup.rs"
