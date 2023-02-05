@@ -33,7 +33,7 @@ async fn archive(bot: &Bot, target: &str) -> Result<()> {
         )
         .await?;
     info!("moved {}: {}", target, move_resp["move"]);
-    let page = bot.page(to_page.as_str())?;
+    let page = bot.page(target)?;
     assert!(!page.exists().await?);
     let (_, save_resp) = page
         .save(
