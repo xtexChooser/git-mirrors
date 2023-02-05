@@ -14,7 +14,7 @@ async fn main() -> Result<()> {
     let comment_regex =
         Regex::new("<!--\\s*.*(/doc|categories|文档|跨语言|Document|分类).*\\s*-->")?;
     let noinclude_regex = Regex::new("<\\s*noinclude\\s*>(\\s|\\n|\\t)*<\\s*/noinclude\\s*\\s*>")?;
-    let documentation_trim_regex = Regex::new("<\\s*noinclude\\s*>(\\s|\\n|\\t)*{{(D|d)ocumentation}}(\\s|\\n|\\t)*<\\s*/noinclude\\s*\\s*>")?;
+    let documentation_trim_regex = Regex::new("<\\s*noinclude\\s*>(\\s|\\n|\\t)*\\{\\{(D|d)ocumentation\\}\\}(\\s|\\n|\\t)*<\\s*/noinclude\\s*\\s*>")?;
     let includeonly_regex =
         Regex::new("<\\s*includeonly\\s*>(\\s|\\n|\\t)*<\\s*/includeonly\\s*\\s*>")?;
     let mut pages = allpages(&bot, 10, FilterRedirect::Nonredirects);
