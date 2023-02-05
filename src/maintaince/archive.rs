@@ -1,5 +1,5 @@
 use anyhow::Result;
-use chrono::Utc;
+use chrono::{Months, Utc};
 use log::info;
 use mwbot::{Bot, SaveOptions};
 
@@ -16,7 +16,11 @@ async fn main() -> Result<()> {
 }
 
 async fn archive(bot: &Bot, target: &str) -> Result<()> {
-    let to_page = format!("{}/存档/{}", target, Utc::now().format("%Y-%m"));
+    let to_page = format!(
+        "{}/存档/{}",
+        target,
+        (Utc::now() - Months::new(1)).format("%Y-%m")
+    );
     info!("archiving {}, to {}", target, to_page);
     let move_resp: serde_json::Value = bot
         .api()
