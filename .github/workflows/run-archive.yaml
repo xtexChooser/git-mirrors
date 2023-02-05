@@ -1,0 +1,32 @@
+name: Run archive
+
+on:
+  workflow_dispatch:
+  schedule:
+    - "0 0 1 * *"
+
+jobs:
+  build_cargo:
+    name: Build with Cargo
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          default: true
+
+      - name: prepare config
+        run: |
+          echo api_url = "https://w.xvnet.eu.org/w/api.php" > mwbot.toml
+          echo rest_url = "https://w.xvnet.eu.org/w/rest.php/v1" >> mwbot.toml
+          echo [auth] >> mwbot.toml
+          echo username = "XTEX-VNETBot" >> mwbot.toml
+          echo password = "${{ secrets.MW_PASSWORD }}" >> mwbot.toml
+          chmod 600 mwbot.toml
+
+      - uses: actions-rs/cargo@v1
+        with:
+          command: run
+          args: archive
