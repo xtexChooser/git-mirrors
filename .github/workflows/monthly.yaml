@@ -1,4 +1,4 @@
-name: Run archive
+name: Monthly
 
 on:
   workflow_dispatch:
@@ -6,8 +6,8 @@ on:
     - cron: "0 0 1 * *"
 
 jobs:
-  build_cargo:
-    name: Build with Cargo
+  run:
+    name: Run
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

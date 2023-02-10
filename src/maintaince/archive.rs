@@ -9,6 +9,7 @@ async fn main() -> Result<()> {
     init().await?;
     let bot = get_bot().await?;
     archive(&bot, "DN42对等请求").await?;
+    archive(&bot, "Wiki:管理员告示板").await?;
     Ok(())
 }
 

@@ -1,13 +1,13 @@
-name: Run archive
+name: Weekly
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 1 1 * *"
+    - cron: "0 1 */7 * *"
 
 jobs:
-  build_cargo:
-    name: Build with Cargo
+  run:
+    name: Run
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
