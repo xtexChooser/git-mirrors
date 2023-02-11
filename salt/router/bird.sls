@@ -14,6 +14,8 @@ bird:
     - user: bird
     - group: bird
     - mode: "0666"
+    - require:
+      - pkg: bird
   docker_image.present:
     - name: ghcr.io/xtex-vnet/bird
     - tag: {{ pillar['network']['routing']['bird_version'] }}
