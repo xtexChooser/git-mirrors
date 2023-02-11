@@ -23,3 +23,4 @@ net.ipv6.conf.all.forwarding:
     file.replace:
         pattern: ^(#\s*|)IPv6_rpfilter=.*$
         repl: IPv6_rpfilter=no
+        append_if_not_found: True
