@@ -39,7 +39,6 @@ bird:
       - pkg: bird
   pkg.latest:
     - name: {{ bird_pkg }}
-    - refresh: False
   service.dead:
     - enable: False
     - require:
