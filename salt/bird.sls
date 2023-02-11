@@ -30,6 +30,9 @@ bird:
       - docker_image: bird
       - service: bird
       - file: bird
+    - environment:
+      - HOME=/root
+      - HOSTNAME={{ grains['fqdn'] }}
   cmd.run:
     - name: sudo birdc configure
     - onchanges:
