@@ -1,3 +1,9 @@
+{% if grains.os_family == 'Debian' or grains.os_family == 'FreeBSD' %}
+  {% set bird_pkg = 'bird2' %}
+{% else %}
+  {% set bird_pkg = 'bird' %}
+{% endif %}
+
 bird:
   file.managed:
     - name: /etc/bird/bird.conf
@@ -32,7 +38,7 @@ bird:
       - docker_container: bird
       - pkg: bird
   pkg.latest:
-    - name: bird
+    - name: {{ bird_pkg }}
     - refresh: False
   service.dead:
     - enable: False
