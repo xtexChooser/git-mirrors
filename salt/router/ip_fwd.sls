@@ -6,9 +6,11 @@ net.ipv4.conf.default.rp_filter:
     sysctl.present:
         - value: 0
 # https://github.com/systemd/systemd/blob/main/sysctl.d/50-default.conf#L26
-net.ipv4.conf.*.rp_filter:
-    sysctl.present:
-        - value: 0
+/lib/sysctl.d/50-default.conf:
+    file.replace:
+        pattern: ^net\.ipv4\.conf\.\*\.rp_filter\s*=\s*2$
+        repl: "# net.ipv4.conf.*.rp_filter = 2"
+        ignore_if_missing: True
 
 # IP forwarding
 net.ipv4.conf.all.forwarding:
