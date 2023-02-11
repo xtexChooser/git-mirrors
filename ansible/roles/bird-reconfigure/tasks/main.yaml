@@ -1,2 +1,0 @@
-- name: Re-configure BIRD
-  ansible.builtin.shell: /sbin/birdc configure

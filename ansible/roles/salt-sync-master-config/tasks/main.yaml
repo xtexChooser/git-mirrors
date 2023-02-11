@@ -1,0 +1,17 @@
+- name: Copy Master git ssh pub key
+  ansible.builtin.copy:
+    src: ../../../salt/salt/ssh_key.pub
+    dest: /etc/salt/ssh_key.pub
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Update Master config
+  ansible.builtin.template:
+    src: ../../../salt/salt/master.j2
+    dest: /etc/salt/master
+    owner: root
+    group: root
+    mode: "0644"
+    validate: bash -c "sudo systemctl restart salt-master; sudo cp %s /dev/null"
+    backup: false

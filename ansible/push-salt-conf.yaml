@@ -1,0 +1,11 @@
+- name: Push Master configuration
+  hosts: nl-alk1
+  become: true
+  roles:
+    - salt-sync-master-config
+
+- name: Push Minion configuration
+  hosts: all
+  become: true
+  roles:
+    - salt-sync-minion-config

@@ -1,15 +1,9 @@
 nodes:
   hosts:
     nl-alk1:
-      ansible_host: nl-alk1.svr.xtexx.ml
-      router_id: 5.255.109.94
-      dn42_ipv4: 172.20.206.65
-      xvnet_asn: 4244310001
-      xvnet_ipv6: fd00:443a:ef14:1::1
+      ansible_host: nl-alk1.svr.xvnet.eu.org
+      salt_id: nl-alk1
   children:
     nl:
       hosts:
         nl-alk1:
-    eu:
-      children:
-        nl:

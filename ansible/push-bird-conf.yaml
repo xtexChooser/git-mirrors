@@ -1,6 +1,0 @@
-- name: Push BIRD configuration
-  hosts: all
-  become: true
-  roles:
-    - bird-sync-config
-    - bird-reconfigure
