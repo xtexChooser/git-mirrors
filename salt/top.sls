@@ -1,4 +1,4 @@
-"{{saltenv}}":
+base:
     '*': []
     'nl-alk1':
         - bird
