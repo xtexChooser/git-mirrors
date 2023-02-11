@@ -8,11 +8,6 @@ bird:
     - user: bird
     - group: bird
     - mode: "0666"
-  service.dead:
-    - enable: False
-#    - reload: True
-#    - watch:
-#      - file: bird
   docker_image.present:
     - name: ghcr.io/xtex-vnet/bird
     - tag: {{ pillar['network']['routing']['bird_version'] }}
@@ -22,11 +17,27 @@ bird:
       - /etc/bird:/etc/bird:ro
       - /var/run/bird:/var/run/bird:rw
     - publish_all_ports: True
-    - require:
-      - docker_image: bird
     - network_mode: host
     - ipc_mode: host
     - cap_add: CAP_NET_ADMIN
+    - require:
+      - docker_image: bird
+      - service: bird
+      - file: bird
+  cmd.run:
+    - name: sudo birdc configure
+    - onchanges:
+      - file: bird
+    - require:
+      - docker_container: bird
+      - pkg: bird
+  pkg.latest:
+    - name: bird
+    - refresh: False
+  service.dead:
+    - enable: False
+    - require:
+      - pkg: bird
 
 remove old BIRD images:
   docker_image.absent:
