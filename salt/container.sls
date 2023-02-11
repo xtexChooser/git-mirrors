@@ -1,5 +1,5 @@
 container:
-    pkgs.installed:
+    pkg.installed:
         - pkgs:
             - podman
     test.nop:
