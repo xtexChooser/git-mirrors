@@ -4,4 +4,4 @@ container:
             - podman
     test.nop:
         - use:
-            - pkgs: container
+            - pkg: container
