@@ -5,6 +5,9 @@ net.ipv4.conf.all.rp_filter:
 net.ipv4.conf.default.rp_filter:
     sysctl.present:
         - value: 0
+net.ipv4.conf.*.rp_filter:
+    sysctl.present:
+        - value: 0
 
 # IP forwarding
 net.ipv4.conf.all.forwarding:
