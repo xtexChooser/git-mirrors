@@ -13,3 +13,9 @@ net.ipv4.conf.all.forwarding:
 net.ipv6.conf.all.forwarding:
     sysctl.present:
         - value: 1
+
+# firewalld IPv6 rp filter
+/etc/firewalld/firewalld.conf:
+    file.replace:
+        pattern: ^(#\s*|)IPv6_rpfilter=.*$
+        repl: IPv6_rpfilter=no
