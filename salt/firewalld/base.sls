@@ -2,7 +2,8 @@ firewalld:
     pkg.installed:
         - pkgs:
             - firewalld
-    service.dead: 
+    service.running:
+        - enable: True 
         - require:
             - pkg: firewalld
     test.nop:
