@@ -20,7 +20,7 @@ firewalld-public:
             - cockpit
             - http
             - https
-{% if pillar['salt-master'] is defined and pillar['salt-master'] == True -%}
+{% if pillar['salt-master'] is defined -%}
             - salt-master
 {% endif -%}
 # dhcpv6-client ssh cockpit http https salt-master syncthing syncthing-gui
