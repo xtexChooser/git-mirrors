@@ -9,4 +9,4 @@ network:
         ipv6: fd00:443a:ef14:1::2
 
 service:
-    etcd: {}
+    etcd: true
