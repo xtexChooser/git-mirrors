@@ -28,8 +28,8 @@ jobs:
           echo updating git pillars
           bash -c "$SSH sudo salt-run git_pillar.update"
 
-          echo globally refreshing pillars
+          echo refreshing pillars
           bash -c "$SSH sudo salt '*' saltutil.refresh_pillar"
 
-          echo globally applying states
+          echo applying states
           bash -c "$SSH sudo salt '*' state.apply"
