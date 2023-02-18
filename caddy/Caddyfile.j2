@@ -2,6 +2,6 @@
 	email acme@xvnet.eu.org
 }
 
-{%- if pillar['service']['ca'] is defined %} 
-{% 'ca.j2' %} 
-{%- endif %}
+{% if pillar['service']['ca'] is defined %} 
+{% include 'ca.j2' %} 
+{% endif %}
