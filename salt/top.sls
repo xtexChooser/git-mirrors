@@ -5,9 +5,12 @@ base:
         - router.ip_fwd
         - router.wireguard
         - firewalld.base
-    'I@service.salt-master:true':
+    'service:salt-master:true':
+        - match: pillar
         - salt-master-cd
-    'I@service.ca:true':
+    'service:ca:true':
+        - match: pillar
         - ca.base
-#    'I@service.etcd:true':
+#    'service:etcd:true':
+#        - match: pillar
 #        - etcd.base
