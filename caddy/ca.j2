@@ -1,0 +1,9 @@
+https://ca.xvnet.eu.org {
+	reverse_proxy https://localhost:9465 {
+		transport http {
+			tls
+			tls_insecure_skip_verify
+			tls_server_name ca.xvnet.eu.org
+		}
+	}
+}

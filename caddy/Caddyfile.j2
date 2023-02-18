@@ -1,0 +1,7 @@
+{
+	email acme@xvnet.eu.org
+}
+
+{%- if pillar['service']['ca'] is defined %} 
+{% 'ca.j2' %} 
+{%- endif %}

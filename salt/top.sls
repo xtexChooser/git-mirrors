@@ -5,6 +5,7 @@ base:
         - router.ip_fwd
         - router.wireguard
         - firewalld.base
+        - caddy
     'service:salt-master:true':
         - match: pillar
         - salt-master-cd
