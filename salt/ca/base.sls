@@ -14,7 +14,7 @@ smallstep:
     - binds:
       - smallstep:/home/step:rw
     - port_bindings:
-      - 9000:9465
+      - 9465:9000
     - require:
       - test: container
       - docker_image: smallstep
