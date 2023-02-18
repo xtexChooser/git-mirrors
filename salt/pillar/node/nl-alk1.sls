@@ -10,3 +10,5 @@ network:
 
 service:
     salt-master: {}
+    etcd: {}
+    ca: {}

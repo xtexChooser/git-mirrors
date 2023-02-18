@@ -1,6 +1,8 @@
 base:
     '*': 
         - bird
+        - etcd
+        - ca
     'nl-alk1':
         - node.nl-alk1
     'us-dal1':

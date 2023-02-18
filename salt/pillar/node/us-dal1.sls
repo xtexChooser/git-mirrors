@@ -7,3 +7,6 @@ network:
     xvnet:
         asn: 4244310002
         ipv6: fd00:443a:ef14:1::2
+
+service:
+    etcd: {}
