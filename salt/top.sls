@@ -5,5 +5,5 @@ base:
         - router.ip_fwd
         - router.wireguard
         - firewalld.base
-    'I@salt-master:true':
+    'I@service.salt-master:true':
         - salt-master-cd
