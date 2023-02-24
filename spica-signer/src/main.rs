@@ -9,6 +9,9 @@ async fn main() -> Result<()> {
     let subscriber = tracing_subscriber::fmt().json().finish();
     tracing::subscriber::set_global_default(subscriber).unwrap();
 
+    info!("initializing openssl");
+    openssl::init();
+
     let app = make_router().await;
 
     let listen_addr = SocketAddr::from_str(&get_config().listen_addr)?;
