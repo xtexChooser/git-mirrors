@@ -19,6 +19,7 @@ caddy:
     - image: ghcr.io/xtex-vnet/caddy:latest
     - binds:
       - /etc/caddy:/etc/caddy:ro
+      - /var/run:/var/run
     - publish_all_ports: True
     - network_mode: host
     - cap_add: CAP_NET_BIND_SERVICE
