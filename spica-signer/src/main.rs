@@ -1,36 +1,22 @@
-#![feature(let_chains)]
+use std::{net::SocketAddr, str::FromStr};
 
-use actix_web::{App, HttpServer};
 use anyhow::{Error, Result};
-use spica_signer::config::get_config;
-use tokio::fs;
+use spica_signer::{config::get_config, routes::make_router};
 use tracing::info;
 
-#[actix_web::main]
+#[tokio::main]
 async fn main() -> Result<()> {
     let subscriber = tracing_subscriber::fmt().json().finish();
     tracing::subscriber::set_global_default(subscriber).unwrap();
 
-    let mut server = HttpServer::new(|| App::new());
+    let app = make_router().await;
 
-    if let Some(addr) = &get_config().listen_addr {
-        info!(addr, "listening");
-        server = server.bind(addr)?;
-    }
-    #[cfg(unix)]
-    if let Some(path) = &get_config().listen_unix {
-        info!(path, "listening UDS");
-        server = server.bind_uds(path)?;
-    }
+    let listen_addr = SocketAddr::from_str(&get_config().listen_addr)?;
+    info!(addr = listen_addr.to_string(), "listening");
+    axum::Server::try_bind(&listen_addr)?
+        .serve(app.into_make_service())
+        .await
+        .map_err(Error::from)?;
 
-    let server = server.run();
-
-    #[cfg(unix)]
-    if let Some(path) = &get_config().listen_unix && let Some(mode) = &get_config().listen_unix_mode {
-        info!(path, mode, "updating UDS file mode");
-        fs::set_permissions(path, std::os::unix::fs::PermissionsExt::from_mode(u32::from_str_radix(&mode, 8)?)).await?;
-    }
-
-    server.await.map_err(Error::from)?;
     Ok(())
 }

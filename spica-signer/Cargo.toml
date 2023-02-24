@@ -6,8 +6,9 @@ license = { workspace = true }
 repository = { workspace = true }
 
 [dependencies]
-actix-web = "4.3.0"
 anyhow = { version = "1.0.69", features = ["backtrace"] }
+axum = { version = "0.6.7", features = ["headers", "http2"] }
+josekit = "0.8.2"
 lazy_static = "1.4.0"
 openssl = "0.10.45"
 reqwest = { version = "0.11.14", features = ["tokio-util", "serde_json"] }

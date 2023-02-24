@@ -1,9 +1,11 @@
-use std::{env, fs};
+use std::{collections::HashMap, env, fs};
 
 use anyhow::{Context, Error, Result};
 use lazy_static::lazy_static;
 use serde::Deserialize;
 use tracing::info;
+
+use crate::cert::CertConfig;
 
 lazy_static! {
     static ref CONFIG: Config = load_config().unwrap();
@@ -27,9 +29,6 @@ pub fn get_config() -> &'static Config {
 
 #[derive(Debug, Deserialize)]
 pub struct Config {
-    pub listen_addr: Option<String>,
-    #[cfg(unix)]
-    pub listen_unix: Option<String>,
-    #[cfg(unix)]
-    pub listen_unix_mode: Option<String>,
+    pub listen_addr: String,
+    pub cert: HashMap<String, CertConfig>,
 }
