@@ -11,7 +11,6 @@ base:
         - salt-master-cd
     'service:ca:true':
         - match: pillar
-        - ca_cleanup
 #    'service:etcd:true':
 #        - match: pillar
 #        - etcd.base
