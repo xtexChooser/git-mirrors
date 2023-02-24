@@ -4,3 +4,6 @@ members = [
 ]
 
 [workspace.package]
+repository = "https://codeberg.org/XTEX-VNET/spica"
+license = "Apache-2.0/MIT"
+edition = "2021"
