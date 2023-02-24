@@ -2,6 +2,6 @@
 	email acme@xvnet.eu.org
 }
 
-{% if pillar['service']['ca'] is defined %} 
-{% include './ca.j2' %} 
+{% if pillar['service']['ntfy'] is defined %} 
+{% include '../ntfy/Caddyfile.j2' %} 
 {% endif %}

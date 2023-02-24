@@ -12,3 +12,4 @@ service:
     salt-master: true
     etcd: true
     ca: true
+    ntfy: true
