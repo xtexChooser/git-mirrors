@@ -1,4 +1,4 @@
-use std::{collections::HashMap, env, fs};
+use std::{env, fs};
 
 use anyhow::{Context, Error, Result};
 use lazy_static::lazy_static;
@@ -30,5 +30,5 @@ pub fn get_config() -> &'static Config {
 #[derive(Debug, Deserialize)]
 pub struct Config {
     pub listen_addr: String,
-    pub cert: HashMap<String, CertConfig>,
+    pub cert: Vec<CertConfig>,
 }
