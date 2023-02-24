@@ -21,7 +21,7 @@ ntfy:
     - binds:
       - /etc/ntfy:/etc/ntfy
       - /var/cache/ntfy:/var/cache/ntfy
-      - /var/run/ntfy/ntfy.sock:/var/run/ntfy/ntfy.sock
+      - /var/run/ntfy:/var/run/ntfy
       - /var/lib/ntfy:/var/lib/ntfy
     - cmd: serve
     - require:
