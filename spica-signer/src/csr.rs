@@ -33,7 +33,7 @@ pub struct CertReq {
 
 impl CertReq {
     pub fn from_csr(
-        pem: Pem,
+        pem: &Pem,
         validity: Option<(SystemTime, SystemTime)>,
         serial: Option<String>,
         acl: ACLRule,
