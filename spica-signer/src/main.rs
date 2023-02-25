@@ -1,7 +1,7 @@
 use std::{net::SocketAddr, str::FromStr};
 
 use anyhow::{Error, Result};
-use spica_signer::{config::get_config, routes::make_router};
+use spica_signer::{cert::get_certs, config::get_config, routes::make_router};
 use tracing::info;
 
 #[tokio::main]
@@ -12,12 +12,12 @@ async fn main() -> Result<()> {
     info!("initializing openssl");
     openssl::init();
 
-    let app = make_router().await;
+    get_certs();
 
     let listen_addr = SocketAddr::from_str(&get_config().listen_addr)?;
     info!(addr = listen_addr.to_string(), "listening");
     axum::Server::try_bind(&listen_addr)?
-        .serve(app.into_make_service())
+        .serve(make_router().await.into_make_service())
         .await
         .map_err(Error::from)?;
 
