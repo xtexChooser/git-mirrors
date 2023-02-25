@@ -5,12 +5,51 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="https://unpkg.com/spcss@latest/sp.min.css" />
+    <style>
+      .crt_tools {
+        float: right;
+      }
+      .crt_tools ul {
+        display: inline;
+        padding: 0;
+      }
+      .crt_tools li {
+        display: inline;
+        margin: 0;
+      }
+      .crt_tools li::after {
+        content: ' | ';
+        font-weight: bold;
+      }
+      .crt_tools li:last-child::after {
+        content: none;
+      }
+    </style>
   </head>
   <body>
     <h1>
       <a href="https://codeberg.org/XTEX-VNET/spica" target="_blank">SPICA</a>
       Signer Server
     </h1>
-    <p>This is a SPICA certificate signer server.</p>
+    <p>
+    This is a SPICA certificate signer server.</br>
+    This server is currently acting as a CA for the following certificates.
+    </p>
+    <div>
+      <ol>
+        {% for crt in certs %}
+        <li>
+          {{ crt }}
+          <span class="crt_tools">
+            [<ul>
+              <li><a href="{{ crt }}.txt">text</a></li>
+              <li><a href="{{ crt }}.crt">crt</a></li>
+              <li><a href="{{ crt }}.key">pub key</a></li>
+            </ul>]
+          </span>
+        </li>
+        {% endfor %}
+      </ol>
+    </div>
   </body>
 </html>
