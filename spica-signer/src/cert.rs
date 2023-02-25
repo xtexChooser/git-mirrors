@@ -15,6 +15,7 @@ use crate::{config::get_config, openssl::OpenSSLOpts};
 pub struct CertConfig {
     pub id: String,
     pub file: String,
+    #[serde(default)]
     pub openssl_opt: OpenSSLOpts,
     #[serde(default)]
     pub priv_key_pass: Option<String>,
