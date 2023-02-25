@@ -1,12 +1,6 @@
 use std::{collections::HashMap, time::Duration};
 
-use axum::{
-    extract::Path,
-    http::{header::CONTENT_TYPE, Response, StatusCode},
-    response::IntoResponse,
-    routing::post,
-    Json, Router,
-};
+use axum::{extract::Path, http::StatusCode, response::IntoResponse, routing::post, Json, Router};
 
 use crate::{acl::ACLRule, cert::get_cert, csr::CertReq};
 

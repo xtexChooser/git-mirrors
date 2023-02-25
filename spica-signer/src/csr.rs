@@ -138,8 +138,15 @@ impl CertReq {
         let pubkey = PKey::public_key_from_pem(self.pubkey_pem.as_bytes())?;
         builder.set_pubkey(&pubkey)?;
 
+        let mut ossl_opts = OpenSSLOpts::new();
+        ossl_opts.insert(
+            "basicConstraints".to_owned(),
+            "critical, CA:FALSE".to_string(),
+        );
+        ossl_opts.extend(ca.config.openssl_opt.to_owned());
+        ossl_opts.extend(self.ossl_opt.to_owned());
         let ossl_ctx = builder.x509v3_context(Some(&ca_crt), Some(get_ossl_conf()));
-        for ext in self.ossl_opt.to_exts(&ossl_ctx)?.iter() {
+        for ext in ossl_opts.to_exts(&ossl_ctx)?.iter() {
             builder.append_extension2(ext)?;
         }
 
