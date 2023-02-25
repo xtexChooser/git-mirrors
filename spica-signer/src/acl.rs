@@ -16,4 +16,6 @@ pub struct ACLRule {
     pub can_custom_serial: bool,
     #[serde(default)]
     pub openssl_opt: OpenSSLOpts,
+    #[serde(default)]
+    pub prefer_hash: Option<String>,
 }

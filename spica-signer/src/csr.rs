@@ -37,6 +37,7 @@ impl CertReq {
         validity: (SystemTime, SystemTime),
         serial: Option<String>,
         acl: ACLRule,
+        fallback_prefer_hash: Option<String>,
     ) -> Result<CertReq> {
         if pem.tag != "CERTIFICATE REQUEST" {
             bail!("unexpected pem tag {}", pem.tag)
@@ -107,7 +108,7 @@ impl CertReq {
             subject_name,
             ossl_opt,
             pubkey_pem: String::from_utf8(ossl_spki.public_key_to_pem()?)?,
-            prefer_hash: None, // @TODO:
+            prefer_hash: acl.prefer_hash.or(fallback_prefer_hash),
         })
     }
 
