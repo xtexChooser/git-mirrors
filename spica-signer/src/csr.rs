@@ -34,7 +34,7 @@ pub struct CertReq {
 impl CertReq {
     pub fn from_csr(
         pem: Pem,
-        validity: (SystemTime, SystemTime),
+        validity: Option<(SystemTime, SystemTime)>,
         serial: Option<String>,
         acl: ACLRule,
         fallback_prefer_hash: Option<String>,
@@ -52,7 +52,10 @@ impl CertReq {
         let ossl_spki = PKey::public_key_from_pem(
             picky_asn1_der::to_vec(&info.subject_public_key_info)?.as_slice(),
         )?;
-        let (not_before, not_after) = validity;
+        let (not_before, not_after) = validity.unwrap_or_else(|| {
+            let now = SystemTime::now();
+            (now, now + acl.max_expire)
+        });
         let duration = not_after.duration_since(not_before)?;
         if duration > acl.max_expire {
             bail!(
