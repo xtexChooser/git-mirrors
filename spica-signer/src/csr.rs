@@ -5,6 +5,7 @@ use openssl::{
     asn1::{Asn1Integer, Asn1Time},
     bn::{BigNum, MsbOption},
     hash::MessageDigest,
+    nid::Nid,
     pkey::PKey,
     x509::X509,
 };
@@ -113,6 +114,34 @@ impl CertReq {
                         .collect::<Vec<_>>()
                         .join(","),
                 );
+            }
+
+            if !regexs.is_empty() {
+                // check CN
+                for cn in subject_name.0.entries_by_nid(Nid::COMMONNAME) {
+                    let cn = cn.data().as_utf8()?.to_string();
+                    if !cn.is_empty() {
+                        let first = cn.as_bytes()[0];
+                        let last = *cn.as_bytes().last().unwrap();
+                        if cn
+                            .chars()
+                            .all(|c| c.is_ascii_alphanumeric() || matches!(c, '-' | '/' | '.'))
+                            && first.is_ascii_alphanumeric()
+                            && (last.is_ascii_alphanumeric() || last == '*' as u8)
+                        {
+                            let mut matched = false;
+                            for regex in regexs.iter() {
+                                if regex.is_match(&cn) {
+                                    matched = true;
+                                    break;
+                                }
+                            }
+                            if !matched {
+                                bail!("subject CN {} seems to be a domain name but is forbidden by ACL", cn)
+                            }
+                        }
+                    }
+                }
             }
         }
 
