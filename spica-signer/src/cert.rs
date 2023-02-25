@@ -2,7 +2,10 @@ use std::{collections::HashMap, fs};
 
 use anyhow::{bail, Context, Error, Result};
 use lazy_static::lazy_static;
-use openssl::x509::X509;
+use openssl::{
+    pkey::{PKey, Private},
+    x509::X509,
+};
 use serde::Deserialize;
 use tracing::info;
 
@@ -13,6 +16,8 @@ pub struct CertConfig {
     pub id: String,
     pub file: String,
     pub openssl_opt: OpenSSLOpts,
+    #[serde(default)]
+    pub priv_key_pass: Option<String>,
 }
 
 impl CertConfig {
@@ -64,6 +69,16 @@ impl CACert {
 
     pub fn to_ossl_x509(&self) -> Result<X509> {
         Ok(X509::from_pem(self.cert_pem.as_bytes())?)
+    }
+
+    pub fn to_ossl_pkey(&self) -> Result<PKey<Private>> {
+        match &self.config.priv_key_pass {
+            Some(pwd) => Ok(PKey::private_key_from_pem_passphrase(
+                self.priv_key_pem.as_bytes(),
+                pwd.as_bytes(),
+            )?),
+            None => Ok(PKey::private_key_from_pem(self.priv_key_pem.as_bytes())?),
+        }
     }
 }
 

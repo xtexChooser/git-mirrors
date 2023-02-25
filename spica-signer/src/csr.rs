@@ -4,6 +4,7 @@ use anyhow::{bail, Result};
 use openssl::{
     asn1::{Asn1Integer, Asn1Time},
     bn::{BigNum, MsbOption},
+    hash::MessageDigest,
     pkey::PKey,
     x509::X509,
 };
@@ -27,6 +28,7 @@ pub struct CertReq {
     #[serde(rename = "openssl-opt", default)]
     pub ossl_opt: OpenSSLOpts,
     pub pubkey_pem: String,
+    pub prefer_hash: Option<String>,
 }
 
 impl CertReq {
@@ -105,6 +107,7 @@ impl CertReq {
             subject_name,
             ossl_opt,
             pubkey_pem: String::from_utf8(ossl_spki.public_key_to_pem()?)?,
+            prefer_hash: None, // @TODO:
         })
     }
 
@@ -135,6 +138,14 @@ impl CertReq {
         for ext in self.ossl_opt.to_exts(&ossl_ctx)?.iter() {
             builder.append_extension2(ext)?;
         }
+
+        let priv_key = ca.to_ossl_pkey()?;
+        let hash = self
+            .prefer_hash
+            .to_owned()
+            .and_then(|v| MessageDigest::from_name(v.as_str()))
+            .unwrap_or(MessageDigest::sha512());
+        builder.sign(&priv_key, hash);
 
         let cert = builder.build();
         Ok(String::from_utf8(cert.to_pem()?)?)
