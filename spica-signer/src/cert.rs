@@ -2,11 +2,14 @@ use std::{collections::HashMap, fs};
 
 use anyhow::{bail, Context, Error, Result};
 use lazy_static::lazy_static;
-use openssl::x509::X509;
+use openssl::x509::{X509Name, X509};
 use serde::Deserialize;
 use tracing::info;
 
-use crate::{config::get_config, openssl::OpenSSLOpts};
+use crate::{
+    config::get_config,
+    openssl::{OpenSSLOpts, X509NameContainer},
+};
 
 #[derive(Debug, Deserialize)]
 pub struct CertConfig {
@@ -22,12 +25,12 @@ impl CertConfig {
     }
 }
 
-#[derive(Debug)]
 pub struct CACert {
     pub config: &'static CertConfig,
     pub cert_pem: String,
     pub priv_key_pem: String,
     pub text: String,
+    pub x509_name: X509NameContainer,
 }
 
 impl CACert {
@@ -42,11 +45,13 @@ impl CACert {
                 err.to_string()
             ),
         };
+        let x509_name = Self::read_cert_name(&cert_pem)?;
         Ok(CACert {
             config,
             cert_pem,
             priv_key_pem,
             text,
+            x509_name: x509_name.into(),
         })
     }
 
@@ -62,6 +67,12 @@ impl CACert {
     pub fn read_cert_text(pem: &String) -> Result<String> {
         let x509 = X509::from_pem(pem.as_bytes())?;
         Ok(String::from_utf8(x509.to_text()?)?)
+    }
+
+    pub fn read_cert_name(pem: &String) -> Result<X509Name> {
+        let x509 = X509::from_pem(pem.as_bytes())?;
+        let name = x509.subject_name().to_der()?;
+        Ok(X509Name::from_der(&name)?)
     }
 }
 

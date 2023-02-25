@@ -6,6 +6,7 @@ use reqwest::{header::CONTENT_TYPE, StatusCode};
 use crate::cert::{get_cert, get_certs};
 
 pub mod nodeinfo;
+pub mod sign;
 
 pub async fn make_router() -> Router {
     Router::new()
@@ -15,6 +16,7 @@ pub async fn make_router() -> Router {
         .route("/:id/text.txt", get(cert_text))
         .route("/:id/cert.crt", get(cert_crt))
         .merge(nodeinfo::make_router().await)
+        .merge(sign::make_router().await)
 }
 
 async fn index() -> IndexTemplate {
