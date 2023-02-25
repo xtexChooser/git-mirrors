@@ -1,7 +1,8 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, fs};
 
-use anyhow::{Context, Result};
+use anyhow::{bail, Context, Error, Result};
 use lazy_static::lazy_static;
+use openssl::x509::X509;
 use serde::Deserialize;
 use tracing::info;
 
@@ -15,14 +16,52 @@ pub struct CertConfig {
     pub openssl_opt: OpenSSLOpts,
 }
 
+impl CertConfig {
+    pub fn read_file(&self) -> Result<String> {
+        Ok(fs::read_to_string(self.file.to_owned()).map_err(Error::from)?)
+    }
+}
+
 #[derive(Debug)]
 pub struct CACert {
     pub config: &'static CertConfig,
+    pub cert_pem: String,
+    pub priv_key_pem: String,
+    pub text: String,
 }
 
 impl CACert {
     pub fn new(config: &'static CertConfig) -> Result<CACert> {
-        Ok(CACert { config })
+        let full_pem = config.read_file()?;
+        let cert_pem = Self::extract_pem(&full_pem, "CERTIFICATE")?;
+        let priv_key_pem = Self::extract_pem(&full_pem, "PRIVATE KEY")?;
+        let text = match Self::read_cert_text(&cert_pem) {
+            Ok(text) => text,
+            Err(err) => format!(
+                "Error construting text dump for this certificate:\n{}",
+                err.to_string()
+            ),
+        };
+        Ok(CACert {
+            config,
+            cert_pem,
+            priv_key_pem,
+            text,
+        })
+    }
+
+    fn extract_pem(pem: &String, tag: &str) -> Result<String> {
+        for pem in pem::parse_many(pem)?.into_iter() {
+            if pem.tag == tag {
+                return Ok(pem::encode(&pem));
+            }
+        }
+        bail!("pem with tag {} not found", tag)
+    }
+
+    pub fn read_cert_text(pem: &String) -> Result<String> {
+        let x509 = X509::from_pem(pem.as_bytes())?;
+        Ok(String::from_utf8(x509.to_text()?)?)
     }
 }
 
