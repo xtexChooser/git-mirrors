@@ -8,13 +8,17 @@ use anyhow::Result;
 use base64::Engine;
 use lazy_static::lazy_static;
 use openssl::{
-    conf::{Conf, ConfMethod},
+    conf::{Conf, ConfMethod, ConfRef},
     x509::{X509Extension, X509Name, X509v3Context},
 };
 use serde::{de::Visitor, Deserialize, Serialize};
 
 lazy_static! {
     static ref CONF: Conf = Conf::new(ConfMethod::default()).unwrap();
+}
+
+pub fn get_ossl_conf() -> &'static ConfRef {
+    &CONF
 }
 
 pub type OpenSSLOpts = HashMap<String, String>;
@@ -35,6 +39,18 @@ impl OpenSSLOptsExt for OpenSSLOpts {
 }
 
 pub struct X509NameContainer(pub X509Name);
+
+impl X509NameContainer {
+    pub fn from_der(der: &[u8]) -> Result<X509NameContainer> {
+        Ok(X509NameContainer(X509Name::from_der(der)?))
+    }
+
+    pub fn from_picky(name: picky_asn1_x509::Name) -> Result<X509NameContainer> {
+        Ok(X509NameContainer(X509Name::from_der(
+            picky_asn1_der::to_vec(&name)?.as_slice(),
+        )?))
+    }
+}
 
 impl fmt::Debug for X509NameContainer {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

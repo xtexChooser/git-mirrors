@@ -6,7 +6,7 @@ use axum::{
     Router,
 };
 
-use crate::cert::get_cert;
+use crate::{cert::get_cert, csr::CertReq};
 
 pub async fn make_router() -> Router {
     Router::new().route("/:id/sign/csr", post(sign_csr))
@@ -16,10 +16,11 @@ async fn sign_csr(Path(id): Path<String>, csr: String) -> Result<impl IntoRespon
     match get_cert(&id) {
         Some(cert) => {
             // re-format
-            let req = pem::encode(&pem::parse(csr).unwrap());
+            let req_pem = pem::encode(&pem::parse(csr).unwrap());
+            //let req = CertReq::from_csr
             Ok((
                 [(CONTENT_TYPE, "application/x-x509-ca-cert")],
-                req.to_owned(),
+                req_pem.to_owned(),
             ))
         }
         None => Err(StatusCode::NOT_FOUND),

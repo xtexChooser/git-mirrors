@@ -1,17 +1,21 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use anyhow::Result;
+use anyhow::{bail, Result};
 use openssl::{
     asn1::{Asn1Integer, Asn1Time},
     bn::{BigNum, MsbOption},
     pkey::PKey,
     x509::X509,
 };
+use pem::Pem;
+use picky_asn1_x509::{AttributeValues, CertificationRequest, ExtensionView};
+use regex::Regex;
 use serde::{Deserialize, Serialize};
 
 use crate::{
+    acl::ACLRule,
     cert::CACert,
-    openssl::{OpenSSLOpts, X509NameContainer},
+    openssl::{get_ossl_conf, OpenSSLOpts, OpenSSLOptsExt, X509NameContainer},
 };
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -21,11 +25,89 @@ pub struct CertReq {
     pub serial: Option<String>,
     pub subject_name: X509NameContainer,
     #[serde(rename = "openssl-opt", default)]
-    pub openssl_opt: OpenSSLOpts,
+    pub ossl_opt: OpenSSLOpts,
     pub pubkey_pem: String,
 }
 
 impl CertReq {
+    pub fn from_csr(
+        pem: Pem,
+        validity: (SystemTime, SystemTime),
+        serial: Option<String>,
+        acl: ACLRule,
+    ) -> Result<CertReq> {
+        if pem.tag != "CERTIFICATE REQUEST" {
+            bail!("unexpected pem tag {}", pem.tag)
+        }
+        if let Some(_) = serial && !acl.can_custom_serial {
+            bail!("custom serial is not allowed for ACL")
+        }
+        let req = picky_asn1_der::from_bytes::<CertificationRequest>(pem.contents.as_slice())?;
+        // let ossl_req = X509Req::from_pem(pem::encode(&pem).as_bytes())?;
+        let info = req.certification_request_info;
+        let subject_name = X509NameContainer::from_picky(info.subject)?;
+        let ossl_spki = PKey::public_key_from_pem(
+            picky_asn1_der::to_vec(&info.subject_public_key_info)?.as_slice(),
+        )?;
+        let (not_before, not_after) = validity;
+        let duration = not_after.duration_since(not_before)?;
+        if duration > acl.max_expire {
+            bail!(
+                "valid duration {}s > max ACL duration {}s",
+                duration.as_secs(),
+                acl.max_expire.as_secs()
+            )
+        }
+        let mut ossl_opt = acl.openssl_opt.to_owned();
+        if !acl.allowed_san_dns.is_empty() {
+            // copy SAN DNS
+            let mut regexs = Vec::new();
+            for v in acl.allowed_san_dns.iter() {
+                regexs.push(Regex::new(v)?);
+            }
+            let mut allowed_names = Vec::new();
+            for attr in info.attributes.iter() {
+                if let AttributeValues::Extensions(exts) = &attr.value {
+                    for ext_set in exts.iter() {
+                        for ext in ext_set.0.iter() {
+                            if let ExtensionView::SubjectAltName(names) = ext.extn_value() {
+                                for name in names.iter() {
+                                    if let picky_asn1_x509::GeneralName::DnsName(name) = name {
+                                        let name = name.to_string();
+                                        for regex in &regexs {
+                                            if regex.is_match(&name) {
+                                                allowed_names.push(name);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if !allowed_names.is_empty() {
+                ossl_opt.insert(
+                    "subjectAltName".to_owned(),
+                    allowed_names
+                        .iter()
+                        .map(|v| format!("DNS:{}", v))
+                        .collect::<Vec<_>>()
+                        .join(","),
+                );
+            }
+        }
+        Ok(CertReq {
+            not_before,
+            not_after,
+            serial,
+            subject_name,
+            ossl_opt,
+            pubkey_pem: String::from_utf8(ossl_spki.public_key_to_pem()?)?,
+        })
+    }
+
     pub fn sign(&self, ca: &CACert) -> Result<String> {
         let mut builder = X509::builder()?;
 
@@ -43,10 +125,16 @@ impl CertReq {
             None => Self::rand_serial()?,
         };
         builder.set_serial_number(Asn1Integer::from_bn(&serial)?.as_ref())?;
-        builder.set_issuer_name(&ca.x509_name)?;
+        let ca_crt = ca.to_ossl_x509()?;
+        builder.set_issuer_name(ca_crt.subject_name())?;
         builder.set_subject_name(&self.subject_name)?;
         let pubkey = PKey::public_key_from_pem(self.pubkey_pem.as_bytes())?;
         builder.set_pubkey(&pubkey)?;
+
+        let ossl_ctx = builder.x509v3_context(Some(&ca_crt), Some(get_ossl_conf()));
+        for ext in self.ossl_opt.to_exts(&ossl_ctx)?.iter() {
+            builder.append_extension2(ext)?;
+        }
 
         let cert = builder.build();
         Ok(String::from_utf8(cert.to_pem()?)?)
