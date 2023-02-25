@@ -1,6 +1,7 @@
 use std::{collections::HashMap, time::Duration};
 
-use axum::{extract::Path, http::StatusCode, response::IntoResponse, routing::post, Json, Router};
+use axum::{extract::Path, http::StatusCode, response::IntoResponse, routing::post, Router};
+use reqwest::header::CONTENT_TYPE;
 
 use crate::{acl::ACLRule, cert::get_cert, csr::CertReq};
 
@@ -10,7 +11,7 @@ pub async fn make_router() -> Router {
 
 async fn sign_csr(Path(id): Path<String>, csr: String) -> impl IntoResponse {
     match get_cert(&id) {
-        Some(cert) => {
+        Some(ca_cert) => {
             // re-format
             let req_pem = match pem::parse(csr) {
                 Ok(pem) => pem,
@@ -31,7 +32,7 @@ async fn sign_csr(Path(id): Path<String>, csr: String) -> impl IntoResponse {
                     "basicConstraints".to_owned(),
                     "CA:FALSE".to_owned(),
                 )]),
-                prefer_hash: Some("sha256".to_owned()),
+                prefer_hash: None,
             };
             let req = CertReq::from_csr(&req_pem, None, None, acl, None);
             let req = match req {
@@ -47,13 +48,27 @@ async fn sign_csr(Path(id): Path<String>, csr: String) -> impl IntoResponse {
                         .into_response()
                 }
             };
-            /*(
-                StatusCode::OK,
+            let crt = req.sign(ca_cert);
+            let crt = match crt {
+                Ok(crt) => crt,
+                Err(e) => {
+                    return (
+                        StatusCode::INTERNAL_SERVER_ERROR,
+                        format!(
+                            "failed to sign cert: {}\n\ncert req: {:?}",
+                            e.to_string(),
+                            serde_json::to_string(&req)
+                        ),
+                    )
+                        .into_response()
+                }
+            };
+            (
+                StatusCode::CREATED,
                 [(CONTENT_TYPE, "application/x-x509-ca-cert")],
-                pem::encode(&req_pem).to_owned(),
+                crt,
             )
-                .into_response()*/
-            (StatusCode::OK, Json(req)).into_response()
+                .into_response()
         }
         None => (StatusCode::NOT_FOUND, format!("unknown cert")).into_response(),
     }
