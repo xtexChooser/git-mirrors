@@ -10,8 +10,11 @@ pub struct ACLRule {
     pub certs: Vec<String>,
     #[serde(deserialize_with = "deserialize_duration")]
     pub max_expire: Duration,
+    /// regex filters for SAN DNS names
+    /// keep None if SAN copying is disabled
+    /// empty list for matching everything
     #[serde(default)]
-    pub allowed_san_dns: Vec<String>,
+    pub allowed_san_dns: Option<Vec<String>>,
     #[serde(default)]
     pub can_custom_serial: bool,
     #[serde(default)]

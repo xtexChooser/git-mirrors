@@ -67,34 +67,36 @@ impl CertReq {
         let mut ossl_opt = acl.openssl_opt.to_owned();
 
         // copy SAN DNS
-        let san_matchers = if !acl.allowed_san_dns.is_empty() {
+        let san_matchers = if let Some(filters) = acl.allowed_san_dns {
             // copy SAN DNS
             let mut regexs = Vec::new();
-            for v in acl.allowed_san_dns.iter() {
+            for v in filters.iter() {
                 regexs.push(Regex::new(v).context(format!("SAN DNS regex matcher {}", v))?);
             }
             Some(regexs)
         } else {
             None
         };
-        let mut san_names = Vec::new();
-        for attr in info.attributes.iter() {
-            if let AttributeValues::Extensions(exts) = &attr.value {
-                for ext_set in exts.iter() {
-                    for ext in ext_set.0.iter() {
-                        if let ExtensionView::SubjectAltName(names) = ext.extn_value() {
-                            for name in names.iter() {
-                                if let picky_asn1_x509::GeneralName::DnsName(name) = name {
-                                    let name = name.to_string();
-                                    if let Some(regexs) = &san_matchers {
-                                        for regex in regexs.iter() {
-                                            if regex.is_match(&name) {
-                                                san_names.push(name);
-                                                break;
+        if let Some(regexs) = &san_matchers {
+            let mut san_names = Vec::new();
+            for attr in info.attributes.iter() {
+                if let AttributeValues::Extensions(exts) = &attr.value {
+                    for ext_set in exts.iter() {
+                        for ext in ext_set.0.iter() {
+                            if let ExtensionView::SubjectAltName(names) = ext.extn_value() {
+                                for name in names.iter() {
+                                    if let picky_asn1_x509::GeneralName::DnsName(name) = name {
+                                        let name = name.to_string();
+                                        if regexs.is_empty() {
+                                            san_names.push(name);
+                                        } else {
+                                            for regex in regexs.iter() {
+                                                if regex.is_match(&name) {
+                                                    san_names.push(name);
+                                                    break;
+                                                }
                                             }
                                         }
-                                    } else {
-                                        san_names.push(name);
                                     }
                                 }
                             }
@@ -102,16 +104,16 @@ impl CertReq {
                     }
                 }
             }
-        }
-        if !san_names.is_empty() {
-            ossl_opt.insert(
-                "subjectAltName".to_owned(),
-                san_names
-                    .iter()
-                    .map(|v| format!("DNS:{}", v))
-                    .collect::<Vec<_>>()
-                    .join(","),
-            );
+            if !san_names.is_empty() {
+                ossl_opt.insert(
+                    "subjectAltName".to_owned(),
+                    san_names
+                        .iter()
+                        .map(|v| format!("DNS:{}", v))
+                        .collect::<Vec<_>>()
+                        .join(","),
+                );
+            }
         }
 
         Ok(CertReq {

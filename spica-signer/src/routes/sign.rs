@@ -26,7 +26,7 @@ async fn sign_csr(Path(id): Path<String>, csr: String) -> impl IntoResponse {
             let acl = ACLRule {
                 certs: vec![],
                 max_expire: Duration::from_secs(60 * 60 * 24 * 15),
-                allowed_san_dns: vec![".*$".to_owned()],
+                allowed_san_dns: Some(vec![".*$".to_owned()]),
                 can_custom_serial: false,
                 openssl_opt: HashMap::from([(
                     "basicConstraints".to_owned(),
