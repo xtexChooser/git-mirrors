@@ -49,7 +49,7 @@ impl CertReq {
         // let ossl_req = X509Req::from_pem(pem::encode(&pem).as_bytes())?;
         let info = req.certification_request_info;
         let subject_name = X509NameContainer::from_picky(info.subject)?;
-        let ossl_spki = PKey::public_key_from_pem(
+        let ossl_spki = PKey::public_key_from_der(
             picky_asn1_der::to_vec(&info.subject_public_key_info)?.as_slice(),
         )?;
         let (not_before, not_after) = validity.unwrap_or_else(|| {
