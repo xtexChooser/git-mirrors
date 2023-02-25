@@ -145,7 +145,7 @@ impl CertReq {
             .to_owned()
             .and_then(|v| MessageDigest::from_name(v.as_str()))
             .unwrap_or(MessageDigest::sha512());
-        builder.sign(&priv_key, hash);
+        builder.sign(&priv_key, hash)?;
 
         let cert = builder.build();
         Ok(String::from_utf8(cert.to_pem()?)?)
