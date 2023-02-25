@@ -10,7 +10,7 @@ use crate::{config::get_config, openssl::OpenSSLOpts};
 
 #[derive(Debug, Deserialize)]
 pub struct CertConfig {
-    pub name: String,
+    pub id: String,
     pub file: String,
     #[serde(rename = "openssl-opt", default)]
     pub openssl_opt: OpenSSLOpts,
@@ -72,12 +72,12 @@ lazy_static! {
 fn init_certs() -> HashMap<String, CACert> {
     let mut certs = HashMap::<String, CACert>::new();
     for config in get_config().cert.iter() {
-        info!(name = config.name, "loading cert");
+        info!(id = config.id, "loading cert");
         let cert = CACert::new(config)
-            .context(format!("Certificate config {}", config.name))
+            .context(format!("Certificate config {}", config.id))
             .unwrap();
-        if let Some(_) = certs.insert(config.name.to_owned(), cert) {
-            panic!("duplicated cert name {}", config.name)
+        if let Some(_) = certs.insert(config.id.to_owned(), cert) {
+            panic!("duplicated cert name {}", config.id)
         }
     }
     certs

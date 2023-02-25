@@ -5,6 +5,7 @@ use crate::cert::get_certs;
 
 pub async fn make_router() -> Router {
     Router::new().route("/", get(index))
+    .route("/:id", get(index))
 }
 
 async fn index() -> IndexTemplate {
