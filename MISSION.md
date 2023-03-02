@@ -76,3 +76,6 @@ more info about creating agreements together.
 2. **Transparency**: All Forgejo communication channels and documents are public.
    Private data (names, bank account number, etc.) and credentials (passwords, etc.)
    are the only data stored in a private space and redacted from documents.
+3. **Privacy**: All Forgejo developments will be made considering data protection by
+   default and by design for all its users, understanding Privacy as a condition of
+   human autonomy and self-governance.
