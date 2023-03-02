@@ -14,35 +14,40 @@ their own agreements about how they work. See <TEAMS.md> for more info.
     - If it's a conceptual agreement about our purpose and values, it goes into `MISSION.md`
     - Otherwise, it goes into *this* file, i.e. `AGREEMENTS.md`
 
-### Decision making table AKA responsibility distribution table
+### Responsibility distribution table
 
 Each item has 4 pieces of info:
 
 1. Domain: Type of decision / domain of responsibility
 2. Who decides / Who is accountable
 3. How? Based on what? Advice, policy, criteria
-4. Duration: When do we review and re-approve
+4. Duration: How often do we review and re-approve
+5. Review: When's the next time do we review and re-approve
 
 * Domain: **Security**
   - Who: Security Team
   - How:
     - Consider impact on Forgejo instances, users and admins
     - Consult with relevant security-knowledgeable people if needed
-  - Duration: -
+  - Duration: 1 year
+  - Review: 1 Feb 2024
 
 * Domain: **Fediverse account**
   - Who: Social Account Team
   - How: -
-  - Duration: -
+  - Duration: 1 year
+  - Review: 1 Feb 2024
 
 * Domain: **Anything else**
-  - Who: Anyone
-  - How: As long as you consult with:
-    1. the relevant teams
-    2. the people impacted by the decision
-    3. the people which relevant knowledge and expertise
-    4. people with the resources required for implementing the decision
-  - Duration: -
+  - Who: The community together, with a facilitator about whom there's no
+         controversy (either an Organization member or external person chosen
+         for this), with the option to delegate an urgent decision to a small
+         group to make in behalf of the community
+  - How: Using the process described in
+         [`DECISION-MAKING.md`](DECISION-MAKING.md) (or any other collaborative
+         inclusive process, as long as all participants are okay with it)
+  - Duration: 1 year
+  - Review: 1 Feb 2024
 
 ## Branding: Forgejo name, tagline, logo and mascot
 
@@ -58,5 +63,5 @@ The name of the project is Forgejo, the tagline is `Beyond coding. We forge.`. S
 
 ## Conflict Engagnement
 
-- When a conflict arises, we contact the [moderation team](TEAMS.md#moderation)
+- When a conflict arises, we contact the [well-being team](TEAMS.md#Well-being)
   and ask for their support to mediate the conversation
