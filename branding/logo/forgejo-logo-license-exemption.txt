@@ -1,0 +1,28 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+I, Caesar Schinas, hereby grant the Forgejo project (hosted at
+https://codeberg.org/forgejo/) and Codeberg e.V. permission to use the Forgejo
+logos I have created for any purpose relating to the Forgejo project, without
+any requirement to adhere to the attribution clause of the CC BY-SA 4.0 license
+under which those logos are otherwise licensed.
+
+Signed: Caesar Schinas (caesar@caesarschinas.com)
+Dated: 2023-01-06
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEX5OAgGb/qz0AmQi7rpEIRhvqWs8FAmO5XbQACgkQrpEIRhvq
+Ws9GHQ/8CsDMEQlZPo2J9gKsiIa8NN9/pvR4RelB5iWkj9ccxT0pF9RVuFwnfbKZ
+GsHnjtoT+OS1WgpDk3Wn4eDqq2IXicnLlzh1kVRDYu3u46xkdKfeAndITB94dn0w
+hE6RmZxNGkUla1gg40NePXhsHXSQmaqlGsyBpEJp7fMXUpocFU9HvQ0rhsikjJZK
+ybS6FDJaPJMLETS1CFhdvNESSAFIuQyNUARYozZbl28V7SzP+H9AsuLbNuWQo7PG
+UyOpFmrKvYta5S/+2qFghQMyD0NPR2O3vYDDKZdRWxwSq7qV05OiwLxzbuAE2rop
+RmiHv8+KiYaDSAHvYo9iSqa4k6sJQELEAIO06a2lgxA1ITEMQ7stnHwyYaT+djsZ
+aHkCYIuOBWhO5DBzvwLLz/pBK6RvP0drXlXI0EUOuR+v/jmVPSa7cHQ4zzMWnFEL
+Vnh0gLmV25cGJ+4VG2ytRrfzJSEcGQGc9zNMTzIPHWkp4gdR6+L+yxv5vJcaNBx8
+aAnoSNwfOUmSH8utrFhrFbWEa6TOzyK/H9dgxcL9TVXvgfCzDgHQMtIC1E8+r2DR
+xRCHJb6nNND+0o/VTJKh29mE3HHTDlobWyynnFKoIZsxvXtBqpNcMMtON67bbSsy
+RTBbsWQIauzW6KC5H9cw+sLP5p5wAaEjqTbfo0mDkMvtZJvFTik=
+=LhnC
+-----END PGP SIGNATURE-----

@@ -1,0 +1,94 @@
+<svg viewBox="0 0 212 212" xmlns="http://www.w3.org/2000/svg">
+  <metadata
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:cc="http://creativecommons.org/ns#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+  >
+    <rdf:RDF>
+      <cc:Work rdf:about="https://codeberg.org/forgejo/meta/src/branch/readme/branding#logo">
+        <dc:title>Forgejo logo</dc:title>
+        <cc:creator rdf:resource="https://caesarschinas.com/"><cc:attributionName>Caesar Schinas</cc:attributionName></cc:creator>
+        <cc:license rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <style type="text/css">
+    circle {
+      fill: none;
+      stroke: #000;
+      stroke-width: 15;
+    }
+    path {
+      fill: none;
+      stroke: #000;
+      stroke-width: 25;
+    }
+    .orange {
+      stroke:#ff6600;
+    }
+    .red {
+      stroke:#d40000;
+    }
+
+    @keyframes draw-orange {
+      0% { stroke-dashoffset: 200; }
+      25% { stroke-dashoffset: 200; stroke-width: 0; }
+      50% { stroke-dashoffset: 0; stroke-width: 25; }
+      100% { stroke-dashoffset: 0; }
+    }
+    @keyframes draw-red {
+      0% { stroke-dashoffset: 130; stroke-width: 0; }
+      25% { stroke-dashoffset: 0; stroke-width: 25; }
+      50% { stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: 0; }
+    }
+    @keyframes red-circle {
+      0% { opacity: 0; }
+      20% { opacity: 0; stroke-width: 0; }
+      25% { opacity: 1; stroke-width: 15; }
+      100% { opacity: 1; }
+    }
+    @keyframes orange-circle {
+      0% { opacity: 0; }
+      45% { opacity: 0; stroke-width: 0; }
+      50% { opacity: 1; stroke-width: 15; }
+      100% { opacity: 1; }
+    }
+    @keyframes fade {
+      0% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    path.orange {
+      stroke-dasharray: 200;
+      stroke-dashoffset: 200;
+      animation: draw-orange 2000ms ease-out 5ms infinite;
+    }
+    path.red {
+      stroke-dasharray: 130;
+      stroke-dashoffset: 130;
+      animation: draw-red 2000ms ease-out 5ms infinite;
+    }
+    .anim circle.red {
+      opacity: 0;
+      animation: red-circle 2000ms ease-out 5ms infinite;
+    }
+    .anim circle.orange {
+      opacity: 0;
+      animation: orange-circle 2000ms ease-out 5ms infinite;
+    }
+    .anim {
+      animation: fade 2000ms ease-in-out 5ms infinite;
+    }
+  </style>
+  <g transform="translate(6,6)">
+    <g class="anim">
+      <path d="M58 168 v-98 a50 50 0 0 1 50-50 h20" class="orange" />
+      <path d="M58 168 v-30 a50 50 0 0 1 50-50 h20" class="red" />
+      <circle cx="142" cy="20" r="18" class="orange" />
+      <circle cx="142" cy="88" r="18" class="red" />
+    </g>
+    <circle cx="58" cy="180" r="18" class="red" />
+  </g>
+</svg>
