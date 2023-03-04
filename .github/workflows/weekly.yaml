@@ -27,6 +27,7 @@ jobs:
           echo -e "\n[edit]" >> mwbot.toml
           echo respect_nobots = false >> mwbot.toml
           chmod 600 mwbot.toml
+          cat mwbot.toml
 
       - uses: actions-rs/cargo@v1
         with:
