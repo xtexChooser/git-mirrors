@@ -3,7 +3,10 @@ use askama_axum::IntoResponse;
 use axum::{extract::Path, routing::get, Json, Router};
 use reqwest::{header::CONTENT_TYPE, StatusCode};
 
-use crate::cert::{get_cert, get_certs};
+use crate::{
+    cert::{get_cert, get_certs},
+    config::{get_config, Config},
+};
 
 pub mod auth;
 pub mod nodeinfo;
@@ -12,6 +15,7 @@ pub mod sign;
 pub async fn make_router() -> Router {
     Router::new()
         .route("/", get(index))
+        .route("/config.html", get(config))
         .route("/certs", get(cert_list))
         .route("/:id", get(cert_probe))
         .route("/:id/text.txt", get(cert_text))
@@ -22,14 +26,23 @@ pub async fn make_router() -> Router {
 
 async fn index() -> IndexTemplate {
     IndexTemplate {
-        certs: get_certs().keys().collect(),
+        config: get_config(),
+        show_config: false,
+    }
+}
+
+async fn config() -> IndexTemplate {
+    IndexTemplate {
+        config: get_config(),
+        show_config: true,
     }
 }
 
 #[derive(Template)]
-#[template(path = "index.html")]
+#[template(path = "index.html.j2")]
 struct IndexTemplate {
-    certs: Vec<&'static String>,
+    config: &'static Config,
+    show_config: bool,
 }
 
 async fn cert_list() -> Json<Vec<&'static String>> {

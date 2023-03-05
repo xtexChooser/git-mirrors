@@ -32,10 +32,16 @@ pub struct Config {
     pub listen_addr: String,
     #[serde(default = "default_otp_required")]
     pub otp_required: bool,
+    #[serde(default = "default_show_roles")]
+    pub show_roles: bool,
     pub cert: Vec<CertConfig>,
     pub role: Vec<Role>,
 }
 
 fn default_otp_required() -> bool {
+    true
+}
+
+fn default_show_roles() -> bool {
     true
 }
