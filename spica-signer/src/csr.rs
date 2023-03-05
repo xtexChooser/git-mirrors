@@ -114,9 +114,10 @@ impl CertReq {
                     if !cn.is_empty() {
                         let first = cn.as_bytes()[0];
                         let last = *cn.as_bytes().last().unwrap();
-                        if cn
-                            .chars()
-                            .all(|c| c.is_ascii_alphanumeric() || matches!(c, '-' | '/' | '.'))
+                        if cn.contains('.')
+                            && cn
+                                .chars()
+                                .all(|c| c.is_ascii_alphanumeric() || matches!(c, '-' | '/' | '.'))
                             && first.is_ascii_alphanumeric()
                             && (last.is_ascii_alphanumeric() || last == '*' as u8)
                         {
@@ -175,8 +176,9 @@ impl CertReq {
                 if !regexs.is_empty() && !v.is_empty() {
                     let first = v.as_bytes()[0];
                     let last = *v.as_bytes().last().unwrap();
-                    if v.chars()
-                        .all(|c| c.is_ascii_alphanumeric() || matches!(c, '-' | '/' | '.'))
+                    if v.contains('.')
+                        && v.chars()
+                            .all(|c| c.is_ascii_alphanumeric() || matches!(c, '-' | '/' | '.'))
                         && first.is_ascii_alphanumeric()
                         && (last.is_ascii_alphanumeric() || last == '*' as u8)
                     {
