@@ -34,12 +34,12 @@ async fn sign_csr(
     Query(params): Query<SignParams>,
     csr: String,
 ) -> impl IntoResponse {
-    let req_pem = match pem::parse(csr.to_owned()) {
+    let req_pem = match pem::parse(&csr) {
         Ok(pem) => pem,
         Err(e) => {
             return (
                 StatusCode::BAD_REQUEST,
-                format!("failed to parse csr pem: {}", e.to_string()),
+                format!("failed to parse csr pem: {e}"),
             )
                 .into_response()
         }
@@ -49,7 +49,7 @@ async fn sign_csr(
         auth,
         params,
         |role, acl| CertReq::from_csr(&req_pem, &None, &None, acl, &role.prefer_hash),
-        format!("origin CSR: {}\n", csr).as_str(),
+        format!("origin CSR: {csr}\n").as_str(),
         "",
     )
     .await
@@ -62,9 +62,9 @@ async fn sign_json(
     Query(params): Query<SignParams>,
     Json(mut req): Json<CSR>,
 ) -> impl IntoResponse {
-    let mut extra_log = format!("origin req: {:#?}\n", req);
+    let mut extra_log = format!("origin req: {req:#?}\n");
     let mut extra_crt = String::new();
-    if let None = req.public_key_pem {
+    if req.public_key_pem.is_none() {
         match (|| {
             let key = create_new_secp521r1_keypair()?;
             let priv_key = String::from_utf8(key.private_key_to_pem()?)?;
@@ -79,7 +79,7 @@ async fn sign_json(
             Err(e) => {
                 return (
                     StatusCode::INTERNAL_SERVER_ERROR,
-                    format!("failed to auto gen secp521r1 keypair: {}", e.to_string()),
+                    format!("failed to auto gen secp521r1 keypair: {e}"),
                 )
                     .into_response()
             }
@@ -123,7 +123,7 @@ where
                 let req = match req {
                     Ok(req) => req,
                     Err(e) => {
-                        log.push_str(format!("ACL rejected: {}\n", e.to_string()).as_str());
+                        log.push_str(format!("ACL rejected: {e}\n").as_str());
                         continue;
                     }
                 };
@@ -131,7 +131,7 @@ where
                 let crt = match req.sign(ca_cert) {
                     Ok(crt) => crt,
                     Err(e) => {
-                        log.push_str(format!("sign failed: {}\n", e.to_string()).as_str());
+                        log.push_str(format!("sign failed: {e}\n").as_str());
                         internal_err = true;
                         continue;
                     }
@@ -161,6 +161,6 @@ where
             )
                 .into_response()
         }
-        None => (StatusCode::NOT_FOUND, format!("unknown cert")).into_response(),
+        None => (StatusCode::NOT_FOUND, "unknown cert".to_string()).into_response(),
     }
 }

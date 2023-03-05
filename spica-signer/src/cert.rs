@@ -23,7 +23,7 @@ pub struct CertConfig {
 
 impl CertConfig {
     pub fn read_file(&self) -> Result<String> {
-        Ok(fs::read_to_string(self.file.to_owned()).map_err(Error::from)?)
+        fs::read_to_string(&self.file).map_err(Error::from)
     }
 }
 
@@ -42,8 +42,7 @@ impl CACert {
         let text = match Self::read_cert_text(&cert_pem) {
             Ok(text) => text,
             Err(err) => format!(
-                "Error construting text dump for this certificate:\n{}",
-                err.to_string()
+                "Error construting text dump for this certificate:\n{err}"
             ),
         };
         Ok(CACert {
@@ -94,7 +93,7 @@ fn init_certs() -> HashMap<String, CACert> {
         let cert = CACert::new(config)
             .context(format!("Certificate config {}", config.id))
             .unwrap();
-        if let Some(_) = certs.insert(config.id.to_owned(), cert) {
+        if certs.insert(config.id.to_owned(), cert).is_some() {
             panic!("duplicated cert name {}", config.id)
         }
     }

@@ -101,7 +101,7 @@ impl CertReq {
                     "subjectAltName".to_owned(),
                     san_names
                         .iter()
-                        .map(|v| format!("DNS:{}", v))
+                        .map(|v| format!("DNS:{v}"))
                         .collect::<Vec<_>>()
                         .join(","),
                 );
@@ -119,7 +119,7 @@ impl CertReq {
                                 .chars()
                                 .all(|c| c.is_ascii_alphanumeric() || matches!(c, '-' | '/' | '.'))
                             && first.is_ascii_alphanumeric()
-                            && (last.is_ascii_alphanumeric() || last == '*' as u8)
+                            && (last.is_ascii_alphanumeric() || last == b'*')
                         {
                             let mut matched = false;
                             for regex in regexs.iter() {
@@ -172,29 +172,27 @@ impl CertReq {
         // subject name
         let mut subject_name = X509Name::builder()?;
         for (k, v) in &csr.name {
-            if k == "CN" && let Some(regexs) = &san_matchers {
-                if !regexs.is_empty() && !v.is_empty() {
-                    let first = v.as_bytes()[0];
-                    let last = *v.as_bytes().last().unwrap();
-                    if v.contains('.')
-                        && v.chars()
-                            .all(|c| c.is_ascii_alphanumeric() || matches!(c, '-' | '/' | '.'))
-                        && first.is_ascii_alphanumeric()
-                        && (last.is_ascii_alphanumeric() || last == '*' as u8)
-                    {
-                        let mut matched = false;
-                        for regex in regexs.iter() {
-                            if regex.is_match(&v) {
-                                matched = true;
-                                break;
-                            }
+            if k == "CN" && let Some(regexs) = &san_matchers && !regexs.is_empty() && !v.is_empty() {
+                let first = v.as_bytes()[0];
+                let last = *v.as_bytes().last().unwrap();
+                if v.contains('.')
+                    && v.chars()
+                        .all(|c| c.is_ascii_alphanumeric() || matches!(c, '-' | '/' | '.'))
+                    && first.is_ascii_alphanumeric()
+                    && (last.is_ascii_alphanumeric() || last == b'*')
+                {
+                    let mut matched = false;
+                    for regex in regexs.iter() {
+                        if regex.is_match(v) {
+                            matched = true;
+                            break;
                         }
-                        if !matched {
-                            bail!(
-                                "subject CN {} seems to be a domain name but is forbidden by ACL",
-                                v
-                            )
-                        }
+                    }
+                    if !matched {
+                        bail!(
+                            "subject CN {} seems to be a domain name but is forbidden by ACL",
+                            v
+                        )
                     }
                 }
             }
@@ -225,7 +223,7 @@ impl CertReq {
                     hosts.push(host);
                 } else {
                     for regex in regexs.iter() {
-                        if regex.is_match(&host) {
+                        if regex.is_match(host) {
                             hosts.push(host);
                             break;
                         }
@@ -237,7 +235,7 @@ impl CertReq {
                     "subjectAltName".to_owned(),
                     hosts
                         .iter()
-                        .map(|v| format!("DNS:{}", v))
+                        .map(|v| format!("DNS:{v}"))
                         .collect::<Vec<_>>()
                         .join(","),
                 );
@@ -271,7 +269,7 @@ impl CertReq {
                 .as_ref(),
         )?;
         let serial = match &self.serial {
-            Some(serial) => BigNum::from_hex_str(&serial)?,
+            Some(serial) => BigNum::from_hex_str(serial)?,
             None => Self::rand_serial()?,
         };
         builder.set_serial_number(Asn1Integer::from_bn(&serial)?.as_ref())?;

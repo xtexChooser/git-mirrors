@@ -21,7 +21,7 @@ async fn well_known(Host(host): Host) -> impl IntoResponse {
             "links": [
                 {
                     "rel": "http://nodeinfo.diaspora.software/ns/schema/2.1",
-                    "href": format!("https://{}/nodeinfo", host)
+                    "href": format!("https://{host}/nodeinfo")
                 }
             ]
         }

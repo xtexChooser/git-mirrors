@@ -21,7 +21,7 @@ pub async fn handle_auth(AuthBasic((id, signature)): AuthBasic) -> Result<&'stat
                     bail!("invalid TOTP token")
                 }
             } else {
-                bail!(format!("role {} not found", id))
+                bail!(format!("role {id} not found"))
             }
         }
     }

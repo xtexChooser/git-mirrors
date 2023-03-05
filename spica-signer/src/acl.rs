@@ -32,7 +32,7 @@ impl ACLRule {
         if let Some(filters) = &self.allowed_san_dns {
             let mut regexs = Vec::new();
             for v in filters.iter() {
-                regexs.push(Regex::new(v).context(format!("SAN DNS regex matcher {}", v))?);
+                regexs.push(Regex::new(v).context(format!("SAN DNS regex matcher {v}"))?);
             }
             Ok(Some(regexs))
         } else {
