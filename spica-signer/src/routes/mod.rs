@@ -5,6 +5,7 @@ use reqwest::{header::CONTENT_TYPE, StatusCode};
 
 use crate::cert::{get_cert, get_certs};
 
+pub mod auth;
 pub mod nodeinfo;
 pub mod sign;
 

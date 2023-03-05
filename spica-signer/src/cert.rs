@@ -6,12 +6,12 @@ use openssl::{
     pkey::{PKey, Private},
     x509::X509,
 };
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use tracing::info;
 
 use crate::{config::get_config, openssl::OpenSSLOpts};
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct CertConfig {
     pub id: String,
     pub file: String,

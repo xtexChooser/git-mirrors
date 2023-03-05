@@ -35,10 +35,10 @@ pub struct CertReq {
 impl CertReq {
     pub fn from_csr(
         pem: &Pem,
-        validity: Option<(SystemTime, SystemTime)>,
-        serial: Option<String>,
-        acl: ACLRule,
-        fallback_prefer_hash: Option<String>,
+        validity: &Option<(SystemTime, SystemTime)>,
+        serial: &Option<String>,
+        acl: &ACLRule,
+        fallback_prefer_hash: &Option<String>,
     ) -> Result<CertReq> {
         if pem.tag != "CERTIFICATE REQUEST" {
             bail!("unexpected pem tag {}", pem.tag)
@@ -68,8 +68,7 @@ impl CertReq {
         let mut ossl_opt = acl.openssl_opt.to_owned();
 
         // copy SAN DNS
-        let san_matchers = if let Some(filters) = acl.allowed_san_dns {
-            // copy SAN DNS
+        let san_matchers = if let Some(filters) = &acl.allowed_san_dns {
             let mut regexs = Vec::new();
             for v in filters.iter() {
                 regexs.push(Regex::new(v).context(format!("SAN DNS regex matcher {}", v))?);
@@ -148,11 +147,14 @@ impl CertReq {
         Ok(CertReq {
             not_before,
             not_after,
-            serial,
+            serial: serial.to_owned(),
             subject_name,
             ossl_opt,
             pubkey_pem: String::from_utf8(ossl_spki.public_key_to_pem()?)?,
-            prefer_hash: acl.prefer_hash.or(fallback_prefer_hash),
+            prefer_hash: acl
+                .prefer_hash
+                .to_owned()
+                .or(fallback_prefer_hash.to_owned()),
         })
     }
 

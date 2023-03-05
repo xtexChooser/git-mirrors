@@ -1,5 +1,5 @@
 [workspace]
-members = ["spica-signer"]
+members = ["spica-signer", "spica-signer-common"]
 
 [workspace.package]
 repository = "https://codeberg.org/XTEX-VNET/spica"
