@@ -1,18 +1,18 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use anyhow::{bail, Context, Result};
+use anyhow::{bail, Result};
 use openssl::{
     asn1::{Asn1Integer, Asn1Time},
     bn::{BigNum, MsbOption},
     hash::MessageDigest,
     nid::Nid,
     pkey::PKey,
-    x509::X509,
+    x509::{X509Name, X509},
 };
 use pem::Pem;
 use picky_asn1_x509::{AttributeValues, CertificationRequest, ExtensionView};
-use regex::Regex;
 use serde::{Deserialize, Serialize};
+use spica_signer_common::req::CSR;
 
 use crate::{
     acl::ACLRule,
@@ -44,7 +44,7 @@ impl CertReq {
             bail!("unexpected pem tag {}", pem.tag)
         }
         if let Some(_) = serial && !acl.can_custom_serial {
-            bail!("custom serial is not allowed for ACL")
+            bail!("custom serial is not allowed by ACL")
         }
         let req = picky_asn1_der::from_bytes::<CertificationRequest>(pem.contents.as_slice())?;
         // let ossl_req = X509Req::from_pem(pem::encode(&pem).as_bytes())?;
@@ -68,15 +68,7 @@ impl CertReq {
         let mut ossl_opt = acl.openssl_opt.to_owned();
 
         // copy SAN DNS
-        let san_matchers = if let Some(filters) = &acl.allowed_san_dns {
-            let mut regexs = Vec::new();
-            for v in filters.iter() {
-                regexs.push(Regex::new(v).context(format!("SAN DNS regex matcher {}", v))?);
-            }
-            Some(regexs)
-        } else {
-            None
-        };
+        let san_matchers = acl.san_dns_to_regexs()?;
         if let Some(regexs) = &san_matchers {
             let mut san_names = Vec::new();
             for attr in info.attributes.iter() {
@@ -151,6 +143,112 @@ impl CertReq {
             subject_name,
             ossl_opt,
             pubkey_pem: String::from_utf8(ossl_spki.public_key_to_pem()?)?,
+            prefer_hash: acl
+                .prefer_hash
+                .to_owned()
+                .or(fallback_prefer_hash.to_owned()),
+        })
+    }
+
+    pub fn from_json(
+        csr: &CSR,
+        acl: &ACLRule,
+        fallback_prefer_hash: &Option<String>,
+    ) -> Result<CertReq> {
+        if let Some(_) = csr.serial && !acl.can_custom_serial {
+            bail!("custom serial is not allowed by ACL")
+        }
+        if !csr.extra_ossl_opts.is_empty() && !acl.can_custom_openssl_opts {
+            bail!("custom OpenSSL options are not allowed by ACL")
+        }
+        let san_matchers = acl.san_dns_to_regexs()?;
+
+        let pubkey_pem = match &csr.pubkey_pem {
+            Some(k) => k.to_owned(),
+            None => bail!("pubkey_pem is required for signing"),
+        };
+
+        // subject name
+        let mut subject_name = X509Name::builder()?;
+        for (k, v) in &csr.name {
+            if k == "CN" && let Some(regexs) = &san_matchers {
+                if !regexs.is_empty() && !v.is_empty() {
+                    let first = v.as_bytes()[0];
+                    let last = *v.as_bytes().last().unwrap();
+                    if v.chars()
+                        .all(|c| c.is_ascii_alphanumeric() || matches!(c, '-' | '/' | '.'))
+                        && first.is_ascii_alphanumeric()
+                        && (last.is_ascii_alphanumeric() || last == '*' as u8)
+                    {
+                        let mut matched = false;
+                        for regex in regexs.iter() {
+                            if regex.is_match(&v) {
+                                matched = true;
+                                break;
+                            }
+                        }
+                        if !matched {
+                            bail!(
+                                "subject CN {} seems to be a domain name but is forbidden by ACL",
+                                v
+                            )
+                        }
+                    }
+                }
+            }
+            subject_name.append_entry_by_text(k.as_str(), v.as_str())?;
+        }
+
+        // validity
+        let not_before = csr.not_before.unwrap_or_else(SystemTime::now);
+        let not_after = not_before + csr.expiry.unwrap_or(acl.max_expire);
+
+        let duration = not_after.duration_since(not_before)?;
+        if duration > acl.max_expire {
+            bail!(
+                "valid duration {}s > max ACL duration {}s",
+                duration.as_secs(),
+                acl.max_expire.as_secs()
+            )
+        }
+
+        let mut ossl_opt = acl.openssl_opt.to_owned();
+        ossl_opt.extend(csr.extra_ossl_opts.clone());
+
+        // copy SAN DNS
+        if let Some(regexs) = &san_matchers {
+            let mut hosts = Vec::new();
+            for host in &csr.hosts {
+                if regexs.is_empty() {
+                    hosts.push(host);
+                } else {
+                    for regex in regexs.iter() {
+                        if regex.is_match(&host) {
+                            hosts.push(host);
+                            break;
+                        }
+                    }
+                }
+            }
+            if !hosts.is_empty() {
+                ossl_opt.insert(
+                    "subjectAltName".to_owned(),
+                    hosts
+                        .iter()
+                        .map(|v| format!("DNS:{}", v))
+                        .collect::<Vec<_>>()
+                        .join(","),
+                );
+            }
+        }
+
+        Ok(CertReq {
+            not_before,
+            not_after,
+            serial: csr.serial.to_owned(),
+            subject_name: X509NameContainer(subject_name.build()),
+            ossl_opt,
+            pubkey_pem,
             prefer_hash: acl
                 .prefer_hash
                 .to_owned()

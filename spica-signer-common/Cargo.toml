@@ -8,9 +8,10 @@ repository = { workspace = true }
 
 [dependencies]
 anyhow = "1.0.69"
+serde = { version = "1.0.152", features = ["derive"], optional = true }
 totp-rs = { version = "4.2.0", optional = true }
 
 [features]
 default = ["std"]
-std = ["sign"]
+std = ["sign", "serde"]
 sign = ["dep:totp-rs"]

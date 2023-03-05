@@ -101,6 +101,9 @@
               {% if acl.can_custom_serial %}
               <p>Can custom serial</p>
               {% endif %}
+              {% if acl.can_custom_openssl_opts %}
+              <p>Can custom OpenSSL options</p>
+              {% endif %}
               <p>OpenSSL Options{% call ossl_opts_table(acl.openssl_opt.clone()) %}</p>
               {% if acl.prefer_hash.is_some() %}
               <p>Preferred hash: <span>{{ acl.prefer_hash.as_ref().unwrap() }}</span></p>
