@@ -12,7 +12,8 @@ use serde::Deserialize;
 use spica_signer_common::req::CSR;
 
 use crate::{
-    acl::ACLRule, cert::get_cert, csr::CertReq, openssl::create_new_secp521r1_keypair, role::Role,
+    acl::ACLRule, cert::get_cert, config::get_config, csr::CertReq,
+    openssl::create_new_secp521r1_keypair, role::Role,
 };
 
 use super::auth::handle_auth;
@@ -118,7 +119,9 @@ where
             let mut internal_err = false;
             for acl in role.acl.iter() {
                 log.push_str("====================\n");
-                log.push_str(format!("ACL definition: {:#?}\n", &acl).as_str());
+                if get_config().show_roles {
+                    log.push_str(format!("ACL definition: {:#?}\n", &acl).as_str());
+                }
                 let req = f(role, acl);
                 let req = match req {
                     Ok(req) => req,
