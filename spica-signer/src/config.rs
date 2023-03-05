@@ -5,7 +5,7 @@ use lazy_static::lazy_static;
 use serde::Deserialize;
 use tracing::info;
 
-use crate::{cert::CertConfig, role::Role};
+use crate::{cert::CertConfig, log::LogConfig, role::Role};
 
 lazy_static! {
     static ref CONFIG: Config = load_config().unwrap();
@@ -36,6 +36,8 @@ pub struct Config {
     pub show_roles: bool,
     pub cert: Vec<CertConfig>,
     pub role: Vec<Role>,
+    #[serde(default)]
+    pub log: LogConfig,
 }
 
 fn default_otp_required() -> bool {

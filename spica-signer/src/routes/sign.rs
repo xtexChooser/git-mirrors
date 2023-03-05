@@ -12,7 +12,7 @@ use serde::Deserialize;
 use spica_signer_common::req::CSR;
 
 use crate::{
-    acl::ACLRule, cert::get_cert, config::get_config, csr::CertReq,
+    acl::ACLRule, cert::get_cert, config::get_config, csr::CertReq, log::CertLog,
     openssl::create_new_secp521r1_keypair, role::Role,
 };
 
@@ -141,7 +141,18 @@ where
                 };
                 log.push_str("certificate signed\n");
                 log.push_str("sending to cert log\n");
-                // @TODO: send to log
+                let ct_log = CertLog {
+                    role: &role.id,
+                    ca: &ca_cert.config.id,
+                    req: &req,
+                    log: &log,
+                    cert: &crt,
+                };
+                if let Err(e) = ct_log.send().await {
+                    log.push_str(format!("ct log send failed: {e}\n").as_str());
+                    internal_err = true;
+                    continue;
+                }
                 log.push_str("certificate created\n");
                 return (
                     StatusCode::CREATED,
