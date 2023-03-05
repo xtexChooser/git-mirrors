@@ -1,6 +1,7 @@
 [package]
 name = "spica-signer-common"
 version = "0.1.0"
+description = "Utilities to work with spica signer"
 edition = { workspace = true }
 license = { workspace = true }
 repository = { workspace = true }
