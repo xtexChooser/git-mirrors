@@ -11,7 +11,9 @@ use reqwest::header::CONTENT_TYPE;
 use serde::Deserialize;
 use spica_signer_common::req::CSR;
 
-use crate::{acl::ACLRule, cert::get_cert, csr::CertReq, role::Role};
+use crate::{
+    acl::ACLRule, cert::get_cert, csr::CertReq, openssl::create_new_secp521r1_keypair, role::Role,
+};
 
 use super::auth::handle_auth;
 
@@ -48,6 +50,7 @@ async fn sign_csr(
         params,
         |role, acl| CertReq::from_csr(&req_pem, &None, &None, acl, &role.prefer_hash),
         format!("origin CSR: {}\n", csr).as_str(),
+        "",
     )
     .await
     .into_response()
@@ -57,14 +60,38 @@ async fn sign_json(
     Path(id): Path<String>,
     auth: AuthBasic,
     Query(params): Query<SignParams>,
-    Json(req): Json<CSR>,
+    Json(mut req): Json<CSR>,
 ) -> impl IntoResponse {
+    let mut extra_log = format!("origin req: {:#?}\n", req);
+    let mut extra_crt = String::new();
+    if let None = req.public_key_pem {
+        match (|| {
+            let key = create_new_secp521r1_keypair()?;
+            let priv_key = String::from_utf8(key.private_key_to_pem()?)?;
+            let pub_key = String::from_utf8(key.public_key_to_pem()?)?;
+            Ok::<(String, String), anyhow::Error>((priv_key, pub_key))
+        })() {
+            Ok((priv_key, pub_key)) => {
+                extra_log.push_str("auto generated secp521r1 keypair\n");
+                extra_crt.push_str(&(priv_key + &pub_key));
+                req.public_key_pem = Some(pub_key);
+            }
+            Err(e) => {
+                return (
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                    format!("failed to auto gen secp521r1 keypair: {}", e.to_string()),
+                )
+                    .into_response()
+            }
+        }
+    }
     sign(
         id,
         auth,
         params,
         |role, acl| CertReq::from_json(&req, acl, &role.prefer_hash),
-        format!("origin req: {:#?}\n", req).as_str(),
+        &extra_log,
+        &extra_crt,
     )
     .await
     .into_response()
@@ -76,6 +103,7 @@ async fn sign<F>(
     params: SignParams,
     f: F,
     extra_log: &str,
+    extra_crt: &str,
 ) -> impl IntoResponse
 where
     F: Fn(&Role, &ACLRule) -> Result<CertReq>,
@@ -116,9 +144,9 @@ where
                     StatusCode::CREATED,
                     [(CONTENT_TYPE, "application/x-x509-ca-cert")],
                     if params.log.unwrap_or(false) {
-                        log + &crt
+                        log + &crt + extra_crt
                     } else {
-                        crt
+                        crt + extra_crt
                     },
                 )
                     .into_response();

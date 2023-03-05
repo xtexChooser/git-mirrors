@@ -9,6 +9,9 @@ use base64::Engine;
 use lazy_static::lazy_static;
 use openssl::{
     conf::{Conf, ConfMethod, ConfRef},
+    ec::{EcGroup, EcKey},
+    nid::Nid,
+    pkey::Private,
     x509::{X509Extension, X509Name, X509v3Context},
 };
 use serde::{de::Visitor, Deserialize, Serialize};
@@ -133,4 +136,10 @@ impl<'de> Visitor<'de> for X509NameVisitor {
             .map_err(|e| serde::de::Error::custom(e.to_string()))?,
         ))
     }
+}
+
+pub fn create_new_secp521r1_keypair() -> Result<EcKey<Private>> {
+    Ok(EcKey::generate(
+        EcGroup::from_curve_name(Nid::SECP521R1)?.as_ref(),
+    )?)
 }
