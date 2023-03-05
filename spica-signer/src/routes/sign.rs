@@ -90,9 +90,7 @@ where
             let mut internal_err = false;
             for acl in role.acl.iter() {
                 log.push_str("====================\n");
-                log.push_str(
-                    format!("ACL definition: {:?}\n", serde_json::to_string(&acl)).as_str(),
-                );
+                log.push_str(format!("ACL definition: {:#?}\n", &acl).as_str());
                 let req = f(role, acl);
                 let req = match req {
                     Ok(req) => req,
@@ -101,7 +99,7 @@ where
                         continue;
                     }
                 };
-                log.push_str(format!("created req: {:?}\n", serde_json::to_string(&req)).as_str());
+                log.push_str(format!("created req: {:#?}\n", &req).as_str());
                 let crt = match req.sign(ca_cert) {
                     Ok(crt) => crt,
                     Err(e) => {
