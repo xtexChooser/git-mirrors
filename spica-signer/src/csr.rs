@@ -163,7 +163,7 @@ impl CertReq {
         }
         let san_matchers = acl.san_dns_to_regexs()?;
 
-        let pubkey_pem = match &csr.pubkey_pem {
+        let pubkey_pem = match &csr.public_key_pem {
             Some(k) => k.to_owned(),
             None => bail!("pubkey_pem is required for signing"),
         };

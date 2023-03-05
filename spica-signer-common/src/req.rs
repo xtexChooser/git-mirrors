@@ -20,7 +20,7 @@ pub struct CSR {
     #[serde(default)]
     pub hosts: Vec<String>,
     #[serde(default)]
-    pub pubkey_pem: Option<String>,
+    pub public_key_pem: Option<String>,
     #[serde(default)]
     pub extra_ossl_opts: HashMap<String, String>,
 }
