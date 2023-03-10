@@ -6,7 +6,7 @@ variables:
 
 pipeline:
   dryrun:
-    image: plugins.drone.io/plugins/buildah
+    image: docker.io/plugins/buildah
     settings:
       dockerfile: *file
       dry-run: true
