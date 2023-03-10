@@ -3,25 +3,13 @@ interface: 0.0.0.0
 
 state_top: top.sls
 top_file_merging_strategy: same
-default_top: base
 
 fileserver_backend:
   - git
   - roots
-
-file_roots:
-  base:
-    - /srv/salt
-
 gitfs_provider: pygit2
 gitfs_remotes:
-  - git@source.moe:XTEX-VNET/conf.git:
-      - name: conf-salt
-      - base: main
-      - pubkey: /etc/salt/ssh_key.pub
-      - privkey: /etc/salt/ssh_key
-      - root: salt
-  - git@source.moe:XTEX-VNET/conf.git:
+  - git@codeberg.org:XTEX-VNET/conf.git:
       - name: conf
       - base: main
       - pubkey: /etc/salt/ssh_key.pub
@@ -43,3 +31,7 @@ ext_pillar:
       - pubkey: /etc/salt/ssh_key.pub
       - privkey: /etc/salt/ssh_key
       - root: pillar
+
+file_roots:
+  base:
+    - /srv/salt

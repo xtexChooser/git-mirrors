@@ -1,6 +1,6 @@
 - name: Update Minion ID
   ansible.builtin.template:
-    src: ../../../salt/salt/minion_id.j2
+    src: ../../../salt/minion_id.j2
     dest: /etc/salt/minion_id
     owner: root
     group: root
@@ -9,7 +9,7 @@
 
 - name: Update Minion config
   ansible.builtin.template:
-    src: ../../../salt/salt/minion.j2
+    src: ../../../salt/minion.j2
     dest: /etc/salt/minion
     owner: root
     group: root

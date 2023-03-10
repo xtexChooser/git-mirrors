@@ -1,6 +1,6 @@
 - name: Copy Master git ssh pub key
   ansible.builtin.copy:
-    src: ../../../salt/salt/ssh_key.pub
+    src: ../../../salt/ssh_key.pub
     dest: /etc/salt/ssh_key.pub
     owner: root
     group: root
@@ -8,7 +8,7 @@
 
 - name: Update Master config
   ansible.builtin.template:
-    src: ../../../salt/salt/master.yaml.j2
+    src: ../../../salt/master.yaml.j2
     dest: /etc/salt/master
     owner: root
     group: root
