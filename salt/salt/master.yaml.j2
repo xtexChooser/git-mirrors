@@ -29,12 +29,17 @@ gitfs_remotes:
 gitfs_refspecs:
   - "+refs/heads/main:refs/remotes/origin/main"
 
-ext_pillar:
-  - git:
-      - main git@source.moe:XTEX-VNET/conf.git:
-          - env: base
-          - pubkey: /etc/salt/ssh_key.pub
-          - privkey: /etc/salt/ssh_key
-          - root: salt/pillar
 ext_pillar_first: True
 git_pillar_provider: pygit2
+ext_pillar:
+  - git:
+    - main git@codeberg.org:XTEX-VNET/conf.git:
+      - env: base
+      - pubkey: /etc/salt/ssh_key.pub
+      - privkey: /etc/salt/ssh_key
+      - root: salt/pillar
+    - main git@codeberg.org:XTEX-VNET/internal-conf.git:
+      - env: base
+      - pubkey: /etc/salt/ssh_key.pub
+      - privkey: /etc/salt/ssh_key
+      - root: pillar
