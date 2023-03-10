@@ -26,11 +26,3 @@ pipeline:
         from_secret: oci_token
     when:
       event: push
-
-  container-buildah:
-    image: plugins/buildah
-    settings:
-      dockerfile: *file
-      dry-run: true
-      repo: *repo
-      tags: latest-buildah
