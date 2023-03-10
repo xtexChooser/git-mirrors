@@ -37,7 +37,7 @@ pub struct Config {
     pub cert: Vec<CertConfig>,
     pub role: Vec<Role>,
     #[serde(default)]
-    pub log: LogConfig,
+    pub log: Option<LogConfig>,
 }
 
 fn default_otp_required() -> bool {
