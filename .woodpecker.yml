@@ -1,0 +1,18 @@
+branches: main
+
+variables:
+  - &file Containerfile
+  - &repo codeberg.org/xtex-vnet/spica
+
+pipeline:
+  deploy:
+    image: ubuntu
+    commands:
+      - echo "$SSH_KEY" >> ssh_key
+      - chmod 0600 ssh_key
+      - SSH="ssh -i ssh_key -o StrictHostKeyChecking=no salt-master-cd@salt.infra.xvnet.eu.org"
+      - $SSH sudo salt-run fileserver.update
+      - $SSH sudo salt-run git_pillar.update
+      - $SSH sudo salt '*' saltutil.refresh_pillar
+      - $SSH sudo salt '*' state.apply
+    secrets: [ssh_key]
