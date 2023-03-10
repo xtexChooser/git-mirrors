@@ -2,7 +2,7 @@ branches: main
 
 variables:
   - &file Containerfile
-  - &repo codeberg.org/${CI_REPO_OWNER}/spica
+  - &repo codeberg.org/xtex-vnet/spica
 
 pipeline:
   container-build:
