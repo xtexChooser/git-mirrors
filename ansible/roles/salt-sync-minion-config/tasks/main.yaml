@@ -9,7 +9,7 @@
 
 - name: Update Minion config
   ansible.builtin.template:
-    src: ../../../salt/minion.j2
+    src: ../../../salt/minion.yaml.j2
     dest: /etc/salt/minion
     owner: root
     group: root
