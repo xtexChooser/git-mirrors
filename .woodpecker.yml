@@ -8,16 +8,23 @@ pipeline:
   container-build:
     image: woodpeckerci/plugin-docker-buildx
     group: build
-    environment: [CARGO_TERM_COLOR=always]
     settings:
       dockerfile: *file
       dry_run: true
       repo: *repo
       tags: latest
 
+  rust-build:
+    image: rust
+    group: build
+    environment: [CARGO_TERM_COLOR=always]
+    commands:
+      - rustup default nightly
+      - cargo check
+      - cargo test
+
   container-push:
     image: woodpeckerci/plugin-docker-buildx
-    environment: [CARGO_TERM_COLOR=always]
     settings:
       dockerfile: *file
       platforms: linux/arm64/v8,linux/amd64
@@ -29,12 +36,3 @@ pipeline:
         from_secret: oci_token
     when:
       event: push
-
-  rust-build:
-    image: rust
-    group: build
-    environment: [CARGO_TERM_COLOR=always]
-    commands:
-      - rustup default nightly
-      - cargo check
-      - cargo test
