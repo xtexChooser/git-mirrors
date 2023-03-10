@@ -1,6 +1,7 @@
 clear-all:
     salt.function:
         - name: saltutil.clear_cache
+        - tgt: "*"
 
 clear-fs:
     salt.runner:
