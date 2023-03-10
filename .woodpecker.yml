@@ -6,12 +6,12 @@ variables:
 
 pipeline:
   deploy:
-    image: ubuntu
+    image: alpine
     commands:
       - echo "$SSH_KEY" >> ssh_key
       - chmod 0600 ssh_key
       - export SSH="ssh -i ssh_key -o StrictHostKeyChecking=no salt-master-cd@salt.infra.xvnet.eu.org"
-      - apt-get install openssh-client
+      - apk add openssh-client-default
       - $SSH sudo salt-run fileserver.update
       - $SSH sudo salt-run git_pillar.update
       - $SSH sudo salt '*' saltutil.refresh_pillar
