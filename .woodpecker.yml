@@ -6,7 +6,7 @@ variables:
 
 pipeline:
   dryrun:
-    image: docker.io/plugins/buildah
+    image: docker.io/plugins/buildah-docker
     settings:
       dockerfile: *file
       dry-run: true
