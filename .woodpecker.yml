@@ -1,0 +1,29 @@
+branches: main
+
+variables:
+  - &file Containerfile
+  - &repo codeberg.org/${CI_REPO_OWNER}/spica
+
+pipeline:
+  dryrun:
+    image: plugins.drone.io/plugins/buildah
+    settings:
+      dockerfile: *file
+      dry-run: true
+      repo: *repo
+      tags: latest
+
+  publish:
+    image: woodpeckerci/plugin-docker-buildx
+    settings:
+      dockerfile: *file
+      platforms: linux/arm/v7,linux/arm64/v8,linux/amd64,linux/ppc64le
+      repo: *repo
+      registry: codeberg.org
+      tags: latest
+      username: ${CI_REPO_OWNER}
+      password:
+        from_secret: cb_token
+    when:
+      event: push
+      path: *file
