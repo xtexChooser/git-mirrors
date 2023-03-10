@@ -5,25 +5,32 @@ variables:
   - &repo codeberg.org/${CI_REPO_OWNER}/spica
 
 pipeline:
-  dryrun:
-    image: docker.io/plugins/buildah-docker
-    settings:
-      dockerfile: *file
-      dry-run: true
-      repo: *repo
-      tags: latest
-
-  publish:
+  container-build:
     image: woodpeckerci/plugin-docker-buildx
     settings:
       dockerfile: *file
-      platforms: linux/arm/v7,linux/arm64/v8,linux/amd64,linux/ppc64le
+      dry_run: true
+      repo: *repo
+      tags: latest
+
+  container-push:
+    image: woodpeckerci/plugin-docker-buildx
+    settings:
+      dockerfile: *file
+      platforms: linux/arm/v7,linux/arm64/v8,linux/amd64
       repo: *repo
       registry: codeberg.org
       tags: latest
       username: ${CI_REPO_OWNER}
       password:
-        from_secret: cb_token
+        from_secret: oci_token
     when:
       event: push
-      path: *file
+
+  container-buildah:
+    image: plugins/buildah
+    settings:
+      dockerfile: *file
+      dry-run: true
+      repo: *repo
+      tags: latest-buildah
