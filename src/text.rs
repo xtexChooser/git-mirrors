@@ -15,7 +15,7 @@ pub async fn draw_text(text: &str, base_x: u16, base_y: u16) -> Result<()> {
         let char_code = u32::from(chr);
         match unsafe { &FONT }.get(&char_code) {
             Some(glyph) => {
-                let glyph = Glyph::new(&glyph)?;
+                let glyph = Glyph::new(glyph)?;
                 for gx in 0..glyph.width() {
                     for gy in 0..16 {
                         let color = glyph.get_pixel(gx, gy);

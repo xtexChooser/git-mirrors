@@ -13,7 +13,7 @@ pub fn new_socket() -> Result<IcmpSocket6> {
     let mut socket = IcmpSocket6::new()?;
     socket
         .bind(Ipv6Addr::from_str("::0")?)
-        .map_err(|e| Error::from(e))?;
+        .map_err(Error::from)?;
     Ok(socket)
 }
 
