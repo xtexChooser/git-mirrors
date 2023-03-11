@@ -42,7 +42,7 @@ pub async fn draw_pixel(
 
     let mut succ = 0;
     loop {
-        if unsafe { QPS_COUNTER } > 1024 {
+        if unsafe { QPS_COUNTER } > 1536 {
             trace!("QPS overload");
             tokio::time::sleep(Duration::from_millis(10)).await;
             continue;
