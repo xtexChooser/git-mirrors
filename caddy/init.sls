@@ -17,7 +17,7 @@ caddy:
             - test: container
     docker_network.present:
         - driver: bridge
-        - driver_opts:
+        - options:
             - isolate=false
     docker_container.running:
         - image: ghcr.io/xtex-vnet/caddy:latest
