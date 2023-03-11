@@ -40,7 +40,7 @@ bird:
             - HOME=/root
             - HOSTNAME={{ grains['fqdn'] }}
     cmd.run:
-        - name: sudo birdc configure
+        - name: podman exec -it bird birdc configure
         - onchanges:
             - file: bird
         - require:
