@@ -35,7 +35,6 @@ bird:
     - require:
       - test: container
       - docker_image: bird
-      - service: bird
       - file: bird
     - environment:
       - HOME=/root
@@ -47,9 +46,5 @@ bird:
     - require:
       - docker_container: bird
       - pkg: bird
-  pkg.latest:
+  pkg.removed:
     - name: {{ bird_pkg }}
-  service.dead:
-    - enable: False
-    - require:
-      - pkg: bird
