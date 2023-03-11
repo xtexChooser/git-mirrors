@@ -1,0 +1,34 @@
+branches: main
+
+variables:
+  - &file Containerfile
+  - &repo codeberg.org/xtex-vnet/bird
+  - &version 2.0.12
+
+pipeline:
+  container-build:
+    image: woodpeckerci/plugin-docker-buildx
+    group: build
+    settings:
+      dockerfile: *file
+      dry_run: true
+      repo: *repo
+      tags: latest
+
+  container-push:
+    image: woodpeckerci/plugin-docker-buildx
+    settings:
+      dockerfile: *file
+      platforms: linux/arm64/v8,linux/amd64
+      repo: *repo
+      registry: codeberg.org
+      tags:
+        - latest
+        - &version
+      build_args:
+        VERSION: &version
+      username: ${CI_REPO_OWNER}
+      password:
+        from_secret: oci_token
+    when:
+      event: push

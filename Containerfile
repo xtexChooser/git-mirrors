@@ -1,11 +1,11 @@
 FROM docker.io/library/alpine AS builder
-ARG VERSION=v2.0.12
+ARG VERSION=2.0.12
 
 RUN apk add clang make autoconf binutils musl musl-dev gcc sudo libcap
 RUN apk add flex-dev bison m4 libssh-dev linux-headers ncurses-dev readline-dev git
-ADD https://gitlab.nic.cz/labs/bird/-/archive/$VERSION/bird-$VERSION.tar.gz /source.tar.gz
+ADD https://gitlab.nic.cz/labs/bird/-/archive/v$VERSION/bird-v$VERSION.tar.gz /source.tar.gz
 RUN tar -xf source.tar.gz
-RUN mv bird-$VERSION src
+RUN mv bird-v$VERSION src
 WORKDIR /src
 RUN mkdir -p /dist
 ENV CC=clang
