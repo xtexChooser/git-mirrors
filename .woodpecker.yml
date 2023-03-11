@@ -24,9 +24,9 @@ pipeline:
       registry: codeberg.org
       tags:
         - latest
-        - &version
+        - *version
       build_args:
-        VERSION: &version
+        VERSION: *version
       username: ${CI_REPO_OWNER}
       password:
         from_secret: oci_token
