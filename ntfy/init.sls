@@ -1,4 +1,4 @@
-{% set NTFY_VERSION = "v2.0.1" -%}
+{% set ntfy_version = "v2.0.1" -%}
 
 ntfy:
     file.managed:
@@ -13,11 +13,11 @@ ntfy:
         - makedirs: True
     docker_image.present:
         - name: docker.io/binwiederhier/ntfy
-        - tag: {{ NTFY_VERSION }}
+        - tag: {{ ntfy_version }}
         - require:
             - test: container
     docker_container.running:
-        - image: docker.io/binwiederhier/ntfy:{{ NTFY_VERSION }}
+        - image: docker.io/binwiederhier/ntfy:{{ ntfy_version }}
         - binds:
             - /etc/ntfy:/etc/ntfy
             - /var/cache/ntfy:/var/cache/ntfy
