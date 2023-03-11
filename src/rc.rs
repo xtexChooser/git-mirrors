@@ -88,7 +88,7 @@ pub async fn draw_rc(title: &str, api: &str, base_x: u16, base_y: u16) -> Result
                 } else {
                     "".to_string()
                 };
-                let msg = format!("{title} (User: {user}{lenstr})");
+                let msg = format!("{title} {lenstr} User: {user}");
                 draw_text(&msg, base_x, y).await?;
             }
 
