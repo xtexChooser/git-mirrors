@@ -1,13 +1,12 @@
 listen_addr = "127.0.0.1:80"
 otp_required = true
+role = []
 
 [[cert]]
     id = "G1T1X-XVNSVR"
     file = "/etc/spica/signer/G1T1X-XVNSVR.pem"
 [cert.openssl_opt]
     basicConstraints = "CA:FALSE"
-
-role = []
 
 #[[role]]
 #    id = "test"
