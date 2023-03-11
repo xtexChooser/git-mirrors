@@ -3,7 +3,7 @@
 {% else %}
     {% set bird_pkg = 'bird' %}
 {% endif -%}
-{% set BIRD_VERSION = pillar['network']['routing']['bird_version'] -%}
+{% set bird_version = pillar['network']['routing']['bird_version'] -%}
 
 bird:
     file.managed:
@@ -20,11 +20,11 @@ bird:
             - pkg: bird
     docker_image.present:
         - name: ghcr.io/xtex-vnet/bird
-        - tag: {{ BIRD_VERSION }}
+        - tag: {{ bird_version }}
         - require:
             - test: container
     docker_container.running:
-        - image: ghcr.io/xtex-vnet/bird:{{ BIRD_VERSION }}
+        - image: ghcr.io/xtex-vnet/bird:{{ bird_version }}
         - binds:
             - /etc/bird:/etc/bird:ro
             - /var/run/bird:/var/run/bird:rw
