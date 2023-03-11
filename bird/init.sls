@@ -3,7 +3,7 @@
 {% else %}
     {% set bird_pkg = 'bird' %}
 {% endif -%}
-{% set bird_version = '2.0.12-1' -%}
+{% set bird_version = '2.0.12' -%}
 
 bird:
     file.managed:
@@ -19,12 +19,12 @@ bird:
         - require:
             - pkg: bird
     docker_image.present:
-        - name: ghcr.io/xtex-vnet/bird
+        - name: codeberg.org/xtex-vnet/bird
         - tag: {{ bird_version }}
         - require:
             - test: container
     docker_container.running:
-        - image: ghcr.io/xtex-vnet/bird:{{ bird_version }}
+        - image: codeberg.org/xtex-vnet/bird:{{ bird_version }}
         - binds:
             - /etc/bird:/etc/bird:ro
             - /var/run/bird:/var/run/bird:rw
