@@ -16,7 +16,7 @@ RUN make install
 RUN sudo setcap CAP_NET_ADMIN=+eip /dist/sbin/bird
 
 FROM docker.io/library/alpine
-RUN apk add libssh
+RUN apk add libssh ncurses readline
 COPY --from=builder /dist /
 RUN mkdir -p /var/run/
 WORKDIR /
