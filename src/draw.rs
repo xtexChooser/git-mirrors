@@ -42,11 +42,11 @@ pub async fn draw_pixel(
 
     let mut succ = 0;
     loop {
-        if unsafe { QPS_COUNTER } > 1536 {
+        /*if unsafe { QPS_COUNTER } > 2048 {
             trace!("QPS overload");
             tokio::time::sleep(Duration::from_millis(10)).await;
             continue;
-        }
+        }*/
         let pkt = Icmpv6Packet::with_echo_request(4431, x + y, vec![])
             .map_err(|e| Error::msg(e.to_string()))?;
         if let Err(err) = socket.send_to(addr, pkt) {
