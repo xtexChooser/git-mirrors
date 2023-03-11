@@ -16,6 +16,7 @@ spica-signer:
         - group: root
         - mode: "0644"
         - makedirs: True
+        - show_changes: False
         - require:
 {% for cert in certs %}
             - file: spica-signer-{{ cert }}
