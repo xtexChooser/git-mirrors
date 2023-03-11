@@ -1,7 +1,7 @@
 base:
     '*': 
         - container
-        - router.bird
+        - bird
         - router.ip_fwd
         - router.wireguard
         - firewalld.base
