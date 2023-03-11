@@ -6,24 +6,28 @@ use flate2::read::GzDecoder;
 use tokio::fs;
 use tracing::info;
 
+const URL: &str =
+    "https://unifoundry.com/pub/unifont/unifont-15.0.01/font-builds/unifont-15.0.01.hex.gz";
+
+pub const GLYPH_HEIGHT: u32 = 16;
+
 pub fn get_path() -> Result<PathBuf> {
     Ok(std::env::var("UNIFONT_FILE")
         .unwrap_or("unifont.hex".to_owned())
         .into())
 }
 
-const URL: &str =
-    "https://unifoundry.com/pub/unifont/unifont-15.0.01/font-builds/unifont-15.0.01.hex.gz";
-
 pub async fn download() -> Result<()> {
     let path = get_path()?;
     if path.exists() {
-        info!("unifont already exists at {}", path.to_string_lossy());
+        info!(
+            path = path.to_string_lossy().to_string(),
+            "unifont already exists"
+        );
     } else {
         info!(
-            "downloading unifont from {} to {}",
-            URL,
-            path.to_string_lossy()
+            path = path.to_string_lossy().to_string(),
+            URL, "downloading unifont",
         );
         let resp = reqwest::get(URL)
             .await?
@@ -52,7 +56,7 @@ pub async fn read() -> Result<BTreeMap<u32, String>> {
             map.insert(code, glyph.to_string());
         }
     }
-    info!("unifont loaded, totally {} glyphs", map.len());
+    info!(glyph_count = map.len(), "unifont loaded");
     Ok(map)
 }
 

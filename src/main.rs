@@ -1,7 +1,14 @@
-use anyhow::Result;
-use draw::{draw_rc, draw_text};
+#![feature(let_chains)]
+#![feature(async_closure)]
 
-mod draw;
+use std::time::Duration;
+
+use anyhow::Result;
+use rc::draw_rc;
+use text::draw_text;
+
+mod rc;
+mod text;
 mod unifont;
 
 #[tokio::main]
@@ -11,13 +18,11 @@ async fn main() -> Result<()> {
     unsafe {
         unifont::FONT = unifont::read().await?;
     }
-    tokio::join!(
-        draw_branding(),
-        draw_zhwiki(),
-        draw_enwiki(),
-        draw_metawiki()
-    );
-    Ok(())
+    tokio::spawn(draw_branding());
+    tokio::spawn(draw_zhwiki());
+    tokio::spawn(draw_enwiki());
+    tokio::spawn(draw_metawiki());
+    loop {}
 }
 
 async fn draw_branding() {
@@ -25,6 +30,7 @@ async fn draw_branding() {
         draw_text("By XTEX-VNET AS4242420361", 400, 300)
             .await
             .unwrap();
+        tokio::time::sleep(Duration::from_secs(5)).await;
     }
 }
 
@@ -41,7 +47,7 @@ async fn draw_enwiki() {
 }
 
 async fn draw_metawiki() {
-    draw_rc("WP meta", "https://meta.wikipedia.org/w/api.php", 400, 450)
+    draw_rc("WP meta", "https://meta.wikimedia.org/w/api.php", 400, 450)
         .await
         .unwrap();
 }
