@@ -1,11 +1,25 @@
 use std::{collections::HashMap, time::Duration};
 
 use anyhow::{Context, Error, Result};
+use image::Rgb;
 use tracing::{error, trace};
 
-use crate::{text::draw_text, unifont};
+use crate::{
+    draw::{fill_rect, new_socket},
+    text::draw_text,
+    unifont,
+};
 
-pub async fn draw_rc(title: &str, api: &str, base_x: u32, base_y: u32) -> Result<()> {
+pub async fn draw_rc(title: &str, api: &str, base_x: u16, base_y: u16) -> Result<()> {
+    fill_rect(
+        &mut new_socket()?,
+        base_x,
+        base_y,
+        250,
+        56,
+        &Rgb([0xcc, 0xcc, 0xcc]),
+    )
+    .await?;
     let client = reqwest::Client::builder()
         .https_only(true)
         .timeout(Duration::from_secs(5))
@@ -70,11 +84,7 @@ pub async fn draw_rc(title: &str, api: &str, base_x: u32, base_y: u32) -> Result
                                       None
                                   };
                 let lenstr = if let Some(len) = len {
-                    if len >= 0 {
-                        format!(" +{}", len)
-                    } else {
-                        format!(" -{}", -len)
-                    }
+                    format!(" {len:+}")
                 } else {
                     "".to_string()
                 };
