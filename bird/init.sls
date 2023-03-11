@@ -12,9 +12,10 @@ bird:
     - context:
         tpldir: bird/
     - template: jinja
-    - user: bird
-    - group: bird
-    - mode: "0666"
+    - user: root
+    - group: root
+    - mode: "0655"
+    - makedirs: True
     - require:
       - pkg: bird
   docker_image.present:
