@@ -5,6 +5,7 @@
 use std::{env, time::Duration};
 
 use anyhow::Result;
+use chrono::Utc;
 use draw::QPS_COUNTER;
 use rc::draw_rc;
 use text::draw_text;
@@ -22,10 +23,12 @@ async fn main() -> Result<()> {
         unifont::FONT = unifont::read().await?;
         draw::PREFIX = env::var("KB_CANVAS_PREFIX").unwrap_or("2a09:b280:ff82:4242".to_string());
     }
-    
+
     tokio::spawn(draw_branding());
+    tokio::spawn(draw_time());
     tokio::spawn(draw_zhwiki());
     tokio::spawn(draw_enwiki());
+    tokio::spawn(draw_mcwzh());
     //tokio::spawn(draw_metawiki());
     loop {
         tokio::time::sleep(Duration::from_secs(1)).await;
@@ -35,7 +38,7 @@ async fn main() -> Result<()> {
     }
 }
 
-const BASE_X: u16 = 310;
+const BASE_X: u16 = 250;
 const BASE_Y: u16 = 140;
 
 async fn draw_branding() {
@@ -47,12 +50,21 @@ async fn draw_branding() {
     }
 }
 
+async fn draw_time() {
+    loop {
+        let text = Utc::now().format("%Y/%m/%d %H:%H:%s").to_string();
+        draw_text(&text, BASE_X, BASE_Y + 24).await.unwrap();
+        tokio::time::sleep(Duration::from_secs(1)).await;
+    }
+}
+
 async fn draw_zhwiki() {
     draw_rc(
         "WP zh",
         "https://zh.wikipedia.org/w/api.php",
         BASE_X,
-        BASE_Y + 56,
+        BASE_Y + 48,
+        2,
     )
     .await
     .unwrap();
@@ -63,7 +75,20 @@ async fn draw_enwiki() {
         "WP en",
         "https://en.wikipedia.org/w/api.php",
         BASE_X,
-        BASE_Y + 112,
+        BASE_Y + 104,
+        1,
+    )
+    .await
+    .unwrap();
+}
+
+async fn draw_mcwzh() {
+    draw_rc(
+        "WP zh",
+        "https://minecraft.fandom.com/zh/api.php",
+        BASE_X,
+        BASE_Y + 160,
+        1,
     )
     .await
     .unwrap();

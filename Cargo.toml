@@ -1,6 +1,6 @@
 [package]
 name = "dn42-kb-canvas-wikipedia-rc"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 license = "GPL-3.0-or-later"
 description = "Draw WP rc on us2.g-load.eu:9090"
@@ -8,6 +8,7 @@ description = "Draw WP rc on us2.g-load.eu:9090"
 [dependencies]
 anyhow = "1.0.69"
 bytes = "1.4.0"
+chrono = "0.4.23"
 flate2 = "1.0.25"
 icmp-socket = "0.2.0"
 image = { version = "0.24.5", default-features = false, features = ["bmp", "rgb"] }

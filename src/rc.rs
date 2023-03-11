@@ -10,7 +10,7 @@ use crate::{
     unifont,
 };
 
-pub async fn draw_rc(title: &str, api: &str, base_x: u16, base_y: u16) -> Result<()> {
+pub async fn draw_rc(title: &str, api: &str, base_x: u16, base_y: u16, count: usize) -> Result<()> {
     fill_rect(
         &mut new_socket()?,
         base_x,
@@ -30,6 +30,7 @@ pub async fn draw_rc(title: &str, api: &str, base_x: u16, base_y: u16) -> Result
         ))
         .build()?;
 
+    let count = count.to_string();
     let rc_params = HashMap::from([
         ("action", "query"),
         ("format", "json"),
@@ -37,7 +38,7 @@ pub async fn draw_rc(title: &str, api: &str, base_x: u16, base_y: u16) -> Result
         ("formatversion", "2"),
         ("rcprop", "title|user|sizes"),
         ("rcshow", "!bot"),
-        ("rclimit", "2"),
+        ("rclimit", &count),
         ("rctoponly", "1"),
     ]);
 
