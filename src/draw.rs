@@ -64,7 +64,7 @@ pub async fn draw_pixel(
             }
             succ += 1;
         }
-        if succ >= 3 || fast {
+        if succ >= 4 || fast {
             break;
         }
     }
