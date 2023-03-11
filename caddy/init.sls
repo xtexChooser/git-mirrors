@@ -15,6 +15,8 @@ caddy:
         - force: True
         - require:
             - test: container
+    docker_network.present:
+        - driver: bridge
     docker_container.running:
         - image: ghcr.io/xtex-vnet/caddy:latest
         - binds:
@@ -24,9 +26,12 @@ caddy:
         - publish_all_ports: True
         - network_mode: host
         - cap_add: CAP_NET_BIND_SERVICE
+        - networks:
+            - caddy
         - require:
             - test: container
             - docker_image: caddy
+            - docker_network: caddy
             - file: caddy
         - environment:
             - HOME=/root

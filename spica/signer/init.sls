@@ -1,4 +1,6 @@
 include:
+    - container
+    - caddy
     - spica
 
 {% set certs = ["G1T1X-XVNSVR"] %}
@@ -25,10 +27,12 @@ spica-signer:
             - test: container
             - docker_image: spica
             - file: spica-signer
+            - docker_network: caddy
+        - networks:
+            - caddy
         - hostname: spica-signer
         - environment:
             - HOME=/root
-#            - HOSTNAME={{ grains['fqdn'] }}
         - watch:
             - file: spica-signer
         - binds:
