@@ -1,6 +1,5 @@
 base:
-    '*': 
-        - bird
+    '*':
         - etcd
         - ca
     'nl-alk1':

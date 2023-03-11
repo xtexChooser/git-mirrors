@@ -3,7 +3,7 @@
 {% else %}
     {% set bird_pkg = 'bird' %}
 {% endif -%}
-{% set bird_version = pillar['network']['routing']['bird_version'] -%}
+{% set bird_version = '2.0.12-1' -%}
 
 bird:
     file.managed:
