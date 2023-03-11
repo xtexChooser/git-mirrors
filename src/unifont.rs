@@ -55,3 +55,5 @@ pub async fn read() -> Result<BTreeMap<u32, String>> {
     info!("unifont loaded, totally {} glyphs", map.len());
     Ok(map)
 }
+
+pub static mut FONT: BTreeMap<u32, String> = BTreeMap::new();

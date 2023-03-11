@@ -6,9 +6,11 @@ mod unifont;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    tracing::subscriber::set_global_default(tracing_subscriber::fmt().json().finish())?;
+    tracing::subscriber::set_global_default(tracing_subscriber::fmt().finish())?;
     unifont::download().await?;
-    unifont::read().await?;
+    unsafe {
+        unifont::FONT = unifont::read().await?;
+    }
     tokio::join!(
         draw_branding(),
         draw_zhwiki(),
