@@ -2,6 +2,8 @@
 name = "dn42-kb-canvas-wikipedia-rc"
 version = "0.1.0"
 edition = "2021"
+license = "GPL-3.0-or-later"
+description = "Draw WP rc on us2.g-load.eu:9090"
 
 [dependencies]
 anyhow = "1.0.69"
