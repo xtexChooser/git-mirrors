@@ -11,3 +11,5 @@ This tool is used to draw the latest Wikipedia recent changes on the [Kioubit DN
 Currently deployed on XTEX-VNET (AS4242420361) (2023/03/11).
 
 Running: `podman run --cap-add CAP_NET_RAW --name dn42-kb-canvas-wikipedia-rc -d --network host codeberg.org/xtex/dn42-kb-canvas-wikipedia-rc`
+
+ICMPv6 ECHO Request will be sent with identifier `4431`.
