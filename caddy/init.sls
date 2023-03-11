@@ -24,7 +24,6 @@ caddy:
             - /var/run:/var/run
             - /var/lib/caddy:/root/.local/share/caddy
         - publish_all_ports: True
-        - network_mode: host
         - cap_add: CAP_NET_BIND_SERVICE
         - networks:
             - caddy
