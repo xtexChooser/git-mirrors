@@ -1,0 +1,48 @@
+include:
+    - spica
+
+{% set certs = ["G1T1X-XVNSVR"] %}
+
+spica-signer:
+    file.managed:
+        - name: /etc/spica/signer/spica-signer.toml
+        - source: salt://spica/signer/spica-signer.toml.j2
+        - context:
+            tpldir: spica/
+        - template: jinja
+        - user: root
+        - group: root
+        - mode: "0644"
+        - makedirs: True
+        - require:
+{% for cert in certs %}
+            - file: spica-signer-{{ cert }}
+{% endfor %}
+    docker_container.running:
+        - image: codeberg.org/xtex-vnet/spica:latest
+        - cmd: spica-signer
+        - require:
+            - test: container
+            - docker_image: spica
+            - file: spica-signer
+        - hostname: spica-signer
+        - environment:
+            - HOME=/root
+#            - HOSTNAME={{ grains['fqdn'] }}
+        - watch:
+            - file: spica-signer
+        - binds:
+            - /etc/spica/signer:/etc/spica/signer
+
+{% for cert in certs %}
+spica-signer-{{ cert }}:
+    file.managed:
+        - name: /etc/spica/signer/{{ cert }}.pem
+        - source: salt://spica/certs/{{ cert }}.pem
+        - template: null
+        - user: root
+        - group: root
+        - mode: "0600"
+        - makedirs: True
+        - show_changes: False
+{% endfor %}

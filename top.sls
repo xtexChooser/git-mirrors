@@ -9,8 +9,9 @@ base:
     'service:salt-master:true':
         - match: pillar
         - salt-master-cd
-    'service:ca:true':
+    'spica:signer:true':
         - match: pillar
+        - spica.signer
 #    'service:etcd:true':
 #        - match: pillar
 #        - etcd.base

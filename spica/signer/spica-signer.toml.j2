@@ -1,0 +1,21 @@
+listen_addr = "127.0.0.1:80"
+otp_required = true
+
+[[cert]]
+    id = "G1T1X-XVNSVR"
+    file = "/etc/spica/signer/G1T1X-XVNSVR.pem"
+[cert.openssl_opt]
+    basicConstraints = "CA:FALSE"
+
+role = []
+
+#[[role]]
+#    id = "test"
+#    auth = "test"
+#[[role.acl]]
+#    certs = [ "G1T1X-XVNSVR" ]
+#    max_expire = "14d"
+
+[log]
+    url = "https://ntfy.xvnet.eu.org/ca-log"
+    token = {{ pillar["spica"]["log-token"] }}

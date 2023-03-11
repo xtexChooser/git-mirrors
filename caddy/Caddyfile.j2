@@ -5,3 +5,7 @@
 {% if pillar['service']['ntfy'] is defined %} 
 {% include '../ntfy/Caddyfile.j2' %} 
 {% endif %}
+
+{% if pillar['spica']['signer'] is defined %}
+{% include '../spica/signer/Caddyfile.j2' %}
+{% endif %}
