@@ -51,8 +51,3 @@ bird:
     - enable: False
     - require:
       - pkg: bird
-
-remove old BIRD images:
-  docker_image.absent:
-    - images:
-      - ghcr.io/xtex-vnet/bird:2.0.11-7
