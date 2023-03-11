@@ -10,10 +10,15 @@ fileserver_backend:
 gitfs_provider: pygit2
 gitfs_remotes:
   - git@codeberg.org:XTEX-VNET/conf.git:
-      - name: conf
-      - base: main
-      - pubkey: /etc/salt/ssh_key.pub
-      - privkey: /etc/salt/ssh_key
+    - name: conf
+    - base: main
+    - pubkey: /etc/salt/ssh_key.pub
+    - privkey: /etc/salt/ssh_key
+  - main git@codeberg.org:XTEX-VNET/internal-conf.git:
+    - name: internal-conf
+    - base: main
+    - pubkey: /etc/salt/ssh_key.pub
+    - privkey: /etc/salt/ssh_key
 gitfs_refspecs:
   - "+refs/heads/main:refs/remotes/origin/main"
 
