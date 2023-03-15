@@ -79,3 +79,7 @@ more info about creating agreements together.
 3. **Privacy**: All Forgejo developments will be made considering data protection by
    default and by design for all its users, understanding Privacy as a condition of
    human autonomy and self-governance.
+4. **Accessibility**: All Forgejo developments will be made considering the ability
+   to access of people with disabilities or functional impairment as a condition of
+   equality of opportunities and inclusion, understanding Accessibility as the
+   quality of being able to access with assistive technology.
