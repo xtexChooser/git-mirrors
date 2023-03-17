@@ -2158,22 +2158,26 @@ class Query {
 		} else {
 			$this->addTables( [
 				'linktarget' => 'lt',
-				'page' => 'tplsrc',
 				'templatelinks' => 'tpl',
 			] );
 
 			$linksMigration = MediaWikiServices::getInstance()->getLinksMigration();
-			list( $nsField, $titleField ) = $linksMigration->getTitleFields( 'templatelinks' );
+			[ $nsField, $titleField ] = $linksMigration->getTitleFields( 'templatelinks' );
 
-			$this->addSelect( [ 'tpl_sel_title' => 'tplsrc.page_title', 'tpl_sel_ns' => 'tplsrc.page_namespace' ] );
-			$where = [
-				$this->tableNames['page'] . '.page_namespace = lt.' . $nsField,
-				$this->tableNames['page'] . '.page_title = lt.' . $titleField,
-				'tplsrc.page_id = tpl.tl_from',
-				$this->dbr->makeList( [ 'tpl.tl_from' => $values ], IDatabase::LIST_OR )
-			];
+			$this->addSelect( [
+				'tpl_sel_title' => "{$this->tableNames['page']}.page_title",
+				'tpl_sel_ns' => "{$this->tableNames['page']}.page_namespace"
+			] );
+
+			$this->addJoin(
+				'lt',
+				[ 'JOIN', [ "page_title = $titleField", "page_namespace = $nsField" ] ]
+			);
+			$this->addJoin( 'tpl', [ 'JOIN', 'lt_id = tl_target_id', ]
+			);
+
+			$where[] = $this->dbr->makeList( [ 'tpl.tl_from' => $values ], IDatabase::LIST_OR );
 		}
-
 		$this->addWhere( $where );
 	}
 
@@ -2193,7 +2197,7 @@ class Query {
 		$linksByNS = [];
 
 		$linksMigration = MediaWikiServices::getInstance()->getLinksMigration();
-		list( $nsField, $titleField ) = $linksMigration->getTitleFields( 'templatelinks' );
+		[ $nsField, $titleField ] = $linksMigration->getTitleFields( 'templatelinks' );
 
 		foreach ( $option as $linkGroup ) {
 			foreach ( $linkGroup as $link ) {
@@ -2239,7 +2243,7 @@ class Query {
 			$linksByNS = [];
 
 			$linksMigration = MediaWikiServices::getInstance()->getLinksMigration();
-			list( $nsField, $titleField ) = $linksMigration->getTitleFields( 'templatelinks' );
+			[ $nsField, $titleField ] = $linksMigration->getTitleFields( 'templatelinks' );
 
 			foreach ( $option as $linkGroup ) {
 				foreach ( $linkGroup as $link ) {
