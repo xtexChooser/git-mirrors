@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="40cm"
+   height="10cm"
+   viewBox="0 0 400 100"
+   version="1.1"
+   id="svg5"
+   sodipodi:docname="Xensor V Network-Full.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   inkscape:export-filename="Xensor V Network-Full.png"
+   inkscape:export-xdpi="130.05"
+   inkscape:export-ydpi="130.05"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title264">Xensor V Network</title>
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="1"
+     inkscape:pagecheckerboard="false"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.4359166"
+     inkscape:cx="103.23076"
+     inkscape:cy="418.65806"
+     inkscape:window-width="1600"
+     inkscape:window-height="827"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1">
+    <sodipodi:guide
+       position="0,99.999999"
+       orientation="0,1511.811"
+       id="guide238"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="400,99.999999"
+       orientation="377.95276,0"
+       id="guide240"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="400,0"
+       orientation="0,-1511.811"
+       id="guide242"
+       inkscape:locked="false" />
+    <sodipodi:guide
+       position="99.999999,124.49297"
+       orientation="-1,0"
+       id="guide244"
+       inkscape:locked="false"
+       inkscape:label=""
+       inkscape:color="rgb(0,134,229)" />
+  </sodipodi:namedview>
+  <defs
+     id="defs2">
+    <font
+       horiz-adv-x="1000"
+       id="font2499"
+       inkscape:label="Font">
+      <font-face
+         units-per-em="1000"
+         ascent="750"
+         cap-height="600"
+         x-height="400"
+         descent="200"
+         id="font-face2501"
+         font-family="Unifont" />
+      <missing-glyph
+         d="M0,0h1000v1000h-1000z"
+         id="missing-glyph2503" />
+    </font>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Cross Blur"
+       id="filter3333"
+       x="-0.009178844"
+       y="-0.10513948"
+       width="1.0183577"
+       height="1.210279">
+      <feColorMatrix
+         in="SourceGraphic"
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 -0.2125 -0.7154 -0.0721 1 0 "
+         result="colormatrix"
+         id="feColorMatrix3323" />
+      <feComposite
+         in="SourceGraphic"
+         in2="colormatrix"
+         operator="arithmetic"
+         k2="1"
+         k3="0"
+         k4="0"
+         result="composite"
+         id="feComposite3325" />
+      <feGaussianBlur
+         stdDeviation="0.5 0.01"
+         result="blur1"
+         id="feGaussianBlur3327" />
+      <feGaussianBlur
+         in="composite"
+         stdDeviation="0.01 0.5"
+         result="blur2"
+         id="feGaussianBlur3329" />
+      <feBlend
+         in="blur2"
+         in2="blur1"
+         mode="lighten"
+         result="fbSourceGraphic"
+         id="feBlend3331" />
+      <feColorMatrix
+         result="fbSourceGraphicAlpha"
+         in="fbSourceGraphic"
+         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0"
+         id="feColorMatrix3503" />
+      <feColorMatrix
+         id="feColorMatrix3505"
+         in="fbSourceGraphic"
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 -0.2125 -0.7154 -0.0721 1 0 "
+         result="colormatrix" />
+      <feComposite
+         in2="colormatrix"
+         id="feComposite3507"
+         in="fbSourceGraphic"
+         operator="arithmetic"
+         k2="1"
+         k3="0.7"
+         k4="0.02"
+         result="composite" />
+      <feGaussianBlur
+         id="feGaussianBlur3509"
+         stdDeviation="0.5 0.01"
+         result="blur1" />
+      <feGaussianBlur
+         id="feGaussianBlur3511"
+         in="composite"
+         stdDeviation="0.01 0.5"
+         result="blur2" />
+      <feBlend
+         in2="blur1"
+         id="feBlend3513"
+         in="blur2"
+         mode="lighten"
+         result="blend" />
+    </filter>
+  </defs>
+  <g
+     inkscape:label="l1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:#1a1a1a;stroke-width:2.351;stroke-dasharray:0.7053, 0.7053, 0.470199, 0.7053"
+       id="1"
+       width="75.349266"
+       height="4.8639102"
+       x="14.128398"
+       y="20.259216"
+       ry="1.3784091"
+       inkscape:label="1" />
+    <rect
+       style="fill:#1a1a1a;stroke-width:2.37951;stroke-dasharray:0.713854, 0.713854, 0.475901, 0.713854"
+       id="2"
+       width="78.496674"
+       height="4.7828245"
+       x="2.1819832"
+       y="-31.015083"
+       ry="1.3554298"
+       transform="matrix(-0.15943998,0.98720762,-0.97995074,-0.19923992,0,0)"
+       inkscape:label="2"
+       rx="0.89039427" />
+    <path
+       style="fill:#1a1a1a;stroke-width:2.351;stroke-dasharray:0.7053, 0.7053, 0.470199, 0.7053"
+       d="M 26.528458,48.136137 61.98898,67.668544 59.658839,52.617314 71.566023,33.25655 l 7.028426,30.629865 11.19651,11.010437 -43.748573,-4.28594 -4.431691,5.212138 z"
+       id="3"
+       inkscape:label="3" />
+    <g
+       aria-label="Xensor V Network"
+       transform="scale(1.0000142,0.99998581)"
+       id="4"
+       style="font-size:33.8667px;font-family:Unifont;-inkscape-font-specification:'Unifont, Normal';fill:#131313;stroke-width:2.35097;stroke-dasharray:0.70529, 0.70529, 0.470192, 0.70529;filter:url(#filter3333)"
+       inkscape:label="4">
+      <path
+         d="m 116.64535,40.475697 v 4.233337 h 2.11667 v 4.233337 h 2.11666 v 4.233338 h -2.11666 v 4.233337 h -2.11667 v 4.233338 h 2.11667 v -4.233338 h 2.11666 v -4.233337 h 4.23334 v 4.233337 h 2.11667 v 4.233338 h 2.11667 v -4.233338 h -2.11667 v -4.233337 h -2.11667 v -4.233338 h 2.11667 v -4.233337 h 2.11667 v -4.233337 h -2.11667 v 4.233337 h -2.11667 v 4.233337 h -4.23334 v -4.233337 h -2.11666 v -4.233337 z"
+         id="path2696" />
+      <path
+         d="m 135.69537,44.709034 v 2.116669 h 8.46667 v 4.233337 h -8.46667 v -4.233337 h -2.11667 v 12.700012 h 2.11667 v 2.116669 h 8.46667 v -2.116669 h 2.11667 v -2.116669 h -2.11667 v 2.116669 h -8.46667 v -6.350006 h 10.58334 v -6.350006 h -2.11667 v -2.116669 z"
+         id="path2698" />
+      <path
+         d="m 150.51205,44.709034 v 16.93335 h 2.11667 V 48.942371 h 2.11666 v -2.116668 h 6.35001 v 14.816681 h 2.11667 V 46.825703 h -2.11667 v -2.116669 h -6.35001 v 2.116669 h -2.11666 v -2.116669 z"
+         id="path2700" />
+      <path
+         d="m 169.56207,44.709034 v 2.116669 h -2.11667 v 4.233337 h 2.11667 v 2.116669 h 4.23333 v 2.116668 h 4.23334 v 4.233338 h -8.46667 v -2.116669 h -2.11667 v 2.116669 h 2.11667 v 2.116669 h 8.46667 v -2.116669 h 2.11667 v -4.233338 h -2.11667 V 53.175709 H 173.7954 V 51.05904 h -4.23333 v -4.233337 h 8.46667 v 2.116668 h 2.11667 v -2.116668 h -2.11667 v -2.116669 z"
+         id="path2702" />
+      <path
+         d="m 186.49541,44.709034 v 2.116669 h -2.11666 v 12.700012 h 2.11666 v 2.116669 h 8.46668 v -2.116669 h -8.46668 V 46.825703 h 8.46668 v 12.700012 h 2.11667 V 46.825703 h -2.11667 v -2.116669 z"
+         id="path2704" />
+      <path
+         d="m 201.3121,44.709034 v 16.93335 h 2.11666 V 48.942371 h 2.11667 v -2.116668 h 6.35001 v 4.233337 h 2.11667 v -4.233337 h -2.11667 v -2.116669 h -6.35001 v 2.116669 h -2.11667 v -2.116669 z"
+         id="path2706" />
+      <path
+         d="m 235.17879,40.475697 v 6.350006 h 2.11667 v 6.350006 h 2.11667 v 4.233337 h 2.11667 v 4.233338 h 2.11667 v -4.233338 h 2.11667 v -4.233337 h 2.11667 v -6.350006 h 2.11667 v -6.350006 h -2.11667 v 6.350006 h -2.11667 v 6.350006 h -2.11667 v 4.233337 h -2.11667 v -4.233337 h -2.11667 v -6.350006 h -2.11667 v -6.350006 z"
+         id="path2708" />
+      <path
+         d="m 269.04549,40.475697 v 21.166687 h 2.11667 V 46.825703 h 2.11667 v 4.233337 h 2.11667 v 4.233337 h 2.11667 v 4.233338 h 2.11667 v 2.116669 h 2.11667 V 40.475697 h -2.11667 v 14.81668 h -2.11667 V 51.05904 h -2.11667 v -4.233337 h -2.11667 v -4.233338 h -2.11667 v -2.116668 z"
+         id="path2710" />
+      <path
+         d="m 288.09551,44.709034 v 2.116669 h 8.46668 v 4.233337 h -8.46668 v -4.233337 h -2.11667 v 12.700012 h 2.11667 v 2.116669 h 8.46668 v -2.116669 h 2.11667 v -2.116669 h -2.11667 v 2.116669 h -8.46668 v -6.350006 h 10.58335 v -6.350006 h -2.11667 v -2.116669 z"
+         id="path2712" />
+      <path
+         d="m 307.14553,40.475697 v 6.350006 h -4.23334 v 2.116668 h 4.23334 v 10.583344 h 2.11667 v 2.116669 h 4.23334 V 59.525715 H 309.2622 V 48.942371 h 4.23334 v -2.116668 h -4.23334 v -6.350006 z"
+         id="path2714" />
+      <path
+         d="m 319.84554,44.709034 v 14.816681 h 2.11667 v 2.116669 h 4.23334 v -2.116669 h 2.11667 v 2.116669 h 4.23334 v -2.116669 h 2.11666 V 44.709034 h -2.11666 v 14.816681 h -4.23334 V 46.825703 h -2.11667 v 12.700012 h -4.23334 V 44.709034 Z"
+         id="path2716" />
+      <path
+         d="m 338.89556,44.709034 v 2.116669 h -2.11667 v 12.700012 h 2.11667 v 2.116669 h 8.46668 v -2.116669 h -8.46668 V 46.825703 h 8.46668 v 12.700012 h 2.11666 V 46.825703 h -2.11666 v -2.116669 z"
+         id="path2718" />
+      <path
+         d="m 353.71224,44.709034 v 16.93335 h 2.11667 V 48.942371 h 2.11667 v -2.116668 h 6.35001 v 4.233337 h 2.11666 v -4.233337 h -2.11666 v -2.116669 h -6.35001 v 2.116669 h -2.11667 v -2.116669 z"
+         id="path2720" />
+      <path
+         d="m 370.64559,38.359028 v 23.283356 h 2.11667 v -8.466675 h 2.11667 v 2.116668 h 2.11667 v 2.116669 h 2.11667 v 2.116669 h 2.11667 v 2.116669 h 2.11666 v -2.116669 h -2.11666 v -2.116669 h -2.11667 v -2.116669 h -2.11667 v -2.116668 h -2.11667 V 51.05904 h 2.11667 v -2.116669 h 2.11667 v -2.116668 h 2.11667 v -2.116669 h -2.11667 v 2.116669 h -2.11667 v 2.116668 h -2.11667 v 2.116669 h -2.11667 V 38.359028 Z"
+         id="path2722" />
+    </g>
+  </g>
+  <metadata
+     id="metadata262">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>Xensor V Network</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>
