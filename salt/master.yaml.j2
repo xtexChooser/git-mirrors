@@ -9,12 +9,12 @@ fileserver_backend:
   - roots
 gitfs_provider: pygit2
 gitfs_remotes:
-  - git@codeberg.org:XTEX-VNET/conf.git:
+  - git@codeberg.org:xvnet/conf.git:
     - name: conf
     - base: main
     - pubkey: /etc/salt/ssh_key.pub
     - privkey: /etc/salt/ssh_key
-  - git@codeberg.org:XTEX-VNET/internal-conf.git:
+  - git@codeberg.org:xvnet/internal-conf.git:
     - name: internal-conf
     - base: main
     - pubkey: /etc/salt/ssh_key.pub
@@ -26,12 +26,12 @@ ext_pillar_first: True
 git_pillar_provider: pygit2
 ext_pillar:
   - git:
-    - main git@codeberg.org:XTEX-VNET/conf.git:
+    - main git@codeberg.org:xvnet/conf.git:
       - env: base
       - pubkey: /etc/salt/ssh_key.pub
       - privkey: /etc/salt/ssh_key
       - root: pillar
-    - main git@codeberg.org:XTEX-VNET/internal-conf.git:
+    - main git@codeberg.org:xvnet/internal-conf.git:
       - env: base
       - pubkey: /etc/salt/ssh_key.pub
       - privkey: /etc/salt/ssh_key
