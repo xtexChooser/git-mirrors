@@ -1,4 +1,4 @@
-TOOLKIT 		= pnpx @xvnet/registry-toolkit
+TOOLKIT 		?= pnpx @xvnet/registry-toolkit
 
 .PHONY: all roa
 all: dist roa
