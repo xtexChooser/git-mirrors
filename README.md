@@ -1,6 +1,6 @@
 # Meta
 
-This repository is about things revolving around Forgejo. 
+This repository is about things revolving around Forgejo.
 
 * [Teams](TEAMS.md)
 * [Agreements](AGREEMENTS.md)
@@ -8,3 +8,6 @@ This repository is about things revolving around Forgejo.
 * [Decision making](DECISION-MAKING.md)
 * [Branding](branding/README.md)
 * [Related projects](CONTRIB.md)
+
+For financial resources & sustainability information, see the
+[sustainability](https://codeberg.org/forgejo/sustainability) repo.
