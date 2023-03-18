@@ -16,7 +16,7 @@ watchtower:
         - environment:
             - HOME: /root
             - WATCHTOWER_NOTIFICATIONS_HOSTNAME: {{ grains['fqdn'] }}
-            - WATCHTOWER_NOTIFICATION_URL: ntfy://{{ salt['pillar.fetch']('watchtower:enable') }}@ntfy.xvnet.eu.org/watchtower?Title={{ pillar['name'] }}
+            - WATCHTOWER_NOTIFICATION_URL: ntfy://{{ salt['pillar.fetch']('watchtower:ntfy-token') }}@ntfy.xvnet.eu.org/watchtower?Title={{ pillar['name'] }}
             - WATCHTOWER_CLEANUP: true
             - WATCHTOWER_INCLUDE_RESTARTING: true
             - WATCHTOWER_INCLUDE_STOPPED: true
