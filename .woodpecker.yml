@@ -1,0 +1,19 @@
+branches: main
+
+pipeline:
+    build:
+        image: node
+        commands:
+            - npm config set @xvnet:registry https://codeberg.org/api/packages/xvnet/npm/
+            - npm install
+            - npm run build
+
+    push:
+        image: node
+        secrets: [cb_token]
+        commands:
+            - npm config set @xvnet:registry https://codeberg.org/api/packages/xvnet/npm/
+            - npm config set -- '//codeberg.org/api/packages/xvnet/npm/:_authToken' $CB_TOKEN
+            - npm publish
+        when:
+            event: tag
