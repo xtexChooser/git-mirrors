@@ -6,6 +6,6 @@
 {% include '../ntfy/Caddyfile.j2' %} 
 {% endif %}
 
-{% if pillar['spica']['signer'] is defined %}
+{% if salt['pillar.fetch']('spica:signer') is true %}
 {% include '../spica/signer/Caddyfile.j2' %}
 {% endif %}
