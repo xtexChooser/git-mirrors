@@ -1,14 +1,18 @@
 branches: main
 
+variables:
+    - &file Containerfile
+    - &repo codeberg.org/xtex-vnet/registry-toolkit
+
 pipeline:
-    build:
+    node-build:
         image: node
         commands:
             - npm config set @xvnet:registry https://codeberg.org/api/packages/xvnet/npm/
             - npm install
             - npm run build
 
-    push:
+    node-push:
         image: node
         secrets: [cb_token]
         commands:
@@ -17,3 +21,25 @@ pipeline:
             - npm publish
         when:
             event: tag
+
+    container-build:
+        image: woodpeckerci/plugin-docker-buildx
+        group: build
+        settings:
+            dockerfile: *file
+            dry_run: true
+            repo: *repo
+            tags: latest
+
+    container-push:
+        image: woodpeckerci/plugin-docker-buildx
+        settings:
+            dockerfile: *file
+            repo: *repo
+            registry: codeberg.org
+            tags: latest
+            username: ${CI_REPO_OWNER}
+            password:
+                from_secret: cb_token
+        when:
+            event: push
