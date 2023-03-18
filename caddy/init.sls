@@ -42,3 +42,4 @@ caddy:
             - HOME=/root
         - watch:
             - file: caddy
+        - memory: 32M
