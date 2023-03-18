@@ -15,10 +15,10 @@ watchtower:
         - hostname: watchtower
         - environment:
             - HOME: /root
-            - WATCHTOWER_NOTIFICATIONS_HOSTNAME: {{ grains['fqdn'] }}
+            - WATCHTOWER_NOTIFICATIONS_HOSTNAME: {{ pillar['name'] }}
             - WATCHTOWER_NOTIFICATION_URL: ntfy://:{{ salt['pillar.fetch']('watchtower:ntfy-token') }}@ntfy.xvnet.eu.org/watchtower?Title={{ pillar['name'] }}
             - WATCHTOWER_CLEANUP: true
-            - WATCHTOWER_INCLUDE_RESTARTING: true
+#            - WATCHTOWER_INCLUDE_RESTARTING: true
             - WATCHTOWER_INCLUDE_STOPPED: true
             {# 15 mins -#}
             - WATCHTOWER_POLL_INTERVAL: 900
