@@ -2,7 +2,7 @@ branches: main
 
 variables:
   - &file Containerfile
-  - &repo codeberg.org/xtex-vnet/bird
+  - &repo codeberg.org/xvnet/bird
   - &version 2.0.12
 
 pipeline:
