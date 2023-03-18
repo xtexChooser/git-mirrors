@@ -1,7 +1,7 @@
 mnter:
   - XTEX-MNT-XVNET
 registry: RIPE
-source: XTEX-VNET
+source: xvnet
 url:
   - whois://whois.ripe.net
   - rdap://rdap.db.ripe.net/

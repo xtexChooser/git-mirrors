@@ -1,7 +1,7 @@
 mnter:
   - XTEX-MNT-XVNET
 registry: APNIC
-source: XTEX-VNET
+source: xvnet
 url:
   - whois://whois.arin.net
   - rdap://rdap.apnic.net/

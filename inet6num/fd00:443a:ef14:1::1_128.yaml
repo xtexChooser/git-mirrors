@@ -1,4 +1,4 @@
-descr: XTEX-VNET nl-alk1
+descr: xvnet nl-alk1
 inet6num: fd00:443a:ef14:1::1/128
-net: XTEX-VNET
-source: XTEX-VNET
+net: xvnet
+source: xvnet

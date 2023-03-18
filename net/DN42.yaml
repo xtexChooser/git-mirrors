@@ -6,4 +6,4 @@ inetnum:
 mnter:
   - XTEX-MNT-XVNET
 net: DN42
-source: XTEX-VNET
+source: xvnet

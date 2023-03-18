@@ -6,5 +6,5 @@ inetnum:
   - 10.134.134.0/24
 mnter:
   - XTEX-MNT-XVNET
-net: XTEX-VNET
-source: XTEX-VNET
+net: xvnet
+source: xvnet

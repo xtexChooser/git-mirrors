@@ -1,6 +1,6 @@
-descr: XTEX-VNET us-dal1
-net: XTEX-VNET
+descr: xvnet us-dal1
+net: xvnet
 origin:
   - 4244310002
 route6: fd00:443a:ef14:1::2/128
-source: XTEX-VNET
+source: xvnet

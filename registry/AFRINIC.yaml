@@ -1,7 +1,7 @@
 mnter:
   - XTEX-MNT-XVNET
 registry: AFRINIC
-source: XTEX-VNET
+source: xvnet
 url:
   - whois://whois.afrinic.net
   - rdap://rdap.afrinic.net/rdap/
