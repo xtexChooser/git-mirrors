@@ -18,3 +18,6 @@ base:
     'service:ntfy:true':
         - match: pillar
         - ntfy
+    'watchtower:enable:true':
+        - match: pillar
+        - watchtower

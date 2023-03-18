@@ -12,7 +12,6 @@ caddy:
     docker_image.present:
         - name: ghcr.io/xtex-vnet/caddy
         - tag: latest
-        - force: True
         - require:
             - test: container
     docker_network.present:
