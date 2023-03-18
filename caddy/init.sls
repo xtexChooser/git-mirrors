@@ -17,6 +17,7 @@ caddy:
             - test: container
     docker_network.present:
         - driver: bridge
+        - ipam_driver: host-local
     docker_container.running:
         - image: ghcr.io/xtex-vnet/caddy:latest
         - binds:

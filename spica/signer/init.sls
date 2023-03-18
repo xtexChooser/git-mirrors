@@ -32,12 +32,11 @@ spica-signer:
         - networks:
             - caddy
         - hostname: spica-signer
-        - environment:
-            - HOME=/root
         - watch:
             - file: spica-signer
         - binds:
             - /etc/spica/signer:/etc/spica/signer
+        - memory: 16M
 
 {% for cert in certs %}
 spica-signer-{{ cert }}:
