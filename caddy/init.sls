@@ -17,7 +17,8 @@ caddy:
             - test: container
     docker_network.present:
         - driver: bridge
-        - ipam_driver: host-local
+        - ipam_driver: default
+        - ipam_opts: driver=host-local
     docker_container.running:
         - image: ghcr.io/xtex-vnet/caddy:latest
         - binds:
@@ -29,14 +30,15 @@ caddy:
             - 443:443
         - cap_add: CAP_NET_BIND_SERVICE
         - networks:
-            - caddy
+            - caddy:
+                - aliases: []
         - require:
             - test: container
             - docker_image: caddy
             - docker_network: caddy
             - file: caddy
+        - hostname: caddy
         - environment:
             - HOME=/root
-            - HOSTNAME={{ grains['fqdn'] }}
         - watch:
             - file: caddy

@@ -30,8 +30,11 @@ spica-signer:
             - file: spica-signer
             - docker_network: caddy
         - networks:
-            - caddy
+            - caddy:
+                - aliases: []
         - hostname: spica-signer
+        - environment:
+            - HOME=/root
         - watch:
             - file: spica-signer
         - binds:
