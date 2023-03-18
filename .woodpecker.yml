@@ -1,9 +1,5 @@
 branches: main
 
-variables:
-  - &file Containerfile
-  - &repo codeberg.org/xtex-vnet/spica
-
 pipeline:
   deploy:
     image: alpine
