@@ -1,4 +1,4 @@
-descr: The XTEX Virtual Network
+descr: XV-NET
 inetnum: 10.134.134.0/24
 net: xvnet
 source: xvnet

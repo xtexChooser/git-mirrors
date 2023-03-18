@@ -1,6 +1,6 @@
 as_block:
   - 4244310000-4244319999
-descr: The XTEX Virtual Network
+descr: XV-NET
 inetnum:
   - fd00:443a:ef14::/48
   - 10.134.134.0/24
