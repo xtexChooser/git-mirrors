@@ -1,0 +1,9 @@
+pipeline:
+    dnscontrol:
+        image: stackexchange/dnscontrol
+        secrets: [cloudflare_api_token]
+        commands:
+            - cd dns
+            - /usr/local/bin/dnscontrol check
+            - /usr/local/bin/dnscontrol preview
+            - /usr/local/bin/dnscontrol push
