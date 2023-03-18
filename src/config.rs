@@ -1,8 +1,8 @@
-use std::{env, fs};
+use std::{env, fs, net::Ipv6Addr};
 
 use anyhow::{Context, Error, Result};
 use lazy_static::lazy_static;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use tracing::info;
 
 lazy_static! {
@@ -24,12 +24,13 @@ pub fn get_config() -> &'static Config {
     &CONFIG
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone, Hash)]
 pub struct Config {
     pub tun: TunConfig,
+    pub addr: AddrConfig,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone, Hash)]
 pub struct TunConfig {
     #[serde(default = "default_tun_ifname")]
     pub ifname: String,
@@ -43,4 +44,34 @@ fn default_tun_ifname() -> String {
 
 fn default_tun_queues() -> usize {
     1
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone, Hash)]
+pub struct AddrConfig {
+    pub subnet: Ipv6Addr,
+    #[serde(default = "default_addr_subnet_len")]
+    pub subnet_len: u8,
+    #[serde(default = "default_addr_index_len")]
+    pub index_len: u8,
+}
+
+fn default_addr_subnet_len() -> u8 {
+    64
+}
+
+fn default_addr_index_len() -> u8 {
+    16
+}
+
+impl AddrConfig {
+    pub fn host_addr(&self) -> Ipv6Addr {
+        self.with_index(
+            Ipv6Addr::from(u128::from(self.subnet) | (u128::MAX >> self.subnet_len)),
+            0,
+        )
+    }
+
+    pub fn with_index(&self, addr: Ipv6Addr, index: u16) -> Ipv6Addr {
+        Ipv6Addr::from(u128::from(addr) >> self.index_len << self.index_len | index as u128)
+    }
 }
