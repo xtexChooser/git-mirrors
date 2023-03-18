@@ -25,9 +25,12 @@ caddy:
             - /etc/caddy:/etc/caddy:ro
             - /var/run:/var/run
             - /var/lib/caddy:/root/.local/share/caddy
-        - publish_all_ports: True
+        - port_bindings:
+            - 80:80
+            - 443:443
         - cap_add: CAP_NET_BIND_SERVICE
         - networks:
+            - podman
             - caddy
         - require:
             - test: container
