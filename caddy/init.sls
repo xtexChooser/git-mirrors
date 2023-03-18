@@ -17,8 +17,6 @@ caddy:
             - test: container
     docker_network.present:
         - driver: bridge
-        - options:
-            - isolate=false
     docker_container.running:
         - image: ghcr.io/xtex-vnet/caddy:latest
         - binds:
@@ -30,7 +28,6 @@ caddy:
             - 443:443
         - cap_add: CAP_NET_BIND_SERVICE
         - networks:
-            - podman
             - caddy
         - require:
             - test: container
