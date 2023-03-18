@@ -32,9 +32,9 @@ pub struct Config {
 #[derive(Debug, Deserialize)]
 pub struct TunConfig {
     #[serde(default = "default_tun_ifname")]
-    pub tun_ifname: String,
+    pub ifname: String,
     #[serde(default = "default_tun_queues")]
-    pub tun_queues: usize,
+    pub queues: usize,
 }
 
 fn default_tun_ifname() -> String {
