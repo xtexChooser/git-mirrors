@@ -27,7 +27,7 @@ export async function collectLocalROA(schema: string): Promise<ROARecord[]> {
                     maxLength:
                         obj['max_len'] ||
                         ip.cidrSubnet(subnet).subnetMaskLength,
-                    source: `XTEX-VNET ${schema}`,
+                    source: `xvnet ${schema}`,
                 })
             })
         })
@@ -49,7 +49,7 @@ export async function collectRemoteROA(): Promise<ROARecord[]> {
     )
 }
 
-export const USER_AGENT = 'XTEX-VNET-Registry-Toolkit/1'
+export const USER_AGENT = 'xvnet-Registry-Toolkit/1'
 
 export async function collectRemoteGoRTRJson(
     url: string,

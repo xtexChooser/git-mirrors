@@ -1,7 +1,7 @@
 {
   "name": "@xvnet/registry-toolkit",
-  "version": "0.1.1",
-  "description": "Toolkit to work with the XTEX-VNET registry",
+  "version": "0.1.2",
+  "description": "Toolkit to work with the xvnet registry",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
@@ -13,11 +13,11 @@
     "format": "prettier --write src/**"
   },
   "keywords": [],
-  "author": "XTEX-VNET",
+  "author": "xvnet",
   "license": "Apache-2.0",
-  "homepage": "https://source.moe/XTEX-VNET/registry-toolkit",
+  "homepage": "https://codeberg.org/xvnet/registry-toolkit",
   "bugs": {
-    "url": "https://source.moe/XTEX-VNET/registry-toolkit/issues"
+    "url": "https://codeberg.org/xvnet/registry-toolkit/issues"
   },
   "files": [
     "src",

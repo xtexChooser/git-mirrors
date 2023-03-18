@@ -7,7 +7,7 @@ import { lintAll, lintObject, lintSchema } from './lint.js'
 
 const program = createCommand('xvnet-registry')
 
-program.description('Toolkit to work with the XTEX-VNET registry')
+program.description('Toolkit to work with the xvnet registry')
 
 program
     .command('lint [schema] [key]')

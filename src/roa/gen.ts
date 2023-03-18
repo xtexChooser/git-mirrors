@@ -48,7 +48,7 @@ export async function printROAToJson(roas: ROARecord[]) {
 }
 
 export async function printROAToBIRD2(roas: ROARecord[]) {
-    console.log('# XTEX-VNET ROA Generator for BIRD2')
+    console.log('# xvnet ROA Generator for BIRD2')
     console.log(`# Updated on ${new Date().toISOString()}`)
     for (const roa of roas) {
         console.log(
@@ -58,7 +58,7 @@ export async function printROAToBIRD2(roas: ROARecord[]) {
 }
 
 export async function printROAToBIRD1(roas: ROARecord[]) {
-    console.log('# XTEX-VNET ROA Generator for BIRD1')
+    console.log('# xvnet ROA Generator for BIRD1')
     console.log(`# Updated on ${new Date().toISOString()}`)
     for (const roa of roas) {
         console.log(
@@ -68,7 +68,7 @@ export async function printROAToBIRD1(roas: ROARecord[]) {
 }
 
 export async function printROAToOBGPD(roas: ROARecord[]) {
-    console.log('# XTEX-VNET ROA Generator for OpenBGPD')
+    console.log('# xvnet ROA Generator for OpenBGPD')
     console.log(`# Updated on ${new Date().toISOString()}`)
     console.log('roa-set {')
     for (const roa of roas) {

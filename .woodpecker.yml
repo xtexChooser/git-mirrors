@@ -1,6 +1,6 @@
 variables:
     - &file Containerfile
-    - &repo codeberg.org/xtex-vnet/registry-toolkit
+    - &repo codeberg.org/xvnet/registry-toolkit
 
 pipeline:
     node-build:
