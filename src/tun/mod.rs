@@ -8,6 +8,7 @@ use tokio::task::JoinSet;
 use tokio_tun::{Tun, TunBuilder};
 use tracing::info;
 use tracing::trace;
+use tracing::warn;
 
 use crate::config::get_config;
 use crate::inet;
@@ -118,7 +119,9 @@ impl TunHandler {
         loop {
             let size = self.tun.recv(self.buf.read_buffer()).await?;
             self.recv_size = size;
-            self.handle_packet().await?;
+            if let Err(e) = self.handle_packet().await {
+                warn!(err = e.to_string(), size, "failed to handle a packet");
+            }
         }
     }
 
