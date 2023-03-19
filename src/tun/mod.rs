@@ -13,8 +13,10 @@ use crate::config::get_config;
 use crate::inet;
 
 use self::buf::TunBuffer;
+use self::ip::HandleIpExt;
 
 pub mod buf;
+pub mod ip;
 
 pub const ERROR_HEADER_SIZE: usize = size_of::<inet::ip6_hdr>() + size_of::<inet::icmp6_hdr>();
 pub const MTU: usize = 9000;
@@ -91,36 +93,44 @@ async fn add_route(ifname: &str) -> Result<()> {
         .execute()
         .await?;
     info!("subnet route added");
+
     Ok(())
 }
 
 pub struct TunHandler {
     pub tun: Tun,
-    pub buffer: TunBuffer,
+    pub buf: TunBuffer,
+    pub recv_size: usize,
 }
-
-unsafe impl Send for TunHandler {}
-unsafe impl Sync for TunHandler {}
 
 impl TunHandler {
     pub fn new(tun: Tun) -> Result<TunHandler> {
         let buffer = TunBuffer::new();
-        Ok(Self { tun, buffer })
+        Ok(Self {
+            tun,
+            buf: buffer,
+            recv_size: 0,
+        })
     }
 
     pub async fn handle(mut self) -> Result<()> {
         info!("handling TUN");
-        let buffer = self.buffer.read_buffer();
         loop {
-            let size = self.tun.recv(buffer).await?;
-            if size <= size_of::<inet::ip6_hdr>() {
-                trace!(size, "received a pkt which is smaller than a IPv6 header")
-            }
-            /*if size <= size_of::<netinet::ip>() {
-                self.log(format!("Received packet with too small size {}", size));
-            } else {
-                handle_ip(&self).await?;
-            }*/
+            let size = self.tun.recv(self.buf.read_buffer()).await?;
+            self.recv_size = size;
+            self.handle_packet().await?;
+        }
+    }
+
+    pub async fn handle_packet(&mut self) -> Result<()> {
+        if self.recv_size <= size_of::<inet::ip6_hdr>() {
+            trace!(
+                size = self.recv_size,
+                required = size_of::<inet::ip6_hdr>(),
+                "received a pkt which is smaller than a IPv6 header"
+            )
+        } else {
+            self.handle_ip().await?;
         }
         Ok(())
     }

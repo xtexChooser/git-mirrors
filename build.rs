@@ -1,6 +1,7 @@
 use std::{env, path::PathBuf};
 
 fn main() {
+    println!("cargo:rerun-if-changed=src/netinet.h");
     let bindings = bindgen::Builder::default()
         .header("src/netinet.h")
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
