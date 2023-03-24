@@ -11,8 +11,8 @@ use tracing::trace;
 use tracing::warn;
 
 use crate::config::get_config;
-use crate::config::SubnetConfig;
 use crate::inet;
+use crate::subnet::SubnetConfig;
 
 use self::buf::TunBuffer;
 use self::ip::HandleIpExt;
@@ -79,7 +79,7 @@ async fn add_route(rtnl: &rtnetlink::Handle, ifindex: u32, subnet: &SubnetConfig
     info!(
         subnet = subnet.subnet.to_string(),
         subnet_len = subnet.subnet_len,
-        index_len = subnet.index_len,
+        hop_len = subnet.hop_len,
         host_addr = host_addr.to_string(),
         "adding route to TUN"
     );

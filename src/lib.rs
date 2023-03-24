@@ -7,4 +7,5 @@ pub mod chain;
 pub mod config;
 pub mod inet;
 pub mod resolver;
+pub mod subnet;
 pub mod tun;

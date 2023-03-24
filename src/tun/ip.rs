@@ -2,7 +2,7 @@ use std::net::Ipv6Addr;
 
 use anyhow::{bail, Result};
 
-use crate::inet;
+use crate::{inet, subnet};
 
 use super::TunHandler;
 
@@ -24,9 +24,11 @@ impl HandleIpExt for TunHandler {
 
     async fn handle_ipv6(&mut self) -> Result<()> {
         let ip6 = self.buf.read::<inet::ip6_hdr>(0);
-        let src = parse_in6_addr(&ip6.ip6_src);
         let dst = parse_in6_addr(&ip6.ip6_dst);
-        println!("recevied pkt {} {}", src, dst);
+        if let Some((index, hop)) = subnet::try_parse(dst) {
+            let src = parse_in6_addr(&ip6.ip6_src);
+            println!("recevied pkt {} {} {index} {hop}", src, dst);
+        }
         Ok(())
     }
 }

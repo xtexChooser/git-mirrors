@@ -12,23 +12,23 @@ pub struct ResolverConfig {
 }
 
 pub trait Resolver {
-    async fn resolve(&self, id: u128) -> Result<Option<Chain>>;
+    async fn resolve(&self, index: u128) -> Result<Option<Chain>>;
 }
 
 impl ResolverConfig {
-    pub fn to_full_path(&self, id: u128) -> String {
+    pub fn to_full_path(&self, index: u128) -> String {
         format!(
             "{}{:0width$x}",
             self.path,
-            id,
+            index,
             width = self.format_width as usize
         )
     }
 }
 
 impl Resolver for ResolverConfig {
-    async fn resolve(&self, id: u128) -> Result<Option<Chain>> {
-        let path = self.to_full_path(id);
+    async fn resolve(&self, index: u128) -> Result<Option<Chain>> {
+        let path = self.to_full_path(index);
         let data = if path.starts_with("http") {
             let resp = get(path).await?;
             if (400..=499).contains(&resp.status().as_u16()) {
