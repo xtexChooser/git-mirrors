@@ -1,3 +1,5 @@
+#![allow(clippy::mut_from_ref)]
+
 use super::{BUFFER_SIZE, ERROR_HEADER_SIZE};
 
 #[repr(transparent)]
@@ -14,7 +16,7 @@ impl TunBuffer {
     }
 
     #[inline]
-    pub fn as_ref(&self) -> &mut [u8; BUFFER_SIZE] {
+    pub fn buf_ref(&self) -> &mut [u8; BUFFER_SIZE] {
         unsafe {
             std::slice::from_raw_parts_mut(self.0.as_ptr().cast_mut(), BUFFER_SIZE)
                 .try_into()
@@ -23,7 +25,7 @@ impl TunBuffer {
     }
 
     pub fn read_buffer(&self) -> &mut [u8] {
-        &mut self.as_ref()[ERROR_HEADER_SIZE..]
+        &mut self.buf_ref()[ERROR_HEADER_SIZE..]
     }
 
     pub fn read<T>(&self, offset: isize) -> &mut T {
@@ -32,5 +34,11 @@ impl TunBuffer {
                 .as_mut()
                 .unwrap_unchecked()
         }
+    }
+}
+
+impl Default for TunBuffer {
+    fn default() -> Self {
+        Self::new()
     }
 }

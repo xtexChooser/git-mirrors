@@ -36,6 +36,6 @@ pub fn parse_in6_addr(addr: &inet::in6_addr) -> Ipv6Addr {
     let addr = (u32::from_be(addr[0]) as u128) << 96
         | (u32::from_be(addr[1]) as u128) << 64
         | (u32::from_be(addr[2]) as u128) << 32
-        | (u32::from_be(addr[3]) as u128) << 0;
+        | (u32::from_be(addr[3]) as u128);
     Ipv6Addr::from(addr)
 }
