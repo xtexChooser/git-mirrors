@@ -1,7 +1,9 @@
 use anyhow::Result;
+use reqwest::get;
 use serde::{Deserialize, Serialize};
+use tokio::fs;
 
-use crate::Chain;
+use crate::chain::{self, Chain};
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone, Hash)]
 pub struct ResolverConfig {
@@ -10,7 +12,7 @@ pub struct ResolverConfig {
 }
 
 pub trait Resolver {
-    fn resolve(&self, id: u128) -> Result<Option<Chain>>;
+    async fn resolve(&self, id: u128) -> Result<Option<Chain>>;
 }
 
 impl ResolverConfig {
@@ -25,8 +27,22 @@ impl ResolverConfig {
 }
 
 impl Resolver for ResolverConfig {
-    fn resolve(&self, id: u128) -> Result<Option<Chain>> {
-        println!("{}", self.to_full_path(0xcfcf));
-        todo!()
+    async fn resolve(&self, id: u128) -> Result<Option<Chain>> {
+        let path = self.to_full_path(id);
+        let data = if path.starts_with("http") {
+            let resp = get(path).await?;
+            if (400..=499).contains(&resp.status().as_u16()) {
+                return Ok(None);
+            }
+            resp.error_for_status()?.text().await?
+        } else {
+            if fs::try_exists(&path).await.map_err(anyhow::Error::from)? {
+                return Ok(None);
+            }
+            fs::read_to_string(path)
+                .await
+                .map_err(anyhow::Error::from)?
+        };
+        Ok(Some(chain::parse_chain(&data)?))
     }
 }
