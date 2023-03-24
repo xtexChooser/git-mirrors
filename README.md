@@ -12,7 +12,9 @@ Each line of the file represents an address on the routing path and the correspo
 
 Lines starts with `#` will be ignored.
 
-Leading and trailing whitespace after uncommented lines will be stripped unless the entire line is explicitly wrapped with `"`.
+Leading and trailing whitespace after uncommented lines will be stripped unless the line starts with `\asis(SPACE)`.
+
+Lines starts with`\dns(SPACE)` will be parsed as a FQDN (must end with a `.`).
 
 ## Updates
 
