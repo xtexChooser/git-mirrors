@@ -2206,14 +2206,14 @@ class Query {
 		$where = $this->tableNames['page'] . '.page_id=tl.tl_from AND lt.lt_id = tl.tl_target_id AND (';
 		$ors = [];
 		$linksByNS = [];
-		$nsField = $this->tableNames['linktarget'] . '.lt_namespace';
-		$titleField = $this->tableNames['linktarget'] . '.lt_title';
+		$nsField = 'lt.lt_namespace';
+		$titleField = 'lt.lt_title';
 
 		global $wgTemplateLinksSchemaMigrationStage;
 		if ( $wgTemplateLinksSchemaMigrationStage & SCHEMA_COMPAT_READ_OLD ) {
 			$where = $this->tableNames['page'] . '.page_id=tl.tl_from AND (';
-			$nsField = $this->tableNames['templatelinks'] . '.tl_namespace';
-			$titleField = $this->tableNames['templatelinks'] . '.tl_title';
+			$nsField = 'tl.tl_namespace';
+			$titleField = 'tl.tl_title';
 		}
 
 		foreach ( $option as $linkGroup ) {
@@ -2258,14 +2258,14 @@ class Query {
 			$where = $this->tableNames['page'] . '.page_id NOT IN (SELECT ' . $this->tableNames['templatelinks'] . '.tl_from FROM ' . $this->tableNames['templatelinks'] . ' INNER JOIN ' . $this->tableNames['linktarget'] . ' ON ' . $this->tableNames['linktarget'] . '.lt_id = ' . $this->tableNames['templatelinks'] . '.tl_target_id WHERE (';
 			$ors = [];
 			$linksByNS = [];
-			$nsField = $this->tableNames['linktarget'] . '.lt_namespace';
-			$titleField = $this->tableNames['linktarget'] . '.lt_title';
+			$nsField = 'lt.lt_namespace';
+			$titleField = 'lt.lt_title';
 
 			global $wgTemplateLinksSchemaMigrationStage;
 			if ( $wgTemplateLinksSchemaMigrationStage & SCHEMA_COMPAT_READ_OLD ) {
 				$where = $this->tableNames['page'] . '.page_id NOT IN (SELECT ' . $this->tableNames['templatelinks'] . '.tl_from FROM ' . $this->tableNames['templatelinks'] . ' WHERE (';
-				$nsField = $this->tableNames['templatelinks'] . '.tl_namespace';
-				$titleField = $this->tableNames['templatelinks'] . '.tl_title';
+				$nsField = 'tl.tl_namespace';
+				$titleField = 'tl.tl_title';
 			}
 
 			foreach ( $option as $linkGroup ) {
