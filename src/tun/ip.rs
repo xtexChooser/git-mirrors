@@ -15,7 +15,7 @@ impl HandleIpExt for TunHandler {
     async fn handle_ip(&mut self) -> Result<()> {
         let ip = self.buf.read::<inet::ip>(0);
         match ip.ip_v() {
-            4 => bail!("unexpected IPv4 pkt"),
+            4 => (),
             6 => self.handle_ipv6().await?,
             _ => bail!("unknown IP version: {}", ip.ip_v()),
         }
