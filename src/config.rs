@@ -5,6 +5,8 @@ use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
+use crate::resolver::ResolverConfig;
+
 lazy_static! {
     static ref CONFIG: Config = load_config().unwrap();
 }
@@ -27,7 +29,8 @@ pub fn get_config() -> &'static Config {
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone, Hash)]
 pub struct Config {
     pub tun: TunConfig,
-    pub addr: AddrConfig,
+    pub subnet: Vec<SubnetConfig>,
+    pub resolver: Vec<ResolverConfig>,
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone, Hash)]
@@ -47,23 +50,23 @@ fn default_tun_queues() -> usize {
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone, Hash)]
-pub struct AddrConfig {
+pub struct SubnetConfig {
     pub subnet: Ipv6Addr,
-    #[serde(default = "default_addr_subnet_len")]
+    #[serde(default = "default_subnet_subnet_len")]
     pub subnet_len: u8,
-    #[serde(default = "default_addr_index_len")]
+    #[serde(default = "default_subnet_index_len")]
     pub index_len: u8,
 }
 
-fn default_addr_subnet_len() -> u8 {
+fn default_subnet_subnet_len() -> u8 {
     64
 }
 
-fn default_addr_index_len() -> u8 {
+fn default_subnet_index_len() -> u8 {
     16
 }
 
-impl AddrConfig {
+impl SubnetConfig {
     pub fn host_addr(&self) -> Ipv6Addr {
         self.with_index(
             Ipv6Addr::from(u128::from(self.subnet) | (u128::MAX >> self.subnet_len)),

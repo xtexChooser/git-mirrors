@@ -11,6 +11,7 @@ use tracing::trace;
 use tracing::warn;
 
 use crate::config::get_config;
+use crate::config::SubnetConfig;
 use crate::inet;
 
 use self::buf::TunBuffer;
@@ -40,7 +41,7 @@ pub async fn start_tun() -> Result<()> {
         "created TUN device"
     );
 
-    add_route(&config.ifname).await?;
+    add_routes(&config.ifname).await?;
 
     let mut tasks = JoinSet::new();
     for tun in tuns.into_iter() {
@@ -54,46 +55,51 @@ pub async fn start_tun() -> Result<()> {
     Ok(())
 }
 
-async fn add_route(ifname: &str) -> Result<()> {
-    let config = &get_config().addr;
-    let host_addr = config.host_addr();
-    info!(
-        subnet = config.subnet.to_string(),
-        subnet_len = config.subnet_len,
-        index_len = config.index_len,
-        host_addr = host_addr.to_string(),
-        "adding route to TUN"
-    );
+async fn add_routes(ifname: &str) -> Result<()> {
     let (connection, handle, _) = rtnetlink::new_connection()?;
     tokio::spawn(connection);
 
     let mut links = handle.link().get().match_name(ifname.to_owned()).execute();
-    let index = if let Some(link) = links.try_next().await? {
+    let ifindex = if let Some(link) = links.try_next().await? {
         assert!(links.try_next().await?.is_none());
         link.header.index
     } else {
         bail!("link not found")
     };
-    info!(index, "got link ifindex");
+    info!(ifindex, "got link ifindex");
 
-    handle
-        .address()
-        .add(index, IpAddr::V6(host_addr), config.subnet_len)
+    for subnet in get_config().subnet.iter() {
+        add_route(&handle, ifindex, subnet).await?;
+    }
+    Ok(())
+}
+
+async fn add_route(rtnl: &rtnetlink::Handle, ifindex: u32, subnet: &SubnetConfig) -> Result<()> {
+    let host_addr = subnet.host_addr();
+    info!(
+        subnet = subnet.subnet.to_string(),
+        subnet_len = subnet.subnet_len,
+        index_len = subnet.index_len,
+        host_addr = host_addr.to_string(),
+        "adding route to TUN"
+    );
+
+    rtnl.address()
+        .add(ifindex, IpAddr::V6(host_addr), subnet.subnet_len)
         .execute()
         .await?;
     info!(host_addr = host_addr.to_string(), "host addr added");
 
-    handle
-        .route()
+    rtnl.route()
         .add()
         .v6()
-        .destination_prefix(config.subnet, config.subnet_len)
-        .output_interface(index)
+        .destination_prefix(subnet.subnet, subnet.subnet_len)
+        .output_interface(ifindex)
         .pref_source(host_addr)
         .replace()
         .execute()
         .await?;
-    info!("subnet route added");
+    info!(subnet = subnet.subnet.to_string(), "subnet route added");
 
     Ok(())
 }
