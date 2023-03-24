@@ -2153,8 +2153,19 @@ class Query {
 			}
 		}
 
+		global $wgTemplateLinksSchemaMigrationStage;
 		if ( $this->parameters->getParameter( 'openreferences' ) ) {
 			$where[] = $this->dbr->makeList( [ 'tpl_from' => $values ], IDatabase::LIST_OR );
+		} elseif ( $wgTemplateLinksSchemaMigrationStage & SCHEMA_COMPAT_READ_OLD ) {
+			$this->addTable( 'templatelinks', 'tpl' );
+			$this->addTable( 'page', 'tplsrc' );
+			$this->addSelect( [ 'tpl_sel_title' => 'tplsrc.page_title', 'tpl_sel_ns' => 'tplsrc.page_namespace' ] );
+			$where = [
+				$this->tableNames['page'] . '.page_namespace = tpl.tl_namespace',
+				$this->tableNames['page'] . '.page_title = tpl.tl_title',
+				'tplsrc.page_id = tpl.tl_from',
+				$this->dbr->makeList( [ 'tpl.tl_from' => $values ], IDatabase::LIST_OR )
+			];
 		} else {
 			$this->addTables( [
 				'linktarget' => 'lt',
@@ -2195,9 +2206,15 @@ class Query {
 		$where = $this->tableNames['page'] . '.page_id=tl.tl_from AND lt.lt_id = tl.tl_target_id AND (';
 		$ors = [];
 		$linksByNS = [];
+		$nsField = $this->tableNames['linktarget'] . '.lt_namespace';
+		$titleField = $this->tableNames['linktarget'] . '.lt_title';
 
-		$linksMigration = MediaWikiServices::getInstance()->getLinksMigration();
-		[ $nsField, $titleField ] = $linksMigration->getTitleFields( 'templatelinks' );
+		global $wgTemplateLinksSchemaMigrationStage;
+		if ( $wgTemplateLinksSchemaMigrationStage & SCHEMA_COMPAT_READ_OLD ) {
+			$where = $this->tableNames['page'] . '.page_id=tl.tl_from AND (';
+			$nsField = $this->tableNames['templatelinks'] . '.tl_namespace';
+			$titleField = $this->tableNames['templatelinks'] . '.tl_title';
+		}
 
 		foreach ( $option as $linkGroup ) {
 			foreach ( $linkGroup as $link ) {
@@ -2210,10 +2227,10 @@ class Query {
 		}
 
 		foreach ( $linksByNS as $ns => $values ) {
-			$_or = '(lt.' . $nsField . '=' . $ns;
+			$_or = '(' . $nsField . '=' . $ns;
 
 			if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-				$_or .= ' AND LOWER(CONVERT(lt.' . $titleField . ' USING utf8mb4))';
+				$_or .= ' AND LOWER(CONVERT(' . $titleField . ' USING utf8mb4))';
 			} else {
 				$_or .= ' AND ' . $titleField;
 			}
@@ -2241,9 +2258,15 @@ class Query {
 			$where = $this->tableNames['page'] . '.page_id NOT IN (SELECT ' . $this->tableNames['templatelinks'] . '.tl_from FROM ' . $this->tableNames['templatelinks'] . ' INNER JOIN ' . $this->tableNames['linktarget'] . ' ON ' . $this->tableNames['linktarget'] . '.lt_id = ' . $this->tableNames['templatelinks'] . '.tl_target_id WHERE (';
 			$ors = [];
 			$linksByNS = [];
+			$nsField = $this->tableNames['linktarget'] . '.lt_namespace';
+			$titleField = $this->tableNames['linktarget'] . '.lt_title';
 
-			$linksMigration = MediaWikiServices::getInstance()->getLinksMigration();
-			[ $nsField, $titleField ] = $linksMigration->getTitleFields( 'templatelinks' );
+			global $wgTemplateLinksSchemaMigrationStage;
+			if ( $wgTemplateLinksSchemaMigrationStage & SCHEMA_COMPAT_READ_OLD ) {
+				$where = $this->tableNames['page'] . '.page_id NOT IN (SELECT ' . $this->tableNames['templatelinks'] . '.tl_from FROM ' . $this->tableNames['templatelinks'] . ' WHERE (';
+				$nsField = $this->tableNames['templatelinks'] . '.tl_namespace';
+				$titleField = $this->tableNames['templatelinks'] . '.tl_title';
+			}
 
 			foreach ( $option as $linkGroup ) {
 				foreach ( $linkGroup as $link ) {
@@ -2256,12 +2279,12 @@ class Query {
 			}
 
 			foreach ( $linksByNS as $ns => $values ) {
-				$_or = '(' . $this->tableNames['linktarget'] . '.' . $nsField . '=' . $ns;
+				$_or = '(' . $nsField . '=' . $ns;
 
 				if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-					$_or .= ' AND LOWER(CONVERT(' . $this->tableNames['linktarget'] . '.' . $titleField . ' USING utf8mb4))';
+					$_or .= ' AND LOWER(CONVERT(' . $titleField . ' USING utf8mb4))';
 				} else {
-					$_or .= ' AND ' . $this->tableNames['linktarget'] . '.' . $titleField;
+					$_or .= ' AND ' . $titleField;
 				}
 
 				if ( count( $values ) == 1 ) {
