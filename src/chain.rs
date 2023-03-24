@@ -11,9 +11,11 @@ pub fn parse_chain(text: &str) -> Result<Chain> {
         if line.starts_with('#') {
             continue;
         }
+        let mut asis_flag = false;
         let mut dns_flag = false;
         while line.starts_with('\\') {
             if line.starts_with("\\asis ") {
+                asis_flag = true;
                 line = &line[6..];
                 break;
             } else if line.starts_with("\\dns ") {
@@ -23,6 +25,9 @@ pub fn parse_chain(text: &str) -> Result<Chain> {
                 }
                 line = &line[5..line.len() - 1];
             }
+        }
+        if !asis_flag && line.is_empty() {
+            continue;
         }
         let parts = if dns_flag {
             line.split('.').map(String::from).collect()
