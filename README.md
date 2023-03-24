@@ -16,6 +16,8 @@ Leading and trailing whitespace after uncommented lines will be stripped unless 
 
 Lines starts with`\dns(SPACE)` will be parsed as a FQDN (must end with a `.`).
 
+Data is cached for 30 seconds, so changes that have just been committed may not be reflected immediately.
+
 ## Updates
 
 All XV-NET members have direct push permissions to this repository.
