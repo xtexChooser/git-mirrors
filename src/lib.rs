@@ -5,6 +5,7 @@
 
 pub mod chain;
 pub mod config;
+pub mod dns;
 pub mod inet;
 pub mod resolver;
 pub mod subnet;
