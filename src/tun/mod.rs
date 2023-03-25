@@ -15,9 +15,10 @@ use crate::inet;
 use crate::subnet::SubnetConfig;
 
 use self::buf::TunBuffer;
-use self::ip::HandleIpExt;
+use self::ip::IpHandler;
 
 pub mod buf;
+pub mod icmp;
 pub mod ip;
 
 pub const ERROR_HEADER_SIZE: usize = size_of::<inet::ip6_hdr>() + size_of::<inet::icmp6_hdr>();
@@ -68,7 +69,7 @@ async fn add_routes(ifname: &str) -> Result<()> {
     };
     info!(ifindex, "got link ifindex");
 
-    for subnet in get_config().subnet.iter() {
+    for subnet in &get_config().subnet {
         add_route(&handle, ifindex, subnet).await?;
     }
     Ok(())

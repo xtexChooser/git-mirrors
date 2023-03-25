@@ -4,14 +4,14 @@ use anyhow::{bail, Result};
 
 use crate::{inet, subnet};
 
-use super::TunHandler;
+use super::{icmp::IcmpHandler, TunHandler};
 
-pub trait HandleIpExt {
+pub trait IpHandler {
     async fn handle_ip(&mut self) -> Result<()>;
     async fn handle_ipv6(&mut self) -> Result<()>;
 }
 
-impl HandleIpExt for TunHandler {
+impl IpHandler for TunHandler {
     async fn handle_ip(&mut self) -> Result<()> {
         let ip = self.buf.read::<inet::ip>(0);
         match ip.ip_v() {
@@ -27,7 +27,10 @@ impl HandleIpExt for TunHandler {
         let dst = parse_in6_addr(&ip6.ip6_dst);
         if let Some((index, hop)) = subnet::try_parse(dst) {
             let src = parse_in6_addr(&ip6.ip6_src);
-            println!("recevied pkt {} {} {index} {hop}", src, dst);
+            match unsafe { ip6.ip6_ctlun.ip6_un1.ip6_un1_nxt } as u32 {
+                inet::IPPROTO_ICMPV6 => self.handle_icmpv6(src, index, hop).await?,
+                _ => (),
+            }
         }
         Ok(())
     }

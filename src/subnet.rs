@@ -45,7 +45,7 @@ impl SubnetConfig {
 }
 
 pub fn try_parse(addr: Ipv6Addr) -> Option<(u128, u8)> {
-    for subnet in get_config().subnet.iter() {
+    for subnet in &get_config().subnet {
         if subnet.contains(addr) {
             return Some(subnet.parse(addr));
         }
