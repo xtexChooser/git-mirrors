@@ -149,7 +149,7 @@ pub unsafe fn calc_checksum(data: *const u8, size: usize, ext_sum: u32) -> u16 {
     for i in 0..(size / 2) {
         checksum += *data16.offset(i as isize) as u32;
     }
-    if size % 1 == 1 {
+    if size % 2 == 1 {
         checksum += *data.offset(size as isize) as u32;
     }
 
