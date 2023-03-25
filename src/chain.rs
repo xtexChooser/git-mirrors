@@ -36,5 +36,6 @@ pub fn parse_chain(text: &str) -> Result<Chain> {
         };
         lines.push(parts);
     }
+    lines.reverse();
     Ok(Chain(lines))
 }
