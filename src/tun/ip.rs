@@ -1,7 +1,6 @@
-use std::{mem::size_of, net::Ipv6Addr};
+use std::net::Ipv6Addr;
 
 use anyhow::{bail, Result};
-use bytes::{Buf, BufMut, BytesMut};
 
 use crate::{inet, subnet};
 
@@ -82,8 +81,8 @@ pub fn build_ipv6_reply(
     Ok(())
 }
 
-pub unsafe fn calc_checksum(data: *const u8, size: usize) -> u16 {
-    let mut checksum = 0u32;
+pub unsafe fn calc_checksum(data: *const u8, size: usize, ext_sum: u32) -> u16 {
+    let mut checksum = ext_sum;
     let data16 = data as *const u16;
 
     for i in 0..(size / 2) {
@@ -99,15 +98,19 @@ pub unsafe fn calc_checksum(data: *const u8, size: usize) -> u16 {
     !(checksum as u16)
 }
 
-pub fn build_ipv6_phdr(buf: &mut u8, src: &Ipv6Addr, dst: &Ipv6Addr, len: u32, nh: u8) {
-    let _buf = buf;
-    let mut buf = BytesMut::new();
-    buf.put_u128(u128::to_be(u128::from(*src)));
-    buf.put_u128(u128::to_be(u128::from(*dst)));
-    buf.put_u32(len.to_be());
-    buf.put_bytes(0, 3);
-    buf.put_u8(nh);
-    let mut buf = buf.freeze();
-    debug_assert!(buf.remaining() == 40);
-    buf.copy_to_slice(unsafe { core::slice::from_raw_parts_mut(_buf, size_of::<inet::ip6_hdr>()) })
+pub fn calc_ipv6_phdr_checksum(src: &Ipv6Addr, dst: &Ipv6Addr, len: u32, nh: u8) -> u32 {
+    let mut checksum = 0u32;
+
+    let src = unsafe { to_in6_addr(src).__in6_u.__u6_addr16 };
+    let dst = unsafe { to_in6_addr(dst).__in6_u.__u6_addr16 };
+    for i in 0..8 {
+        checksum += src[i] as u32;
+        checksum += dst[i] as u32;
+    }
+
+    checksum += (len as u16).to_be() as u32;
+    checksum += (len >> 16).to_be() as u32;
+    checksum += (nh as u32) << 8;
+
+    checksum
 }

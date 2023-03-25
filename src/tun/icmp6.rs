@@ -67,13 +67,6 @@ pub fn build_icmpv6_reply(
     len: usize,
 ) -> Result<()> {
     let ip_offset = if prepend { 0 } else { super::ERROR_HEADER_SIZE };
-    ip::build_ipv6_phdr(
-        buf.object(ip_offset),
-        src,
-        dst,
-        (size_of::<inet::icmp6_hdr>() + len) as u32,
-        inet::IPPROTO_ICMPV6 as u8,
-    );
     let icmp6 = buf.object::<inet::icmp6_hdr>(ip_offset + size_of::<inet::ip6_hdr>());
     icmp6.icmp6_type = typ as u8;
     icmp6.icmp6_code = code as u8;
@@ -83,8 +76,14 @@ pub fn build_icmpv6_reply(
     }
     let checksum = unsafe {
         ip::calc_checksum(
-            buf.object(ip_offset),
-            size_of::<inet::ip6_hdr>() + size_of::<inet::icmp6_hdr>() + len,
+            buf.object(ip_offset + size_of::<inet::ip6_hdr>()),
+            size_of::<inet::icmp6_hdr>() + len,
+            ip::calc_ipv6_phdr_checksum(
+                src,
+                dst,
+                (size_of::<inet::icmp6_hdr>() + len) as u32,
+                inet::IPPROTO_ICMPV6 as u8,
+            ),
         )
     };
     icmp6.icmp6_cksum = checksum;
