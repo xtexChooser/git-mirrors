@@ -29,6 +29,10 @@ impl SubnetConfig {
         )
     }
 
+    pub fn build_addr(&self, index: u128, hop: u8) -> Ipv6Addr {
+        Ipv6Addr::from(u128::from(self.subnet) | index << self.hop_len | hop as u128)
+    }
+
     pub fn with_hop(&self, addr: Ipv6Addr, hop: u8) -> Ipv6Addr {
         Ipv6Addr::from(u128::from(addr) >> self.hop_len << self.hop_len | hop as u128)
     }

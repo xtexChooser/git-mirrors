@@ -1,6 +1,6 @@
 use std::{collections::BTreeMap, str::FromStr, sync::Arc, time::Duration};
 
-use anyhow::Result;
+use anyhow::{bail, Result};
 use serde::{Deserialize, Serialize};
 use tokio::net::{TcpListener, UdpSocket};
 use tracing::info;
@@ -14,7 +14,9 @@ use trust_dns_server::{
 
 use crate::config::get_config;
 
-pub mod handler;
+use self::forward_auth::ForwardAuth;
+
+pub mod forward_auth;
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone, Hash)]
 pub struct DnsConfig {
@@ -33,9 +35,24 @@ pub enum DnsListenAddr {
 
 pub async fn start_dns() -> Result<()> {
     let config = &get_config().dns;
+    let mname = Name::from_str(&config.mname)?;
+    if !mname.is_fqdn() {
+        bail!("mname is not FQDN")
+    }
+    let rname = Name::from_str(&config.rname)?;
+    if !rname.is_fqdn() {
+        bail!("rname is not FQDN")
+    }
 
     let mut catalog = Catalog::new();
     catalog.upsert(Name::root().into(), build_root_authority()?);
+
+    catalog.upsert(
+        mname.clone().into(),
+        Box::new(Arc::new(ForwardAuth {
+            origin: mname.into(),
+        })),
+    );
 
     let mut server = ServerFuture::new(catalog);
 
