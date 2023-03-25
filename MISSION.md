@@ -53,7 +53,7 @@ moves us towards the purpose. Hints for deriving our mission:
   umbrella to organize the finer elements
 
 From our mission(s), we derive our
-[roadmap](https://codeberg.org/forgejo/meta/issues/10).
+[roadmap](https://codeberg.org/forgejo/discussions/issues/17).
 
 **Mission of Forgejo Organization**:
 
