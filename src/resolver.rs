@@ -62,6 +62,7 @@ pub mod cache {
 
     use lazy_static::lazy_static;
     use tokio::sync::Mutex;
+    use tracing::info;
 
     use crate::chain::Chain;
 
@@ -75,6 +76,7 @@ pub mod cache {
     }
 
     pub async fn put_cache(index: u128, chain: Option<Arc<Chain>>) {
+        info!(index, resolved = chain.is_some(), "caching chain");
         CACHE.lock().await.insert(index, (Instant::now(), chain));
     }
 

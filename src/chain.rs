@@ -3,7 +3,13 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone, Hash)]
 #[serde(transparent)]
-pub struct Chain(Vec<Vec<String>>);
+pub struct Chain(pub Vec<Vec<String>>);
+
+impl Chain {
+    pub fn len(&self) -> u8 {
+        self.0.len() as u8
+    }
+}
 
 pub fn parse_chain(text: &str) -> Result<Chain> {
     let mut lines = vec![];
@@ -37,5 +43,8 @@ pub fn parse_chain(text: &str) -> Result<Chain> {
         lines.push(parts);
     }
     lines.reverse();
+    if lines.len() > u8::MAX as usize {
+        bail!("too many lines in chainfile")
+    }
     Ok(Chain(lines))
 }

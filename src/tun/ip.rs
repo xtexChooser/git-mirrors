@@ -25,10 +25,10 @@ impl IpHandler for TunHandler {
     async fn handle_ipv6(&mut self) -> Result<()> {
         let ip6 = self.buf.read_object::<inet::ip6_hdr>(0);
         let dst = parse_in6_addr(&ip6.ip6_dst);
-        if let Some((index, hop)) = subnet::try_parse(dst) {
+        if let Some((subnet, index, hop)) = subnet::try_parse(dst) {
             let src = parse_in6_addr(&ip6.ip6_src);
             match unsafe { ip6.ip6_ctlun.ip6_un1.ip6_un1_nxt } as u32 {
-                inet::IPPROTO_ICMPV6 => self.handle_icmpv6(src, dst, index, hop).await?,
+                inet::IPPROTO_ICMPV6 => self.handle_icmpv6(src, dst, subnet, index, hop).await?,
                 _ => (),
             }
         }

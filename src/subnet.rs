@@ -29,7 +29,7 @@ impl SubnetConfig {
         )
     }
 
-    pub fn with_hop(&self, addr: Ipv6Addr, hop: u16) -> Ipv6Addr {
+    pub fn with_hop(&self, addr: Ipv6Addr, hop: u8) -> Ipv6Addr {
         Ipv6Addr::from(u128::from(addr) >> self.hop_len << self.hop_len | hop as u128)
     }
 
@@ -44,10 +44,11 @@ impl SubnetConfig {
     }
 }
 
-pub fn try_parse(addr: Ipv6Addr) -> Option<(u128, u8)> {
+pub fn try_parse(addr: Ipv6Addr) -> Option<(&'static SubnetConfig, u128, u8)> {
     for subnet in &get_config().subnet {
         if subnet.contains(addr) {
-            return Some(subnet.parse(addr));
+            let (index, hop) = subnet.parse(addr);
+            return Some((subnet, index, hop));
         }
     }
     None
