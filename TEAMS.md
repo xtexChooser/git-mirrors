@@ -117,7 +117,8 @@ Purpose: [See the documentation](https://codeberg.org/forgejo/forgejo/src/branch
 
 Accountability:
 
-* Enforce the Code of Conduct
+* Take action when a behavior in a Forgejo space goes against the Code of Conduct or the law.
+* Create moderation reports based on auditable facts and explain each action in a logical way.
 
 Team members:
 
