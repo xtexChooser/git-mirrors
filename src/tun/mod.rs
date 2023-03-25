@@ -147,6 +147,7 @@ impl TunHandler {
     }
 
     pub async fn send(&mut self, offset: usize, len: usize) -> Result<()> {
+        #[allow(clippy::redundant_closure_call)]
         self.tun
             .send((|| unsafe {
                 core::slice::from_raw_parts(self.buf.object(offset), len)

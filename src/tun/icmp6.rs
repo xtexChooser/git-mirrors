@@ -36,13 +36,12 @@ pub async fn send_error_reply(
     dst: &Ipv6Addr,
     typ: u32,
     code: u32,
-    data: u32,
 ) -> Result<()> {
     let len = max(
         tun.recv_size - size_of::<inet::icmp6_hdr>() - size_of::<inet::ip6_hdr>(),
         min(1000, tun.recv_size),
     );
-    build_reply(&mut tun.buf, true, src, dst, typ, code, data, len)?;
+    build_reply(&mut tun.buf, true, src, dst, typ, code, len)?;
     tun.send(
         0,
         size_of::<inet::ip6_hdr>() + size_of::<inet::icmp6_hdr>() + len,
@@ -58,7 +57,6 @@ pub fn build_reply(
     dst: &Ipv6Addr,
     typ: u32,
     code: u32,
-    data: u32,
     len: usize,
 ) -> Result<()> {
     let offset = if prepend { 0 } else { super::ERROR_HEADER_SIZE } + size_of::<inet::ip6_hdr>();
@@ -67,7 +65,7 @@ pub fn build_reply(
     icmp6.icmp6_code = code as u8;
     icmp6.icmp6_cksum = 0;
     unsafe {
-        icmp6.icmp6_dataun.icmp6_un_data32[0] = data;
+        icmp6.icmp6_dataun.icmp6_un_data32[0] = 0;
     }
     let checksum = unsafe {
         ip::calc_checksum(

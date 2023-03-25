@@ -66,12 +66,14 @@ pub mod cache {
 
     use crate::chain::Chain;
 
+    pub type CacheRecord = (Instant, Option<Arc<Chain>>);
+
     lazy_static! {
-        pub(crate) static ref CACHE: Mutex<BTreeMap<u128, (Instant, Option<Arc<Chain>>)>> =
+        pub(crate) static ref CACHE: Mutex<BTreeMap<u128, CacheRecord>> =
             Mutex::new(BTreeMap::new());
     }
 
-    pub async fn find_cache(index: u128) -> Option<(Instant, Option<Arc<Chain>>)> {
+    pub async fn find_cache(index: u128) -> Option<CacheRecord> {
         CACHE.lock().await.get(&index).cloned()
     }
 
@@ -103,7 +105,7 @@ pub mod cache {
 }
 
 pub async fn try_resolve(index: u128) -> Result<Option<Arc<Chain>>> {
-    let _ = cache::CACHE.lock();
+    let _ = cache::CACHE.lock().await;
     if let Some((_, chain)) = cache::find_cache(index).await {
         return Ok(chain);
     }

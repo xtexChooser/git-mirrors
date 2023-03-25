@@ -45,7 +45,6 @@ impl IpHandler for TunHandler {
                         &src,
                         inet::ICMP6_DST_UNREACH,
                         inet::ICMP6_DST_UNREACH_ADDR,
-                        0,
                     )
                     .await?;
                 } else {
@@ -58,7 +57,6 @@ impl IpHandler for TunHandler {
                             &src,
                             inet::ICMP6_TIME_EXCEEDED,
                             inet::ICMP6_TIME_EXCEED_TRANSIT,
-                            0,
                         )
                         .await?;
                     } else {
@@ -73,7 +71,6 @@ impl IpHandler for TunHandler {
                                     &src,
                                     inet::ICMP6_DST_UNREACH,
                                     inet::ICMP6_DST_UNREACH_NOPORT,
-                                    0,
                                 )
                                 .await?;
                             }
@@ -88,7 +85,6 @@ impl IpHandler for TunHandler {
                     &src,
                     inet::ICMP6_DST_UNREACH,
                     inet::ICMP6_DST_UNREACH_NOROUTE,
-                    0,
                 )
                 .await?;
             }
@@ -130,6 +126,7 @@ pub fn build_ipv6_reply(
 ) -> Result<()> {
     let read_ip6 = buf.read_object::<inet::ip6_hdr>(0);
     let ip6 = buf.object::<inet::ip6_hdr>(if prepend { 0 } else { super::ERROR_HEADER_SIZE });
+    #[allow(clippy::identity_op)]
     unsafe {
         ip6.ip6_ctlun.ip6_un1.ip6_un1_flow =
             ((6 << 28) | (0 << 20) | u32::from_be(read_ip6.ip6_ctlun.ip6_un1.ip6_un1_flow)).to_be();
@@ -142,15 +139,17 @@ pub fn build_ipv6_reply(
     Ok(())
 }
 
+/// # Safety
+/// `data[0..size]` MUST be readable
 pub unsafe fn calc_checksum(data: *const u8, size: usize, ext_sum: u32) -> u16 {
     let mut checksum = ext_sum;
     let data16 = data as *const u16;
 
     for i in 0..(size / 2) {
-        checksum += *data16.offset(i as isize) as u32;
+        checksum += *data16.add(i) as u32;
     }
     if size % 2 == 1 {
-        checksum += *data.offset(size as isize) as u32;
+        checksum += *data.add(size) as u32;
     }
 
     while (checksum >> 16) != 0 {
@@ -170,7 +169,7 @@ pub fn calc_ipv6_phdr_checksum(src: &Ipv6Addr, dst: &Ipv6Addr, len: u32, nh: u8)
     }
 
     checksum += (len as u16).to_be() as u32;
-    checksum += (len >> 16).to_be() as u32;
+    checksum += (len >> 16).to_be();
     checksum += (nh as u32) << 8;
 
     checksum
