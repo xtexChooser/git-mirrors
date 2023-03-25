@@ -70,7 +70,7 @@ impl IpHandler for TunHandler {
                                     &dst,
                                     &src,
                                     inet::ICMP6_DST_UNREACH,
-                                    inet::ICMP6_DST_UNREACH_ADDR,
+                                    inet::ICMP6_DST_UNREACH_NOPORT,
                                     0,
                                 )
                                 .await?;
