@@ -5,6 +5,7 @@ fn main() {
     let bindings = bindgen::Builder::default()
         .header("src/netinet.h")
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
+        .blocklist_type("in6_addr.*")
         .generate()
         .unwrap();
 

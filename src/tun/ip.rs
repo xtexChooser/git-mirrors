@@ -94,7 +94,7 @@ impl IpHandler for TunHandler {
 }
 
 pub fn parse_in6_addr(addr: &inet::in6_addr) -> Ipv6Addr {
-    let addr = unsafe { addr.__in6_u.__u6_addr32 };
+    let addr = unsafe { addr.__in6_union.__u6_addr32 };
     let addr = (u32::from_be(addr[0]) as u128) << 96
         | (u32::from_be(addr[1]) as u128) << 64
         | (u32::from_be(addr[2]) as u128) << 32
@@ -105,7 +105,7 @@ pub fn parse_in6_addr(addr: &inet::in6_addr) -> Ipv6Addr {
 pub fn to_in6_addr(addr: &Ipv6Addr) -> inet::in6_addr {
     let addr = u128::from(*addr);
     inet::in6_addr {
-        __in6_u: inet::in6_addr__bindgen_ty_1 {
+        __in6_union: inet::in6_addr__bindgen_ty_1 {
             __u6_addr32: [
                 u32::to_be((addr >> 96) as u32),
                 u32::to_be((addr >> 64) as u32),
@@ -161,8 +161,8 @@ pub unsafe fn calc_checksum(data: *const u8, size: usize, ext_sum: u32) -> u16 {
 pub fn calc_ipv6_phdr_checksum(src: &Ipv6Addr, dst: &Ipv6Addr, len: u32, nh: u8) -> u32 {
     let mut checksum = 0u32;
 
-    let src = unsafe { to_in6_addr(src).__in6_u.__u6_addr16 };
-    let dst = unsafe { to_in6_addr(dst).__in6_u.__u6_addr16 };
+    let src = unsafe { to_in6_addr(src).__in6_union.__u6_addr16 };
+    let dst = unsafe { to_in6_addr(dst).__in6_union.__u6_addr16 };
     for i in 0..8 {
         checksum += src[i] as u32;
         checksum += dst[i] as u32;
