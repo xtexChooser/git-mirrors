@@ -67,7 +67,7 @@ pub mod cache {
     use crate::chain::Chain;
 
     lazy_static! {
-        static ref CACHE: Mutex<BTreeMap<u128, (Instant, Option<Arc<Chain>>)>> =
+        pub(crate) static ref CACHE: Mutex<BTreeMap<u128, (Instant, Option<Arc<Chain>>)>> =
             Mutex::new(BTreeMap::new());
     }
 
@@ -106,6 +106,7 @@ pub async fn try_resolve(index: u128) -> Result<Option<Arc<Chain>>> {
     if let Some((_, chain)) = cache::find_cache(index).await {
         return Ok(chain);
     }
+    let _ = cache::CACHE.lock();
     for resolver in &get_config().resolver {
         if let Some(chain) = resolver.resolve(index).await? {
             let chain = Arc::new(chain);
