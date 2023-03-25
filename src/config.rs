@@ -5,7 +5,7 @@ use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
-use crate::{resolver::ResolverConfig, subnet::SubnetConfig};
+use crate::{dns::DnsConfig, resolver::ResolverConfig, subnet::SubnetConfig};
 
 lazy_static! {
     static ref CONFIG: Config = load_config().unwrap();
@@ -29,6 +29,7 @@ pub fn get_config() -> &'static Config {
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone, Hash)]
 pub struct Config {
     pub tun: TunConfig,
+    pub dns: DnsConfig,
     pub subnet: Vec<SubnetConfig>,
     pub resolver: Vec<ResolverConfig>,
 }

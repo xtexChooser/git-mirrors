@@ -1,5 +1,5 @@
 use anyhow::Result;
-use mekbuda::{resolver, tun::start_tun};
+use mekbuda::{dns::start_dns, resolver, tun::start_tun};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -7,6 +7,7 @@ async fn main() -> Result<()> {
     tracing::subscriber::set_global_default(subscriber).unwrap();
 
     tokio::spawn(resolver::cache::gc_worker());
+    tokio::spawn(start_dns());
     start_tun().await?;
 
     Ok(())
