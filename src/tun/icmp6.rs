@@ -6,11 +6,7 @@ use std::{
 
 use anyhow::{bail, Result};
 
-use crate::{
-    inet,
-    resolver::resolve,
-    subnet::{self, SubnetConfig},
-};
+use crate::{inet, resolver::resolve, subnet::SubnetConfig};
 
 use super::{
     buf::TunBuffer,
@@ -38,49 +34,53 @@ impl Icmp6Handler for TunHandler {
         index: u128,
         hop: u8,
     ) -> Result<()> {
-        if let Some(chain) = resolve(index).await {
-            let ip6 = self.buf.read_object::<inet::ip6_hdr>(0);
-            let hops = chain.len();
-            if hop >= hops {
-                // ADDR UNREACHABLE for hops out of range
-                send_icmpv6_error_reply(
-                    self,
-                    &subnet.with_hop(dst, hops - 1),
-                    &src,
-                    inet::ICMP6_DST_UNREACH,
-                    inet::ICMP6_DST_UNREACH_ADDR,
-                    0,
-                )
-                .await?;
-            } else {
-                let ttl = unsafe { ip6.ip6_ctlun.ip6_un1.ip6_un1_hlim };
-                println!("hop {}/{} ttl {}", hop, hops, ttl);
-                if hops - hop > ttl {
-                    // TTL EXCEEDED
+        let icmp6 = self
+            .buf
+            .read_object::<inet::icmp6_hdr>(size_of::<inet::ip6_hdr>() as isize);
+        if icmp6.icmp6_type == inet::ICMP6_ECHO_REQUEST as u8 && icmp6.icmp6_code == 0 {
+            if let Some(chain) = resolve(index).await {
+                let ip6 = self.buf.read_object::<inet::ip6_hdr>(0);
+                let hops = chain.len();
+                if hop >= hops {
+                    // ADDR UNREACHABLE for hops out of range
                     send_icmpv6_error_reply(
                         self,
-                        &subnet.with_hop(dst, hops - ttl),
+                        &subnet.with_hop(dst, hops - 1),
                         &src,
-                        inet::ICMP6_TIME_EXCEEDED,
-                        inet::ICMP6_TIME_EXCEED_TRANSIT,
+                        inet::ICMP6_DST_UNREACH,
+                        inet::ICMP6_DST_UNREACH_ADDR,
                         0,
                     )
                     .await?;
                 } else {
-                    //send_icmpv6_echo_reply(self).await?;
+                    let ttl = unsafe { ip6.ip6_ctlun.ip6_un1.ip6_un1_hlim };
+                    if hops - hop > ttl {
+                        // TTL EXCEEDED
+                        send_icmpv6_error_reply(
+                            self,
+                            &subnet.with_hop(dst, hops - ttl),
+                            &src,
+                            inet::ICMP6_TIME_EXCEEDED,
+                            inet::ICMP6_TIME_EXCEED_TRANSIT,
+                            0,
+                        )
+                        .await?;
+                    } else {
+                        //send_icmpv6_echo_reply(self).await?;
+                    }
                 }
+            } else {
+                // NOROUTE for non-exists chains
+                send_icmpv6_error_reply(
+                    self,
+                    &dst,
+                    &src,
+                    inet::ICMP6_DST_UNREACH,
+                    inet::ICMP6_DST_UNREACH_NOROUTE,
+                    0,
+                )
+                .await?;
             }
-        } else {
-            // NOROUTE for non-exists chains
-            send_icmpv6_error_reply(
-                self,
-                &dst,
-                &src,
-                inet::ICMP6_DST_UNREACH,
-                inet::ICMP6_DST_UNREACH_NOROUTE,
-                0,
-            )
-            .await?;
         }
         Ok(())
     }
@@ -146,5 +146,14 @@ pub fn build_icmpv6_reply(
         size_of::<inet::icmp6_hdr>() + len,
         inet::IPPROTO_ICMPV6,
     )?;
+    Ok(())
+}
+
+pub async fn send_icmpv6_echo_reply(tun: &mut TunHandler) -> Result<()> {
+    let ip6 = tun.buf.read_object::<inet::ip6_hdr>(0);
+    let icmp6 = tun
+        .buf
+        .read_object::<inet::icmp6_hdr>(size_of::<inet::ip6_hdr>() as isize);
+
     Ok(())
 }
