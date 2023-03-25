@@ -1,6 +1,6 @@
 FROM docker.io/library/alpine AS builder
 
-RUN apk add -q --no-cache build-base curl
+RUN apk add -q --no-cache build-base curl linux-headers
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain nightly --profile minimal
 WORKDIR /build
 COPY ["Cargo*", "LICENSE*", "build.rs", "src", "./"]
