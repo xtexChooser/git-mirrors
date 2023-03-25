@@ -21,3 +21,5 @@ base:
     'watchtower:enable:true':
         - match: pillar
         - watchtower
+    'nl-alk1':
+        - mekbuda
