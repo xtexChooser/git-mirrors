@@ -26,7 +26,7 @@ pub const ERROR_HEADER_SIZE: usize = size_of::<inet::ip6_hdr>() + size_of::<inet
 pub const MTU: usize = 9000;
 pub const BUFFER_SIZE: usize = ERROR_HEADER_SIZE + MTU;
 
-pub async fn start_tun() -> Result<()> {
+pub async fn start_tun() -> Result<JoinSet<Result<()>>> {
     let config = &get_config().tun;
     let tuns = TunBuilder::new()
         .name(config.ifname.as_str())
@@ -50,11 +50,7 @@ pub async fn start_tun() -> Result<()> {
         tasks.spawn(TunHandler::new(tun)?.handle());
     }
 
-    while let Some(result) = tasks.join_next().await {
-        result??;
-    }
-
-    Ok(())
+    Ok(tasks)
 }
 
 async fn add_routes(ifname: &str) -> Result<()> {

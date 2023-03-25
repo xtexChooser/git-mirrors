@@ -7,8 +7,8 @@ async fn main() -> Result<()> {
     tracing::subscriber::set_global_default(subscriber).unwrap();
 
     tokio::spawn(resolver::cache::gc_worker());
-    tokio::spawn(async { start_dns().await.unwrap() });
-    start_tun().await?;
+    let _tun_tasks = start_tun().await?;
+    start_dns().await?;
 
     Ok(())
 }
