@@ -13,5 +13,5 @@ FROM docker.io/library/alpine
 RUN apk add libgcc
 COPY --from=builder /app /usr
 WORKDIR /
-ENV MEKBUDA_CONFIG = "/etc/mekbuda/mekbuda.toml"
+ENV MEKBUDA_CONFIG="/etc/mekbuda/mekbuda.toml"
 ENTRYPOINT [ "/usr/bin/mekbuda" ]
