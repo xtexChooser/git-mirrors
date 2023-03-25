@@ -7,6 +7,7 @@ use crate::{inet, resolver::resolve, subnet};
 use super::{
     buf::TunBuffer,
     icmp6::{self, Icmp6Handler},
+    tcp6::Tcp6Handler,
     TunHandler,
 };
 
@@ -63,6 +64,7 @@ impl IpHandler for TunHandler {
                     } else {
                         match unsafe { ip6.ip6_ctlun.ip6_un1.ip6_un1_nxt } as u32 {
                             inet::IPPROTO_ICMPV6 => self.handle_icmpv6(src, dst).await?,
+                            inet::IPPROTO_TCP => self.handle_tcp6(src, dst).await?,
                             _ => {
                                 // ADDR UNREACHABLE for unknown protocols
                                 icmp6::send_error_reply(
@@ -182,6 +184,6 @@ pub fn calc_diff_checksum(checksum: u16, diff: u16) -> u16 {
     !(checksum as u16)
 }
 
-pub fn diff_checksum(checksum: &mut u16, diff: u16) {
-    *checksum = calc_diff_checksum(*checksum, diff);
+pub fn diff_checksum(checksum: &mut u16, old: u16, new: u16) {
+    *checksum = calc_diff_checksum(*checksum, new.overflowing_sub(old).0);
 }

@@ -22,7 +22,7 @@ impl Icmp6Handler for TunHandler {
     async fn handle_icmpv6(&mut self, src: Ipv6Addr, dst: Ipv6Addr) -> Result<()> {
         let icmp6 = self
             .buf
-            .read_object::<inet::icmp6_hdr>(size_of::<inet::ip6_hdr>() as isize);
+            .read_object::<inet::icmp6_hdr>(size_of::<inet::ip6_hdr>());
         if icmp6.icmp6_type == inet::ICMP6_ECHO_REQUEST as u8 && icmp6.icmp6_code == 0 {
             send_echo_reply(self, &dst, &src).await?;
         }
@@ -97,7 +97,7 @@ pub async fn send_echo_reply(tun: &mut TunHandler, src: &Ipv6Addr, dst: &Ipv6Add
     let ip6 = tun.buf.read_object::<inet::ip6_hdr>(0);
     let icmp6 = tun
         .buf
-        .read_object::<inet::icmp6_hdr>(size_of::<inet::ip6_hdr>() as isize);
+        .read_object::<inet::icmp6_hdr>(size_of::<inet::ip6_hdr>());
 
     ip6.ip6_src = ip::to_in6_addr(src);
     ip6.ip6_dst = ip::to_in6_addr(dst);
@@ -106,7 +106,8 @@ pub async fn send_echo_reply(tun: &mut TunHandler, src: &Ipv6Addr, dst: &Ipv6Add
     icmp6.icmp6_type = inet::ICMP6_ECHO_REPLY as u8;
     ip::diff_checksum(
         &mut icmp6.icmp6_cksum,
-        (inet::ICMP6_ECHO_REPLY - inet::ICMP6_ECHO_REQUEST) as u16,
+        inet::ICMP6_ECHO_REQUEST as u16,
+        inet::ICMP6_ECHO_REPLY as u16,
     );
 
     tun.send(super::ERROR_HEADER_SIZE, tun.recv_size).await?;

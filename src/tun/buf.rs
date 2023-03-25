@@ -28,8 +28,8 @@ impl TunBuffer {
         &mut self.buf_ref()[ERROR_HEADER_SIZE..]
     }
 
-    pub fn read_object<T>(&self, offset: isize) -> &mut T {
-        self.object((ERROR_HEADER_SIZE as isize + offset) as usize)
+    pub fn read_object<T>(&self, offset: usize) -> &mut T {
+        self.object(ERROR_HEADER_SIZE + offset)
     }
 
     pub fn object<T>(&self, offset: usize) -> &mut T {

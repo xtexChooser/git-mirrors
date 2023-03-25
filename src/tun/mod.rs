@@ -20,6 +20,7 @@ use self::ip::IpHandler;
 pub mod buf;
 pub mod icmp6;
 pub mod ip;
+pub mod tcp6;
 
 pub const ERROR_HEADER_SIZE: usize = size_of::<inet::ip6_hdr>() + size_of::<inet::icmp6_hdr>();
 pub const MTU: usize = 9000;
