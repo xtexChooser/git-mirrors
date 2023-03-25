@@ -18,7 +18,7 @@ use self::buf::TunBuffer;
 use self::ip::IpHandler;
 
 pub mod buf;
-pub mod icmp;
+pub mod icmp6;
 pub mod ip;
 
 pub const ERROR_HEADER_SIZE: usize = size_of::<inet::ip6_hdr>() + size_of::<inet::icmp6_hdr>();
@@ -124,7 +124,7 @@ impl TunHandler {
     pub async fn handle(mut self) -> Result<()> {
         info!("handling TUN");
         loop {
-            let size = self.tun.recv(self.buf.read_buffer()).await?;
+            let size = self.tun.recv(self.buf.read_buf()).await?;
             self.recv_size = size;
             if let Err(e) = self.handle_packet().await {
                 warn!(err = e.to_string(), size, "failed to handle a packet");
@@ -142,6 +142,15 @@ impl TunHandler {
         } else {
             self.handle_ip().await?;
         }
+        Ok(())
+    }
+
+    pub async fn send(&mut self, offset: usize, len: usize) -> Result<()> {
+        self.tun
+            .send((|| unsafe {
+                core::slice::from_raw_parts(self.buf.object(offset), len)
+            })())
+            .await?;
         Ok(())
     }
 }

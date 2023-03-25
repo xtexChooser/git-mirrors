@@ -24,13 +24,17 @@ impl TunBuffer {
         }
     }
 
-    pub fn read_buffer(&self) -> &mut [u8] {
+    pub fn read_buf(&self) -> &mut [u8] {
         &mut self.buf_ref()[ERROR_HEADER_SIZE..]
     }
 
-    pub fn read<T>(&self, offset: isize) -> &mut T {
+    pub fn read_object<T>(&self, offset: isize) -> &mut T {
+        self.object((ERROR_HEADER_SIZE as isize + offset) as usize)
+    }
+
+    pub fn object<T>(&self, offset: usize) -> &mut T {
         unsafe {
-            (self.read_buffer().as_ptr().byte_offset(offset) as *mut T)
+            (self.buf_ref().as_ptr().byte_offset(offset as isize) as *mut T)
                 .as_mut()
                 .unwrap_unchecked()
         }
