@@ -4,7 +4,7 @@ use anyhow::Result;
 use reqwest::get;
 use serde::{Deserialize, Serialize};
 use tokio::fs;
-use tracing::error;
+use tracing::{error, info};
 
 use crate::{
     chain::{self, Chain},
@@ -107,6 +107,7 @@ pub async fn try_resolve(index: u128) -> Result<Option<Arc<Chain>>> {
     if let Some((_, chain)) = cache::find_cache(index).await {
         return Ok(chain);
     }
+    info!(index, "trying to resolve chain");
     for resolver in &get_config().resolver {
         if let Some(chain) = resolver.resolve(index).await? {
             let chain = Arc::new(chain);
