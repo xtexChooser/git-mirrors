@@ -21,7 +21,11 @@ impl Tcp6Handler for TunHandler {
         let tcp = self
             .buf
             .read_object::<inet::tcphdr>(size_of::<inet::ip6_hdr>());
-        if unsafe { tcp.__bindgen_anon_1.__bindgen_anon_1.th_flags } == inet::TH_SYN as u8 {
+        #[cfg(not(target_env = "musl"))]
+        let th_flags = unsafe { tcp.__bindgen_anon_1.__bindgen_anon_1.th_flags };
+        #[cfg(target_env = "musl")]
+        let th_flags = tcp.th_flags;
+        if th_flags == inet::TH_SYN as u8 {
             send_rst_reply(self, &dst, &src).await?;
         }
         Ok(())
@@ -33,7 +37,10 @@ pub async fn send_rst_reply(tun: &mut TunHandler, src: &Ipv6Addr, dst: &Ipv6Addr
     let tcp = tun
         .buf
         .read_object::<inet::tcphdr>(size_of::<inet::ip6_hdr>());
+    #[cfg(not(target_env = "musl"))]
     let th = unsafe { &mut tcp.__bindgen_anon_1.__bindgen_anon_1 };
+    #[cfg(target_env = "musl")]
+    let th = tcp;
 
     // put addr
     ip6.ip6_src = ip::to_in6_addr(src);
