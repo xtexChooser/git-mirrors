@@ -103,10 +103,10 @@ pub mod cache {
 }
 
 pub async fn try_resolve(index: u128) -> Result<Option<Arc<Chain>>> {
+    let _ = cache::CACHE.lock();
     if let Some((_, chain)) = cache::find_cache(index).await {
         return Ok(chain);
     }
-    let _ = cache::CACHE.lock();
     for resolver in &get_config().resolver {
         if let Some(chain) = resolver.resolve(index).await? {
             let chain = Arc::new(chain);
