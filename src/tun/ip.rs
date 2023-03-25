@@ -2,9 +2,15 @@ use std::net::Ipv6Addr;
 
 use anyhow::{bail, Result};
 
-use crate::{inet, subnet};
+use crate::{inet, resolver::resolve, subnet};
 
-use super::{buf::TunBuffer, icmp6::Icmp6Handler, TunHandler};
+use super::{
+    buf::TunBuffer,
+    icmp6::{self, Icmp6Handler},
+    TunHandler,
+};
+
+pub const REPLY_TTL: u8 = 0xff;
 
 pub trait IpHandler {
     async fn handle_ip(&mut self) -> Result<()>;
@@ -24,12 +30,65 @@ impl IpHandler for TunHandler {
 
     async fn handle_ipv6(&mut self) -> Result<()> {
         let ip6 = self.buf.read_object::<inet::ip6_hdr>(0);
+        let src = parse_in6_addr(&ip6.ip6_src);
         let dst = parse_in6_addr(&ip6.ip6_dst);
         if let Some((subnet, index, hop)) = subnet::try_parse(dst) {
-            let src = parse_in6_addr(&ip6.ip6_src);
-            match unsafe { ip6.ip6_ctlun.ip6_un1.ip6_un1_nxt } as u32 {
-                inet::IPPROTO_ICMPV6 => self.handle_icmpv6(src, dst, subnet, index, hop).await?,
-                _ => (),
+            let chain = resolve(index).await;
+            if let Some(chain) = chain {
+                let hops = chain.len();
+                if hop >= hops {
+                    // ADDR UNREACHABLE for hops out of range
+                    icmp6::send_error_reply(
+                        self,
+                        &subnet.with_hop(dst, hops - 1),
+                        &src,
+                        inet::ICMP6_DST_UNREACH,
+                        inet::ICMP6_DST_UNREACH_ADDR,
+                        0,
+                    )
+                    .await?;
+                } else {
+                    let ttl = unsafe { ip6.ip6_ctlun.ip6_un1.ip6_un1_hlim };
+                    if hops - hop > ttl {
+                        // TTL EXCEEDED
+                        icmp6::send_error_reply(
+                            self,
+                            &subnet.with_hop(dst, hops - ttl),
+                            &src,
+                            inet::ICMP6_TIME_EXCEEDED,
+                            inet::ICMP6_TIME_EXCEED_TRANSIT,
+                            0,
+                        )
+                        .await?;
+                    } else {
+                        match unsafe { ip6.ip6_ctlun.ip6_un1.ip6_un1_nxt } as u32 {
+                            inet::IPPROTO_ICMPV6 => self.handle_icmpv6(src, dst).await?,
+                            _ => {
+                                // ADDR UNREACHABLE for unknown protocols
+                                icmp6::send_error_reply(
+                                    self,
+                                    &dst,
+                                    &src,
+                                    inet::ICMP6_DST_UNREACH,
+                                    inet::ICMP6_DST_UNREACH_ADDR,
+                                    0,
+                                )
+                                .await?;
+                            }
+                        }
+                    }
+                }
+            } else {
+                // NOROUTE for non-exists chains
+                icmp6::send_error_reply(
+                    self,
+                    &dst,
+                    &src,
+                    inet::ICMP6_DST_UNREACH,
+                    inet::ICMP6_DST_UNREACH_NOROUTE,
+                    0,
+                )
+                .await?;
             }
         }
         Ok(())
@@ -74,7 +133,7 @@ pub fn build_ipv6_reply(
             ((6 << 28) | (0 << 20) | u32::from_be(read_ip6.ip6_ctlun.ip6_un1.ip6_un1_flow)).to_be();
         ip6.ip6_ctlun.ip6_un1.ip6_un1_plen = (len as u16).to_be();
         ip6.ip6_ctlun.ip6_un1.ip6_un1_nxt = next_header as u8;
-        ip6.ip6_ctlun.ip6_un1.ip6_un1_hlim = 0xff;
+        ip6.ip6_ctlun.ip6_un1.ip6_un1_hlim = REPLY_TTL;
     }
     ip6.ip6_src = to_in6_addr(src);
     ip6.ip6_dst = to_in6_addr(dst);
@@ -113,4 +172,16 @@ pub fn calc_ipv6_phdr_checksum(src: &Ipv6Addr, dst: &Ipv6Addr, len: u32, nh: u8)
     checksum += (nh as u32) << 8;
 
     checksum
+}
+
+pub fn calc_diff_checksum(checksum: u16, diff: u16) -> u16 {
+    let mut checksum = (!checksum as u32) + (diff as u32);
+    while (checksum >> 16) != 0 {
+        checksum = (checksum & 0xffff) + (checksum >> 16);
+    }
+    !(checksum as u16)
+}
+
+pub fn diff_checksum(checksum: &mut u16, diff: u16) {
+    *checksum = calc_diff_checksum(*checksum, diff);
 }
