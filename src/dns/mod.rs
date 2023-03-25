@@ -14,9 +14,10 @@ use trust_dns_server::{
 
 use crate::config::get_config;
 
-use self::forward_auth::ForwardAuth;
+use self::{forward_auth::ForwardAuth, reverse_auth::ReverseAuth};
 
 pub mod forward_auth;
+pub mod reverse_auth;
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, Clone, Hash)]
 pub struct DnsConfig {
@@ -52,6 +53,11 @@ pub async fn start_dns() -> Result<()> {
         Box::new(Arc::new(ForwardAuth {
             origin: mname.into(),
         })),
+    );
+
+    catalog.upsert(
+        reverse_auth::ARPA_LC.clone(),
+        Box::new(Arc::new(ReverseAuth())),
     );
 
     let mut server = ServerFuture::new(catalog);

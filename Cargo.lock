@@ -626,6 +626,7 @@ dependencies = [
  "bindgen",
  "bytes",
  "futures-util",
+ "ipnet",
  "lazy_static",
  "libc",
  "reqwest",

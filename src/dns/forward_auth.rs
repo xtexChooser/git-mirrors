@@ -2,7 +2,7 @@ use std::str::FromStr;
 use std::sync::Arc;
 
 use anyhow::Result;
-use tracing::trace;
+use tracing::info;
 use trust_dns_server::authority::LookupRecords;
 use trust_dns_server::proto::rr::{Name, RData, Record, RecordSet};
 use trust_dns_server::{
@@ -72,7 +72,7 @@ impl Authority for ForwardAuth {
 
         let addr = get_config().subnet[0].build_addr(index, hop);
 
-        trace!(
+        info!(
             full_name = name_str,
             subname = subname.to_string(),
             index,
