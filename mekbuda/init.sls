@@ -1,3 +1,6 @@
+include:
+    - container
+
 mekbuda:
     file.managed:
         - name: /etc/mekbuda/mekbuda.toml
