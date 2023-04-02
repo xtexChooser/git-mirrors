@@ -1,6 +1,6 @@
 variables:
     - &file caddy/Containerfile
-    - &repo codeberg.org/${CI_REPO_OWNER}/containers
+    - &repo codeberg.org/${CI_REPO_OWNER}/caddy
 
 pipeline:
     build:
