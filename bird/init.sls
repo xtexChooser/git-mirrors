@@ -19,12 +19,12 @@ bird:
         - require:
             - pkg: bird
     docker_image.present:
-        - name: codeberg.org/xtex-vnet/bird
+        - name: codeberg.org/xvnet/bird
         - tag: {{ bird_version }}
         - require:
             - test: container
     docker_container.running:
-        - image: codeberg.org/xtex-vnet/bird:{{ bird_version }}
+        - image: codeberg.org/xvnet/bird:{{ bird_version }}
         - binds:
             - /etc/bird:/etc/bird:ro
             - /var/run/bird:/var/run/bird:rw

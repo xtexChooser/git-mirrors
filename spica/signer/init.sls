@@ -22,7 +22,7 @@ spica-signer:
             - file: spica-signer-{{ cert }}
 {% endfor %}
     docker_container.running:
-        - image: codeberg.org/xtex-vnet/spica:latest
+        - image: codeberg.org/xvnet/spica:latest
         - cmd: spica-signer
         - require:
             - test: container
