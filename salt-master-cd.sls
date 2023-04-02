@@ -1,6 +1,6 @@
 salt-master-cd:
     user.present:
-        - fullname: XTEX-VNET Salt Master CD Bot
+        - fullname: XV-NET Salt Master CD Bot
         - shell: /bin/bash
         - home: /home/salt-master-cd
         - gid: root
