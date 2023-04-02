@@ -10,7 +10,7 @@ caddy:
         - mode: "0666"
         - makedirs: True
     docker_image.present:
-        - name: ghcr.io/xtex-vnet/caddy
+        - name: codeberg.org/xvnet/caddy
         - tag: latest
         - require:
             - test: container
@@ -19,7 +19,7 @@ caddy:
         - ipam_driver: default
         - ipam_opts: driver=host-local
     docker_container.running:
-        - image: ghcr.io/xtex-vnet/caddy:latest
+        - image: codeberg.org/xvnet/caddy:latest
         - binds:
             - /etc/caddy:/etc/caddy:ro
             - /var/run:/var/run
