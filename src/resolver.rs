@@ -111,10 +111,16 @@ pub async fn try_resolve(index: u128) -> Result<Option<Arc<Chain>>> {
     }
     info!(index, "trying to resolve chain");
     for resolver in &get_config().resolver {
-        if let Some(chain) = resolver.resolve(index).await? {
-            let chain = Arc::new(chain);
-            cache::put_cache(index, Some(chain.clone())).await;
-            return Ok(Some(chain));
+        match resolver.resolve(index).await {
+            Ok(Some(chain)) => {
+                let chain = Arc::new(chain);
+                cache::put_cache(index, Some(chain.clone())).await;
+                return Ok(Some(chain));
+            }
+            Ok(_) => (),
+            Err(err) => {
+                error!(err = err.to_string(), index, "error resolving chain");
+            }
         }
     }
     cache::put_cache(index, None).await;
