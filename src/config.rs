@@ -42,7 +42,7 @@ pub struct TunConfig {
     pub queues: usize,
 }
 
-const fn default_tun_ifname() -> String {
+fn default_tun_ifname() -> String {
     String::from("mekbuda")
 }
 
