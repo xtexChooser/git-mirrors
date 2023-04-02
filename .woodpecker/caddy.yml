@@ -1,0 +1,19 @@
+variables:
+    - &file caddy/Containerfile
+    - &repo codeberg.org/${CI_REPO_OWNER}/containers
+
+pipeline:
+    build:
+        image: woodpeckerci/plugin-docker-buildx
+        settings:
+            dockerfile: *file
+            platforms: linux/amd64,linux/arm64/v8
+            repo: *repo
+            registry: codeberg.org
+            tags: latest
+            username: ${CI_REPO_OWNER}
+            password:
+                from_secret: oci_token
+        when:
+            event: push
+            path: *file
