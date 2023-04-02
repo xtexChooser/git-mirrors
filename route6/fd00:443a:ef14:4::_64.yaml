@@ -1,0 +1,7 @@
+descr: Mekbuda
+max_len: 64
+net: xvnet
+origin:
+  - 4244310001
+route6: fd00:443a:ef14:4::/64
+source: xvnet
