@@ -4,6 +4,8 @@ use std::net::IpAddr;
 use anyhow::bail;
 use anyhow::Result;
 use futures_util::TryStreamExt;
+use netlink_packet_route::route::Nla;
+use netlink_packet_route::RT_TABLE_MAIN;
 use tokio::task::JoinSet;
 use tokio_tun::{Tun, TunBuilder};
 use tracing::info;
@@ -88,15 +90,21 @@ async fn add_route(rtnl: &rtnetlink::Handle, ifindex: u32, subnet: &SubnetConfig
         .await?;
     info!(host_addr = host_addr.to_string(), "host addr added");
 
-    rtnl.route()
+    let mut add = rtnl
+        .route()
         .add()
         .v6()
         .destination_prefix(subnet.subnet, subnet.subnet_len)
         .output_interface(ifindex)
         .pref_source(host_addr)
-        .replace()
-        .execute()
-        .await?;
+        .table(subnet.table.unwrap_or(RT_TABLE_MAIN))
+        .replace();
+    if subnet.high_pref {
+        add.message_mut()
+            .nlas
+            .push(Nla::Pref(vec![0x1 /*ICMPV6_ROUTER_PREF_HIGH*/]));
+    }
+    add.execute().await?;
     info!(subnet = subnet.subnet.to_string(), "subnet route added");
 
     Ok(())

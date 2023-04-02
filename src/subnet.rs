@@ -11,6 +11,11 @@ pub struct SubnetConfig {
     pub subnet_len: u8,
     #[serde(default = "default_hop_len")]
     pub hop_len: u8,
+    /// The route table to use. 254(MAIN) by default.
+    #[serde(default)]
+    pub table: Option<u8>,
+    #[serde(default = "default_high_pref")]
+    pub high_pref: bool,
 }
 
 fn default_subnet_len() -> u8 {
@@ -19,6 +24,10 @@ fn default_subnet_len() -> u8 {
 
 fn default_hop_len() -> u8 {
     16
+}
+
+fn default_high_pref() -> bool {
+    true
 }
 
 impl SubnetConfig {
