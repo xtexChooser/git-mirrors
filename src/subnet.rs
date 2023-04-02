@@ -18,15 +18,15 @@ pub struct SubnetConfig {
     pub high_pref: bool,
 }
 
-fn default_subnet_len() -> u8 {
+const fn default_subnet_len() -> u8 {
     64
 }
 
-fn default_hop_len() -> u8 {
+const fn default_hop_len() -> u8 {
     16
 }
 
-fn default_high_pref() -> bool {
+const fn default_high_pref() -> bool {
     true
 }
 

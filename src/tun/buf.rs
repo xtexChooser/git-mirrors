@@ -42,7 +42,7 @@ impl TunBuffer {
 }
 
 impl Default for TunBuffer {
-    fn default() -> Self {
+    const fn default() -> Self {
         Self::new()
     }
 }
