@@ -53,7 +53,7 @@ function cn_filter_import_peer() {
         print "[cn] BGP path too long ", net, " len ", bgp_path.len, " proto ", proto, bgp_path;
         reject;
     }
-    if (check_roa_cn() == ROA_INVALID) then {
+    if (check_roa_cn() = ROA_INVALID) then {
         print "[cn] ROA failed for ", net, " ASN ", bgp_path.last, " proto ", proto;
         reject;
     }
@@ -70,7 +70,7 @@ function cn_filter_import_upstream() {
         print "[cn] BGP path too long ", net, " len ", bgp_path.len, " proto ", proto, bgp_path;
         reject;
     }
-    if (check_roa_cn() == ROA_INVALID) then {
+    if (check_roa_cn() = ROA_INVALID) then {
         print "[cn] ROA failed for ", net, " ASN ", bgp_path.last, " proto ", proto;
         reject;
     }
