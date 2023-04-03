@@ -82,10 +82,10 @@ function cn_filter_export_upstream() {
 }
 
 filter cn_import_peer { bgp_large_community.add(COMMUNITY_XVN_FROM_PEER); cn_filter_import_peer(); accept; }
-filter cn_export_peer { bgp_large_community.delete([COMMUNITY_XVN_LOCAL_DIRECTION]); cn_filter_export_peer(); accept; }
+filter cn_export_peer { bgp_large_community.delete(COMMUNITY_XVN_LOCAL_DIRECTION); cn_filter_export_peer(); accept; }
 
 filter cn_import_upstream { bgp_large_community.add(COMMUNITY_XVN_FROM_UPSTREAM); cn_filter_import_upstream(); accept; }
-filter cn_export_upstream { bgp_large_community.delete([COMMUNITY_XVN_LOCAL_DIRECTION]); cn_filter_export_upstream(); accept; }
+filter cn_export_upstream { bgp_large_community.delete(COMMUNITY_XVN_LOCAL_DIRECTION); cn_filter_export_upstream(); accept; }
 
 {# Template #}
 template bgp cn_peer {
@@ -105,7 +105,7 @@ template bgp cn_peer {
     };
 }
 
-template bgp cn_transit {
+template bgp cn_upstream {
     local as 199304;
 
     ipv4 {
