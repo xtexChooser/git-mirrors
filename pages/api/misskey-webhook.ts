@@ -39,10 +39,11 @@ export default async function handler(
                     topic: "xtex-logs",
                     message: `Forwarding Misskey note to TG: ${note["id"]}`,
                 });
-                const text = note["renote"]?.["text"] || note["text"];
+                const renote = note["renote"] as any | undefined;
+                const text = renote?.["text"] || note["text"];
                 await bot.sendMessage(
                     "-1001657723727",
-                    `${text}\n(src: https://neko.ci/notes/${note["id"]})`
+                    `${renote ? `(announce from ${renote?.['uri']})\n` : ''}${text}\n(src: https://neko.ci/notes/${note["id"]})`
                 );
             }
         }
