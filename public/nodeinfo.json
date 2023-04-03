@@ -6,15 +6,10 @@
         "repository": "https://source.moe/xtex/home",
         "homepage": "https://xtexx.ml/"
     },
-    "protocols": [
-        "activitypub"
-    ],
+    "protocols": ["activitypub"],
     "services": {
         "inbound": [],
-        "outbound": [
-            "atom1.0",
-            "rss2.0"
-        ]
+        "outbound": ["atom1.0", "rss2.0"]
     },
     "openRegistrations": false,
     "usage": {

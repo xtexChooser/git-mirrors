@@ -1,15 +1,15 @@
 .links ul {
-  padding-left: 0;
+    padding-left: 0;
 }
 
 .links li {
-  display: inline;
+    display: inline;
 }
 
 .links li::after {
-  content: " | ";
+    content: " | ";
 }
 
 .links ul li:last-child::after {
-  content: "";
+    content: "";
 }

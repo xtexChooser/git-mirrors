@@ -26,10 +26,7 @@
         "aliasTo": "xtex"
     },
     "instance": {
-        "aliases": [
-            "https://xtexx.ml",
-            "mailto:xtex@xtexx.ml"
-        ],
+        "aliases": ["https://xtexx.ml", "mailto:xtex@xtexx.ml"],
         "links": [
             {
                 "rel": "http://webfinger.net/rel/profile-page",
@@ -48,9 +45,7 @@
         ]
     },
     "misskey9199": {
-        "aliases": [
-            "acct:xtex@xtexx.ml"
-        ],
+        "aliases": ["acct:xtex@xtexx.ml"],
         "links": [
             {
                 "rel": "self",

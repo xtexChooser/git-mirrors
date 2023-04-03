@@ -1,28 +1,28 @@
 .main {
-  padding-bottom: 3em;
+    padding-bottom: 3em;
 }
 
 .header {
-  min-height: 95vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  border-bottom: 1px solid #eee;
+    min-height: 95vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid #eee;
 }
 
 .header .title {
-  margin: 0;
-  line-height: 1.15;
-  font-size: 4rem;
+    margin: 0;
+    line-height: 1.15;
+    font-size: 4rem;
 }
 
 .header .description {
-  font-size: 1.1rem;
+    font-size: 1.1rem;
 }
 
 .footer {
-  padding: 2rem 0;
-  border-top: 1px solid #eee;
-  text-align: center;
+    padding: 2rem 0;
+    border-top: 1px solid #eee;
+    text-align: center;
 }
