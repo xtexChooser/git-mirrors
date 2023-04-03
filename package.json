@@ -1,25 +1,26 @@
 {
-  "name": "home",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "server": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@peertube/http-signature": "1.7.0",
-    "@types/node": "18.11.9",
-    "@types/react": "18.0.25",
-    "@types/react-dom": "18.0.8",
-    "activitypub-core-types": "0.0.274",
-    "eslint": "8.27.0",
-    "eslint-config-next": "13.0.3",
-    "next": "13.0.3",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "spcss": "0.9.0",
-    "typescript": "4.8.4"
-  }
+    "name": "home",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "server": "next start",
+        "lint": "next lint",
+        "fmt": "prettier -w -u **"
+    },
+    "dependencies": {
+        "@peertube/http-signature": "1.7.0",
+        "@types/node": "18.11.9",
+        "@types/react": "18.0.25",
+        "@types/react-dom": "18.0.8",
+        "activitypub-core-types": "0.0.274",
+        "eslint": "8.27.0",
+        "eslint-config-next": "13.0.3",
+        "next": "13.0.3",
+        "react": "18.2.0",
+        "react-dom": "18.2.0",
+        "spcss": "0.9.0",
+        "typescript": "4.8.4"
+    }
 }
