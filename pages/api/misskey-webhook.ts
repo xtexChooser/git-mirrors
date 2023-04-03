@@ -29,7 +29,7 @@ export default async function handler(
     switch (body["type"] as string) {
         case "note": {
             const note = body["body"]["note"] as any;
-            console.log("note: " + body["note"]);
+            console.log("note: " + note);
             if (
                 body["userId"] == "8pjo5pvnqn" &&
                 note["visibility"] == "public"
