@@ -34,7 +34,7 @@ export default async function handler(
                 body["userId"] == "8pjo5pvnqn" &&
                 note["visibility"] == "public" &&
                 note["replyId"] == undefined &&
-                !('nofwd' in note['tags'])
+                !("nofwd" in note["tags"])
             ) {
                 await sendToNtfy({
                     topic: "xtex-logs",
@@ -44,7 +44,9 @@ export default async function handler(
                 const text = renote?.["text"] || note["text"];
                 await bot.sendMessage(
                     "-1001657723727",
-                    `${renote ? `(announce from ${renote?.['uri']})\n` : ''}${text}\n(src: https://neko.ci/notes/${note["id"]})`
+                    `${
+                        renote ? `(announce from ${renote?.["uri"]})\n` : ""
+                    }${text}\n(src: https://neko.ci/notes/${note["id"]})`
                 );
             }
         }
