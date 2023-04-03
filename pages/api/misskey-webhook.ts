@@ -34,7 +34,8 @@ export default async function handler(
                 body["userId"] == "8pjo5pvnqn" &&
                 note["visibility"] == "public" &&
                 note["replyId"] == undefined &&
-                !("nofwd" in note["tags"])
+                (note["tags"] == undefined ||
+                    note["tags"].indexOf("nofwd") == -1)
             ) {
                 await sendToNtfy({
                     topic: "xtex-logs",
