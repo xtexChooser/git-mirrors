@@ -45,6 +45,7 @@ function cn_filter_export() {
     if is_cn_net_len_too_long() then reject;
     if is_xvnet_internal_prefix() then reject;
     strip_confed_as();
+    bgp_large_community.delete(COMMUNITY_XVN_LOCAL_DIRECTION); 
 }
 
 function cn_filter_import_peer() {
@@ -60,8 +61,8 @@ function cn_filter_import_peer() {
 }
 
 function cn_filter_export_peer() {
-    cn_filter_export();
     if COMMUNITY_XVN_FROM_UPSTREAM ~ bgp_large_community then reject;
+    cn_filter_export();
 }
 
 function cn_filter_import_upstream() {
@@ -77,15 +78,15 @@ function cn_filter_import_upstream() {
 }
 
 function cn_filter_export_upstream() {
-    cn_filter_export();
     if COMMUNITY_XVN_FROM_UPSTREAM ~ bgp_large_community then reject;
+    cn_filter_export();
 }
 
 filter cn_import_peer { bgp_large_community.add(COMMUNITY_XVN_FROM_PEER); cn_filter_import_peer(); accept; }
-filter cn_export_peer { bgp_large_community.delete(COMMUNITY_XVN_LOCAL_DIRECTION); cn_filter_export_peer(); accept; }
+filter cn_export_peer { cn_filter_export_peer(); accept; }
 
 filter cn_import_upstream { bgp_large_community.add(COMMUNITY_XVN_FROM_UPSTREAM); cn_filter_import_upstream(); accept; }
-filter cn_export_upstream { bgp_large_community.delete(COMMUNITY_XVN_LOCAL_DIRECTION); cn_filter_export_upstream(); accept; }
+filter cn_export_upstream { cn_filter_export_upstream(); accept; }
 
 {# Template #}
 template bgp cn_peer {
