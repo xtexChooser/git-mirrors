@@ -5,8 +5,8 @@
 {# TODO: Static ROAs #}
 
 {# Static Routes #}
-protocol static cn_static4 {
-    route 172.20.206.64/26 reject;
+protocol static cn_static6 {
+    route 2a12:dd47:df10::/44 reject;
 
     ipv4 { import all; export none; };
 };
@@ -27,25 +27,23 @@ protocol rpki cn_rpki_cf {
 function is_cn_net_len_too_long(){
     case net.type {
         NET_IP4: return net.len > 24;
-        NET_IP6: return net.len > 48;
+        NET_IP6: return net.len > 64;
         else: print "cn_net_len_too_long: unexpected net.type ", net.type, " ", net; return false;
     }
 }
 
 function cn_filter_import() {
-    if is_bogon_asn() then reject;
     if is_bogon_prefix() then reject;
     if is_cn_net_len_too_long() then reject;
+    if is_bogon_asn() then reject;
     if COMMUNITY_XVN_DONT_ACCEPT ~ bgp_large_community then reject;
 }
 
 function cn_filter_export() {
-    if is_bogon_asn() then reject;
     if is_bogon_prefix() then reject;
     if is_cn_net_len_too_long() then reject;
-    if is_xvnet_internal_prefix() then reject;
     strip_confed_as();
-    bgp_large_community.delete(COMMUNITY_XVN_LOCAL_DIRECTION); 
+    if is_bogon_asn() then reject;
 }
 
 function cn_filter_import_peer() {
@@ -63,6 +61,7 @@ function cn_filter_import_peer() {
 function cn_filter_export_peer() {
     if COMMUNITY_XVN_FROM_UPSTREAM ~ bgp_large_community then reject;
     cn_filter_export();
+    bgp_large_community.delete(COMMUNITY_XVN_LOCAL_DIRECTION); 
 }
 
 function cn_filter_import_upstream() {
@@ -80,6 +79,7 @@ function cn_filter_import_upstream() {
 function cn_filter_export_upstream() {
     if COMMUNITY_XVN_FROM_UPSTREAM ~ bgp_large_community then reject;
     cn_filter_export();
+    bgp_large_community.delete(COMMUNITY_XVN_LOCAL_DIRECTION); 
 }
 
 filter cn_import_peer { bgp_large_community.add(COMMUNITY_XVN_FROM_PEER); cn_filter_import_peer(); accept; }
