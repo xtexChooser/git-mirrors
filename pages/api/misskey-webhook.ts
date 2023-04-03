@@ -33,7 +33,8 @@ export default async function handler(
             if (
                 body["userId"] == "8pjo5pvnqn" &&
                 note["visibility"] == "public" &&
-                note["replyId"] == undefined
+                note["replyId"] == undefined &&
+                !('nofwd' in note['tags'])
             ) {
                 await sendToNtfy({
                     topic: "xtex-logs",
