@@ -12,11 +12,14 @@ export default async function handler(
     if (req.headers['x-misskey-hook-secret'] != env['XTEX_HOME_MISSKEY_SECRET']) {
         throw 'invalid secret'
     }
+    console.log('secret check passed')
 
     const bot = new TelegramBot(env['XTEX_HOME_MISSKEY_TG_TOKEN'] as string, {});
+    console.log('type: ' + body['type'])
     switch (body['type'] as string) {
         case 'note': {
             const note = body['body']['note'] as any;
+            console.log('note: ' + body['note'])
             if (body['userId'] == '8pjo5pvnqn' && note['visibility'] == 'public') {
                 await sendToNtfy({
                     topic: 'xtex-logs',
