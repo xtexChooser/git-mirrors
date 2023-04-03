@@ -32,7 +32,8 @@ export default async function handler(
             console.log("note: " + note);
             if (
                 body["userId"] == "8pjo5pvnqn" &&
-                note["visibility"] == "public"
+                note["visibility"] == "public" &&
+                note["replyId"] == undefined
             ) {
                 await sendToNtfy({
                     topic: "xtex-logs",
