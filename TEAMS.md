@@ -4,30 +4,6 @@ A team is a group of people who work together on a specific area to further Forg
 
 Some of the teams are trusted with access to exclusive resources that require credentials. To participate in such a team someone can open a pull request to add their name and their membership will be decided by the Forgejo community (see the [decision making document](DECISION-MAKING.md) for more information).
 
-## Secrets keeper
-
-Purpose: [See the documentation](https://codeberg.org/forgejo/forgejo/src/branch/forgejo/CONTRIBUTING/SECRETS.md).
-
-Accountability:
-
-* Keep the Forgejo credentials (social accounts, release keys, etc.) in a safe place.
-
-Team members:
-
-* ???
-
-## Admins
-
-Purpose: The team has administrative access to all repositories except those with Forgejo credentials.
-
-Accountability:
-
-* Grant access to team members depending on what they need.
-
-Team members:
-
-* ???
-
 ## Accessibility
 
 Purpose: Work on improving Forgejo accessibility.
@@ -38,11 +14,12 @@ Team members:
 
 ## Devops
 
-Purpose: The team cares for the resources that Forgejo depends on (CI, static web site hosting). The team has administrative access to all repositories involved in the CI/CD pipelines (code, releases, website, etc.).
+Purpose: The team cares of all the technical resources that Forgejo depends on (hardware, CI, static web site hosting, social media etc.). It helps all other teams to use those resources by installing, upgrading or migrating them when needed. If a resource becomes unavailable, it will help restore it in a functional state.
 
 Accountability:
 
 * Fix problems that prevent the resources that Forgejo depends on from running.
+* Keep the [credentials to access the resources](https://codeberg.org/forgejo/forgejo/src/branch/forgejo/CONTRIBUTING/SECRETS.md) in a safe place and share them with the teams that need them.
 
 Team members:
 
@@ -55,23 +32,6 @@ Purpose: Improve Forgejo. The team has write access to all repositories but no a
 Team members:
 
 * ???
-
-## Chatrooms / matrix
-
-Purpose: manage the Matrix chatrooms
-
-Accountability:
-
-* Address technical problems that prevent people/bots from participating
-
-Team members:
-
-* https://matrix.to/#/#forgejo-development:matrix.org
-  * ???
-* https://matrix.to/#/#forgejo-chat:matrix.org
-  * ???
-* https://matrix.to/#/#forgejo-releases:a-0.me
-  * https://matrix.to/#/@ph:a-0.me
 
 ## Releases
 
