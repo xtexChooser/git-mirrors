@@ -1,4 +1,4 @@
-#!/usr/bash
+#!/usr/bin/bash
 
 SLAPD_D_PATH=${SLAPD_D_PATH:-/etc/openldap/slapd.d}
 SLAPD_CONF_PATH=${SLAPD_CONF_PATH:-/etc/openldap/slapd.conf}
@@ -22,7 +22,7 @@ fi
 
 if [[ "x$OLO_NO_LN_BUILTIN_SCHEMA" != "xtrue" ]]; then
     echo copying builtin schemas
-    cp -R -s -n "$(readlink -e "${OLO_BUILTIN_SCHEMA_PATH:-/usr/lib/openldap-oci/builtin-schema}")" "$(readlink -m "${OLO_SCHEMA_LN_DST:-/etc/openldap/schema}")"
+    cp -R -s -n "$(readlink -e "${OLO_BUILTIN_SCHEMA_PATH:-/olo/builtin-schema}")" "$(readlink -m "${OLO_SCHEMA_LN_DST:-/etc/openldap/schema}")"
 fi
 
 if [[ "x$OLO_NO_IMPORT_SLAPD_LDIF" != "xtrue" ]]; then

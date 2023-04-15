@@ -28,11 +28,11 @@ RUN apk add bash
 COPY --from=builder /dist /usr
 COPY --from=builder /etc/openldap /etc/openldap
 
-ADD start.sh /usr/lib/openldap-oci/start.sh
-RUN chmod +x /usr/lib/openldap-oci/start.sh
-COPY --from=builder /etc/openldap/schema /usr/lib/openldap-oci/builtin-schema
-
 RUN mkdir -p /var/run/slapd/ /var/lib/
 RUN ln -s /usr/libexec/slapd /usr/sbin/slapd
 
-ENTRYPOINT [ "/usr/lib/openldap-oci/start.sh" ]
+COPY start.sh /olo/start.sh
+RUN chmod +x /olo/start.sh
+COPY --from=builder /etc/openldap/schema /olo/builtin-schema
+
+ENTRYPOINT [ "/usr/bin/bash", "/olo/start.sh" ]
