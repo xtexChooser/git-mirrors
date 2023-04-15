@@ -2,6 +2,10 @@ FROM docker.io/library/alpine AS builder
 ARG VERSION=2.6.4
 ARG TAG=OPENLDAP_REL_ENG_2_6_4
 
+LABEL name="openldap" \
+    summary="OpenLDAP slapd" \
+    maintainer="Xensor V Network <containers@xvnet.eu.org>"
+
 ADD https://git.openldap.org/openldap/openldap/-/archive/$TAG/openldap-$TAG.tar.gz /source.tar.gz
 RUN tar -xf source.tar.gz
 RUN mv openldap-$TAG src
