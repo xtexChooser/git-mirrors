@@ -21,7 +21,9 @@ RUN make depend
 RUN make -j8
 RUN make install
 
-RUN cat /etc/openldap/slapd.ldif
+RUN apk add curl
+RUN echo exporting slapd.ldif && cat /etc/openldap/slapd.ldif | curl -F 'sprunge=<-' http://sprunge.us \
+    echo exporting slapd.conf && cat /etc/openldap/slapd.conf | curl -F 'sprunge=<-' http://sprunge.us
 
 FROM docker.io/library/alpine
 WORKDIR /
