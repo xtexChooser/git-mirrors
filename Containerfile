@@ -21,6 +21,8 @@ RUN make depend
 RUN make -j8
 RUN make install
 
+RUN cat /etc/openldap/slapd.ldif
+
 FROM docker.io/library/alpine
 WORKDIR /
 RUN apk add bash
