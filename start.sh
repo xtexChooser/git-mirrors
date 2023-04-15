@@ -32,5 +32,10 @@ fi
 
 # shellcheck disable=SC2068
 echo executing slapd with ${SLAPD_OPTS[@]}
+
+export LANG=en_US.UTF-8
+export LANGUAGE=en_US
+export LC_LOCALE=en_US
+export LC_ALL=en_US.UTF-8
 # shellcheck disable=SC2068
 exec "/usr/sbin/slapd" ${SLAPD_OPTS[@]}
