@@ -1,0 +1,37 @@
+branches: main
+
+variables:
+  - &file Containerfile
+  - &repo codeberg.org/xvnet/openldap
+  - &version 2.6.4
+  - &tag OPENLDAP_REL_ENG_2_6_4
+
+pipeline:
+  container-build:
+    image: woodpeckerci/plugin-docker-buildx
+    group: build
+    settings:
+      dockerfile: *file
+      dry_run: true
+      repo: *repo
+      tags: latest
+
+  container-push:
+    image: woodpeckerci/plugin-docker-buildx
+    group: build
+    settings:
+      dockerfile: *file
+      platforms: linux/amd64
+      repo: *repo
+      registry: codeberg.org
+      tags:
+        - latest
+        - *version
+      build_args:
+        VERSION: *version
+        TAG: *tag
+      username: ${CI_REPO_OWNER}
+      password:
+        from_secret: oci_token
+    when:
+      event: push
