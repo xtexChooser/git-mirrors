@@ -19,6 +19,7 @@ RUN make install
 FROM docker.io/library/alpine
 #RUN apk add libssh ncurses readline
 COPY --from=builder /dist /
+COPY --from=builder /etc/openldap /etc/openldap
 RUN mkdir -p /var/run/ /var/lib/
 WORKDIR /
 ENTRYPOINT [ "/sbin/slapd" ]
