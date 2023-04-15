@@ -13,10 +13,24 @@ RUN mv openldap-$TAG src
 WORKDIR /src
 RUN mkdir -p /dist
 
-RUN apk add gcc make binutils musl musl-dev groff
+RUN apk add gcc make binutils musl musl-dev groff argon2 argon2-dev
 
-RUN ./configure --prefix=/dist --localstatedir=/var --sysconfdir=/etc \
-    --enable-syslog --enable-ipv6 --with-tls --enable-local 
+RUN ./configure --prefix=/dist --localstatedir=/var/lib --runstatedir=/var/run/openldap --sysconfdir=/etc \
+    # features
+    --enable-syslog --enable-ipv6 --enable-local \
+    # slapd options
+    --enable-dynacl --enable-aci --enable-crypt --enable-modules --enable-rlookups --enable-slapi --enable-slp --enable-wrappers \
+    # slapd backend options
+    --enable-mdb --enable-relay \
+    # slapd overlay options
+    --enable-overlays \
+    # slapd password module options
+    --enable-argon2 \
+    # lloadd options
+    --enable-balancer \
+    # optional packages
+    --with-fetch --with-tls
+
 RUN make depend
 RUN make -j8
 RUN make install
@@ -29,11 +43,12 @@ FROM docker.io/library/alpine
 WORKDIR /
 RUN apk add bash
 
-COPY --from=builder /dist /usr
+COPY --from=builder /dist /dist
 COPY --from=builder /etc/openldap /etc/openldap
 
-RUN mkdir -p /var/run/slapd/ /var/lib/
+RUN mkdir -p /var/run/openldap/ /var/lib/
 RUN ln -s /usr/libexec/slapd /usr/sbin/slapd
+RUN cp -R -s -v /dist /
 
 COPY start.sh /olo/start.sh
 RUN chmod +x /olo/start.sh
