@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 SLAPD_D_PATH=${SLAPD_D_PATH:-/etc/openldap/slapd.d}
 SLAPD_CONF_PATH=${SLAPD_CONF_PATH:-/etc/openldap/slapd.conf}

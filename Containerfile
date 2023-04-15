@@ -35,4 +35,4 @@ COPY start.sh /olo/start.sh
 RUN chmod +x /olo/start.sh
 COPY --from=builder /etc/openldap/schema /olo/builtin-schema
 
-ENTRYPOINT [ "/usr/bin/bash", "/olo/start.sh" ]
+ENTRYPOINT [ "/bin/bash", "/olo/start.sh" ]
