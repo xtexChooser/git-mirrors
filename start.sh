@@ -22,7 +22,7 @@ fi
 
 if [[ "x$OLO_NO_LN_BUILTIN_SCHEMA" != "xtrue" ]]; then
     echo copying builtin schemas
-    cp -R -s -n "$(readlink -e "${OLO_BUILTIN_SCHEMA_PATH:-/olo/builtin-schema}")" "$(readlink -m "${OLO_SCHEMA_LN_DST:-/etc/openldap/schema}")"
+    cp -R -s -n "$(readlink -f "${OLO_BUILTIN_SCHEMA_PATH:-/olo/builtin-schema}")" "$(readlink -f "${OLO_SCHEMA_LN_DST:-/etc/openldap/schema}")"
 fi
 
 if [[ "x$OLO_NO_IMPORT_SLAPD_LDIF" != "xtrue" ]]; then
@@ -33,4 +33,4 @@ fi
 # shellcheck disable=SC2086
 echo executing slapd with $SLAPD_OPTS
 # shellcheck disable=SC2086
-exec "/usr/bin/slapd" $SLAPD_OPTS
+exec "/usr/sbin/slapd" $SLAPD_OPTS
