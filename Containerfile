@@ -13,7 +13,8 @@ RUN mv openldap-$TAG src
 WORKDIR /src
 RUN mkdir -p /dist
 
-RUN apk add gcc make binutils musl musl-dev groff argon2 argon2-dev libtool
+RUN apk add gcc make binutils musl musl-dev
+RUN apk add groff argon2 argon2-dev libtool cyrus-sasl cyrus-sasl-dev
 
 RUN ./configure \
     # directories
@@ -31,7 +32,7 @@ RUN ./configure \
     # lloadd options
     --enable-balancer \
     # optional packages
-    --with-fetch --with-tls
+    --with-tls
 
 RUN make depend
 RUN make -j8
