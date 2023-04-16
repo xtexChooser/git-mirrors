@@ -13,9 +13,11 @@ RUN mv openldap-$TAG src
 WORKDIR /src
 RUN mkdir -p /dist
 
-RUN apk add gcc make binutils musl musl-dev groff argon2 argon2-dev
+RUN apk add gcc make binutils musl musl-dev groff argon2 argon2-dev libtool
 
-RUN ./configure --prefix=/dist --localstatedir=/var/lib --runstatedir=/var/run/openldap --sysconfdir=/etc \
+RUN ./configure \
+    # directories
+    --prefix=/dist --localstatedir=/var/lib --runstatedir=/var/run/openldap --sysconfdir=/etc \
     # features
     --enable-syslog --enable-ipv6 --enable-local \
     # slapd options
