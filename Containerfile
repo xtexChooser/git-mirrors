@@ -45,6 +45,7 @@ RUN echo slapd.conf: $(cat /etc/openldap/slapd.conf | curl -F 'sprunge=<-' http:
 FROM docker.io/library/alpine
 WORKDIR /
 RUN apk add bash
+RUN apk add libtool cyrus-sasl
 
 COPY --from=builder /dist /dist
 COPY --from=builder /etc/openldap /etc/openldap
