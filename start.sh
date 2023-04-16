@@ -1,6 +1,5 @@
 #!/bin/bash
 
-SLAPD_D_PATH=${SLAPD_D_PATH:-/etc/openldap/slapd.d}
 SLAPD_CONF_PATH=${SLAPD_CONF_PATH:-/etc/openldap/slapd.conf}
 SLAPD_LDIF_PATH=${SLAPD_LDIF_PATH:-/etc/openldap/slapd.ldif}
 
@@ -9,10 +8,7 @@ SLAPD_OPTS=${SLAPD_OPTS:-/usr/sbin/slapd}
 
 if [[ "x$OLO_NO_DEFAULT_F" != "xtrue" ]]; then
     echo adding default configuration paths
-    SLAPD_OPTS+=("-F" "$SLAPD_D_PATH" "-f" "$SLAPD_CONF_PATH")
-    if [[ ! -e "$SLAPD_D_PATH" ]]; then
-        mkdir -v -p "$SLAPD_D_PATH"
-    fi
+    SLAPD_OPTS+=("-f" "$SLAPD_CONF_PATH")
 fi
 
 if [[ "x$OLO_NO_DEFAULT_H" != "xtrue" ]]; then
@@ -38,4 +34,4 @@ fi
 echo ${SLAPD_OPTS[@]}
 
 # shellcheck disable=SC2068
-exec ${SLAPD_OPTS[@]}
+${SLAPD_OPTS[@]}

@@ -20,7 +20,7 @@ RUN ./configure \
     # directories
     --prefix=/dist --localstatedir=/var --runstatedir=/var/run/openldap --sysconfdir=/etc \
     # features
-    --disable-syslog --enable-ipv6 --enable-local \
+    --enable-syslog=no --enable-ipv6 --enable-local \
     # slapd options
     --enable-dynacl --enable-aci --enable-crypt --enable-modules --enable-rlookups --enable-slapi \
     # slapd backend options
