@@ -5,7 +5,7 @@ SLAPD_CONF_PATH=${SLAPD_CONF_PATH:-/etc/openldap/slapd.conf}
 SLAPD_LDIF_PATH=${SLAPD_LDIF_PATH:-/etc/openldap/slapd.ldif}
 
 SLAPD_LISTEN=${SLAPD_LISTEN:-ldap:/// ldaps:/// ldapi:///}
-SLAPD_OPTS=${SLAPD_OPTS:-}
+SLAPD_OPTS=${SLAPD_OPTS:-/usr/sbin/slapd}
 
 if [[ "x$OLO_NO_DEFAULT_F" != "xtrue" ]]; then
     echo adding default configuration paths
@@ -17,7 +17,7 @@ fi
 
 if [[ "x$OLO_NO_DEFAULT_H" != "xtrue" ]]; then
     echo adding default listen addrs
-    SLAPD_OPTS+=("-h" "'$SLAPD_LISTEN'")
+    SLAPD_OPTS+=("-h" "\"$SLAPD_LISTEN\"")
 fi
 
 if [[ "x$OLO_NO_LN_BUILTIN_SCHEMA" != "xtrue" ]]; then
@@ -31,7 +31,7 @@ if [[ "x$OLO_NO_IMPORT_SLAPD_LDIF" != "xtrue" ]]; then
 fi
 
 # shellcheck disable=SC2068
-echo executing slapd with ${SLAPD_OPTS[@]}
+echo ${SLAPD_OPTS[@]}
 
 # shellcheck disable=SC2068
-exec "/usr/sbin/slapd" ${SLAPD_OPTS[@]}
+exec ${SLAPD_OPTS[@]}
