@@ -30,10 +30,6 @@ if [[ "x$OLO_NO_IMPORT_SLAPD_LDIF" != "xtrue" ]]; then
     /usr/sbin/slapadd -n 0 -c -F "$SLAPD_D_PATH" -l "$SLAPD_LDIF_PATH"
 fi
 
-if [[ "x$OLO_NO_DEFAULT_SLP_OFF" != "xtrue" ]]; then
-    SLAPD_OPTS+=("-o" "slp=off")
-fi
-
 if [[ "x$OLO_NO_AUTO_USER" != "xtrue" ]]; then
     SLAPD_OPTS+=("-u" "$(id -n -u)" "-g" "$(id -n -g)")
 fi
