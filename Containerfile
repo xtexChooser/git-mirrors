@@ -22,7 +22,7 @@ RUN ./configure \
     # features
     --enable-syslog --enable-ipv6 --enable-local \
     # slapd options
-    --enable-dynacl --enable-aci --enable-crypt --enable-modules --enable-rlookups --enable-slapi --enable-slp \
+    --enable-dynacl --enable-aci --enable-crypt --enable-modules --enable-rlookups --enable-slapi \
     # slapd backend options
     --enable-mdb --enable-relay \
     # slapd overlay options
