@@ -50,8 +50,8 @@ COPY --from=builder /dist /dist
 COPY --from=builder /etc/openldap /etc/openldap
 
 RUN mkdir -p /var/run/openldap/ /var/lib/
+RUN cp -R -s -v /dist/* /usr/
 RUN ln -s /usr/libexec/slapd /usr/sbin/slapd
-RUN cp -R -s -v /dist/* /
 
 COPY start.sh /olo/start.sh
 RUN chmod +x /olo/start.sh
