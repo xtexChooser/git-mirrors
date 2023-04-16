@@ -14,7 +14,7 @@ WORKDIR /src
 RUN mkdir -p /dist
 
 RUN apk add gcc make binutils musl musl-dev
-RUN apk add groff argon2 argon2-dev libtool cyrus-sasl cyrus-sasl-dev libevent libevent-dev
+RUN apk add groff argon2 argon2-dev libtool cyrus-sasl cyrus-sasl-dev libevent libevent-dev openssl-dev
 
 RUN ./configure \
     # directories
@@ -32,7 +32,7 @@ RUN ./configure \
     # lloadd options
     --enable-balancer \
     # optional packages
-    --with-tls
+    --with-tls=openssl
 
 RUN make depend
 RUN make -j8
