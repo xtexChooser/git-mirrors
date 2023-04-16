@@ -18,21 +18,40 @@ RUN apk add groff argon2 argon2-dev libtool cyrus-sasl cyrus-sasl-dev libevent l
 
 RUN ./configure \
     # directories
-    --prefix=/dist --localstatedir=/var --runstatedir=/var/run/openldap --sysconfdir=/etc \
+    --prefix=/dist \
+    --localstatedir=/var \
+    --runstatedir=/var/run/openldap \
+    --sysconfdir=/etc \
     # features
-    --enable-syslog=no --enable-ipv6 --enable-local \
+    --enable-syslog \
+    --enable-ipv6=yes \
+    --enable-local \
     # slapd options
-    --enable-dynacl --enable-aci --enable-crypt --enable-modules --enable-rlookups --enable-slapi \
+    --enable-dynacl \
+    --enable-aci \
+    --enable-modules \
+    --enable-shared \
+    --enable-dynamic \
+    --enable-crypt \
+    --enable-wrappers=no \
+    --enable-spasswd \
     # slapd backend options
-    --enable-mdb --enable-relay \
+    --enable-ldap=mod \
+    --enable-mdb=mod \
+    --enable-relay=mod \
     # slapd overlay options
-    --enable-overlays \
+    --enable-overlays=mod \
+    --enable-syncprov=mod \
+    --enable-ppolicy=mod \
     # slapd password module options
     --enable-argon2 \
     # lloadd options
     --enable-balancer \
-    # optional packages
-    --with-tls=openssl
+    # others
+    --with-cyrus-sasl \
+    --with-tls=openssl \
+    --with-yielding-select \
+    --with-argon2=libargon2
 
 RUN make depend
 RUN make -j8
