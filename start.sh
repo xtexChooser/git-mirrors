@@ -23,7 +23,7 @@ fi
 
 if [[ "x$OLO_NO_IMPORT_SLAPD_LDIF" != "xtrue" ]]; then
     echo importing slapd.ldif
-    /usr/sbin/slapadd -n 0 -c -F "$SLAPD_D_PATH" -l "$SLAPD_LDIF_PATH"
+    /usr/sbin/slapadd -n 0 -c -l "$SLAPD_LDIF_PATH"
 fi
 
 if [[ "x$OLO_NO_AUTO_USER" != "xtrue" ]]; then
@@ -34,4 +34,4 @@ fi
 echo ${SLAPD_OPTS[@]}
 
 # shellcheck disable=SC2068
-${SLAPD_OPTS[@]}
+bash -c ${SLAPD_OPTS[@]}
