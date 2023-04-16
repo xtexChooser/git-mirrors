@@ -18,7 +18,7 @@ RUN apk add groff argon2 argon2-dev libtool cyrus-sasl cyrus-sasl-dev libevent l
 
 RUN ./configure \
     # directories
-    --prefix=/dist --localstatedir=/var/lib --runstatedir=/var/run/openldap --sysconfdir=/etc \
+    --prefix=/dist --localstatedir=/var --runstatedir=/var/run/openldap --sysconfdir=/etc \
     # features
     --enable-syslog --enable-ipv6 --enable-local \
     # slapd options
@@ -51,7 +51,7 @@ COPY --from=builder /etc/openldap /etc/openldap
 
 RUN mkdir -p /var/run/openldap/ /var/lib/
 RUN ln -s /usr/libexec/slapd /usr/sbin/slapd
-RUN cp -R -s -v /dist /
+RUN cp -R -s -v /dist/* /
 
 COPY start.sh /olo/start.sh
 RUN chmod +x /olo/start.sh
