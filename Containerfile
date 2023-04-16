@@ -14,7 +14,7 @@ WORKDIR /src
 RUN mkdir -p /dist
 
 RUN apk add gcc make binutils musl musl-dev
-RUN apk add groff argon2 argon2-dev libtool cyrus-sasl cyrus-sasl-dev
+RUN apk add groff argon2 argon2-dev libtool cyrus-sasl cyrus-sasl-dev libevent libevent-dev
 
 RUN ./configure \
     # directories
