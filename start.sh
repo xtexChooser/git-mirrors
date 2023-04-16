@@ -18,7 +18,7 @@ fi
 
 if [[ "x$OLO_NO_LN_BUILTIN_SCHEMA" != "xtrue" ]]; then
     echo copying builtin schemas
-    cp -R -s -n "$(readlink -f "${OLO_BUILTIN_SCHEMA_PATH:-/olo/builtin-schema}")" "$(readlink -f "${OLO_SCHEMA_LN_DST:-/etc/openldap/schema}")"
+    cp -R -s -n "$(readlink -f "${OLO_BUILTIN_SCHEMA_PATH:-/olo/builtin-schema}")/*" "$(readlink -f "${OLO_SCHEMA_LN_DST:-/etc/openldap/schema/}")"
 fi
 
 if [[ "x$OLO_NO_IMPORT_SLAPD_LDIF" != "xtrue" ]]; then
@@ -28,6 +28,10 @@ fi
 
 if [[ "x$OLO_NO_AUTO_USER" != "xtrue" ]]; then
     SLAPD_OPTS+=("-u" "$(id -n -u)" "-g" "$(id -n -g)")
+fi
+
+if [[ "x$OLO_NO_CHANGE_ULIMIT" != "xtrue" ]]; then
+    ulimit -n 1024
 fi
 
 # shellcheck disable=SC2068
@@ -41,5 +45,5 @@ echo slapd pid: "$pid"
 tail "--pid=$pid" -f /dev/null
 
 if [[ -e /proc/$pid/cmdline ]]; then
-    kill --verbose "$pid"
+    kill "$pid"
 fi
