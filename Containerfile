@@ -50,7 +50,7 @@ RUN apk add libtool cyrus-sasl
 COPY --from=builder /dist /dist
 COPY --from=builder /etc/openldap /etc/openldap
 
-RUN mkdir -p /var/run/openldap/ /var/lib/
+RUN mkdir -p /var/run/openldap/ /var/lib/ /var/openldap-data/
 RUN cp -R -s -v /dist/* /usr/
 RUN ln -s /usr/libexec/slapd /usr/sbin/slapd
 
