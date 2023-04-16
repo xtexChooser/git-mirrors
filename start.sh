@@ -24,7 +24,7 @@ fi
 
 if [[ "x$OLO_NO_IMPORT_SLAPD_LDIF" != "xtrue" ]]; then
     echo importing slapd.ldif
-    /usr/sbin/slapadd -n 0 -c -l "$SLAPD_LDIF_PATH"
+    /usr/sbin/slapadd -n 0 -f "$SLAPD_CONF_PATH" -c -l "$SLAPD_LDIF_PATH"
 fi
 
 if [[ "x$OLO_NO_AUTO_USER" != "xtrue" ]]; then
