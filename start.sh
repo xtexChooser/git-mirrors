@@ -35,3 +35,7 @@ echo ${SLAPD_OPTS[@]}
 
 # shellcheck disable=SC2068
 bash -c ${SLAPD_OPTS[@]}
+
+pid=$(cat /var/run/slapd.pid)
+echo slapd pid: "$pid"
+tail "--pid=$pid" -f /dev/null
