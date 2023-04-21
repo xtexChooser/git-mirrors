@@ -16,7 +16,7 @@ if [[ "x$OLO_NO_DEFAULT_H" != "xtrue" ]]; then
     SLAPD_OPTS+=("-h" "\"$SLAPD_LISTEN\"")
 fi
 
-if [[ "x$OLO_NO_LN_BUILTIN_SCHEMA" != "xtrue" ]]; then
+if [[ "x${OLO_NO_LN_BUILTIN_SCHEMA:-true}" != "xtrue" ]]; then
     echo copying builtin schemas
     # shellcheck disable=SC2046
     cp -R -s -n $(readlink -f "${OLO_BUILTIN_SCHEMA_PATH:-/olo/builtin-schema}")/* "$(readlink -f "${OLO_SCHEMA_LN_DST:-/etc/openldap/schema/}")"
