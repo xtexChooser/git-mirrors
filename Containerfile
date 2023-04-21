@@ -78,6 +78,6 @@ RUN ln -s /usr/libexec/slapd /usr/sbin/slapd
 
 COPY start.sh /olo/start.sh
 RUN chmod +x /olo/start.sh
-COPY --from=builder /etc/openldap/schema /olo/builtin-schema
+COPY --from=builder /etc/openldap/schema /olo/schema
 
 ENTRYPOINT [ "/bin/bash", "/olo/start.sh" ]
