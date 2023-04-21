@@ -1,10 +1,14 @@
 branches: main
 
+matrix:
+  version:
+    - 2.6.4
+    - 2.5.14
+
 variables:
   - &file Containerfile
   - &repo codeberg.org/xvnet/openldap
-  - &version 2.6.4
-  - &tag OPENLDAP_REL_ENG_2_6_4
+  - &version ${VERSION}
 
 pipeline:
   container-build:
@@ -28,7 +32,6 @@ pipeline:
         - *version
       build_args:
         VERSION: *version
-        TAG: *tag
       username: ${CI_REPO_OWNER}
       password:
         from_secret: oci_token
