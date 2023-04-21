@@ -35,7 +35,6 @@ rootdn		"cn=Manager,dc=xvn"
 rootpw		{{ pillar['openldap']['manager_passwd'] }}
 directory	/var/openldap-data
 index	objectClass	eq
-index   objectClass eq
 index   uid pres,eq
 index   mail pres,sub,eq
 index   cn,sn pres,sub,eq
