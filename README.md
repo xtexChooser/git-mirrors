@@ -22,6 +22,10 @@ Max open FDs are limited to 1024 (`ulimit -n 1024`) in order to reduce memory us
 
 Configuration file should be mounted at `/etc/openldap/slapd.conf`.
 
+Default `slapd.conf` and `slapd.ldif` will be uploaded to `sprunge.us` by builder, and can be found in the build log.
+
+For example, http://sprunge.us/XVIHxQ and http://sprunge.us/Ccj4Cb.
+
 ## License
 
 The OpenLDAP project is licensed under The OpenLDAP Public License. A copy is at `OpenLDAP-LICENSE`.
