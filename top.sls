@@ -23,3 +23,4 @@ base:
         - watchtower
     'nl-alk1':
         - mekbuda
+        - openldap.slapd
