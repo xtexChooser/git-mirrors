@@ -18,7 +18,7 @@ Default listening addresses are `ldap:/// ldaps:/// ldapi:///`.
 
 Max open FDs are limited to 1024 (`ulimit -n 1024`) in order to reduce memory usage.
 
-`/etc/openldap/slapd.ldif` will be added with `slapadd` on launch.
+`/etc/openldap/slapd.ldif` will be added through `slapadd` on launch.
 
 Configuration file should be mounted at `/etc/openldap/slapd.conf`.
 
