@@ -1,6 +1,7 @@
 #!/bin/bash
 
 SLAPD_CONF_PATH=${SLAPD_CONF_PATH:-/etc/openldap/slapd.conf}
+SLAPD_D_PATH=${SLAPD_D_PATH:-/tmp/slapd.d}
 SLAPD_LDIF_PATH=${SLAPD_LDIF_PATH:-/etc/openldap/slapd.ldif}
 
 SLAPD_LISTEN=${SLAPD_LISTEN:-ldap:/// ldaps:/// ldapi:///}
@@ -24,7 +25,9 @@ fi
 
 if [[ "x$OLO_NO_IMPORT_SLAPD_LDIF" != "xtrue" ]]; then
     echo importing slapd.ldif
-    /usr/sbin/slapadd -n 0 -f "$SLAPD_CONF_PATH" -c -l "$SLAPD_LDIF_PATH"
+    mkdir "$SLAPD_D_PATH"
+    /usr/sbin/slapadd -n 0 -F "$SLAPD_D_PATH" -c -l "$SLAPD_LDIF_PATH"
+    SLAPD_OPTS+=("-F" "$SLAPD_D_PATH")
 fi
 
 if [[ "x$OLO_NO_AUTO_USER" != "xtrue" ]]; then
