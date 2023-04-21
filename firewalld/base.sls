@@ -21,6 +21,8 @@ firewalld-public:
             - cockpit
             - http
             - https
+            - ldap
+            - ldaps
 {%- if pillar['service']['salt-master'] is defined %}
             - salt-master
 {%- endif %}
