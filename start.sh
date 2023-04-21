@@ -23,7 +23,7 @@ if [[ "x${OLO_NO_LN_BUILTIN_SCHEMA:-true}" != "xtrue" ]]; then
     cp -R -s -n $(readlink -f "${OLO_BUILTIN_SCHEMA_PATH:-/olo/schema}")/* "$(readlink -f "${OLO_SCHEMA_LN_DST:-/etc/openldap/schema/}")"
 fi
 
-if [[ "x$OLO_NO_IMPORT_SLAPD_LDIF" != "xtrue" ]]; then
+if [[ "x$OLO_NO_IMPORT_SLAPD_LDIF" != "xtrue" && -e "$SLAPD_LDIF_PATH" ]]; then
     echo importing slapd.ldif
     mkdir "$SLAPD_D_PATH"
     /usr/sbin/slapadd -n 0 -F "$SLAPD_D_PATH" -c -l "$SLAPD_LDIF_PATH"
