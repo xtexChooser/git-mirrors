@@ -14,7 +14,7 @@ moduleload  memberof.la
 password-hash               {CRYPT} {SSHA}
 password-crypt-salt-format  "$6$%.16s"
 
-security ssf=1 update_ssf=112 simple_bind=64
+#security ssf=1 update_ssf=112 simple_bind=64
 
 access to attrs=userPassword,userPKCS12
     by self write
