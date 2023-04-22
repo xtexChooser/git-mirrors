@@ -10,14 +10,14 @@ log "start updating per-node TLS cert..."
 
 salt '*' --preview-target --no-color | sed -e 's/- //' | while read -r node; do
     payload="{\"name\": {\"O\": \"Xensor V Network\", \"OU\": \"$node.svr.xvnet.eu.org\"}, \"hosts\": [ \"$node.svr.xvnet.eu.org\", \"*.xvnet.eu.org\" ]}"
-    log "processing for $node\npayload: $payload"
+    log "processing for $node: $payload"
     resp=$(curl -H "Content-Type: application/json" -u "node_tls:{{ pillar["node_tls"]["spica-auth"] }}" -d "$payload" "https://signer.pki.xvnet.eu.org/A1/sign/json")
     cert=$(echo "$resp" | openssl x509)
     if [[ -z "$cert" ]]; then
         log "failed to request cert for $node: $resp"
     else
         privkey=$(echo "$resp" | openssl pkey)
-        log "requested cert for $node:\n$(echo "$cert" | openssl x509 -text)"
+        log "requested cert for $node: $(echo "$cert" | openssl x509 -text)"
         echo "$cert" > "cert_$node.crt"
         echo "$privkey" > "cert_$node.key"
         salt-cp "$node" "cert_$node.crt" "/opt/node_tls.crt"
