@@ -39,7 +39,7 @@ spica-signer:
             - file: spica-signer
         - binds:
             - /etc/spica/signer:/etc/spica/signer
-        - memory: 16M
+        - memory: 32M
 
 {% for cert in certs %}
 spica-signer-{{ cert }}:
