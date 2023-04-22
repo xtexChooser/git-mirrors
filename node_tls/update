@@ -8,16 +8,22 @@ function log() {
 
 log "start updating per-node TLS cert..."
 
-salt '*' --preview-target --no-color | sed -e 's/- //' | while read -r minion; do
-    payload="{\"name\": {\"O\": \"Xensor V Network\", \"OU\": \"$minion.svr.xvnet.eu.org\"}, \"hosts\": [ \"$minion.svr.xvnet.eu.org\", \"*.xvnet.eu.org\" ]}"
-    log "processing for $minion\npayload: $payload"
+salt '*' --preview-target --no-color | sed -e 's/- //' | while read -r node; do
+    payload="{\"name\": {\"O\": \"Xensor V Network\", \"OU\": \"$node.svr.xvnet.eu.org\"}, \"hosts\": [ \"$node.svr.xvnet.eu.org\", \"*.xvnet.eu.org\" ]}"
+    log "processing for $node\npayload: $payload"
     resp=$(curl -H "Content-Type: application/json" -u "node_tls:{{ pillar["node_tls"]["spica-auth"] }}" -d "$payload" "https://signer.pki.xvnet.eu.org/A1/sign/json")
     cert=$(echo "$resp" | openssl x509)
     if [[ -z "$cert" ]]; then
-        log "failed to requested cert: $resp"
+        log "failed to request cert for $node: $resp"
     else
-        log "requested cert: $cert"
+        privkey=$(echo "$resp" | openssl pkey)
+        log "requested cert for $node:\n$(echo "$cert" | openssl x509 -text)"
+        echo "$cert" > "cert_$node.crt"
+        echo "$privkey" > "cert_$node.key"
+        salt-cp "$node" "cert_$node.crt" "/opt/node_tls.crt"
+        salt-cp "$node" "cert_$node.key" "/opt/node_tls.key"
+        log "updated TLS cert for $node"
     fi
 done
 
-log "node tls updated"
+log "all node tls updated"
