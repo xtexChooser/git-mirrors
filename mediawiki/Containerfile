@@ -26,14 +26,18 @@ RUN { \
     } > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
 RUN mkdir -p /var/www/data; chown -R www-data:www-data /var/www/data
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
 LABEL org.opencontainers.image.title=MediaWiki
 LABEL org.opencontainers.image.vendor="XV-NET"
 LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/containers"
 
+WORKDIR /
 ADD https://releases.wikimedia.org/mediawiki/$MAJOR_VERSION/mediawiki-$VERSION.tar.gz /mw.tar.gz
-RUN tar -x --strip-components=1 -f /mw.tar.gz
-RUN rm /mw.tar.gz
+RUN tar -x -f mw.tar.gz
+RUN mv mediawiki-$VERSION /var/www/html
+RUN rm mw.tar.gz
+WORKDIR /var/www/html
 RUN chown -R www-data:www-data extensions skins cache images
 
 ENTRYPOINT [ "/usr/local/sbin/php-fpm" ]
