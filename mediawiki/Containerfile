@@ -24,6 +24,7 @@ LABEL org.opencontainers.image.title=MediaWiki
 LABEL org.opencontainers.image.vendor="XV-NET"
 LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/containers"
 
+WORKDIR /
 ADD https://releases.wikimedia.org/mediawiki/$MAJOR_VERSION/mediawiki-$VERSION.tar.gz /mw.tar.gz
 RUN tar -xf mw.tar.gz
 RUN mv mediawiki-$VERSION mw
