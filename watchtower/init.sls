@@ -22,4 +22,4 @@ watchtower:
             - WATCHTOWER_INCLUDE_STOPPED: true
             {# 15 mins -#}
             - WATCHTOWER_POLL_INTERVAL: 900
-        - memory: 8M
+        - memory: 32M
