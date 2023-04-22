@@ -1,9 +1,11 @@
-include /olo/schema/core.schema
-include /olo/schema/cosine.schema
-include /olo/schema/inetorgperson.schema
+loglevel	stats config
 
 pidfile     /var/run/slapd.pid
 argsfile    /var/run/slapd.args
+
+include /olo/schema/core.schema
+include /olo/schema/cosine.schema
+include /olo/schema/inetorgperson.schema
 
 modulepath /dist/libexec/openldap
 moduleload back_mdb.la
@@ -32,7 +34,7 @@ database mdb
 #maxsize 1073741824
 suffix  "dc=xvn"
 rootdn  "cn=Manager,dc=xvn"
-rootpw  "{{ pillar['openldap']['manager_passwd'] }}""
+rootpw  "{{ pillar['openldap']['manager_passwd'] }}"
 directory /var/openldap-data
 index   objectClass eq
 index   uid         pres,eq
@@ -41,4 +43,3 @@ index   cn,sn       pres,sub,eq
 index   dc          eq
 
 database monitor
-
