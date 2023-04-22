@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cd /root/node_tls/ || exit
+cd /opt/node_tls/ || exit
 
 function log() {
     curl -d "$1" https://ntfy.xvnet.eu.org/xvn-node-tls
