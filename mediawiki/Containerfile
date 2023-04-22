@@ -35,6 +35,7 @@ WORKDIR /
 ADD https://releases.wikimedia.org/mediawiki/$MAJOR_VERSION/mediawiki-$VERSION.tar.gz /mw.tar.gz
 RUN tar -xf mw.tar.gz
 RUN mv mediawiki-$VERSION mw
+RUN rm mw.tar.gz
 WORKDIR /mw
 RUN chown -R www-data:www-data extensions skins cache images
 
