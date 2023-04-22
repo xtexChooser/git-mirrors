@@ -31,12 +31,9 @@ LABEL org.opencontainers.image.title=MediaWiki
 LABEL org.opencontainers.image.vendor="XV-NET"
 LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/containers"
 
-WORKDIR /
 ADD https://releases.wikimedia.org/mediawiki/$MAJOR_VERSION/mediawiki-$VERSION.tar.gz /mw.tar.gz
-RUN tar -xf mw.tar.gz
-RUN mv mediawiki-$VERSION mw
-RUN rm mw.tar.gz
-WORKDIR /mw
+RUN tar -x --strip-components=1 -f /mw.tar.gz
+RUN rm /mw.tar.gz
 RUN chown -R www-data:www-data extensions skins cache images
 
 ENTRYPOINT [ "/usr/local/sbin/php-fpm" ]
