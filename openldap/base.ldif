@@ -1,0 +1,29 @@
+version: 1
+
+dn: dc=xvn
+objectClass: dcObject
+objectClass: organization
+dc: xvn
+o: xvn
+
+dn: cn=Manager,dc=xvn
+objectClass: organizationalRole
+objectClass: top
+cn: Manager
+description: LDAP root DN
+roleOccupant: dc=xvn
+
+dn: ou=Primary,dc=xvn
+objectClass: organizationalUnit
+objectClass: top
+ou: Primary
+
+dn: ou=People,ou=Primary,dc=xvn
+objectClass: organizationalUnit
+objectClass: top
+ou: People
+
+dn: ou=Bots,ou=Primary,dc=xvn
+objectClass: organizationalUnit
+objectClass: top
+ou: Bots
