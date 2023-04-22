@@ -1,3 +1,6 @@
+include:
+    - node_tls
+
 salt-master-cd:
     user.present:
         - fullname: XV-NET Salt Master CD Bot

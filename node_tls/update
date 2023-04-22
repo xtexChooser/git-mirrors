@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+cd /root/node_tls/ || exit
+
+function log() {
+    curl -d "$1" https://ntfy.xvnet.eu.org/xvn-node-tls
+}
+
+log "start updating per-node TLS cert..."
+
+salt '*' --preview-target --no-color | sed -e 's/- //' | while read -r minion; do
+    payload="{\"name\": {\"O\": \"Xensor V Network\", \"OU\": \"$minion.svr.xvnet.eu.org\"}, \"hosts\": [ \"$minion.svr.xvnet.eu.org\", \"*.xvnet.eu.org\" ]}"
+    log "processing for $minion\npayload: $payload"
+    resp=$(curl -H "Content-Type: application/json" -u "node_tls:{{ pillar["node_tls"]["spica-auth"] }}" -d "$payload" "https://signer.pki.xvnet.eu.org/A1/sign/json")
+    cert=$(echo "$resp" | openssl x509)
+    if [[ -z "$cert" ]]; then
+        log "failed to requested cert: $resp"
+    else
+        log "requested cert: $cert"
+    fi
+done
+
+log "node tls updated"
