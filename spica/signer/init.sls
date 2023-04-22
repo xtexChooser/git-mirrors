@@ -3,7 +3,7 @@ include:
     - caddy
     - spica
 
-{% set certs = ["G1T1X-XVNSVR"] %}
+{% set certs = ["A1"] %}
 
 spica-signer:
     file.managed:
