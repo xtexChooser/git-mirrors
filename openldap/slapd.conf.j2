@@ -29,6 +29,12 @@ access to *
     by dn.base="cn=Manager,dc=xvn" write
     by users read
 
+TLSCACertificateFile    /opt/cert_ca.crt
+TLSCACertificatePath    /usr/share/ca-certificates/trust-source
+TLSCertificateFile      /opt/node_tls.crt
+TLSCertificateKeyFile   /opt/node_tls.key
+TLSVerifyClient         allow
+
 database config
 
 database mdb
