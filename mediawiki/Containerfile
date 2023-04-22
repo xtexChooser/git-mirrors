@@ -1,7 +1,7 @@
 FROM docker.io/library/php:fpm-alpine
 
-ARG MEDIAWIKI_MAJOR_VERSION=1.39
-ARG MEDIAWIKI_VERSION=1.39.3
+ARG MAJOR_VERSION=1.39
+ARG VERSION=1.39.3
 
 RUN apk add --no-cache git imagemagick python3
 
@@ -24,7 +24,9 @@ LABEL org.opencontainers.image.title=MediaWiki
 LABEL org.opencontainers.image.vendor="XV-NET"
 LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/containers"
 
-ADD https://releases.wikimedia.org/mediawiki/$MEDIAWIKI_MAJOR_VERSION/mediawiki-$MEDIAWIKI_VERSION.tar.gz /mw
+ADD https://releases.wikimedia.org/mediawiki/$MAJOR_VERSION/mediawiki-$VERSION.tar.gz /mw.tar.gz
+RUN tar -xf mw.tar.gz
+RUN mv mediawiki-$VERSION mw
 WORKDIR /mw
 RUN chown -R www-data:www-data extensions skins cache images
 
