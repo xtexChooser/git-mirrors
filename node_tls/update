@@ -23,8 +23,11 @@ salt '*' --preview-target --no-color | sed -e 's/- //' | while read -r node; do
         log "requested cert for $node: $(echo "$cert" | openssl x509 -text)"
         echo "$cert" > "cert_$node.crt"
         echo "$privkey" > "cert_$node.key"
+        echo "$cert" > "cert_${node}_bundle.crt"
+        cat cert_ca.crt >> "cert_${node}_bundle.crt"
         salt-cp "$node" "cert_$node.crt" "/opt/node_tls.crt"
         salt-cp "$node" "cert_$node.key" "/opt/node_tls.key"
+        salt-cp "$node" "cert_${node}_bundle.crt" "/opt/node_tls_bundle.crt"
         salt-cp "$node" "cert_ca.crt" "/opt/cert_ca.crt"
         log "updated TLS cert for $node"
     fi
