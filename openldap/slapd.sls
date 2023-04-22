@@ -9,6 +9,7 @@ slapd:
         - binds:
             - /etc/openldap:/etc/openldap:ro
             - /var/lib/openldap:/var/openldap-data
+            - /opt:/opt:ro
         - require:
             - test: container
             - file: slapd.conf
