@@ -1,0 +1,31 @@
+FROM docker.io/library/php:fpm-alpine
+
+ARG MEDIAWIKI_MAJOR_VERSION=1.39
+ARG MEDIAWIKI_VERSION=1.39.3
+
+RUN apk add --no-cache git imagemagick python3
+
+RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS icu-dev oniguruma-dev
+RUN docker-php-ext-install -j8 calendar intl mbstring mysqli opcache
+RUN pecl install APCu-5.1.21; docker-php-ext-enable apcu; rm -r /tmp/pear
+RUN apk del .build-deps
+
+RUN { \
+    echo 'opcache.memory_consumption=128'; \
+    echo 'opcache.interned_strings_buffer=8'; \
+    echo 'opcache.max_accelerated_files=4000'; \
+    echo 'opcache.revalidate_freq=60'; \
+    echo 'opcache.fast_shutdown=1'; \
+    } > /usr/local/etc/php/conf.d/opcache-recommended.ini
+
+RUN mkdir -p /var/www/data; chown -R www-data:www-data /var/www/data
+
+LABEL org.opencontainers.image.title=MediaWiki
+LABEL org.opencontainers.image.vendor="XV-NET"
+LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/containers"
+
+ADD https://releases.wikimedia.org/mediawiki/$MEDIAWIKI_MAJOR_VERSION/mediawiki-$MEDIAWIKI_VERSION.tar.gz /mw
+WORKDIR /mw
+RUN chown -R www-data:www-data extensions skins cache images
+
+ENTRYPOINT [ "/usr/bin/php-fpm" ]
