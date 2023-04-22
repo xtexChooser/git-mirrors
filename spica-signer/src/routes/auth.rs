@@ -9,7 +9,7 @@ pub async fn handle_auth(AuthBasic((id, signature)): AuthBasic) -> Result<&'stat
         Some(signature) => {
             if let Some(role) = Role::get(&id) {
                 if signature == role.auth {
-                    if get_config().otp_required {
+                    if role.otp_required.unwrap_or(get_config().otp_required) {
                         bail!("OTP authentication is required")
                     }
                     return Ok(role);

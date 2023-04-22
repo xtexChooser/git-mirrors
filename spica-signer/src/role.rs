@@ -11,6 +11,8 @@ pub struct Role {
     pub auth: String,
     #[serde(default)]
     pub prefer_hash: Option<String>,
+    #[serde(default)]
+    pub otp_required: Option<bool>,
     pub acl: Vec<ACLRule>,
 }
 
