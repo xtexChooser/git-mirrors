@@ -2,7 +2,9 @@ package mcms;
 
 import org.apache.bcel.Const;
 import org.apache.bcel.classfile.*;
+import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.LDC;
 import org.apache.bcel.generic.SIPUSH;
 import org.apache.bcel.util.Class2HTML;
 
@@ -12,6 +14,7 @@ import java.lang.instrument.ClassFileTransformer;
 import java.nio.charset.StandardCharsets;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class LRTransformer implements ClassFileTransformer {
@@ -69,16 +72,24 @@ public class LRTransformer implements ClassFileTransformer {
                                                 Utils.log("warn, double sipush 1500 found");
                                             }
                                             Utils.log("located SIPUSH 1500, confirmed as drawStars");
-                                            short newVal;
+                                            int newVal;
                                             if (System.getenv("MCMS_COUNT") != null) {
-                                                newVal = Short.parseShort(System.getenv("MCMS_COUNT"));
+                                                newVal = Integer.parseInt(System.getenv("MCMS_COUNT"));
                                             } else if (System.getProperty("mcms.count") != null) {
-                                                newVal = Short.parseShort(System.getProperty("mcms.count"));
+                                                newVal = Integer.parseInt(System.getProperty("mcms.count"));
                                             } else {
                                                 newVal = 30000;
                                             }
-                                            ih.setInstruction(new SIPUSH(newVal));
-                                            Utils.log("replaced to " + newVal);
+                                            if (((int) (short) newVal) == newVal) {
+                                                ih.setInstruction(new SIPUSH((short) newVal));
+                                                Utils.log("replaced to " + newVal + " with SIPUSH");
+                                            } else {
+                                                var consts = Arrays.copyOf(jc.getConstantPool().getConstantPool(), jc.getConstantPool().getLength() + 1);
+                                                consts[consts.length - 1] = new ConstantInteger(newVal);
+                                                jc.getConstantPool().setConstantPool(consts);
+                                                ih.setInstruction(new LDC(consts.length - 1));
+                                                Utils.log("replaced to " + newVal + " with LDC");
+                                            }
                                             located = true;
                                         }
                                     }
