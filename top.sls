@@ -24,3 +24,4 @@ base:
     'nl-alk1':
         - mekbuda
         - openldap.slapd
+        - pgsql
