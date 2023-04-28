@@ -19,4 +19,4 @@ pgsql:
             - 5432:5432
         - command: -c ssl_cert_file=\"/opt/node_tls.crt\"
             -c ssl_key_file=\"/opt/node_tls.key\"
-            -c ssl=\"on\"
+            -c ssl=\"true\"
