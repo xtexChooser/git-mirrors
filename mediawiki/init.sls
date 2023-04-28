@@ -7,10 +7,11 @@ mediawiki:
         - image: codeberg.org/xvnet/mediawiki:latest
         - binds:
             - /var/www/mw/images:/var/www/html/images
-#            - /var/www/mw/LocalSettings.php:/var/www/html/LocalSettings.php
+            - /var/www/mw/LocalSettings.php:/var/www/html/LocalSettings.php
         - require:
             - test: container
             - file: /var/www/mw/images
+            - file: /var/www/mw/LocalSettings.php
         - memory: 64M
         - hostname: mediawiki
         - environment:
@@ -35,3 +36,13 @@ mediawiki:
         - mode: "0644"
         - require:
             - file: /etc/caddy/sites
+
+/var/www/mw/LocalSettings.php:
+    file.managed:
+        - source: salt://mediawiki/LocalSettings.php
+        - template: jinja
+        - user: root
+        - group: root
+        - mode: "0600"
+        - require:
+            - file: /var/www/mw/images

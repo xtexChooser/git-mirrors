@@ -14,79 +14,33 @@ $wgMetaNamespace = "XV-NET_Wiki";
 $wgScriptPath = "";
 
 ## The protocol and server name to use in fully-qualified URLs
-$wgServer = "http://localhost:8080";
+$wgServer = "https://w.xvnet.eu.org";
 
-## The URL path to static resources (images, scripts, etc.)
 $wgResourceBasePath = $wgScriptPath;
 
-## The URL paths to the logo.  Make sure you change this from the default,
-## or else you'll overwrite your logo when you upgrade!
 $wgLogos = [
-	'1x' => "$wgResourceBasePath/resources/assets/change-your-logo.svg",
+	'1x' => "$wgResourceBasePath/resources/assets/xvnet-logo.svg",
 	'icon' => "$wgResourceBasePath/resources/assets/xvnet-logo.svg",
 ];
 
-## UPO means: this is also a user preference option
-
 $wgEnableEmail = true;
-$wgEnableUserEmail = true; # UPO
+$wgEnableUserEmail = true;
 
-$wgEmergencyContact = "noreply@xvnet.eu.org";
+$wgEmergencyContact = "emerg@xvnet.eu.org";
 $wgPasswordSender = "noreply@xvnet.eu.org";
 
-$wgEnotifUserTalk = true; # UPO
-$wgEnotifWatchlist = true; # UPO
+$wgEnotifUserTalk = true;
+$wgEnotifWatchlist = true;
 $wgEmailAuthentication = true;
 
 ## Database settings
-$wgDBtype = "sqlite";
-$wgDBserver = "";
-$wgDBname = "my_wiki";
-$wgDBuser = "";
-$wgDBpassword = "";
-
-# SQLite-specific settings
-$wgSQLiteDataDir = "/var/www/data";
-$wgObjectCaches[CACHE_DB] = [
-	'class' => SqlBagOStuff::class,
-	'loggroup' => 'SQLBagOStuff',
-	'server' => [
-		'type' => 'sqlite',
-		'dbname' => 'wikicache',
-		'tablePrefix' => '',
-		'variables' => [ 'synchronous' => 'NORMAL' ],
-		'dbDirectory' => $wgSQLiteDataDir,
-		'trxMode' => 'IMMEDIATE',
-		'flags' => 0
-	]
-];
-$wgObjectCaches['db-replicated'] = [
-	'factory' => 'Wikimedia\ObjectFactory\ObjectFactory::getObjectFromSpec',
-	'args' => [ [ 'factory' => 'ObjectCache::getInstance', 'args' => [ CACHE_DB ] ] ]
-];
-$wgLocalisationCacheConf['storeServer'] = [
-	'type' => 'sqlite',
-	'dbname' => "{$wgDBname}_l10n_cache",
-	'tablePrefix' => '',
-	'variables' => [ 'synchronous' => 'NORMAL' ],
-	'dbDirectory' => $wgSQLiteDataDir,
-	'trxMode' => 'IMMEDIATE',
-	'flags' => 0
-];
-$wgJobTypeConf['default'] = [
-	'class' => 'JobQueueDB',
-	'claimTTL' => 3600,
-	'server' => [
-		'type' => 'sqlite',
-		'dbname' => "{$wgDBname}_jobqueue",
-		'tablePrefix' => '',
-		'variables' => [ 'synchronous' => 'NORMAL' ],
-		'dbDirectory' => $wgSQLiteDataDir,
-		'trxMode' => 'IMMEDIATE',
-		'flags' => 0
-	]
-];
-$wgResourceLoaderUseObjectCacheForDeps = true;
+$wgDBtype = "postgres";
+$wgDBserver = "pgsql.xvnet.eu.org";
+$wgDBname = "xvnetwiki";
+$wgDBuser = "mediawiki";
+$wgDBpassword = "{{ pillar['mediawiki']['db_pwd'] }}";
+$wgDBport = "5432";
+$wgDBmwschema = "mediawiki";
 
 # Shared database table
 # This has no effect unless $wgSharedDB is also set.
@@ -111,7 +65,7 @@ $wgUseInstantCommons = true;
 $wgPingback = true;
 
 # Site language code, should be one of the list in ./includes/languages/data/Names.php
-$wgLanguageCode = "zh-cn";
+$wgLanguageCode = "en";
 
 # Time zone
 $wgLocaltimezone = "UTC";
@@ -121,50 +75,30 @@ $wgLocaltimezone = "UTC";
 ## be publicly accessible from the web.
 #$wgCacheDirectory = "$IP/cache";
 
-$wgSecretKey = "80291a6a9865fa6bab9b460cc5bcb5c83caefa599fa61a7ea19177cdcec620c1";
-
-# Changing this will log out all existing sessions.
+$wgSecretKey = "{{ pillar['mediawiki']['secret_key'] }}";
 $wgAuthenticationTokenVersion = "1";
+$wgUpgradeKey = false;
 
-# Site upgrade key. Must be set to a string (default provided) to turn on the
-# web installer while LocalSettings.php is in place
-$wgUpgradeKey = "a8e19b2eb820bb00";
-
-## For attaching licensing metadata to pages, and displaying an
-## appropriate copyright notice / icon. GNU Free Documentation
-## License and Creative Commons licenses are supported so far.
-$wgRightsPage = ""; # Set to the title of a wiki page that describes your license/copyright
+#$wgRightsPage = "";
 $wgRightsUrl = "https://creativecommons.org/licenses/by-sa/4.0/";
 $wgRightsText = "知识共享署名-相同方式共享";
 $wgRightsIcon = "$wgResourceBasePath/resources/assets/licenses/cc-by-sa.png";
 
-# Path to the GNU diff3 utility. Used for conflict resolution.
 $wgDiff3 = "/usr/bin/diff3";
 
-# The following permissions were set based on your choice in the installer
 $wgGroupPermissions['*']['edit'] = false;
 
-## Default skin: you can change the default skin. Use the internal symbolic
-## names, e.g. 'vector' or 'monobook':
 $wgDefaultSkin = "vector";
 
-# Enabled skins.
-# The following skins were automatically enabled:
 wfLoadSkin( 'MinervaNeue' );
 wfLoadSkin( 'Timeless' );
 wfLoadSkin( 'Vector' );
 
-
-# Enabled extensions. Most of the extensions are enabled by adding
-# wfLoadExtension( 'ExtensionName' );
-# to LocalSettings.php. Check specific extension documentation for more details.
-# The following extensions were automatically enabled:
 wfLoadExtension( 'AbuseFilter' );
 wfLoadExtension( 'CategoryTree' );
 wfLoadExtension( 'Cite' );
 wfLoadExtension( 'CiteThisPage' );
 wfLoadExtension( 'CodeEditor' );
-wfLoadExtension( 'ConfirmEdit' );
 wfLoadExtension( 'Gadgets' );
 wfLoadExtension( 'InputBox' );
 wfLoadExtension( 'Interwiki' );
