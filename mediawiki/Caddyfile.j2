@@ -12,13 +12,16 @@ w.xvnet.eu.org {
 
 		@indexFiles file {
 			try_files {path} {path}/index.php index.php
-			#split_path .php
+			split_path ''
 		}
 		rewrite @indexFiles {file_match.relative}
+		rewrite /wiki/* /index.php?title={file_match.relative}
+		root * /var/www/html/
 
-		@phpFiles path *
-		reverse_proxy @phpFiles mediawiki:9000 {
-			transport fastcgi
+		reverse_proxy path * mediawiki:9000 {
+			transport fastcgi {
+				split ''
+			}
 		}
 	}
 }
