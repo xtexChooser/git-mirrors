@@ -7,7 +7,7 @@ mediawiki:
         - image: codeberg.org/xvnet/mediawiki:latest
         - binds:
             - /var/www/mw/images:/var/www/html/images
-            - /var/www/mw/LocalSettings.php:/var/www/html/LocalSettings.php
+#            - /var/www/mw/LocalSettings.php:/var/www/html/LocalSettings.php
         - require:
             - test: container
             - file: /var/www/mw/images

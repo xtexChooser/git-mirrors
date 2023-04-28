@@ -1,3 +1,5 @@
 w.xvnet.eu.org {
-    reverse_proxy http://mediawiki:80
+	php_fastcgi path *.php mediawiki:80 {
+		root /var/www/html/
+	}
 }
