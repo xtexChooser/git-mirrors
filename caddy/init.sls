@@ -36,6 +36,7 @@ caddy:
             - docker_image: caddy
             - docker_network: caddy
             - file: caddy
+            - file: /etc/caddy/sites
         - hostname: caddy
         - environment:
             - HOME=/root

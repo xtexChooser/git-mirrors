@@ -24,6 +24,7 @@ mediawiki:
         - user: root
         - group: root
         - dir_mode: 660
+        - makedirs: true
 
 /etc/caddy/sites/mediawiki.conf:
     file.managed:
