@@ -81,7 +81,7 @@ $wgUpgradeKey = false;
 
 #$wgRightsPage = "";
 $wgRightsUrl = "https://creativecommons.org/licenses/by-sa/4.0/";
-$wgRightsText = "知识共享署名-相同方式共享";
+$wgRightsText = "知识共享署名-相同方式共享 4.0 国际";
 $wgRightsIcon = "$wgResourceBasePath/resources/assets/licenses/cc-by-sa.png";
 
 $wgDiff3 = "/usr/bin/diff3";

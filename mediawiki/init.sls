@@ -43,6 +43,6 @@ mediawiki:
         - template: jinja
         - user: root
         - group: root
-        - mode: "0600"
+        - mode: "0644"
         - require:
             - file: /var/www/mw/images
