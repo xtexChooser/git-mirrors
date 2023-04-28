@@ -5,8 +5,8 @@ pgsql:
     docker_container.running:
         - image: docker.io/library/postgres:alpine
         - binds:
-            - /var/lib/pgsql/data:/var/lib/postgresql/data
-            - /opt:/opt:ro
+            - /var/lib/postgresql/data:/var/lib/postgresql/data
+            - /var/run/postgresql:/var/run/postgresql
         - require:
             - test: container
         - memory: 256M
