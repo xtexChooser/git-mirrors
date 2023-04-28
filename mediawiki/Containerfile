@@ -4,7 +4,6 @@ LABEL org.opencontainers.image.title=MediaWiki
 LABEL org.opencontainers.image.vendor="XV-NET"
 LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/containers"
 
-RUN apt install diffutils
+RUN apt-get install --no-cache diffutils libpq-dev
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
-RUN apt install libpq-dev
 RUN docker-php-ext-install pgsql pdo_pgsql
