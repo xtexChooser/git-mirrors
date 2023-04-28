@@ -9,4 +9,5 @@ pipeline:
       - export SSH="ssh -i ssh_key -o StrictHostKeyChecking=no salt-master-cd@salt.infra.xvnet.eu.org"
       - apk add openssh-client-default
       - $SSH sudo salt-run state.orch orch.deploy
+      - $SSH sudo salt '*' state.apply
     secrets: [ssh_key]
