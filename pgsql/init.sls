@@ -19,16 +19,6 @@ pgsql:
             - POSTGRES_INITDB_ARGS: --data-checksums
         - port_bindings:
             - 5432:5432
-        - command: -c ssl_cert_file='/opt/node_tls.crt' \
-            -c ssl_key_file='/opt/node_tls.key' \
-            -c ssl='on'
-
-/var/lib/pgsql/data/server.crt:
-    file.symlink:
-        - target: /opt/node_tls.crt
-        - makedirs: true
-
-/var/lib/pgsql/data/server.key:
-    file.symlink:
-        - target: /opt/node_tls.key
-        - makedirs: true
+        - command: -c ssl_cert_file=\"/opt/node_tls.crt\" \
+            -c ssl_key_file=\"/opt/node_tls.key\" \
+            -c ssl=\"on\"
