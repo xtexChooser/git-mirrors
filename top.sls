@@ -26,3 +26,4 @@ base:
         - mekbuda
         - openldap.slapd
         - pgsql
+        - mediawiki

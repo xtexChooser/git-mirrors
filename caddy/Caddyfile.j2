@@ -1,11 +1,15 @@
 {
-	email acme@xvnet.eu.org
+email acme@xvnet.eu.org
 }
 
-{% if pillar['service']['ntfy'] is defined %} 
-{% include '../ntfy/Caddyfile.j2' %} 
+{% if pillar['service']['ntfy'] is defined %}
+{% include '../ntfy/Caddyfile.j2' %}
 {% endif %}
 
 {% if salt['pillar.fetch']('spica:signer') is true %}
 {% include '../spica/signer/Caddyfile.j2' %}
+{% endif %}
+
+{% if with_mediawiki is true %}
+{% include '../mediawiki/Caddyfile.j2' %}
 {% endif %}
