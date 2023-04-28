@@ -1,5 +1,6 @@
 w.xvnet.eu.org {
-	php_fastcgi path *.php mediawiki:80 {
+	php_fastcgi mediawiki:9000 {
 		root /var/www/html/
+		try_files {path} {path}/index.php =404
 	}
 }
