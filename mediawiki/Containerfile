@@ -6,4 +6,4 @@ LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/containers"
 
 RUN apk add --no-cache diffutils
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
-RUN docker-php-ext-install postgresql
+RUN docker-php-ext-install pgsql pdo_pgsql
