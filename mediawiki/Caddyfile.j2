@@ -17,8 +17,8 @@ w.xvnet.eu.org {
 		rewrite @indexFiles {file_match.relative}
 
 		@phpFiles path *
-		reverse_proxy @phpFiles <php-fpm_gateway> {
-			transport fastcgi {}
+		reverse_proxy @phpFiles mediawiki:9000 {
+			transport fastcgi
 		}
 	}
 }
