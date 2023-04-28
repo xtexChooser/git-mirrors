@@ -1,10 +1,10 @@
-FROM docker.io/library/mediawiki:stable-fpm-alpine
+FROM docker.io/library/mediawiki:latest
 
 LABEL org.opencontainers.image.title=MediaWiki
 LABEL org.opencontainers.image.vendor="XV-NET"
 LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/containers"
 
-RUN apk add --no-cache diffutils
+RUN apt install diffutils
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
-RUN apk add --no-cache libpq libpq-dev
+RUN apt install libpq-dev
 RUN docker-php-ext-install pgsql pdo_pgsql
