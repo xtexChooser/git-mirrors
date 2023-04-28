@@ -3,7 +3,6 @@
 cd /opt/node_tls/ || exit
 
 if podman container exists pgsql; then
-    # cp /
     cp -f /opt/tls/crt.crt /var/lib/pgsql/data/server.crt
     cp -f /opt/tls/crt.key /var/lib/pgsql/data/server.key
     podman run --rm -it -v /var/lib/pgsql/data:/data --entrypoint chown docker.io/library/postgres:alpine postgres:postgres /data/server.crt

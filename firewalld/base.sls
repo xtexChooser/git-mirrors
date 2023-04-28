@@ -23,6 +23,7 @@ firewalld-public:
             - https
             - ldap
             - ldaps
+            - postgresql
 {%- if pillar['service']['salt-master'] is defined %}
             - salt-master
 {%- endif %}
