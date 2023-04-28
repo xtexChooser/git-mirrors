@@ -25,10 +25,11 @@ salt '*' --preview-target --no-color | sed -e 's/- //' | while read -r node; do
         echo "$privkey" > "cert_$node.key"
         echo "$cert" > "cert_${node}_bundle.crt"
         cat cert_ca.crt >> "cert_${node}_bundle.crt"
-        salt-cp "$node" "cert_$node.crt" "/opt/node_tls.crt"
-        salt-cp "$node" "cert_$node.key" "/opt/node_tls.key"
-        salt-cp "$node" "cert_${node}_bundle.crt" "/opt/node_tls_bundle.crt"
-        salt-cp "$node" "cert_ca.crt" "/opt/cert_ca.crt"
+        salt-cp "$node" "cert_$node.crt" "/opt/tls/crt.crt"
+        salt-cp "$node" "cert_$node.key" "/opt/tls/crt.key"
+        salt-cp "$node" "cert_${node}_bundle.crt" "/opt/tls/bundle.crt"
+        salt-cp "$node" "cert_ca.crt" "/opt/ca.crt"
+        salt "$node" cmd.run "bash /opt/node_tls/agent_update"
         log "updated TLS cert for $node"
     fi
 done

@@ -6,6 +6,7 @@ base:
         - router.wireguard
         - firewalld.base
         - caddy
+        - node_tls.agent
     'service:salt-master:true':
         - match: pillar
         - salt-master-cd

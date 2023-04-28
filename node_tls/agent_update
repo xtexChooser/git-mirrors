@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+cd /opt/node_tls/ || exit
+
+if podman container exists pgsql; then
+    # cp /
+    echo x
+fi

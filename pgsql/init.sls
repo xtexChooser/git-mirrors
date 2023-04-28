@@ -7,6 +7,7 @@ pgsql:
         - binds:
             - /var/lib/pgsql/data:/var/lib/postgresql/data
             - /opt:/opt:ro
+            - /etc/passwd:/etc/passwd:ro
         - require:
             - test: container
         - memory: 256M
@@ -20,3 +21,4 @@ pgsql:
         - command: -c ssl_cert_file=/opt/node_tls.crt
             -c ssl_key_file=/opt/node_tls.key
             -c ssl=true
+        - user: root:root

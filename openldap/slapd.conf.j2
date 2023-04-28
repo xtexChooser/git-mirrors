@@ -29,10 +29,10 @@ access to *
     by dn.base="cn=Manager,dc=xvn" write
     by users read
 
-TLSCACertificateFile    /opt/cert_ca.crt
+TLSCACertificateFile    /opt/ca.crt
 TLSCACertificatePath    /usr/share/ca-certificates/trust-source
-TLSCertificateFile      /opt/node_tls_bundle.crt
-TLSCertificateKeyFile   /opt/node_tls.key
+TLSCertificateFile      /opt/tls/bundle.crt
+TLSCertificateKeyFile   /opt/tls/crt.key
 TLSVerifyClient         allow
 
 database config
