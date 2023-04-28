@@ -42,3 +42,9 @@ caddy:
         - watch:
             - file: caddy
         - memory: 32M
+
+/etc/caddy/sites:
+    file.directory:
+        - user: root
+        - group: root
+        - dir_mode: 644

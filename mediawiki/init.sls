@@ -2,12 +2,6 @@ include:
     - container
     - caddy
 
-extend:
-    caddy:
-        file.managed:
-            - context:
-                - with_mediawiki: true
-
 mediawiki:
     docker_container.running:
         - image: codeberg.org/xvnet/mediawiki:latest
@@ -30,3 +24,13 @@ mediawiki:
         - user: root
         - group: root
         - dir_mode: 660
+
+/etc/caddy/sites/mediawiki.conf:
+    file.managed:
+        - source: salt://mediawiki/Caddyfile.j2
+        - template: jinja
+        - user: root
+        - group: root
+        - mode: "0644"
+        - require:
+            - file: /etc/caddy/sites

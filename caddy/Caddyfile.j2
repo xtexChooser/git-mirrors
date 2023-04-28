@@ -10,6 +10,4 @@ email acme@xvnet.eu.org
 {% include '../spica/signer/Caddyfile.j2' %}
 {% endif %}
 
-{% if with_mediawiki is true %}
-{% include '../mediawiki/Caddyfile.j2' %}
-{% endif %}
+import /etc/caddy/sites/*
