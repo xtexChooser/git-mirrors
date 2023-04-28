@@ -9,8 +9,6 @@ pgsql:
             - /opt:/opt:ro
         - require:
             - test: container
-            - file: /var/lib/pgsql/data/server.crt
-            - file: /var/lib/pgsql/data/server.key
         - memory: 256M
         - hostname: pgsql
         - environment:
