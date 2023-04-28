@@ -6,7 +6,7 @@ extend:
     caddy:
         file.managed:
             - context:
-                with_mediawiki: true
+                - with_mediawiki: true
 
 mediawiki:
     docker_container.running:
