@@ -2198,6 +2198,11 @@ class Query {
 	 * @param mixed $option
 	 */
 	private function _uses( $option ) {
+		$this->addTables( [
+			'linktarget' => 'lt',
+			'templatelinks' => 'tl',
+		] );
+
 		$where = $this->tableNames['page'] . '.page_id=tl.tl_from AND lt.lt_id = tl.tl_target_id AND (';
 		$ors = [];
 		$linksByNS = [];
@@ -2209,14 +2214,6 @@ class Query {
 			$where = $this->tableNames['page'] . '.page_id=tl.tl_from AND (';
 			$nsField = 'tl.tl_namespace';
 			$titleField = 'tl.tl_title';
-			$this->addTables( [
-				'templatelinks' => 'tl',
-			] );
-		} else {
-			$this->addTables( [
-				'linktarget' => 'lt',
-				'templatelinks' => 'tl',
-			] );
 		}
 
 		foreach ( $option as $linkGroup ) {
