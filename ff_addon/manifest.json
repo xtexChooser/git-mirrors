@@ -1,0 +1,21 @@
+{
+    "description": "Lumberjack Solver Firefox Agent Addon",
+    "manifest_version": 2,
+    "name": "lumberjack_addon_agent",
+    "version": "1.0",
+    "permissions": [
+        "webRequest",
+        "webRequestBlocking",
+        "<all_urls>"
+    ],
+    "background": {
+        "scripts": [
+            "background.js"
+        ]
+    },
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "ff_agent@lumberjack-solver"
+        }
+    }
+}

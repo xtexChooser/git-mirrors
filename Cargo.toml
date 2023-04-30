@@ -1,0 +1,20 @@
+[package]
+name = "lumberjack"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = { version = "1.0.71", features = ["backtrace"] }
+eframe = { version = "0.21.3", features = ["dark-light"] }
+egui = { version = "0.21.0", features = ["tracing"] }
+reqwest = { version = "0.11.17", features = ["json"] }
+serde = { version = "1.0.160", features = ["derive"] }
+serde_json = "1.0.96"
+thirtyfour = "0.31.0"
+tokio = { version = "1.28.0", features = ["full", "tracing"] }
+tracing = "0.1.37"
+tracing-subscriber = { version = "0.3.17", features = ["env-filter"] }
+urlencoding = "2.1.2"
