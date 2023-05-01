@@ -1,9 +1,11 @@
 use anyhow::Result;
-use build_clean::search;
+use build_clean::{db::init_lua, search};
 use cursive::views::TextView;
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    init_lua().await?;
+
     /*let mut siv = cursive::default();
 
     siv.add_global_callback('q', |s| s.quit());
@@ -12,7 +14,7 @@ async fn main() -> Result<()> {
 
     siv.run();*/
 
-    search::search("/mnt/src2".into(), 8, 6).await?;
+    search::search("/mnt/src/".into(), 8, 6).await?;
 
     Ok(())
 }

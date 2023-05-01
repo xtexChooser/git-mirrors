@@ -3,15 +3,19 @@ use std::{fs::DirEntry, path::PathBuf, sync::Arc};
 use anyhow::Result;
 use async_recursion::async_recursion;
 use parking_lot::Mutex;
-use tokio::{
-    sync::{oneshot, RwLock},
-    task::JoinSet,
-};
+use tokio::{sync::oneshot, task::JoinSet};
 
-pub async fn search(base: PathBuf, worker_count: usize, queue_depth: usize) -> Result<()> {
+use crate::{db, info::CacheTypeRef};
+
+pub async fn search(
+    base: PathBuf,
+    worker_count: usize,
+    queue_depth: usize,
+) -> Result<Vec<(PathBuf, CacheTypeRef)>> {
     let ctx = Arc::new(Context {
         busy_workers: Mutex::new(worker_count),
         balancer: Mutex::default(),
+        result: tokio::sync::Mutex::default(),
     });
 
     let mut handles = JoinSet::new();
@@ -35,20 +39,25 @@ pub async fn search(base: PathBuf, worker_count: usize, queue_depth: usize) -> R
 
     while let Some(_) = handles.join_next().await {}
 
-    Ok(())
+    let result = ctx.result.lock().await;
+    Ok(result.clone())
 }
 
 #[derive(Debug)]
 struct Context {
     busy_workers: Mutex<usize>,
     balancer: Mutex<Vec<oneshot::Sender<Option<(usize, PathBuf)>>>>,
+    result: tokio::sync::Mutex<Vec<(PathBuf, CacheTypeRef)>>,
 }
 
 unsafe impl Send for Context {}
 
 impl Context {
     async fn check_entry(&self, entry: &DirEntry) -> Result<()> {
-        println!("{}", entry.path().display());
+        let path = entry.path();
+        if let Some(cache) = db::check_path(&path).await? {
+            self.result.lock().await.push((path, cache));
+        }
         Ok(())
     }
 }
