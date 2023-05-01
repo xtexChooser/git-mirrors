@@ -4,7 +4,11 @@ use anyhow::{anyhow, Result};
 use mlua::Lua;
 use parking_lot::Mutex;
 
-use crate::{builtin, info::CacheTypeRef};
+use crate::builtin;
+
+use self::info::CacheTypeRef;
+
+pub mod info;
 
 pub static LUA: Mutex<LazyCell<Lua>> = Mutex::new(LazyCell::new(Lua::new));
 pub static REGISTRY: Mutex<BTreeMap<String, CacheTypeRef>> = Mutex::new(BTreeMap::new());
@@ -65,7 +69,7 @@ pub async fn init_lua() -> Result<()> {
     Ok(())
 }
 
-pub async fn check_path(path: &PathBuf) -> Result<Option<CacheTypeRef>> {
+pub async fn check_path(path: &PathBuf) -> Result<Option<(CacheTypeRef, PathBuf)>> {
     let cleaners = REGISTRY.lock();
     let name = &path
         .file_name()
@@ -76,7 +80,7 @@ pub async fn check_path(path: &PathBuf) -> Result<Option<CacheTypeRef>> {
         let lua = LUA.lock();
         let resolved = reference.resolve(&lua)?;
         if resolved.filter(path)? {
-            return Ok(Some(reference.to_owned()));
+            return Ok(Some((reference.to_owned(), path.clone())));
         }
     }
     Ok(None)

@@ -4,5 +4,4 @@
 
 pub mod builtin;
 pub mod db;
-pub mod info;
 pub mod search;

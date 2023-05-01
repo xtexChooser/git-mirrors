@@ -1,10 +1,10 @@
 use std::path::PathBuf;
 
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use mlua::{FromLua, Function, Lua, Table};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize, PartialOrd, Ord)]
 #[repr(transparent)]
 pub struct CacheTypeRef(String);
 
@@ -74,6 +74,20 @@ impl<'a> CacheType<'a> {
             .0
             .get::<_, Function>("filter")?
             .call::<_, bool>(path.to_string_lossy().to_string())?)
+    }
+
+    pub fn to_display(&self, path: &PathBuf) -> Result<PathBuf> {
+        if !self.0.contains_key("to_display")? {
+            return Ok(path
+                .parent()
+                .ok_or(anyhow!("got a root dir with cache"))?
+                .to_path_buf());
+        }
+        Ok(self
+            .0
+            .get::<_, Function>("to_display")?
+            .call::<_, String>(path.to_string_lossy().to_string())?
+            .into())
     }
 
     pub fn clean(&self, path: &PathBuf) -> Result<bool> {

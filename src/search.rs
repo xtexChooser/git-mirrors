@@ -5,7 +5,7 @@ use async_recursion::async_recursion;
 use parking_lot::Mutex;
 use tokio::{sync::oneshot, task::JoinSet};
 
-use crate::{db, info::CacheTypeRef};
+use crate::db::{self, info::CacheTypeRef};
 
 pub async fn search(
     base: PathBuf,
@@ -55,7 +55,7 @@ unsafe impl Send for Context {}
 impl Context {
     async fn check_entry(&self, entry: &DirEntry) -> Result<()> {
         let path = entry.path();
-        if let Some(cache) = db::check_path(&path).await? {
+        if let Some((cache, path)) = db::check_path(&path).await? {
             self.result.lock().await.push((path, cache));
         }
         Ok(())
