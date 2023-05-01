@@ -41,9 +41,9 @@ pub async fn init_lua() -> Result<()> {
         PathBuf::from_str("/usr/local/build-clean.d")?,
         PathBuf::from_str("build-clean.d")?,
         PathBuf::from_str(".build-clean.d")?,
-        PathBuf::from_str(
-            &std::env::var("BUILD_CLEAN_RC").unwrap_or("/opt/build-clean.d".to_string()),
-        )?,
+        PathBuf::from_str(&std::env::var("BUILD_CLEAN_RC").unwrap_or_else(|_| {
+            std::env::var("HOME").unwrap_or("/opt".to_string()) + "/build-clean.d"
+        }))?,
     ];
     let mut script_files = vec![];
     for dir in script_dirs {
