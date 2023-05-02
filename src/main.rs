@@ -21,7 +21,7 @@ use cursive::{
 use cursive_async_view::{AsyncState, AsyncView};
 use mlua::Lua;
 use owo_colors::{
-    colors::{css::LightGreen, Green, Red, Yellow},
+    colors::{css::LightGreen, Blue, Green, Red, Yellow},
     AnsiColors, OwoColorize,
 };
 use parking_lot::{Mutex, RwLock};
@@ -30,6 +30,7 @@ use tokio::{
     task::JoinSet,
     time::Instant,
 };
+use updater::{check_update, should_update};
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 struct CleanOptions {
@@ -37,6 +38,8 @@ struct CleanOptions {
     clean_type: bool,
     workers: usize,
 }
+
+pub mod updater;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -47,6 +50,13 @@ async fn main() -> Result<()> {
 
     let (tx, mut rx) = oneshot::channel::<CleanOptions>();
     siv.set_user_data(tx);
+
+    let (updater_tx, mut updater_rx) = oneshot::channel::<Option<String>>();
+    if should_update()? {
+        tokio::spawn(async move {
+            let _ = check_update(updater_tx).await;
+        });
+    }
 
     show_init_lua(&mut siv)?;
 
@@ -146,6 +156,28 @@ async fn main() -> Result<()> {
                 "CLEAN SUCCESSFUL!".fg::<LightGreen>().bold(),
                 time.as_secs_f32()
             );
+            if let Ok(Some(version)) = updater_rx.try_recv() {
+                println!(
+                    "\n{}",
+                    format!(
+                        r#"│
+│ {} is updateable!
+│ {} {}
+{}"#,
+                        env!("CARGO_PKG_NAME"),
+                        concat!("- ", env!("CARGO_PKG_VERSION")).fg::<Red>().bold(),
+                        format!("+ {}", version).fg::<Green>().bold(),
+                        format!(
+                            r#"│ please update with your package manager or cargo.
+│ if you do not want to get update notifications anymore,
+│       set BUILD_CLEAN_NO_UPDATES environment variables.
+│"#
+                        )
+                        .fg::<Blue>()
+                    )
+                    .fg::<Blue>()
+                );
+            }
         } else {
             println!(
                 "{}",
