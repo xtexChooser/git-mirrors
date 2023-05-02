@@ -259,6 +259,10 @@ fn show_main_menu(siv: &mut Cursive) -> Result<()> {
                                     .with_name("clean_workers_text"),
                             ),
                     )
+                    .child(
+                        "Follow Symlinks",
+                        Checkbox::new().unchecked().with_name("follow_symlink"),
+                    )
                     .full_width()
                     .scrollable(),
             )
@@ -296,31 +300,39 @@ fn run(siv: &mut Cursive) -> Result<()> {
         .call_on_name("clean_workers", |view: &mut SliderView| view.get_value())
         .unwrap()
         + 1;
+    let follow_symlink = siv
+        .call_on_name("follow_symlink", |view: &mut Checkbox| view.is_checked())
+        .unwrap();
     siv.pop_layer();
 
     let (tx, mut rx) = oneshot::channel();
     let t0 = Instant::now();
     tokio::spawn(async move {
         tx.send(
-            search::search(search_base.into(), worker_count, queue_depth)
-                .await
-                .map(|mut result| {
-                    result.sort_by(|(p1, _), (p2, _)| p1.cmp(p2));
-                    let mut result1 = vec![];
-                    for result in result.into_iter() {
-                        match result1.last() {
-                            Some((path, _)) => {
-                                if !result.0.starts_with(path) {
-                                    result1.push(result)
-                                }
+            search::search(
+                search_base.into(),
+                worker_count,
+                queue_depth,
+                follow_symlink,
+            )
+            .await
+            .map(|mut result| {
+                result.sort_by(|(p1, _), (p2, _)| p1.cmp(p2));
+                let mut result1 = vec![];
+                for result in result.into_iter() {
+                    match result1.last() {
+                        Some((path, _)) => {
+                            if !result.0.starts_with(path) {
+                                result1.push(result)
                             }
-                            None => result1.push(result),
                         }
+                        None => result1.push(result),
                     }
-                    let mut result = result1;
-                    result.sort_by(|(_, r1), (_, r2)| r1.cmp(r2));
-                    result
-                }),
+                }
+                let mut result = result1;
+                result.sort_by(|(_, r1), (_, r2)| r1.cmp(r2));
+                result
+            }),
         )
         .unwrap();
     });

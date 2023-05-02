@@ -15,9 +15,11 @@ pub async fn search(
     base: PathBuf,
     worker_count: usize,
     queue_depth: usize,
+    follow_symlink: bool,
 ) -> Result<Vec<(PathBuf, CacheTypeRef)>> {
     assert_ne!(worker_count, 0);
     let ctx = Arc::new(Context {
+        follow_symlink,
         busy_workers: Mutex::new(worker_count),
         balancer: Mutex::default(),
         result: tokio::sync::Mutex::default(),
@@ -52,6 +54,7 @@ type BalancerQueue = Vec<oneshot::Sender<Option<(usize, PathBuf)>>>;
 
 #[derive(Debug)]
 struct Context {
+    follow_symlink: bool,
     busy_workers: Mutex<usize>,
     balancer: Mutex<BalancerQueue>,
     result: tokio::sync::Mutex<Vec<(PathBuf, CacheTypeRef)>>,
@@ -167,6 +170,9 @@ impl WorkerContext {
 
         for entry in path.read_dir()? {
             let entry = entry?;
+            if !ctx.follow_symlink && entry.file_type()?.is_symlink() {
+                continue;
+            }
             ctx.check_entry(&entry).await?;
             if entry.metadata()?.is_dir() {
                 queue.push(entry.path());
@@ -185,6 +191,9 @@ impl WorkerContext {
     ) -> Result<()> {
         for entry in path.read_dir()? {
             let entry = entry?;
+            if !ctx.follow_symlink && entry.file_type()?.is_symlink() {
+                continue;
+            }
             ctx.check_entry(&entry).await?;
             if entry.metadata()?.is_dir() {
                 *timer = timer.overflowing_add(1).0;
