@@ -13,8 +13,7 @@ pub mod info;
 pub static LUA: Mutex<LazyCell<Lua>> = Mutex::new(LazyCell::new(Lua::new));
 pub static REGISTRY: Mutex<BTreeMap<String, CacheTypeRef>> = Mutex::new(BTreeMap::new());
 
-pub async fn init_lua() -> Result<()> {
-    let lua = LUA.lock();
+pub fn init_lua(lua: &Lua) -> Result<()> {
     // init globals
     let globals = lua.globals();
     globals.set(

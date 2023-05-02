@@ -15,8 +15,7 @@ cursive = { version = "0.20.0", features = ["crossterm-backend"] }
 cursive-async-view = "0.6.0"
 mlua = { version = "0.8.8", features = ["lua54", "send", "serde", "macros", "mlua_derive"] }
 num_cpus = "1.15.0"
+owo-colors = "3.5.0"
 parking_lot = "0.12.1"
 serde = { version = "1.0.160", features = ["derive"] }
 tokio = { version = "1.28.0", features = ["full", "tracing"] }
-tracing = "0.1.37"
-tracing-subscriber = { version = "0.3.17", features = ["env-filter"] }

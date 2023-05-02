@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::{fs, path::PathBuf};
 
 use anyhow::{anyhow, Result};
 use mlua::{FromLua, Function, Lua, Table};
@@ -10,10 +10,15 @@ pub struct CacheTypeRef(String);
 
 impl CacheTypeRef {
     pub fn resolve<'a>(&self, lua: &'a Lua) -> Result<CacheType<'a>> {
-        Ok((
+        /*Ok((
             lua.load(&self.0)
                 .set_name(format!("resolver for cache type {}", &self.0))?
                 .eval::<Table>()?,
+            self.clone(),
+        )
+            .into())*/
+        Ok((
+            lua.globals().get::<_, Table>(self.0.as_str())?,
             self.clone(),
         )
             .into())
@@ -90,10 +95,23 @@ impl<'a> CacheType<'a> {
             .into())
     }
 
-    pub fn clean(&self, path: &PathBuf) -> Result<bool> {
+    pub fn clean(&self, path: &PathBuf) -> Result<()> {
+        if !self.0.contains_key("do_clean")? {
+            return self.fast_clean(path);
+        }
         Ok(self
             .0
-            .get::<_, Function>("clean")?
-            .call::<_, bool>(path.to_string_lossy().to_string())?)
+            .get::<_, Function>("do_clean")?
+            .call::<_, _>(path.to_string_lossy().to_string())?)
+    }
+
+    pub fn fast_clean(&self, path: &PathBuf) -> Result<()> {
+        if !self.0.contains_key("do_fast_clean")? {
+            return fs::remove_dir_all(path).map_err(anyhow::Error::from);
+        }
+        Ok(self
+            .0
+            .get::<_, Function>("do_fast_clean")?
+            .call::<_, _>(path.to_string_lossy().to_string())?)
     }
 }

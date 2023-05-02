@@ -1,8 +1,9 @@
 cargo = {
     name = "Cargo",
     file_name = "target",
-    clean = function(path)
+    do_clean = function(path)
         print("cleanup cargo ", path)
+        error("aa")
     end
 }
 register_type("cargo")
@@ -10,7 +11,7 @@ register_type("cargo")
 gradle = {
     name = "Gradle",
     file_name = ".gradle",
-    clean = function(path)
+    do_clean = function(path)
         print("cleanup gradle ", path)
     end
 }
