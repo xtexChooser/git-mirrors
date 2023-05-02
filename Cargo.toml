@@ -3,6 +3,9 @@ name = "build-clean"
 version = "0.0.9"
 edition = "2021"
 license = "Apache-2.0"
+description = "Clean all build caches on your disk!"
+homepage = "https://codeberg.org/xtex/build-clean"
+repository = "https://codeberg.org/xtex/build-clean.git"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
