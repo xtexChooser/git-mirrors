@@ -17,7 +17,10 @@ function flush()
 
         local rm = ""
         for path, type in pairs(current.rm) do
-            rm = rm .. string.format("        fs:%s(fs:side(path, \"%s\"))\n", type, path)
+            rm = rm .. string.format("        if (fs:exists(fs:side(path, \"%s\"))) then\
+            fs:%s(fs:side(path, \"%s\"))\
+        end\
+", path, type, path)
         end
         output:write(string.format("registry:create({\
     id = \"%s\",\

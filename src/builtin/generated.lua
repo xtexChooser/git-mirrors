@@ -11,7 +11,9 @@ registry:create({
         return true
     end,
     do_clean = function(path)
-        fs:rmrf(fs:side(path, "target"))
+        if (fs:exists(fs:side(path, "target"))) then
+            fs:rmrf(fs:side(path, "target"))
+        end
     end
 })
 registry:create({
@@ -25,8 +27,12 @@ registry:create({
         return true
     end,
     do_clean = function(path)
-        fs:rmrf(fs:side(path, ".gradle"))
-        fs:rmrf(fs:side(path, "build"))
+        if (fs:exists(fs:side(path, "build"))) then
+            fs:rmrf(fs:side(path, "build"))
+        end
+        if (fs:exists(fs:side(path, ".gradle"))) then
+            fs:rmrf(fs:side(path, ".gradle"))
+        end
     end
 })
 registry:create({
@@ -40,6 +46,8 @@ registry:create({
         return true
     end,
     do_clean = function(path)
-        fs:rmrf(fs:side(path, "node_modules"))
+        if (fs:exists(fs:side(path, "node_modules"))) then
+            fs:rmrf(fs:side(path, "node_modules"))
+        end
     end
 })
