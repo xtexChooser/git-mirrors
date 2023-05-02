@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Hash, PartialEq, Eq, Serialize, Deserialize, PartialOrd, Ord)]
 #[repr(transparent)]
-pub struct CacheTypeRef(String);
+pub struct CacheTypeRef(pub String);
 
 impl CacheTypeRef {
     pub fn resolve<'a>(&self, lua: &'a Lua) -> Result<CacheType<'a>> {

@@ -12,6 +12,7 @@ pub async fn search(
     worker_count: usize,
     queue_depth: usize,
 ) -> Result<Vec<(PathBuf, CacheTypeRef)>> {
+    assert_ne!(worker_count, 0);
     let ctx = Arc::new(Context {
         busy_workers: Mutex::new(worker_count),
         balancer: Mutex::default(),

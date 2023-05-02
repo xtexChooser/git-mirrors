@@ -1,12 +1,12 @@
 use std::{cell::LazyCell, collections::BTreeMap, path::PathBuf, str::FromStr};
 
 use anyhow::{anyhow, Result};
-use mlua::Lua;
+use mlua::{Lua, Table};
 use parking_lot::Mutex;
 
 use crate::builtin;
 
-use self::info::CacheTypeRef;
+use self::info::{CacheType, CacheTypeRef};
 
 pub mod info;
 
@@ -17,7 +17,7 @@ pub fn init_lua(lua: &Lua) -> Result<()> {
     // init globals
     let globals = lua.globals();
     globals.set(
-        "register_type",
+        "register_type_ref",
         lua.create_function(|lua, reference: CacheTypeRef| {
             let resolved = reference.resolve(lua).unwrap();
             REGISTRY
@@ -27,10 +27,26 @@ pub fn init_lua(lua: &Lua) -> Result<()> {
         })?,
     )?;
     globals.set(
-        "unregister_type",
+        "unregister_type_ref",
         lua.create_function(|lua, reference: CacheTypeRef| {
             let resolved = reference.resolve(lua).unwrap();
             REGISTRY.lock().remove(&resolved.get_file_name().unwrap());
+            Ok(())
+        })?,
+    )?;
+    globals.set(
+        "get_registered_types",
+        lua.create_function(|_, ()| Ok(REGISTRY.lock().keys().cloned().collect::<Vec<_>>()))?,
+    )?;
+    globals.set(
+        "register_type",
+        lua.create_function(|lua, table: Table| {
+            let id = table.get::<_, String>("id")?;
+            let cache_type = CacheType::from((table.clone(), CacheTypeRef(id.clone())));
+            lua.globals().set(id.clone(), table)?;
+            REGISTRY
+                .lock()
+                .insert(cache_type.get_file_name().unwrap(), CacheTypeRef(id));
             Ok(())
         })?,
     )?;
