@@ -80,7 +80,7 @@ async fn main() -> Result<()> {
             handles.spawn(async move || -> Result<()> {
                 let lua = Lua::new();
                 lua::init_lua(&lua)?;
-                while let Some((path, type_ref)) = target.lock().next() {
+                while let Some((path, type_ref)) = { target.lock().next() } {
                     let resolved = type_ref.resolve(&lua)?;
                     let t0 = Instant::now();
                     println!(
@@ -133,7 +133,7 @@ async fn main() -> Result<()> {
         }
 
         while let Some(val) = handles.join_next().await {
-            let _ = val?;
+            let _ = val??;
         }
 
         let time = t0.elapsed();
@@ -318,11 +318,16 @@ fn run(siv: &mut Cursive) -> Result<()> {
             .await
             .map(|mut result| {
                 result.sort_by(|(p1, _), (p2, _)| p1.cmp(p2));
-                let mut result1 = vec![];
+                result.reverse();
+                let mut result1: Vec<(PathBuf, CacheTypeRef)> = vec![];
                 for result in result.into_iter() {
                     match result1.last() {
                         Some((path, _)) => {
-                            if !result.0.starts_with(path) {
+                            if !result.0.starts_with(if path.is_file() {
+                                path.parent().unwrap()
+                            } else {
+                                path
+                            }) {
                                 result1.push(result)
                             }
                         }
@@ -330,6 +335,7 @@ fn run(siv: &mut Cursive) -> Result<()> {
                     }
                 }
                 let mut result = result1;
+                result.reverse();
                 result.sort_by(|(_, r1), (_, r2)| r1.cmp(r2));
                 result
             }),
