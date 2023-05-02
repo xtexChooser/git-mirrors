@@ -6,8 +6,8 @@ use std::{cmp::max, collections::BTreeMap, env, path::PathBuf, sync::Arc};
 
 use anyhow::Result;
 use build_clean::{
-    db::{self, info::CacheTypeRef, LUA},
-    search,
+    db::{info::CacheTypeRef, LUA},
+    lua, search,
 };
 use cursive::{
     reexports::ahash::{HashMap, HashMapExt},
@@ -73,12 +73,13 @@ async fn main() -> Result<()> {
 
         let clean_type = opts.clean_type;
         let error_count = Arc::new(RwLock::new(0usize));
+        let t0 = Instant::now();
         for _ in 0..opts.workers {
             let target = target.clone();
             let error_count = error_count.clone();
             handles.spawn(async move || -> Result<()> {
                 let lua = Lua::new();
-                db::init_lua(&lua)?;
+                lua::init_lua(&lua)?;
                 while let Some((path, type_ref)) = target.lock().next() {
                     let resolved = type_ref.resolve(&lua)?;
                     let t0 = Instant::now();
@@ -135,9 +136,14 @@ async fn main() -> Result<()> {
             let _ = val?;
         }
 
+        let time = t0.elapsed();
         let error_count = *error_count.read();
         if error_count == 0 {
-            println!("{}", "CLEAN SUCCESSFUL!".fg::<LightGreen>().bold());
+            println!(
+                "{} Took {:.2}s",
+                "CLEAN SUCCESSFUL!".fg::<LightGreen>().bold(),
+                time.as_secs_f32()
+            );
         } else {
             println!(
                 "{}",
@@ -156,7 +162,7 @@ fn show_init_lua(siv: &mut Cursive) -> Result<()> {
     let cb = siv.cb_sink().clone();
     tokio::spawn(async move {
         let lua = LUA.lock();
-        db::init_lua(&lua).unwrap();
+        lua::init_lua(&lua).unwrap();
         cb.send(Box::new(|siv| {
             siv.pop_layer();
             show_main_menu(siv).unwrap();
@@ -396,8 +402,12 @@ fn show_result(
 
         for (path, _) in result {
             let path = path.clone();
+            let mut name = resolved.to_display(&path).unwrap().display().to_string();
+            if name.len() > 64 {
+                name = format!("{}...", &name[0..63]);
+            }
             group.add_child(
-                &resolved.to_display(&path).unwrap().display().to_string(),
+                &name,
                 Checkbox::new()
                     .with(|view| {
                         view.set_checked(default_action);

@@ -1,18 +1,20 @@
-register_type({
+registry:create({
     id = "cargo",
     name = "Cargo",
-    file_name = "target",
+    file_name = "Cargo.toml",
+    filter = function(path)
+        return fs:exists(fs:side(path, "target"))
+    end,
     do_clean = function(path)
-        print("cleanup cargo ", path)
-        error("aa")
+        fs:rmrf(fs:side(path, "target"))
     end
 })
 
-gradle = {
+registry:create({
+    id = "gradle",
     name = "Gradle",
     file_name = ".gradle",
     do_clean = function(path)
         print("cleanup gradle ", path)
     end
-}
-register_type_ref("gradle")
+})

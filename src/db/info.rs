@@ -1,7 +1,4 @@
-use std::{
-    fs,
-    path::{Path, PathBuf},
-};
+use std::path::{Path, PathBuf};
 
 use anyhow::{anyhow, Result};
 use mlua::{FromLua, Function, Lua, Table};
@@ -109,9 +106,6 @@ impl<'a> CacheType<'a> {
     }
 
     pub fn fast_clean(&self, path: &Path) -> Result<()> {
-        if !self.0.contains_key("do_fast_clean")? {
-            return fs::remove_dir_all(path).map_err(anyhow::Error::from);
-        }
         Ok(self
             .0
             .get::<_, Function>("do_fast_clean")?
