@@ -10,6 +10,7 @@ use build_clean::{
     lua, search,
 };
 use cursive::{
+    event::Key,
     reexports::ahash::{HashMap, HashMapExt},
     view::{Nameable, Resizable, Scrollable},
     views::{
@@ -42,6 +43,7 @@ async fn main() -> Result<()> {
     let mut siv = cursive::default();
 
     siv.add_global_callback('q', |s| s.quit());
+    siv.add_global_callback(Key::Esc, |s| s.quit());
 
     let (tx, mut rx) = oneshot::channel::<CleanOptions>();
     siv.set_user_data(tx);
