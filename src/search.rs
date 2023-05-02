@@ -1,4 +1,8 @@
-use std::{fs::DirEntry, path::PathBuf, sync::Arc};
+use std::{
+    fs::DirEntry,
+    path::{Path, PathBuf},
+    sync::Arc,
+};
 
 use anyhow::Result;
 use async_recursion::async_recursion;
@@ -38,16 +42,18 @@ pub async fn search(
         });
     }
 
-    while let Some(_) = handles.join_next().await {}
+    while handles.join_next().await.is_some() {}
 
     let result = ctx.result.lock().await;
     Ok(result.clone())
 }
 
+type BalancerQueue = Vec<oneshot::Sender<Option<(usize, PathBuf)>>>;
+
 #[derive(Debug)]
 struct Context {
     busy_workers: Mutex<usize>,
-    balancer: Mutex<Vec<oneshot::Sender<Option<(usize, PathBuf)>>>>,
+    balancer: Mutex<BalancerQueue>,
     result: tokio::sync::Mutex<Vec<(PathBuf, CacheTypeRef)>>,
 }
 
@@ -74,7 +80,7 @@ impl WorkerContext {
         let mut queue = unsafe { queue.assume_init() };
         queue.fill_with(Vec::new);
 
-        Ok(WorkerContext { queue: queue })
+        Ok(WorkerContext { queue })
     }
 
     async fn pull_job(&mut self, ctx: &Arc<Context>) -> Result<bool> {
@@ -132,7 +138,7 @@ impl WorkerContext {
         loop {
             if let Some(path) = self.queue[depth].pop() {
                 // current depth has queued path
-                let children = self.do_search(&ctx, path).await?;
+                let children = self.do_search(ctx, path).await?;
                 if depth + 1 < self.queue.len() {
                     if !children.is_empty() {
                         depth += 1;
@@ -141,7 +147,7 @@ impl WorkerContext {
                     }
                 } else {
                     for child in children {
-                        self.do_recursive_search(&ctx, &child, &mut recursive_timer)
+                        self.do_recursive_search(ctx, &child, &mut recursive_timer)
                             .await?;
                     }
                 }
@@ -174,7 +180,7 @@ impl WorkerContext {
     async fn do_recursive_search(
         &mut self,
         ctx: &Arc<Context>,
-        path: &PathBuf,
+        path: &Path,
         timer: &mut u32,
     ) -> Result<()> {
         for entry in path.read_dir()? {

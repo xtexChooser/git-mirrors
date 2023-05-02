@@ -1,4 +1,9 @@
-use std::{cell::LazyCell, collections::BTreeMap, path::PathBuf, str::FromStr};
+use std::{
+    cell::LazyCell,
+    collections::BTreeMap,
+    path::{Path, PathBuf},
+    str::FromStr,
+};
 
 use anyhow::{anyhow, Result};
 use mlua::{Lua, Table};
@@ -84,7 +89,7 @@ pub fn init_lua(lua: &Lua) -> Result<()> {
     Ok(())
 }
 
-pub async fn check_path(path: &PathBuf) -> Result<Option<(CacheTypeRef, PathBuf)>> {
+pub async fn check_path(path: &Path) -> Result<Option<(CacheTypeRef, PathBuf)>> {
     let cleaners = REGISTRY.lock();
     let name = &path
         .file_name()
@@ -95,7 +100,7 @@ pub async fn check_path(path: &PathBuf) -> Result<Option<(CacheTypeRef, PathBuf)
         let lua = LUA.lock();
         let resolved = reference.resolve(&lua)?;
         if resolved.filter(path)? {
-            return Ok(Some((reference.to_owned(), path.clone())));
+            return Ok(Some((reference.to_owned(), path.to_path_buf())));
         }
     }
     Ok(None)

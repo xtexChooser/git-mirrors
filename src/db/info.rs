@@ -1,4 +1,7 @@
-use std::{fs, path::PathBuf};
+use std::{
+    fs,
+    path::{Path, PathBuf},
+};
 
 use anyhow::{anyhow, Result};
 use mlua::{FromLua, Function, Lua, Table};
@@ -71,7 +74,7 @@ impl<'a> CacheType<'a> {
         Ok(self.0.get::<_, bool>("default_selected")?)
     }
 
-    pub fn filter(&self, path: &PathBuf) -> Result<bool> {
+    pub fn filter(&self, path: &Path) -> Result<bool> {
         if !self.0.contains_key("filter")? {
             return Ok(true);
         }
@@ -81,7 +84,7 @@ impl<'a> CacheType<'a> {
             .call::<_, bool>(path.to_string_lossy().to_string())?)
     }
 
-    pub fn to_display(&self, path: &PathBuf) -> Result<PathBuf> {
+    pub fn to_display(&self, path: &Path) -> Result<PathBuf> {
         if !self.0.contains_key("to_display")? {
             return Ok(path
                 .parent()
@@ -95,7 +98,7 @@ impl<'a> CacheType<'a> {
             .into())
     }
 
-    pub fn clean(&self, path: &PathBuf) -> Result<()> {
+    pub fn clean(&self, path: &Path) -> Result<()> {
         if !self.0.contains_key("do_clean")? {
             return self.fast_clean(path);
         }
@@ -105,7 +108,7 @@ impl<'a> CacheType<'a> {
             .call::<_, _>(path.to_string_lossy().to_string())?)
     }
 
-    pub fn fast_clean(&self, path: &PathBuf) -> Result<()> {
+    pub fn fast_clean(&self, path: &Path) -> Result<()> {
         if !self.0.contains_key("do_fast_clean")? {
             return fs::remove_dir_all(path).map_err(anyhow::Error::from);
         }

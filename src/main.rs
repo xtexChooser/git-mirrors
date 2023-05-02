@@ -66,7 +66,7 @@ async fn main() -> Result<()> {
         let target = Arc::new(Mutex::new(
             target
                 .iter()
-                .map(|(path, type_ref)| (path.clone().clone(), type_ref.clone()))
+                .map(|(path, type_ref)| ((*path).clone(), type_ref.clone()))
                 .collect::<HashMap<_, _>>()
                 .into_iter(),
         ));
@@ -111,7 +111,7 @@ async fn main() -> Result<()> {
                                 }
                                 .color(match time.as_millis() {
                                     ..=200 => AnsiColors::Green,
-                                    ..=1000 => AnsiColors::Yellow,
+                                    201..=1000 => AnsiColors::Yellow,
                                     _ => AnsiColors::Red,
                                 },)
                             );
@@ -377,7 +377,7 @@ fn show_result(
 ) -> Result<()> {
     siv.pop_layer();
     let lua = LUA.lock();
-    let result0 = result.clone();
+    let result0 = result;
     let mut list = LinearLayout::vertical();
     unsafe {
         ACTION = Some(
@@ -442,7 +442,7 @@ fn run_clean(
         .iter()
         .filter_map(|(k, v)| {
             if *v {
-                Some((k, types.get(k).unwrap().clone().clone()))
+                Some((k, (*types.get(k).unwrap()).clone()))
             } else {
                 None
             }
