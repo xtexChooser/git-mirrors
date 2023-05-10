@@ -7,6 +7,7 @@ This repository is about things revolving around Forgejo.
 * [Mission](MISSION.md)
 * [Decision making](DECISION-MAKING.md)
 * [Branding](branding/README.md)
+* [Moderation process](MODERATION-PROCESS.md)
 * [Related projects](CONTRIB.md)
 
 For financial resources & sustainability information, see the

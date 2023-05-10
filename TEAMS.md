@@ -80,7 +80,7 @@ Purpose: [See the documentation](https://codeberg.org/forgejo/forgejo/src/branch
 Accountability:
 
 * Take action when a behavior in a Forgejo space goes against the Code of Conduct or the law.
-* Create moderation reports based on auditable facts and explain each action in a logical way.
+* [Follow the moderation process](MODERATION-PROCESS.md) and publish auditable reports based on facts and logic.
 
 Team members:
 
