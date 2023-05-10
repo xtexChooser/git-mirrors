@@ -61,7 +61,6 @@ The name of the project is Forgejo, the tagline is `Beyond coding. We forge.`. S
 
 <img src="./branding/mascot/2022-11-27_Forgejo_by-David-Revoy_small.jpg" alt="Logo" width="150" />
 
-## Conflict Engagnement
+## Conflict Engagement
 
-- When a conflict arises, we contact the [well-being team](TEAMS.md#Well-being)
-  and ask for their support to mediate the conversation
+- When a conflict arises, we get in touch with the admins of the [Forgejo reconciliation chatroom](https://matrix.to/#/#forgejo-reconciliation:matrix.org) in private and ask for their support to mediate the conversation
