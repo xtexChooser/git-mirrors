@@ -83,3 +83,9 @@ more info about creating agreements together.
    to access of people with disabilities or functional impairment as a condition of
    equality of opportunities and inclusion, understanding Accessibility as the
    quality of being able to access with assistive technology.
+
+## Licensing
+
+Forgejo is [published under a permissive license](https://codeberg.org/forgejo/forgejo/src/branch/forgejo/LICENSE) and contributions are accepted provided the author agrees to the [Developer Certificate of Origin (DCO)](https://codeberg.org/forgejo/forgejo/src/branch/forgejo/CONTRIBUTING/DCO.md).
+
+The Forgejo community agrees on principle that original works published under a copyleft license can be merged into the codebase. Before that happens, the Forgejo community will decide on a copyleft license in accordance to the decision making process.
