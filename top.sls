@@ -4,7 +4,7 @@ base:
         - bird
         - router.ip_fwd
         - router.wireguard
-        - firewalld.base
+#        - firewalld.base
         - caddy
         - node_tls.agent
     'service:salt-master:true':
