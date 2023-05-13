@@ -1,8 +1,10 @@
-branches: main
-
-variables:
-  - &repo codeberg.org/xvnet/bird
-  - &version 2.13
+matrix:
+  VERSION:
+    - 2.0.12
+    - 2.13
+    - 3.0-alpha1
+    - &latest 3.0-alpha2
+    - latest
 
 pipeline:
   container-build:
@@ -11,21 +13,23 @@ pipeline:
     settings:
       dockerfile: Containerfile
       dry_run: true
-      repo: *repo
+      repo: codeberg.org/xvnet/bird
       tags: latest
+      build_args:
+        LATEST: *latest
 
   container-push:
     image: woodpeckerci/plugin-docker-buildx
     settings:
       dockerfile: Containerfile
       platforms: linux/arm64/v8,linux/amd64
-      repo: *repo
+      repo: codeberg.org/xvnet/bird
       registry: codeberg.org
       tags:
-        - latest
-        - *version
+        - ${VERSION}
       build_args:
-        VERSION: *version
+        VERSION: ${VERSION}
+        LATEST: *latest
       username: ${CI_REPO_OWNER}
       password:
         from_secret: oci_token
