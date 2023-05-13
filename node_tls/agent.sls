@@ -6,3 +6,9 @@
         - group: root
         - mode: "0744"
         - makedirs: True
+
+/opt/tls:
+    file.directory:
+        - user: root
+        - group: root
+        - dir_mode: 755
