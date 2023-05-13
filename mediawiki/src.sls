@@ -8,7 +8,7 @@ codeberg.org/xvnet/mediawiki-src:
             - test: container
 
 mediawiki-src:
-    docker_volume:
+    docker_volume.present:
         - driver: image
         - driver_opts:
             - image: codeberg.org/xvnet/mediawiki-src:latest
