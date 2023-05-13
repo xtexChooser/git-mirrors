@@ -1,27 +1,8 @@
 w.xvnet.eu.org {
-	#php_fastcgi * mediawiki:9000 {
-	#	root /var/www/html/
-	#	try_files {path} {path}/index.php =404
-	#}
-	route {
-		@canonicalPath {
-			file {path}/index.php
-			not path */
-		}
-		redir @canonicalPath {http.request.orig_uri.path}/ 308
-
-		@indexFiles file {
-			try_files {path} {path}/index.php index.php
-			split_path ''
-		}
-		rewrite @indexFiles {file_match.relative}
-		rewrite /wiki/* /index.php?title={file_match.relative}
-		root * /var/www/html/
-
-		reverse_proxy path * mediawiki:9000 {
-			transport fastcgi {
-				split ''
-			}
-		}
+	root /srv/mw/w
+	php_fastcgi mediawiki:9000 {
+		try_files {path} {path}/index.php =404
 	}
+	#rewrite /wiki/* /index.php?title={file_match.relative}
+	#reverse_proxy mediawiki:9000
 }

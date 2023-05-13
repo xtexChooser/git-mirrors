@@ -1,17 +1,19 @@
 include:
     - container
     - caddy
+    - mediawiki.src
 
 mediawiki:
     docker_container.running:
         - image: codeberg.org/xvnet/mediawiki:latest
         - binds:
-            - /var/www/mw/images:/var/www/html/images
-            - /var/www/mw/LocalSettings.php:/var/www/html/LocalSettings.php
+            - mediawiki-src:/srv/mw/w:ro
+            - /srv/mw/images:/srv/mw/images:rw
+            - /srv/mw/config/LocalSettings.php:/srv/mw/config/LocalSettings.php:ro
         - require:
             - test: container
-            - file: /var/www/mw/images
-            - file: /var/www/mw/LocalSettings.php
+            - file: /srv/mw/images
+            - file: /srv/mw/config/LocalSettings.php
         - memory: 64M
         - hostname: mediawiki
         - environment:
@@ -20,7 +22,7 @@ mediawiki:
             - caddy:
                 - aliases: []
 
-/var/www/mw/images:
+/srv/mw/images:
     file.directory:
         - user: root
         - group: root
@@ -37,7 +39,7 @@ mediawiki:
         - require:
             - file: /etc/caddy/sites
 
-/var/www/mw/LocalSettings.php:
+/srv/mw/config/LocalSettings.php:
     file.managed:
         - source: salt://mediawiki/LocalSettings.php
         - template: jinja
@@ -45,4 +47,4 @@ mediawiki:
         - group: root
         - mode: "0644"
         - require:
-            - file: /var/www/mw/images
+            - file: /srv/mw/images
