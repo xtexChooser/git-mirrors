@@ -3,7 +3,7 @@
 {% else %}
     {% set bird_pkg = 'bird' %}
 {% endif -%}
-{% set bird_version = '2.0.12' -%}
+{% set bird_version = '2.13' -%}
 
 bird:
     file.managed:
