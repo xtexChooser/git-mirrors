@@ -1,7 +1,6 @@
 branches: main
 
 variables:
-  - &file Containerfile
   - &repo codeberg.org/xvnet/bird
   - &version 2.0.12
 
@@ -10,7 +9,7 @@ pipeline:
     image: woodpeckerci/plugin-docker-buildx
     group: build
     settings:
-      dockerfile: *file
+      dockerfile: Containerfile
       dry_run: true
       repo: *repo
       tags: latest
@@ -18,7 +17,7 @@ pipeline:
   container-push:
     image: woodpeckerci/plugin-docker-buildx
     settings:
-      dockerfile: *file
+      dockerfile: Containerfile
       platforms: linux/arm64/v8,linux/amd64
       repo: *repo
       registry: codeberg.org
