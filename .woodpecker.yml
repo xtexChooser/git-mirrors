@@ -2,7 +2,7 @@ branches: main
 
 variables:
   - &repo codeberg.org/xvnet/bird
-  - &version 2.0.12
+  - &version 2.13
 
 pipeline:
   container-build:

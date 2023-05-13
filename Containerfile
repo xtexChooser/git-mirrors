@@ -1,5 +1,5 @@
 FROM docker.io/library/alpine AS builder
-ARG VERSION=2.0.12
+ARG VERSION=2.13
 
 RUN apk add clang make autoconf binutils musl musl-dev gcc sudo libcap
 RUN apk add flex-dev bison m4 libssh-dev linux-headers ncurses-dev readline-dev git
