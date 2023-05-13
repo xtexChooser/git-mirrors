@@ -1,5 +1,5 @@
 w.xvnet.eu.org {
-	root /srv/mw/w
+	root * /srv/mw/w
 	php_fastcgi mediawiki:9000 {
 		try_files {path} {path}/index.php =404
 	}
