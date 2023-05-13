@@ -14,6 +14,7 @@ curl -o cert_ca.crt https://signer.pki.xvnet.eu.org/$chain/cert.crt
 salt '*' --preview-target --no-color | sed -e 's/- //' | while read -r node; do
     payload="{\"name\": {\"O\": \"Xensor V Network\", \"OU\": \"$node.svr.xvnet.eu.org\"}, \"hosts\": [ \"$node.svr.xvnet.eu.org\", \"*.xvnet.eu.org\" ]}"
     log "processing for $node: $payload"
+    # shellcheck disable=SC2140
     resp=$(curl -H "Content-Type: application/json" -u "node_tls:{{ pillar["node_tls"]["spica-auth"] }}" -d "$payload" "https://signer.pki.xvnet.eu.org/$chain/sign/json")
     cert=$(echo "$resp" | openssl x509)
     if [[ -z "$cert" ]]; then
