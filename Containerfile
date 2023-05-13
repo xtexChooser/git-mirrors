@@ -1,7 +1,7 @@
 FROM docker.io/library/alpine AS builder
 ARG VERSION=latest
 ARG LATEST=3.0-alpha2
-ARG VERSION=${VERSION/#latest/${LATEST}}
+ENV VERSION=${VERSION/#latest/$LATEST}
 
 RUN apk add clang make autoconf binutils musl musl-dev gcc sudo libcap
 RUN apk add flex-dev bison m4 libssh-dev linux-headers ncurses-dev readline-dev git
