@@ -6,7 +6,7 @@ nodes:
     #    us-chi1:
     #      ansible_host: us-chi1.svr.xvnet.eu.org
     #      salt_id: us-chi1
-    us-dal1:
-      ansible_host: us-dal1.svr.xvnet.eu.org
-      salt_id: us-dal1
+    #us-dal1:
+    #  ansible_host: us-dal1.svr.xvnet.eu.org
+    #  salt_id: us-dal1
   children: {}
