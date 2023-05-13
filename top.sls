@@ -21,7 +21,7 @@ base:
         - ntfy
     'watchtower:enable:true':
         - match: pillar
-        - watchtower
+#        - watchtower
     'nl-alk1':
         - mekbuda
         - openldap.slapd
