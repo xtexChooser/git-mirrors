@@ -1,0 +1,12 @@
+pipeline:
+    build:
+        image: woodpeckerci/plugin-docker-buildx
+        settings:
+            dockerfile: mediawiki-src/Containerfile
+            platforms: linux/amd64,linux/arm64
+            repo: codeberg.org/${CI_REPO_OWNER}/mediawiki-src
+            registry: codeberg.org
+            tags: latest
+            username: ${CI_REPO_OWNER}
+            password:
+                from_secret: oci_token

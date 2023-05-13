@@ -1,0 +1,17 @@
+FROM docker.io/library/alpine:latest AS builder
+ARG MAJOR_VERSION=1.39
+ARG VERSION=1.39.3
+
+RUN apk add --no-cache curl
+RUN curl -o src.tar.gz https://releases.wikimedia.org/mediawiki/$MAJOR_VERSION/mediawiki-$VERSION.tar.gz
+RUN tar -xzf src.tar.gz
+RUN mv mediawiki-$VERSION /src
+
+FROM scratch
+
+LABEL org.opencontainers.image.title="MediaWiki Source"
+LABEL org.opencontainers.image.source="https://github.com/wikimedia/mediawiki"
+LABEL org.opencontainers.image.version=$VERSION
+LABEL org.opencontainers.image.licenses=GPL-2.0-or-later
+
+COPY --from=builder /src /
