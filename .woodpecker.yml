@@ -1,37 +1,88 @@
-matrix:
-  VERSION:
-    - 2.0.12
-    - 2.13
-    - 3.0-alpha1
-    - &latest 3.0-alpha2
-    - latest
+# GENERATED FILE, DO NOT MODIFY
+# regenerate with ./pipeline.sh
 
 pipeline:
-  container-build:
-    image: woodpeckerci/plugin-docker-buildx
-    group: build
-    settings:
-      dockerfile: Containerfile
-      dry_run: true
-      repo: codeberg.org/xvnet/bird
-      tags: latest
-      build_args:
-        LATEST: *latest
+    container-build:
+        image: woodpeckerci/plugin-docker-buildx
+        group: dry-build
+        settings:
+            dockerfile: Containerfile
+            dry_run: true
+            repo: codeberg.org/xvnet/bird
+            tags: latest
+            build_args:
+                VERSION: 3.0-alpha2
 
-  container-push:
-    image: woodpeckerci/plugin-docker-buildx
-    settings:
-      dockerfile: Containerfile
-      platforms: linux/arm64/v8,linux/amd64
-      repo: codeberg.org/xvnet/bird
-      registry: codeberg.org
-      tags:
-        - ${VERSION}
-      build_args:
-        VERSION: ${VERSION}
-        LATEST: *latest
-      username: ${CI_REPO_OWNER}
-      password:
-        from_secret: oci_token
-    when:
-      event: push
+    build-3.0-alpha2:
+        image: woodpeckerci/plugin-docker-buildx
+        group: build
+        settings:
+            dockerfile: Containerfile
+            platforms: linux/arm64/v8,linux/amd64
+            repo: codeberg.org/xvnet/bird
+            registry: codeberg.org
+            tags:
+                - 3.0-alpha2
+                - latest
+            build_args:
+                VERSION: 3.0-alpha2
+            username: ${CI_REPO_OWNER}
+            password:
+                from_secret: oci_token
+        when:
+            event: push
+
+    build-3.0-alpha1:
+        image: woodpeckerci/plugin-docker-buildx
+        group: build
+        settings:
+            dockerfile: Containerfile
+            platforms: linux/arm64/v8,linux/amd64
+            repo: codeberg.org/xvnet/bird
+            registry: codeberg.org
+            tags:
+                - 3.0-alpha1
+            build_args:
+                VERSION: 3.0-alpha1
+            username: ${CI_REPO_OWNER}
+            password:
+                from_secret: oci_token
+        when:
+            event: push
+
+    build-2.13:
+        image: woodpeckerci/plugin-docker-buildx
+        group: build
+        settings:
+            dockerfile: Containerfile
+            platforms: linux/arm64/v8,linux/amd64
+            repo: codeberg.org/xvnet/bird
+            registry: codeberg.org
+            tags:
+                - 2.13
+            build_args:
+                VERSION: 2.13
+            username: ${CI_REPO_OWNER}
+            password:
+                from_secret: oci_token
+        when:
+            event: push
+
+    build-2.0.12:
+        image: woodpeckerci/plugin-docker-buildx
+        group: build
+        settings:
+            dockerfile: Containerfile
+            platforms: linux/arm64/v8,linux/amd64
+            repo: codeberg.org/xvnet/bird
+            registry: codeberg.org
+            tags:
+                - 2.0.12
+            build_args:
+                VERSION: 2.0.12
+            username: ${CI_REPO_OWNER}
+            password:
+                from_secret: oci_token
+        when:
+            event: push
+
