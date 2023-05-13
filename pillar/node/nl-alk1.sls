@@ -9,7 +9,6 @@ network:
         ipv6: fd00:443a:ef14:1::1
 
 service:
-    salt-master: true
     etcd: true
     ca: true
     ntfy: true

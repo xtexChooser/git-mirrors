@@ -7,9 +7,6 @@ base:
 #        - firewalld.base
         - caddy
         - node_tls.agent
-    'service:salt-master:true':
-        - match: pillar
-        - salt-master-cd
     'spica:signer:true':
         - match: pillar
         - spica.signer
