@@ -75,7 +75,7 @@ Team members:
 
 ## Moderation
 
-Purpose: [See the documentation](https://codeberg.org/forgejo/forgejo/src/branch/forgejo/CONTRIBUTING/COC.md).
+Purpose: [See the documentation](https://forgejo.org/docs/v1.20/developer/COC/).
 
 Accountability:
 
@@ -84,7 +84,7 @@ Accountability:
 
 Team members:
 
-* ???
+* https://codeberg.org/earl-warren [May 2023 Agreement](https://codeberg.org/forgejo/governance/issues/10)
 
 ## Decision-making
 
