@@ -2,10 +2,10 @@
 
 namespace LoginNotify\Maintenance;
 
-use FauxRequest;
 use Maintenance;
 use MediaWiki\Auth\AuthenticationResponse;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Request\FauxRequest;
 use RawMessage;
 use User;
 

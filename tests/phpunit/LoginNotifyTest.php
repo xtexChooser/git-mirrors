@@ -1,6 +1,7 @@
 <?php
 
 use LoginNotify\LoginNotify;
+use MediaWiki\Request\FauxRequest;
 use Psr\Log\NullLogger;
 use Wikimedia\TestingAccessWrapper;
 
