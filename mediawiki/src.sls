@@ -1,16 +1,17 @@
-include:
-    - container
+/srv/mw:
+    file.directory:
+        - user: root
+        - group: root
+        - dir_mode: 664
 
-codeberg.org/xvnet/mediawiki-src:
-    docker_image.present:
-        - tag: latest
+/srv/mw/src:
+    file.directory:
         - require:
-            - test: container
+            - file: /srv/mw
+    git.cloned:
+        - name: https://github.com/wikimedia/mediawiki.git
+        - target: /srv/mw/src
+        - require:
+            - file: /srv/mw/src
 
-mediawiki-src:
-    docker_volume.present:
-        - driver: image
-        - driver_opts:
-            - image: codeberg.org/xvnet/mediawiki-src:latest
-        - require:
-            - docker_image: codeberg.org/xvnet/mediawiki-src
+#mediawiki-src:
