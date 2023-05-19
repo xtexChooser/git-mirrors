@@ -4,9 +4,9 @@ namespace LoginNotify\Maintenance;
 
 use Maintenance;
 use MediaWiki\Auth\AuthenticationResponse;
+use MediaWiki\Language\RawMessage;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Request\FauxRequest;
-use RawMessage;
 use User;
 
 $IP = getenv( 'MW_INSTALL_PATH' );
