@@ -3,6 +3,12 @@ include:
     - caddy
     - mediawiki.src
 
+extend:
+    caddy:
+        docker_container:
+            - binds:
+                - mediawiki-src:/srv/mw/w:ro
+
 mediawiki:
     docker_container.running:
         - image: codeberg.org/xvnet/mediawiki:latest
