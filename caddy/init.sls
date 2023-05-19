@@ -1,3 +1,6 @@
+include:
+    - container
+
 caddy:
     file.managed:
         - name: /etc/caddy/Caddyfile
