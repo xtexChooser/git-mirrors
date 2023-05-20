@@ -1,4 +1,8 @@
 #!/usr/bin/bash
+#
+# Configure a new lydia installtion on exozy.me:
+# curl -Ls https://codeberg.org/Lydia/deployment/raw/branch/main/exozyme/init.sh | bash
+#
 
 set -xe
 echo "[init.sh]"

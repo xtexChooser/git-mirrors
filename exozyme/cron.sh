@@ -1,4 +1,8 @@
 #!/usr/bin/bash
+#
+# Updater entrypoint
+# should be called by systemd timer
+#
 
 set -xe
 echo "[cron.sh]"

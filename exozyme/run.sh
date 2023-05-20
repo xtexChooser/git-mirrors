@@ -1,4 +1,7 @@
 #!/usr/bin/bash
+#
+# Run entrypoint
+#
 
 set -xe
 echo "[run.sh]"

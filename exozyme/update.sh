@@ -1,4 +1,7 @@
 #!/usr/bin/bash
+#
+# Updater script
+#
 
 set -xe
 echo "[update.sh]"
@@ -7,9 +10,10 @@ pwd
 echo pull lydia.git in ./src
 
 git_head_commit=$(git rev-parse HEAD)
+cd src
 echo current git HEAD: "$git_head_commit"
 
-cd src; git pull --force --all --ff-only; git describe --all --long; cd ..
+git pull --force --all --ff-only; git describe --all --long
 
 if [[ $git_head_commit == $(git rev-parse HEAD) ]]; then
     echo no changes got
@@ -17,6 +21,7 @@ if [[ $git_head_commit == $(git rev-parse HEAD) ]]; then
 else
     echo new HEAD: "$(git rev-parse HEAD)"
 fi
+cd ..
 
 echo update systemd units
 cp d/lydia.service ~/.config/systemd/user/lydia.service
