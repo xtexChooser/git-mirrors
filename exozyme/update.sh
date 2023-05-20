@@ -9,8 +9,8 @@ pwd
 
 echo pull lydia.git in ./src
 
-git_head_commit=$(git rev-parse HEAD)
 cd src
+git_head_commit=$(git rev-parse HEAD)
 echo current git HEAD: "$git_head_commit"
 
 git pull --force --all --ff-only; git describe --all --long
