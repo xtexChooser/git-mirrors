@@ -1,8 +1,0 @@
-[Unit]
-Description=lydia server
-
-[Service]
-ExecStart=~/lydia/d/run.sh
-
-[Install]
-WantedBy=default.target
