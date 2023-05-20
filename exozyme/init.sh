@@ -24,4 +24,4 @@ cd src; git describe --all --long; cd ..
 echo create ~/.config/systemd/user
 mkdir -p ~/.config/systemd/user
 
-exec ./deployment/exozyme/update.sh
+LYDIA_FORCE_UPDATE=true exec ./deployment/exozyme/update.sh

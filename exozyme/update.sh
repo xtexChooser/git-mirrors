@@ -17,7 +17,9 @@ git pull --force --all --ff-only; git describe --all --long
 
 if [[ $git_head_commit == $(git rev-parse HEAD) ]]; then
     echo no changes got
-    exit
+    if [[ -z "$LYDIA_FORCE_UPDATE" ]]; then
+        exit
+    fi
 else
     echo new HEAD: "$(git rev-parse HEAD)"
 fi
