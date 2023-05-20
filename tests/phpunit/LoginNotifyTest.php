@@ -50,7 +50,7 @@ class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( $expected, $actual );
 	}
 
-	public function provideGetIPNetwork() {
+	public static function provideGetIPNetwork() {
 		return [
 			[ '127.0.0.1', '127.0.0.' ],
 			[ '118.221.191.18', '118.221.191.' ],
@@ -74,7 +74,7 @@ class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 		$this->assertEquals( $expected, $actual );
 	}
 
-	public function provideGenerateUserCookieRecord() {
+	public static function provideGenerateUserCookieRecord() {
 		return [
 			[ 'Foo', 2011, 'a4321f', '2011-a4321f-8oerxg4l59zpiu0by7m2to1b4cjeer4' ],
 			[ 'Foo', 2011, 'A4321f', '2011-A4321f-in65gc2i9czojfopkeieijc0ek8j5vu' ],
@@ -179,7 +179,7 @@ class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( 1, $res, "after clear" );
 	}
 
-	public function provideClearCounters() {
+	public static function provideClearCounters() {
 		return [
 			[ 'new' ],
 			[ 'known' ],
@@ -292,7 +292,7 @@ class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 		$this->assertEquals( $expected, $this->inst->validateCookieRecord( $cookie ) );
 	}
 
-	public function provideValidateCookieRecord() {
+	public static function provideValidateCookieRecord() {
 		$y = gmdate( 'Y' );
 		return [
 			[ 'fdakslnknfaknasf', false ],
