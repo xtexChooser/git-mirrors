@@ -33,9 +33,9 @@ echo build worker
 source .profile
 cargo -V
 toolforge-jobs run build --command d/build.sh --image bullseye --emails=onfailure --wait
-cat build.log
+cat build.out
 cat build.err
-rm build.log build.err
+rm build.out build.err
 
 echo restart webservice
 webservice restart
