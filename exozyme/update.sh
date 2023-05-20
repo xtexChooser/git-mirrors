@@ -51,6 +51,6 @@ EOF
 echo generate lydia-update.timer
 tee ~/.config/systemd/user/lydia-update.timer < d/lydia-update.timer
 systemctl --user daemon-reload
-systemctl --user enable lydia-update.timer
+systemctl --user enable --now lydia-update.timer
 
 exec systemctl --user restart lydia.service
