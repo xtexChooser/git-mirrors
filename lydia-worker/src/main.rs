@@ -2,6 +2,8 @@ use anyhow::Result;
 use tracing::{info, Level};
 use tracing_subscriber::FmtSubscriber;
 
+pub mod env;
+
 #[tokio::main]
 async fn main() -> Result<()> {
     // init logging
@@ -13,6 +15,7 @@ async fn main() -> Result<()> {
     tracing::subscriber::set_global_default(subscriber)?;
 
     info!("lydia worker starting");
+    env::detect_env()?;
 
     Ok(())
 }
