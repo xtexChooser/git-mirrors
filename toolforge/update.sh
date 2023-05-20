@@ -30,6 +30,8 @@ toolforge-jobs load ./d/jobs.yaml
 toolforge-jobs list
 
 echo build worker
+source .profile
+cargo -V
 toolforge-jobs run build --command d/build.sh --image bullseye --emails=onfailure --wait
 cat build.log
 cat build.err
