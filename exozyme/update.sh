@@ -26,7 +26,9 @@ fi
 cd ..
 
 echo update systemd units
-cat > ~/.config/systemd/user/lydia.service << EOF
+
+echo generate lydia.service
+tee ~/.config/systemd/user/lydia.service << EOF
 [Unit]
 Description=lydia server
 
@@ -36,14 +38,18 @@ ExecStart=$(pwd)/deployment/exozyme/run.sh
 [Install]
 WantedBy=default.target
 EOF
-cat > ~/.config/systemd/user/lydia-update.service << EOF
+
+echo generate lydia-update.service
+tee ~/.config/systemd/user/lydia-update.service << EOF
 [Unit]
 Description=lydia updater
 
 [Service]
 ExecStart=$(pwd)/deployment/exozyme/cron.sh
 EOF
-cp d/lydia-update.timer ~/.config/systemd/user/lydia-update.timer
+
+echo generate lydia-update.timer
+tee ~/.config/systemd/user/lydia-update.timer < d/lydia-update.timer
 systemctl --user daemon-reload
 
 exec systemctl --user restart lydia.service

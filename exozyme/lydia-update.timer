@@ -2,7 +2,7 @@
 Description=Update lydia deployment
 
 [Timer]
-OnCalendar=*:*/5:00
+OnCalendar=*:0..59/5
 Persistent=true
 
 [Install]
