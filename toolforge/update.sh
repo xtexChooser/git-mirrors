@@ -30,7 +30,7 @@ toolforge-jobs load ./d/jobs.yaml
 toolforge-jobs list
 
 echo build worker
-toolforge-jobs run build --command "cargo build --package lydia-worker --release" --image bullseye --emails=onfailure --wait
+toolforge-jobs run build --command d/build.sh --image bullseye --emails=onfailure --wait
 cat build.log
 cat build.err
 rm build.log build.err
