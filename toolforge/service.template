@@ -1,4 +1,4 @@
 backend: kubernetes
 type: golang1.11
 extra_args:
-    - src/target/release/lydia-worker
+    - d/run.sh

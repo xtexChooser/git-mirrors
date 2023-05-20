@@ -28,8 +28,6 @@ cd ..
 echo load tf jobs
 toolforge-jobs load ./d/jobs.yaml
 toolforge-jobs list
-toolforge-jobs show build
-sha256sum ./src/target/release/lydia-worker
 
 echo restart webservice
 webservice restart
