@@ -27,8 +27,8 @@ git update-server-info
 mv hooks/post-update.sample hooks/post-update
 ln -s hooks/post-update hooks/post-commit
 ln -s hooks/post-update hooks/post-rewrite
-ln -s hooks/post-update hooks/post-update
 chmod a+x hooks/post-update
+cd ~
 
 echo configure webservice
 ln -s ~/deployment/toolforge/service.template service.template
