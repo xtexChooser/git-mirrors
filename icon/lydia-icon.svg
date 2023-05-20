@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="50mm"
+   height="50mm"
+   viewBox="0 0 50 50"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="lydia-icon.svg"
+   inkscape:export-filename="lydia-icon.png"
+   inkscape:export-xdpi="130.05"
+   inkscape:export-ydpi="130.05"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title135">Lydia Project Icon</title>
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="2.4659167"
+     inkscape:cx="-93.879895"
+     inkscape:cy="106.45128"
+     inkscape:window-width="1600"
+     inkscape:window-height="827"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="icon"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <circle
+       style="fill:#161a1a;fill-opacity:1;stroke-width:2.351;stroke-dasharray:0.7053, 0.7053, 0.470199, 0.7053"
+       id="path236"
+       cx="25"
+       cy="25"
+       inkscape:label="background"
+       r="24" />
+    <path
+       d="m 37.479888,24.096295 -4.741334,13.80718 c -0.356034,1.042051 -0.811931,1.96253 -1.367692,2.761436 -0.555761,0.798906 -1.267829,1.437162 -2.136205,1.914769 -0.868376,0.486291 -1.945162,0.78588 -3.230359,0.898769 l -0.377744,-2.188308 c 0.929163,-0.147624 1.667282,-0.364718 2.214359,-0.651282 0.555761,-0.27788 1.31559,-1.107179 1.31559,-1.107179 0,0 2.783494,-4.255807 1.93329,-5.516766 l -6.026191,-9.951692 c 0,0 0.642505,-0.362092 1.111836,-0.347267 1.100257,0.03475 1.326809,0.380337 1.326809,0.380337 l 4.589299,7.489744 2.392444,-7.489744 z"
+       id="path678"
+       style="font-weight:500;font-size:25.4px;font-family:'Fira Code';-inkscape-font-specification:'Fira Code Medium';fill:#808080;stroke-width:2.351;stroke-dasharray:0.7053, 0.7053, 0.470199, 0.7053"
+       sodipodi:nodetypes="ccscccccscscccc"
+       inkscape:label="y" />
+    <path
+       d="m 18.477055,10.067333 c 0.352598,0.170697 0,15.209607 0,15.526564 0,0.316957 0.191043,1.085469 0.573128,1.354666 0.390769,0.260513 0.894427,0.39077 1.510974,0.39077 0.390769,0 0.764171,-0.03908 1.120205,-0.117231 0.364718,-0.08684 3.049767,-3.024063 3.388434,-3.163003 l 1.219332,1.692185 c -0.408137,0.20841 -3.308611,3.389555 -3.907791,3.545863 -0.590495,0.156308 -1.68124,0.399827 -2.445411,0.399827 -1.380718,0 -2.457504,-0.390769 -3.230359,-1.172308 -0.764171,-0.781539 -1.146256,-1.845299 -1.146256,-3.191282 v -13.11682 h -1.525883 v -2.149231 c 0,0 4.091029,-0.1706974 4.443627,0 z"
+       id="path676"
+       style="font-weight:500;font-size:25.4px;font-family:'Fira Code';-inkscape-font-specification:'Fira Code Medium';fill:#808080;fill-opacity:1;stroke-width:2.351;stroke-dasharray:0.7053, 0.7053, 0.470199, 0.7053"
+       sodipodi:nodetypes="zzcsccccscscccz"
+       inkscape:label="l" />
+    <rect
+       style="fill:#999999;fill-opacity:1;stroke-width:2.32448;stroke-dasharray:0.697343, 0.697343, 0.464894, 0.697343"
+       id="rect842"
+       width="16.175411"
+       height="1.8530568"
+       x="10.323937"
+       y="30.551838"
+       rx="1.1340544"
+       ry="1.0403283"
+       inkscape:label="line" />
+  </g>
+  <metadata
+     id="metadata133">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>Lydia Project Icon</dc:title>
+        <dc:date>2023/5/20</dc:date>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>xtex</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>lydia</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <cc:license
+           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>
