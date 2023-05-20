@@ -9,8 +9,8 @@ echo "[run.sh]"
 cd src
 pwd
 
-echo make sure lydia has been built
-cargo build --package lydia-worker --release
+#echo make sure lydia has been built
+#cargo build --package lydia-worker --release
 
 echo starting lydia
 sha256sum ./target/release/lydia-worker
