@@ -28,13 +28,13 @@ cd ..
 echo build worker
 source .profile
 cargo -V
+toolforge-jobs flush
 toolforge-jobs run build --command d/build.sh --image bullseye --emails=onfailure --wait
 cat build.out
 cat build.err
 rm build.out build.err
 
 echo load tf jobs
-toolforge-jobs flush
 #toolforge-jobs load ./d/jobs.yaml
 toolforge-jobs list
 
