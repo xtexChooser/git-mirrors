@@ -1,1 +1,1 @@
-*/15 * * * * ./d/cron.sh >update.log 2>&1
+*/15 * * * * /usr/bin/jsub -N update -once -quiet ./d/cron.sh
