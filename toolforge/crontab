@@ -1,1 +1,1 @@
-*/15 * * * * ./d/cron.sh
+*/15 * * * * ./d/cron.sh >update.log 2>&1
