@@ -34,8 +34,13 @@ cat build.err
 rm build.out build.err
 
 echo load tf jobs
-toolforge-jobs load ./d/jobs.yaml
+toolforge-jobs flush
+#toolforge-jobs load ./d/jobs.yaml
 toolforge-jobs list
+
+echo load crontab
+crontab ./d/crontab
+crontab -l
 
 echo restart webservice
 webservice restart

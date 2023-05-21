@@ -1,5 +1,0 @@
----
-- name: update
-  command: ./d/cron.sh
-  image: bullseye
-  schedule: "*/15 * * * *"
