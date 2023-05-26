@@ -3,6 +3,7 @@ use tracing::{info, Level};
 use tracing_subscriber::FmtSubscriber;
 
 pub mod env;
+pub mod tf;
 
 #[tokio::main]
 async fn main() -> Result<()> {
