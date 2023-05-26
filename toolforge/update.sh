@@ -28,8 +28,9 @@ cd ..
 echo build worker
 source .profile
 cargo -V
-toolforge-jobs flush
-toolforge-jobs run build --command d/build.sh --image bullseye --emails=onfailure --wait
+#toolforge-jobs flush
+#toolforge-jobs run build --command d/build.sh --image bullseye --emails=onfailure --wait
+time jsub -N build -mem 2G -sync y d/build.sh
 cat build.out
 cat build.err
 rm build.out build.err
