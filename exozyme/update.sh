@@ -53,4 +53,7 @@ tee ~/.config/systemd/user/lydia-update.timer < d/lydia-update.timer
 systemctl --user daemon-reload
 systemctl --user enable --now lydia-update.timer
 
+echo sync update tf
+ssh login.toolforge.org become lydia d/cron.sh
+
 exec systemctl --user restart lydia.service
