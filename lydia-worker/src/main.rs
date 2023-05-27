@@ -16,6 +16,7 @@ pub mod env;
 pub mod report;
 pub mod secrets;
 pub mod tf;
+pub mod util;
 
 pub const USER_AGENT: &str = concat!(
     "lydia-bot/",

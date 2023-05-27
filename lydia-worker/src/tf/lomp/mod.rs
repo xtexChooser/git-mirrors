@@ -1,19 +1,21 @@
-use std::{collections::HashMap, fs, sync::Arc};
+use std::{collections::HashMap, sync::Arc};
 
 use anyhow::Result;
 use askama::Template;
 use chrono::{DateTime, Duration, Utc};
-use mwbot::SaveOptions;
 use serde::{Deserialize, Serialize};
 use tokio::{task::JoinHandle, time::sleep};
 use tracing::{info, instrument, warn};
 
-use crate::Bot;
+use crate::{util::translation::load_translation_page, Bot};
 
 pub mod mpc;
 
 pub const JSON_REPORT: &str = "tf/zhwiki/lomp.json";
 pub const HTML_REPORT: &str = "tf/zhwiki/lomp.html";
+
+pub const SITE_TRANSLATION_PAGE: &str = "User:XtexChooser/小行星列表地点";
+pub const DISCOVERERS_TRANSLATION_PAGE: &str = "User:XtexChooser/小行星列表发现者";
 
 pub fn start_lomp_worker(bot: Arc<Bot>) -> Result<JoinHandle<()>> {
     Ok(tokio::spawn(async move {
@@ -24,7 +26,7 @@ pub fn start_lomp_worker(bot: Arc<Bot>) -> Result<JoinHandle<()>> {
                 sleep(Duration::days(1).to_std().unwrap()).await;
 
                 let bot = bot.clone();
-                tokio::spawn(async move { do_lomp_maintaince(bot) });
+                tokio::spawn(async move { do_lomp_maintaince(bot).await.unwrap() });
             }
         }
     }))
@@ -36,6 +38,23 @@ async fn do_lomp_maintaince(bot: Arc<Bot>) -> Result<()> {
     let mwbot = bot.zhwp.clone().unwrap();
 
     let mps = mpc::fetch_numbered_mps(&bot).await?;
+
+    let mut all_sites = mps
+        .values()
+        .map(|p| p.discovery_site.as_str())
+        .collect::<Vec<_>>();
+    all_sites.dedup();
+    all_sites.sort();
+    let sites = load_translation_page(&mwbot, SITE_TRANSLATION_PAGE, &all_sites).await?;
+
+    let mut all_discoverers = mps
+        .values()
+        .map(|p| p.discoverers.as_str())
+        .collect::<Vec<_>>();
+    all_discoverers.dedup();
+    all_discoverers.sort();
+    let discoverers =
+        load_translation_page(&mwbot, DISCOVERERS_TRANSLATION_PAGE, &all_discoverers).await?;
 
     // pull all subpages
     info!("scanning exists subpages");
@@ -130,10 +149,12 @@ async fn do_lomp_maintaince(bot: Arc<Bot>) -> Result<()> {
                 content.push_str(&format!("|desig={}", desig));
             }
             // @TODO: meaning ref
-            // @TODO: discovery rule
             content.push_str(&format!("|date={}", mp.discovery_date));
-            content.push_str(&format!("|site={}", mp.discovery_site)); // @TODO: translations
-            content.push_str(&format!("|discoverer={}", mp.discoverers)); // @TODO: translations
+            content.push_str(&format!("|site={}", sites[mp.discovery_site.trim()]));
+            content.push_str(&format!(
+                "|discoverer={}",
+                discoverers[mp.discoverers.trim()]
+            ));
             content.push_str("}}\n");
         }
         content.push_str("|}\n");
