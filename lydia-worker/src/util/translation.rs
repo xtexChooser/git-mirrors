@@ -18,7 +18,6 @@ pub async fn load_translation_page(
         .filter(|s| s.starts_with("* "))
         .filter_map(|s| s.split_once("=>"))
         .map(|(k, v)| (k.trim().to_string(), v.trim().to_string()))
-        .filter(|(_, v)| v != "MISSING")
         .collect::<BTreeMap<_, _>>();
 
     let mut missing_keys = vec![];
@@ -47,7 +46,9 @@ pub async fn load_translation_page(
                 wt.push_str(&format!("* {} => MISSING\n", k));
             }
         }
-        mwpage.save(wt, &SaveOptions::summary("summary")).await?;
+        mwpage
+            .save(wt, &SaveOptions::summary("[lydia bot] 添加缺失的翻译"))
+            .await?;
         info!(page, "appended missing translations");
         let url = bot.page(page)?.url().await?.to_string();
         let lbot = BOT.read().clone().unwrap();
