@@ -118,9 +118,9 @@ async fn do_lomp_maintaince(bot: Arc<Bot>) -> Result<()> {
         let mut content = String::new();
 
         // build table
-        content.push_str("{{小行星列表/header2}}\n");
+        content.push_str("<noinclude>{{小行星列表/Header2}}</noinclude>\n");
         for (num, mp) in mps {
-            content.push_str("{{小行星列表/item");
+            content.push_str("{{小行星列表/Item");
             content.push_str(&format!("|{}", num));
             content.push_str(&format!("|pname={}", num));
             if let Some(name) = &mp.name {
