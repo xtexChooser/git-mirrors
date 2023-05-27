@@ -35,6 +35,8 @@ pub async fn load_translation_page(
         if !wt.ends_with('\n') {
             wt.push('\n');
         }
+        missing_keys.dedup();
+        missing_keys.sort();
         for k in &missing_keys {
             wt.push_str(&format!("* {} => MISSING\n", k));
         }
