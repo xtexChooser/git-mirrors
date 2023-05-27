@@ -22,6 +22,18 @@ impl Display for Env {
     }
 }
 
+impl Env {
+    pub fn is_exo(&self) -> bool {
+        self == &Self::Exo
+    }
+    pub fn is_tf(&self) -> bool {
+        self == &Self::TF
+    }
+    pub fn is_dev(&self) -> bool {
+        self == &Self::Dev
+    }
+}
+
 /// detect the current env type
 pub fn detect_env() -> Result<Env> {
     let hostname = hostname::get()?

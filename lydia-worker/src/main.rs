@@ -9,6 +9,7 @@ use tracing_subscriber::{fmt::writer::MakeWriterExt, FmtSubscriber};
 use webhook::client::WebhookClient;
 
 pub mod env;
+pub mod report;
 pub mod secrets;
 pub mod tf;
 
@@ -21,6 +22,7 @@ pub const USER_AGENT: &str = concat!(
 pub struct Bot {
     pub env: Env,
     pub secrets: Secrets,
+    pub http: reqwest::Client,
     pub discord: WebhookClient,
     pub wpzh_bot: Option<mwbot::Bot>,
 }
@@ -29,6 +31,9 @@ impl Bot {
     pub async fn new() -> Result<Bot> {
         let env = env::detect_env()?;
         let secrets = Secrets::new()?;
+
+        let http = reqwest::Client::builder().user_agent(USER_AGENT).build()?;
+
         let discord = WebhookClient::new(&secrets.dc.url);
         let wmf_bot = if let Some(s) = secrets.wmf.clone() {
             Some(
@@ -47,6 +52,7 @@ impl Bot {
         Ok(Bot {
             env,
             secrets,
+            http,
             discord,
             wpzh_bot: wmf_bot,
         })
@@ -62,6 +68,10 @@ impl Bot {
             .await
             .map_err(|e| anyhow!("failed to delivery notification message: {e:?}"))?);
         Ok(())
+    }
+
+    pub fn is_dev(&self) -> bool {
+        self.env.is_dev()
     }
 }
 
@@ -95,8 +105,9 @@ async fn main() -> Result<()> {
     };
     let mut handles = vec![];
     for job in &jobs {
+        let bot = bot.clone();
         handles.push(match job.as_str() {
-            "wm:lomp" => tf::lomp::start_lomp_worker()?,
+            "wm:lomp" => tf::lomp::start_lomp_worker(bot)?,
             _ => bail!("unknown job: {}", job),
         });
     }

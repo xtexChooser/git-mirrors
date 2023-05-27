@@ -8,6 +8,7 @@ use tracing::info;
 pub struct Secrets {
     pub wmf: Option<Wmf>,
     pub dc: Dc,
+    pub cb: Cb,
 }
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Clone, Hash)]
@@ -19,6 +20,11 @@ pub struct Wmf {
 #[derive(PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Clone, Hash)]
 pub struct Dc {
     pub url: String,
+}
+
+#[derive(PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Clone, Hash)]
+pub struct Cb {
+    pub token: String,
 }
 
 impl Secrets {
