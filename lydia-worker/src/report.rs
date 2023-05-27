@@ -1,6 +1,7 @@
 use anyhow::{anyhow, Result};
 use base64::Engine;
-use serde::Serialize;
+use reqwest::Response;
+use serde::{de::DeserializeOwned, Serialize};
 use tracing::info;
 
 use crate::Bot;
@@ -58,4 +59,23 @@ where
     T: ?Sized + Serialize,
 {
     update_report(bot, path, message, &serde_json::to_string(content)?).await
+}
+
+pub async fn fetch_report(bot: &Bot, path: &str) -> Result<Response> {
+    let url = format!(
+        "https://codeberg.org/Lydia/{}/raw/branch/pages/{}",
+        if bot.is_dev() {
+            "test-report"
+        } else {
+            "report"
+        },
+        path
+    );
+    info!(path, "fetch report");
+    Ok(bot.http.get(url).send().await?.error_for_status()?)
+}
+
+#[inline]
+pub async fn fetch_report_json<T: DeserializeOwned>(bot: &Bot, path: &str) -> Result<T> {
+    Ok(fetch_report(bot, path).await?.json().await?)
 }
