@@ -7,7 +7,11 @@ use serde::{Deserialize, Serialize};
 use tokio::{task::JoinHandle, time::sleep};
 use tracing::{info, instrument, warn};
 
-use crate::{util::translation::load_translation_page, Bot};
+use crate::{
+    report::{update_json_report, update_report},
+    util::translation::load_translation_page,
+    Bot,
+};
 
 pub mod mpc;
 
@@ -176,6 +180,28 @@ async fn do_lomp_maintaince(bot: Arc<Bot>) -> Result<()> {
         }
     }
 
+    // build report
+    let report = LOMPReport {
+        time: Utc::now(),
+        numbered_mps: mps.len(),
+        all_sites: all_sites.iter().map(|s| s.to_string()).collect(),
+        all_discoverers: all_discoverers.iter().map(|s| s.to_string()).collect(),
+    };
+    update_json_report(
+        &bot,
+        JSON_REPORT,
+        "update LOMP maintaince report (1/2)",
+        &report,
+    )
+    .await?;
+    update_report(
+        &bot,
+        HTML_REPORT,
+        "update LOMP maintaince report (2/2)",
+        &report.render()?,
+    )
+    .await?;
+
     Ok(())
 }
 
@@ -183,4 +209,7 @@ async fn do_lomp_maintaince(bot: Arc<Bot>) -> Result<()> {
 #[template(path = "lomp_report.html")]
 pub struct LOMPReport {
     pub time: DateTime<Utc>,
+    pub numbered_mps: usize,
+    pub all_sites: Vec<String>,
+    pub all_discoverers: Vec<String>,
 }
