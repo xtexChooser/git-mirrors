@@ -28,7 +28,7 @@ pub struct Bot {
     pub secrets: Secrets,
     pub http: reqwest::Client,
     pub discord: WebhookClient,
-    pub wpzh_bot: Option<mwbot::Bot>,
+    pub zhwp: Option<Arc<mwbot::Bot>>,
 }
 
 impl Bot {
@@ -40,7 +40,7 @@ impl Bot {
 
         let discord = WebhookClient::new(&secrets.dc.url);
         let wmf_bot = if let Some(s) = secrets.wmf.clone() {
-            Some(
+            Some(Arc::new(
                 mwbot::Bot::builder(
                     "https://zh.wikipedia.org/w/api.php".to_string(),
                     "https://zh.wikipedia.org/api/rest_v1".to_string(),
@@ -49,7 +49,7 @@ impl Bot {
                 .set_user_agent(USER_AGENT.to_string())
                 .build()
                 .await?,
-            )
+            ))
         } else {
             None
         };
@@ -58,7 +58,7 @@ impl Bot {
             secrets,
             http,
             discord,
-            wpzh_bot: wmf_bot,
+            zhwp: wmf_bot,
         })
     }
 
