@@ -27,7 +27,7 @@ pub fn detect_env() -> Result<Env> {
     let hostname = hostname::get()?
         .into_string()
         .map_err(|_| anyhow!("hostname is not valid utf-8"))?;
-    let env = if hostname.contains("wikimedia.cloud") {
+    let env = if hostname.contains("wikimedia.cloud") || hostname.starts_with("lydia-") {
         Env::TF
     } else if hostname == "exozyme" {
         Env::Exo
