@@ -4,9 +4,6 @@ use anyhow::{anyhow, bail, Result};
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
-/// auto-detected env type
-static mut ENV: Option<Env> = None;
-
 /// environment type
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Hash, Serialize, Deserialize)]
 pub enum Env {
@@ -26,7 +23,7 @@ impl Display for Env {
 }
 
 /// detect the current env type
-pub fn detect_env() -> Result<()> {
+pub fn detect_env() -> Result<Env> {
     let hostname = hostname::get()?
         .into_string()
         .map_err(|_| anyhow!("hostname is not valid utf-8"))?;
@@ -46,6 +43,5 @@ pub fn detect_env() -> Result<()> {
         env = env.to_string(),
         "detected runtime environement"
     );
-    unsafe { ENV = Some(env) }
-    Ok(())
+    Ok(env)
 }
