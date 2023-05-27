@@ -1,13 +1,17 @@
 use std::{sync::Arc, time::Duration};
 
-use anyhow::{anyhow, bail, Result};
+use anyhow::{bail, Result};
 use env::Env;
+use parking_lot::RwLock;
 use secrets::Secrets;
 use tokio::time::sleep;
 use tracing::{info, Level};
 use tracing_subscriber::{fmt::writer::MakeWriterExt, FmtSubscriber};
 use webhook::client::WebhookClient;
 
+use crate::discord::send_discord;
+
+pub mod discord;
 pub mod env;
 pub mod report;
 pub mod secrets;
@@ -58,39 +62,48 @@ impl Bot {
         })
     }
 
-    pub async fn send_discord<F>(&self, f: F) -> Result<()>
-    where
-        F: Fn(&mut webhook::models::Message) -> &mut webhook::models::Message,
-    {
-        assert!(self
-            .discord
-            .send(f)
-            .await
-            .map_err(|e| anyhow!("failed to delivery notification message: {e:?}"))?);
-        Ok(())
-    }
-
     pub fn is_dev(&self) -> bool {
         self.env.is_dev()
     }
 }
 
+#[macro_export]
+macro_rules! if_dev {
+    ($bot:ident, $prod:expr, $dev:expr) => {
+        if $bot.is_dev() {
+            $dev
+        } else {
+            $prod
+        }
+    };
+}
+
+pub static BOT: RwLock<Option<Arc<Bot>>> = RwLock::new(None);
+
 #[tokio::main]
 async fn main() -> Result<()> {
     // init logging
     let file_appender = tracing_appender::rolling::daily("../logs", "worker.log");
-    let (non_blocking_file, _guard) = tracing_appender::non_blocking(file_appender);
+    let (non_blocking_file, _) = tracing_appender::non_blocking(file_appender);
+    let err_file_appender = tracing_appender::rolling::daily("../logs", "worker-error.log");
 
     let subscriber = FmtSubscriber::builder()
         .with_max_level(Level::INFO)
-        .with_writer(std::io::stdout.and(non_blocking_file))
+        .with_writer(
+            std::io::stdout
+                .and(err_file_appender.with_max_level(Level::WARN))
+                .and(non_blocking_file),
+        )
         .json()
         .finish();
     tracing::subscriber::set_global_default(subscriber)?;
 
+    std::panic::set_hook(Box::new(tracing_panic::panic_hook));
+
     // construct bot
     info!(user_agent = USER_AGENT, "lydia-worker started");
     let bot = Arc::new(Bot::new().await?);
+    *BOT.write() = Some(bot.clone());
 
     // run bot
     info!("run bot");
@@ -112,7 +125,7 @@ async fn main() -> Result<()> {
         });
     }
 
-    bot.send_discord(|msg| {
+    send_discord(&bot, |msg| {
         msg.content(&format!(
             "lydia-worker started
             env: {:?}
@@ -136,15 +149,13 @@ async fn main() -> Result<()> {
             index += 1;
         }
         if !err {
-            sleep(Duration::from_secs(5)).await;
+            sleep(Duration::from_secs(if_dev!(bot, 30, 5))).await;
             continue;
         }
         // error exits
         let handle = handles.swap_remove(index);
         let job = &jobs[index];
-        bot.send_discord(|msg| msg.content(&format!("{job} stopped unexpectedly")))
-            .await?;
         handle.await?;
-        bail!("job {job} finished successfully")
+        bail!("job {job} finished without error")
     }
 }

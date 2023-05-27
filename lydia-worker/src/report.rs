@@ -4,17 +4,13 @@ use reqwest::Response;
 use serde::{de::DeserializeOwned, Serialize};
 use tracing::info;
 
-use crate::Bot;
+use crate::{if_dev, Bot};
 
 pub async fn update_report(bot: &Bot, path: &str, message: &str, content: &str) -> Result<()> {
     let token = &bot.secrets.cb.token;
     let url = format!(
         "https://codeberg.org/api/v1/repos/Lydia/{}/contents/{}?token={}",
-        if bot.is_dev() {
-            "test-report"
-        } else {
-            "report"
-        },
+        if_dev!(bot, "report", "test-report"),
         path,
         token
     );
@@ -64,11 +60,7 @@ where
 pub async fn fetch_report(bot: &Bot, path: &str) -> Result<Response> {
     let url = format!(
         "https://codeberg.org/Lydia/{}/raw/branch/pages/{}",
-        if bot.is_dev() {
-            "test-report"
-        } else {
-            "report"
-        },
+        if_dev!(bot, "report", "test-report"),
         path
     );
     info!(path, "fetch report");
