@@ -87,7 +87,7 @@ async fn main() -> Result<()> {
 
     let jobs = match bot.env {
         Env::Exo => vec![],
-        Env::TF => vec![],
+        Env::TF => vec!["wm:lomp".to_string()],
         Env::Dev => std::env::var("LYDIA_DEV_JOBS")?
             .split(',')
             .map(String::from)
