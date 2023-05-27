@@ -24,8 +24,13 @@ pub async fn load_translation_page(
     let mut missing_keys = vec![];
     for k in required_keys {
         let k = k.to_string();
-        if !map.contains_key(&k) {
-            missing_keys.push(k);
+        match map.get(&k) {
+            None => missing_keys.push((k, true)),
+            Some(s) => {
+                if s == "MISSING" {
+                    missing_keys.push((k, false))
+                }
+            }
         }
     }
     if !missing_keys.is_empty() {
@@ -37,8 +42,10 @@ pub async fn load_translation_page(
         }
         missing_keys.dedup();
         missing_keys.sort();
-        for k in &missing_keys {
-            wt.push_str(&format!("* {} => MISSING\n", k));
+        for (k, append) in &missing_keys {
+            if *append {
+                wt.push_str(&format!("* {} => MISSING\n", k));
+            }
         }
         mwpage.save(wt, &SaveOptions::summary("summary")).await?;
         info!(page, "appended missing translations");
