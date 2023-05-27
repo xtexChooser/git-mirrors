@@ -6,7 +6,7 @@ use tracing::info;
 
 #[derive(PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Clone, Hash)]
 pub struct Secrets {
-    pub wmf: Wmf,
+    pub wmf: Option<Wmf>,
     pub dc: Dc,
 }
 

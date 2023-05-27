@@ -12,10 +12,17 @@ pub mod env;
 pub mod secrets;
 pub mod tf;
 
+pub const USER_AGENT: &str = concat!(
+    "lydia-bot/",
+    env!("CARGO_PKG_VERSION"),
+    " (https://codeberg.org/Lydia)"
+);
+
 pub struct Bot {
     pub env: Env,
     pub secrets: Secrets,
     pub discord: WebhookClient,
+    pub wpzh_bot: Option<mwbot::Bot>,
 }
 
 impl Bot {
@@ -23,10 +30,25 @@ impl Bot {
         let env = env::detect_env()?;
         let secrets = Secrets::new()?;
         let discord = WebhookClient::new(&secrets.dc.url);
+        let wmf_bot = if let Some(s) = secrets.wmf.clone() {
+            Some(
+                mwbot::Bot::builder(
+                    "https://zh.wikipedia.org/w/api.php".to_string(),
+                    "https://zh.wikipedia.org/api/rest_v1".to_string(),
+                )
+                .set_botpassword(s.user, s.passwd)
+                .set_user_agent(USER_AGENT.to_string())
+                .build()
+                .await?,
+            )
+        } else {
+            None
+        };
         Ok(Bot {
             env,
             secrets,
             discord,
+            wpzh_bot: wmf_bot,
         })
     }
 
@@ -57,7 +79,7 @@ async fn main() -> Result<()> {
     tracing::subscriber::set_global_default(subscriber)?;
 
     // construct bot
-    info!("lydia-worker started");
+    info!(user_agent = USER_AGENT, "lydia-worker started");
     let bot = Arc::new(Bot::new().await?);
 
     // run bot
