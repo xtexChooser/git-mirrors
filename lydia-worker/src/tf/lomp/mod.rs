@@ -136,6 +136,7 @@ async fn do_lomp_maintaince(bot: Arc<Bot>) -> Result<()> {
             content.push_str(&format!("|discoverer={}", mp.discoverers)); // @TODO: translations
             content.push_str("}}\n");
         }
+        content.push_str("|}\n");
 
         // save
         info!(page, content, "creating LOMP hundreds page");
