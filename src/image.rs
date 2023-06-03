@@ -5,7 +5,7 @@ use podman_api::{
     opts::{ImagesRemoveOpts, ImagesRemoveOptsBuilder, PullOpts, PullOptsBuilder, PullPolicy},
 };
 use serde::{Deserialize, Serialize};
-use tracing::{error, info};
+use tracing::info;
 
 use crate::direct_into_build;
 

@@ -2,8 +2,10 @@ use std::path::PathBuf;
 
 use anyhow::{bail, Result};
 use clap::Parser;
+use notify::{Event, EventKind, RecommendedWatcher, Watcher};
 use podman_api::Podman;
 use serde::{Deserialize, Serialize};
+use tokio::sync::mpsc;
 use tracing::info;
 
 mod image;
@@ -54,7 +56,28 @@ async fn main() -> Result<()> {
     match args.command {
         Subcommand::Apply => rc::apply(&args.base, &podman, args.keep).await?,
         Subcommand::Daemon => {
-            rc::apply(&args.base, &podman, args.keep).await?;
+            let (tx, mut rx) = mpsc::channel(1);
+            tx.send(()).await?;
+            let mut watcher = RecommendedWatcher::new(
+                move |res: Result<_, _>| {
+                    let res: Event = res.unwrap();
+                    if matches!(
+                        res.kind,
+                        EventKind::Create(_) | EventKind::Modify(_) | EventKind::Remove(_)
+                    ) {
+                        futures::executor::block_on(async {
+                            tx.send(()).await.unwrap();
+                        });
+                    }
+                },
+                notify::Config::default(),
+            )?;
+            watcher.watch(&args.base, notify::RecursiveMode::Recursive)?;
+
+            while let Some(_) = rx.recv().await {
+                info!("some files changed, reloading configuration");
+                rc::apply(&args.base, &podman, args.keep).await?;
+            }
         }
     }
 
