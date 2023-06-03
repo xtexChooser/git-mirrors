@@ -48,6 +48,10 @@ async fn main() -> Result<()> {
 
     info!("init podman socket");
     let podman = Podman::new(&args.podman)?;
+    info!(
+        api_version = podman.ping().await?.api_version,
+        "podman socket connected"
+    );
 
     if !args.base.exists() {
         bail!("base directory {} does not exist", args.base.display())
