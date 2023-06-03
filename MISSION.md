@@ -86,6 +86,6 @@ more info about creating agreements together.
 
 ## Licensing
 
-Forgejo is [published under a permissive license](https://codeberg.org/forgejo/forgejo/src/branch/forgejo/LICENSE) and contributions are accepted provided the author agrees to the [Developer Certificate of Origin (DCO)](https://codeberg.org/forgejo/forgejo/src/branch/forgejo/CONTRIBUTING/DCO.md).
+Forgejo is [published under a permissive license](https://codeberg.org/forgejo/forgejo/src/branch/forgejo/LICENSE) and contributions are accepted provided the author agrees to the [Developer Certificate of Origin (DCO)](https://forgejo.org/docs/next/developer/DCO/).
 
 The Forgejo community agrees on principle that original works published under a copyleft license can be merged into the codebase. Before that happens, the Forgejo community will decide on a copyleft license in accordance to the decision making process.
