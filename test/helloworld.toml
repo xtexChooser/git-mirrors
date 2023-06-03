@@ -1,0 +1,12 @@
+[[image.pulled]]
+name = "docker.io/testcontainers/helloworld:latest"
+#all_tags = false
+#arch = "amd64"
+#os = "linux"
+#policy = "missing"
+#tls_verify = true
+#variant = ""
+
+[[image.removed]]
+name = "docker.io/library/ubuntu:latest"
+#force = false
