@@ -1,0 +1,7 @@
+{{ define "main" }} {{ partial "post" . }}
+
+<ul>
+  {{ range .Pages }} {{ .Render "li" }} {{ end }}
+</ul>
+
+{{ end }}

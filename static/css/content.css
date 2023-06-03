@@ -1,0 +1,31 @@
+:root {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+article header {
+    font-family: serif;
+}
+
+article .content {
+    line-height: 1.7rem;
+}
+
+a {
+    color: #dfdfdf;
+}
+
+a:visited {
+    color: #cccccc;
+}
+
+code, span {
+    line-height: normal;
+}
+
+.highlight code {
+    margin: 2rem;
+}
+
+code {
+    border: #333 0.1em solid;
+}

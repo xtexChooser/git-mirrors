@@ -1,0 +1,14 @@
+<article>
+  <header>
+    <h1 class="title">{{ .Title | markdownify }}</h1>
+    {{ with .Params.subtitle }}
+    <span class="subtitle">{{ . }}</span>
+    {{ end }}
+  </header>
+  {{ if .Params.toc }}
+  <aside></aside>
+  {{ end }} {{with .Content }}
+  <div class="content">{{ . }}</div>
+  {{end}}
+  <footer class="footer"></footer>
+</article>

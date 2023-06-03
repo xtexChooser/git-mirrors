@@ -1,0 +1,14 @@
+<meta charset="UTF-8" />
+<title>{{ with .Title }}{{ . }} &ndash; {{end}}{{ .Site.Title }}</title>
+
+{{ with .Site.Params.about }}
+<meta name="description" content="{{ .description }}" />
+{{ end }}
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+{{ if .Site.Params.noindex }}
+<meta name="robots" content="noindex" />
+{{ end }}
+
+<link rel="stylesheet" href='{{ "css/arc.css" | absURL }}' />
+<link rel="stylesheet" href='{{ "css/custom.css" | absURL }}' />
