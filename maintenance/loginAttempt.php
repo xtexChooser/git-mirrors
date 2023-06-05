@@ -2,6 +2,7 @@
 
 namespace LoginNotify\Maintenance;
 
+use LoginNotify\Hooks\HookRunner;
 use Maintenance;
 use MediaWiki\Auth\AuthenticationResponse;
 use MediaWiki\Language\RawMessage;
@@ -64,15 +65,15 @@ class LoginAttempt extends Maintenance {
 			return;
 		}
 
-		$hookContainer = MediaWikiServices::getInstance()->getHookContainer();
+		$hookRunner = new HookRunner( MediaWikiServices::getInstance()->getHookContainer() );
 		for ( $i = 0; $i < $reps; $i++ ) {
 			if ( $success ) {
 				$res = AuthenticationResponse::newPass( $username );
-				$hookContainer->run( 'AuthManagerLoginAuthenticateAudit', [ $res, $user, $username, [] ] );
+				$hookRunner->onAuthManagerLoginAuthenticateAudit( $res, $user, $username, [] );
 				$this->output( "A successful login attempt was registered!\n" );
 			} else {
 				$res = AuthenticationResponse::newFail( new RawMessage( 'Well, it failed' ) );
-				$hookContainer->run( 'AuthManagerLoginAuthenticateAudit', [ $res, null, $username, [] ] );
+				$hookRunner->onAuthManagerLoginAuthenticateAudit( $res, null, $username, [] );
 				$this->output( "A failed login attempt was registered!\n" );
 			}
 		}
