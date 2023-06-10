@@ -2,10 +2,7 @@ use anyhow::{bail, Result};
 use futures::TryStreamExt;
 use podman_api::{
     api::Images,
-    opts::{
-        ImageListOpts, ImagesRemoveOpts, ImagesRemoveOptsBuilder, PullOpts, PullOptsBuilder,
-        PullPolicy,
-    },
+    opts::{ImageListOpts, PullOpts, PullOptsBuilder, PullPolicy},
 };
 use serde::{Deserialize, Serialize};
 use tracing::info;
@@ -60,6 +57,18 @@ impl ImageResources {
             }
             if !error.is_empty() {
                 bail!("error when pulling {}: {}", pulled.name, error)
+            }
+        }
+        for removed in &self.removed {
+            let remote = api.get(&removed.name);
+            if remote.exists().await? {
+                let force = removed.force.unwrap_or(false);
+                if force {
+                    remote.remove().await?;
+                } else {
+                    remote.delete().await?;
+                }
+                info!(name = removed.name, force, "deleted image");
             }
         }
         Ok(())
@@ -150,15 +159,3 @@ pub struct ImageRemoved {
     #[serde(default)]
     pub force: Option<bool>,
 }
-
-impl Into<ImagesRemoveOptsBuilder> for ImageRemoved {
-    fn into(self) -> ImagesRemoveOptsBuilder {
-        ImagesRemoveOpts::builder()
-            .all(false)
-            .ignore(true)
-            .images(vec![self.name])
-            .force(self.force.unwrap_or(false))
-    }
-}
-
-direct_into_build!(ImageRemoved, ImagesRemoveOptsBuilder => ImagesRemoveOpts);
