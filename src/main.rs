@@ -11,6 +11,7 @@ use tracing::info;
 mod image;
 mod macros;
 mod rc;
+mod volume;
 
 #[derive(Debug, Parser, Serialize, Deserialize)]
 #[command(author, version, about, long_about = None)]

@@ -1,17 +1,18 @@
 use std::{fs, path::PathBuf};
 
 use anyhow::{Context, Result};
-use futures::try_join;
 use podman_api::Podman;
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
-use crate::image::ImageResources;
+use crate::{image::ImageResources, volume::VolumeResources};
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Clone, Hash, Default)]
+#[derive(Debug, PartialEq, Eq, Serialize, Deserialize, Clone, Default)]
 pub struct Resources {
     #[serde(default)]
     pub image: ImageResources,
+    #[serde(default)]
+    pub volume: VolumeResources,
 }
 
 impl Resources {
@@ -28,19 +29,20 @@ impl Resources {
     }
 
     pub async fn apply(&self, api: &Podman) -> Result<()> {
-        let images_api = api.images();
-        try_join!(self.image.apply(&images_api))?;
+        self.image.apply(&api.images()).await?;
+        self.volume.apply(&api.volumes()).await?;
         Ok(())
     }
 
     pub async fn purge(&self, api: &Podman) -> Result<()> {
-        let images_api = api.images();
-        try_join!(self.image.purge(&images_api))?;
+        self.image.purge(&api.images()).await?;
+        self.volume.purge(&api.volumes()).await?;
         Ok(())
     }
 
     pub fn merge(self, new: &mut Self) {
         self.image.merge(&mut new.image);
+        self.volume.merge(&mut new.volume);
     }
 }
 

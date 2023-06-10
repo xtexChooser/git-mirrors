@@ -10,3 +10,7 @@ name = "docker.io/testcontainers/helloworld:latest"
 [[image.removed]]
 name = "docker.io/library/ubuntu:latest"
 #force = false
+
+[[volume.created]]
+name = "podrc-test"
+driver = "local"
