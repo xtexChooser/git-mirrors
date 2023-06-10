@@ -66,6 +66,7 @@ impl VolumeResources {
 
     pub fn merge(self, new: &mut Self) {
         new.created.extend(self.created);
+        new.removed.extend(self.removed);
     }
 }
 
