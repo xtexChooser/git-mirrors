@@ -77,7 +77,7 @@ impl NetworkResources {
             .collect::<Vec<_>>();
         for network in network {
             let name = network.name.unwrap();
-            if managed.contains(&name) {
+            if !managed.contains(&name) {
                 api.get(&name).delete().await?;
                 info!(name, "purged network");
             }
