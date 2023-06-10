@@ -4,12 +4,15 @@ use anyhow::{Context, Result};
 use podman_api::{
     api::Volumes,
     models::VolumeInspect,
-    opts::{VolumeCreateOpts, VolumeCreateOptsBuilder},
+    opts::{VolumeCreateOpts, VolumeCreateOptsBuilder, VolumeListFilter, VolumeListOpts},
 };
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
-use crate::direct_into_build;
+use crate::{
+    constant::{LABEL_NO_PURGE, LABEL_NO_PURGE_VAL},
+    direct_into_build,
+};
 
 #[derive(Debug, PartialEq, Eq, Serialize, Deserialize, Clone, Default)]
 pub struct VolumeResources {
@@ -60,7 +63,28 @@ impl VolumeResources {
     }
 
     pub async fn purge(&self, api: &Volumes) -> Result<()> {
-        // todo
+        let volume = api
+            .list(
+                &VolumeListOpts::builder()
+                    .filter([VolumeListFilter::NoLabelKeyVal(
+                        LABEL_NO_PURGE.to_string(),
+                        LABEL_NO_PURGE_VAL.to_string(),
+                    )])
+                    .build(),
+            )
+            .await?;
+        let managed = self
+            .created
+            .iter()
+            .map(|f| f.name.to_owned())
+            .collect::<Vec<_>>();
+        for volume in volume {
+            let name = volume.name;
+            if !managed.contains(&name) {
+                api.get(&name).delete().await?;
+                info!(name, "purged volume");
+            }
+        }
         Ok(())
     }
 
