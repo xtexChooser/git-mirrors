@@ -81,12 +81,11 @@ pub struct VolumeCreated {
 
 impl Into<VolumeCreateOptsBuilder> for VolumeCreated {
     fn into(self) -> VolumeCreateOptsBuilder {
-        let mut builder = VolumeCreateOpts::builder()
+        VolumeCreateOpts::builder()
             .name(self.name)
             .driver(self.driver)
             .options(self.options)
-            .labels(self.labels);
-        builder
+            .labels(self.labels)
     }
 }
 
