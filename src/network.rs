@@ -9,7 +9,7 @@ use podman_api::{
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
-use crate::constant::{LABEL_NO_PURGE, LABEL_NO_PURGE_VAL};
+use crate::constant::{LABEL_NO_PURGE, LABEL_NO_PURGE_VAL, PODMAN_SYSTEM_NETWORK};
 
 #[derive(Debug, PartialEq, Eq, Serialize, Deserialize, Clone, Default)]
 pub struct NetworkResources {
@@ -77,7 +77,7 @@ impl NetworkResources {
             .collect::<Vec<_>>();
         for network in network {
             let name = network.name.unwrap();
-            if !managed.contains(&name) {
+            if name != PODMAN_SYSTEM_NETWORK && !managed.contains(&name) {
                 api.get(&name).delete().await?;
                 info!(name, "purged network");
             }
