@@ -66,7 +66,27 @@ impl ImageResources {
     }
 
     pub async fn purge(&self, api: &Images) -> Result<()> {
-        // todo
+        let image = api.list(&ImageListOpts::default()).await?;
+        let managed = self
+            .pulled
+            .iter()
+            .map(|f| f.name.to_owned())
+            .collect::<Vec<_>>();
+        for image in image {
+            if image.dangling.unwrap() || image.containers.unwrap_or(1) == 0 {
+                let id = image.id.unwrap();
+                if !managed.contains(&id)
+                    && !image
+                        .names
+                        .unwrap_or_default()
+                        .iter()
+                        .any(|i| managed.contains(i))
+                {
+                    api.get(&id).delete().await?;
+                    info!(name = id, "purged image");
+                }
+            }
+        }
         Ok(())
     }
 
