@@ -82,7 +82,7 @@ impl ImageResources {
             .map(|f| f.name.to_owned())
             .collect::<Vec<_>>();
         for image in image {
-            if image.dangling.unwrap() || image.containers.unwrap_or(1) == 0 {
+            if image.dangling.unwrap_or(false) || image.containers.unwrap_or(1) == 0 {
                 let id = image.id.unwrap();
                 if !managed.contains(&id)
                     && !image
