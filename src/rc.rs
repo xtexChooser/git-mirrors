@@ -5,7 +5,7 @@ use podman_api::Podman;
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
-use crate::{image::ImageResources, volume::VolumeResources};
+use crate::{image::ImageResources, network::NetworkResources, volume::VolumeResources};
 
 #[derive(Debug, PartialEq, Eq, Serialize, Deserialize, Clone, Default)]
 pub struct Resources {
@@ -13,6 +13,8 @@ pub struct Resources {
     pub image: ImageResources,
     #[serde(default)]
     pub volume: VolumeResources,
+    #[serde(default)]
+    pub network: NetworkResources,
 }
 
 impl Resources {
@@ -31,18 +33,21 @@ impl Resources {
     pub async fn apply(&self, api: &Podman) -> Result<()> {
         self.image.apply(&api.images()).await?;
         self.volume.apply(&api.volumes()).await?;
+        self.network.apply(&api.networks()).await?;
         Ok(())
     }
 
     pub async fn purge(&self, api: &Podman) -> Result<()> {
         self.image.purge(&api.images()).await?;
         self.volume.purge(&api.volumes()).await?;
+        self.network.purge(&api.networks()).await?;
         Ok(())
     }
 
     pub fn merge(self, new: &mut Self) {
         self.image.merge(&mut new.image);
         self.volume.merge(&mut new.volume);
+        self.network.merge(&mut new.network);
     }
 }
 

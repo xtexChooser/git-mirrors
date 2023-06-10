@@ -14,7 +14,25 @@ name = "docker.io/library/ubuntu:latest"
 [[volume.created]]
 name = "podrc-test"
 driver = "local"
+#options = {}
+#labels = {}
 
 [[volume.removed]]
+name = "podrc-test-removed"
+#force = false
+
+[[network.created]]
+name = "podrc-test"
+driver = "bridge"
+#options = {}
+#labels = {}
+#dns = true
+#internal = false
+#ipam_options = {}
+#ipv6 = false
+#iface = ""
+#subnets = []
+
+[[network.removed]]
 name = "podrc-test-removed"
 #force = false

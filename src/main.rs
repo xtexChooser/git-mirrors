@@ -10,6 +10,7 @@ use tracing::info;
 
 mod image;
 mod macros;
+mod network;
 mod rc;
 mod volume;
 
