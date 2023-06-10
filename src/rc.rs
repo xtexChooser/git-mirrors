@@ -1,11 +1,14 @@
-use std::{fs, path::PathBuf};
+use std::{env, fs, path::PathBuf};
 
 use anyhow::{Context, Result};
 use podman_api::Podman;
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
-use crate::{image::ImageResources, network::NetworkResources, volume::VolumeResources};
+use crate::{
+    constant::ENV_PURGE_VOLS, image::ImageResources, network::NetworkResources,
+    volume::VolumeResources,
+};
 
 #[derive(Debug, PartialEq, Eq, Serialize, Deserialize, Clone, Default)]
 pub struct Resources {
@@ -39,7 +42,9 @@ impl Resources {
 
     pub async fn purge(&self, api: &Podman) -> Result<()> {
         self.image.purge(&api.images()).await?;
-        self.volume.purge(&api.volumes()).await?;
+        if env::var(ENV_PURGE_VOLS).unwrap_or_default() == "true" {
+            self.volume.purge(&api.volumes()).await?;
+        }
         self.network.purge(&api.networks()).await?;
         Ok(())
     }
