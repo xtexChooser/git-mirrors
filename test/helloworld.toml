@@ -14,3 +14,7 @@ name = "docker.io/library/ubuntu:latest"
 [[volume.created]]
 name = "podrc-test"
 driver = "local"
+
+[[volume.removed]]
+name = "podrc-test-removed"
+#force = false
