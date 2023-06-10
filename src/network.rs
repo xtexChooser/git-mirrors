@@ -4,10 +4,12 @@ use anyhow::{bail, Context, Result};
 use podman_api::{
     api::Networks,
     models::{LeaseRange, Network, Subnet},
-    opts::{NetworkCreateOpts, NetworkCreateOptsBuilder},
+    opts::{NetworkCreateOpts, NetworkCreateOptsBuilder, NetworkListFilter, NetworkListOpts},
 };
 use serde::{Deserialize, Serialize};
 use tracing::info;
+
+use crate::constant::{LABEL_NO_PURGE, LABEL_NO_PURGE_VAL};
 
 #[derive(Debug, PartialEq, Eq, Serialize, Deserialize, Clone, Default)]
 pub struct NetworkResources {
@@ -58,7 +60,28 @@ impl NetworkResources {
     }
 
     pub async fn purge(&self, api: &Networks) -> Result<()> {
-        // todo
+        let network = api
+            .list(
+                &NetworkListOpts::builder()
+                    .filter([NetworkListFilter::NoLabelKeyVal(
+                        LABEL_NO_PURGE.to_string(),
+                        LABEL_NO_PURGE_VAL.to_string(),
+                    )])
+                    .build(),
+            )
+            .await?;
+        let managed = self
+            .created
+            .iter()
+            .map(|f| f.name.to_owned())
+            .collect::<Vec<_>>();
+        for network in network {
+            let name = network.name.unwrap();
+            if managed.contains(&name) {
+                api.get(&name).delete().await?;
+                info!(name, "purged network");
+            }
+        }
         Ok(())
     }
 

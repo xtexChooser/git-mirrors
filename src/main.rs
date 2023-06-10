@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 use tokio::sync::mpsc;
 use tracing::info;
 
+mod constant;
 mod image;
 mod macros;
 mod network;
