@@ -2,7 +2,10 @@ use anyhow::{bail, Result};
 use futures::TryStreamExt;
 use podman_api::{
     api::Images,
-    opts::{ImagesRemoveOpts, ImagesRemoveOptsBuilder, PullOpts, PullOptsBuilder, PullPolicy},
+    opts::{
+        ImageListOpts, ImagesRemoveOpts, ImagesRemoveOptsBuilder, PullOpts, PullOptsBuilder,
+        PullPolicy,
+    },
 };
 use serde::{Deserialize, Serialize};
 use tracing::info;
@@ -19,7 +22,27 @@ pub struct ImageResources {
 
 impl ImageResources {
     pub async fn apply(&self, api: &Images) -> Result<()> {
-        for pulled in &self.pulled {
+        let list = api.list(&ImageListOpts::default()).await?;
+        'pulled: for pulled in &self.pulled {
+            if matches!(
+                pulled.policy.to_owned().unwrap_or_default().as_str(),
+                "" | "missing"
+            ) {
+                for image in &list {
+                    if let Some(value) = &image.id {
+                        if value == &pulled.name {
+                            continue 'pulled;
+                        }
+                    }
+                    if let Some(value) = &image.names {
+                        for name in value {
+                            if name == &pulled.name {
+                                continue 'pulled;
+                            }
+                        }
+                    }
+                }
+            }
             let mut report = api.pull(&pulled.clone().into());
             let mut error = String::new();
             while let Some(report) = report.try_next().await? {
