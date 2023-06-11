@@ -4,4 +4,4 @@ pipeline:
     commands:
       - hugo
       - git status
-      - cp public/* /srv/http/pages/xtex/
+      - cp -r public/* /srv/http/pages/xtex/
