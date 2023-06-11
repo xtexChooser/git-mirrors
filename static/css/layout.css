@@ -4,6 +4,7 @@ body {
     cursor: default;
     padding: 3rem;
     padding-top: 0.7rem;
+    max-width: 100%;
 }
 
 main {
