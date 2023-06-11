@@ -2,6 +2,7 @@ body {
     background-color: var(--color-body-bg);
     color: var(--color-body-fg);
 	padding: 4px;
+    cursor: default;
 }
 
 main {
