@@ -149,6 +149,8 @@ pub struct ContainerCreated {
     #[serde(default)]
     pub dependency_containers: Vec<String>,
     #[serde(default)]
+    pub device_cgroup_rule: Option<Vec<LinuxDeviceCgroup>>,
+    #[serde(default)]
     pub devices: Vec<LinuxDevice>,
     #[serde(default)]
     pub dns_option: Vec<String>,
@@ -167,6 +169,10 @@ pub struct ContainerCreated {
     #[serde(default)]
     pub groups: Vec<String>,
     #[serde(default)]
+    pub health_check_on_failure_action: Option<i64>,
+    #[serde(default)]
+    pub health_config: Option<Schema2HealthConfig>,
+    #[serde(default)]
     pub host_device_list: Vec<LinuxDevice>,
     #[serde(default)]
     pub hosts_add: Vec<String>,
@@ -176,6 +182,8 @@ pub struct ContainerCreated {
     pub hostusers: Vec<String>,
     #[serde(default = "value_true")]
     pub http_proxy: bool,
+    #[serde(default)]
+    pub id_mappings: Option<IdMappingOptions>,
     pub image: String,
     #[serde(default)]
     pub image_arch: Option<String>,
@@ -401,11 +409,23 @@ impl Into<ContainerCreateOptsBuilder> for ContainerCreated {
         if let Some(value) = self.common_pid_file {
             builder = builder.common_pid_file(value);
         }
+        if let Some(value) = self.device_cgroup_rule {
+            builder = builder.device_cgroup_rule(value);
+        }
         if let Some(value) = self.entrypoint {
             builder = builder.entrypoint(value);
         }
+        if let Some(value) = self.health_check_on_failure_action {
+            builder = builder.health_check_on_failure_action(value);
+        }
+        if let Some(value) = self.health_config {
+            builder = builder.health_config(value);
+        }
         if let Some(value) = self.hostname {
             builder = builder.hostname(value);
+        }
+        if let Some(value) = self.id_mappings {
+            builder = builder.id_mappings(value);
         }
         if let Some(value) = self.image_arch {
             builder = builder.image_arch(value);
