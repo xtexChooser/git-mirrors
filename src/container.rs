@@ -3,7 +3,7 @@ use std::{cmp, collections::HashMap, env};
 use anyhow::{Context, Result};
 use podman_api::{
     api::Containers,
-    models::InspectContainerData,
+    models::{InspectContainerData, LinuxDevice},
     opts::{
         ContainerCreateOpts, ContainerCreateOptsBuilder, ContainerDeleteOpts, ContainerListFilter,
         ContainerListOpts,
@@ -118,7 +118,7 @@ impl ContainerResources {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, Serialize, Deserialize, Clone, Default)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Default)]
 pub struct ContainerCreated {
     #[serde(default)]
     pub annotations: Option<HashMap<String, String>>,
@@ -146,6 +146,8 @@ pub struct ContainerCreated {
     pub create_working_dir: bool,
     #[serde(default)]
     pub dependency_containers: Vec<String>,
+    #[serde(default)]
+    pub devices: Vec<LinuxDevice>,
     #[serde(default)]
     pub dns_option: Vec<String>,
     #[serde(default)]
@@ -276,6 +278,8 @@ pub struct ContainerCreated {
     pub work_dir: Option<String>,
 }
 
+impl Eq for ContainerCreated {}
+
 fn value_true() -> bool {
     true
 }
@@ -291,6 +295,7 @@ impl Into<ContainerCreateOptsBuilder> for ContainerCreated {
             .cpu_quota(self.cpu_quota)
             .create_working_dir(self.create_working_dir)
             .dependency_containers(self.dependency_containers)
+            .devices(self.devices)
             .dns_option(self.dns_option)
             .dns_search(self.dns_search)
             .dns_server(self.dns_server)
