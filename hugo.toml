@@ -1,0 +1,42 @@
+baseURL = 'https://blog.xtexx.ml/'
+languageCode = 'zh-cn'
+title = "xtex's Blog"
+theme = 'arc'
+paginate = 30
+copyright = 'Creative Commons Attribution-ShareAlike 4.0 International License'
+enableRobotsTXT = true
+enableGitInfo = true
+hasCJKLanguage = true
+rssLimit = 30
+
+[author]
+    name = 'xtex'
+
+[params]
+    description = "xtex's personal blog"
+    index_list = false
+
+[[params.links]]
+    text = "index"
+    url = "/"
+
+[[params.links]]
+    text = "posts"
+    url = "/posts"
+
+[[params.links]]
+    text = "archives"
+    url = "/archives"
+
+[[params.links]]
+    text = "home"
+    url = "https://xtexx.ml/"
+    target = "_blank"
+
+[sitemap]
+    changefreq = 'weekly'
+    filename = 'sitemap.xml'
+    priority = 0.5
+
+[permalinks]
+    posts = '/:year/:month/:day/:title'

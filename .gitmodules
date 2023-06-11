@@ -1,0 +1,3 @@
+[submodule "themes/arc"]
+	path = themes/arc
+	url = git@codeberg.org:xtex/hugo-theme-arc.git
