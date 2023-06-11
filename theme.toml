@@ -11,11 +11,5 @@ features = []
 min_version = "0.112.5"
 
 [author]
-  name = ""
-  homepage = ""
-
-# If porting an existing theme
-[original]
-  name = ""
-  homepage = ""
-  repo = ""
+  name = "xtex"
+  homepage = "https://xtexx.ml/"

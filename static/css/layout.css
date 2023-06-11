@@ -1,6 +1,7 @@
 body {
-    background-color: #222222;
-    color: #cccccc;
+    background-color: var(--color-body-bg);
+    color: var(--color-body-fg);
+	padding: 4px;
 }
 
 main {

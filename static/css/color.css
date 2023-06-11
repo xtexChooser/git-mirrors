@@ -1,0 +1,30 @@
+:root {
+    --color-body-bg: #fcfcfc;
+    --color-body-fg: #333333;
+    --color-link-fg: #3366ff;
+    --color-article-header-bottom: #222222;
+    --color-code-block-bg: #393939;
+    --color-code-block-border: #ffffff;
+    --color-title-top: #222222;
+    --color-hr-fg: #222222;
+    --color-code-inline-border: #333333;
+    --color-table-tr-odd-bg: #eeeeee;
+    --color-blockquote-bg: #eeeeee;
+}
+
+:root { color-scheme: light dark; }
+@media only all and (prefers-color-scheme: dark) {
+    :root {
+        --color-body-bg: #171717;
+        --color-body-fg: #cccccc;
+        --color-link-fg: #33aaff;
+        --color-article-header-bottom: #ffffff;
+        --color-code-block-bg: #282828;
+        --color-code-block-border: #101010;
+        --color-title-top: #808080;
+        --color-hr-fg: #a3a3a3;
+        --color-code-inline-border: #333333;
+        --color-table-tr-odd-bg: #222222;
+        --color-blockquote-bg: #222222;
+    }
+}
