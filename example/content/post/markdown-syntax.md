@@ -9,6 +9,7 @@ categories = [
 ]
 aliases = ["md-test"]
 subtitle = "Test subtitle"
+date = "2019-04-01"
 +++
 
 This is intended as a quick reference and showcase. For more complete info, see [John Gruber's original spec](http://daringfireball.net/projects/markdown/) and the [Github-flavored Markdown info page](http://github.github.com/github-flavored-markdown/).
