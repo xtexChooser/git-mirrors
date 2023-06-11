@@ -1,0 +1,6 @@
+steps:
+  build:
+    image: alpine
+    commands:
+      - apk add --no-cache hugo
+      - hugo

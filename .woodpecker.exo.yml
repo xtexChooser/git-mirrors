@@ -1,0 +1,7 @@
+steps:
+  build:
+    image: bash
+    commands:
+      - hugo
+      - git status
+      - cp public/* /srv/http/pages/xtex/
