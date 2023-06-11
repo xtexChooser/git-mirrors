@@ -40,7 +40,7 @@ timeZone = "Asia/Shanghai"
 
 [params.icon]
     type = "image/png"
-    url = "icon.png"
+    url = "/icon.png"
 
 [sitemap]
     changefreq = 'weekly'
