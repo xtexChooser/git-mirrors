@@ -36,3 +36,10 @@ driver = "bridge"
 [[network.removed]]
 name = "podrc-test-removed"
 #force = false
+
+[[container.created]]
+name = "podrc-test"
+image = "docker.io/testcontainers/helloworld:latest"
+
+[[container.removed]]
+name = "podrc-test-removed"
