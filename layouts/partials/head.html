@@ -11,9 +11,19 @@
 {{ end }}
 
 <!-- -->
-{{ range .AlternativeOutputFormats -}}
-{{ printf `<link rel="%s" type="%s" href="%s" title="%s">` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
-{{ end -}}
+{{ range .AlternativeOutputFormats -}} {{ printf `<link
+  rel="%s"
+  type="%s"
+  href="%s"
+  title="%s"
+/>` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }} {{ end -}}
+
+<!-- -->
+{{with .Site.Params.icon }}
+<link rel="icon" type="{{ .type }}" href="{{ .url }}" />
+{{ end }} {{ with .Site.Params.alticon }}
+<link rel="alternate icon" type="{{ .type }}" href="{{ .url }}" />
+{{ end }}
 
 <link rel="stylesheet" href='{{ "css/arc.css" | absURL }}' />
 <link rel="stylesheet" href='{{ "css/custom.css" | absURL }}' />
