@@ -23,18 +23,23 @@ article header {
     border-bottom: 0.1rem solid var(--color-article-header-bottom);
 }
 
+article header .date {
+    float: right;
+}
+
 .content {
     padding-top: 2rem;
     line-height: 140%;
 }
 
-.content h1, h2, h3 {
+.content h1, .content h2, .content h3 {
     border-top: 0.1rem solid var(--color-title-top);
-    width: 70%;
+    width: 80%;
+    padding-top: 0.3rem;
 }
 
 hr {
-    width: 55%;
+    width: 75%;
     margin: 0.2rem;
     display: inline-block;
     border-color: var(--color-hr-fg);
@@ -61,14 +66,14 @@ code, kbd, samp {
 }
 
 iframe, video {
-    max-width: 100%;
+    max-width: 80%;
     margin: 1rem auto;
     display: block;
 }
 
 table {
     border-collapse: collapse;
-    width: 100%;
+    width: 80%;
 }
 
 table tbody tr:nth-child(2n+1) {

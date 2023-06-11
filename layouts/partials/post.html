@@ -2,7 +2,11 @@
   <header>
     <h1 class="title">{{ .Title | markdownify }}</h1>
     {{ with .Params.subtitle }}
-    <span class="subtitle">{{ . }}</span>
+    <h3 class="subtitle">{{ . }}</h3>
+    {{ end }} {{ if $date := .Params.date }}
+    <p class="date">{{ with .Params.author }}{{.}} - {{ end }}{{ $date }}</p>
+    {{ end }} {{ with .Params.description }}
+    <p class="description">{{ . }}</p>
     {{ end }}
   </header>
   {{ if .Params.toc }}
