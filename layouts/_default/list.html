@@ -1,7 +1,60 @@
 {{ define "main" }} {{ partial "post" . }}
 
 <ul>
-  {{ range .Pages }} {{ .Render "li" }} {{ end }}
+  {{ range .Paginator.Pages }} {{ .Render "li" }} {{ end }}
+</ul>
+
+<ul class="pager hlist">
+  {{- with .Paginator }}
+  <!-- -->
+  {{- with .First }}
+  <li>
+    <a href="{{ .URL }}" aria-label="First" role="button">&lt;&lt;</a>
+  </li>
+  {{- end }}
+  <!-- -->
+  {{- with .Prev }}
+  <li>
+    <a href="{{ .URL }}" aria-label="Previous" role="button">&lt;</a>
+  </li>
+  {{- end }}
+  <!-- -->
+  {{ $slots := 10 }}
+  <!-- -->
+  {{ $start := math.Max 1 (sub .PageNumber (math.Floor (div $slots 2))) }}
+  <!-- -->
+  {{ $end := math.Min .TotalPages (sub (add $start $slots) 1) }}
+  <!-- -->
+  {{ if lt (add (sub $end $start) 1) $slots }} {{ $start = math.Max 1 (add (sub
+  $end $slots) 1) }} {{ end }}
+  <!-- -->
+  {{- range $k := seq $start $end }} {{- if eq $.Paginator.PageNumber $k }}
+  <li>{{ $k }}</li>
+  {{- else }}
+  <li>
+    <a
+      href="{{ (index $.Paginator.Pagers (sub $k 1)).URL }}"
+      aria-label="Page {{ $k }}"
+      role="button"
+    >
+      {{ $k }}
+    </a>
+  </li>
+  {{- end }} {{- end }}
+  <!-- -->
+  {{- with .Next }}
+  <li>
+    <a href="{{ .URL }}" aria-label="Next" role="button">&gt;</a>
+  </li>
+  {{- end }}
+  <!-- -->
+  {{- with .Last }}
+  <li>
+    <a href="{{ .URL }}" aria-label="Last" role="button">&gt;&gt;</a>
+  </li>
+  {{- end }}
+  <!-- -->
+  {{- end }}
 </ul>
 
 {{ end }}
