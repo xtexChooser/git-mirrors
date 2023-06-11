@@ -3,10 +3,7 @@ use std::{cmp, collections::HashMap, env};
 use anyhow::{Context, Result};
 use podman_api::{
     api::Containers,
-    models::{
-        ImageVolume, InspectContainerData, LinuxDevice, LinuxResources, LogConfig, Namespace,
-        PosixRlimit, Secret,
-    },
+    models::*,
     opts::{
         ContainerCreateOpts, ContainerCreateOptsBuilder, ContainerDeleteOpts, ContainerListFilter,
         ContainerListOpts,
@@ -218,11 +215,17 @@ pub struct ContainerCreated {
     #[serde(default)]
     pub oom_score_adj: Option<i64>,
     #[serde(default)]
+    pub overlay_volumes: Vec<OverlayVolume>,
+    #[serde(default)]
     pub passwd_entry: Option<String>,
+    #[serde(default)]
+    pub personality: Option<LinuxPersonality>,
     #[serde(default)]
     pub pid_namespace: Option<Namespace>,
     #[serde(default)]
     pub pod: Option<String>,
+    #[serde(default)]
+    pub portmappings: Vec<PortMapping>,
     #[serde(default)]
     pub privileged: bool,
     #[serde(default)]
@@ -302,6 +305,10 @@ pub struct ContainerCreated {
     #[serde(default)]
     pub volatile: bool,
     #[serde(default)]
+    pub volumes: Vec<NamedVolume>,
+    #[serde(default)]
+    pub weight_device: Option<LinuxWeightDevice>,
+    #[serde(default)]
     pub work_dir: Option<String>,
 }
 
@@ -341,6 +348,8 @@ impl Into<ContainerCreateOptsBuilder> for ContainerCreated {
             .namespace(self.namespace)
             .networks(self.networks)
             .no_new_privilages(self.no_new_privilages)
+            .overlay_volumes(self.overlay_volumes)
+            .portmappings(self.portmappings)
             .privileged(self.privileged)
             .publish_image_ports(self.publish_image_ports)
             .r_limits(self.r_limits)
@@ -368,7 +377,8 @@ impl Into<ContainerCreateOptsBuilder> for ContainerCreated {
             .unset_env_all(self.unset_env_all)
             .use_image_hosts(self.use_image_hosts)
             .use_image_resolv_conf(self.use_image_resolv_conf)
-            .volatile(self.volatile);
+            .volatile(self.volatile)
+            .volumes(self.volumes);
         // todo: https://github.com/containers/podman/pull/18849
         if !self.unmask.is_empty() {
             builder = builder.unmask(self.unmask);
@@ -439,6 +449,9 @@ impl Into<ContainerCreateOptsBuilder> for ContainerCreated {
         if let Some(value) = self.passwd_entry {
             builder = builder.passwd_entry(value);
         }
+        if let Some(value) = self.personality {
+            builder = builder.personality(value);
+        }
         if let Some(value) = self.pid_namespace {
             builder = builder.pid_namespace(value);
         }
@@ -480,6 +493,9 @@ impl Into<ContainerCreateOptsBuilder> for ContainerCreated {
         }
         if let Some(value) = self.uts_namespace {
             builder = builder.uts_namespace(value);
+        }
+        if let Some(value) = self.weight_device {
+            builder = builder.weight_device(value);
         }
         if let Some(value) = self.work_dir {
             builder = builder.work_dir(value);
