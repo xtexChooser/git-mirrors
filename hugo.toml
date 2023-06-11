@@ -38,6 +38,10 @@ timeZone = "Asia/Shanghai"
     url = "https://xtexx.ml/"
     target = "_blank"
 
+[params.icon]
+    type = "image/png"
+    url = "icon.png"
+
 [sitemap]
     changefreq = 'weekly'
     filename = 'sitemap.xml'
