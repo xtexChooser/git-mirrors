@@ -10,6 +10,11 @@
 <meta name="robots" content="noindex" />
 {{ end }}
 
+<!-- -->
+{{ range .AlternativeOutputFormats -}}
+{{ printf `<link rel="%s" type="%s" href="%s" title="%s">` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }}
+{{ end -}}
+
 <link rel="stylesheet" href='{{ "css/arc.css" | absURL }}' />
 <link rel="stylesheet" href='{{ "css/custom.css" | absURL }}' />
 

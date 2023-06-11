@@ -4,6 +4,10 @@ title = 'Example'
 theme = "hugo-theme-arc"
 themesDir = "../.."
 paginate = 10
+enableRobotsTXT = true
+copyright = 'CC'
+[author]
+  name = 'the author'
 
 [params]
 description = "test site"
@@ -30,3 +34,8 @@ url = "/posts"
 [[params.links]]
 text = "archives"
 url = "/archives"
+
+[sitemap]
+changefreq = 'weekly'
+filename = 'sitemap.xml'
+priority = 0.5
