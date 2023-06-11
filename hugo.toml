@@ -1,4 +1,4 @@
-baseURL = 'https://blog.xtexx.ml/'
+baseURL = 'https://xtex.exozy.me/'
 languageCode = 'zh-cn'
 title = "xtex's Blog"
 theme = 'arc'
