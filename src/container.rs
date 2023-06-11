@@ -3,7 +3,10 @@ use std::{cmp, collections::HashMap, env};
 use anyhow::{Context, Result};
 use podman_api::{
     api::Containers,
-    models::{InspectContainerData, LinuxDevice, Namespace},
+    models::{
+        ImageVolume, InspectContainerData, LinuxDevice, LinuxResources, LogConfig, Namespace,
+        PosixRlimit, Secret,
+    },
     opts::{
         ContainerCreateOpts, ContainerCreateOptsBuilder, ContainerDeleteOpts, ContainerListFilter,
         ContainerListOpts,
@@ -184,6 +187,8 @@ pub struct ContainerCreated {
     #[serde(default)]
     pub image_variant: Option<String>,
     #[serde(default)]
+    pub image_volumes: Option<Vec<ImageVolume>>,
+    #[serde(default)]
     pub init: bool,
     #[serde(default)]
     pub init_container_type: Option<String>,
@@ -193,6 +198,8 @@ pub struct ContainerCreated {
     pub ipc_namespace: Option<Namespace>,
     #[serde(default)]
     pub labels: HashMap<String, String>,
+    #[serde(default)]
+    pub log_configuration: Option<LogConfig>,
     #[serde(default)]
     pub mask: Option<Vec<String>>,
     pub name: String,
@@ -223,11 +230,15 @@ pub struct ContainerCreated {
     #[serde(default)]
     pub publish_image_ports: bool,
     #[serde(default)]
+    pub r_limits: Vec<PosixRlimit>,
+    #[serde(default)]
     pub raw_image_name: Option<String>,
     #[serde(default)]
     pub read_only_fs: bool,
     #[serde(default)]
     pub remove: bool,
+    #[serde(default)]
+    pub resource_limits: Option<LinuxResources>,
     #[serde(default)]
     pub restart_tries: u64,
     #[serde(default)]
@@ -238,6 +249,8 @@ pub struct ContainerCreated {
     pub rootfs_propagation: Option<String>,
     #[serde(default)]
     pub secret_env: HashMap<String, String>,
+    #[serde(default)]
+    pub secrets: Vec<Secret>,
     #[serde(default)]
     pub selinux_opts: Vec<String>,
     #[serde(default)]
@@ -330,12 +343,14 @@ impl Into<ContainerCreateOptsBuilder> for ContainerCreated {
             .no_new_privilages(self.no_new_privilages)
             .privileged(self.privileged)
             .publish_image_ports(self.publish_image_ports)
+            .r_limits(self.r_limits)
             .read_only_fs(self.read_only_fs)
             .remove(self.remove)
             .restart_tries(self.restart_tries)
             .rootfs(self.rootfs)
             .rootfs_overlay(self.rootfs_overlay)
             .secret_env(self.secret_env)
+            .secrets(self.secrets)
             .selinux_opts(self.selinux_opts)
             .stdin(self.stdin)
             .storage_opts(self.storage_opts)
@@ -391,6 +406,9 @@ impl Into<ContainerCreateOptsBuilder> for ContainerCreated {
         if let Some(value) = self.image_variant {
             builder = builder.image_variant(value);
         }
+        if let Some(value) = self.image_volumes {
+            builder = builder.image_volumes(value);
+        }
         if let Some(value) = self.init_container_type {
             builder = builder.init_container_type(value);
         }
@@ -399,6 +417,9 @@ impl Into<ContainerCreateOptsBuilder> for ContainerCreated {
         }
         if let Some(value) = self.ipc_namespace {
             builder = builder.ipc_namespace(value);
+        }
+        if let Some(value) = self.log_configuration {
+            builder = builder.log_configuration(value);
         }
         if let Some(value) = self.mask {
             builder = builder.mask(value);
@@ -429,6 +450,9 @@ impl Into<ContainerCreateOptsBuilder> for ContainerCreated {
         }
         if let Some(value) = self.raw_image_name {
             builder = builder.raw_image_name(value);
+        }
+        if let Some(value) = self.resource_limits {
+            builder = builder.resource_limits(value);
         }
         if let Some(value) = self.rootfs_propagation {
             builder = builder.rootfs_propagation(value);
