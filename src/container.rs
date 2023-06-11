@@ -3,7 +3,7 @@ use std::{cmp, collections::HashMap, env};
 use anyhow::{Context, Result};
 use podman_api::{
     api::Containers,
-    models::{InspectContainerData, LinuxDevice},
+    models::{InspectContainerData, LinuxDevice, Namespace},
     opts::{
         ContainerCreateOpts, ContainerCreateOptsBuilder, ContainerDeleteOpts, ContainerListFilter,
         ContainerListOpts,
@@ -131,6 +131,8 @@ pub struct ContainerCreated {
     #[serde(default)]
     pub cgroup_parent: Option<String>,
     #[serde(default)]
+    pub cgroup_namespace: Option<Namespace>,
+    #[serde(default)]
     pub cgroup_mode: Option<String>,
     #[serde(default)]
     pub chroot_directories: Vec<String>,
@@ -161,9 +163,11 @@ pub struct ContainerCreated {
     #[serde(default)]
     pub env_host: bool,
     #[serde(default)]
-    pub env_merge: Vec<String>,
+    pub envmerge: Vec<String>,
     #[serde(default)]
     pub groups: Vec<String>,
+    #[serde(default)]
+    pub host_device_list: Vec<LinuxDevice>,
     #[serde(default)]
     pub hosts_add: Vec<String>,
     #[serde(default)]
@@ -186,12 +190,16 @@ pub struct ContainerCreated {
     #[serde(default)]
     pub init_path: Option<String>,
     #[serde(default)]
+    pub ipc_namespace: Option<Namespace>,
+    #[serde(default)]
     pub labels: HashMap<String, String>,
     #[serde(default)]
     pub mask: Option<Vec<String>>,
     pub name: String,
     #[serde(default)]
     pub namespace: String,
+    #[serde(default)]
+    pub net_namespace: Option<Namespace>,
     #[serde(default)]
     pub network_options: Option<HashMap<String, String>>,
     #[serde(default)]
@@ -204,6 +212,8 @@ pub struct ContainerCreated {
     pub oom_score_adj: Option<i64>,
     #[serde(default)]
     pub passwd_entry: Option<String>,
+    #[serde(default)]
+    pub pid_namespace: Option<Namespace>,
     #[serde(default)]
     pub pod: Option<String>,
     #[serde(default)]
@@ -273,6 +283,10 @@ pub struct ContainerCreated {
     #[serde(default)]
     pub user: Option<String>,
     #[serde(default)]
+    pub user_namespace: Option<Namespace>,
+    #[serde(default)]
+    pub uts_namespace: Option<Namespace>,
+    #[serde(default)]
     pub volatile: bool,
     #[serde(default)]
     pub work_dir: Option<String>,
@@ -301,8 +315,9 @@ impl Into<ContainerCreateOptsBuilder> for ContainerCreated {
             .dns_server(self.dns_server)
             .env(self.env)
             .env_host(self.env_host)
-            .envmerge(self.env_merge)
+            .envmerge(self.envmerge)
             .groups(self.groups)
+            .host_device_list(self.host_device_list)
             .hosts_add(self.hosts_add)
             .hostusers(self.hostusers)
             .http_proxy(self.http_proxy)
@@ -349,6 +364,9 @@ impl Into<ContainerCreateOptsBuilder> for ContainerCreated {
         if let Some(value) = self.cgroup_parent {
             builder = builder.cgroup_parent(value);
         }
+        if let Some(value) = self.cgroup_namespace {
+            builder = builder.cgroup_namespace(value);
+        }
         if let Some(value) = self.cgroup_mode {
             builder = builder.cgroup_mode(value);
         }
@@ -379,8 +397,14 @@ impl Into<ContainerCreateOptsBuilder> for ContainerCreated {
         if let Some(value) = self.init_path {
             builder = builder.init_path(value);
         }
+        if let Some(value) = self.ipc_namespace {
+            builder = builder.ipc_namespace(value);
+        }
         if let Some(value) = self.mask {
             builder = builder.mask(value);
+        }
+        if let Some(value) = self.net_namespace {
+            builder = builder.net_namespace(value);
         }
         if let Some(value) = self.network_options {
             builder = builder.network_options(value);
@@ -393,6 +417,9 @@ impl Into<ContainerCreateOptsBuilder> for ContainerCreated {
         }
         if let Some(value) = self.passwd_entry {
             builder = builder.passwd_entry(value);
+        }
+        if let Some(value) = self.pid_namespace {
+            builder = builder.pid_namespace(value);
         }
         if let Some(value) = self.pod {
             builder = builder.pod(value);
@@ -423,6 +450,12 @@ impl Into<ContainerCreateOptsBuilder> for ContainerCreated {
         }
         if let Some(value) = self.user {
             builder = builder.user(value);
+        }
+        if let Some(value) = self.user_namespace {
+            builder = builder.user_namespace(value);
+        }
+        if let Some(value) = self.uts_namespace {
+            builder = builder.uts_namespace(value);
         }
         if let Some(value) = self.work_dir {
             builder = builder.work_dir(value);
