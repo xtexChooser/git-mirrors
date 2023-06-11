@@ -1,16 +1,16 @@
 :root {
-	font-family: sans-serif;
-	font-size: 10pt;
+    font-family: sans-serif;
+    font-size: 10pt;
 }
 
 a {
-	color: var(--color-link-fg);
-	text-decoration: none;
+    color: var(--color-link-fg);
+    text-decoration: none;
     padding: 2px;
 }
 
 a:hover {
-	text-decoration: underline;
+    text-decoration: underline;
 }
 
 a:active {
@@ -32,7 +32,9 @@ article header .date {
     line-height: 140%;
 }
 
-.content h1, .content h2, .content h3 {
+.content h1,
+.content h2,
+.content h3 {
     border-top: 0.1rem solid var(--color-title-top);
     width: 80%;
     padding-top: 0.3rem;
@@ -51,7 +53,8 @@ hr {
     border: 0.1rem solid var(--color-code-block-border);
 }
 
-.highlight, .highlight pre {
+.highlight,
+.highlight pre {
     background-color: var(--color-code-block-bg) !important;
 }
 
@@ -60,12 +63,15 @@ hr {
     padding: 0;
 }
 
-code, kbd, samp {
+code,
+kbd,
+samp {
     border: var(--color-code-inline-border) 0.1rem solid;
     padding: 0 0.4rem 0 0.4rem;
 }
 
-iframe, video {
+iframe,
+video {
     max-width: 80%;
     margin: 1rem auto;
     display: block;
@@ -76,8 +82,8 @@ table {
     width: 80%;
 }
 
-table tbody tr:nth-child(2n+1) {
-  background-color: var(--color-table-tr-odd-bg);
+table tbody tr:nth-child(2n + 1) {
+    background-color: var(--color-table-tr-odd-bg);
 }
 
 blockquote {

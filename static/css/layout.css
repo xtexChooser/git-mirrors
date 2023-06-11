@@ -1,10 +1,49 @@
 body {
     background-color: var(--color-body-bg);
     color: var(--color-body-fg);
-	padding: 4px;
     cursor: default;
+    padding: 3rem;
+    padding-top: 0.7rem;
 }
 
 main {
-    padding: 3rem;
+    padding-top: 1rem;
+}
+
+.header .title {
+    display: inline-block;
+}
+
+.header .links {
+    float: right;
+}
+
+.hlist ul {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+.hlist li {
+    display: inline;
+}
+
+.hlist li:not(:last-child) {
+    padding-right: 0.286em;
+}
+
+.hlist li:not(:last-child)::before {
+    content: "";
+}
+
+.hlist li:not(:last-child)::after {
+    content: "/";
+}
+
+.hlist li ul li:first-child::before {
+    content: "(";
+}
+
+.hlist li ul li:last-child::after {
+    content: ")";
 }

@@ -1,8 +1,8 @@
 <meta charset="UTF-8" />
 <title>{{ with .Title }}{{ . }} &ndash; {{end}}{{ .Site.Title }}</title>
 
-{{ with .Site.Params.about }}
-<meta name="description" content="{{ .description }}" />
+{{ with .Site.Params.description }}
+<meta name="description" content="{{ . }}" />
 {{ end }}
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -12,3 +12,5 @@
 
 <link rel="stylesheet" href='{{ "css/arc.css" | absURL }}' />
 <link rel="stylesheet" href='{{ "css/custom.css" | absURL }}' />
+
+{{ with .Site.Params.ext_head }} {{ . }} {{ end }}

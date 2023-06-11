@@ -2,4 +2,30 @@ baseURL = 'http://example.org/'
 languageCode = 'en-us'
 title = 'Example'
 theme = "hugo-theme-arc"
-themesDir="../.."
+themesDir = "../.."
+
+[params]
+description = "test site"
+index_list = false
+
+[[params.links]]
+text = "exozyme"
+url = "https://exozy.me/"
+target = "_blank"
+
+[[params.links]]
+text = "xtex"
+url = "https://xtexx.ml/"
+target = "_blank"
+
+[[params.links]]
+text = "about"
+url = "/about"
+
+[[params.links]]
+text = "posts"
+url = "/posts"
+
+[[params.links]]
+text = "archives"
+url = "/archives"

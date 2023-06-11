@@ -1,16 +1,17 @@
 <article>
+  {{ if .Title }}
   <header>
     <h1 class="title">{{ .Title | markdownify }}</h1>
-    {{ with .Params.subtitle }}
-    <h3 class="subtitle">{{ . }}</h3>
-    {{ end }} {{ if $date := .Params.date }}
+    {{ if $date := .Params.date }}
     <p class="date">{{ with .Params.author }}{{.}} - {{ end }}{{ $date }}</p>
+    {{ end }} {{ with .Params.subtitle }}
+    <h3 class="subtitle">{{ . }}</h3>
     {{ end }} {{ with .Params.description }}
     <p class="description">{{ . }}</p>
+    {{ end }} {{ with .Params.tags }}
+    <p class="tags">{{ range . }}#{{ . }} {{ end }}</p>
     {{ end }}
   </header>
-  {{ if .Params.toc }}
-  <aside></aside>
   {{ end }} {{with .Content }}
   <div class="content">{{ . }}</div>
   {{end}}

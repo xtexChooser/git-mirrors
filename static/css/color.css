@@ -12,7 +12,10 @@
     --color-blockquote-bg: #eeeeee;
 }
 
-:root { color-scheme: light dark; }
+:root {
+    color-scheme: light dark;
+}
+
 @media only all and (prefers-color-scheme: dark) {
     :root {
         --color-body-bg: #171717;
