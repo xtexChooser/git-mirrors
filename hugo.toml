@@ -8,6 +8,7 @@ enableRobotsTXT = true
 enableGitInfo = true
 hasCJKLanguage = true
 rssLimit = 30
+timeZone = "Asia/Shanghai"
 
 [author]
     name = 'xtex'
@@ -22,7 +23,11 @@ rssLimit = 30
 
 [[params.links]]
     text = "posts"
-    url = "/posts"
+    url = "/post"
+
+[[params.links]]
+    text = "rss"
+    url = "/post/index.xml"
 
 [[params.links]]
     text = "archives"
@@ -39,4 +44,13 @@ rssLimit = 30
     priority = 0.5
 
 [permalinks]
-    post = '/:year/:month/:day/:title'
+    post = '/:year/:month/:slugorfilename'
+
+[minify]
+  disableCSS = false
+  disableHTML = false
+  disableJS = false
+  disableJSON = false
+  disableSVG = false
+    disableXML = false
+    minifyOutput = true
