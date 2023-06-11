@@ -51,10 +51,4 @@ timeZone = "Asia/Shanghai"
     post = '/:year/:month/:slugorfilename'
 
 [minify]
-  disableCSS = false
-  disableHTML = false
-  disableJS = false
-  disableJSON = false
-  disableSVG = false
-    disableXML = false
     minifyOutput = true
