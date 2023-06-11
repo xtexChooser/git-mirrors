@@ -23,4 +23,7 @@ date: 2023-06-11T20:03:39+08:00
 
 主题也是自己造的，[hugo-theme-arc](https://codeberg.org/xtex/hugo-theme-arc/)，从开项目到写本文经过了大约7个地球日，~~实际折合写代码的时间3h~~，
 
-这套主题受cgit启发，支持自适应颜色，更加简易
+这套主题受cgit启发，支持自适应颜色，更加简易（
+
+等我有空再deploy，预计使用[exopages](https://exozy.me/)！
+

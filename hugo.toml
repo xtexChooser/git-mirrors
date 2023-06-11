@@ -39,4 +39,4 @@ rssLimit = 30
     priority = 0.5
 
 [permalinks]
-    posts = '/:year/:month/:day/:title'
+    post = '/:year/:month/:day/:title'
