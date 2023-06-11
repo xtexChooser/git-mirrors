@@ -4,3 +4,11 @@ author = "Hugo Authors"
 +++
 
 Hello
+
+{{<hlist>}}
+
+- Test
+- B
+- C
+
+{{</hlist>}}
