@@ -1,0 +1,13 @@
+name = "LAN World Plug-n-Play"
+filename = "mcwifipnp-1.6.5-1.20-quilt.jar"
+side = "both"
+
+[download]
+hash-format = "sha1"
+hash = "701fe5209db9dd8fd22a984acff14503c120e287"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 4577209
+project-id = 450250

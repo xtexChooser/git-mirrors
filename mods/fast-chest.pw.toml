@@ -1,0 +1,7 @@
+name = "fast-chest"
+filename = "fast-chest-1.4+1.20.jar"
+
+[download]
+url = "https://github.com/FakeDomi/FastChest/releases/download/1.4%2B1.20/fast-chest-1.4+1.20.jar"
+hash-format = "sha1"
+hash = "a4e79157329be8eea09db23e7d682beff6a6272e"

@@ -1,0 +1,13 @@
+name = "Click Through Architectury"
+filename = "clickthrougharchitectury-1.0.3-fabric.jar"
+side = "client"
+
+[download]
+url = "https://cdn.modrinth.com/data/Ql9v1uPP/versions/LKjRq19t/clickthrougharchitectury-1.0.3-fabric.jar"
+hash-format = "sha1"
+hash = "75a4cc35548e118852494e913814a3e9a4c73d41"
+
+[update]
+[update.modrinth]
+mod-id = "Ql9v1uPP"
+version = "LKjRq19t"

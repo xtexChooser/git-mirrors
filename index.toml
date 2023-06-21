@@ -125,8 +125,68 @@ hash = "659e2447deffc797f441ed09c0b05d75138253dfacfe1479d3938e55773be4b6"
 metafile = true
 
 [[files]]
+file = "mods/krypton.pw.toml"
+hash = "71ef7cc16632c0039fe194183b5885968c6d740aaa67a58000653ae0cb40b882"
+metafile = true
+
+[[files]]
+file = "mods/lambdynamiclights.pw.toml"
+hash = "8bb36bbf7dbac0d531f6c308329109d29d95a83a2c0d972178655efd8afddf4b"
+metafile = true
+
+[[files]]
+file = "mods/lazy-language-loader.pw.toml"
+hash = "cf8744a2896e9d00e777500b89da0f221e405e68df0fde5f95fce4f81ebd8175"
+metafile = true
+
+[[files]]
+file = "mods/lazydfu.pw.toml"
+hash = "b4ca05b39b85c27cd97ccb65d5fb832f5e9fd7ee5710542a3e69dfa30a97ea7d"
+metafile = true
+
+[[files]]
 file = "mods/libipn.pw.toml"
 hash = "b7d04fcd38f84af79e1733f2f4912df51f40dbd5d196f5d6bbadce586b52136b"
+metafile = true
+
+[[files]]
+file = "mods/litematica.pw.toml"
+hash = "849549f8e5590a794eaf1e4e848d25f9f38c1f7e51b0f1eba6178870c11628d7"
+metafile = true
+
+[[files]]
+file = "mods/lithium.pw.toml"
+hash = "c239c951796882b9c93e649a0dba4f2d95804441faaed707b686381b7a5c67da"
+metafile = true
+
+[[files]]
+file = "mods/log-cleaner.pw.toml"
+hash = "65a25b591b2afa0767de3426a944495a52721d71a7328daa3639e60dd88a04eb"
+metafile = true
+
+[[files]]
+file = "mods/malilib.pw.toml"
+hash = "1b5a615e2ee610f82a242fbb8390dc9e9b8a265c522848a860f1e25e6d637913"
+metafile = true
+
+[[files]]
+file = "mods/mcwifipnp.pw.toml"
+hash = "048f3010da02bcaba044b7eb31514518a3cafacaa35ce5cc48b5e49157d2df50"
+metafile = true
+
+[[files]]
+file = "mods/mixintrace.pw.toml"
+hash = "b89656eaf7e4404d8d2c5b1e1155aae85a839939f83cab6d1b5e791412ad5f86"
+metafile = true
+
+[[files]]
+file = "mods/modmenu.pw.toml"
+hash = "e00217e8327711e7d6acf95814212d9398499bc15cde7a3ec4ca4417393a8fbc"
+metafile = true
+
+[[files]]
+file = "mods/moreculling.pw.toml"
+hash = "6d813994b3eda187ae08b36561b60205de365852e2163f323c4c0ee283816ac6"
 metafile = true
 
 [[files]]
