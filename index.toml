@@ -20,6 +20,11 @@ hash = "6869de1ca55dc09beabb3c234727e84be4d4fbdcbad2c8081c03010713f374e1"
 metafile = true
 
 [[files]]
+file = "mods/architectury-api.pw.toml"
+hash = "f238e1f28f18e58f737116b13dab9716ca38b2dd84242e802d60419cc71ed737"
+metafile = true
+
+[[files]]
 file = "mods/badpackets.pw.toml"
 hash = "cbf5544ba86d4d10262fff9c53af6c9ef05bb92d329bb02f891a5aaf3ca94631"
 metafile = true
@@ -190,6 +195,11 @@ hash = "6d813994b3eda187ae08b36561b60205de365852e2163f323c4c0ee283816ac6"
 metafile = true
 
 [[files]]
+file = "mods/no-chat-reports.pw.toml"
+hash = "5ac7c70847108d6c21c3352ae5233129a410e42ddf161319cb0a658c0b296693"
+metafile = true
+
+[[files]]
 file = "mods/qkl.pw.toml"
 hash = "02343a477f6f4ffd9cbedd4f93252f443c599b2f8d250037920d3a47f5756e6a"
 metafile = true
@@ -200,6 +210,86 @@ hash = "b26289a0932399eeccd9e80167963590032bb04a40a52330bcfa218bf2bfda39"
 metafile = true
 
 [[files]]
+file = "mods/quick_hotkeys.pw.toml"
+hash = "fe8c0560f01a5e49eedbc49833986c7edd16e0d1a61a1682b60d02cc82fac36e"
+metafile = true
+
+[[files]]
+file = "mods/reeses-sodium-options.pw.toml"
+hash = "a1d419cad5a32a4a442b37b2e2fe2db3e761429d6ab60dd3bb79f43d36df2297"
+metafile = true
+
+[[files]]
+file = "mods/rei.pw.toml"
+hash = "be84563e2c530c6960ceedec8a6ec6a1272fcb6de2740d7e6bcf096e347ea38f"
+metafile = true
+
+[[files]]
+file = "mods/screenshot-to-clipboard.pw.toml"
+hash = "672f3809a2053eef01aea4015ca4b0d4be6c507622172c091c17833b8d2ffb39"
+metafile = true
+
+[[files]]
+file = "mods/sodium-extra.pw.toml"
+hash = "ea193a0081775b5b2dda289e12578c9122294ec6b6363dbfd7c1e7b5d2dfbd71"
+metafile = true
+
+[[files]]
 file = "mods/sodium.pw.toml"
 hash = "217b07516517c4c01958387192143943f3e9309a0e935828f9f32af771425d66"
+metafile = true
+
+[[files]]
+file = "mods/spark.pw.toml"
+hash = "7ca0983d3b7852c06f84c66b9f12da8115ff9b8ba63293cd20452377a0de726e"
+metafile = true
+
+[[files]]
+file = "mods/tweakermore.pw.toml"
+hash = "a22a3641d47822ad6b02e9ce96400c831d448981ca727e2840cfe5eeca6ccd2c"
+metafile = true
+
+[[files]]
+file = "mods/tweakeroo.pw.toml"
+hash = "b015f1f1bd558c30c74e2bc5707e52de1cde557824bd8ce85eddcafa14a3da3a"
+metafile = true
+
+[[files]]
+file = "mods/viafabricplus.pw.toml"
+hash = "087056c9649976cf12b0d3b844d3efecc0545574157e3a951d0acf6a36ff814c"
+metafile = true
+
+[[files]]
+file = "mods/vmp-fabric.pw.toml"
+hash = "7c3eff18529e48a5a3ba5e73315478fa84f32bf040adca45a37b4ba5a02bccf9"
+metafile = true
+
+[[files]]
+file = "mods/whoami.pw.toml"
+hash = "8b35ac594bfad2fd2533849ad3f573cc1f036be47302123a3193c9009fbe4691"
+metafile = true
+
+[[files]]
+file = "mods/wthit.pw.toml"
+hash = "ba1c6b53100f4b5666ccd77de55a8a29daf7b5b1b961f16dcbb8127959221a61"
+metafile = true
+
+[[files]]
+file = "mods/xaeros-minimap.pw.toml"
+hash = "fc94337582444f4dd4396f46dc3240300e2526725bd9b2835fb8822df6382234"
+metafile = true
+
+[[files]]
+file = "mods/xaeros-world-map.pw.toml"
+hash = "b7babc04b87a2a2edd7e34a0463f0a332549cbd6f00699142335019007251e2e"
+metafile = true
+
+[[files]]
+file = "mods/yacl.pw.toml"
+hash = "2da296c9f042dc47c672e2645be715c2f1cefa764f938a8e95e6c4163f8ce3ab"
+metafile = true
+
+[[files]]
+file = "mods/zoomify.pw.toml"
+hash = "fe67f559bf7c07593f1eb0e3cfabb56635de7e566b26241559452dc04484bd4e"
 metafile = true

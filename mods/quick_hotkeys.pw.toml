@@ -1,0 +1,13 @@
+name = "Quick Hotkeys"
+filename = "mc.v1.20.x-quick_hotkeys-1.0.0.jar"
+side = "client"
+
+[download]
+url = "https://cdn.modrinth.com/data/24LuV3ge/versions/2RpntXkB/mc.v1.20.x-quick_hotkeys-1.0.0.jar"
+hash-format = "sha1"
+hash = "7490b59e29b82122be0287620179e0eced39ca45"
+
+[update]
+[update.modrinth]
+mod-id = "24LuV3ge"
+version = "2RpntXkB"
