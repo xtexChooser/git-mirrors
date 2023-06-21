@@ -5,6 +5,10 @@ file = "LICENSE"
 hash = "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
 
 [[files]]
+file = "ViaFabricPlus/settings.json"
+hash = "c97448bb0414342e6d0e3b3036a76fc12316e3f6b87bd3386c47c9a410869a6f"
+
+[[files]]
 file = "crosshair_config.ccmcfg"
 hash = "8a629984637c34c7a7893a7b9e4b42bb0a207117fa1e355ca56d157ecf7ab502"
 
