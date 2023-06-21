@@ -1,4 +1,10 @@
 {
+	"advanced": {
+		"search": {
+			"identifierSearch": "ALWAYS",
+			"modSearch": "ALWAYS"
+		},
+	},
 	"appearance": {
 		"theme": "DARK"
 	}
