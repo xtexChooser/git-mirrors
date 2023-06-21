@@ -13,6 +13,7 @@ joinedFirstServer:true
 hideBundleTutorial:true
 allowServerListing:true
 onlyShowSecureChat:false
+key_key.custom-crosshair-mod.edit_crosshair:key.keyboard.unknown
 key_key.saveToolbarActivator:key.keyboard.unknown
 key_key.loadToolbarActivator:key.keyboard.unknown
 key_key.imblocker.switchIMEState:key.keyboard.f6
