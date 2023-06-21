@@ -3,11 +3,11 @@ filename = "Xaeros_Minimap_23.5.0_Fabric_1.20.jar"
 side = "both"
 
 [download]
+url = "https://cdn.modrinth.com/data/1bokaNcj/versions/46F7j3df/Xaeros_Minimap_23.5.0_Fabric_1.20.jar"
 hash-format = "sha1"
 hash = "d0d455112aea5603681f07255243faf387e65119"
-mode = "metadata:curseforge"
 
 [update]
-[update.curseforge]
-file-id = 4593188
-project-id = 263420
+[update.modrinth]
+mod-id = "1bokaNcj"
+version = "46F7j3df"
