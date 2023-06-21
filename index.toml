@@ -5,6 +5,18 @@ file = "LICENSE"
 hash = "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
 
 [[files]]
+file = "crosshair_config.ccmcfg"
+hash = "8a629984637c34c7a7893a7b9e4b42bb0a207117fa1e355ca56d157ecf7ab502"
+
+[[files]]
+file = "icon.png"
+hash = "77fefa8239b559861ace41f8b9c853e65b9e7480b77551e8d71bc3c1b4610371"
+
+[[files]]
+file = "icon.svg"
+hash = "7bb655575371f8b4d4b339d3b81e7c66e475ca3a33677349053fdf4723633018"
+
+[[files]]
 file = "mods/3dskinlayers.pw.toml"
 hash = "05ac5655886661106bb34a8a898d47fd317577f7f44519693be882c7a73c64b8"
 metafile = true
@@ -293,3 +305,7 @@ metafile = true
 file = "mods/zoomify.pw.toml"
 hash = "fe67f559bf7c07593f1eb0e3cfabb56635de7e566b26241559452dc04484bd4e"
 metafile = true
+
+[[files]]
+file = "options.txt"
+hash = "370ae8172742981850f295c5fb51a6b7fe910d874182fc74509a9a6d657eedc4"
