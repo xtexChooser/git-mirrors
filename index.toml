@@ -1,6 +1,10 @@
 hash-format = "sha256"
 
 [[files]]
+file = "CREDITS.md"
+hash = "1d067ac48a5ea90f6764bdf40331d6e4ba8ff8fd5d28182e074bd27d79a96ce8"
+
+[[files]]
 file = "LICENSE"
 hash = "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
 
@@ -406,6 +410,11 @@ hash = "662d7d268d602dd4c69dcff89d6ddfad9703a52f25cad852c6d9d8aa888d4b7b"
 metafile = true
 
 [[files]]
+file = "resourcepacks/mcwzh-meme-resourcepack.pw.toml"
+hash = "4db5eb8e38aaee5eb653e58727c0f3f33ede51d58632f1b0109f9ad478d6ca1f"
+metafile = true
+
+[[files]]
 file = "resourcepacks/shiny-ores-countxd.pw.toml"
 hash = "4a2fc439ba06cf87b429a7bfde61ebbdf81aa359ec0e208fdbaa9e918b4c6b18"
 metafile = true
@@ -434,3 +443,7 @@ metafile = true
 file = "shaderpacks/makeup-ultra-fast-shaders.pw.toml"
 hash = "d607da4ce672251838256616b1c6db384f5f0b5d849e428ce05d852d6e9b81ae"
 metafile = true
+
+[[files]]
+file = "update-credits.sh"
+hash = "67fd50d573d753fbcff23549f00a969bf3ef892a53e5a088d75b3baffcfc4b53"

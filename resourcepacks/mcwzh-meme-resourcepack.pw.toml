@@ -1,0 +1,11 @@
+# build: https://meme.teahouse.team/#br=G4QDAJwHdsNah/AB5zatkK35+VVvn/yjbHZQ0XcBDmjOZNHpapEYma3JUtN3/6e+WACjKYAV8C5jbmu3jWUpaK1gLWD/12HNU5lA6wnPyc3XIxXOCCkHPSgRnZRacHUaYjX1O46fj1Y3b2Xm/9/hWSS0UoRv2oglWl7x0rfAPN/KZ81X5u8kvcYIHpez0NwL+WrYE0vpWSlVrVgbQnE+3/rEySe7WfczrO5LxKxgwYtjPaDGgggIUEDiSuzolCOGR5yfJTL1vb3JmQF7Ar04Uc3NLOioEn+5mMpaNtIprBM1ZYI60ItomOPf5++Rlp2jP+rXe2zgSI+2v6TnRhObuQJrzN/Lygr6fJa7Lb3QAAwWvlcmsjBiXBQbx5jb4Gd4KxmAwEEGEMpISnftK2+TBfk1ZXsi+aAGBbJvQHcqEBGOK3xMcsIHKTm/puznQl7l5Cnxla3dChtfIuXM1Du5X0VZ15kreZMrA+kpB3Hv1CbKcQLkM9AN+iFWwDB+Syg/8X0DLVeMBZMl5MwAiVBC0YlMks1ALMSAzBlGeN8j2lP3YE9wFq2GCd5FAZqh2wfbbyU72Yr27P0N
+# prebuilt zip is distributed on exozy.me
+# last build date: 2023/6/22
+name = "mcwzh-meme-resourcepack"
+filename = "mcwzh-meme-resourcepack.zip"
+side = "client"
+
+[download]
+url = "https://cloud.exozy.me/s/M8sCGDpnZwbEswX/download/meme.teahouse.team-97f301.zip"
+hash-format = "sha1"
+hash = "e6ff3302f5cca4b055351edd46bb47436265e2a5"
