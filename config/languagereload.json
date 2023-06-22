@@ -1,7 +1,11 @@
 {
   "multilingualItemSearch": true,
   "fallbacks": [
+    "zh_cn"
+  ],
+  "previousFallbacks": [
     "zh_meme"
   ],
-  "language": "zh_cn"
+  "language": "zh_meme",
+  "previousLanguage": "zh_cn"
 }
