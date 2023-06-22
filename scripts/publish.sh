@@ -5,7 +5,7 @@ if git tag | grep -q "$version"; then
     echo "$version" is already tagged
     exit
 fi
-changelog=$(git log "$(git tag | head -n1)"..HEAD --oneline --decorate=no --abbrev)
+changelog=$(git log "$(git tag | tail -n1)"..HEAD --oneline --decorate=no --abbrev)
 
 rm -f -- *.mrpack *.zip
 
