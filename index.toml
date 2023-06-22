@@ -14,7 +14,11 @@ hash = "84cbc7d60663e8cf95647d7fb8f3c3a40217c07ea4c0426d4fede8dd88d4bc13"
 
 [[files]]
 file = "config/customsplashscreen.json"
-hash = "d44f15275fd7e6ee67a46dca5ab95f3f676f1e98c6c902456bf01277a4c8edf2"
+hash = "deeac03dc760936d2800fee34122ebdd5dd3f2eff124e453e5d0545fb50063f4"
+
+[[files]]
+file = "config/customsplashscreen/wide_logo.png"
+hash = "4441dfbc00b8967fc33b1b03f0f6aafcce04768740133b69660e87a7d1d71492"
 
 [[files]]
 file = "config/debugify.json"
