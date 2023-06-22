@@ -6,6 +6,8 @@
 
 This Fabric-modpack is client-only.
 
+Get more tips from [the wiki](https://codeberg.org/xtex/xtex-mp-pack/wiki/Home).
+
 ## Download
 
 ### Stable
