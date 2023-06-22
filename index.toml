@@ -61,6 +61,10 @@ file = "config/modmenu.json"
 hash = "5feba4460fc88646c7cfab6828322785e145086d47e87a0a50039ca82c05e606"
 
 [[files]]
+file = "config/replaymod.json"
+hash = "4353e96331fed165dfd5dff9af6048eaa69393afe57167b66c162e5a29baddf5"
+
+[[files]]
 file = "config/roughlyenoughitems/config.json5"
 hash = "421613508ff033c031b0cc83ce8d57b53d51737036be4c695a2ad60b32fd7861"
 
