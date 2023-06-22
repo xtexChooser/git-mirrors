@@ -1,0 +1,13 @@
+name = "Sofron oCd"
+filename = "1.20.1 Sofron_V 1.9-oCd! 0.4.zip"
+side = "both"
+
+[download]
+hash-format = "sha1"
+hash = "50305d5ffb04ecf4b349413c1cdbcf97e8806849"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 4599309
+project-id = 269923

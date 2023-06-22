@@ -1,0 +1,13 @@
+name = "Shiny Ores"
+filename = "shiny ores 1.20 v1.2.zip"
+side = "client"
+
+[download]
+url = "https://cdn.modrinth.com/data/oYrEfh82/versions/m21lupTs/shiny%20ores%201.20%20v1.2.zip"
+hash-format = "sha1"
+hash = "9dffa9afbe7fc0e6a81405746bf6cdc9dcd1ccdb"
+
+[update]
+[update.modrinth]
+mod-id = "oYrEfh82"
+version = "m21lupTs"

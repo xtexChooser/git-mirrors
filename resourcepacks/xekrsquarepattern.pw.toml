@@ -1,0 +1,13 @@
+name = "XeKrSquarePattern"
+filename = "XKSPv3.0方纹1.20.zip"
+side = "client"
+
+[download]
+url = "https://cdn.modrinth.com/data/rq4lDGdf/versions/4TwX8gX5/XKSPv3.0%E6%96%B9%E7%BA%B91.20.zip"
+hash-format = "sha1"
+hash = "b3b258fbe0fb957061722cf22806a1fba4fad6c2"
+
+[update]
+[update.modrinth]
+mod-id = "rq4lDGdf"
+version = "4TwX8gX5"

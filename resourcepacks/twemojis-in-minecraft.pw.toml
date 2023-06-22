@@ -1,0 +1,13 @@
+name = "Twemojis In Minecraft"
+filename = "Twemojis in MInecraft 1.2.1.zip"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/WdYcUVh8/versions/d3kBhaVa/Twemojis%20in%20MInecraft%201.2.1.zip"
+hash-format = "sha1"
+hash = "ff0374181fb38291bfeecdb777840487ccec7359"
+
+[update]
+[update.modrinth]
+mod-id = "WdYcUVh8"
+version = "d3kBhaVa"

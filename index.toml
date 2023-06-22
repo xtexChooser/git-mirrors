@@ -384,3 +384,48 @@ metafile = true
 [[files]]
 file = "options.txt"
 hash = "f8f286bfe93677ec707dc6c7467b44d5436dc10ce6c0c2d4cfda2c65bca35b0e"
+
+[[files]]
+file = "resourcepacks/bettersky.pw.toml"
+hash = "2f88bd49fbd1a900ae7623856ba12aff85c0973813163b1b43064fde51d47034"
+metafile = true
+
+[[files]]
+file = "resourcepacks/default-dark-mode.pw.toml"
+hash = "1de5f2bf9632a9bfb2576a95711155fb72d4dc9825d767615465fe58cd6bd588"
+metafile = true
+
+[[files]]
+file = "resourcepacks/foliage+.pw.toml"
+hash = "662d7d268d602dd4c69dcff89d6ddfad9703a52f25cad852c6d9d8aa888d4b7b"
+metafile = true
+
+[[files]]
+file = "resourcepacks/shiny-ores-countxd.pw.toml"
+hash = "4a2fc439ba06cf87b429a7bfde61ebbdf81aa359ec0e208fdbaa9e918b4c6b18"
+metafile = true
+
+[[files]]
+file = "resourcepacks/sofron-ocd.pw.toml"
+hash = "843dd5cc71109d375a35aeb11093067c0825bf885e8c0147b5e93812cc240905"
+metafile = true
+
+[[files]]
+file = "resourcepacks/twemojis-in-minecraft.pw.toml"
+hash = "47431478d12672c51968f63100f75c9009b1be58c8c11a59775efa1745c0550a"
+metafile = true
+
+[[files]]
+file = "resourcepacks/xekrsquarepattern.pw.toml"
+hash = "0175738cf5dcb41d02911f1c85d3d4b9f37fffb4137df1f925c51108df8e3355"
+metafile = true
+
+[[files]]
+file = "resourcepacks/xk-redstone-display.pw.toml"
+hash = "664335993895dc64996b40f9418892d0267f568715e0f64e304ce567a126d6e8"
+metafile = true
+
+[[files]]
+file = "shaderpacks/makeup-ultra-fast-shaders.pw.toml"
+hash = "d607da4ce672251838256616b1c6db384f5f0b5d849e428ce05d852d6e9b81ae"
+metafile = true
