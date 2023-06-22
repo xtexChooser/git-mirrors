@@ -6,7 +6,7 @@ version=$(grep '^version = "' pack.toml | sed -e 's/version = "//' | sed -e 's/"
 echo "$version"
 
 payload=$(jo -- project_id=HsMwyVxf \
-    file_parts="$(jo -a file)" featured=true loaders="$(jo -a quilt)" \
+    file_parts="$(jo -a file)" featured=false loaders="$(jo -a quilt)" \
     version_type=release \
     game_versions="$(jo -a "$(grep '^minecraft = "' pack.toml | sed -e 's/minecraft = "//' | sed -e 's/"//')")" \
     dependencies="$(jo -a < /dev/null)" \
