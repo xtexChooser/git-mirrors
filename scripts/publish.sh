@@ -17,5 +17,8 @@ git tag -s -m "Release $version" "$version"
 git push
 git push --tags
 
+packwiz modrinth export
+packwiz curseforge export
+
 scripts/sync-readme.sh
 CHANGELOG="$changelog" scripts/upload-to-mr.sh
