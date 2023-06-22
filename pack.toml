@@ -1,12 +1,12 @@
 name = "xtex's MP Pack"
 author = "xtex"
-version = "2.5"
+version = "2.6"
 pack-format = "packwiz:1.1.0"
 
 [index]
 file = "index.toml"
 hash-format = "sha256"
-hash = "754ca2f6f0dfe2ea01b22f5767d8ba04b7b7f1405ababda03db7d92fb442a1db"
+hash = "c9b78e7c1f4cd210d22a12260f455c2ef4d145fa5cbd25f58114352f0805e43e"
 
 [versions]
 minecraft = "1.20.1"

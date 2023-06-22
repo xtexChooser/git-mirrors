@@ -2,7 +2,7 @@ hash-format = "sha256"
 
 [[files]]
 file = "CREDITS.md"
-hash = "1d067ac48a5ea90f6764bdf40331d6e4ba8ff8fd5d28182e074bd27d79a96ce8"
+hash = "8c7637b2279226d5dff38461b76d29c5ae44073d40ac2c137c70c681aca69b48"
 
 [[files]]
 file = "LICENSE"
@@ -46,7 +46,7 @@ hash = "83b8c0bbd7c92d6e668155d49f5266a1537988d76866e16ff310e2faa07ad2e3"
 
 [[files]]
 file = "config/languagereload.json"
-hash = "5c5ba86bc16ccd01a3952e42624c5840317844a2edde38f73627bcb9a0954978"
+hash = "b9eb0ae31d89d6879b5da3c6b198ba58aee0400852dc569726b3b720e22f1d1a"
 
 [[files]]
 file = "config/litematica.json"

@@ -73,6 +73,7 @@ This is a complete list of all mods, resource packs and shaders included in this
 - Quilted Fabric API (QFAPI) / Quilt Standard Libraries (QSL)
 - Quilt Kotlin Libraries (QKL)
 - Reese's Sodium Options
+- ReplayMod
 - Roughly Enough Items (REI)
 - Screenshot to Clipboard
 - Shiny Ores
@@ -152,6 +153,7 @@ This is a complete list of all mods, resource packs and shaders included in this
 - [Xaero's Minimap](https://modrinth.com/mod/1bokaNcj)
 - [Xaero's World Map](https://modrinth.com/mod/NcUtCpym)
 - [Language Reload](https://modrinth.com/mod/uLbm7CG6)
+- [ReplayMod](https://modrinth.com/mod/Nv2fQJo5)
 - [Default Dark Mode](https://modrinth.com/mod/6SLU7tS5)
 - [Twemojis In Minecraft](https://modrinth.com/mod/WdYcUVh8)
 - [XK Redstone Display](https://modrinth.com/mod/4ueVo9s5)
