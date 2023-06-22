@@ -13,7 +13,7 @@ scripts/update-credits.sh
 packwiz refresh
 
 git commit -uall -a -S -s --allow-empty -m "release: $version\n\n$changelog"
-git tag -s "$version"
+git tag -s -m "Release $version" "$version"
 git push
 git push --tags
 
