@@ -6,7 +6,7 @@ directionalAudio:true
 gamma:0.5
 guiScale:2
 particles:1
-resourcePacks:["vanilla"]
+resourcePacks:["vanilla","file/Default-Dark-Mode-1.20-2023.6.0.zip","file/Twemojis in MInecraft 1.2.1.zip","file/XK红显3.0for1.20.zip","file/shiny ores 1.20 v1.2.zip","file/mcwzh-meme-resourcepack.zip"]
 lang:zh_cn
 tutorialStep:none
 joinedFirstServer:true
