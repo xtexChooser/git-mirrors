@@ -3,14 +3,15 @@
 source .env
 
 version=$(grep '^version = "' pack.toml | sed -e 's/version = "//' | sed -e 's/"//')
+echo "$version"
 
-payload=$(jo -p project_id=HsMwyVxf \
-    'file_parts=["file"]' featured=true 'loaders=["quilt"]' \
+payload=$(jo -- project_id=HsMwyVxf \
+    file_parts="$(jo -a file)" featured=true loaders="$(jo -a quilt)" \
     version_type=release \
-    "game_versions=[\"$(grep '^minecraft = "' pack.toml | sed -e 's/minecraft = "//' | sed -e 's/"//')\"]" \
-    dependencies=[] \
-    "version_number=\"$version\"" "name=\"$version\"" \
-    "changelog=\"$CHANGELOG\"")
+    game_versions="$(jo -a "$(grep '^minecraft = "' pack.toml | sed -e 's/minecraft = "//' | sed -e 's/"//')")" \
+    dependencies="$(jo -a < /dev/null)" \
+    -s "version_number=$version" -s "name=$version" \
+    changelog="${CHANGELOG:-unavailable}")
 
 echo "$payload"
 
