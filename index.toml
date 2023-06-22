@@ -9,6 +9,10 @@ file = "LICENSE"
 hash = "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
 
 [[files]]
+file = "README.md"
+hash = "6ae7da12365c6c160fb415fc5f32f9e9db74e606f15f38bcebaf58c5d5f08256"
+
+[[files]]
 file = "ViaFabricPlus/settings.json"
 hash = "c97448bb0414342e6d0e3b3036a76fc12316e3f6b87bd3386c47c9a410869a6f"
 
@@ -39,6 +43,10 @@ hash = "fc273072f132ab4beba18bdee72e80cce7f82775d91219b39bbff41f9ac5158c"
 [[files]]
 file = "config/lambdynlights.toml"
 hash = "83b8c0bbd7c92d6e668155d49f5266a1537988d76866e16ff310e2faa07ad2e3"
+
+[[files]]
+file = "config/languagereload.json"
+hash = "5c5ba86bc16ccd01a3952e42624c5840317844a2edde38f73627bcb9a0954978"
 
 [[files]]
 file = "config/litematica.json"
@@ -392,7 +400,7 @@ metafile = true
 
 [[files]]
 file = "options.txt"
-hash = "f8f286bfe93677ec707dc6c7467b44d5436dc10ce6c0c2d4cfda2c65bca35b0e"
+hash = "972860cc3cbe817be2c4c25a96dccc0e8049fa275f193b8179f019808168be83"
 
 [[files]]
 file = "resourcepacks/bettersky.pw.toml"
@@ -443,7 +451,3 @@ metafile = true
 file = "shaderpacks/makeup-ultra-fast-shaders.pw.toml"
 hash = "d607da4ce672251838256616b1c6db384f5f0b5d849e428ce05d852d6e9b81ae"
 metafile = true
-
-[[files]]
-file = "update-credits.sh"
-hash = "67fd50d573d753fbcff23549f00a969bf3ef892a53e5a088d75b3baffcfc4b53"
