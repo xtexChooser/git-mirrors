@@ -11,7 +11,7 @@ payload=$(jo -- project_id=HsMwyVxf \
     game_versions="$(jo -a "$(grep '^minecraft = "' pack.toml | sed -e 's/minecraft = "//' | sed -e 's/"//')")" \
     dependencies="$(jo -a < /dev/null)" \
     -s "version_number=$version" -s "name=$version" \
-    "changelog=$(echo -e "${changelog:-unavailable}")")
+    "changelog=$(echo -e "${CHANGELOG:-unavailable}")")
 
 echo "$payload"
 
