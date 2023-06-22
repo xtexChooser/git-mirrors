@@ -9,6 +9,78 @@ file = "ViaFabricPlus/settings.json"
 hash = "c97448bb0414342e6d0e3b3036a76fc12316e3f6b87bd3386c47c9a410869a6f"
 
 [[files]]
+file = "config/betterpingdisplay.json"
+hash = "84cbc7d60663e8cf95647d7fb8f3c3a40217c07ea4c0426d4fede8dd88d4bc13"
+
+[[files]]
+file = "config/customsplashscreen.json"
+hash = "d44f15275fd7e6ee67a46dca5ab95f3f676f1e98c6c902456bf01277a4c8edf2"
+
+[[files]]
+file = "config/debugify.json"
+hash = "6996193d411b58e087ab2c76c0a209a28d075e847ca8416cd5f3e74fe1633903"
+
+[[files]]
+file = "config/dynamicfps.toml"
+hash = "3429fa956cf7b9f29667fcfc74fdc4b505d25c4ec9a237281f33ff87e2e9df23"
+
+[[files]]
+file = "config/iris.properties"
+hash = "fc273072f132ab4beba18bdee72e80cce7f82775d91219b39bbff41f9ac5158c"
+
+[[files]]
+file = "config/lambdynlights.toml"
+hash = "83b8c0bbd7c92d6e668155d49f5266a1537988d76866e16ff310e2faa07ad2e3"
+
+[[files]]
+file = "config/litematica.json"
+hash = "ad6fdf495f150d0090f237808fea75a6088a666951de9e88f8ce368e2ac0d33b"
+
+[[files]]
+file = "config/logcleaner.json"
+hash = "8f5b042919783ab53ace20e94a89620964e275426fa3faf7aa93345dc2031ac3"
+
+[[files]]
+file = "config/modmenu.json"
+hash = "5feba4460fc88646c7cfab6828322785e145086d47e87a0a50039ca82c05e606"
+
+[[files]]
+file = "config/roughlyenoughitems/config.json5"
+hash = "421613508ff033c031b0cc83ce8d57b53d51737036be4c695a2ad60b32fd7861"
+
+[[files]]
+file = "config/seedcracker.json"
+hash = "17d143a4927c024d62fa8a38a0c1c987a7b9153c7aa6cf2f6ff6f670c9b1a682"
+
+[[files]]
+file = "config/sodium-options.json"
+hash = "4eb582bb7e8c3ddb7d4d9e41c0fe9206d5768cc06c351226af3f2adfa3c64785"
+
+[[files]]
+file = "config/tweakeroo.json"
+hash = "b5ff1e451b60c8a5d1d626a21c0084b082859ed241804845d8d07d64438b396a"
+
+[[files]]
+file = "config/waila/waila.json"
+hash = "feeab4030df2e80853826ae23bd323d1beeca183d3dc3c02b119f3a90ac36ae1"
+
+[[files]]
+file = "config/waila/waila_plugins.json"
+hash = "3271c997d638f8a920d229b37fa99c5b7a3f28bf03c273158ec9b254432c4938"
+
+[[files]]
+file = "config/xaerominimap.txt"
+hash = "c26ae78ad8547bb8f62aff5cfcfc7e611401e31cb9305001b6e016027026460f"
+
+[[files]]
+file = "config/xaeropatreon.txt"
+hash = "519f811142b420c13dcf133196b9edd93046cf37e30c63afaf4f0e962b4fc94a"
+
+[[files]]
+file = "config/xaeroworldmap.txt"
+hash = "5f60325504ed1c87697036574a581882b92a18f89e4f7285d0242cb8d9cd1b76"
+
+[[files]]
 file = "crosshair_config.ccmcfg"
 hash = "8a629984637c34c7a7893a7b9e4b42bb0a207117fa1e355ca56d157ecf7ab502"
 
@@ -306,10 +378,5 @@ hash = "2da296c9f042dc47c672e2645be715c2f1cefa764f938a8e95e6c4163f8ce3ab"
 metafile = true
 
 [[files]]
-file = "mods/zoomify.pw.toml"
-hash = "fe67f559bf7c07593f1eb0e3cfabb56635de7e566b26241559452dc04484bd4e"
-metafile = true
-
-[[files]]
 file = "options.txt"
-hash = "370ae8172742981850f295c5fb51a6b7fe910d874182fc74509a9a6d657eedc4"
+hash = "f8f286bfe93677ec707dc6c7467b44d5436dc10ce6c0c2d4cfda2c65bca35b0e"

@@ -1,0 +1,30 @@
+{
+  "Generic": {
+    "freeCameraPlayerInputs": true,
+    "gammaOverrideValue": 32.0
+  },
+  "GenericHotkeys": {
+    "writeMapsAsImages": {
+      "keys": "X,M"
+    },
+    "zoomActivate": {
+      "keys": "C"
+    }
+  },
+  "Internal": {
+    "gammaValueOriginal": 0.5
+  },
+  "TweakToggles": {
+    "tweakChatTimestamp": true,
+    "tweakMapPreview": true,
+    "tweakZoom": true
+  },
+  "TweakHotkeys": {
+    "tweakFreeCamera": {
+      "keys": "X,F"
+    },
+    "tweakGammaOverride": {
+      "keys": "X,G"
+    }
+  }
+}

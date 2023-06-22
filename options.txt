@@ -3,7 +3,7 @@ autoJump:true
 showSubtitles:true
 forceUnicodeFont:true
 directionalAudio:true
-gamma:1.0
+gamma:0.5
 guiScale:2
 particles:1
 resourcePacks:["vanilla"]
