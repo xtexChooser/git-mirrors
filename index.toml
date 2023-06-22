@@ -334,6 +334,11 @@ hash = "be84563e2c530c6960ceedec8a6ec6a1272fcb6de2740d7e6bcf096e347ea38f"
 metafile = true
 
 [[files]]
+file = "mods/replaymod.pw.toml"
+hash = "9e7c1e6cf3b81dce5a77bf5c95ed9d8e9b936b932aeadb1255245234230ced16"
+metafile = true
+
+[[files]]
 file = "mods/screenshot-to-clipboard.pw.toml"
 hash = "672f3809a2053eef01aea4015ca4b0d4be6c507622172c091c17833b8d2ffb39"
 metafile = true
