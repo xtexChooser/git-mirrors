@@ -8,25 +8,25 @@ This Fabric-modpack is client-only.
 
 ## Download
 
-#### Stable
+### Stable
 
 The stable versions are available at [Modrinth](https://modrinth.com/modpack/xtex-mp-pack).
 
-#### Staging (recommended)
+### Staging (recommended)
 
 > Use **at your own risk**. Some of your customized configurations may be erased during the update.
 
 The staging version is the delayed version of the dev. It is hosted on [exogit](https://exozy.me) and will be synchronized with dev every 24h, so some temporary bugs may be fixed in time.
 
-[packwiz bootstrap URL](https://git.exozy.me/xtex/xtex-mp-pack-staging/raw/branch/main/pack.toml) | [MultiMC](https://cloud.exozy.me/s/WT8gK647zSPGk5o)
+[packwiz bootstrap URL](https://git.exozy.me/xtex/xtex-mp-pack-staging/raw/branch/main/pack.toml) | [MultiMC](https://cloud.exozy.me/s/2C8NamM8biP4QZz)
 
-#### Dev: packwiz installer
+### Dev: packwiz installer
 
 > Using this bootstrap URL means your client will always be in sync with the latest development branch **at your own risk**.
 >
 > To keep your own customized configurations, disable custom pre-launch command after first launch.
 
-[packwiz bootstrap URL](https://codeberg.org/xtex/xtex-mp-pack/raw/branch/main/pack.toml) | [MultiMC](https://cloud.exozy.me/s/NTwiRnkPHFRTf5M)
+[packwiz bootstrap URL](https://codeberg.org/xtex/xtex-mp-pack/raw/branch/main/pack.toml) | [MultiMC](https://cloud.exozy.me/s/yWWfzxpSERF7roF)
 
 ## Credits
 
