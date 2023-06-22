@@ -7,7 +7,7 @@ if git tag | grep -q "$version"; then
 fi
 changelog=$(git log "$(git tag | head -n1)"..HEAD --oneline --decorate=no --abbrev)
 
-rm -- *.mrpack *.zip
+rm -q -- *.mrpack *.zip
 
 scripts/update-credits.sh
 packwiz refresh
