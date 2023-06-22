@@ -10,7 +10,7 @@ hash = "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
 
 [[files]]
 file = "README.md"
-hash = "a7110a00014e2cb119ee4fec052fc6db20d7f7128c497ad365d17fc24d2dca86"
+hash = "b96c20095e7b886778224c2007fca60e012d41c859d67c1a1af268950c84dd4d"
 
 [[files]]
 file = "ViaFabricPlus/settings.json"
@@ -405,7 +405,7 @@ metafile = true
 
 [[files]]
 file = "options.txt"
-hash = "972860cc3cbe817be2c4c25a96dccc0e8049fa275f193b8179f019808168be83"
+hash = "a5ef7f68669cc0f3556ed5ef70951375c21e357e6a52c6eece8f02b7a9938683"
 
 [[files]]
 file = "resourcepacks/bettersky.pw.toml"
