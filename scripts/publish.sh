@@ -7,13 +7,13 @@ if git tag | grep -q "$version"; then
 fi
 changelog=$(git log "$(git tag | head -n1)"..HEAD --oneline --decorate=no --abbrev)
 
-rm -q -- *.mrpack *.zip
+rm -f -- *.mrpack *.zip
 
 scripts/update-credits.sh
 packwiz refresh
 
 git commit -uall -a -S -s --allow-empty -m "release: $version\n\n$changelog"
-git tag -S "$version"
+git tag -s "$version"
 git push
 git push --tags
 
