@@ -9,7 +9,8 @@ payload=$(jo -p project_id=HsMwyVxf \
     version_type=release \
     "game_versions=[\"$(grep '^minecraft = "' pack.toml | sed -e 's/minecraft = "//' | sed -e 's/"//')\"]" \
     dependencies=[] \
-    "version_number=$version" "name=$version")
+    "version_number=$version" "name=$version" \
+    "changelog=$CHANGELOG")
 
 echo "$payload"
 
