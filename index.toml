@@ -232,6 +232,11 @@ hash = "8bb36bbf7dbac0d531f6c308329109d29d95a83a2c0d972178655efd8afddf4b"
 metafile = true
 
 [[files]]
+file = "mods/language-reload.pw.toml"
+hash = "e0bcfae8d473e27507ca87747e1529eb34c2eb763efcb41c849ed863cbd70c75"
+metafile = true
+
+[[files]]
 file = "mods/lazy-language-loader.pw.toml"
 hash = "cf8744a2896e9d00e777500b89da0f221e405e68df0fde5f95fce4f81ebd8175"
 metafile = true
