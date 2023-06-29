@@ -1,0 +1,6 @@
+{
+  "parent": "quaedam:block/projection",
+  "textures": {
+    "ext": "quaedam:block/skylight_projection"
+  }
+}

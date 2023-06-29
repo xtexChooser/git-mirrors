@@ -33,7 +33,7 @@ object ProjectorBlock : Block(Properties.of()
     .lightLevel { 3 }
     .mapColor(MapColor.COLOR_BLACK)
     .randomTicks()
-    .destroyTime(4.0f)
+    .strength(4.0f)
     .requiresCorrectToolForDrops()) {
 
     override fun use(
