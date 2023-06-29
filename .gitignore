@@ -1,0 +1,4 @@
+build
+.gradle
+forge/run
+.idea

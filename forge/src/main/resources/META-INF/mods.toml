@@ -1,0 +1,42 @@
+modLoader = "kotlinforforge"
+loaderVersion = "[4,)"
+issueTrackerURL = "https://codeberg.org/xtex/quaedam/issues"
+license = "Apache-2.0"
+
+[[mods]]
+modId = "quaedam"
+version = "${version}"
+displayName = "Quaedam"
+authors = "xtex"
+description = '''
+This is an example description! Tell everyone what your mod is about!
+'''
+#logoFile = ""
+
+[[dependencies.quaedam]]
+modId = "forge"
+mandatory = true
+versionRange = "[43,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.quaedam]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[${minecraft_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.quaedam]]
+modId = "architectury"
+mandatory = true
+versionRange = "[${architectury_version},)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.quaedam]]
+modId = "kotlinforforge"
+mandatory = true
+versionRange = "[${kotlin_for_forge_version}]"
+ordering = "AFTER"
+side = "BOTH"
