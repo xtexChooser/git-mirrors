@@ -9,6 +9,7 @@ import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import quaedam.projection.SkylightProjection
 
 object Quaedam {
 
@@ -26,6 +27,7 @@ object Quaedam {
 
     fun init() {
         Projector
+        SkylightProjection
         creativeModeTabs.register()
         items.register()
         blocks.register()
