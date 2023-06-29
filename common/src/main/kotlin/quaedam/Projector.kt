@@ -1,6 +1,8 @@
 package quaedam
 
 import net.minecraft.core.BlockPos
+import net.minecraft.server.level.ServerLevel
+import net.minecraft.util.RandomSource
 import net.minecraft.world.InteractionHand
 import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.player.Player
@@ -36,6 +38,7 @@ object ProjectorBlock : Block(Properties.of()
     .strength(4.0f)
     .requiresCorrectToolForDrops()) {
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun use(
         blockState: BlockState,
         level: Level,
@@ -45,6 +48,16 @@ object ProjectorBlock : Block(Properties.of()
         blockHitResult: BlockHitResult
     ): InteractionResult {
         return InteractionResult.SUCCESS
+    }
+
+    @Suppress("OVERRIDE_DEPRECATION")
+    override fun randomTick(
+        blockState: BlockState,
+        serverLevel: ServerLevel,
+        blockPos: BlockPos,
+        randomSource: RandomSource
+    ) {
+        // @TODO: call projectorRandomTick
     }
 
 }
