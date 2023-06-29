@@ -11,7 +11,7 @@ authors = "xtex"
 description = '''
 Hot hot hot!
 '''
-#logoFile = ""
+logoFile = "icon.png"
 
 [[dependencies.quaedam]]
 modId = "forge"
