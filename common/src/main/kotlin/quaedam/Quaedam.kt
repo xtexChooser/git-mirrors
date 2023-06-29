@@ -8,31 +8,27 @@ import net.minecraft.network.chat.Component
 import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
-import quaedam.QuaedamExpectPlatform.getConfigDirectory
+import net.minecraft.world.item.Items
 
 object Quaedam {
-    const val MOD_ID = "quaedam"
 
-    private val createModeTabs = DeferredRegister.create(MOD_ID, Registries.CREATIVE_MODE_TAB)
-    val exampleTab: RegistrySupplier<CreativeModeTab> = createModeTabs.register("example_tab") {
+    const val ID = "quaedam"
+
+    val creativeModeTabs = DeferredRegister.create(ID, Registries.CREATIVE_MODE_TAB)!!
+    val items = DeferredRegister.create(ID, Registries.ITEM)!!
+    val blocks = DeferredRegister.create(ID, Registries.BLOCK)!!
+
+    val creativeModeTab: RegistrySupplier<CreativeModeTab> = creativeModeTabs.register("quaedam") {
         CreativeTabRegistry.create(Component.translatable("category.quaedam")) {
-            ItemStack(exampleItem.get())
+            ItemStack(Items.TORCH)
         }
     }
 
-    private val items = DeferredRegister.create(MOD_ID, Registries.ITEM)
-    val exampleItem: RegistrySupplier<Item> = items.register(
-        "example_item"
-    ) {
-        Item(
-            Item.Properties().`arch$tab`(exampleTab) // DON'T CALL GET ON exampleTab HERE
-        )
-    }
-
     fun init() {
-        createModeTabs.register()
+        Projector
+        creativeModeTabs.register()
         items.register()
-
-        println("CONFIG DIR: ${getConfigDirectory().toAbsolutePath().normalize()}")
+        blocks.register()
     }
+
 }
