@@ -50,12 +50,14 @@ tasks.processResources {
     inputs.property("version", project.version)
 
     filesMatching("META-INF/mods.toml") {
-        expand(mapOf(
-            "version" to project.version,
-            "minecraft_version" to rootProject.property("minecraft_version"),
-            "architectury_version" to rootProject.property("architectury_version"),
-            "kotlin_for_forge_version" to rootProject.property("kotlin_for_forge_version")
-        ))
+        expand(
+            mapOf(
+                "version" to project.version,
+                "minecraft_version" to rootProject.property("minecraft_version"),
+                "architectury_version" to rootProject.property("architectury_version"),
+                "kotlin_for_forge_version" to rootProject.property("kotlin_for_forge_version")
+            )
+        )
     }
 }
 

@@ -1,8 +1,8 @@
 package quaedam.forge
 
 import dev.architectury.platform.forge.EventBuses
-import quaedam.Quaedam
 import net.minecraftforge.fml.common.Mod
+import quaedam.Quaedam
 import thedarkcolour.kotlinforforge.forge.MOD_BUS
 
 @Mod(Quaedam.MOD_ID)

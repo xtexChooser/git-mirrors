@@ -3,12 +3,12 @@ package quaedam
 import dev.architectury.registry.CreativeTabRegistry
 import dev.architectury.registry.registries.DeferredRegister
 import dev.architectury.registry.registries.RegistrySupplier
-import quaedam.QuaedamExpectPlatform.getConfigDirectory
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
 import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
+import quaedam.QuaedamExpectPlatform.getConfigDirectory
 
 object Quaedam {
     const val MOD_ID = "quaedam"
