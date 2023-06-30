@@ -1,14 +1,18 @@
 package quaedam.projection
 
+import net.minecraft.core.BlockPos
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
+import net.minecraft.world.level.block.state.BlockState
 import quaedam.Quaedam
 
 object SkylightProjection {
 
     const val ID = "skylight_projection"
 
-    val block = Quaedam.blocks.register(ID) { SkylightProjectionBlock }
+    val block = Quaedam.blocks.register(ID) { SkylightProjectionBlock }!!
 
     val item = Quaedam.items.register(ID) {
         BlockItem(
@@ -17,6 +21,31 @@ object SkylightProjection {
         )
     }!!
 
+    val effect = Quaedam.projectionEffects.register(ID) {
+        ProjectionEffectType { SkylightProjectionEffect }
+    }!!
+
 }
 
-object SkylightProjectionBlock : ProjectionBlock(createProperties().lightLevel { 3 })
+object SkylightProjectionBlock : ProjectionBlock<SkylightProjectionEffect>(createProperties().lightLevel { 3 }) {
+
+    override fun createProjectionEffect(
+        level: ServerLevel,
+        state: BlockState,
+        pos: BlockPos
+    ) = SkylightProjectionEffect
+
+}
+
+object SkylightProjectionEffect : ProjectionEffect() {
+
+    override val type
+        get() = SkylightProjection.effect.get()!!
+
+    override fun toNbt(tag: CompoundTag) {
+    }
+
+    override fun fromNbt(tag: CompoundTag) {
+    }
+
+}
