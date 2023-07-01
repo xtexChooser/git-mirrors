@@ -1,6 +1,8 @@
 package quaedam.projection.swarm
 
+import net.minecraft.core.BlockPos
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.server.level.ServerLevel
 import quaedam.projection.ProjectionEffect
 
 data class SwarmProjectionEffect(
@@ -28,6 +30,9 @@ data class SwarmProjectionEffect(
         maxCount = tag.getInt(TAG_MAX_COUNT)
         withPlayer = tag.getBoolean(TAG_WITH_PLAYER)
         withVillager = tag.getBoolean(TAG_WITH_VILLAGER)
+    }
+
+    override fun randomTick(level: ServerLevel, pos: BlockPos) {
     }
 
 }

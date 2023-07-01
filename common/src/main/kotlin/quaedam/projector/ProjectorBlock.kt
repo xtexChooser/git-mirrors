@@ -9,13 +9,11 @@ import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
-import net.minecraft.world.level.LevelAccessor
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.EntityBlock
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.phys.BlockHitResult
-import quaedam.projection.ProjectionBlock
 
 object ProjectorBlock : Block(Properties.of()
     .jumpFactor(0.8f)
@@ -53,8 +51,8 @@ object ProjectorBlock : Block(Properties.of()
         pos: BlockPos,
         random: RandomSource
     ) {
-        // @TODO: call projectorRandomTick
         checkUpdate(level, pos)
+        (level.getBlockEntity(pos) as ProjectorBlockEntity).effects.values.forEach { it.randomTick(level, pos) }
     }
 
     @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")

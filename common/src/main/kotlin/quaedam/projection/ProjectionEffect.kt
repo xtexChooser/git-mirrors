@@ -7,7 +7,7 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
-import net.minecraft.util.RandomSource
+import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 
 abstract class ProjectionEffect {
@@ -24,14 +24,13 @@ abstract class ProjectionEffect {
 
     override fun hashCode() = type.hashCode()
 
-    fun activated(level: ServerLevel, projectorPos: BlockPos) {
-    }
+    open fun activate(level: Level, pos: BlockPos) {}
 
-    fun deactivated(level: ServerLevel, projectorPos: BlockPos) {
-    }
+    open fun deactivate(level: Level, pos: BlockPos) {}
 
-    fun randomTick(level: ServerLevel, projectorPos: BlockPos, random: RandomSource) {
-    }
+    open fun update(level: Level, pos: BlockPos, old: ProjectionEffect) {}
+
+    open fun randomTick(level: ServerLevel, pos: BlockPos) {}
 
 }
 
@@ -45,7 +44,7 @@ data class ProjectionEffectType<T : ProjectionEffect>(val constructor: () -> T) 
 
     }
 
-    val id by lazy { registry.getResourceKey(this).get().location()!! }
+    val id: ResourceLocation by lazy { registry.getResourceKey(this).get().location() }
 
 }
 

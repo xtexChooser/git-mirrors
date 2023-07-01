@@ -88,10 +88,18 @@ class ProjectorBlockEntity(pos: BlockPos, state: BlockState) :
 
     fun updateEffects(effects: Map<ProjectionEffectType<*>, ProjectionEffect>, notify: Boolean = true) {
         if (effects != this.effects) {
+            val oldEffects = this.effects
+            val level = level!!
             this.effects = effects
-            if (!level!!.isClientSide) {
+            if (!level.isClientSide) {
                 sendBlockUpdated()
             }
+            val addedEffects = effects.filterKeys { it !in oldEffects }
+            val removedEffects = oldEffects.filterKeys { it !in effects }
+            val updatedEffects = effects.filter { (k, v) -> oldEffects[k] != v }
+            addedEffects.values.forEach { it.activate(level, blockPos) }
+            removedEffects.values.forEach { it.deactivate(level, blockPos) }
+            updatedEffects.forEach { (k, v) -> v.update(level, blockPos, oldEffects[k]!!) }
         }
     }
 
