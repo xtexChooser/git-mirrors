@@ -11,6 +11,7 @@ import quaedam.Quaedam
 object SkylightProjection {
 
     const val ID = "skylight_projection"
+    const val SHORT_ID = "skylight"
 
     val block = Quaedam.blocks.register(ID) { SkylightProjectionBlock }!!
 
@@ -21,7 +22,7 @@ object SkylightProjection {
         )
     }!!
 
-    val effect = Quaedam.projectionEffects.register(ID) {
+    val effect = Quaedam.projectionEffects.register(SHORT_ID) {
         ProjectionEffectType { SkylightProjectionEffect() }
     }!!
 
@@ -39,15 +40,19 @@ object SkylightProjectionBlock : ProjectionBlock<SkylightProjectionEffect>(creat
 
 data class SkylightProjectionEffect(var factor: Double = 2.0) : ProjectionEffect() {
 
+    companion object {
+        const val TAG_FACTOR = "Factor"
+    }
+
     override val type
         get() = SkylightProjection.effect.get()!!
 
     override fun toNbt(tag: CompoundTag) {
-        tag.putDouble("Factor", factor)
+        tag.putDouble(TAG_FACTOR, factor)
     }
 
     override fun fromNbt(tag: CompoundTag) {
-        factor = tag.getDouble("Factor")
+        factor = tag.getDouble(TAG_FACTOR)
     }
 
 }

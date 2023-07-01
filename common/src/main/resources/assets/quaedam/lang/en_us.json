@@ -1,4 +1,6 @@
 {
   "category.quaedam": "Quaedam",
-  "block.quaedam.projector": "Projector"
+  "block.quaedam.projector": "Projector",
+  "block.quaedam.skylight_projection": "Skylight Projection",
+  "block.quaedam.swarm_projection": "Swarm Projection"
 }

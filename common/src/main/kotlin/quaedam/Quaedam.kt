@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
 import quaedam.projection.ProjectionEffectType
 import quaedam.projection.SkylightProjection
+import quaedam.projection.swarm.SwarmProjection
 import quaedam.projector.Projector
 
 object Quaedam {
@@ -31,6 +32,7 @@ object Quaedam {
     fun init() {
         Projector
         SkylightProjection
+        SwarmProjection
 
         creativeModeTabs.register()
         items.register()

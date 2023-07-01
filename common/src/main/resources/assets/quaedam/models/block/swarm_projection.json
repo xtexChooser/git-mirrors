@@ -1,0 +1,6 @@
+{
+  "parent": "quaedam:block/projection",
+  "textures": {
+    "ext": "quaedam:block/swarm_projection"
+  }
+}
