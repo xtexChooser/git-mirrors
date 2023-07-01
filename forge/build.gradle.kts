@@ -15,7 +15,7 @@ loom {
         extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
 
         mixinConfig("quaedam-common.mixins.json")
-        mixinConfig("quaedam.mixins.json")
+        //mixinConfig("quaedam.mixins.json")
     }
 }
 
