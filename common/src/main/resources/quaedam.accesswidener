@@ -1,3 +1,4 @@
 accessWidener   v2  named
 # Custom Registry for ProjectionEffect
 accessible method net/minecraft/core/registries/BuiltInRegistries registerSimple (Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/core/registries/BuiltInRegistries$RegistryBootstrap;)Lnet/minecraft/core/Registry;
+accessible class net/minecraft/core/registries/BuiltInRegistries$RegistryBootstrap
