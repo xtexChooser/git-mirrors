@@ -20,14 +20,10 @@ import quaedam.utils.sendBlockUpdated
 class ProjectorBlockEntity(pos: BlockPos, state: BlockState) :
     BlockEntity(Projector.blockEntity.get(), pos, state) {
 
-    companion object {
-        const val EFFECT_RADIUS = 4
-    }
-
     val effectAreaChunk by lazy {
         val chunk = level!!.getChunk(pos).pos
-        ChunkPos(chunk.x - EFFECT_RADIUS, chunk.z - EFFECT_RADIUS) to
-                ChunkPos(chunk.x + EFFECT_RADIUS, chunk.z + EFFECT_RADIUS)
+        ChunkPos(chunk.x - Projector.EFFECT_RADIUS, chunk.z - Projector.EFFECT_RADIUS) to
+                ChunkPos(chunk.x + Projector.EFFECT_RADIUS, chunk.z + Projector.EFFECT_RADIUS)
     }
 
     val effectArea: BoundingBox by lazy {

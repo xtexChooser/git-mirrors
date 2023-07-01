@@ -23,7 +23,7 @@ abstract class ProjectionBlock<P : ProjectionEffect>(properties: Properties = cr
 
         fun findNearbyProjectors(level: Level, pos: BlockPos) = level.getChunksNearby(pos, 1)
             .flatMap {
-                it.blockEntities.filter { (k, v) -> v is ProjectorBlockEntity }
+                it.blockEntities.filter { (_, v) -> v is ProjectorBlockEntity }
                     .keys
                     .filterNotNull()
             }

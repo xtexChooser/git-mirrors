@@ -22,7 +22,7 @@ object SkylightProjection {
     }!!
 
     val effect = Quaedam.projectionEffects.register(ID) {
-        ProjectionEffectType { SkylightProjectionEffect }
+        ProjectionEffectType { SkylightProjectionEffect() }
     }!!
 
 }
@@ -33,19 +33,21 @@ object SkylightProjectionBlock : ProjectionBlock<SkylightProjectionEffect>(creat
         level: ServerLevel,
         state: BlockState,
         pos: BlockPos
-    ) = SkylightProjectionEffect
+    ) = SkylightProjectionEffect()
 
 }
 
-object SkylightProjectionEffect : ProjectionEffect() {
+data class SkylightProjectionEffect(var factor: Double = 2.0) : ProjectionEffect() {
 
     override val type
         get() = SkylightProjection.effect.get()!!
 
     override fun toNbt(tag: CompoundTag) {
+        tag.putDouble("Factor", factor)
     }
 
     override fun fromNbt(tag: CompoundTag) {
+        factor = tag.getDouble("Factor")
     }
 
 }
