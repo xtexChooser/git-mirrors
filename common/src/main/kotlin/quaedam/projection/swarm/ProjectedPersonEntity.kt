@@ -119,7 +119,7 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
     }
 
     private fun checkProjectionEffect() =
-        Projector.findNearbyProjections(level(), blockPosition(), SwarmProjection.effect.get()).isEmpty()
+        Projector.findNearbyProjections(level(), blockPosition(), SwarmProjection.effect.get()).isNotEmpty()
 
     override fun checkDespawn() {
         super.checkDespawn()
