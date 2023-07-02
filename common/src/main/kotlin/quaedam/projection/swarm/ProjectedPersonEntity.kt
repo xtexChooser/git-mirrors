@@ -102,6 +102,6 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
     override fun getTypeName(): Component = shape.name.takeIf { it.isNotEmpty() }?.let { Component.literal(it) }
         ?: super.getTypeName()
 
-    override fun getNameTagOffsetY() = super.getNameTagOffsetY() - BOUNDING_HEIGHT * (1.3f - shape.scaleY)
+    override fun getNameTagOffsetY() = super.getNameTagOffsetY() - (BOUNDING_HEIGHT * (1.2f - shape.scaleY))
 
 }
