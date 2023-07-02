@@ -6,6 +6,7 @@ import dev.architectury.registry.level.entity.EntityAttributeRegistry
 import net.fabricmc.api.EnvType
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
+import net.minecraft.network.protocol.game.DebugPackets
 import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.network.syncher.SynchedEntityData
@@ -135,5 +136,12 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
         super.pickUpItem(item)
         InventoryCarrier.pickUpItem(this, this, item)
     }
+
+    override fun sendDebugPackets() {
+        super.sendDebugPackets()
+        DebugPackets.sendEntityBrain(this)
+    }
+
+    override fun removeWhenFarAway(d: Double) = false
 
 }
