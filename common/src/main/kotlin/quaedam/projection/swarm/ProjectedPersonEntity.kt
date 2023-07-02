@@ -21,10 +21,12 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
 
         const val ID = "projected_person"
 
+        const val KEY_ENTITY_SHAPE = "EntityShape"
+
         val entity = Quaedam.entities.register(ID) {
             EntityType.Builder.of(::ProjectedPersonEntity, MobCategory.CREATURE)
                 .canSpawnFarFromPlayer()
-                .sized(2.0f, 2.0f)
+                .sized(0.6F, 1.8F)
                 .build("quaedam:$ID")
         }!!
 
@@ -75,6 +77,16 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
             shape = ProjectedPersonShape.fromTag(shapeTag)
         }
         super.onSyncedDataUpdated(data)
+    }
+
+    override fun addAdditionalSaveData(tag: CompoundTag) {
+        super.addAdditionalSaveData(tag)
+        tag.put(KEY_ENTITY_SHAPE, shapeTag)
+    }
+
+    override fun readAdditionalSaveData(tag: CompoundTag) {
+        super.readAdditionalSaveData(tag)
+        shapeTag = tag.getCompound(KEY_ENTITY_SHAPE)
     }
 
     override fun shouldShowName() = true
