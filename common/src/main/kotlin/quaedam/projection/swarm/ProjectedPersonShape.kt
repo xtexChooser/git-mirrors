@@ -3,7 +3,6 @@ package quaedam.projection.swarm
 import dev.architectury.platform.Platform
 import dev.architectury.registry.ReloadListenerRegistry
 import net.fabricmc.api.EnvType
-import net.fabricmc.api.Environment
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackType
@@ -13,8 +12,6 @@ import net.minecraft.util.profiling.ProfilerFiller
 import quaedam.Quaedam
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executor
-import java.util.function.IntFunction
-import java.util.stream.Collectors
 import kotlin.math.abs
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -137,7 +134,7 @@ data class ProjectedPersonShape(
                     skins.addAll(resourceManager.listResources("textures/entity/projected_person") { it.namespace == "quaedam" }.keys)
                     Skins.skins = skins.toSet().toList().sorted()
                     Quaedam.logger.info("Loaded ${Skins.skins.size} unique projected person skins")
-                    Quaedam.logger.debug("Projected person skins ring: $skins")
+                    Quaedam.logger.debug("Projected person skins ring: {}", skins)
                 }, executor2)
 
             override fun getName() = "quaedam:projected_person_skins"

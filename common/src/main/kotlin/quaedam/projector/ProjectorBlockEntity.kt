@@ -12,7 +12,6 @@ import net.minecraft.world.level.ChunkPos
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.levelgen.structure.BoundingBox
-import quaedam.Quaedam
 import quaedam.projection.ProjectionEffect
 import quaedam.projection.ProjectionEffectType
 import quaedam.projection.ProjectionProvider

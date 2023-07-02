@@ -26,10 +26,13 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
 
         const val KEY_ENTITY_SHAPE = "EntityShape"
 
+        const val BOUNDING_WIDTH = 0.6f
+        const val BOUNDING_HEIGHT = 1.8f
+
         val entity = Quaedam.entities.register(ID) {
             EntityType.Builder.of(::ProjectedPersonEntity, MobCategory.CREATURE)
                 .canSpawnFarFromPlayer()
-                .sized(0.6f, 1.8f * 1.3f)
+                .sized(BOUNDING_WIDTH, BOUNDING_HEIGHT * 1.2f)
                 .build("quaedam:$ID")
         }!!
 
@@ -98,5 +101,7 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
 
     override fun getTypeName(): Component = shape.name.takeIf { it.isNotEmpty() }?.let { Component.literal(it) }
         ?: super.getTypeName()
+
+    override fun getNameTagOffsetY() = super.getNameTagOffsetY() - BOUNDING_HEIGHT * (1.3f - shape.scaleY)
 
 }
