@@ -1,7 +1,6 @@
 package quaedam.projection.swarm
 
 import com.google.common.collect.ImmutableList
-import com.mojang.datafixers.util.Pair
 import net.minecraft.world.entity.ai.Brain
 import net.minecraft.world.entity.ai.behavior.*
 import net.minecraft.world.entity.ai.memory.MemoryModuleType
@@ -10,6 +9,8 @@ import net.minecraft.world.entity.schedule.Activity
 import net.minecraft.world.entity.schedule.Schedule
 import net.minecraft.world.entity.schedule.ScheduleBuilder
 import quaedam.Quaedam
+import quaedam.utils.weight
+import quaedam.utils.weightR
 
 object ProjectedPersonAI {
 
@@ -21,14 +22,15 @@ object ProjectedPersonAI {
         MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES,
         MemoryModuleType.NEAREST_VISIBLE_WANTED_ITEM,
         MemoryModuleType.HURT_BY,
-        MemoryModuleType.ATTACK_COOLING_DOWN
+        MemoryModuleType.ATTACK_COOLING_DOWN,
+        MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
     )
 
     private val sensorTypes = listOf(
         SensorType.NEAREST_LIVING_ENTITIES,
         SensorType.NEAREST_PLAYERS,
         SensorType.HURT_BY,
-        SensorType.NEAREST_ITEMS
+        SensorType.NEAREST_ITEMS,
     )
 
     val defaultSchedule = Quaedam.schedule.register("projected_person_default") {
@@ -80,52 +82,61 @@ object ProjectedPersonAI {
 
     private fun initCoreActivity(brain: Brain<ProjectedPersonEntity>) {
         brain.addActivity(
-            Activity.CORE, 0, ImmutableList.of(
-                Swim(0.8f),
-                InteractWithDoor.create(),
-                LookAtTargetSink(40, 70),
-                MoveToTargetSink(),
-                WakeUp.create(),
-            )
-        )
-        brain.addActivity(
-            Activity.CORE, 3, ImmutableList.of(
-                GoToWantedItem.create(0.7f, false, 7)
+            Activity.CORE, ImmutableList.of(
+                0 weight Swim(0.8f),
+                0 weight InteractWithDoor.create(),
+                0 weight LookAtTargetSink(40, 70),
+                0 weight MoveToTargetSink(),
+                0 weight WakeUp.create(),
+                3 weight GoToWantedItem.create(1.2f, false, 7),
             )
         )
     }
 
     private fun initIdleActivity(brain: Brain<ProjectedPersonEntity>) {
-        brain.addActivity(Activity.IDLE, 99, ImmutableList.of(UpdateActivityFromSchedule.create()))
+        brain.addActivity(
+            Activity.IDLE, ImmutableList.of(
+                3 weight createStrollBehavior(),
+                99 weight UpdateActivityFromSchedule.create(),
+            )
+        )
     }
 
     private fun initPlayActivity(brain: Brain<ProjectedPersonEntity>) {
         brain.addActivity(
-            Activity.PLAY, 3, ImmutableList.of(
-                GoToWantedItem.create(1.75f, true, 32),
+            Activity.PLAY, ImmutableList.of(
+                3 weight GoToWantedItem.create(1.75f, true, 32),
+                5 weight JumpOnBed(1.0f),
+                5 weight createStrollBehavior(),
+                99 weight UpdateActivityFromSchedule.create(),
             )
         )
-        brain.addActivity(
-            Activity.PLAY, 5, ImmutableList.of(
-                JumpOnBed(0.5f),
-                RunOne(
-                    listOf(
-                        Pair.of(RandomStroll.stroll(0.5f), 2),
-                        Pair.of(SetWalkTargetFromLookTarget.create(1.0f, 5), 2),
-                        Pair.of(DoNothing(30, 60), 1)
-                    )
-                ),
-            )
-        )
-        brain.addActivity(Activity.PLAY, 99, ImmutableList.of(UpdateActivityFromSchedule.create()))
     }
 
     private fun initWorkActivity(brain: Brain<ProjectedPersonEntity>) {
-        brain.addActivity(Activity.WORK, 99, ImmutableList.of(UpdateActivityFromSchedule.create()))
+        brain.addActivity(
+            Activity.WORK, ImmutableList.of(
+                3 weight createStrollBehavior(),
+                99 weight UpdateActivityFromSchedule.create(),
+            )
+        )
     }
 
     private fun initRestActivity(brain: Brain<ProjectedPersonEntity>) {
-        brain.addActivity(Activity.REST, 99, ImmutableList.of(UpdateActivityFromSchedule.create()))
+        brain.addActivity(
+            Activity.REST, ImmutableList.of(
+                3 weight createStrollBehavior(),
+                99 weight UpdateActivityFromSchedule.create(),
+            )
+        )
     }
+
+    private fun createStrollBehavior() = RunOne(
+        listOf(
+            2 weightR RandomStroll.stroll(1.0f),
+            2 weightR SetWalkTargetFromLookTarget.create(1.0f, 5),
+            1 weightR DoNothing(30, 60)
+        )
+    )
 
 }
