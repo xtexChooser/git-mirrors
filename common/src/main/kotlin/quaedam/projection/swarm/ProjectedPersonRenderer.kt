@@ -1,6 +1,7 @@
 package quaedam.projection.swarm
 
 import com.mojang.blaze3d.vertex.PoseStack
+import dev.architectury.registry.client.level.entity.EntityRendererRegistry
 import net.fabricmc.api.EnvType
 import net.fabricmc.api.Environment
 import net.minecraft.client.model.PlayerModel
@@ -17,6 +18,12 @@ class ProjectedPersonRenderer(context: EntityRendererProvider.Context) :
         PlayerModel(context.bakeLayer(ModelLayers.PLAYER), false),
         0.4f
     ) {
+
+    companion object {
+        init {
+            EntityRendererRegistry.register(ProjectedPersonEntity.entity, ::ProjectedPersonRenderer)
+        }
+    }
 
     init {
         addLayer(CustomHeadLayer(this, context.modelSet, context.itemInHandRenderer))

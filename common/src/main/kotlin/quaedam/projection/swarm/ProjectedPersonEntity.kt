@@ -1,7 +1,7 @@
 package quaedam.projection.swarm
 
+import com.mojang.serialization.Dynamic
 import dev.architectury.platform.Platform
-import dev.architectury.registry.client.level.entity.EntityRendererRegistry
 import dev.architectury.registry.level.entity.EntityAttributeRegistry
 import net.fabricmc.api.EnvType
 import net.minecraft.nbt.CompoundTag
@@ -13,6 +13,7 @@ import net.minecraft.network.syncher.SynchedEntityData
 import net.minecraft.world.DifficultyInstance
 import net.minecraft.world.SimpleContainer
 import net.minecraft.world.entity.*
+import net.minecraft.world.entity.ai.Brain
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier
 import net.minecraft.world.entity.ai.attributes.Attributes
 import net.minecraft.world.entity.item.ItemEntity
@@ -22,8 +23,8 @@ import net.minecraft.world.level.ServerLevelAccessor
 import quaedam.Quaedam
 import quaedam.projector.Projector
 
-class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Level) :
-    PathfinderMob(entityType, level), InventoryCarrier {
+class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Level) : PathfinderMob(entityType, level),
+    InventoryCarrier {
 
     companion object {
 
@@ -35,27 +36,23 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
         const val BOUNDING_HEIGHT = 1.8f
 
         val entity = Quaedam.entities.register(ID) {
-            EntityType.Builder.of(::ProjectedPersonEntity, MobCategory.CREATURE)
-                .canSpawnFarFromPlayer()
-                .sized(BOUNDING_WIDTH, BOUNDING_HEIGHT * 1.2f)
-                .build("quaedam:$ID")
+            EntityType.Builder.of(::ProjectedPersonEntity, MobCategory.CREATURE).canSpawnFarFromPlayer()
+                .sized(BOUNDING_WIDTH, BOUNDING_HEIGHT * 1.2f).build("quaedam:$ID")
         }!!
 
         val dataShape =
             SynchedEntityData.defineId(ProjectedPersonEntity::class.java, EntityDataSerializers.COMPOUND_TAG)
 
-        private fun createAttributes(): AttributeSupplier.Builder = Mob.createMobAttributes()
-            .add(Attributes.ATTACK_DAMAGE, 1.5)
-            .add(Attributes.MOVEMENT_SPEED, 0.11)
-            .add(Attributes.ATTACK_SPEED)
-
         init {
             EntityAttributeRegistry.register(entity, ::createAttributes)
-            if (Platform.getEnv() == EnvType.CLIENT) {
-                EntityRendererRegistry.register(entity, ::ProjectedPersonRenderer)
-            }
+            if (Platform.getEnv() == EnvType.CLIENT) ProjectedPersonRenderer
             ProjectedPersonShape
+            ProjectedPersonAI
         }
+
+        private fun createAttributes(): AttributeSupplier.Builder =
+            Mob.createMobAttributes().add(Attributes.ATTACK_DAMAGE, 1.5).add(Attributes.MOVEMENT_SPEED, 0.11)
+                .add(Attributes.ATTACK_SPEED)
 
     }
 
@@ -106,8 +103,8 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
 
     override fun shouldShowName() = true
 
-    override fun getTypeName(): Component = shape.name.takeIf { it.isNotEmpty() }?.let { Component.literal(it) }
-        ?: super.getTypeName()
+    override fun getTypeName(): Component =
+        shape.name.takeIf { it.isNotEmpty() }?.let { Component.literal(it) } ?: super.getTypeName()
 
     override fun getNameTagOffsetY() = super.getNameTagOffsetY() - (BOUNDING_HEIGHT * (1.2f - shape.scaleY))
 
@@ -116,8 +113,7 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
     override fun tick() {
         super.tick()
         if (tickCount % 20 == 0) {
-            if (!checkProjectionEffect())
-                remove(RemovalReason.KILLED)
+            if (!checkProjectionEffect()) remove(RemovalReason.KILLED)
         }
     }
 
@@ -126,8 +122,7 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
 
     override fun checkDespawn() {
         super.checkDespawn()
-        if (!checkProjectionEffect())
-            discard()
+        if (!checkProjectionEffect()) discard()
     }
 
     private val inventory = SimpleContainer(10)
@@ -145,5 +140,17 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
     }
 
     override fun removeWhenFarAway(d: Double) = false
+
+    // Type signature referenced from: https://github.com/bbrk24/amurians-mod/blob/7a0f0c3c7a3e84c22e5c631286ad23795207adc0/src/main/kotlin/org/bbrk24/amurians/amurian/AmurianEntity.kt#L220
+    override fun brainProvider() = ProjectedPersonAI.provider()
+
+    @Suppress("UNCHECKED_CAST")
+    override fun makeBrain(dynamic: Dynamic<*>): Brain<out ProjectedPersonEntity> = brainProvider().makeBrain(dynamic)
+        .also { ProjectedPersonAI.initBrain(this, it as Brain<ProjectedPersonEntity>) }
+
+    @Suppress("UNCHECKED_CAST")
+    override fun getBrain(): Brain<ProjectedPersonEntity> = super.getBrain() as Brain<ProjectedPersonEntity>
+
+    override fun isBaby() = shape.baby
 
 }

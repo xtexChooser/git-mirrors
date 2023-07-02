@@ -22,6 +22,7 @@ data class ProjectedPersonShape(
     val scaleZ: Float = 1.0f,
     val name: String = "",
     val skin: Int = 0,
+    val baby: Boolean = false,
 ) {
 
     companion object {
@@ -31,6 +32,7 @@ data class ProjectedPersonShape(
         const val KEY_SCALE_Z = "ScaleZ"
         const val KEY_NAME = "Name"
         const val KEY_SKIN = "Skin"
+        const val KEY_BABY = "Baby"
 
         init {
             Names
@@ -45,6 +47,7 @@ data class ProjectedPersonShape(
             scaleZ = rand.nextInt(0..2 * 4) * 0.025f + 0.9f,
             name = Names.random(rand),
             skin = Skins.random(rand),
+            baby = rand.nextInt(500) == 1
         )
 
         fun fromTag(tag: CompoundTag) = ProjectedPersonShape(
@@ -53,6 +56,7 @@ data class ProjectedPersonShape(
             scaleZ = tag.getFloat(KEY_SCALE_Z),
             name = tag.getString(KEY_NAME),
             skin = tag.getInt(KEY_SKIN),
+            baby = tag.getBoolean(KEY_BABY)
         )
 
     }
@@ -63,6 +67,7 @@ data class ProjectedPersonShape(
         putFloat(KEY_SCALE_Z, scaleZ)
         putString(KEY_NAME, name)
         putInt(KEY_SKIN, skin)
+        putBoolean(KEY_BABY, baby)
     }
 
     object Names {
