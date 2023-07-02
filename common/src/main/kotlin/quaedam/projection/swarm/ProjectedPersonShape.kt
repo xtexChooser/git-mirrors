@@ -23,7 +23,7 @@ data class ProjectedPersonShape(
     val scaleX: Float = 1.0f,
     val scaleY: Float = 1.0f,
     val scaleZ: Float = 1.0f,
-    val name: String = "[DESYNC]",
+    val name: String = "",
     val skin: Int = 0,
 ) {
 

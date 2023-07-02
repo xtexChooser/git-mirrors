@@ -5,6 +5,7 @@ import dev.architectury.registry.client.level.entity.EntityRendererRegistry
 import dev.architectury.registry.level.entity.EntityAttributeRegistry
 import net.fabricmc.api.EnvType
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.network.chat.Component
 import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.network.syncher.SynchedEntityData
@@ -42,7 +43,7 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
 
         init {
             EntityAttributeRegistry.register(entity, ::createAttributes)
-            if(Platform.getEnv() == EnvType.CLIENT) {
+            if (Platform.getEnv() == EnvType.CLIENT) {
                 EntityRendererRegistry.register(entity, ::ProjectedPersonRenderer)
             }
             ProjectedPersonShape
@@ -94,5 +95,8 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
     }
 
     override fun shouldShowName() = true
+
+    override fun getTypeName(): Component = shape.name.takeIf { it.isNotEmpty() }?.let { Component.literal(it) }
+        ?: super.getTypeName()
 
 }
