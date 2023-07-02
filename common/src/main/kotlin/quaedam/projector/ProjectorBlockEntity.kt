@@ -92,7 +92,7 @@ class ProjectorBlockEntity(pos: BlockPos, state: BlockState) :
             this.effects = effects
             if (level != null) {
                 val level = level!!
-                if (level.isClientSide && notify) {
+                if (!level.isClientSide && notify) {
                     sendBlockUpdated()
                 }
                 val addedEffects = effects.filterKeys { it !in oldEffects }
