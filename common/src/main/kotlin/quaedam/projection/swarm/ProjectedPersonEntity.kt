@@ -80,6 +80,7 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
         set(value) {
             field = value
             shapeTag = shape.toTag()
+            ProjectedPersonAI.updateSchedule(this)
         }
 
     override fun onSyncedDataUpdated(data: EntityDataAccessor<*>) {

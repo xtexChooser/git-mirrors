@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
+import quaedam.projection.swarm.SwarmProjection
 
 abstract class ProjectionEffect {
 
@@ -38,7 +39,9 @@ data class ProjectionEffectType<T : ProjectionEffect>(val constructor: () -> T) 
 
         val registryKey: ResourceKey<Registry<ProjectionEffectType<*>>> =
             ResourceKey.createRegistryKey(ResourceLocation("quaedam", "projection_effect"))
-        val registry: Registry<ProjectionEffectType<*>> = BuiltInRegistries.registerSimple(registryKey) { null }
+        val registry: Registry<ProjectionEffectType<*>> = BuiltInRegistries.registerSimple(registryKey) {
+            SwarmProjection.effect.get()
+        }
 
     }
 

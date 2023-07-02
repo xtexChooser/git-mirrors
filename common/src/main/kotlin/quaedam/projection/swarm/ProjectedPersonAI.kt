@@ -57,12 +57,6 @@ object ProjectedPersonAI {
     fun provider(): Brain.Provider<out ProjectedPersonEntity> = Brain.provider(memoryTypes, sensorTypes)
 
     fun initBrain(entity: ProjectedPersonEntity, brain: Brain<ProjectedPersonEntity>) {
-        if (entity.shape.baby) {
-            brain.schedule = babySchedule.get()
-        } else {
-            brain.schedule = defaultSchedule.get()
-        }
-
         initCoreActivity(brain)
         initIdleActivity(brain)
         initPlayActivity(brain)
@@ -70,8 +64,19 @@ object ProjectedPersonAI {
         initRestActivity(brain)
         brain.setCoreActivities(setOf(Activity.CORE))
         brain.setDefaultActivity(Activity.IDLE)
+        updateSchedule(entity, brain, baby = false)
+    }
+
+    fun updateSchedule(entity: ProjectedPersonEntity, brain: Brain<ProjectedPersonEntity>, baby: Boolean) {
+        if (baby) {
+            brain.schedule = babySchedule.get()
+        } else {
+            brain.schedule = defaultSchedule.get()
+        }
         brain.updateActivityFromSchedule(entity.level().dayTime, entity.level().gameTime)
     }
+
+    fun updateSchedule(entity: ProjectedPersonEntity) = updateSchedule(entity, entity.brain, entity.shape.baby)
 
     private fun initCoreActivity(brain: Brain<ProjectedPersonEntity>) {
         brain.addActivity(
