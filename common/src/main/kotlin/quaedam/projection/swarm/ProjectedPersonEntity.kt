@@ -104,4 +104,6 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
 
     override fun getNameTagOffsetY() = super.getNameTagOffsetY() - (BOUNDING_HEIGHT * (1.2f - shape.scaleY))
 
+    override fun createNavigation(level: Level) = ProjectedPersonNavigation(this, level)
+
 }
