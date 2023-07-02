@@ -15,6 +15,7 @@ import net.minecraft.world.DifficultyInstance
 import net.minecraft.world.SimpleContainer
 import net.minecraft.world.entity.*
 import net.minecraft.world.entity.ai.Brain
+import net.minecraft.world.entity.ai.attributes.AttributeModifier
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier
 import net.minecraft.world.entity.ai.attributes.Attributes
 import net.minecraft.world.entity.item.ItemEntity
@@ -23,6 +24,7 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.ServerLevelAccessor
 import quaedam.Quaedam
 import quaedam.projector.Projector
+import kotlin.random.Random
 
 class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Level) : PathfinderMob(entityType, level),
     InventoryCarrier {
@@ -35,6 +37,7 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
 
         const val BOUNDING_WIDTH = 0.6f
         const val BOUNDING_HEIGHT = 1.8f
+        const val INV_DIFF_NAME = "quaedam:Random Individual Differences"
 
         val entity = Quaedam.entities.register(ID) {
             EntityType.Builder.of(::ProjectedPersonEntity, MobCategory.CREATURE).canSpawnFarFromPlayer()
@@ -64,7 +67,38 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
         spawnGroupData: SpawnGroupData?,
         compoundTag: CompoundTag?
     ): SpawnGroupData? {
-        shape = ProjectedPersonShape.create(serverLevelAccessor.random.nextLong())
+        val rand = Random(serverLevelAccessor.random.nextLong())
+        // random shape
+        shape = ProjectedPersonShape.create(rand.nextLong())
+        // random attributes
+        getAttribute(Attributes.MOVEMENT_SPEED)!!.addPermanentModifier(
+            AttributeModifier(
+                INV_DIFF_NAME,
+                rand.nextFloat() * 0.1,
+                AttributeModifier.Operation.ADDITION
+            )
+        )
+        getAttribute(Attributes.ATTACK_DAMAGE)!!.addPermanentModifier(
+            AttributeModifier(
+                INV_DIFF_NAME,
+                rand.nextFloat() * 1.5,
+                AttributeModifier.Operation.ADDITION
+            )
+        )
+        getAttribute(Attributes.ATTACK_SPEED)!!.addPermanentModifier(
+            AttributeModifier(
+                INV_DIFF_NAME,
+                rand.nextFloat() * -2.0,
+                AttributeModifier.Operation.ADDITION
+            )
+        )
+        getAttribute(Attributes.MAX_HEALTH)!!.addPermanentModifier(
+            AttributeModifier(
+                INV_DIFF_NAME,
+                rand.nextFloat() * 5.0,
+                AttributeModifier.Operation.ADDITION
+            )
+        )
         return super.finalizeSpawn(serverLevelAccessor, difficultyInstance, mobSpawnType, spawnGroupData, compoundTag)
     }
 
