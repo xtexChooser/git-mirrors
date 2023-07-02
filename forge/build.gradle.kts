@@ -10,7 +10,7 @@ architectury {
 loom {
     accessWidenerPath.set(project(":common").loom.accessWidenerPath)
 
-    forge.apply {
+    forge {
         convertAccessWideners.set(true)
         extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
 

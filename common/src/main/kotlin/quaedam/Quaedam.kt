@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import org.slf4j.LoggerFactory
 import quaedam.projection.ProjectionEffectType
 import quaedam.projection.SkylightProjection
 import quaedam.projection.swarm.SwarmProjection
@@ -17,10 +18,13 @@ object Quaedam {
 
     const val ID = "quaedam"
 
+    val logger = LoggerFactory.getLogger("Quaedam")
+
     val creativeModeTabs = DeferredRegister.create(ID, Registries.CREATIVE_MODE_TAB)!!
     val items = DeferredRegister.create(ID, Registries.ITEM)!!
     val blocks = DeferredRegister.create(ID, Registries.BLOCK)!!
     val blockEntities = DeferredRegister.create(ID, Registries.BLOCK_ENTITY_TYPE)!!
+    val entities = DeferredRegister.create(ID, Registries.ENTITY_TYPE)!!
     val projectionEffects = DeferredRegister.create(ID, ProjectionEffectType.registryKey)!!
 
     val creativeModeTab: RegistrySupplier<CreativeModeTab> = creativeModeTabs.register("quaedam") {
@@ -38,6 +42,7 @@ object Quaedam {
         items.register()
         blocks.register()
         blockEntities.register()
+        entities.register()
         projectionEffects.register()
     }
 

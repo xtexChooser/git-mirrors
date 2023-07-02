@@ -23,4 +23,8 @@ object SwarmProjection {
         ProjectionEffectType { SwarmProjectionEffect() }
     }!!
 
+    init {
+        ProjectedPersonEntity
+    }
+
 }

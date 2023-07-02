@@ -12,6 +12,7 @@ import net.minecraft.world.level.ChunkPos
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.levelgen.structure.BoundingBox
+import quaedam.Quaedam
 import quaedam.projection.ProjectionEffect
 import quaedam.projection.ProjectionEffectType
 import quaedam.projection.ProjectionProvider
@@ -62,7 +63,7 @@ class ProjectorBlockEntity(pos: BlockPos, state: BlockState) :
                 }
             }
         }
-        updateEffects(effects)
+        updateEffects(effects, notify = false)
     }
 
     override fun getUpdateTag(): CompoundTag = saveWithoutMetadata()
@@ -89,17 +90,22 @@ class ProjectorBlockEntity(pos: BlockPos, state: BlockState) :
     fun updateEffects(effects: Map<ProjectionEffectType<*>, ProjectionEffect>, notify: Boolean = true) {
         if (effects != this.effects) {
             val oldEffects = this.effects
-            val level = level!!
             this.effects = effects
-            if (!level.isClientSide) {
-                sendBlockUpdated()
+            if (level != null) {
+                val level = level!!
+                if (level.isClientSide && notify) {
+                    sendBlockUpdated()
+                }
+                val addedEffects = effects.filterKeys { it !in oldEffects }
+                val removedEffects = oldEffects.filterKeys { it !in effects }
+                val updatedEffects = effects.filter { (k, v) -> oldEffects[k] != null && oldEffects[k] != v }
+                addedEffects.values.forEach { it.activate(level, blockPos) }
+                removedEffects.values.forEach { it.deactivate(level, blockPos) }
+                updatedEffects.forEach { (k, v) ->
+                    oldEffects[k]!!.deactivate(level, blockPos)
+                    v.activate(level, blockPos)
+                }
             }
-            val addedEffects = effects.filterKeys { it !in oldEffects }
-            val removedEffects = oldEffects.filterKeys { it !in effects }
-            val updatedEffects = effects.filter { (k, v) -> oldEffects[k] != v }
-            addedEffects.values.forEach { it.activate(level, blockPos) }
-            removedEffects.values.forEach { it.deactivate(level, blockPos) }
-            updatedEffects.forEach { (k, v) -> v.update(level, blockPos, oldEffects[k]!!) }
         }
     }
 

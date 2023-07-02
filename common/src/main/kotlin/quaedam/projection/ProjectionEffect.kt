@@ -28,8 +28,6 @@ abstract class ProjectionEffect {
 
     open fun deactivate(level: Level, pos: BlockPos) {}
 
-    open fun update(level: Level, pos: BlockPos, old: ProjectionEffect) {}
-
     open fun randomTick(level: ServerLevel, pos: BlockPos) {}
 
 }
