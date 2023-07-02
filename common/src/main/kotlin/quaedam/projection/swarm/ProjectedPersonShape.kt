@@ -1,6 +1,8 @@
 package quaedam.projection.swarm
 
 import dev.architectury.registry.ReloadListenerRegistry
+import net.fabricmc.api.EnvType
+import net.fabricmc.api.Environment
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.packs.PackType
@@ -40,9 +42,9 @@ data class ProjectedPersonShape(
         fun create(seed: Long) = create(Random(seed))
 
         fun create(rand: Random) = ProjectedPersonShape(
-            scaleX = rand.nextInt(0..6) * 0.1f + 0.7f,
-            scaleY = rand.nextInt(0..6) * 0.1f + 0.7f,
-            scaleZ = rand.nextInt(0..2) * 0.1f + 0.9f,
+            scaleX = rand.nextInt(0..6 * 4) * 0.025f + 0.7f,
+            scaleY = rand.nextInt(0..6 * 4) * 0.025f + 0.7f,
+            scaleZ = rand.nextInt(0..2 * 4) * 0.025f + 0.9f,
             name = Names.random(rand),
             skin = Skins.random(rand),
         )
@@ -69,6 +71,7 @@ data class ProjectedPersonShape(
 
         val id = ResourceLocation("quaedam", "projected-person-names")
 
+        @Environment(EnvType.SERVER)
         var names = emptySet<String>()
 
         init {
@@ -106,7 +109,7 @@ data class ProjectedPersonShape(
 
         val id = ResourceLocation("quaedam", "skins")
 
-        // only available on client
+        @Environment(EnvType.CLIENT)
         var skins = emptyList<ResourceLocation>()
 
         init {

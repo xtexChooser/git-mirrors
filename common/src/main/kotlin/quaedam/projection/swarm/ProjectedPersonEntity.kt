@@ -1,7 +1,9 @@
 package quaedam.projection.swarm
 
+import dev.architectury.platform.Platform
 import dev.architectury.registry.client.level.entity.EntityRendererRegistry
 import dev.architectury.registry.level.entity.EntityAttributeRegistry
+import net.fabricmc.api.EnvType
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.EntityDataSerializers
@@ -40,7 +42,9 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
 
         init {
             EntityAttributeRegistry.register(entity, ::createAttributes)
-            EntityRendererRegistry.register(entity, ::ProjectedPersonRenderer)
+            if(Platform.getEnv() == EnvType.CLIENT) {
+                EntityRendererRegistry.register(entity, ::ProjectedPersonRenderer)
+            }
             ProjectedPersonShape
         }
 
