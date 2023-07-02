@@ -72,7 +72,6 @@ data class ProjectedPersonShape(
 
         val id = ResourceLocation("quaedam", "projected-person-names")
 
-        @Environment(EnvType.SERVER)
         var names = emptySet<String>()
 
         init {
@@ -110,21 +109,17 @@ data class ProjectedPersonShape(
 
         val id = ResourceLocation("quaedam", "skins")
 
-        @Environment(EnvType.CLIENT)
         var skins = emptyList<ResourceLocation>()
 
         init {
-            @Environment(EnvType.CLIENT)
             if (Platform.getEnv() == EnvType.CLIENT) {
                 ReloadListenerRegistry.register(PackType.CLIENT_RESOURCES, ReloadListener, id)
             }
         }
 
-        @Environment(EnvType.CLIENT)
         operator fun get(index: Int) = skins[abs(index) % skins.size]
         fun random(random: Random) = random.nextInt()
 
-        @Environment(EnvType.CLIENT)
         private object ReloadListener : PreparableReloadListener {
 
             @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
