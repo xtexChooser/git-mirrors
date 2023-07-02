@@ -16,6 +16,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.ServerLevelAccessor
 import quaedam.Quaedam
+import quaedam.projector.Projector
 
 class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Level) :
     PathfinderMob(entityType, level) {
@@ -105,5 +106,18 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
     override fun getNameTagOffsetY() = super.getNameTagOffsetY() - (BOUNDING_HEIGHT * (1.2f - shape.scaleY))
 
     override fun createNavigation(level: Level) = ProjectedPersonNavigation(this, level)
+
+    override fun tick() {
+        super.tick()
+        if (tickCount % 20 == 0) {
+            tickProjectionCheck()
+        }
+    }
+
+    private fun tickProjectionCheck() {
+        if (Projector.findNearbyProjections(level(), blockPosition(), SwarmProjection.effect.get()).isEmpty()) {
+            remove(RemovalReason.KILLED)
+        }
+    }
 
 }
