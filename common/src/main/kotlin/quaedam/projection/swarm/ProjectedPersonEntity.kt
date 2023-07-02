@@ -95,11 +95,13 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
     override fun addAdditionalSaveData(tag: CompoundTag) {
         super.addAdditionalSaveData(tag)
         tag.put(KEY_ENTITY_SHAPE, shapeTag)
+        writeInventoryToTag(tag)
     }
 
     override fun readAdditionalSaveData(tag: CompoundTag) {
         super.readAdditionalSaveData(tag)
         shapeTag = tag.getCompound(KEY_ENTITY_SHAPE)
+        readInventoryFromTag(tag)
     }
 
     override fun shouldShowName() = true
