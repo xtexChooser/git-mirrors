@@ -10,16 +10,19 @@ import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.network.syncher.SynchedEntityData
 import net.minecraft.world.DifficultyInstance
+import net.minecraft.world.SimpleContainer
 import net.minecraft.world.entity.*
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier
 import net.minecraft.world.entity.ai.attributes.Attributes
+import net.minecraft.world.entity.item.ItemEntity
+import net.minecraft.world.entity.npc.InventoryCarrier
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.ServerLevelAccessor
 import quaedam.Quaedam
 import quaedam.projector.Projector
 
 class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Level) :
-    PathfinderMob(entityType, level) {
+    PathfinderMob(entityType, level), InventoryCarrier {
 
     companion object {
 
@@ -110,14 +113,27 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
     override fun tick() {
         super.tick()
         if (tickCount % 20 == 0) {
-            tickProjectionCheck()
+            if (!checkProjectionEffect())
+                remove(RemovalReason.KILLED)
         }
     }
 
-    private fun tickProjectionCheck() {
-        if (Projector.findNearbyProjections(level(), blockPosition(), SwarmProjection.effect.get()).isEmpty()) {
-            remove(RemovalReason.KILLED)
-        }
+    private fun checkProjectionEffect() =
+        Projector.findNearbyProjections(level(), blockPosition(), SwarmProjection.effect.get()).isEmpty()
+
+    override fun checkDespawn() {
+        super.checkDespawn()
+        if (!checkProjectionEffect())
+            discard()
+    }
+
+    private val inventory = SimpleContainer(10)
+
+    override fun getInventory() = inventory
+
+    override fun pickUpItem(item: ItemEntity) {
+        super.pickUpItem(item)
+        InventoryCarrier.pickUpItem(this, this, item)
     }
 
 }
