@@ -17,14 +17,12 @@ import net.minecraft.world.entity.*
 import net.minecraft.world.entity.ai.Brain
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier
 import net.minecraft.world.entity.ai.attributes.Attributes
-import net.minecraft.world.entity.ai.memory.MemoryModuleType
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.npc.InventoryCarrier
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.ServerLevelAccessor
 import quaedam.Quaedam
 import quaedam.projector.Projector
-import kotlin.jvm.optionals.getOrNull
 
 class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Level) : PathfinderMob(entityType, level),
     InventoryCarrier {
@@ -54,8 +52,7 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
         }
 
         private fun createAttributes(): AttributeSupplier.Builder =
-            Mob.createMobAttributes().add(Attributes.ATTACK_DAMAGE, 1.5)
-                .add(Attributes.MOVEMENT_SPEED, 0.2)
+            Mob.createMobAttributes().add(Attributes.ATTACK_DAMAGE, 1.5).add(Attributes.MOVEMENT_SPEED, 0.2)
                 .add(Attributes.ATTACK_SPEED)
 
     }
@@ -111,7 +108,7 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
     override fun getTypeName(): Component =
         shape.name.takeIf { it.isNotEmpty() }?.let { Component.literal(it) } ?: super.getTypeName()
 
-    override fun getNameTagOffsetY() = super.getNameTagOffsetY() - (BOUNDING_HEIGHT * (1.3f - shape.scaleY))
+    override fun getNameTagOffsetY() = super.getNameTagOffsetY() - (bbHeight * (1f - shape.scaleY))
 
     override fun createNavigation(level: Level) = ProjectedPersonNavigation(this, level)
 
