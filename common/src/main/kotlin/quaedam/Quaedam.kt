@@ -36,6 +36,7 @@ object Quaedam {
 
     fun init() {
         Projector
+        ProjectionEffectType
         SkylightProjection
         SwarmProjection
 
