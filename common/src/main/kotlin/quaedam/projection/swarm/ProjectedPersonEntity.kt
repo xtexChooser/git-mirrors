@@ -26,7 +26,7 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
         val entity = Quaedam.entities.register(ID) {
             EntityType.Builder.of(::ProjectedPersonEntity, MobCategory.CREATURE)
                 .canSpawnFarFromPlayer()
-                .sized(0.6F, 1.8F)
+                .sized(0.6f, 1.8f * 1.3f)
                 .build("quaedam:$ID")
         }!!
 
