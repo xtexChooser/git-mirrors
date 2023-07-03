@@ -4,6 +4,7 @@ import com.mojang.serialization.Dynamic
 import dev.architectury.platform.Platform
 import dev.architectury.registry.level.entity.EntityAttributeRegistry
 import net.fabricmc.api.EnvType
+import net.minecraft.core.BlockPos
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.game.DebugPackets
@@ -18,11 +19,14 @@ import net.minecraft.world.entity.ai.Brain
 import net.minecraft.world.entity.ai.attributes.AttributeModifier
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier
 import net.minecraft.world.entity.ai.attributes.Attributes
+import net.minecraft.world.entity.ai.memory.MemoryModuleType
 import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.npc.InventoryCarrier
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.ServerLevelAccessor
 import quaedam.Quaedam
+import quaedam.projection.swarm.ai.ProjectedPersonAI
+import quaedam.projection.swarm.ai.ProjectedPersonNavigation
 import quaedam.projector.Projector
 import kotlin.random.Random
 
@@ -193,5 +197,19 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
     }
 
     override fun isBaby() = shape.baby
+
+    override fun startSleeping(blockPos: BlockPos) {
+        super.startSleeping(blockPos)
+        brain.eraseMemory(MemoryModuleType.WALK_TARGET)
+        brain.eraseMemory(MemoryModuleType.LOOK_TARGET)
+        brain.eraseMemory(MemoryModuleType.NEAREST_BED)
+        brain.eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE)
+    }
+
+    override fun stopSleeping() {
+        super.stopSleeping()
+        brain.setMemory(MemoryModuleType.LAST_WOKEN, level().gameTime)
+        brain.eraseMemory(MemoryModuleType.HOME)
+    }
 
 }

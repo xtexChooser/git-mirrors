@@ -25,7 +25,8 @@ object Quaedam {
     val blocks = DeferredRegister.create(ID, Registries.BLOCK)!!
     val blockEntities = DeferredRegister.create(ID, Registries.BLOCK_ENTITY_TYPE)!!
     val entities = DeferredRegister.create(ID, Registries.ENTITY_TYPE)!!
-    val schedule = DeferredRegister.create(ID, Registries.SCHEDULE)!!
+    val schedules = DeferredRegister.create(ID, Registries.SCHEDULE)!!
+    val sensors = DeferredRegister.create(ID, Registries.SENSOR_TYPE)!!
     val projectionEffects = DeferredRegister.create(ID, ProjectionEffectType.registryKey)!!
 
     val creativeModeTab: RegistrySupplier<CreativeModeTab> = creativeModeTabs.register("quaedam") {
@@ -45,7 +46,8 @@ object Quaedam {
         blocks.register()
         blockEntities.register()
         entities.register()
-        schedule.register()
+        schedules.register()
+        sensors.register()
         projectionEffects.register()
     }
 
