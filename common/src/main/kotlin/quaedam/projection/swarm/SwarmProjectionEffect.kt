@@ -10,7 +10,7 @@ import quaedam.projector.ProjectorBlockEntity
 import kotlin.math.min
 
 data class SwarmProjectionEffect(
-    var maxCount: Int = 100,
+    var maxCount: Int = 180,
 ) : ProjectionEffect() {
 
     companion object {

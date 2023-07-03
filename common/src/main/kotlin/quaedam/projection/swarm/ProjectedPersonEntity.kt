@@ -158,7 +158,10 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
     override fun tick() {
         super.tick()
         if (tickCount % 20 == 0) {
-            if (!checkProjectionEffect()) remove(RemovalReason.KILLED)
+            if (!checkProjectionEffect()) {
+                dropEquipment()
+                remove(RemovalReason.KILLED)
+            }
         }
     }
 
@@ -167,7 +170,10 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
 
     override fun checkDespawn() {
         super.checkDespawn()
-        if (!checkProjectionEffect()) remove(RemovalReason.KILLED)
+        if (!checkProjectionEffect()) {
+            dropEquipment()
+            remove(RemovalReason.KILLED)
+        }
     }
 
     private val inventory = SimpleContainer(10)
@@ -215,6 +221,11 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
         super.stopSleeping()
         brain.setMemory(MemoryModuleType.LAST_WOKEN, level().gameTime)
         brain.eraseMemory(MemoryModuleType.HOME)
+    }
+
+    override fun dropEquipment() {
+        super.dropEquipment()
+        inventory.removeAllItems().forEach(::spawnAtLocation)
     }
 
 }
