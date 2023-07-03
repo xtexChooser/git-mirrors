@@ -110,6 +110,7 @@ object ProjectedPersonAI {
     private fun initCoreActivity(brain: Brain<ProjectedPersonEntity>) {
         brain.addActivity(
             Activity.CORE, ImmutableList.of(
+                0 weight UpdateActivityFromSchedule.create(),
                 0 weight Swim(0.8f),
                 0 weight WakeUp.create(),
                 0 weight StopAttackingIfTargetInvalid.create(),
@@ -130,7 +131,6 @@ object ProjectedPersonAI {
         brain.addActivity(
             Activity.IDLE, ImmutableList.of(
                 10 weight createStrollBehavior(),
-                99 weight UpdateActivityFromSchedule.create(),
             )
         )
     }
@@ -141,7 +141,6 @@ object ProjectedPersonAI {
                 7 weight GoToWantedItem.create(1.75f, true, 32),
                 10 weight JumpOnBed(1.0f),
                 10 weight createStrollBehavior(),
-                99 weight UpdateActivityFromSchedule.create(),
             )
         )
     }
@@ -151,7 +150,6 @@ object ProjectedPersonAI {
             Activity.WORK, ImmutableList.of(
                 7 weight ExchangeItem(),
                 10 weight createStrollBehavior(),
-                99 weight UpdateActivityFromSchedule.create(),
             )
         )
     }
@@ -160,8 +158,8 @@ object ProjectedPersonAI {
         brain.addActivity(
             Activity.REST, ImmutableList.of(
                 0 weight SleepInBed(),
-                5 weight GoToTargetLocation.create(MemoryModuleType.NEAREST_BED, 1, 1.05f),
-                5 weight RunOne(
+                3 weight GoToTargetLocation.create(MemoryModuleType.NEAREST_BED, 1, 1.05f),
+                3 weight RunOne(
                     mapOf(
                         MemoryModuleType.HOME to MemoryStatus.VALUE_ABSENT
                     ),
@@ -169,7 +167,6 @@ object ProjectedPersonAI {
                         1 weightR createStrollBehavior()
                     )
                 ),
-                99 weight UpdateActivityFromSchedule.create(),
             )
         )
     }
