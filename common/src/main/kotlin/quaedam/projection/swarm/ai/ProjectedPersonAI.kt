@@ -101,6 +101,7 @@ object ProjectedPersonAI {
                 3 weight LookAtTargetSink(40, 70),
                 3 weight MoveToTargetSink(),
                 3 weight InteractWithDoor.create(),
+                3 weight LostItem(400),
                 10 weight GoToWantedItem.create(1.2f, false, 7),
             )
         )
