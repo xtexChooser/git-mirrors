@@ -76,8 +76,8 @@ object ProjectedPersonAI {
         listOf(
             SensorType.NEAREST_LIVING_ENTITIES,
             SensorType.NEAREST_PLAYERS,
-            SensorType.HURT_BY,
             SensorType.NEAREST_ITEMS,
+            SensorType.HURT_BY,
             BedInChunkSensor.sensor.get(),
             NearestVisibleContainer.sensor.get(),
         )

@@ -12,6 +12,7 @@ import net.minecraft.world.level.ChunkPos
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.levelgen.structure.BoundingBox
+import net.minecraft.world.phys.AABB
 import quaedam.projection.ProjectionEffect
 import quaedam.projection.ProjectionEffectType
 import quaedam.projection.ProjectionProvider
@@ -27,11 +28,17 @@ class ProjectorBlockEntity(pos: BlockPos, state: BlockState) :
     }
 
     val effectArea: BoundingBox by lazy {
-        val chunk = level!!.getChunk(pos).pos
         val (minChunk, maxChunk) = effectAreaChunk
         val minBlock = BlockPos(minChunk.minBlockX, level!!.minBuildHeight, minChunk.minBlockZ)
         val maxBlock = BlockPos(maxChunk.maxBlockX, level!!.maxBuildHeight, maxChunk.maxBlockZ)
         BoundingBox.fromCorners(minBlock, maxBlock)
+    }
+
+    val effectAreaAABB by lazy {
+        val (minChunk, maxChunk) = effectAreaChunk
+        val minBlock = BlockPos(minChunk.minBlockX, level!!.minBuildHeight, minChunk.minBlockZ)
+        val maxBlock = BlockPos(maxChunk.maxBlockX, level!!.maxBuildHeight, maxChunk.maxBlockZ)
+        AABB(minBlock, maxBlock)
     }
 
     val checkArea: BoundingBox by lazy {

@@ -4,9 +4,9 @@ import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.ai.behavior.OneShot
 import net.minecraft.world.entity.ai.behavior.declarative.BehaviorBuilder
 import net.minecraft.world.entity.ai.behavior.declarative.Trigger
+import net.minecraft.world.entity.item.ItemEntity
 import net.minecraft.world.entity.npc.InventoryCarrier
 import net.minecraft.world.entity.schedule.Activity
-import net.minecraft.world.level.block.Block
 
 @Suppress("FunctionName")
 fun <E> LostItem(chance: Int): OneShot<E>
@@ -20,7 +20,7 @@ fun <E> LostItem(chance: Int): OneShot<E>
             val count = level.random.nextInt(item.count)
             item.shrink(count)
             inventory.setChanged()
-            Block.popResource(level, entity.blockPosition(), item.copyWithCount(count))
+            level.addFreshEntity(ItemEntity(level, entity.x, entity.y + 0.25, entity.z, item.copyWithCount(count)))
         }
         return@Trigger true
     })

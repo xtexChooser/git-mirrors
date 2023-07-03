@@ -29,6 +29,7 @@ class ExchangeItem<E> : Behavior<E>(
         target = entity.brain.getMemory(NearestVisibleContainer.memory.get()).get()
         closeAt = null
         entity.brain.setMemory(MemoryModuleType.WALK_TARGET, WalkTarget(target!!, 1.0f, 2))
+        entity.brain.eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE)
     }
 
     override fun canStillUse(level: ServerLevel, entity: E, l: Long) =
@@ -54,6 +55,7 @@ class ExchangeItem<E> : Behavior<E>(
 
     override fun stop(level: ServerLevel, entity: E, l: Long) {
         entity.brain.eraseMemory(MemoryModuleType.WALK_TARGET)
+        entity.brain.eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE)
         if (closeAt != null) {
             // opened
             val chest = level.getBlockEntity(target!!)!!
@@ -108,13 +110,11 @@ class ExchangeItem<E> : Behavior<E>(
                                 val targetItem = container.getItem(target)
                                 if (targetItem.isEmpty) {
                                     container.setItem(target, takeItem.copyAndClear())
-                                    println("put all at $target")
                                     break
                                 }
                             }
                         }
                         val putCount = takeCount - takeItem.count
-                        println("put $putCount")
                         item.shrink(putCount)
                         container.setItem(slot, item)
                     }
