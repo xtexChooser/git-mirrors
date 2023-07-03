@@ -29,3 +29,5 @@
 <link rel="stylesheet" href='{{ "css/custom.css" | absURL }}' />
 
 {{ with .Site.Params.ext_head }} {{ . }} {{ end }}
+
+{{ partial "x-head.html" . }}

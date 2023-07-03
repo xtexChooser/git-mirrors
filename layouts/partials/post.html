@@ -15,5 +15,5 @@
   {{ end }} {{with .Content }}
   <div class="content">{{ . }}</div>
   {{end}}
-  <footer class="footer"></footer>
+  <footer class="footer">{{ partial "x-post-footer.html" . }}</footer>
 </article>
