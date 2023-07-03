@@ -20,7 +20,9 @@ fun <E> LostItem(chance: Int): OneShot<E>
             val count = level.random.nextInt(item.count)
             item.shrink(count)
             inventory.setChanged()
-            level.addFreshEntity(ItemEntity(level, entity.x, entity.y + 0.25, entity.z, item.copyWithCount(count)))
+            val itemEntity = ItemEntity(level, entity.x, entity.y + 0.25, entity.z, item.copyWithCount(count))
+            itemEntity.setDefaultPickUpDelay()
+            level.addFreshEntity(itemEntity)
             return@Trigger true
         } else {
             return@Trigger false

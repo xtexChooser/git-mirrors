@@ -167,7 +167,7 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
 
     override fun checkDespawn() {
         super.checkDespawn()
-        if (!checkProjectionEffect()) discard()
+        if (!checkProjectionEffect()) remove(RemovalReason.KILLED)
     }
 
     private val inventory = SimpleContainer(10)
