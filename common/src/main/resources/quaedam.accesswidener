@@ -4,3 +4,5 @@ accessible method net/minecraft/core/registries/BuiltInRegistries registerSimple
 accessible class net/minecraft/core/registries/BuiltInRegistries$RegistryBootstrap
 # Entity Brain AI
 accessible method net/minecraft/world/entity/ai/sensing/SensorType <init> (Ljava/util/function/Supplier;)V
+# ExchangeItem behaviour
+accessible method net/minecraft/world/level/block/entity/ChestBlockEntity playSound (Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/sounds/SoundEvent;)V

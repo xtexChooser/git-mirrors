@@ -52,6 +52,7 @@ object ProjectedPersonAI {
 
     init {
         BedInChunkSensor
+        NearestVisibleContainer
     }
 
     private val memoryTypes by lazy {
@@ -67,6 +68,7 @@ object ProjectedPersonAI {
             MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
             MemoryModuleType.HOME,
             MemoryModuleType.LAST_WOKEN,
+            NearestVisibleContainer.memory.get(),
         )
     }
 
@@ -77,6 +79,7 @@ object ProjectedPersonAI {
             SensorType.HURT_BY,
             SensorType.NEAREST_ITEMS,
             BedInChunkSensor.sensor.get(),
+            NearestVisibleContainer.sensor.get(),
         )
     }
 
@@ -146,6 +149,7 @@ object ProjectedPersonAI {
     private fun initWorkActivity(brain: Brain<ProjectedPersonEntity>) {
         brain.addActivity(
             Activity.WORK, ImmutableList.of(
+                7 weight ExchangeItem(),
                 10 weight createStrollBehavior(),
                 99 weight UpdateActivityFromSchedule.create(),
             )

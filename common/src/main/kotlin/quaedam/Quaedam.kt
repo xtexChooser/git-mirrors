@@ -26,6 +26,7 @@ object Quaedam {
     val blockEntities = DeferredRegister.create(ID, Registries.BLOCK_ENTITY_TYPE)!!
     val entities = DeferredRegister.create(ID, Registries.ENTITY_TYPE)!!
     val schedules = DeferredRegister.create(ID, Registries.SCHEDULE)!!
+    val memoryTypes = DeferredRegister.create(ID, Registries.MEMORY_MODULE_TYPE)!!
     val sensors = DeferredRegister.create(ID, Registries.SENSOR_TYPE)!!
     val projectionEffects = DeferredRegister.create(ID, ProjectionEffectType.registryKey)!!
 
@@ -47,6 +48,7 @@ object Quaedam {
         blockEntities.register()
         entities.register()
         schedules.register()
+        memoryTypes.register()
         sensors.register()
         projectionEffects.register()
     }
