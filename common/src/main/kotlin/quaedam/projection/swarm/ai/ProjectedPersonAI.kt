@@ -148,7 +148,7 @@ object ProjectedPersonAI {
     private fun initWorkActivity(brain: Brain<ProjectedPersonEntity>) {
         brain.addActivity(
             Activity.WORK, ImmutableList.of(
-                7 weight ExchangeItem(),
+                5 weight ExchangeItem(),
                 10 weight createStrollBehavior(),
             )
         )

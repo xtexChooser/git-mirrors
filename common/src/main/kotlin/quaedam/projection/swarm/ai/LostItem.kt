@@ -21,7 +21,9 @@ fun <E> LostItem(chance: Int): OneShot<E>
             item.shrink(count)
             inventory.setChanged()
             level.addFreshEntity(ItemEntity(level, entity.x, entity.y + 0.25, entity.z, item.copyWithCount(count)))
+            return@Trigger true
+        } else {
+            return@Trigger false
         }
-        return@Trigger true
     })
 }
