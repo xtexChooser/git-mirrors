@@ -1,11 +1,17 @@
 package quaedam.projection.swarm.ai
 
 import com.google.common.collect.ImmutableList
+import net.minecraft.core.registries.Registries
+import net.minecraft.resources.ResourceLocation
+import net.minecraft.tags.TagKey
+import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.ai.Brain
 import net.minecraft.world.entity.ai.behavior.*
 import net.minecraft.world.entity.ai.memory.MemoryModuleType
 import net.minecraft.world.entity.ai.memory.MemoryStatus
+import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities
 import net.minecraft.world.entity.ai.sensing.SensorType
+import net.minecraft.world.entity.monster.Monster
 import net.minecraft.world.entity.schedule.Activity
 import net.minecraft.world.entity.schedule.Schedule
 import net.minecraft.world.entity.schedule.ScheduleBuilder
@@ -13,8 +19,13 @@ import quaedam.Quaedam
 import quaedam.projection.swarm.ProjectedPersonEntity
 import quaedam.utils.weight
 import quaedam.utils.weightR
+import java.util.*
+import kotlin.jvm.optionals.getOrNull
 
 object ProjectedPersonAI {
+
+    val tagEnemy = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation("quaedam", "projected_person/enemy"))
+    val tagNoAttack = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation("quaedam", "projected_person/no_attack"))
 
     val defaultSchedule = Quaedam.schedules.register("projected_person_default") {
         ScheduleBuilder(Schedule()).changeActivityAt(10, Activity.IDLE)
@@ -98,10 +109,15 @@ object ProjectedPersonAI {
             Activity.CORE, ImmutableList.of(
                 0 weight Swim(0.8f),
                 0 weight WakeUp.create(),
+                0 weight StopAttackingIfTargetInvalid.create(),
                 3 weight LookAtTargetSink(40, 70),
                 3 weight MoveToTargetSink(),
                 3 weight InteractWithDoor.create(),
-                3 weight LostItem(400),
+                3 weight SetWalkTargetAwayFrom.entity(MemoryModuleType.HURT_BY_ENTITY, 1.2f, 6, false),
+                4 weight MeleeAttack.create(15),
+                5 weight LostItem(400),
+                5 weight StartAttacking.create(::findAttackTarget),
+                5 weight SetWalkTargetFromAttackTargetIfTargetOutOfReach.create(1.1f),
                 10 weight GoToWantedItem.create(1.2f, false, 7),
             )
         )
@@ -161,5 +177,15 @@ object ProjectedPersonAI {
             1 weightR DoNothing(30, 60)
         )
     )
+
+    private fun findAttackTarget(entity: ProjectedPersonEntity): Optional<out LivingEntity> {
+        val entities = entity.brain.getMemory(MemoryModuleType.NEAREST_VISIBLE_LIVING_ENTITIES).getOrNull()
+            ?: NearestVisibleLivingEntities.empty()
+        return entities.findClosest { target: LivingEntity ->
+            entity.canAttack(target)
+                    && !target.type.`is`(tagNoAttack)
+                    && (target.type.`is`(tagEnemy) || target is Monster)
+        }
+    }
 
 }
