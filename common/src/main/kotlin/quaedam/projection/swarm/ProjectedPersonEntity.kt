@@ -64,6 +64,10 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
 
     }
 
+    init {
+        setCanPickUpLoot(true)
+    }
+
     override fun finalizeSpawn(
         serverLevelAccessor: ServerLevelAccessor,
         difficultyInstance: DifficultyInstance,
@@ -139,6 +143,7 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
         super.readAdditionalSaveData(tag)
         shapeTag = tag.getCompound(KEY_ENTITY_SHAPE)
         readInventoryFromTag(tag)
+        setCanPickUpLoot(true)
     }
 
     override fun shouldShowName() = true
