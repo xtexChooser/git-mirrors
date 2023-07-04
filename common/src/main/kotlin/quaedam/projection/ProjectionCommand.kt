@@ -55,7 +55,7 @@ object ProjectionCommand {
         )
         val data = Projector.findNearbyProjectors(ctx.source.level, pos)
             .map { ctx.source.level.getBlockEntity(it)!!.saveWithFullMetadata() }
-        ctx.source.sendSystemMessage(Component.nbt(path, false, Optional.empty()) { data.stream() })
+        ctx.source.sendSystemMessage(Component.nbt(path, true, Optional.empty()) { data.stream() })
         return 0
     }
 
@@ -71,7 +71,7 @@ object ProjectionCommand {
         val type = ctx.getArgument("type", Holder.Reference::class.java).value() as ProjectionEffectType<*>
         val data = Projector.findNearbyProjections(ctx.source.level, pos, type)
             .map { it.toNbt() }
-        ctx.source.sendSystemMessage(Component.nbt(path, false, Optional.empty()) { data.stream() })
+        ctx.source.sendSystemMessage(Component.nbt(path, true, Optional.empty()) { data.stream() })
         return 0
     }
 
