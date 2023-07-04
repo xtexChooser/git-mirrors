@@ -69,7 +69,7 @@ class ExchangeItem<E> : Behavior<E>(
         val container = level.getBlockEntity(target!!) as Container
         val inventory = entity.inventory
         for (i in 1..6) {
-            val maxCount = level.random.nextInt(16)
+            val maxCount = 1 + level.random.nextInt(16)
             if (level.random.nextBoolean()) {
                 // take
                 val slot = level.random.nextInt(container.containerSize)
@@ -78,7 +78,7 @@ class ExchangeItem<E> : Behavior<E>(
                     val takeCount = min(item.count, maxCount)
                     val takeItem = item.copyWithCount(takeCount)
                     if (inventory.canTakeItem(container, slot, takeItem) && entity.canHoldItem(takeItem)) {
-                        val remaining = entity.inventory.addItem(entity.equipItemIfPossible(takeItem))
+                        val remaining = inventory.addItem(/*entity.equipItemIfPossible(takeItem)*/ takeItem)
                         val actualCount = takeCount - remaining.count
                         item.shrink(actualCount)
                         container.setItem(slot, item)
@@ -116,11 +116,13 @@ class ExchangeItem<E> : Behavior<E>(
                         }
                         val putCount = takeCount - takeItem.count
                         item.shrink(putCount)
-                        container.setItem(slot, item)
+                        inventory.setItem(slot, item)
                     }
                 }
             }
         }
+        container.setChanged()
+        inventory.setChanged()
     }
 
 }
