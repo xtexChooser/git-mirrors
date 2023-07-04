@@ -33,7 +33,7 @@ object Quaedam {
 
     val creativeModeTab: RegistrySupplier<CreativeModeTab> = creativeModeTabs.register("quaedam") {
         CreativeTabRegistry.create(Component.translatable("category.quaedam")) {
-            ItemStack(Items.TORCH)
+            ItemStack(Projector.item.get())
         }
     }
 
