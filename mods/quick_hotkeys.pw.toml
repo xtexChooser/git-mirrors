@@ -1,13 +1,13 @@
 name = "Quick Hotkeys"
-filename = "mc.v1.20.x-quick_hotkeys-1.0.0.jar"
+filename = "mc.v1.20.x-quick_hotkeys-1.0.2_fabric.jar"
 side = "client"
 
 [download]
-url = "https://cdn.modrinth.com/data/24LuV3ge/versions/2RpntXkB/mc.v1.20.x-quick_hotkeys-1.0.0.jar"
+url = "https://cdn.modrinth.com/data/24LuV3ge/versions/BpZ0WAJd/mc.v1.20.x-quick_hotkeys-1.0.2_fabric.jar"
 hash-format = "sha1"
-hash = "7490b59e29b82122be0287620179e0eced39ca45"
+hash = "40cd0431ee00ead513c49879bd7a3463d39815cc"
 
 [update]
 [update.modrinth]
 mod-id = "24LuV3ge"
-version = "2RpntXkB"
+version = "BpZ0WAJd"
