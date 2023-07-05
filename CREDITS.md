@@ -43,6 +43,7 @@ This is a complete list of all mods, resource packs and shaders included in this
 - Debugify
 - Default Dark Mode
 - Dynamic FPS
+- e4mc
 - Entity Culling
 - fast-chest
 - FerriteCore
@@ -60,6 +61,7 @@ This is a complete list of all mods, resource packs and shaders included in this
 - lazy-language-loader
 - libIPN
 - Litematica
+- Litematica Printer
 - Lithium
 - Log Cleaner
 - MakeUp - Ultra Fast
@@ -154,6 +156,8 @@ This is a complete list of all mods, resource packs and shaders included in this
 - [Xaero's World Map](https://modrinth.com/mod/NcUtCpym)
 - [Language Reload](https://modrinth.com/mod/uLbm7CG6)
 - [ReplayMod](https://modrinth.com/mod/Nv2fQJo5)
+- [e4mc](https://modrinth.com/mod/qANg5Jrr)
+- [Litematica Printer](https://modrinth.com/mod/3llatzyE)
 - [Default Dark Mode](https://modrinth.com/mod/6SLU7tS5)
 - [Twemojis In Minecraft](https://modrinth.com/mod/WdYcUVh8)
 - [XK Redstone Display](https://modrinth.com/mod/4ueVo9s5)
