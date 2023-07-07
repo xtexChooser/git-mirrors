@@ -2,49 +2,35 @@
 default: build test
 
 # Tools
-NINJA ?= ninja
-NINJA_FLAGS ?= -j8
-READLINK ?= readlink -f
+MAKE_FLAGS = -j4
 
-# Leonis paths
-LEONIS_BASE_DIR ?= .
-LEONIS_PLAYGROUND_DIR ?= $(LEONIS_BASE_DIR)/playground
-LEONIS_MAKE_DIR ?= $(LEONIS_BASE_DIR)/make
-LEONIS_STATES_DIR ?= $(LEONIS_BASE_DIR)/states
-LEONIS_NINJA_DIR ?= $(LEONIS_BASE_DIR)/ninja
-
-# Vendor paths
-ifndef $(VENDOR_CODE_DIR)
-$(warning You are running Leonis playground)
-endif
-VENDOR_CODE_DIR ?= $(LEONIS_PLAYGROUND_DIR)
-BUILD_DIR ?= $(VENDOR_CODE_DIR)/build
-VENDOR_MAKE_DIR ?= $(VENDOR_CODE_DIR)/make
-
-# Include make files
-
+# Variables
 LEONIS_BUILD_DEPS = $(empty)
 LEONIS_TEST_DEPS = $(empty)
 LEONIS_APPLY_DEPS = $(empty)
+APPLY_TARGETS ?= $(empty)
 
-LEONIS_STATE_NINJA = $(empty)
+# Leonis paths
+ifndef LEONIS_BASE_DIR
+$(error LEONIS_BASE_DIR is not specified)
+endif
+LEONIS_MAKE_DIR ?= $(LEONIS_BASE_DIR)/make
+LEONIS_STATES_DIR ?= $(LEONIS_BASE_DIR)/states
 
+# Vendor paths
+VENDOR_CODE_DIR ?= .
+BUILD_DIR ?= $(VENDOR_CODE_DIR)/out
+VENDOR_MAKE_DIR ?= $(VENDOR_CODE_DIR)/make
+VENDOR_STATES_DIR ?= $(VENDOR_CODE_DIR)/states
+
+# Include make files
 include $(LEONIS_MAKE_DIR)/*.mk
 include $(LEONIS_STATES_DIR)/*.mk
--include $(VENDOR_MAKE_DIR)/*.mk
+include $(VENDOR_MAKE_DIR)/*.mk
+include $(LEONIS_STATES_DIR)/*.mk
+$(call end-all)
 
-# states.ninja
-$(call run-on-build,$(BUILD_DIR)/states.ninja)
-
-LEONIS_STATE_NINJA_MARKER = $(BUILD_DIR)/states.marker.$(shell echo "$(LEONIS_STATE_NINJA)" | sha256sum | head -c6)
-$(BUILD_DIR)/states.ninja: $(LEONIS_STATE_NINJA_MARKER)
-	printf "$(LEONIS_STATE_NINJA)" | sed -e 's/^ //' > $(BUILD_DIR)/states.ninja
-
-$(LEONIS_STATE_NINJA_MARKER):
-	rm -f $(BUILD_DIR)/states.marker.*
-	touch $(LEONIS_STATE_NINJA_MARKER)
-
-# Builtin tasks
+# Core tasks
 
 .PHONY: default build test apply
 
@@ -52,5 +38,10 @@ build: $(LEONIS_BUILD_DEPS)
 
 test: build $(LEONIS_TEST_DEPS)
 
+CUSTOM_APPLY ?= $(empty)
+define default-apply
+$(if $(APPLY_TARGETS),,$(error APPLY_TARGETS is empty))
 apply: test $(LEONIS_APPLY_DEPS)
-	$(NINJA) $(NINJA_FLAGS) -C $(BUILD_DIR)
+	$(MAKE) $(MAKE_FLAGS) $(APPLY_TARGETS)
+endef
+$(if $(CUSTOM_APPLY),,$(eval $(call default-apply)))
