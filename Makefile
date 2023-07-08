@@ -25,7 +25,6 @@ VENDOR_STATES_DIR ?= $(VENDOR_CODE_DIR)/states
 include $(LEONIS_MAKE_DIR)/*.mk
 include $(LEONIS_MODULES_DIR)/*.mk
 include $(VENDOR_MAKE_DIR)/*.mk
-
 -include $(VENDOR_MODULES_DIR)/*.mk
 $(call end-all)
 
@@ -41,6 +40,6 @@ CUSTOM_APPLY ?= $(empty)
 define default-apply
 $(if $(APPLY_TARGETS),,$(error APPLY_TARGETS is empty))
 apply: test $(LEONIS_APPLY_DEPS)
-	$(MAKE) $(MAKE_FLAGS) $(APPLY_TARGETS)
+	@$(MAKE) $(MAKE_FLAGS) $(APPLY_TARGETS)
 endef
 $(if $(CUSTOM_APPLY),,$(eval $(call default-apply)))
