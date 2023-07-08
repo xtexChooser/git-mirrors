@@ -19,28 +19,28 @@ $(if $(V_ENABLED),
 	if ! $(V_SYSTEMCTL) is-enabled $(V_UNIT) > /dev/null; then
 		$(V_SYSTEMCTL) enable $(V_UNIT)
 		$(call succ, Enabled SD unit $(V_UNIT))
-		$(if $(V_POST),E_MINOR=enabled $(MAKE) $(MAKE_FLAGS) $(V_POST))
+		$(call vpost, E_MINOR=enabled)
 	fi
 )
 $(if $(V_DISABLED),
 	if $(V_SYSTEMCTL) is-enabled $(V_UNIT) > /dev/null; then
 		$(V_SYSTEMCTL) enable $(V_UNIT)
 		$(call succ, Disabled SD unit $(V_UNIT))
-		$(if $(V_POST),E_MINOR=disabled $(MAKE) $(MAKE_FLAGS) $(V_POST))
+		$(call vpost, E_MINOR=disabled)
 	fi
 )
 $(if $(V_RUNNING),
 	if ! $(V_SYSTEMCTL) is-active $(V_UNIT) > /dev/null; then
 		$(V_SYSTEMCTL) start $(V_UNIT)
 		$(call succ, Started SD unit $(V_UNIT))
-		$(if $(V_POST),E_MINOR=activated $(MAKE) $(MAKE_FLAGS) $(V_POST))
+		$(call vpost, E_MINOR=activated)
 	fi
 )
 $(if $(V_STOPPED),
 	if $(V_SYSTEMCTL) is-active $(V_UNIT) > /dev/null; then
 		$(V_SYSTEMCTL) stop $(V_UNIT)
 		$(call succ, Stopped SD unit $(V_UNIT))
-		$(if $(V_POST),E_MINOR=deactivated $(MAKE) $(MAKE_FLAGS) $(V_POST))
+		$(call vpost, E_MINOR=deactivated)
 	fi
 )
 
