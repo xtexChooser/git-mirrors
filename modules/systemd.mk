@@ -1,5 +1,5 @@
-SYSTEMCTL ?= systemctl
-SYSTEMCTL_USER ?= $(SYSTEMCTL) --user
+SYSTEMCTL = systemctl
+SYSTEMCTL_USER = $(SYSTEMCTL) --user
 
 SYSTEMD_UNIT_VARS=V_TARGET_NAME V_UNIT V_ENABLED V_DISABLED V_RUNNING V_STOPPED V_USER V_SYSTEMCTL V_POST V_DEPS
 define systemd-unit0
@@ -14,33 +14,33 @@ $(call mktrace-vars,$(SYSTEMD_UNIT_VARS))
 $(call apply-target,$(V_TARGET_NAME))
 $(call vt-target,$(V_TARGET_NAME))
 $(V_TARGET_NAME): $(V_DEPS)
-	export E_UNIT=$(V_UNIT)
+	export E_MAJOR=systemd E_UNIT=$(V_UNIT)
 $(if $(V_ENABLED),
 	if ! $(V_SYSTEMCTL) is-enabled $(V_UNIT) > /dev/null; then
 		$(V_SYSTEMCTL) enable $(V_UNIT)
 		$(call succ, Enabled SD unit $(V_UNIT))
-		$(if $(V_POST),E_EVENT=systemd.enabled $(MAKE) $(MAKE_FLAGS) $(V_POST))
+		$(if $(V_POST),E_MINOR=enabled $(MAKE) $(MAKE_FLAGS) $(V_POST))
 	fi
 )
 $(if $(V_DISABLED),
 	if $(V_SYSTEMCTL) is-enabled $(V_UNIT) > /dev/null; then
 		$(V_SYSTEMCTL) enable $(V_UNIT)
 		$(call succ, Disabled SD unit $(V_UNIT))
-		$(if $(V_POST),E_EVENT=systemd.disabled $(MAKE) $(MAKE_FLAGS) $(V_POST))
+		$(if $(V_POST),E_MINOR=disabled $(MAKE) $(MAKE_FLAGS) $(V_POST))
 	fi
 )
 $(if $(V_RUNNING),
 	if ! $(V_SYSTEMCTL) is-active $(V_UNIT) > /dev/null; then
 		$(V_SYSTEMCTL) start $(V_UNIT)
 		$(call succ, Started SD unit $(V_UNIT))
-		$(if $(V_POST),E_EVENT=systemd.activated $(MAKE) $(MAKE_FLAGS) $(V_POST))
+		$(if $(V_POST),E_MINOR=activated $(MAKE) $(MAKE_FLAGS) $(V_POST))
 	fi
 )
 $(if $(V_STOPPED),
 	if $(V_SYSTEMCTL) is-active $(V_UNIT) > /dev/null; then
 		$(V_SYSTEMCTL) stop $(V_UNIT)
 		$(call succ, Stopped SD unit $(V_UNIT))
-		$(if $(V_POST),E_EVENT=systemd.deactivated $(MAKE) $(MAKE_FLAGS) $(V_POST))
+		$(if $(V_POST),E_MINOR=deactivated $(MAKE) $(MAKE_FLAGS) $(V_POST))
 	fi
 )
 
