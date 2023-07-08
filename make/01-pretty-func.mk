@@ -39,5 +39,5 @@ endef
 
 # ========== Utilities Functions ==========
 define unset-vars
-$(foreach var,$(1),$(eval undefine $(strip $(var))))
+$(foreach var,$(.VARIABLES),$(if $(call starts-with,V_,$(var)),$(eval undefine $(var))))
 endef
