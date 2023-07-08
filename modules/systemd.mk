@@ -1,4 +1,4 @@
-SYSTEMD_UNIT_VARS=V_TARGET_NAME V_UNIT V_ENABLED V_DISABLED V_RUNNING V_STOPPED V_USER V_SYSTEMCTL V_POST
+SYSTEMD_UNIT_VARS=V_TARGET_NAME V_UNIT V_ENABLED V_DISABLED V_RUNNING V_STOPPED V_USER V_SYSTEMCTL V_POST V_DEPS
 SYSTEMCTL ?= systemctl
 SYSTEMCTL_USER ?= $(SYSTEMCTL) --user
 
@@ -12,7 +12,7 @@ $(call mktrace,Define systemd unit target: $(V_UNIT))
 $(call mktrace-vars,$(SYSTEMD_UNIT_VARS))
 $(call apply-target,$(V_TARGET_NAME))
 $(call vt-target,$(V_TARGET_NAME))
-$(V_TARGET_NAME):
+$(V_TARGET_NAME): $(V_DEPS)
 	export E_UNIT=$(V_UNIT)
 $(if $(V_ENABLED),
 	if ! $(V_SYSTEMCTL) is-enabled $(V_UNIT) > /dev/null; then
