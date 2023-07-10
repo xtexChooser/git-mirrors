@@ -1,0 +1,61 @@
+{
+  "entity.projected_person.noise": {
+    "sounds": [
+      {
+        "name": "entity.villager.ambient",
+        "weight": 4,
+        "type": "event"
+      },
+      {
+        "name": "entity.villager.yes",
+        "weight": 2,
+        "type": "event"
+      },
+      {
+        "name": "entity.villager.no",
+        "weight": 1,
+        "type": "event"
+      },
+      {
+        "name": "entity.villager.trade",
+        "weight": 3,
+        "type": "event"
+      },
+      {
+        "name": "entity.villager.work_librarian",
+        "weight": 2,
+        "type": "event"
+      },
+      {
+        "name": "entity.villager.work_cleric",
+        "weight": 2,
+        "type": "event"
+      },
+      {
+        "name": "entity.villager.work_mason",
+        "weight": 2,
+        "type": "event"
+      },
+      {
+        "name": "entity.villager.work_shepherd",
+        "weight": 2,
+        "type": "event"
+      },
+      {
+        "name": "entity.wandering_trader.drink_milk",
+        "weight": 1,
+        "type": "event"
+      },
+      {
+        "name": "entity.wandering_trader.no",
+        "weight": 2,
+        "type": "event"
+      },
+      {
+        "name": "entity.wandering_trader.yes",
+        "weight": 3,
+        "type": "event"
+      }
+    ]
+  }
+}

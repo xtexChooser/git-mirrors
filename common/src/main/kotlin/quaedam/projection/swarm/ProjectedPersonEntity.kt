@@ -12,6 +12,7 @@ import net.minecraft.network.syncher.EntityDataAccessor
 import net.minecraft.network.syncher.EntityDataSerializers
 import net.minecraft.network.syncher.SynchedEntityData
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.sounds.SoundEvent
 import net.minecraft.world.DifficultyInstance
 import net.minecraft.world.SimpleContainer
 import net.minecraft.world.entity.*
@@ -51,6 +52,11 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
 
         val dataShape =
             SynchedEntityData.defineId(ProjectedPersonEntity::class.java, EntityDataSerializers.COMPOUND_TAG)
+
+        const val SOUND_NOISE_ID = "entity.projected_person.noise"
+        val soundNoise = Quaedam.soundEvents.register(SOUND_NOISE_ID) {
+            SoundEvent.createVariableRangeEvent(Quaedam.resource(SOUND_NOISE_ID))
+        }!!
 
         init {
             EntityAttributeRegistry.register(entity, ::createAttributes)
@@ -232,5 +238,19 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
     override fun isSilent() =
         super.isSilent()
                 && Projector.findNearbyProjections(level(), blockPosition(), SoundProjection.effect.get()).isNotEmpty()
+
+    override fun getAmbientSound(): SoundEvent? {
+        if (Projector.findNearbyProjections(level(), blockPosition(), SoundProjection.effect.get()).isNotEmpty()) {
+            // sound projection available
+            return soundNoise.get()
+        }
+        return null
+    }
+
+    override fun getSoundVolume() = super.getSoundVolume() * (random.nextFloat() * 0.5f + 0.6f)
+
+    override fun getVoicePitch() = super.getVoicePitch() * (random.nextFloat() * 0.4f + 0.8f)
+
+    override fun getAmbientSoundInterval() = -(160 + random.nextInt(1000 - 160))
 
 }

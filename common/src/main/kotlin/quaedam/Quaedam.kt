@@ -5,6 +5,7 @@ import dev.architectury.registry.registries.DeferredRegister
 import dev.architectury.registry.registries.RegistrySupplier
 import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
@@ -27,6 +28,7 @@ object Quaedam {
     val schedules = DeferredRegister.create(ID, Registries.SCHEDULE)!!
     val memoryTypes = DeferredRegister.create(ID, Registries.MEMORY_MODULE_TYPE)!!
     val sensors = DeferredRegister.create(ID, Registries.SENSOR_TYPE)!!
+    val soundEvents = DeferredRegister.create(ID, Registries.SOUND_EVENT)!!
     val projectionEffects = DeferredRegister.create(ID, ProjectionEffectType.registryKey)!!
 
     val creativeModeTab: RegistrySupplier<CreativeModeTab> = creativeModeTabs.register("quaedam") {
@@ -52,7 +54,10 @@ object Quaedam {
         schedules.register()
         memoryTypes.register()
         sensors.register()
+        soundEvents.register()
         projectionEffects.register()
     }
+
+    fun resource(path: String) = ResourceLocation(ID, path)
 
 }
