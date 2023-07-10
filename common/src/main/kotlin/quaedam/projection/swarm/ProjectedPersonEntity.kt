@@ -25,6 +25,7 @@ import net.minecraft.world.entity.npc.InventoryCarrier
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.ServerLevelAccessor
 import quaedam.Quaedam
+import quaedam.projection.SoundProjection
 import quaedam.projection.swarm.ai.ProjectedPersonAI
 import quaedam.projection.swarm.ai.ProjectedPersonNavigation
 import quaedam.projector.Projector
@@ -227,5 +228,9 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
         super.dropEquipment()
         inventory.removeAllItems().forEach(::spawnAtLocation)
     }
+
+    override fun isSilent() =
+        super.isSilent()
+                && Projector.findNearbyProjections(level(), blockPosition(), SoundProjection.effect.get()).isNotEmpty()
 
 }

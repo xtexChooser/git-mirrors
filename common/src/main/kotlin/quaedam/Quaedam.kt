@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory
 import quaedam.projection.ProjectionCommand
 import quaedam.projection.ProjectionEffectType
 import quaedam.projection.SkylightProjection
+import quaedam.projection.SoundProjection
 import quaedam.projection.swarm.SwarmProjection
 import quaedam.projector.Projector
 
@@ -42,6 +43,7 @@ object Quaedam {
         ProjectionEffectType
         SkylightProjection
         SwarmProjection
+        SoundProjection
         ProjectionCommand
 
         creativeModeTabs.register()
