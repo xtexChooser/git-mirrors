@@ -333,7 +333,7 @@ if ' ' in script_file or 'flag' in script_file:
 
 比赛从CST前天下午1:00开始，下午3:00我开始参赛，今天凌晨1:00结束，共32h。
 
-也可以参考一下DC里面[其他人的Write Up](https://discord.com/channels/959047109015904306/965183289621110794)
+也可以参考一下DC里面[其他人的Write Up](https://discord.com/channels/959047109015904306/965183289621110794)或者official writeup
 
 - [6E 61 74 68（helpmeeeee）](https://hackmd.io/@6E617468/HkO3ZddKn)
 - [L-T-B（Hex2dec）](https://github.com/L-T-B/CTFS/blob/main/crew-ctf/web/hex2dec.md)
@@ -342,3 +342,13 @@ if ' ' in script_file or 'flag' in script_file:
 - [untrue.me（Safe Proxy）](https://untrue.me/writeups/crewctf2023/safe-proxy/)
 
 ![scores.webp](scores.webp)
+
+从别人的WriteUp中我学到了：
+
+- OSM可以立体搜索
+- TrueCrypt并不安全
+- **解题相关的manpages不能跳着读**
+- deno会缓存远程import的文件
+- Local File Inclusion（LFI）攻击
+- tar可以保存带有父目录遍历的符号链接
+- 遇事不绝机器学习
