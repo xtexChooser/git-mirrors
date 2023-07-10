@@ -1,0 +1,9 @@
+{
+	"@metadata": {
+		"authors": [
+			"Piano1forte2"
+		]
+	},
+	"categorywatch-notification-bundle": "$1 changes in categorisation on {{SITENAME}}",
+	"echo-pref-tooltip-categorywatch": "Notify me when someone categorises a page into or out of a category that I'm watching."
+}
