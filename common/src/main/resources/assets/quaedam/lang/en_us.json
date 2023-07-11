@@ -3,5 +3,7 @@
   "block.quaedam.projector": "Projector",
   "block.quaedam.skylight_projection": "Skylight Projection",
   "block.quaedam.swarm_projection": "Swarm Projection",
+  "block.quaedam.sound_projection": "Sound Projection",
+  "block.quaedam.noise_projection": "Noise Projection",
   "entity.quaedam.projected_person": "Virtual Person"
 }

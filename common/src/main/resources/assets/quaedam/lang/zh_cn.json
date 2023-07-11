@@ -3,5 +3,7 @@
   "block.quaedam.projector": "投影仪",
   "block.quaedam.skylight_projection": "天光投影",
   "block.quaedam.swarm_projection": "人群投影",
+  "block.quaedam.sound_projection": "声音投影",
+  "block.quaedam.noise_projection": "噪音投影",
   "entity.quaedam.projected_person": "虚拟个体"
 }
