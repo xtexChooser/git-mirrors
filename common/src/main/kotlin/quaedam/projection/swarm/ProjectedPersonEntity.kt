@@ -251,6 +251,6 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
 
     override fun getVoicePitch() = super.getVoicePitch() * (random.nextFloat() * 0.55f + 0.7f)
 
-    override fun getAmbientSoundInterval() = 60 - random.nextInt(850)
+    override fun getAmbientSoundInterval() = 80 - random.nextInt(700)
 
 }
