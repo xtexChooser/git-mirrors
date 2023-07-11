@@ -39,10 +39,8 @@ data class SwarmProjectionEffect(
                     level.random.nextInt(area.minY(), area.maxY()),
                     level.random.nextInt(area.minZ(), area.maxZ()),
                 )
-                spawnPos = spawnPos.atY(level.getHeight(Heightmap.Types.WORLD_SURFACE, spawnPos.x, spawnPos.z))
+                spawnPos = spawnPos.atY(level.getHeight(Heightmap.Types.WORLD_SURFACE, spawnPos.x, spawnPos.z)).above()
                 if (level.getBlockState(spawnPos.below()).isAir)
-                    return
-                if (!level.getBlockState(spawnPos).isAir)
                     return
                 ProjectedPersonEntity.entity.get().spawn(level, spawnPos, MobSpawnType.TRIGGERED)
             }

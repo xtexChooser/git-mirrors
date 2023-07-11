@@ -247,10 +247,10 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
         return null
     }
 
-    override fun getSoundVolume() = super.getSoundVolume() * (random.nextFloat() * 0.5f + 0.6f)
+    override fun getSoundVolume() = super.getSoundVolume() * (random.nextFloat() * 1.1f + 0.4f)
 
-    override fun getVoicePitch() = super.getVoicePitch() * (random.nextFloat() * 0.4f + 0.8f)
+    override fun getVoicePitch() = super.getVoicePitch() * (random.nextFloat() * 0.55f + 0.7f)
 
-    override fun getAmbientSoundInterval() = -(160 + random.nextInt(1000 - 160))
+    override fun getAmbientSoundInterval() = 60 - random.nextInt(850)
 
 }
