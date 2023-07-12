@@ -6,7 +6,7 @@ plugins {
     id("architectury-plugin") version "3.4-SNAPSHOT"
     id("dev.architectury.loom") version "1.2-SNAPSHOT" apply false
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
-    id("io.github.juuxel.loom-quiltflower") version ("1.10.0") apply false
+    id("io.github.juuxel.loom-quiltflower") version "1.10.0" apply false
 }
 
 architectury {
