@@ -42,3 +42,8 @@ $(call unset-vars)
 endef
 
 $(call define-func, package)
+
+$(call vt-target,pkg-refresh)
+pkg-refresh:
+	$(PKCON) refresh
+	$(call succ, Refreshed package cache)
