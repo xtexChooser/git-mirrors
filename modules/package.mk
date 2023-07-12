@@ -43,7 +43,11 @@ endef
 
 $(call define-func, package)
 
-$(call vt-target,pkg-refresh)
+$(call vt-target,pkg-refresh pkg-update)
 pkg-refresh:
 	$(PKCON) refresh
 	$(call succ, Refreshed package cache)
+
+pkg-update:
+	$(PKCON) update $(E_PKG)
+	$(call succ, Updated package $(E_PKG))
