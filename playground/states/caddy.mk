@@ -11,9 +11,14 @@ V_REMOVED	= y
 V_INST_FILE	= /usr/bin/caddy
 $(call end)
 
+$(call cmd)
+V_NAME		= sd-reload-caddy
+V_CMD		= systemd reload caddy
+$(call end)
+
 $(call refresh-timer)
-V_NAME		= package-cache
-V_POST		= pkg-refresh
+V_NAME		= caddy-daily
+V_POST		= pkg-refresh cmd-sd-reload-caddy
 #V_TIME		= 10secs
 V_TIME		= 1days
 $(call end)
