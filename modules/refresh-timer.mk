@@ -10,10 +10,10 @@ $(call apply-target,$(V_TARGET_NAME))
 $(call vt-target,$(V_TARGET_NAME))
 
 $(V_TARGET_NAME): $(V_STAMP_FILE)
-$(V_STAMP_FILE): $(STAMP_APPLICATION)
-	$$(TOUCH) -r $(STAMP_APPLICATION) -d $(V_TIME) $$@
-	$(call vpost, E_MAJOR=refresh-timer E_MINOR=run)
+$(V_STAMP_FILE): $(STAMP_REF)
+	$$(TOUCH) -r $(STAMP_REF) -d $(V_TIME) $$@
 	$$(call succ, Updated refresh timer $$@)
+	$(call vpost, E_MAJOR=refresh-timer E_MINOR=run)
 
 $(call unset-vars)
 endef

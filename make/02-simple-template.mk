@@ -9,7 +9,7 @@ $(call define-inline-func,define-mkdir-target)
 define define-touch-target0
 $(1): $(2)
 	@$$(TOUCH) $(3) $$@
-	$$(call succ, Touched $$@)
+	$(if $(4),,$$(call succ, Touched $$@))
 endef
 
 $(call define-inline-func,define-touch-target)

@@ -10,3 +10,10 @@ V_PKG		= caddy
 V_REMOVED	= y
 V_INST_FILE	= /usr/bin/caddy
 $(call end)
+
+$(call refresh-timer)
+V_NAME		= package-cache
+V_POST		= pkg-refresh
+#V_TIME		= 10secs
+V_TIME		= 1days
+$(call end)
