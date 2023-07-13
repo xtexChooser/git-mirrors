@@ -10,6 +10,10 @@ define vt-target
 $(call virtual-target,$(1))
 endef
 
+define delete-on-err
+$(eval .DELETE_ON_ERROR: $(1))
+endef
+
 define load-state0
 $(call mktrace, Loading vendor state $(1))
 LEONIS_LOADED_STATES+=$(1)
