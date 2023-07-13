@@ -11,7 +11,7 @@ endif
 # ========== Print in Makefiles ==========
 
 define mkprint-ansi
-$(info $(shell printf -- "$(strip $(1))$(ansi-clear)"))
+$(info $(shell $(PRINTF) -- "$(strip $(1))$(ansi-clear)"))
 endef
 
 define mkprintc
@@ -37,7 +37,7 @@ endef
 # ========== Print in Recipes ==========
 
 define print-ansi
-printf -- "$(strip $(1))$(ansi-clear)\n"
+$(PRINTF) -- "$(strip $(1))$(ansi-clear)\n"
 endef
 
 define printc

@@ -1,7 +1,8 @@
 # ========== Build ==========
 BUILD_DIR ?= $(VENDOR_CODE_DIR)/out
-APPLY_DIR = $(VENDOR_CODE_DIR)/out/apply
-APPLY_TIME_FILE = $(VENDOR_CODE_DIR)/out/apply/latest-ts
+APPLY_DIR = $(BUILD_DIR)/apply
+STAMPS_DIR = $(APPLY_DIR)/stamps
+STAMP_APPLICATION = $(STAMPS_DIR)/application
 
 # ========== Exports ==========
 export LEONIS_BASE_DIR
