@@ -2,7 +2,8 @@ SHELL = bash
 .SHELLFLAGS += -e
 .ONESHELL:
 
-MAKE_FLAGS = -j4 --silent --no-builtin-rules --output-sync=target
+MAKE_JOBSERVER_FLAGS = -j4
+MAKE_FLAGS = --silent --no-builtin-rules --output-sync=target
 
 TOUCH ?= touch
 MKDIR ?= mkdir
