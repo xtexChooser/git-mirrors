@@ -22,3 +22,7 @@ V_POST		= pkg-refresh cmd-sd-reload-caddy
 #V_TIME		= 10secs
 V_TIME		= 1days
 $(call end)
+
+#$(call hostname)
+#V_HOSTNAME	= a-caddy-servier
+#$(call end)
