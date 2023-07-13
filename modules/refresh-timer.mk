@@ -1,4 +1,3 @@
-
 REFRESH_TIMER_VARS=V_TARGET_NAME V_NAME V_TIME V_POST V_STAMP_FILE
 define refresh-timer0
 $(eval V_TARGET_NAME?=refresh-timer-$(V_NAME))
