@@ -8,3 +8,6 @@ MAKE_FLAGS = --silent --no-builtin-rules --output-sync=target
 TOUCH ?= touch
 MKDIR ?= mkdir
 PRINTF ?= printf
+RM ?= rm
+CHOWN ?= chown
+CHMOD ?= chmod

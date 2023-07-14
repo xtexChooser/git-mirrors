@@ -26,3 +26,11 @@ $(call end)
 #$(call hostname)
 #V_HOSTNAME	= a-caddy-servier
 #$(call end)
+
+$(call directory)
+V_PATH		= $(BUILD_DIR)/test-caddy
+V_EXIST		= y
+#V_USER		= root
+#V_GROUP		= root
+#V_ACCESS	= 0700
+$(call end)

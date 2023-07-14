@@ -6,6 +6,10 @@ define ends-with
 $(if $(patsubst %$(1),,$(2)),,y)
 endef
 
+define streq
+$(if $(subst $(1),,$(2)),,y)
+endef
+
 define is-true
 $(findstring y,$(1))$(findstring t,$(1))$(findstring 1,$(1))
 endef

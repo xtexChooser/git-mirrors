@@ -8,7 +8,7 @@ $(if $(V_HOSTNAME),,$(error V_HOSTNAME is not defined))
 
 $(call mktrace,Define hostname target: $(V_TARGET_NAME))
 $(call mktrace-vars,$(HOSTNAME_VARS))
-$(if $(subst $(V_HOSTNAME),,$(HOSTNAME)),$(call apply-target,$(V_TARGET_NAME)))
+$(if $(call streq,$(V_HOSTNAME),$(HOSTNAME)),,$(call apply-target,$(V_TARGET_NAME)))
 $(call vt-target,$(V_TARGET_NAME))
 
 $(V_TARGET_NAME): $(V_DEPS)
