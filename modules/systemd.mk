@@ -1,12 +1,10 @@
 SYSTEMCTL = systemctl
 SYSTEMCTL_USER = $(SYSTEMCTL) --user
 
-SYSTEMD_UNIT_VARS=V_TARGET_NAME V_UNIT V_ENABLED V_DISABLED V_RUNNING V_STOPPED V_USER V_SYSTEMCTL V_POST V_DEPS
+SYSTEMD_UNIT_VARS=V_TARGET_NAME V_UNIT V_ENABLED V_RUNNING V_USER V_SYSTEMCTL V_POST V_DEPS
 define systemd-unit0
 $(eval V_TARGET_NAME?=systemd-$(V_UNIT))
 $(eval V_SYSTEMCTL ?= $(if $(V_USER),$(SYSTEMCTL_USER),$(SYSTEMCTL)))
-$(if $(V_ENABLED),$(if $(V_DISABLED),$(error Both V_ENABLED and V_DISABLED is defined for $(V_UNIT))))
-$(if $(V_RUNNING),$(if $(V_STOPPED),$(error Both V_RUNNING and V_STOPPED is defined for $(V_UNIT))))
 $(if $(findstring .,$(V_UNIT)),,$(error V_UNIT $(V_UNIT) should include the suffix, e.g. .service and .timer))
 
 $(call mktrace,Define systemd unit target: $(V_UNIT))
@@ -15,28 +13,28 @@ $(call apply-target,$(V_TARGET_NAME))
 $(call vt-target,$(V_TARGET_NAME))
 $(V_TARGET_NAME): $(V_DEPS)
 	export E_MAJOR=systemd E_UNIT=$(V_UNIT)
-$(if $(V_ENABLED),
+$(if $(call is-true,$(V_ENABLED)),
 	if ! $(V_SYSTEMCTL) is-enabled $(V_UNIT) > /dev/null; then
 		$(V_SYSTEMCTL) enable $(V_UNIT)
 		$(call succ, Enabled SD unit $(V_UNIT))
 		$(call vpost, E_MINOR=enabled)
 	fi
 )
-$(if $(V_DISABLED),
+$(if $(call is-false,$(V_ENABLED)),
 	if $(V_SYSTEMCTL) is-enabled $(V_UNIT) > /dev/null; then
 		$(V_SYSTEMCTL) enable $(V_UNIT)
 		$(call succ, Disabled SD unit $(V_UNIT))
 		$(call vpost, E_MINOR=disabled)
 	fi
 )
-$(if $(V_RUNNING),
+$(if $(call is-true,$(V_RUNNING)),
 	if ! $(V_SYSTEMCTL) is-active $(V_UNIT) > /dev/null; then
 		$(V_SYSTEMCTL) start $(V_UNIT)
 		$(call succ, Started SD unit $(V_UNIT))
 		$(call vpost, E_MINOR=activated)
 	fi
 )
-$(if $(V_STOPPED),
+$(if $(call is-false,$(V_RUNNING)),
 	if $(V_SYSTEMCTL) is-active $(V_UNIT) > /dev/null; then
 		$(V_SYSTEMCTL) stop $(V_UNIT)
 		$(call succ, Stopped SD unit $(V_UNIT))

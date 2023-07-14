@@ -1,13 +1,13 @@
 $(call systemd-unit)
 V_UNIT		= caddy.service
-V_DISABLE	= y
-V_STOPPED	= y
+V_ENABLED	= n
+V_RUNNING	= n
 V_DEPS		= pkg-caddy
 $(call end)
 
 $(call package)
 V_PKG		= caddy
-V_REMOVED	= y
+V_INSTALLED	= n
 V_INST_FILE	= /usr/bin/caddy
 $(call end)
 
@@ -18,7 +18,7 @@ $(call end)
 
 $(call refresh-timer)
 V_NAME		= caddy-daily
-V_POST		= pkg-refresh cmd-sd-reload-caddy
+#V_POST		= pkg-refresh cmd-sd-reload-caddy
 #V_TIME		= 10secs
 V_TIME		= 1days
 $(call end)
