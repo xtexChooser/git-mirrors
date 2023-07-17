@@ -4,7 +4,6 @@
 			"Piano1forte2"
 		]
 	},
-	"categorywatch-emailsubject": "Activity involving watched category '$1'",
 	"categorywatch-notification-bundle": "$1 changes in categorisation on {{SITENAME}}",
 	"echo-pref-tooltip-categorywatch": "Notify me when someone categorises a page into or out of a category that I'm watching."
 }
