@@ -1,4 +1,4 @@
-package quaedam.projection
+package quaedam.projection.misc
 
 import net.minecraft.core.BlockPos
 import net.minecraft.nbt.CompoundTag
@@ -7,6 +7,9 @@ import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.state.BlockState
 import quaedam.Quaedam
+import quaedam.projection.ProjectionBlock
+import quaedam.projection.ProjectionEffect
+import quaedam.projection.ProjectionEffectType
 
 object SkylightProjection {
 

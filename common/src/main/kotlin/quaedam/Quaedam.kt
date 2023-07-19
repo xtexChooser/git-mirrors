@@ -8,9 +8,11 @@ import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.ItemStack
-import net.minecraft.world.item.Items
 import org.slf4j.LoggerFactory
 import quaedam.projection.*
+import quaedam.projection.misc.NoiseProjection
+import quaedam.projection.misc.SkylightProjection
+import quaedam.projection.misc.SoundProjection
 import quaedam.projection.swarm.SwarmProjection
 import quaedam.projector.Projector
 

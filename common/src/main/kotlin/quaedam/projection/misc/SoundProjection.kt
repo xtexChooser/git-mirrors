@@ -1,4 +1,4 @@
-package quaedam.projection
+package quaedam.projection.misc
 
 import net.minecraft.core.BlockPos
 import net.minecraft.nbt.CompoundTag
@@ -7,52 +7,49 @@ import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.block.state.BlockState
 import quaedam.Quaedam
+import quaedam.projection.ProjectionBlock
+import quaedam.projection.ProjectionEffect
+import quaedam.projection.ProjectionEffectType
 
-object NoiseProjection {
+object SoundProjection {
 
-    const val ID = "noise_projection"
-    const val SHORT_ID = "noise"
+    const val ID = "sound_projection"
+    const val SHORT_ID = "sound"
 
-    val block = Quaedam.blocks.register(ID) { NoiseProjectionBlock }!!
+    val block = Quaedam.blocks.register(ID) { SoundProjectionBlock }!!
 
     val item = Quaedam.items.register(ID) {
         BlockItem(
-            NoiseProjectionBlock, Item.Properties()
+            SoundProjectionBlock, Item.Properties()
                 .`arch$tab`(Quaedam.creativeModeTab)
         )
     }!!
 
     val effect = Quaedam.projectionEffects.register(SHORT_ID) {
-        ProjectionEffectType { NoiseProjectionEffect() }
+        ProjectionEffectType { SoundProjectionEffect }
     }!!
 
 }
 
-object NoiseProjectionBlock : ProjectionBlock<NoiseProjectionEffect>(createProperties().lightLevel { 3 }) {
+object SoundProjectionBlock : ProjectionBlock<SoundProjectionEffect>(createProperties().lightLevel { 3 }) {
 
     override fun createProjectionEffect(
         level: ServerLevel,
         state: BlockState,
         pos: BlockPos
-    ) = NoiseProjectionEffect()
+    ) = SoundProjectionEffect
 
 }
 
-data class NoiseProjectionEffect(var amount: Int = 5) : ProjectionEffect() {
-
-    companion object {
-        const val TAG_AMOUNT = "Amount"
-    }
+object SoundProjectionEffect : ProjectionEffect() {
 
     override val type
         get() = SoundProjection.effect.get()!!
 
     override fun toNbt(tag: CompoundTag) {
-        tag.putInt(TAG_AMOUNT, amount)
     }
 
     override fun fromNbt(tag: CompoundTag) {
-        amount = tag.getInt(TAG_AMOUNT)
     }
 
 }

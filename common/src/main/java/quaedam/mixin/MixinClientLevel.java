@@ -8,8 +8,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import quaedam.projection.SkylightProjection;
-import quaedam.projection.SkylightProjectionEffect;
+import quaedam.projection.misc.SkylightProjection;
+import quaedam.projection.misc.SkylightProjectionEffect;
 import quaedam.projector.Projector;
 
 import java.util.List;
