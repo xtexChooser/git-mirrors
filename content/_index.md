@@ -25,7 +25,7 @@ There is no self-introduction for myself, see https://xtexx.ml/ pls.
 
 Look at [there](https://xtexx.ml/contact)
 
-or `mailto:xtexchooser_AT_duck.com` or `acct:xtexchooser@duck.com` or `matrix: @xtexchooser:sakura.ci`
+or `mailto:xtexchooser_AT_duck.com` or `acct:xtexchooser@neko.ci` or `matrix: @xtexchooser:sakura.ci`
 
 ## Some Links
 
