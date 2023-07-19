@@ -4,6 +4,7 @@ import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import quaedam.Quaedam
 import quaedam.projection.ProjectionEffectType
+import quaedam.projection.SimpleProjectionEntity
 
 object SwarmProjection {
 
@@ -21,6 +22,10 @@ object SwarmProjection {
 
     val effect = Quaedam.projectionEffects.register(SHORT_ID) {
         ProjectionEffectType { SwarmProjectionEffect() }
+    }!!
+
+    val blockEntity = Quaedam.blockEntities.register(ID) {
+        SimpleProjectionEntity.createBlockEntityType(block, ::SwarmProjectionEffect)
     }!!
 
     init {

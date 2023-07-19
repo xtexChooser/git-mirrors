@@ -1,15 +1,13 @@
 package quaedam.projection.misc
 
-import net.minecraft.core.BlockPos
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
-import net.minecraft.world.level.block.state.BlockState
 import quaedam.Quaedam
-import quaedam.projection.ProjectionBlock
+import quaedam.projection.EntityProjectionBlock
 import quaedam.projection.ProjectionEffect
 import quaedam.projection.ProjectionEffectType
+import quaedam.projection.SimpleProjectionEntity
 
 object SkylightProjection {
 
@@ -29,15 +27,15 @@ object SkylightProjection {
         ProjectionEffectType { SkylightProjectionEffect() }
     }!!
 
+    val blockEntity = Quaedam.blockEntities.register(ID) {
+        SimpleProjectionEntity.createBlockEntityType(block, ::SkylightProjectionEffect)
+    }!!
+
 }
 
-object SkylightProjectionBlock : ProjectionBlock<SkylightProjectionEffect>(createProperties().lightLevel { 3 }) {
+object SkylightProjectionBlock : EntityProjectionBlock<SkylightProjectionEffect>(createProperties().lightLevel { 3 }) {
 
-    override fun createProjectionEffect(
-        level: ServerLevel,
-        state: BlockState,
-        pos: BlockPos
-    ) = SkylightProjectionEffect()
+    override val blockEntity = SkylightProjection.blockEntity
 
 }
 

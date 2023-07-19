@@ -9,7 +9,8 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.ItemStack
 import org.slf4j.LoggerFactory
-import quaedam.projection.*
+import quaedam.projection.ProjectionCommand
+import quaedam.projection.ProjectionEffectType
 import quaedam.projection.misc.NoiseProjection
 import quaedam.projection.misc.SkylightProjection
 import quaedam.projection.misc.SoundProjection

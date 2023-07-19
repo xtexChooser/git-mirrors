@@ -42,15 +42,18 @@ abstract class ProjectionBlock<P : ProjectionEffect>(properties: Properties = cr
         itemStack: ItemStack
     ) {
         super.setPlacedBy(level, pos, state, placer, itemStack)
-        if (!level.isClientSide) {
-            findNearbyProjectors(level, pos)
-                .forEach { (level.getBlockEntity(it) as ProjectorBlockEntity).checkUpdate() }
-        }
+        sendUpdateToProjectors(level, pos)
     }
 
     override fun destroy(level: LevelAccessor, pos: BlockPos, state: BlockState) {
         super.destroy(level, pos, state)
-        if (level is Level && !level.isClientSide) {
+        if (level is Level) {
+            sendUpdateToProjectors(level, pos)
+        }
+    }
+
+    fun sendUpdateToProjectors(level: Level, pos: BlockPos) {
+        if (!level.isClientSide) {
             findNearbyProjectors(level, pos)
                 .forEach { (level.getBlockEntity(it) as ProjectorBlockEntity).checkUpdate() }
         }

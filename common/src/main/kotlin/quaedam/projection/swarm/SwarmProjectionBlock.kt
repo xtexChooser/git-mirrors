@@ -1,16 +1,9 @@
 package quaedam.projection.swarm
 
-import net.minecraft.core.BlockPos
-import net.minecraft.server.level.ServerLevel
-import net.minecraft.world.level.block.state.BlockState
-import quaedam.projection.ProjectionBlock
+import quaedam.projection.EntityProjectionBlock
 
-object SwarmProjectionBlock : ProjectionBlock<SwarmProjectionEffect>() {
+object SwarmProjectionBlock : EntityProjectionBlock<SwarmProjectionEffect>() {
 
-    override fun createProjectionEffect(
-        level: ServerLevel,
-        state: BlockState,
-        pos: BlockPos
-    ) = SwarmProjectionEffect()
+    override val blockEntity = SwarmProjection.blockEntity
 
 }

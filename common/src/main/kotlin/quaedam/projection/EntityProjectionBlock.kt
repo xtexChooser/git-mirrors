@@ -1,59 +1,32 @@
 package quaedam.projection
 
+import dev.architectury.registry.registries.DeferredSupplier
 import net.minecraft.core.BlockPos
-import net.minecraft.world.entity.LivingEntity
-import net.minecraft.world.item.ItemStack
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.Level
-import net.minecraft.world.level.LevelAccessor
-import net.minecraft.world.level.block.Block
+import net.minecraft.world.level.block.EntityBlock
+import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
-import net.minecraft.world.level.material.MapColor
-import net.minecraft.world.level.storage.loot.LootParams
-import quaedam.projector.ProjectorBlockEntity
-import quaedam.utils.getChunksNearby
 
-abstract class EntityProjectionBlock<P : ProjectionEffect>(properties: Properties = createProperties()) : Block(properties),
-    ProjectionProvider<P> {
+abstract class EntityProjectionBlock<P : ProjectionEffect>(properties: Properties = createProperties()) :
+    ProjectionBlock<P>(properties), EntityBlock {
 
     companion object {
-        fun createProperties(): Properties = Properties.of()
-            .strength(3.5f)
-            .requiresCorrectToolForDrops()
-            .mapColor(MapColor.COLOR_GRAY)
-
-        fun findNearbyProjectors(level: Level, pos: BlockPos) = level.getChunksNearby(pos, 1)
-            .flatMap {
-                it.blockEntities.filter { (_, v) -> v is ProjectorBlockEntity }
-                    .keys
-                    .filterNotNull()
-            }
-            .toSet()
-
+        fun createProperties(): Properties = ProjectionBlock.createProperties()
     }
 
-    @Suppress("OVERRIDE_DEPRECATION")
-    override fun getDrops(blockState: BlockState, builder: LootParams.Builder) = listOf(ItemStack(asItem()))
+    abstract val blockEntity: DeferredSupplier<BlockEntityType<SimpleProjectionEntity<P>>>
 
-    override fun setPlacedBy(
-        level: Level,
-        pos: BlockPos,
-        state: BlockState,
-        placer: LivingEntity?,
-        itemStack: ItemStack
-    ) {
-        super.setPlacedBy(level, pos, state, placer, itemStack)
-        if (!level.isClientSide) {
-            findNearbyProjectors(level, pos)
-                .forEach { (level.getBlockEntity(it) as ProjectorBlockEntity).checkUpdate() }
-        }
-    }
+    override fun newBlockEntity(pos: BlockPos, state: BlockState) = blockEntity.get().create(pos, state)
 
-    override fun destroy(level: LevelAccessor, pos: BlockPos, state: BlockState) {
-        super.destroy(level, pos, state)
-        if (level is Level && !level.isClientSide) {
-            findNearbyProjectors(level, pos)
-                .forEach { (level.getBlockEntity(it) as ProjectorBlockEntity).checkUpdate() }
-        }
+    @Suppress("UNCHECKED_CAST")
+    fun getProjection(level: Level, pos: BlockPos) = (level.getBlockEntity(pos) as SimpleProjectionEntity<P>).projection
+
+    override fun applyProjectionEffect(level: ServerLevel, state: BlockState, pos: BlockPos) = getProjection(level, pos)
+
+    inline fun applyChange(level: Level, pos: BlockPos, func: P.() -> Unit) {
+        getProjection(level, pos).apply(func)
+        sendUpdateToProjectors(level, pos)
     }
 
 }

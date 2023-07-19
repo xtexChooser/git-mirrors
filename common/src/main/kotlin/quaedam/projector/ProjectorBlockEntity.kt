@@ -132,7 +132,7 @@ class ProjectorBlockEntity(pos: BlockPos, state: BlockState) :
                     val blockState = level.getBlockState(pos)
                     val block = blockState.block
                     if (block is ProjectionProvider<*>) {
-                        val projection = block.createProjectionEffect(level, blockState, pos)
+                        val projection = block.applyProjectionEffect(level, blockState, pos)
                         if (projection != null) {
                             effects[projection.type] = projection
                         }

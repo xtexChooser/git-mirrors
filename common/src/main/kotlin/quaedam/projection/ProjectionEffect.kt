@@ -57,5 +57,5 @@ data class ProjectionEffectType<T : ProjectionEffect>(val constructor: () -> T) 
 }
 
 interface ProjectionProvider<P : ProjectionEffect> {
-    fun createProjectionEffect(level: ServerLevel, state: BlockState, pos: BlockPos): P?
+    fun applyProjectionEffect(level: ServerLevel, state: BlockState, pos: BlockPos): P?
 }
