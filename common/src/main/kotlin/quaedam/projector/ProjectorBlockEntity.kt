@@ -21,6 +21,10 @@ import quaedam.utils.sendBlockUpdated
 class ProjectorBlockEntity(pos: BlockPos, state: BlockState) :
     BlockEntity(Projector.blockEntity.get(), pos, state) {
 
+    companion object {
+        const val TAG_PROJECTION_EFFECTS = "ProjectionEffects"
+    }
+
     val effectAreaChunk by lazy {
         val chunk = level!!.getChunk(pos).pos
         ChunkPos(chunk.x - Projector.EFFECT_RADIUS, chunk.z - Projector.EFFECT_RADIUS) to
@@ -53,12 +57,12 @@ class ProjectorBlockEntity(pos: BlockPos, state: BlockState) :
         effects.map { (type, effect) ->
             effectsTag.put(type.id.toString(), effect.toNbt())
         }
-        tag.put("ProjectionEffects", effectsTag)
+        tag.put(TAG_PROJECTION_EFFECTS, effectsTag)
     }
 
     override fun load(tag: CompoundTag) {
         super.load(tag)
-        val effectsTag = tag["ProjectionEffects"]
+        val effectsTag = tag[TAG_PROJECTION_EFFECTS]
         val effects = mutableMapOf<ProjectionEffectType<*>, ProjectionEffect>()
         if (effectsTag != null && effectsTag is CompoundTag) {
             effectsTag.allKeys.forEach { id ->
