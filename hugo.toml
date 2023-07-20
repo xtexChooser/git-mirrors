@@ -1,4 +1,4 @@
-baseURL = 'https://blog.xtexx.ml/'
+baseURL = 'https://blog.xtexx.eu.org/'
 languageCode = 'zh-cn'
 title = "xtex's Blog"
 theme = 'arc'
@@ -35,7 +35,7 @@ timeZone = "Asia/Shanghai"
 
 [[params.links]]
     text = "home"
-    url = "https://xtexx.ml/"
+    url = "https://xtexx.eu.org/"
     target = "_blank"
 
 [params.icon]
