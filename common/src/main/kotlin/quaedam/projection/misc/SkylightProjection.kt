@@ -45,26 +45,6 @@ object SkylightProjectionBlock : EntityProjectionBlock<SkylightProjectionEffect>
 
     override val blockEntity = SkylightProjection.blockEntity
 
-    override fun use(
-        blockState: BlockState,
-        level: Level,
-        blockPos: BlockPos,
-        player: Player,
-        interactionHand: InteractionHand,
-        blockHitResult: BlockHitResult
-    ): InteractionResult {
-        if (level.isClientSide) {
-            println("update")
-            applyChange(level, blockPos) {
-                factor -= 0.5
-                if (factor < 0.5) factor = 2.0
-                println("new factor: $factor")
-            }
-            return InteractionResult.CONSUME
-        }
-        return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult)
-    }
-
 }
 
 data class SkylightProjectionEffect(var factor: Double = 2.0) : ProjectionEffect() {
