@@ -1387,3 +1387,36 @@ Hello
 - 安装了zig
 - gopher好玩
 - 用了z3-solver、pwntools
+- AVX Masked-Load侧信道攻击
+
+### 奇奇怪怪的东西
+
+- 比赛中途有人提前公布了crypto/You get extra information {1,2}的script
+
+- 比赛结束前一小时才有人做出guessctf
+
+- 官方题解.webp：
+
+  ![guessctf-writeup.webp](guessctf-writeup.webp)
+
+### 其他Writeup
+
+- [daffainfo - zippper](https://github.com/daffainfo/ctf-writeup/tree/main/AmateursCTF%202023/zipper)
+- [0xazr - lahoot](https://scribe.projectsegfau.lt/@0xazr/winning-race-condition-writeup-web-lahoot-amateursctf-2023-b4e6fddd7bb8)
+- [official - sanity](https://gist.github.com/voxxal/fb69443f0a31bc6f2ddbce763d609935#sanity)
+- [official - perfect sandbox](https://amateurs.team/writeups/AmateursCTF-2023/perfect-sandbox)
+
+### 从别人的Writeup学到的
+
+- py `marshal.dump`可以直接dump code
+- 直接往shell塞\x00可以使后面的pipe不被处理
+- `window.xxx`可以直接按ID获取
+- linux可以mmap的最低线性内存地址由`vm.mmap_min_addr` sysctl决定
+- AVX Masked-Load侧信道攻击
+- `write` syscall提供无效地址只会返回错误而不会SIGSEGV
+- `write` syscall提供一半有效一半无效的范围时只会打印有效的地址
+
+### 最终得分
+
+![scores.webp](scores.webp)
+
