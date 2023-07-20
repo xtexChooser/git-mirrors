@@ -16,7 +16,7 @@ abstract class ProjectionEffect {
 
     abstract fun toNbt(tag: CompoundTag)
 
-    abstract fun fromNbt(tag: CompoundTag)
+    abstract fun fromNbt(tag: CompoundTag, trusted: Boolean)
 
     fun toNbt() = CompoundTag().apply { toNbt(this) }
 
@@ -51,7 +51,7 @@ data class ProjectionEffectType<T : ProjectionEffect>(val constructor: () -> T) 
     object NopEffect : ProjectionEffect() {
         override val type get() = nopEffect
         override fun toNbt(tag: CompoundTag) {}
-        override fun fromNbt(tag: CompoundTag) {}
+        override fun fromNbt(tag: CompoundTag, trusted: Boolean) {}
     }
 
 }

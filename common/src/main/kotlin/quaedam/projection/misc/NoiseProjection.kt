@@ -8,6 +8,7 @@ import quaedam.projection.EntityProjectionBlock
 import quaedam.projection.ProjectionEffect
 import quaedam.projection.ProjectionEffectType
 import quaedam.projection.SimpleProjectionEntity
+import kotlin.math.min
 
 object NoiseProjection {
 
@@ -52,8 +53,11 @@ data class NoiseProjectionEffect(var amount: Int = 5) : ProjectionEffect() {
         tag.putInt(TAG_AMOUNT, amount)
     }
 
-    override fun fromNbt(tag: CompoundTag) {
+    override fun fromNbt(tag: CompoundTag, trusted: Boolean) {
         amount = tag.getInt(TAG_AMOUNT)
+        if (!trusted) {
+            amount = min(amount, 8)
+        }
     }
 
 }

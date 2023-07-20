@@ -8,6 +8,7 @@ import quaedam.projection.EntityProjectionBlock
 import quaedam.projection.ProjectionEffect
 import quaedam.projection.ProjectionEffectType
 import quaedam.projection.SimpleProjectionEntity
+import kotlin.math.min
 
 object SkylightProjection {
 
@@ -52,8 +53,11 @@ data class SkylightProjectionEffect(var factor: Double = 2.0) : ProjectionEffect
         tag.putDouble(TAG_FACTOR, factor)
     }
 
-    override fun fromNbt(tag: CompoundTag) {
+    override fun fromNbt(tag: CompoundTag, trusted: Boolean) {
         factor = tag.getDouble(TAG_FACTOR)
+        if (!trusted) {
+            factor = min(factor, 5.0)
+        }
     }
 
 }

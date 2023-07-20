@@ -24,8 +24,11 @@ data class SwarmProjectionEffect(
         tag.putInt(TAG_MAX_COUNT, maxCount)
     }
 
-    override fun fromNbt(tag: CompoundTag) {
+    override fun fromNbt(tag: CompoundTag, trusted: Boolean) {
         maxCount = tag.getInt(TAG_MAX_COUNT)
+        if (!trusted){
+            maxCount = min(maxCount, 250)
+        }
     }
 
     override fun randomTick(level: ServerLevel, pos: BlockPos) {

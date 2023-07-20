@@ -41,7 +41,7 @@ class SimpleProjectionEntity<P : ProjectionEffect>(
 
     override fun load(tag: CompoundTag) {
         super.load(tag)
-        projection.fromNbt(tag.getCompound(TAG_PROJECTION_EFFECT))
+        projection.fromNbt(tag.getCompound(TAG_PROJECTION_EFFECT), true)
     }
 
     override fun getUpdateTag(): CompoundTag = saveWithoutMetadata()

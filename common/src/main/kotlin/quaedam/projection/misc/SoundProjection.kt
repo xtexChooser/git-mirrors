@@ -47,7 +47,7 @@ object SoundProjectionEffect : ProjectionEffect() {
     override fun toNbt(tag: CompoundTag) {
     }
 
-    override fun fromNbt(tag: CompoundTag) {
+    override fun fromNbt(tag: CompoundTag, trusted: Boolean) {
     }
 
 }

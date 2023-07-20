@@ -68,7 +68,7 @@ class ProjectorBlockEntity(pos: BlockPos, state: BlockState) :
             effectsTag.allKeys.forEach { id ->
                 val type = ProjectionEffectType.registry[ResourceLocation(id)]
                 if (type != null) {
-                    val effect = type.constructor().apply { fromNbt(effectsTag[id] as CompoundTag) }
+                    val effect = type.constructor().apply { fromNbt(effectsTag[id] as CompoundTag, true) }
                     effects[type] = effect
                 }
             }
