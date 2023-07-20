@@ -3,13 +3,13 @@
 
 name = "arc"
 license = "Apache-2.0"
-licenselink = "https://github.com/yourname/yourtheme/blob/master/LICENSE"
+licenselink = "https://codeberg.org/xtex/hugo-theme-arc/src/branch/main/LICENSE"
 description = ""
-homepage = "http://example.com/"
+homepage = "http://blog.xtexx.eu.org/"
 tags = []
 features = []
 min_version = "0.112.5"
 
 [author]
   name = "xtex"
-  homepage = "https://xtexx.ml/"
+  homepage = "https://xtexx.eu.org/"
