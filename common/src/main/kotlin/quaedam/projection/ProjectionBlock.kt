@@ -29,6 +29,13 @@ abstract class ProjectionBlock<P : ProjectionEffect>(properties: Properties = cr
             }
             .toSet()
 
+        fun sendUpdateToProjectors(level: Level, pos: BlockPos) {
+            if (!level.isClientSide) {
+                findNearbyProjectors(level, pos)
+                    .forEach { (level.getBlockEntity(it) as ProjectorBlockEntity).checkUpdate() }
+            }
+        }
+
     }
 
     @Suppress("OVERRIDE_DEPRECATION")
@@ -49,13 +56,6 @@ abstract class ProjectionBlock<P : ProjectionEffect>(properties: Properties = cr
         super.destroy(level, pos, state)
         if (level is Level) {
             sendUpdateToProjectors(level, pos)
-        }
-    }
-
-    fun sendUpdateToProjectors(level: Level, pos: BlockPos) {
-        if (!level.isClientSide) {
-            findNearbyProjectors(level, pos)
-                .forEach { (level.getBlockEntity(it) as ProjectorBlockEntity).checkUpdate() }
         }
     }
 

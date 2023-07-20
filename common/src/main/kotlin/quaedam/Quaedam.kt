@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack
 import org.slf4j.LoggerFactory
 import quaedam.projection.ProjectionCommand
 import quaedam.projection.ProjectionEffectType
+import quaedam.projection.SimpleProjectionUpdate
 import quaedam.projection.misc.NoiseProjection
 import quaedam.projection.misc.SkylightProjection
 import quaedam.projection.misc.SoundProjection
@@ -48,6 +49,7 @@ object Quaedam {
         SoundProjection
         NoiseProjection
         ProjectionCommand
+        SimpleProjectionUpdate
 
         creativeModeTabs.register()
         items.register()

@@ -26,7 +26,7 @@ data class SwarmProjectionEffect(
 
     override fun fromNbt(tag: CompoundTag, trusted: Boolean) {
         maxCount = tag.getInt(TAG_MAX_COUNT)
-        if (!trusted){
+        if (!trusted) {
             maxCount = min(maxCount, 250)
         }
     }

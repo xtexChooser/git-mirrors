@@ -14,19 +14,20 @@ class SimpleProjectionEntity<P : ProjectionEffect>(
     type: BlockEntityType<SimpleProjectionEntity<P>>,
     pos: BlockPos,
     state: BlockState,
-    val projection: P
+    var projection: P,
+    val default: () -> P,
 ) : BlockEntity(type, pos, state) {
 
     companion object {
         const val TAG_PROJECTION_EFFECT = "ProjectionEffect"
 
-        fun <P : ProjectionEffect, B: ProjectionBlock<P>> createBlockEntityType(
+        fun <P : ProjectionEffect, B : ProjectionBlock<P>> createBlockEntityType(
             block: RegistrySupplier<B>,
             default: () -> P,
         ): BlockEntityType<SimpleProjectionEntity<P>> {
             val type = ValueContainer<BlockEntityType<SimpleProjectionEntity<P>>>()
             type.inner = BlockEntityType.Builder.of({ pos, state ->
-                SimpleProjectionEntity(type.inner!!, pos, state, default())
+                SimpleProjectionEntity(type.inner!!, pos, state, default(), default)
             }, block.get()).build(null)
             return type.inner!!
         }
@@ -41,11 +42,15 @@ class SimpleProjectionEntity<P : ProjectionEffect>(
 
     override fun load(tag: CompoundTag) {
         super.load(tag)
-        projection.fromNbt(tag.getCompound(TAG_PROJECTION_EFFECT), true)
+        if (TAG_PROJECTION_EFFECT in tag) {
+            projection.fromNbt(tag.getCompound(TAG_PROJECTION_EFFECT))
+        }
     }
 
     override fun getUpdateTag(): CompoundTag = saveWithoutMetadata()
 
     override fun getUpdatePacket(): Packet<ClientGamePacketListener> = ClientboundBlockEntityDataPacket.create(this)
+
+    fun cloneProjection() = default().apply { fromNbt(projection.toNbt()) }
 
 }

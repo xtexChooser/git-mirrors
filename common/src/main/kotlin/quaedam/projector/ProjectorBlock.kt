@@ -39,6 +39,7 @@ object ProjectorBlock : Block(Properties.of()
         blockHitResult: BlockHitResult
     ): InteractionResult {
         checkUpdate(level, blockPos)
+        println(level.getBlockEntity(blockPos)!!.saveWithoutMetadata())
         return InteractionResult.SUCCESS
     }
 

@@ -1,8 +1,15 @@
 package quaedam.projection.misc
 
+import net.minecraft.core.BlockPos
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.world.InteractionHand
+import net.minecraft.world.InteractionResult
+import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
+import net.minecraft.world.level.Level
+import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.phys.BlockHitResult
 import quaedam.Quaedam
 import quaedam.projection.EntityProjectionBlock
 import quaedam.projection.ProjectionEffect
@@ -37,6 +44,26 @@ object SkylightProjection {
 object SkylightProjectionBlock : EntityProjectionBlock<SkylightProjectionEffect>(createProperties().lightLevel { 3 }) {
 
     override val blockEntity = SkylightProjection.blockEntity
+
+    override fun use(
+        blockState: BlockState,
+        level: Level,
+        blockPos: BlockPos,
+        player: Player,
+        interactionHand: InteractionHand,
+        blockHitResult: BlockHitResult
+    ): InteractionResult {
+        if (level.isClientSide) {
+            println("update")
+            applyChange(level, blockPos) {
+                factor -= 0.5
+                if (factor < 0.5) factor = 2.0
+                println("new factor: $factor")
+            }
+            return InteractionResult.CONSUME
+        }
+        return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult)
+    }
 
 }
 

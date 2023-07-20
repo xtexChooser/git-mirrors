@@ -21,7 +21,10 @@ subprojects {
 
     dependencies {
         "minecraft"("com.mojang:minecraft:${project.property("minecraft_version")}")
-        "mappings"(loom.officialMojangMappings())
+        "mappings"(loom.layered {
+            officialMojangMappings()
+            parchment("org.parchmentmc.data:parchment-${project.property("minecraft_version")}:${project.property("parchment_version")}@zip")
+        })
     }
 }
 
@@ -34,6 +37,13 @@ allprojects {
     base.archivesName.set("quaedam")
     version = "1.0.0"
     group = "quaedam"
+
+    repositories {
+        maven {
+            name = "ParchmentMC"
+            setUrl("https://maven.parchmentmc.org")
+        }
+    }
 
     dependencies {
         compileOnly("org.jetbrains.kotlin:kotlin-stdlib")

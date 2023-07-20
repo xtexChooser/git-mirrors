@@ -10,17 +10,17 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
 
-abstract class ProjectionEffect {
+abstract class ProjectionEffect : Cloneable {
 
     abstract val type: ProjectionEffectType<*>
 
     abstract fun toNbt(tag: CompoundTag)
 
-    abstract fun fromNbt(tag: CompoundTag, trusted: Boolean)
+    abstract fun fromNbt(tag: CompoundTag, trusted: Boolean = true)
 
     fun toNbt() = CompoundTag().apply { toNbt(this) }
 
-    override fun equals(other: Any?) = other === this
+    override fun equals(other: Any?): Boolean = other === this
 
     override fun hashCode() = type.hashCode()
 
