@@ -1,20 +1,15 @@
 package quaedam.projection.misc
 
-import net.minecraft.core.BlockPos
 import net.minecraft.nbt.CompoundTag
-import net.minecraft.world.InteractionHand
-import net.minecraft.world.InteractionResult
-import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
-import net.minecraft.world.level.Level
-import net.minecraft.world.level.block.state.BlockState
-import net.minecraft.world.phys.BlockHitResult
 import quaedam.Quaedam
 import quaedam.projection.EntityProjectionBlock
 import quaedam.projection.ProjectionEffect
 import quaedam.projection.ProjectionEffectType
 import quaedam.projection.SimpleProjectionEntity
+import quaedam.shell.ProjectionEffectShell
+import quaedam.shell.buildProjectionEffectShell
 import kotlin.math.min
 
 object SkylightProjection {
@@ -47,7 +42,7 @@ object SkylightProjectionBlock : EntityProjectionBlock<SkylightProjectionEffect>
 
 }
 
-data class SkylightProjectionEffect(var factor: Double = 2.0) : ProjectionEffect() {
+data class SkylightProjectionEffect(var factor: Double = 2.0) : ProjectionEffect(), ProjectionEffectShell.Provider {
 
     companion object {
         const val TAG_FACTOR = "Factor"
@@ -65,6 +60,10 @@ data class SkylightProjectionEffect(var factor: Double = 2.0) : ProjectionEffect
         if (!trusted) {
             factor = min(factor, 5.0)
         }
+    }
+
+    override fun createShell() = buildProjectionEffectShell(this) {
+        doubleSlider("quaedam.shell.skylight.factor", ::factor, 0.0..5.0, 0.1)
     }
 
 }

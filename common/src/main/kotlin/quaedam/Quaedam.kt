@@ -17,6 +17,7 @@ import quaedam.projection.misc.SkylightProjection
 import quaedam.projection.misc.SoundProjection
 import quaedam.projection.swarm.SwarmProjection
 import quaedam.projector.Projector
+import quaedam.shell.ProjectionShell
 
 object Quaedam {
 
@@ -50,6 +51,7 @@ object Quaedam {
         NoiseProjection
         ProjectionCommand
         SimpleProjectionUpdate
+        ProjectionShell
 
         creativeModeTabs.register()
         items.register()

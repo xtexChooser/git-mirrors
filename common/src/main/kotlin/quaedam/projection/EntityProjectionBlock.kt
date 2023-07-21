@@ -8,10 +8,12 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.EntityBlock
 import net.minecraft.world.level.block.entity.BlockEntityType
 import net.minecraft.world.level.block.state.BlockState
+import quaedam.shell.ProjectionEffectShell
+import quaedam.shell.ProjectionShellBlock
 import quaedam.utils.sendBlockUpdated
 
 abstract class EntityProjectionBlock<P : ProjectionEffect>(properties: Properties = createProperties()) :
-    ProjectionBlock<P>(properties), EntityBlock {
+    ProjectionBlock<P>(properties), EntityBlock, ProjectionShellBlock {
 
     companion object {
         fun createProperties(): Properties = ProjectionBlock.createProperties()
@@ -38,6 +40,13 @@ abstract class EntityProjectionBlock<P : ProjectionEffect>(properties: Propertie
             getBlockEntity(level, pos).sendBlockUpdated()
             sendUpdateToProjectors(level, pos)
         }
+    }
+
+    override fun getProjectionEffectForShell(level: Level, pos: BlockPos) =
+        (getBlockEntity(level, pos).cloneProjection() as ProjectionEffectShell.Provider).createShell()
+
+    override fun applyFromShell(level: Level, pos: BlockPos, shell: ProjectionEffectShell) = applyChange(level, pos) {
+        fromNbt(shell.effect.toNbt())
     }
 
 }

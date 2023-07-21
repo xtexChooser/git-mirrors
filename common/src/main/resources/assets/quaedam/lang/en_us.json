@@ -5,5 +5,11 @@
   "block.quaedam.swarm_projection": "Swarm Projection",
   "block.quaedam.sound_projection": "Sound Projection",
   "block.quaedam.noise_projection": "Noise Projection",
-  "entity.quaedam.projected_person": "Virtual Person"
+  "entity.quaedam.projected_person": "Virtual Person",
+  "item.quaedam.projection_shell": "Projection Shell",
+  "quaedam.screen.projection_shell": "Projection Shell",
+  "quaedam.screen.projection_shell.lock_revoked": "Timeout! Connection Lost",
+  "quaedam.screen.projection_shell.lock_failed": "Permission denied!",
+  "quaedam.screen.projection_shell.save": "Save",
+  "quaedam.shell.skylight.factor": "Factor"
 }
