@@ -4,7 +4,7 @@
         "name": "xtex-home",
         "version": "1.0",
         "repository": "https://source.moe/xtex/home",
-        "homepage": "https://xtexx.ml/"
+        "homepage": "https://xtexx.eu.org/"
     },
     "protocols": ["activitypub"],
     "services": {
@@ -24,7 +24,7 @@
         "nodeDescription": "The xtex's Home\n",
         "maintainer": {
             "name": "xtex",
-            "email": "xtex@xtexx.ml"
+            "email": "xtex@xtexx.eu.org"
         },
         "langs": [],
         "repositoryUrl": "https://source.moe/xtex/home",

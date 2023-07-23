@@ -7,7 +7,7 @@ const nextConfig = {
         return [
             {
                 source: "/blog/:path*",
-                destination: "https://blog.xtexx.ml/:path*",
+                destination: "https://blog.xtexx.eu.org/:path*",
                 permanent: true,
             },
         ];

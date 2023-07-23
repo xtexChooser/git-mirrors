@@ -21,7 +21,7 @@ export default function Home() {
                         <ul>
                             <li>
                                 <a
-                                    href="https://blog.xtexx.ml/about"
+                                    href="https://blog.xtexx.eu.org/about"
                                     target="_blank"
                                     rel="noreferrer"
                                 >
@@ -30,7 +30,7 @@ export default function Home() {
                             </li>
                             <li>
                                 <a
-                                    href="https://blog.xtexx.ml/about/contact.html"
+                                    href="https://blog.xtexx.eu.org/about/contact.html"
                                     target="_blank"
                                     rel="noreferrer"
                                 >
@@ -50,20 +50,11 @@ export default function Home() {
                     <ul>
                         <li>
                             <a
-                                href="https://blog.xtexx.ml/"
+                                href="https://blog.xtexx.eu.org/"
                                 target="_blank"
                                 rel="noreferrer"
                             >
                                 Blog
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                href="https://status.xtexx.ml/"
-                                target="_blank"
-                                rel="noreferrer"
-                            >
-                                Status
                             </a>
                         </li>
                     </ul>

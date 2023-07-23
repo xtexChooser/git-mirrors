@@ -1,23 +1,23 @@
 [
     {
         "rel": "icon",
-        "href": "https://xtexx.ml/favicon.ico"
+        "href": "https://xtexx.eu.org/favicon.ico"
     },
     {
         "rel": "about",
-        "href": "https://xtexx.ml/site_about"
+        "href": "https://xtexx.eu.org/site_about"
     },
     {
         "rel": "copyright",
-        "href": "https://xtexx.ml/site_about#license"
+        "href": "https://xtexx.eu.org/site_about#license"
     },
     {
         "rel": "author",
-        "href": "mailto:xtex@xtexx.ml"
+        "href": "mailto:xtex@xtexx.eu.org"
     },
     {
         "rel": "lrdd",
         "type": "application/jrd+json",
-        "template": "https://xtexx.ml/.well-known/webfinger?resource={uri}"
+        "template": "https://xtexx.eu.org/.well-known/webfinger?resource={uri}"
     }
 ]

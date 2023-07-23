@@ -7,30 +7,30 @@
         }
     ],
     "type": "Service",
-    "id": "https://xtexx.ml/ap/actor.json",
+    "id": "https://xtexx.eu.org/ap/actor.json",
     "preferredUsername": "instance",
     "name": "xtex's Home",
-    "summary": "The Instance Actor of xtex's Home. Just only represents xtexx.ml for Fediverse interactive operations.",
-    "url": "https://xtexx.ml/",
+    "summary": "The Instance Actor of xtex's Home. Just only represents xtexx.eu.org for Fediverse interactive operations.",
+    "url": "https://xtexx.eu.org/",
     "icon": {
         "type": "Image",
-        "url": "https://blog.xtexx.ml/icon.png",
+        "url": "https://blog.xtexx.eu.org/icon.png",
         "name": "xtex's Avatar"
     },
     "image": {
         "type": "Image",
-        "url": "https://blog.xtexx.ml/icon.png",
+        "url": "https://blog.xtexx.eu.org/icon.png",
         "name": "xtex's Avatar"
     },
-    "inbox": "https://xtexx.ml/ap/api/inbox",
-    "sharedInbox": "https://xtexx.ml/ap/api/shared_inbox",
+    "inbox": "https://xtexx.eu.org/ap/api/inbox",
+    "sharedInbox": "https://xtexx.eu.org/ap/api/shared_inbox",
     "endpoints": {
-        "sharedInbox": "https://xtexx.ml/ap/api/shared_inbox"
+        "sharedInbox": "https://xtexx.eu.org/ap/api/shared_inbox"
     },
     "publicKey": {
-        "id": "https://xtexx.ml/ap/actor.json#main-key",
+        "id": "https://xtexx.eu.org/ap/actor.json#main-key",
         "type": "Key",
-        "owner": "https://xtexx.ml/ap/actor.json",
+        "owner": "https://xtexx.eu.org/ap/actor.json",
         "publicKeyPem": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5+4/pwu49x8Bszd7wFZt\nTalkS0PFnXhPgpaDZ8itVkTWUmPaI7+FBKKftCT+gclhmhlrlpla2MFFaBvJJuXr\nKmBd6yCkoi0mWT3w+9WHaUYCh1LBY0q5smRfdw8PRr8cvXvnrJKyv3lzLHky6MQs\nHjlRKsctOxXE9F1ivzwzRHcxC6dca+FPqMD8YbDVhx9tp0dUbcIpmfTzwJiEhYpW\nsH0gblDzq3sYzRo09o/6ut9Am9fbAuqkQCkUEYMux36c8gKghIFXHKBYRs4tub3c\nrhf02tvjkUxvvlPdwQCCNIzcn6PppFuAGCnSdBSiTTXWgF1L8PToi6X4mxRVKXCl\n0QIDAQAB\n-----END PUBLIC KEY-----\n"
     },
     "discoverable": false,
@@ -44,7 +44,7 @@
         {
             "type": "PropertyValue",
             "name": "Web Site",
-            "value": "<a href=\"https://xtexx.ml/\" rel=\"me nofollow noopener\" target=\"_blank\">https://xtexx.ml/</a>"
+            "value": "<a href=\"https://xtexx.eu.org/\" rel=\"me nofollow noopener\" target=\"_blank\">https://xtexx.eu.org/</a>"
         }
     ]
 }

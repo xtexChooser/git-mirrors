@@ -46,11 +46,11 @@ export default async function handler(
             {
                 type: ActivityTypes.REJECT,
                 id: new URL(
-                    `https://xtexx.ml/ap/reject_follows/${encodeURI(
+                    `https://xtexx.eu.org/ap/reject_follows/${encodeURI(
                         actor.id!!.toString()
                     )}`
                 ),
-                actor: new URL("https://xtexx.ml/ap/actor.json"),
+                actor: new URL("https://xtexx.eu.org/ap/actor.json"),
                 object: activity.id,
                 target: actor.id,
             } as Reject
