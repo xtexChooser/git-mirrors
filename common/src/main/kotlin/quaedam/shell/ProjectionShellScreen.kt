@@ -38,7 +38,7 @@ class ProjectionShellScreen(val level: Level, val pos: BlockPos, val shell: Proj
                     block.applyFromShell(level, pos, shell)
                 }
                 GameInstance.getClient().setScreen(null)
-            }.build())
+            }.build().apply(::setInitialFocus))
         }
         layout.arrangeElements()
         layout.x = (width - layout.width) / 2
