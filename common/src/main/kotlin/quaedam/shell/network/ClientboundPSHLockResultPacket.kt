@@ -50,6 +50,7 @@ data class ClientboundPSHLockResultPacket(val pos: BlockPos, val result: Boolean
                             )
                         } catch (e: Throwable) {
                             Quaedam.logger.error("Failed to open projection shell screen", e)
+                            ProjectionShell.channel.sendToServer(ServerboundPSHLockReleasePacket(pos))
                         }
                     }
                 } else {
