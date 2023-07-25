@@ -11,6 +11,8 @@
   "quaedam.screen.projection_shell.lock_revoked": "超时！连接丢失",
   "quaedam.screen.projection_shell.lock_failed": "正被使用",
   "quaedam.screen.projection_shell.save": "保存",
+  "quaedam.screen.projection_shell.empty": "无可用选项！",
+  "quaedam.screen.projection_shell.close": "关闭",
   "quaedam.shell.skylight.factor": "因子",
   "quaedam.shell.noise.amount": "数量",
   "quaedam.shell.swarm.max_count": "最大数量"

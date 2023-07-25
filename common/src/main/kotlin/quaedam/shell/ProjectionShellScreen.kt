@@ -24,19 +24,27 @@ class ProjectionShellScreen(val level: Level, val pos: BlockPos, val shell: Proj
         super.init()
         layout = GridLayout()
         layout.spacing(4)
-        val rows = layout.createRowHelper(2)
         val renderContext = ShellRenderContext(this)
-        shell.rows.forEach {
-            rows.addChild(StringWidget(150, 20, it.text, font))
-            rows.addChild(it.renderer(renderContext))
-        }
-        run { // Buttons
-            rows.addChild(StringWidget(Component.empty(), font))
-            rows.addChild(Button.builder(Component.translatable("quaedam.screen.projection_shell.save")) {
-                val block = level.getBlockState(pos).block
-                if (block is ProjectionShellBlock) {
-                    block.applyFromShell(level, pos, shell)
-                }
+        if (shell.rows.isNotEmpty()) {
+            val rows = layout.createRowHelper(2)
+            shell.rows.forEach {
+                rows.addChild(StringWidget(150, 20, it.text, font))
+                rows.addChild(it.renderer(renderContext))
+            }
+            run { // Buttons
+                rows.addChild(StringWidget(Component.empty(), font))
+                rows.addChild(Button.builder(Component.translatable("quaedam.screen.projection_shell.save")) {
+                    val block = level.getBlockState(pos).block
+                    if (block is ProjectionShellBlock) {
+                        block.applyFromShell(level, pos, shell)
+                    }
+                    GameInstance.getClient().setScreen(null)
+                }.build().apply(::setInitialFocus))
+            }
+        } else {
+            val rows = layout.createRowHelper(1)
+            rows.addChild(StringWidget(Component.translatable("quaedam.screen.projection_shell.empty"), font))
+            rows.addChild(Button.builder(Component.translatable("quaedam.screen.projection_shell.close")) {
                 GameInstance.getClient().setScreen(null)
             }.build().apply(::setInitialFocus))
         }
@@ -44,6 +52,10 @@ class ProjectionShellScreen(val level: Level, val pos: BlockPos, val shell: Proj
         layout.x = (width - layout.width) / 2
         layout.y = (height - layout.height) / 2
         layout.visitWidgets(::addRenderableWidget)
+        addRenderableOnly(StringWidget(level.getBlockState(pos).block.name, font).apply {
+            x = (this@ProjectionShellScreen.width - width) / 2
+            y = layout.y - 2 * BORDER - font.lineHeight
+        })
     }
 
     fun getFont() = font

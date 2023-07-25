@@ -11,6 +11,8 @@
   "quaedam.screen.projection_shell.lock_revoked": "Timeout! Connection Lost",
   "quaedam.screen.projection_shell.lock_failed": "Permission denied!",
   "quaedam.screen.projection_shell.save": "Save",
+  "quaedam.screen.projection_shell.empty": "No Options Available!",
+  "quaedam.screen.projection_shell.close": "Close",
   "quaedam.shell.skylight.factor": "Factor",
   "quaedam.shell.noise.amount": "Amount",
   "quaedam.shell.swarm.max_count": "Max Count"
