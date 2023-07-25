@@ -42,7 +42,7 @@ class ProjectionEffectShell(val effect: ProjectionEffect) {
 
                 override fun applyValue() {
                     val diff = value % step
-                    if (diff < 0.5) {
+                    if (diff < step * 0.5) {
                         value -= diff
                     } else {
                         value += (step - diff)
@@ -67,7 +67,7 @@ class ProjectionEffectShell(val effect: ProjectionEffect) {
 
                 override fun applyValue() {
                     val diff = value % step
-                    if (diff < 0.5) {
+                    if (diff < step * 0.5) {
                         value -= diff
                     } else {
                         value += (step - diff)
