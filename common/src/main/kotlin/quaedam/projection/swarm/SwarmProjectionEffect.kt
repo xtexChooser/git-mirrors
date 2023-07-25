@@ -7,11 +7,13 @@ import net.minecraft.world.entity.MobSpawnType
 import net.minecraft.world.level.levelgen.Heightmap
 import quaedam.projection.ProjectionEffect
 import quaedam.projector.ProjectorBlockEntity
+import quaedam.shell.ProjectionEffectShell
+import quaedam.shell.buildProjectionEffectShell
 import kotlin.math.min
 
 data class SwarmProjectionEffect(
     var maxCount: Int = 180,
-) : ProjectionEffect() {
+) : ProjectionEffect(), ProjectionEffectShell.Provider {
 
     companion object {
         const val TAG_MAX_COUNT = "MaxCount"
@@ -48,6 +50,10 @@ data class SwarmProjectionEffect(
                 ProjectedPersonEntity.entity.get().spawn(level, spawnPos, MobSpawnType.TRIGGERED)
             }
         }
+    }
+
+    override fun createShell() = buildProjectionEffectShell(this) {
+        intSlider("quaedam.shell.swarm.max_count", ::maxCount, 0..180 step 5)
     }
 
 }

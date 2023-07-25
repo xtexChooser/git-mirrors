@@ -8,6 +8,8 @@ import quaedam.projection.EntityProjectionBlock
 import quaedam.projection.ProjectionEffect
 import quaedam.projection.ProjectionEffectType
 import quaedam.projection.SimpleProjectionEntity
+import quaedam.shell.ProjectionEffectShell
+import quaedam.shell.buildProjectionEffectShell
 
 object SoundProjection {
 
@@ -39,7 +41,7 @@ object SoundProjectionBlock : EntityProjectionBlock<SoundProjectionEffect>(creat
 
 }
 
-object SoundProjectionEffect : ProjectionEffect() {
+object SoundProjectionEffect : ProjectionEffect(), ProjectionEffectShell.Provider {
 
     override val type
         get() = SoundProjection.effect.get()!!
@@ -48,6 +50,9 @@ object SoundProjectionEffect : ProjectionEffect() {
     }
 
     override fun fromNbt(tag: CompoundTag, trusted: Boolean) {
+    }
+
+    override fun createShell() = buildProjectionEffectShell(this) {
     }
 
 }

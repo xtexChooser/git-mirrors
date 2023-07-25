@@ -8,6 +8,8 @@ import quaedam.projection.EntityProjectionBlock
 import quaedam.projection.ProjectionEffect
 import quaedam.projection.ProjectionEffectType
 import quaedam.projection.SimpleProjectionEntity
+import quaedam.shell.ProjectionEffectShell
+import quaedam.shell.buildProjectionEffectShell
 import kotlin.math.min
 
 object NoiseProjection {
@@ -40,7 +42,7 @@ object NoiseProjectionBlock : EntityProjectionBlock<NoiseProjectionEffect>(creat
 
 }
 
-data class NoiseProjectionEffect(var amount: Int = 5) : ProjectionEffect() {
+data class NoiseProjectionEffect(var amount: Int = 5) : ProjectionEffect(), ProjectionEffectShell.Provider {
 
     companion object {
         const val TAG_AMOUNT = "Amount"
@@ -58,6 +60,10 @@ data class NoiseProjectionEffect(var amount: Int = 5) : ProjectionEffect() {
         if (!trusted) {
             amount = min(amount, 8)
         }
+    }
+
+    override fun createShell() = buildProjectionEffectShell(this) {
+        intSlider("quaedam.shell.noise.amount", ::amount, 0..8)
     }
 
 }

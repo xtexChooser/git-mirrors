@@ -29,11 +29,13 @@ class ProjectionEffectShell(val effect: ProjectionEffect) {
 
     fun text(key: String, value: Component) = row(key) { StringWidget(value, it.font) }
 
-    fun doubleSlider(key: String, property: KMutableProperty0<Double>, range: ClosedRange<Double>, step: Double) =
+    fun doubleSlider(key: String, property: KMutableProperty0<Double>, range: ClosedRange<Double>, step: Double) {
+        val len = range.endInclusive - range.start
+        val step = step / len
         row(key) {
             object : AbstractSliderButton(
                 0, 0, width, height,
-                Component.literal(property.get().toString()), property.get()
+                Component.literal(property.get().toString()), (property.get() - range.start).toDouble() / len
             ) {
                 override fun updateMessage() {
                     message = Component.literal(value.toString())
@@ -41,10 +43,31 @@ class ProjectionEffectShell(val effect: ProjectionEffect) {
 
                 override fun applyValue() {
                     value = floor(value / step) * step
-                    property.set(value)
+                    property.set(range.start + floor(value * len))
                 }
             }
         }
+    }
+
+    fun intSlider(key: String, property: KMutableProperty0<Int>, range: IntProgression) {
+        val len = range.last - range.first
+        val step = range.step / len
+        row(key) {
+            object : AbstractSliderButton(
+                0, 0, width, height,
+                Component.literal(property.get().toString()), (property.get() - range.first).toDouble() / len
+            ) {
+                override fun updateMessage() {
+                    message = Component.literal(value.toString())
+                }
+
+                override fun applyValue() {
+                    value = floor(value / step) * step
+                    property.set((range.first + floor(value * len)).toInt())
+                }
+            }
+        }
+    }
 
     fun intCycle(key: String, property: KMutableProperty0<Int>, range: IntProgression) =
         row(key) {
