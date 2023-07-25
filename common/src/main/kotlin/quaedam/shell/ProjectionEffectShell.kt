@@ -6,7 +6,6 @@ import net.minecraft.client.gui.components.StringWidget
 import net.minecraft.client.gui.layouts.LayoutElement
 import net.minecraft.network.chat.Component
 import quaedam.projection.ProjectionEffect
-import kotlin.math.floor
 import kotlin.reflect.KMutableProperty0
 
 class ProjectionEffectShell(val effect: ProjectionEffect) {
@@ -35,15 +34,20 @@ class ProjectionEffectShell(val effect: ProjectionEffect) {
         row(key) {
             object : AbstractSliderButton(
                 0, 0, width, height,
-                Component.literal(property.get().toString()), (property.get() - range.start).toDouble() / len
+                Component.literal(property.get().toString()), (property.get() - range.start) / len
             ) {
                 override fun updateMessage() {
-                    message = Component.literal(value.toString())
+                    message = Component.literal(property.get().toString())
                 }
 
                 override fun applyValue() {
-                    value = floor(value / step) * step
-                    property.set(range.start + floor(value * len))
+                    val diff = value % step
+                    if (diff < 0.5) {
+                        value -= diff
+                    } else {
+                        value += (step - diff)
+                    }
+                    property.set(range.start + (value * len))
                 }
             }
         }
@@ -51,19 +55,24 @@ class ProjectionEffectShell(val effect: ProjectionEffect) {
 
     fun intSlider(key: String, property: KMutableProperty0<Int>, range: IntProgression) {
         val len = range.last - range.first
-        val step = range.step / len
+        val step = range.step.toDouble() / len
         row(key) {
             object : AbstractSliderButton(
                 0, 0, width, height,
                 Component.literal(property.get().toString()), (property.get() - range.first).toDouble() / len
             ) {
                 override fun updateMessage() {
-                    message = Component.literal(value.toString())
+                    message = Component.literal(property.get().toString())
                 }
 
                 override fun applyValue() {
-                    value = floor(value / step) * step
-                    property.set((range.first + floor(value * len)).toInt())
+                    val diff = value % step
+                    if (diff < 0.5) {
+                        value -= diff
+                    } else {
+                        value += (step - diff)
+                    }
+                    property.set(range.first + (value * len).toInt())
                 }
             }
         }

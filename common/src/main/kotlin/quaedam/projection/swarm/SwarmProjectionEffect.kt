@@ -53,7 +53,7 @@ data class SwarmProjectionEffect(
     }
 
     override fun createShell() = buildProjectionEffectShell(this) {
-        intSlider("quaedam.shell.swarm.max_count", ::maxCount, 0..180 step 5)
+        intSlider("quaedam.shell.swarm.max_count", ::maxCount, 0..250 step 5)
     }
 
 }
