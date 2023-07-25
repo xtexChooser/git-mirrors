@@ -34,10 +34,10 @@ class ProjectionEffectShell(val effect: ProjectionEffect) {
         row(key) {
             object : AbstractSliderButton(
                 0, 0, width, height,
-                Component.literal(property.get().toString()), (property.get() - range.start) / len
+                Component.literal(String.format("%.2f", property.get())), (property.get() - range.start) / len
             ) {
                 override fun updateMessage() {
-                    message = Component.literal(property.get().toString())
+                    message = Component.literal(String.format("%.2f", property.get()))
                 }
 
                 override fun applyValue() {
