@@ -81,4 +81,6 @@ class ProjectionShellScreen(val level: Level, val pos: BlockPos, val shell: Proj
         ProjectionShell.channel.sendToServer(ServerboundPSHLockReleasePacket(pos))
     }
 
+    override fun isPauseScreen() = false
+
 }
