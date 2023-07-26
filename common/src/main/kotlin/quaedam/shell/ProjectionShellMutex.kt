@@ -12,12 +12,14 @@ object ProjectionShellMutex {
 
     init {
         TickEvent.SERVER_POST.register { server ->
-            val mutex = (server as ProjectionShellMutexAccessor).`quaedam$getProjectionShellMutex`()
-            val currentTime = System.currentTimeMillis()
-            mutex.forEach { (pos, lock) ->
-                if (currentTime - lock.time > 60 * 1000) {
-                    mutex.remove(pos)
-                    ProjectionShell.channel.sendToPlayer(lock.player, ClientboundPSHLockRevokePacket)
+            if (server.tickCount and 8 == 0) {
+                val mutex = (server as ProjectionShellMutexAccessor).`quaedam$getProjectionShellMutex`()
+                val currentTime = System.currentTimeMillis()
+                mutex.forEach { (pos, lock) ->
+                    if (currentTime - lock.time > 60 * 1000) {
+                        mutex.remove(pos)
+                        ProjectionShell.channel.sendToPlayer(lock.player, ClientboundPSHLockRevokePacket)
+                    }
                 }
             }
         }
