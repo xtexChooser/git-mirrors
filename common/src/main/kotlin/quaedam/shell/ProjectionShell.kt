@@ -14,7 +14,7 @@ object ProjectionShell {
 
     val item = Quaedam.items.register(ID) { ProjectionShellItem }!!
 
-    val channel = NetworkChannel.create(ResourceLocation("quaedam", ID))
+    val channel = NetworkChannel.create(Quaedam.resource(ID))
 
     init {
         ServerboundPSHLockAcquirePacket

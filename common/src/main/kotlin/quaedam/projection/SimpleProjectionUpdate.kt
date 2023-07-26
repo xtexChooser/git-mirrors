@@ -7,14 +7,13 @@ import net.minecraft.core.BlockPos
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.FriendlyByteBuf
 import net.minecraft.network.chat.Component
-import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerPlayer
 import quaedam.Quaedam
 import quaedam.utils.sendBlockUpdated
 
 object SimpleProjectionUpdate {
 
-    val id = ResourceLocation("quaedam", "simple_projection_update")
+    val id = Quaedam.resource("simple_projection_update")
 
     init {
         NetworkManager.registerReceiver(NetworkManager.Side.C2S, id, ::handle)

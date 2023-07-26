@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
+import quaedam.Quaedam
 
 abstract class ProjectionEffect : Cloneable {
 
@@ -37,11 +38,11 @@ data class ProjectionEffectType<T : ProjectionEffect>(val constructor: () -> T) 
     companion object {
 
         val registryKey: ResourceKey<Registry<ProjectionEffectType<*>>> =
-            ResourceKey.createRegistryKey(ResourceLocation("quaedam", "projection_effect"))
+            ResourceKey.createRegistryKey(Quaedam.resource("projection_effect"))
         val registry: Registry<ProjectionEffectType<*>> = BuiltInRegistries.registerSimple(registryKey) { null }
 
         val nopEffect: ProjectionEffectType<NopEffect> =
-            Registry.register(registry, ResourceLocation("quaedam", "nop"), ProjectionEffectType { NopEffect })
+            Registry.register(registry, Quaedam.resource("nop"), ProjectionEffectType { NopEffect })
 
     }
 

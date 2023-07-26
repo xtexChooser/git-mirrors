@@ -72,7 +72,7 @@ data class ProjectedPersonShape(
 
     object Names {
 
-        val id = ResourceLocation("quaedam", "projected-person-names")
+        val id = Quaedam.resource("projected-person-names")
 
         var names = emptySet<String>()
 
@@ -109,7 +109,7 @@ data class ProjectedPersonShape(
 
     object Skins {
 
-        val id = ResourceLocation("quaedam", "skins")
+        val id = Quaedam.resource("skins")
 
         var skins = emptyList<ResourceLocation>()
 

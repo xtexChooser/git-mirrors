@@ -24,8 +24,8 @@ import kotlin.jvm.optionals.getOrNull
 
 object ProjectedPersonAI {
 
-    val tagEnemy = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation("quaedam", "projected_person/enemy"))
-    val tagNoAttack = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation("quaedam", "projected_person/no_attack"))
+    val tagEnemy = TagKey.create(Registries.ENTITY_TYPE, Quaedam.resource("projected_person/enemy"))
+    val tagNoAttack = TagKey.create(Registries.ENTITY_TYPE, Quaedam.resource("projected_person/no_attack"))
 
     val defaultSchedule = Quaedam.schedules.register("projected_person_default") {
         ScheduleBuilder(Schedule()).changeActivityAt(10, Activity.IDLE)
