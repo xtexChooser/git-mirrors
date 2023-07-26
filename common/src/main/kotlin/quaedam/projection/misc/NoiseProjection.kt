@@ -49,8 +49,8 @@ object NoiseProjection {
 
     init {
         ClientTickEvent.CLIENT_POST.register { game ->
-            val player = game.player!!
-            val random = game.level!!.random
+            val player = game.player ?: return@register
+            val random = (game.level ?: return@register).random
             val projections = Projector.findNearbyProjections(player.level(), player.blockPosition(), effect.get())
             if (projections.isNotEmpty()) {
                 val rate = projections.maxOf { it.rate }
