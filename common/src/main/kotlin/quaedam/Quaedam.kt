@@ -34,7 +34,7 @@ object Quaedam {
     val memoryTypes = DeferredRegister.create(ID, Registries.MEMORY_MODULE_TYPE)!!
     val sensors = DeferredRegister.create(ID, Registries.SENSOR_TYPE)!!
     val soundEvents = DeferredRegister.create(ID, Registries.SOUND_EVENT)!!
-    val projectionEffects = DeferredRegister.create(ID, ProjectionEffectType.registryKey)!!
+    val projectionEffects by lazy { DeferredRegister.create(ID, ProjectionEffectType.registryKey)!! }
 
     val creativeModeTab: RegistrySupplier<CreativeModeTab> = creativeModeTabs.register("quaedam") {
         CreativeTabRegistry.create(Component.translatable("category.quaedam")) {
