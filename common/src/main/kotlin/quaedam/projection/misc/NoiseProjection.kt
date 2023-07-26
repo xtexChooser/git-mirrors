@@ -1,6 +1,8 @@
 package quaedam.projection.misc
 
 import dev.architectury.event.events.client.ClientTickEvent
+import dev.architectury.platform.Platform
+import net.fabricmc.api.EnvType
 import net.minecraft.client.Minecraft
 import net.minecraft.client.resources.sounds.SimpleSoundInstance
 import net.minecraft.client.resources.sounds.SoundInstance
@@ -48,17 +50,19 @@ object NoiseProjection {
     }!!
 
     init {
-        ClientTickEvent.CLIENT_POST.register { game ->
-            val player = game.player ?: return@register
-            val random = (game.level ?: return@register).random
-            val projections = Projector.findNearbyProjections(player.level(), player.blockPosition(), effect.get())
-            if (projections.isNotEmpty()) {
-                val rate = projections.maxOf { it.rate }
-                val amount = min(projections.sumOf { it.amount }, 12)
-                if (amount != 0 && random.nextInt(1000 / rate) == 1) {
-                    for (i in 0 until random.nextInt(amount)) {
-                        // play random noise
-                        playRandomNoise(random, game)
+        if (Platform.getEnv() == EnvType.CLIENT) {
+            ClientTickEvent.CLIENT_POST.register { game ->
+                val player = game.player ?: return@register
+                val random = (game.level ?: return@register).random
+                val projections = Projector.findNearbyProjections(player.level(), player.blockPosition(), effect.get())
+                if (projections.isNotEmpty()) {
+                    val rate = projections.maxOf { it.rate }
+                    val amount = min(projections.sumOf { it.amount }, 12)
+                    if (amount != 0 && random.nextInt(1000 / rate) == 1) {
+                        for (i in 0 until random.nextInt(amount)) {
+                            // play random noise
+                            playRandomNoise(random, game)
+                        }
                     }
                 }
             }
