@@ -1,6 +1,13 @@
 package quaedam.projection.misc
 
+import dev.architectury.event.events.client.ClientTickEvent
+import net.minecraft.client.Minecraft
+import net.minecraft.client.resources.sounds.SimpleSoundInstance
+import net.minecraft.client.resources.sounds.SoundInstance
 import net.minecraft.nbt.CompoundTag
+import net.minecraft.sounds.SoundEvent
+import net.minecraft.sounds.SoundSource
+import net.minecraft.util.RandomSource
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import quaedam.Quaedam
@@ -8,6 +15,7 @@ import quaedam.projection.EntityProjectionBlock
 import quaedam.projection.ProjectionEffect
 import quaedam.projection.ProjectionEffectType
 import quaedam.projection.SimpleProjectionEntity
+import quaedam.projector.Projector
 import quaedam.shell.ProjectionEffectShell
 import quaedam.shell.buildProjectionEffectShell
 import kotlin.math.min
@@ -34,6 +42,47 @@ object NoiseProjection {
         SimpleProjectionEntity.createBlockEntityType(block, ::NoiseProjectionEffect)
     }!!
 
+    const val SOUND_NOISE_ID = "quaedam.projection.noise"
+    val soundEvent = Quaedam.soundEvents.register(SOUND_NOISE_ID) {
+        SoundEvent.createVariableRangeEvent(Quaedam.resource(SOUND_NOISE_ID))
+    }!!
+
+    init {
+        ClientTickEvent.CLIENT_POST.register { game ->
+            val player = game.player!!
+            val random = game.level!!.random
+            val projections = Projector.findNearbyProjections(player.level(), player.blockPosition(), effect.get())
+            if (projections.isNotEmpty()) {
+                val rate = projections.maxOf { it.rate }
+                val amount = min(projections.sumOf { it.amount }, 12)
+                if (amount != 0 && random.nextInt(1000 / rate) == 1) {
+                    for (i in 0 until random.nextInt(amount)) {
+                        // play random noise
+                        playRandomNoise(random, game)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun playRandomNoise(random: RandomSource, game: Minecraft) {
+        val sound = SimpleSoundInstance(
+            soundEvent.get().location,
+            SoundSource.AMBIENT,
+            random.nextFloat() * 0.6f + 0.7f,
+            random.nextFloat() + 0.4f,
+            RandomSource.create(random.nextLong()),
+            false,
+            0,
+            SoundInstance.Attenuation.NONE,
+            random.nextFloat() * 24.0 - 12,
+            random.nextFloat() * 24.0 - 12,
+            random.nextFloat() * 12.0 - 2,
+            true
+        )
+        game.soundManager.playDelayed(sound, random.nextInt(3))
+    }
+
 }
 
 object NoiseProjectionBlock : EntityProjectionBlock<NoiseProjectionEffect>(createProperties().lightLevel { 3 }) {
@@ -42,7 +91,8 @@ object NoiseProjectionBlock : EntityProjectionBlock<NoiseProjectionEffect>(creat
 
 }
 
-data class NoiseProjectionEffect(var amount: Int = 5) : ProjectionEffect(), ProjectionEffectShell.Provider {
+data class NoiseProjectionEffect(var rate: Int = 10, var amount: Int = 3) : ProjectionEffect(),
+    ProjectionEffectShell.Provider {
 
     companion object {
         const val TAG_AMOUNT = "Amount"
