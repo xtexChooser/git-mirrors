@@ -16,7 +16,9 @@ object ProjectionShellMutex {
                 val mutex = (server as ProjectionShellMutexAccessor).`quaedam$getProjectionShellMutex`()
                 val currentTime = System.currentTimeMillis()
                 mutex.forEach { (pos, lock) ->
-                    if (currentTime - lock.time > 60 * 1000) {
+                    if (lock.player !in server.playerList.players) {
+                        mutex.remove(pos)
+                    } else if (currentTime - lock.time > 60 * 1000) {
                         mutex.remove(pos)
                         ProjectionShell.channel.sendToPlayer(lock.player, ClientboundPSHLockRevokePacket)
                     }
