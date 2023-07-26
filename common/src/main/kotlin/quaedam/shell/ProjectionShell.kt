@@ -1,7 +1,6 @@
 package quaedam.shell
 
 import dev.architectury.networking.NetworkChannel
-import net.minecraft.resources.ResourceLocation
 import quaedam.Quaedam
 import quaedam.shell.network.ClientboundPSHLockResultPacket
 import quaedam.shell.network.ClientboundPSHLockRevokePacket
