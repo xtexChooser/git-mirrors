@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.EntityBlock
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.MapColor
+import net.minecraft.world.level.material.PushReaction
 import net.minecraft.world.phys.BlockHitResult
 
 object ProjectorBlock : Block(Properties.of()
@@ -21,7 +22,9 @@ object ProjectorBlock : Block(Properties.of()
     .mapColor(MapColor.COLOR_BLACK)
     .randomTicks()
     .strength(4.0f)
-    .requiresCorrectToolForDrops()), EntityBlock {
+    .requiresCorrectToolForDrops()
+    .pushReaction(PushReaction.IGNORE)
+), EntityBlock {
 
     fun checkUpdate(level: Level, pos: BlockPos) {
         if (!level.isClientSide) {
