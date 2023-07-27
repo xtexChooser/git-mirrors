@@ -59,12 +59,12 @@ object CABlock : HorizontalDirectionalBlock(
         when (state.getValue(FACING)) {
             Direction.WEST, Direction.EAST -> Shapes.or(
                 box(0.0, 0.0, 0.0, 16.0, 12.0, 16.0),
-                box(7.0, 13.0, 6.0, 9.0, 15.0, 10.0),
+                box(7.0, 14.0, 6.0, 9.0, 16.0, 10.0),
             )
 
             Direction.SOUTH, Direction.NORTH -> Shapes.or(
                 box(0.0, 0.0, 0.0, 16.0, 12.0, 16.0),
-                box(6.0, 13.0, 7.0, 10.0, 15.0, 9.0),
+                box(6.0, 14.0, 7.0, 10.0, 16.0, 9.0),
             )
 
             else -> throw IllegalStateException(state.getValue(FACING).name)
