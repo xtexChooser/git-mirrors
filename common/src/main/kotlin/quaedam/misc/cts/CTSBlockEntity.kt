@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.state.BlockState
 import quaedam.projector.Projector
 
 class CTSBlockEntity(pos: BlockPos, state: BlockState) :
-    BlockEntity(Projector.blockEntity.get(), pos, state) {
+    BlockEntity(ConstantTemporalSink.blockEntity.get(), pos, state) {
 
     override fun getUpdateTag(): CompoundTag = saveWithoutMetadata()
 
