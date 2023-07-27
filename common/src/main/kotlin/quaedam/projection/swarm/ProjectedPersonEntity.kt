@@ -166,7 +166,7 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
     override fun tick() {
         super.tick()
         if (tickCount % 20 == 0) {
-            if (!checkProjectionEffect()) {
+            if (!checkProjectionEffect() && !CausalityAnchor.checkEffect(level(), blockPosition())) {
                 dropEquipment()
                 remove(RemovalReason.KILLED)
             }
