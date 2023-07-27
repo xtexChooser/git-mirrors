@@ -5,10 +5,14 @@ import com.google.gson.GsonBuilder
 import dev.architectury.event.events.client.ClientPlayerEvent
 import dev.architectury.platform.Platform
 import dev.architectury.utils.GameInstance
+import net.fabricmc.api.EnvType
 import net.minecraft.nbt.CompoundTag
 import quaedam.Quaedam
 import java.nio.file.Path
-import kotlin.io.path.*
+import kotlin.io.path.exists
+import kotlin.io.path.notExists
+import kotlin.io.path.readText
+import kotlin.io.path.writeText
 
 data class QuaedamConfig(
     val projectorEffectRadius: Int = 4
@@ -31,9 +35,11 @@ data class QuaedamConfig(
         init {
             SimpleQuaedamConfigPush
 
-            ClientPlayerEvent.CLIENT_PLAYER_QUIT.register { player ->
-                if (player == GameInstance.getClient().player) {
-                    applyRemoteConfig(null)
+            if (Platform.getEnv() == EnvType.CLIENT) {
+                ClientPlayerEvent.CLIENT_PLAYER_QUIT.register { player ->
+                    if (player == GameInstance.getClient().player) {
+                        applyRemoteConfig(null)
+                    }
                 }
             }
             if (localFile.notExists()) {
