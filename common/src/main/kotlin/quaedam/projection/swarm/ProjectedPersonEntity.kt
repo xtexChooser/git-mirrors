@@ -26,6 +26,7 @@ import net.minecraft.world.entity.npc.InventoryCarrier
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.ServerLevelAccessor
 import quaedam.Quaedam
+import quaedam.misc.cts.ConstantTemporalSink
 import quaedam.projection.misc.SoundProjection
 import quaedam.projection.swarm.ai.ProjectedPersonAI
 import quaedam.projection.swarm.ai.ProjectedPersonNavigation
@@ -177,7 +178,7 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
 
     override fun checkDespawn() {
         super.checkDespawn()
-        if (!checkProjectionEffect()) {
+        if (!checkProjectionEffect() && !ConstantTemporalSink.checkEffect(level(), blockPosition())) {
             dropEquipment()
             remove(RemovalReason.KILLED)
         }
@@ -252,5 +253,7 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
     override fun getVoicePitch() = super.getVoicePitch() * (random.nextFloat() * 0.55f + 0.7f)
 
     override fun getAmbientSoundInterval() = 80 - random.nextInt(700)
+
+    override fun isEffectiveAi() = super.isEffectiveAi() && checkProjectionEffect()
 
 }

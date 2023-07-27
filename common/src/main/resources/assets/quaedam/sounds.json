@@ -94,5 +94,29 @@
         "type": "file"
       }
     ]
+  },
+  "quaedam.projection.noise": {
+    "sounds": [
+      {
+        "name": "entity.villager.work_librarian",
+        "weight": 2,
+        "type": "event"
+      },
+      {
+        "name": "entity.villager.work_cleric",
+        "weight": 2,
+        "type": "event"
+      },
+      {
+        "name": "entity.villager.work_mason",
+        "weight": 2,
+        "type": "event"
+      },
+      {
+        "name": "entity.villager.work_shepherd",
+        "weight": 2,
+        "type": "event"
+      }
+    ]
   }
 }
