@@ -45,7 +45,11 @@ data class SwarmProjectionEffect(
                     level.random.nextInt(area.minZ(), area.maxZ()),
                 )
                 spawnPos = spawnPos.atY(level.getHeight(Heightmap.Types.WORLD_SURFACE, spawnPos.x, spawnPos.z))
-                if (level.getBlockState(spawnPos.below()).isAir)
+                val belowState = level.getBlockState(spawnPos.below())
+                if (belowState.isAir || !belowState.fluidState.isEmpty || !belowState.canOcclude())
+                    return
+                val state = level.getBlockState(spawnPos)
+                if (state.canOcclude() || !state.fluidState.isEmpty)
                     return
                 ProjectedPersonEntity.entity.get().spawn(level, spawnPos, MobSpawnType.TRIGGERED)
             }
