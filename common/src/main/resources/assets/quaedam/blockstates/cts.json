@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "quaedam:block/cts"
+    },
+    "facing=south": {
+      "model": "quaedam:block/cts",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "quaedam:block/cts",
+      "y": 180
+    },
+    "facing=north": {
+      "model": "quaedam:block/cts",
+      "y": 270
+    }
+  }
+}
