@@ -6,6 +6,7 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BlockEntityType
 import quaedam.Quaedam
+import quaedam.config.QuaedamConfig
 import quaedam.projection.ProjectionEffect
 import quaedam.projection.ProjectionEffectType
 import quaedam.utils.getChunksNearby
@@ -13,7 +14,6 @@ import quaedam.utils.getChunksNearby
 object Projector {
 
     const val ID = "projector"
-    const val EFFECT_RADIUS = 4
 
     val block = Quaedam.blocks.register(ID) { ProjectorBlock }!!
 
@@ -29,7 +29,9 @@ object Projector {
         BlockEntityType.Builder.of(::ProjectorBlockEntity, block.get()).build(null)
     }!!
 
-    fun findNearbyProjectors(level: Level, pos: BlockPos) = level.getChunksNearby(pos, EFFECT_RADIUS)
+    val currentEffectRadius get() = QuaedamConfig.current.projectorEffectRadius
+
+    fun findNearbyProjectors(level: Level, pos: BlockPos) = level.getChunksNearby(pos, currentEffectRadius)
         .flatMap {
             it.blockEntities.filter { (_, v) -> v is ProjectorBlockEntity }
                 .keys

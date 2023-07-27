@@ -27,8 +27,8 @@ class ProjectorBlockEntity(pos: BlockPos, state: BlockState) :
 
     val effectAreaChunk by lazy {
         val chunk = level!!.getChunk(pos).pos
-        ChunkPos(chunk.x - Projector.EFFECT_RADIUS, chunk.z - Projector.EFFECT_RADIUS) to
-                ChunkPos(chunk.x + Projector.EFFECT_RADIUS, chunk.z + Projector.EFFECT_RADIUS)
+        ChunkPos(chunk.x - Projector.currentEffectRadius, chunk.z - Projector.currentEffectRadius) to
+                ChunkPos(chunk.x + Projector.currentEffectRadius, chunk.z + Projector.currentEffectRadius)
     }
 
     val effectArea: BoundingBox by lazy {

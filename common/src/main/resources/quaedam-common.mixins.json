@@ -9,7 +9,8 @@
   "mixins": [
     "MixinBedBlock",
     "MixinBuiltInRegistries",
-    "MixinMinecraftServer"
+    "MixinMinecraftServer",
+    "MixinPlayerList"
   ],
   "injectors": {
     "defaultRequire": 1

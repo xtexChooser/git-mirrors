@@ -19,7 +19,7 @@ abstract class ProjectionEffect : Cloneable {
 
     abstract fun fromNbt(tag: CompoundTag, trusted: Boolean = true)
 
-    fun toNbt() = CompoundTag().apply { toNbt(this) }
+    fun toNbt() = CompoundTag().also { toNbt(it) }
 
     override fun equals(other: Any?): Boolean = other === this
 

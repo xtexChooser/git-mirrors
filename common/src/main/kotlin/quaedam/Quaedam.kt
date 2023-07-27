@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.ItemStack
 import org.slf4j.LoggerFactory
+import quaedam.config.QuaedamConfig
 import quaedam.projection.ProjectionCommand
 import quaedam.projection.ProjectionEffectType
 import quaedam.projection.SimpleProjectionUpdate
@@ -43,6 +44,7 @@ object Quaedam {
     }
 
     fun init() {
+        QuaedamConfig
         Projector
         ProjectionEffectType
         SkylightProjection
