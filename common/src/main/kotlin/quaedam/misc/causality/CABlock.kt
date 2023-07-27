@@ -44,7 +44,7 @@ object CABlock : HorizontalDirectionalBlock(
     }
 
     override fun getStateForPlacement(context: BlockPlaceContext): BlockState? {
-        if (context.level.getBlockState(context.clickedPos.below()).isAir) return null
+        if (!context.level.getBlockState(context.clickedPos.below()).canOcclude()) return null
         return super.defaultBlockState().setValue(FACING, context.horizontalDirection)
     }
 
@@ -102,7 +102,7 @@ object CABlock : HorizontalDirectionalBlock(
         movedByPiston: Boolean
     ) {
         super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston)
-        if (level.getBlockState(pos.below()).isAir) {
+        if (!level.getBlockState(pos.below()).canOcclude()) {
             level.destroyBlock(pos, true)
         }
     }
