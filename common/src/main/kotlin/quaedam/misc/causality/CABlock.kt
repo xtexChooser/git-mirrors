@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.state.StateDefinition
 import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import net.minecraft.world.level.material.FluidState
 import net.minecraft.world.level.material.Fluids
+import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.phys.shapes.CollisionContext
 import net.minecraft.world.phys.shapes.Shapes
 import net.minecraft.world.phys.shapes.VoxelShape
@@ -20,6 +21,9 @@ object CABlock : HorizontalDirectionalBlock(
     Properties.of()
         .lightLevel { 2 }
         .noOcclusion()
+        .strength(2f)
+        .requiresCorrectToolForDrops()
+        .mapColor(MapColor.COLOR_CYAN)
 ), EntityBlock, SimpleWaterloggedBlock {
 
     val shapes = getShapeForEachState(::createVoxelShape)

@@ -1,6 +1,8 @@
 {
   "replace": false,
   "values": [
-    "quaedam:projector"
+    "quaedam:projector",
+    "quaedam:causality_anchor",
+    "#quaedam:projections"
   ]
 }
