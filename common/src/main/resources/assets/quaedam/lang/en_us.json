@@ -5,6 +5,7 @@
   "block.quaedam.swarm_projection": "Swarm Projection",
   "block.quaedam.sound_projection": "Sound Projection",
   "block.quaedam.noise_projection": "Noise Projection",
+  "block.quaedam.causality_anchor": "Causality Anchor",
   "entity.quaedam.projected_person": "Virtual Person",
   "item.quaedam.projection_shell": "Projection Shell",
   "quaedam.screen.projection_shell": "Projection Shell",

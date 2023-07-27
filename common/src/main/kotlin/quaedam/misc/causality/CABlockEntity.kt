@@ -1,4 +1,4 @@
-package quaedam.misc.cts
+package quaedam.misc.causality
 
 import net.minecraft.core.BlockPos
 import net.minecraft.nbt.CompoundTag
@@ -7,10 +7,9 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
-import quaedam.projector.Projector
 
-class CTSBlockEntity(pos: BlockPos, state: BlockState) :
-    BlockEntity(ConstantTemporalSink.blockEntity.get(), pos, state) {
+class CABlockEntity(pos: BlockPos, state: BlockState) :
+    BlockEntity(CausalityAnchor.blockEntity.get(), pos, state) {
 
     override fun getUpdateTag(): CompoundTag = saveWithoutMetadata()
 

@@ -5,8 +5,8 @@
     64
   ],
   "textures": {
-    "0": "quaedam:block/cts",
-    "particle": "quaedam:block/cts"
+    "0": "quaedam:block/causality_anchor",
+    "particle": "quaedam:block/causality_anchor"
   },
   "elements": [
     {

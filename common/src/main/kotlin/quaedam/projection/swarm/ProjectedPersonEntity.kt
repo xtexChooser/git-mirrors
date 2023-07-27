@@ -26,7 +26,7 @@ import net.minecraft.world.entity.npc.InventoryCarrier
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.ServerLevelAccessor
 import quaedam.Quaedam
-import quaedam.misc.cts.ConstantTemporalSink
+import quaedam.misc.causality.CausalityAnchor
 import quaedam.projection.misc.SoundProjection
 import quaedam.projection.swarm.ai.ProjectedPersonAI
 import quaedam.projection.swarm.ai.ProjectedPersonNavigation
@@ -178,7 +178,7 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
 
     override fun checkDespawn() {
         super.checkDespawn()
-        if (!checkProjectionEffect() && !ConstantTemporalSink.checkEffect(level(), blockPosition())) {
+        if (!checkProjectionEffect() && !CausalityAnchor.checkEffect(level(), blockPosition())) {
             dropEquipment()
             remove(RemovalReason.KILLED)
         }

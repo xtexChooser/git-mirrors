@@ -1,4 +1,4 @@
-package quaedam.misc.cts
+package quaedam.misc.causality
 
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
@@ -15,7 +15,7 @@ import net.minecraft.world.phys.shapes.CollisionContext
 import net.minecraft.world.phys.shapes.Shapes
 import net.minecraft.world.phys.shapes.VoxelShape
 
-object CTSBlock : HorizontalDirectionalBlock(
+object CABlock : HorizontalDirectionalBlock(
     Properties.of()
         .lightLevel { 2 }
         .noOcclusion()
@@ -31,7 +31,7 @@ object CTSBlock : HorizontalDirectionalBlock(
         )
     }
 
-    override fun newBlockEntity(pos: BlockPos, state: BlockState) = CTSBlockEntity(pos, state)
+    override fun newBlockEntity(pos: BlockPos, state: BlockState) = CABlockEntity(pos, state)
 
     override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
         super.createBlockStateDefinition(builder)
