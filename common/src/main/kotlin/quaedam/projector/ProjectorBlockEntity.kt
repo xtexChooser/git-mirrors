@@ -121,9 +121,6 @@ class ProjectorBlockEntity(pos: BlockPos, state: BlockState) :
 
     fun collectEffects(): Map<ProjectionEffectType<*>, ProjectionEffect> {
         val level = level!! as ServerLevel
-        if (!level.getBlockState(blockPos.below()).isAir) {
-            return emptyMap()
-        }
         val effects = mutableMapOf<ProjectionEffectType<*>, ProjectionEffect>()
         for (x in checkArea.minX()..checkArea.maxX()) {
             for (y in checkArea.minY()..checkArea.maxY()) {
