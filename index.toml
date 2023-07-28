@@ -129,7 +129,7 @@ metafile = true
 
 [[files]]
 file = "mods/architectury-api.pw.toml"
-hash = "df19c411fd67e340ed687f781863a6d7fb9f1de666449df75ffe82136e45f9dc"
+hash = "a243675bc757485925b293932ee289b9fbcfb3b75bd3ba74eca7603f191cedad"
 metafile = true
 
 [[files]]
@@ -144,12 +144,12 @@ metafile = true
 
 [[files]]
 file = "mods/betterf3.pw.toml"
-hash = "86ce47da34b9a69c105e4e22058a5d6fc12448283a54a1f911c16351f096068e"
+hash = "ba31b113733abc813e36738bdc8104fad628232d29907f66f48cf8c45299de9f"
 metafile = true
 
 [[files]]
 file = "mods/c2me-fabric.pw.toml"
-hash = "be694b9cf9d9d2245fb0908c837f129dd9033bfb69ffe49c0e5c9dcecb580a2e"
+hash = "084ec914d4aba5a139e1bfaeb67c6a6c7cf1ba22cfbf5ef96a46db49c830db96"
 metafile = true
 
 [[files]]
@@ -159,12 +159,17 @@ metafile = true
 
 [[files]]
 file = "mods/chat-heads.pw.toml"
-hash = "a43e92e619450f5e1c0cd79114232a8f8ddf16892342af1c855ebcf97f877e8f"
+hash = "cd2e4fa0a3dda308c440d163b8339b2072cfb2409a0def1f49099a3114596ab6"
 metafile = true
 
 [[files]]
 file = "mods/click-through-architectury.pw.toml"
 hash = "576bb1a9ec6003160e98bc14dfce79d9d299303d229ea8e494e428c6b13d323e"
+metafile = true
+
+[[files]]
+file = "mods/clickthrough.pw.toml"
+hash = "7703705832bac583d57f9c7c4abf04a669273f3bbf047fb8b333b52e9f5bb3ed"
 metafile = true
 
 [[files]]
@@ -199,7 +204,7 @@ metafile = true
 
 [[files]]
 file = "mods/e4mc.pw.toml"
-hash = "b03c0c9616b8e790ca01054d8be91c2d6b62b26e7c9262ec7b0a70fb07e6a7f5"
+hash = "b066bbf1fd98c8ec52dfb0d9f041572b4d1680ddf33932266ce334800891338d"
 metafile = true
 
 [[files]]
@@ -224,7 +229,7 @@ metafile = true
 
 [[files]]
 file = "mods/immediatelyfast.pw.toml"
-hash = "a154087f80d2179cabd05cf7629c29c06c5a62538e70f7c58021dd1d4f9e3e3a"
+hash = "2d6174a3ed06ac03e00fcd915d8f899aa102f25f8d8734032f60f2321ecf29bc"
 metafile = true
 
 [[files]]
@@ -309,7 +314,7 @@ metafile = true
 
 [[files]]
 file = "mods/modmenu.pw.toml"
-hash = "e00217e8327711e7d6acf95814212d9398499bc15cde7a3ec4ca4417393a8fbc"
+hash = "e2a93bfe1d1e55657afd64a361b1d05929c8984332f1c39afd957eb7f88e9a62"
 metafile = true
 
 [[files]]
@@ -339,12 +344,12 @@ metafile = true
 
 [[files]]
 file = "mods/reeses-sodium-options.pw.toml"
-hash = "a1d419cad5a32a4a442b37b2e2fe2db3e761429d6ab60dd3bb79f43d36df2297"
+hash = "2cadde7b91d76a9376b6335b1215b734e8d75473c594a7b75ebb220ff7e2c017"
 metafile = true
 
 [[files]]
 file = "mods/rei.pw.toml"
-hash = "401489a8476901a3f5d354b1d413f88034c9d69fb0928c932d042d99f33e68fc"
+hash = "201ab0485fc28e1b4a8fb04f620bfe94e19a3495131b939b67a701068de7f325"
 metafile = true
 
 [[files]]
@@ -359,7 +364,7 @@ metafile = true
 
 [[files]]
 file = "mods/sodium-extra.pw.toml"
-hash = "ea193a0081775b5b2dda289e12578c9122294ec6b6363dbfd7c1e7b5d2dfbd71"
+hash = "0906da8c52ef97aa073b150915eea98647ed1ad2445c4d2c91512acb32af8a30"
 metafile = true
 
 [[files]]
@@ -374,7 +379,7 @@ metafile = true
 
 [[files]]
 file = "mods/tweakermore.pw.toml"
-hash = "a22a3641d47822ad6b02e9ce96400c831d448981ca727e2840cfe5eeca6ccd2c"
+hash = "108acd4e732728a057ef30b5ded8315d7f754d571ec2e11463a9856f42110111"
 metafile = true
 
 [[files]]
@@ -389,7 +394,7 @@ metafile = true
 
 [[files]]
 file = "mods/vmp-fabric.pw.toml"
-hash = "7c3eff18529e48a5a3ba5e73315478fa84f32bf040adca45a37b4ba5a02bccf9"
+hash = "93e2bb699bae8854559b94395f8d3468682f61b52db24a8a076b946a87635e3c"
 metafile = true
 
 [[files]]
@@ -399,22 +404,22 @@ metafile = true
 
 [[files]]
 file = "mods/wthit.pw.toml"
-hash = "ba1c6b53100f4b5666ccd77de55a8a29daf7b5b1b961f16dcbb8127959221a61"
+hash = "afa5a21210e4a661713eac2b8f8a11cb1102079e725268aeb4fb2c705a103b1c"
 metafile = true
 
 [[files]]
 file = "mods/xaeros-minimap.pw.toml"
-hash = "fa7940ff6c6d65fede416632132a57518ab1a79e09014410932ed614ea386a70"
+hash = "1817999655716ccd487c6096cea09af0d379176c73a773b3e16b33879e9f3690"
 metafile = true
 
 [[files]]
 file = "mods/xaeros-world-map.pw.toml"
-hash = "f8f30afc8349f40bfbe62d21aabf6caeca2d67a8cc2778296ce758b2763c5d8d"
+hash = "060e75568f5ed015ccdcc973c6498503c9b712ebea4defac5fce3afdb5842fcf"
 metafile = true
 
 [[files]]
 file = "mods/yacl.pw.toml"
-hash = "796239ec3e198ff16d27b144d24f813da260ee25c7342cf5487f0db0843f1c29"
+hash = "2008716fdfef554660ce44659a3a42acd673a5391af2d4bd94f40654f1f60a1d"
 metafile = true
 
 [[files]]
@@ -458,7 +463,7 @@ metafile = true
 
 [[files]]
 file = "resourcepacks/xekrsquarepattern.pw.toml"
-hash = "0175738cf5dcb41d02911f1c85d3d4b9f37fffb4137df1f925c51108df8e3355"
+hash = "c62244b04611fbba28cc78312d128f9e2dc66e05fb8b3581328d4ba40e2cdc31"
 metafile = true
 
 [[files]]
