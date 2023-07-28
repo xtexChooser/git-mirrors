@@ -7,6 +7,7 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BlockEntityType
 import quaedam.Quaedam
 import quaedam.config.QuaedamConfig
+import quaedam.misc.reality.RealityStabler
 import quaedam.projection.ProjectionEffect
 import quaedam.projection.ProjectionEffectType
 import quaedam.utils.getChunksNearby
@@ -40,9 +41,17 @@ object Projector {
         .toSet()
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : ProjectionEffect> findNearbyProjections(level: Level, pos: BlockPos, type: ProjectionEffectType<T>) =
-        findNearbyProjectors(level, pos)
+    fun <T : ProjectionEffect> findNearbyProjections(
+        level: Level,
+        pos: BlockPos,
+        type: ProjectionEffectType<T>
+    ): List<T> {
+        if (RealityStabler.checkEffect(level, pos)) {
+            return emptyList()
+        }
+        return findNearbyProjectors(level, pos)
             .map { level.getBlockEntity(it) as ProjectorBlockEntity }
             .mapNotNull { it.effects[type] as T? }
+    }
 
 }
