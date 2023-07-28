@@ -1,0 +1,20 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "quaedam:block/causality_anchor",
+      "y": 270
+    },
+    "facing=south": {
+      "model": "quaedam:block/causality_anchor",
+      "y": 0
+    },
+    "facing=west": {
+      "model": "quaedam:block/causality_anchor",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "quaedam:block/causality_anchor",
+      "y": 180
+    }
+  }
+}
