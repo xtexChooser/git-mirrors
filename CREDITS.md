@@ -29,12 +29,13 @@ This is a complete list of all mods, resource packs and shaders included in this
 - AppleSkin
 - Architectury API
 - bad packets
+- Beenfo
 - BetterF3
 - Better Ping Display [Fabric]
 - Better Sky
 - Carpet
 - Chat Heads
-- Click Through Architectury
+- ClickThrough
 - Cloth Config API
 - Concurrent Chunk Management Engine (Fabric)
 - Custom Crosshair Mod
@@ -45,8 +46,11 @@ This is a complete list of all mods, resource packs and shaders included in this
 - Dynamic FPS
 - e4mc
 - Entity Culling
+- Exordium
 - fast-chest
+- Fastload
 - FerriteCore
+- FlightHelper
 - Foliage+
 - IMBlockerFabric
 - ImmediatelyFast
@@ -115,7 +119,6 @@ This is a complete list of all mods, resource packs and shaders included in this
 - [Chat Heads](https://modrinth.com/mod/Wb5oqrBJ)
 - [Custom Crosshair Mod](https://modrinth.com/mod/o1tyE5vJ)
 - [Debugify](https://modrinth.com/mod/QwxR6Gcd)
-- [Click Through Architectury](https://modrinth.com/mod/Ql9v1uPP)
 - [DashLoader](https://modrinth.com/mod/ZfQ3kTvR)
 - [Dynamic FPS](https://modrinth.com/mod/LQ3K71Q1)
 - [Custom Splash Screen](https://modrinth.com/mod/BwFQLeCh)
@@ -158,6 +161,11 @@ This is a complete list of all mods, resource packs and shaders included in this
 - [ReplayMod](https://modrinth.com/mod/Nv2fQJo5)
 - [e4mc](https://modrinth.com/mod/qANg5Jrr)
 - [Litematica Printer](https://modrinth.com/mod/3llatzyE)
+- [ClickThrough](https://modrinth.com/mod/Z5b0cAlD)
+- [Fastload](https://modrinth.com/mod/kCpssoSb)
+- [FlightHelper](https://modrinth.com/mod/1yyNJogn)
+- [Exordium](https://modrinth.com/mod/DynYZEae)
+- [Beenfo](https://modrinth.com/mod/Bta0Pt47)
 - [Default Dark Mode](https://modrinth.com/mod/6SLU7tS5)
 - [Twemojis In Minecraft](https://modrinth.com/mod/WdYcUVh8)
 - [XK Redstone Display](https://modrinth.com/mod/4ueVo9s5)
