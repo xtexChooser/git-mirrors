@@ -42,7 +42,7 @@ object ProjectorBlock : Block(Properties.of()
         blockHitResult: BlockHitResult
     ): InteractionResult {
         checkUpdate(level, blockPos)
-        return InteractionResult.SUCCESS
+        return InteractionResult.PASS
     }
 
     override fun newBlockEntity(pos: BlockPos, state: BlockState) = ProjectorBlockEntity(pos, state)
