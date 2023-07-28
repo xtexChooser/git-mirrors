@@ -10,7 +10,7 @@
       "enabled": false
     },
     "copySignTextToClipBoard": {
-      "keys": "CTRL,C"
+      "keys": "LEFT_CONTROL,LEFT_SHIFT,C"
     }
   }
 }
