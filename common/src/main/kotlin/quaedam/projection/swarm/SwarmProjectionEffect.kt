@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.MobSpawnType
 import net.minecraft.world.level.levelgen.Heightmap
 import quaedam.projection.ProjectionEffect
+import quaedam.projector.Projector
 import quaedam.projector.ProjectorBlockEntity
 import quaedam.shell.ProjectionEffectShell
 import quaedam.shell.buildProjectionEffectShell
@@ -45,6 +46,8 @@ data class SwarmProjectionEffect(
                     level.random.nextInt(area.minZ(), area.maxZ()),
                 )
                 spawnPos = spawnPos.atY(level.getHeight(Heightmap.Types.WORLD_SURFACE, spawnPos.x, spawnPos.z))
+                if (Projector.findNearbyProjections(level, spawnPos, SwarmProjection.effect.get()).isEmpty())
+                    continue
                 val belowState = level.getBlockState(spawnPos.below())
                 val state = level.getBlockState(spawnPos)
                 if (belowState.isAir || !belowState.fluidState.isEmpty || !belowState.canOcclude())
