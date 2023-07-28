@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack
 import org.slf4j.LoggerFactory
 import quaedam.config.QuaedamConfig
 import quaedam.misc.causality.CausalityAnchor
+import quaedam.misc.reality.RealityStabler
 import quaedam.projection.ProjectionCommand
 import quaedam.projection.ProjectionEffectType
 import quaedam.projection.SimpleProjectionUpdate
@@ -56,6 +57,7 @@ object Quaedam {
         SimpleProjectionUpdate
         ProjectionShell
         CausalityAnchor
+        RealityStabler
 
         creativeModeTabs.register()
         items.register()
