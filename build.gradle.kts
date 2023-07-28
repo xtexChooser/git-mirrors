@@ -2,11 +2,11 @@ import net.fabricmc.loom.api.LoomGradleExtensionAPI
 
 plugins {
     java
-    kotlin("jvm") version "1.8.22"
+    kotlin("jvm") version "1.9.0"
     id("architectury-plugin") version "3.4-SNAPSHOT"
-    id("dev.architectury.loom") version "1.2-SNAPSHOT" apply false
+    id("dev.architectury.loom") version "1.3-SNAPSHOT" apply false
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
-    id("io.github.juuxel.loom-quiltflower") version "1.10.0" apply false
+    id("io.github.juuxel.loom-vineflower") version "1.11.0" apply false
 }
 
 architectury {
@@ -15,7 +15,7 @@ architectury {
 
 subprojects {
     apply(plugin = "dev.architectury.loom")
-    apply(plugin = "io.github.juuxel.loom-quiltflower")
+    apply(plugin = "io.github.juuxel.loom-vineflower")
 
     val loom = project.extensions.getByName<LoomGradleExtensionAPI>("loom")
 
