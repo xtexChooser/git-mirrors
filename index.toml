@@ -2,7 +2,7 @@ hash-format = "sha256"
 
 [[files]]
 file = "CREDITS.md"
-hash = "b93a4e7cb4728120612cabe867b2525527246ff94e17bb42994374ead63bb5a8"
+hash = "59ad070dc857d65e3fdaf5fd1a43313de503d14aea57427fb00fd2417151aeed"
 
 [[files]]
 file = "LICENSE"
@@ -82,7 +82,7 @@ hash = "4eb582bb7e8c3ddb7d4d9e41c0fe9206d5768cc06c351226af3f2adfa3c64785"
 
 [[files]]
 file = "config/tweakermore.json"
-hash = "225d115cee46d3f3c6f3fb88f2103f21d56c4aac7e3a437baf6319201dd1ca53"
+hash = "427330cad10b928507db2f712840b05d61702c07308e5ee804320ca9b5f03c6d"
 
 [[files]]
 file = "config/tweakeroo.json"

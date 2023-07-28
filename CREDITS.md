@@ -46,7 +46,6 @@ This is a complete list of all mods, resource packs and shaders included in this
 - Dynamic FPS
 - e4mc
 - Entity Culling
-- Exordium
 - fast-chest
 - Fastload
 - FerriteCore
@@ -71,7 +70,6 @@ This is a complete list of all mods, resource packs and shaders included in this
 - MakeUp - Ultra Fast
 - MaLiLib
 - mcwzh-meme-resourcepack
-- MixinTrace
 - Mod Menu
 - More Culling
 - No Chat Reports
@@ -138,7 +136,6 @@ This is a complete list of all mods, resource packs and shaders included in this
 - [LazyDFU](https://modrinth.com/mod/hvFnDODi)
 - [Lithium](https://modrinth.com/mod/gvQqBUqZ)
 - [Log Cleaner](https://modrinth.com/mod/hwRo6mwQ)
-- [MixinTrace](https://modrinth.com/mod/sGmHWmeL)
 - [Mod Menu](https://modrinth.com/mod/mOgUt4GM)
 - [More Culling](https://modrinth.com/mod/51shyZVL)
 - [ViaFabricPlus](https://modrinth.com/mod/rIC2XJV4)
@@ -164,7 +161,6 @@ This is a complete list of all mods, resource packs and shaders included in this
 - [ClickThrough](https://modrinth.com/mod/Z5b0cAlD)
 - [Fastload](https://modrinth.com/mod/kCpssoSb)
 - [FlightHelper](https://modrinth.com/mod/1yyNJogn)
-- [Exordium](https://modrinth.com/mod/DynYZEae)
 - [Beenfo](https://modrinth.com/mod/Bta0Pt47)
 - [Default Dark Mode](https://modrinth.com/mod/6SLU7tS5)
 - [Twemojis In Minecraft](https://modrinth.com/mod/WdYcUVh8)
