@@ -1,0 +1,13 @@
+name = "Beenfo"
+filename = "beenfo-1.20-fabric0.83.0-1.3.3-spigot.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/Bta0Pt47/versions/a0pmHqfk/beenfo-1.20-fabric0.83.0-1.3.3-spigot.jar"
+hash-format = "sha1"
+hash = "2c6666115bbe9536866c72358147f7783bef05b7"
+
+[update]
+[update.modrinth]
+mod-id = "Bta0Pt47"
+version = "a0pmHqfk"

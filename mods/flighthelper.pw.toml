@@ -1,0 +1,13 @@
+name = "FlightHelper"
+filename = "flighthelper-1.20-fabric0.83.0-1.2.2.jar"
+side = "client"
+
+[download]
+url = "https://cdn.modrinth.com/data/1yyNJogn/versions/i9wp3XZ7/flighthelper-1.20-fabric0.83.0-1.2.2.jar"
+hash-format = "sha1"
+hash = "0b5bcc96f2929c992a10e8835af43b6826ad36c6"
+
+[update]
+[update.modrinth]
+mod-id = "1yyNJogn"
+version = "i9wp3XZ7"
