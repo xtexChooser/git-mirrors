@@ -48,9 +48,6 @@ object CABlock : HorizontalDirectionalBlock(
     }
 
     @Suppress("OVERRIDE_DEPRECATION")
-    override fun getRenderShape(state: BlockState) = RenderShape.MODEL
-
-    @Suppress("OVERRIDE_DEPRECATION")
     override fun getShape(state: BlockState, level: BlockGetter, pos: BlockPos, context: CollisionContext) =
         shapes[state]!!
 
