@@ -1,0 +1,16 @@
+{
+  "Generic": {
+    "signMultilinePasteSupport": true,
+    "replayAccurateTimelineTimestamp": true,
+    "xmapWaypointFreecamCompact": true
+  },
+  "GenericHotkeys": {
+    "copyItemDataToClipBoard": {
+      "keys": "F3,I",
+      "enabled": false
+    },
+    "copySignTextToClipBoard": {
+      "keys": "CTRL,C"
+    }
+  }
+}
