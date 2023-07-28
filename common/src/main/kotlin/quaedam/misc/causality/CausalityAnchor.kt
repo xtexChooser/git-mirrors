@@ -5,6 +5,7 @@ import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BlockEntityType
+import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import quaedam.Quaedam
 
 object CausalityAnchor {
@@ -27,6 +28,6 @@ object CausalityAnchor {
 
     fun checkEffect(level: Level, pos: BlockPos) = level.getChunkAt(pos)
         .blockEntities
-        .any { (_, v) -> v is CABlockEntity }
+        .any { (k, v) -> v is CABlockEntity && !level.getBlockState(k).getValue(BlockStateProperties.WATERLOGGED) }
 
 }

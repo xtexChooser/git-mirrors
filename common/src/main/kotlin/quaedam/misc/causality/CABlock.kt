@@ -19,7 +19,6 @@ import net.minecraft.world.phys.shapes.VoxelShape
 
 object CABlock : HorizontalDirectionalBlock(
     Properties.of()
-        .lightLevel { 2 }
         .noOcclusion()
         .strength(2f)
         .requiresCorrectToolForDrops()
