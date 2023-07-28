@@ -213,11 +213,6 @@ hash = "4eec3de8a58a6e64ea96e31781b52f70b4b33ec02a34a45f171e3a1e6697ba86"
 metafile = true
 
 [[files]]
-file = "mods/exordium.pw.toml"
-hash = "e48e1afae8805196d8facff0851325f2a461d94f19cedfa6bdb4ef78fd0da5bb"
-metafile = true
-
-[[files]]
 file = "mods/fast-chest.pw.toml"
 hash = "06c5fd14757e9949fc82c95bb0ca6b02e5b462a28daa840909785405998fe9e2"
 metafile = true
@@ -320,11 +315,6 @@ metafile = true
 [[files]]
 file = "mods/mcwifipnp.pw.toml"
 hash = "048f3010da02bcaba044b7eb31514518a3cafacaa35ce5cc48b5e49157d2df50"
-metafile = true
-
-[[files]]
-file = "mods/mixintrace.pw.toml"
-hash = "b89656eaf7e4404d8d2c5b1e1155aae85a839939f83cab6d1b5e791412ad5f86"
 metafile = true
 
 [[files]]
