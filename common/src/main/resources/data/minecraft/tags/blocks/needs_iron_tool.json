@@ -2,7 +2,8 @@
   "replace": false,
   "values": [
     "quaedam:projector",
+    "#quaedam:projections",
     "quaedam:causality_anchor",
-    "#quaedam:projections"
+    "quaedam:reality_stabler"
   ]
 }

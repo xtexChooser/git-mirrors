@@ -1,19 +1,19 @@
 {
   "variants": {
     "facing=east": {
-      "model": "quaedam:block/causality_anchor",
+      "model": "quaedam:block/reality_stabler",
       "y": 270
     },
     "facing=south": {
-      "model": "quaedam:block/causality_anchor",
+      "model": "quaedam:block/reality_stabler",
       "y": 0
     },
     "facing=west": {
-      "model": "quaedam:block/causality_anchor",
+      "model": "quaedam:block/reality_stabler",
       "y": 90
     },
     "facing=north": {
-      "model": "quaedam:block/causality_anchor",
+      "model": "quaedam:block/reality_stabler",
       "y": 180
     }
   }
