@@ -37,6 +37,10 @@ file = "config/dynamicfps.toml"
 hash = "3429fa956cf7b9f29667fcfc74fdc4b505d25c4ec9a237281f33ff87e2e9df23"
 
 [[files]]
+file = "config/inventoryprofilesnext/inventoryprofiles.json"
+hash = "ada590e38f0656b5acf5f6cbb71d014756f3947356e7305a5be7cc3ab2de15bc"
+
+[[files]]
 file = "config/iris.properties"
 hash = "fc273072f132ab4beba18bdee72e80cce7f82775d91219b39bbff41f9ac5158c"
 
@@ -75,6 +79,10 @@ hash = "17d143a4927c024d62fa8a38a0c1c987a7b9153c7aa6cf2f6ff6f670c9b1a682"
 [[files]]
 file = "config/sodium-options.json"
 hash = "4eb582bb7e8c3ddb7d4d9e41c0fe9206d5768cc06c351226af3f2adfa3c64785"
+
+[[files]]
+file = "config/tweakermore.json"
+hash = "225d115cee46d3f3c6f3fb88f2103f21d56c4aac7e3a437baf6319201dd1ca53"
 
 [[files]]
 file = "config/tweakeroo.json"
