@@ -16,7 +16,7 @@ object ProjectionShellItem : Item(
         val block = context.level.getBlockState(context.clickedPos).block
         if (block is ProjectionShellBlock && context.level.isClientSide) {
             ProjectionShell.channel.sendToServer(ServerboundPSHLockAcquirePacket(context.clickedPos))
-            return InteractionResult.CONSUME
+            return InteractionResult.SUCCESS
         }
         return InteractionResult.PASS
     }
