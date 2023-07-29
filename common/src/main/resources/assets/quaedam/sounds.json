@@ -49,12 +49,52 @@
       },
       {
         "name": "entity.wandering_trader.no",
-        "weight": 2,
+        "weight": 1,
         "type": "event"
       },
       {
         "name": "entity.wandering_trader.yes",
-        "weight": 3,
+        "weight": 1,
+        "type": "event"
+      },
+      {
+        "name": "block.sand.step",
+        "weight": 2,
+        "type": "event"
+      },
+      {
+        "name": "block.scaffolding.step",
+        "weight": 2,
+        "type": "event"
+      },
+      {
+        "name": "block.stone.step",
+        "weight": 2,
+        "type": "event"
+      },
+      {
+        "name": "block.grass.step",
+        "weight": 2,
+        "type": "event"
+      },
+      {
+        "name": "block.wet_grass.step",
+        "weight": 1,
+        "type": "event"
+      },
+      {
+        "name": "block.bamboo_wood.step",
+        "weight": 1,
+        "type": "event"
+      },
+      {
+        "name": "block.cherry_wood.step",
+        "weight": 1,
+        "type": "event"
+      },
+      {
+        "name": "block.wood.step",
+        "weight": 2,
         "type": "event"
       }
     ]
