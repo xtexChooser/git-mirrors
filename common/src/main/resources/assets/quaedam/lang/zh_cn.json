@@ -5,6 +5,7 @@
   "block.quaedam.swarm_projection": "人群投影",
   "block.quaedam.sound_projection": "声音投影",
   "block.quaedam.noise_projection": "噪音投影",
+  "block.quaedam.music_projection": "音乐投影",
   "block.quaedam.causality_anchor": "因果锚",
   "block.quaedam.reality_stabler": "现实稳定器",
   "entity.quaedam.projected_person": "虚拟个体",
@@ -19,5 +20,9 @@
   "quaedam.shell.noise.rate": "速率",
   "quaedam.shell.noise.amount": "数量",
   "quaedam.shell.swarm.max_count": "最大数量",
-  "quaedam.shell.sound.rate": "速率"
+  "quaedam.shell.sound.rate": "速率",
+  "quaedam.shell.music.volume_factor": "响度因子",
+  "quaedam.shell.music.multi_tracks": "多轨音乐",
+  "quaedam.shell.music.multi_tracks.true": "开启",
+  "quaedam.shell.music.multi_tracks.false": "关闭"
 }

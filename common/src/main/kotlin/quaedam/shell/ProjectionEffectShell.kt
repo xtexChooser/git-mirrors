@@ -28,9 +28,9 @@ class ProjectionEffectShell(val effect: ProjectionEffect) {
 
     fun text(key: String, value: Component) = row(key) { StringWidget(value, it.font) }
 
-    fun doubleSlider(key: String, property: KMutableProperty0<Double>, range: ClosedRange<Double>, step: Double) {
+    fun doubleSlider(key: String, property: KMutableProperty0<Double>, range: ClosedRange<Double>, rawStep: Double) {
         val len = range.endInclusive - range.start
-        val step = step / len
+        val step = rawStep / len
         row(key) {
             object : AbstractSliderButton(
                 0, 0, width, height,
@@ -48,6 +48,35 @@ class ProjectionEffectShell(val effect: ProjectionEffect) {
                         value += (step - diff)
                     }
                     property.set(range.start + (value * len))
+                }
+            }
+        }
+    }
+
+    fun floatSlider(key: String, property: KMutableProperty0<Float>, range: ClosedRange<Float>, rawStep: Float) {
+        val len = range.endInclusive - range.start
+        val step = rawStep / len
+        row(key) {
+            object : AbstractSliderButton(
+                0,
+                0,
+                width,
+                height,
+                Component.literal(String.format("%.2f", property.get())),
+                (property.get() - range.start) / len.toDouble()
+            ) {
+                override fun updateMessage() {
+                    message = Component.literal(String.format("%.2f", property.get()))
+                }
+
+                override fun applyValue() {
+                    val diff = value % step
+                    if (diff < step * 0.5) {
+                        value -= diff
+                    } else {
+                        value += (step - diff)
+                    }
+                    property.set(range.start + (value.toFloat() * len))
                 }
             }
         }
@@ -83,6 +112,14 @@ class ProjectionEffectShell(val effect: ProjectionEffect) {
             CycleButton.builder<Int> { Component.literal(it.toString()) }
                 .displayOnlyValue()
                 .withValues(range.toList())
+                .create(0, 0, width, height, Component.translatable(key))
+        }
+
+    fun boolean(key: String, property: KMutableProperty0<Boolean>) =
+        row(key) {
+            CycleButton.builder<Boolean> { Component.translatable("$key.$it") }
+                .displayOnlyValue()
+                .withValues(listOf(true, false))
                 .create(0, 0, width, height, Component.translatable(key))
         }
 

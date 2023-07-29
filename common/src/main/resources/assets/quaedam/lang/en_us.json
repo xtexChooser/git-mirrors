@@ -5,6 +5,7 @@
   "block.quaedam.swarm_projection": "Swarm Projection",
   "block.quaedam.sound_projection": "Sound Projection",
   "block.quaedam.noise_projection": "Noise Projection",
+  "block.quaedam.music_projection": "Music Projection",
   "block.quaedam.causality_anchor": "Causality Anchor",
   "block.quaedam.reality_stabler": "Reality Stabler",
   "entity.quaedam.projected_person": "Virtual Person",
@@ -19,5 +20,9 @@
   "quaedam.shell.noise.rate": "Rate",
   "quaedam.shell.noise.amount": "Amount",
   "quaedam.shell.swarm.max_count": "Max Count",
-  "quaedam.shell.sound.rate": "Rate"
+  "quaedam.shell.sound.rate": "Rate",
+  "quaedam.shell.music.volume_factor": "Volume Factor",
+  "quaedam.shell.music.multi_tracks": "Multi Tracks",
+  "quaedam.shell.music.multi_tracks.true": "Enabled",
+  "quaedam.shell.music.multi_tracks.false": "Disabled"
 }
