@@ -104,7 +104,7 @@ data class NoiseProjectionEffect(var rate: Int = 10, var amount: Int = 3) : Proj
     }
 
     override val type
-        get() = SoundProjection.effect.get()!!
+        get() = NoiseProjection.effect.get()!!
 
     override fun toNbt(tag: CompoundTag) {
         tag.putInt(TAG_RATE, rate)
