@@ -19,7 +19,7 @@ object SimpleProjectionUpdate {
         NetworkManager.registerReceiver(NetworkManager.Side.C2S, id, ::handle)
     }
 
-    private fun handle(buf: FriendlyByteBuf, ctx: PacketContext) {
+    private fun handle(buf: FriendlyByteBuf, ctx: PacketContext) = runCatching {
         val player = ctx.player!! as ServerPlayer
         val level = player.level()
 
@@ -31,7 +31,7 @@ object SimpleProjectionUpdate {
             if (player.blockPosition().distSqr(pos) > 50 * 50) {
                 player.connection.disconnect(Component.literal("[Quaedam] wth r u doing? why not waiting for server?"))
             }
-            return
+            return@runCatching
         }
 
         level.server!!.execute {
@@ -47,10 +47,13 @@ object SimpleProjectionUpdate {
                 player.connection.disconnect(Component.literal("[Quaedam] ? wait what did you send to the server?"))
                 return@execute
             }
+            entity.setChanged()
             blockEntity.sendBlockUpdated()
             ProjectionBlock.sendUpdateToProjectors(level, pos)
         }
     }
+        .onFailure { Quaedam.logger.error("Error handling simple projection update packet", it) }
+        .getOrThrow()
 
     fun send(pos: BlockPos, data: CompoundTag) {
         val buf = FriendlyByteBuf(Unpooled.buffer())

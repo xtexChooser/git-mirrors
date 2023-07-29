@@ -34,10 +34,6 @@ class ProjectionShellScreen(val level: Level, val pos: BlockPos, val shell: Proj
             run { // Buttons
                 rows.addChild(StringWidget(Component.empty(), font))
                 rows.addChild(Button.builder(Component.translatable("quaedam.screen.projection_shell.save")) {
-                    val block = level.getBlockState(pos).block
-                    if (block is ProjectionShellBlock) {
-                        block.applyFromShell(level, pos, shell)
-                    }
                     GameInstance.getClient().setScreen(null)
                 }.build().apply(::setInitialFocus))
             }
@@ -78,6 +74,10 @@ class ProjectionShellScreen(val level: Level, val pos: BlockPos, val shell: Proj
 
     override fun removed() {
         super.removed()
+        val block = level.getBlockState(pos).block
+        if (block is ProjectionShellBlock) {
+            block.applyFromShell(level, pos, shell)
+        }
         ProjectionShell.channel.sendToServer(ServerboundPSHLockReleasePacket(pos))
     }
 

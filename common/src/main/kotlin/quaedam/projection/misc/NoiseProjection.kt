@@ -101,7 +101,7 @@ object NoiseProjectionBlock : EntityProjectionBlock<NoiseProjectionEffect>(creat
 
 }
 
-data class NoiseProjectionEffect(var rate: Int = 120, var amount: Int = 3) : ProjectionEffect(),
+data class NoiseProjectionEffect(var rate: Int = 250, var amount: Int = 3) : ProjectionEffect(),
     ProjectionEffectShell.Provider {
 
     companion object {

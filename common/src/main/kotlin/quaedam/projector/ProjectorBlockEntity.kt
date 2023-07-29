@@ -106,6 +106,7 @@ class ProjectorBlockEntity(pos: BlockPos, state: BlockState) :
                 if (!level.isClientSide && notify) {
                     sendBlockUpdated()
                 }
+                setChanged()
                 val addedEffects = effects.filterKeys { it !in oldEffects }
                 val removedEffects = oldEffects.filterKeys { it !in effects }
                 val updatedEffects = effects.filter { (k, v) -> oldEffects[k] != null && oldEffects[k] != v }
