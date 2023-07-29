@@ -8,7 +8,6 @@ import quaedam.projection.EntityProjectionBlock
 import quaedam.projection.ProjectionEffect
 import quaedam.projection.ProjectionEffectType
 import quaedam.projection.SimpleProjectionEntity
-import quaedam.projection.misc.SoundProjection
 import quaedam.shell.ProjectionEffectShell
 import quaedam.shell.buildProjectionEffectShell
 import kotlin.math.min
@@ -16,7 +15,7 @@ import kotlin.math.min
 object MusicProjection {
 
     const val ID = "music_projection"
-    const val SHORT_ID = "projection"
+    const val SHORT_ID = "music"
 
     val block = Quaedam.blocks.register(ID) { MusicProjectionBlock }!!
 
@@ -35,6 +34,10 @@ object MusicProjection {
         SimpleProjectionEntity.createBlockEntityType(block) { MusicProjectionEffect() }
     }!!
 
+    init {
+        CyberInstrument
+    }
+
 }
 
 object MusicProjectionBlock : EntityProjectionBlock<MusicProjectionEffect>(createProperties().lightLevel { 3 }) {
@@ -43,12 +46,12 @@ object MusicProjectionBlock : EntityProjectionBlock<MusicProjectionEffect>(creat
 
 }
 
-data class MusicProjectionEffect(var volumeFactor: Float = 1.0f, var multiTracks: Boolean = true) : ProjectionEffect(),
+data class MusicProjectionEffect(var volumeFactor: Float = 1.0f, var particle: Boolean = true) : ProjectionEffect(),
     ProjectionEffectShell.Provider {
 
     companion object {
         const val TAG_VOLUME_FACTOR = "VolumeFactor"
-        const val TAG_MULTI_TRACKS = "MultiTracks"
+        const val TAG_PARTICLE = "Particle"
     }
 
     override val type
@@ -56,12 +59,12 @@ data class MusicProjectionEffect(var volumeFactor: Float = 1.0f, var multiTracks
 
     override fun toNbt(tag: CompoundTag) {
         tag.putFloat(TAG_VOLUME_FACTOR, volumeFactor)
-        tag.putBoolean(TAG_MULTI_TRACKS, multiTracks)
+        tag.putBoolean(TAG_PARTICLE, particle)
     }
 
     override fun fromNbt(tag: CompoundTag, trusted: Boolean) {
         volumeFactor = tag.getFloat(TAG_VOLUME_FACTOR)
-        multiTracks = tag.getBoolean(TAG_MULTI_TRACKS)
+        particle = tag.getBoolean(TAG_PARTICLE)
         if (!trusted) {
             volumeFactor = min(volumeFactor, 5.0f)
         }
@@ -69,7 +72,7 @@ data class MusicProjectionEffect(var volumeFactor: Float = 1.0f, var multiTracks
 
     override fun createShell() = buildProjectionEffectShell(this) {
         floatSlider("quaedam.shell.music.volume_factor", ::volumeFactor, 0.0f..1.0f, 0.1f)
-        boolean("quaedam.shell.music.multi_tracks", ::multiTracks)
+        boolean("quaedam.shell.music.particle", ::particle)
     }
 
 }

@@ -22,7 +22,7 @@
   "quaedam.shell.swarm.max_count": "最大数量",
   "quaedam.shell.sound.rate": "速率",
   "quaedam.shell.music.volume_factor": "响度因子",
-  "quaedam.shell.music.multi_tracks": "多轨音乐",
-  "quaedam.shell.music.multi_tracks.true": "开启",
-  "quaedam.shell.music.multi_tracks.false": "关闭"
+  "quaedam.shell.music.particle": "粒子效果",
+  "quaedam.shell.music.particle.true": "显示",
+  "quaedam.shell.music.particle.false": "隐藏"
 }
