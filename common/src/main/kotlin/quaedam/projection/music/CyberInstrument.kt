@@ -27,6 +27,7 @@ import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.phys.BlockHitResult
 import quaedam.Quaedam
 import quaedam.projector.Projector
+import quaedam.utils.sendBlockUpdated
 
 object CyberInstrument {
 
@@ -176,6 +177,7 @@ class CyberInstrumentBlockEntity(pos: BlockPos, state: BlockState) :
         if (player == null && !level!!.isClientSide && checkProjections()) {
             player = MusicPlayer(level!!.random.nextLong(), level!!, blockPos)
             setChanged()
+            sendBlockUpdated()
         }
     }
 
@@ -186,6 +188,7 @@ class CyberInstrumentBlockEntity(pos: BlockPos, state: BlockState) :
                 if (player?.isEnd == true) {
                     player = null
                     setChanged()
+                    sendBlockUpdated()
                     if (level!!.random.nextInt(7) != 0) {
                         startMusic()
                     }
@@ -194,6 +197,7 @@ class CyberInstrumentBlockEntity(pos: BlockPos, state: BlockState) :
         } else {
             player = null
             setChanged()
+            sendBlockUpdated()
         }
     }
 

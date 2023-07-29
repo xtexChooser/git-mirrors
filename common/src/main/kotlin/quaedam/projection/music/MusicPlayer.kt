@@ -1,11 +1,15 @@
 package quaedam.projection.music
 
+import dev.architectury.utils.GameInstance
+import net.minecraft.client.resources.sounds.SimpleSoundInstance
+import net.minecraft.client.resources.sounds.SoundInstance
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Holder
 import net.minecraft.core.particles.ParticleTypes
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.sounds.SoundEvent
 import net.minecraft.sounds.SoundSource
+import net.minecraft.util.RandomSource
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.NoteBlock
 import net.minecraft.world.level.block.entity.SkullBlockEntity
@@ -84,17 +88,19 @@ class MusicPlayer(val seed: Long, val level: Level, val pos: BlockPos, val start
                     )
                 }
 
-                level.playSeededSound(
-                    null,
-                    pos.x.toDouble() + 0.5,
-                    pos.y.toDouble() + 0.5,
-                    pos.z.toDouble() + 0.5,
-                    holder,
+                val instance = SimpleSoundInstance(
+                    holder.value().location,
                     SoundSource.RECORDS,
                     volume,
                     pitch,
-                    level.random.nextLong()
+                    RandomSource.create(level.random.nextLong()),
+                    false, 0, SoundInstance.Attenuation.NONE,
+                    pos.x.toDouble() + 0.5,
+                    pos.y.toDouble() + 0.5,
+                    pos.z.toDouble() + 0.5,
+                    false
                 )
+                GameInstance.getClient().soundManager.play(instance)
             }
         }
         noteTime--
