@@ -56,42 +56,6 @@
         "name": "entity.wandering_trader.yes",
         "weight": 3,
         "type": "event"
-      },
-      {
-        "name": "quaedam:entity/projected_person/1",
-        "weight": 1,
-        "volume": 1.2,
-        "type": "file"
-      },
-      {
-        "name": "quaedam:entity/projected_person/2",
-        "weight": 1,
-        "volume": 1.2,
-        "type": "file"
-      },
-      {
-        "name": "quaedam:entity/projected_person/3",
-        "weight": 1,
-        "volume": 0.4,
-        "type": "file"
-      },
-      {
-        "name": "quaedam:entity/projected_person/4",
-        "weight": 1,
-        "volume": 1.2,
-        "type": "file"
-      },
-      {
-        "name": "quaedam:entity/projected_person/5",
-        "weight": 1,
-        "volume": 1.2,
-        "type": "file"
-      },
-      {
-        "name": "quaedam:entity/projected_person/6",
-        "weight": 1,
-        "volume": 1.2,
-        "type": "file"
       }
     ]
   },
