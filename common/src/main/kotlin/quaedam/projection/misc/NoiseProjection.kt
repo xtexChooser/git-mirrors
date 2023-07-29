@@ -99,6 +99,7 @@ data class NoiseProjectionEffect(var rate: Int = 10, var amount: Int = 3) : Proj
     ProjectionEffectShell.Provider {
 
     companion object {
+        const val TAG_RATE = "Rate"
         const val TAG_AMOUNT = "Amount"
     }
 
@@ -106,17 +107,21 @@ data class NoiseProjectionEffect(var rate: Int = 10, var amount: Int = 3) : Proj
         get() = SoundProjection.effect.get()!!
 
     override fun toNbt(tag: CompoundTag) {
+        tag.putInt(TAG_RATE, rate)
         tag.putInt(TAG_AMOUNT, amount)
     }
 
     override fun fromNbt(tag: CompoundTag, trusted: Boolean) {
+        rate = tag.getInt(TAG_RATE)
         amount = tag.getInt(TAG_AMOUNT)
         if (!trusted) {
             amount = min(amount, 8)
+            rate = min(rate, 500)
         }
     }
 
     override fun createShell() = buildProjectionEffectShell(this) {
+        intSlider("quaedam.shell.noise.rate", ::rate, 0..300 step 5)
         intSlider("quaedam.shell.noise.amount", ::amount, 0..8)
     }
 

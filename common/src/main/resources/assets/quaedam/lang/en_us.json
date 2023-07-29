@@ -16,6 +16,7 @@
   "quaedam.screen.projection_shell.empty": "No Options Available!",
   "quaedam.screen.projection_shell.close": "Close",
   "quaedam.shell.skylight.factor": "Factor",
+  "quaedam.shell.noise.rate": "Rate",
   "quaedam.shell.noise.amount": "Amount",
   "quaedam.shell.swarm.max_count": "Max Count"
 }

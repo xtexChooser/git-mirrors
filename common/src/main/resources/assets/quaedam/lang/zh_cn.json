@@ -16,6 +16,7 @@
   "quaedam.screen.projection_shell.empty": "无可用选项！",
   "quaedam.screen.projection_shell.close": "关闭",
   "quaedam.shell.skylight.factor": "因子",
+  "quaedam.shell.noise.rate": "速率",
   "quaedam.shell.noise.amount": "数量",
   "quaedam.shell.swarm.max_count": "最大数量"
 }
