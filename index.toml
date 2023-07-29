@@ -465,6 +465,11 @@ hash = "4db5eb8e38aaee5eb653e58727c0f3f33ede51d58632f1b0109f9ad478d6ca1f"
 metafile = true
 
 [[files]]
+file = "resourcepacks/redstone-tweaks.pw.toml"
+hash = "73ef348602ef873cce3c304a92f643ecb402d8def6a026b70b9f94b3181bab08"
+metafile = true
+
+[[files]]
 file = "resourcepacks/shiny-ores-countxd.pw.toml"
 hash = "4a2fc439ba06cf87b429a7bfde61ebbdf81aa359ec0e208fdbaa9e918b4c6b18"
 metafile = true
@@ -482,11 +487,6 @@ metafile = true
 [[files]]
 file = "resourcepacks/xekrsquarepattern.pw.toml"
 hash = "c62244b04611fbba28cc78312d128f9e2dc66e05fb8b3581328d4ba40e2cdc31"
-metafile = true
-
-[[files]]
-file = "resourcepacks/xk-redstone-display.pw.toml"
-hash = "664335993895dc64996b40f9418892d0267f568715e0f64e304ce567a126d6e8"
 metafile = true
 
 [[files]]
