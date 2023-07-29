@@ -76,6 +76,7 @@ This is a complete list of all mods, resource packs and shaders included in this
 - Quick Hotkeys
 - Quilted Fabric API (QFAPI) / Quilt Standard Libraries (QSL)
 - Quilt Kotlin Libraries (QKL)
+- Redstone Tweaks
 - Reese's Sodium Options
 - ReplayMod
 - Roughly Enough Items (REI)
@@ -85,6 +86,7 @@ This is a complete list of all mods, resource packs and shaders included in this
 - Sodium Extra
 - Sofron oCd
 - spark
+- Starlight (Fabric)
 - TweakerMore
 - Tweakeroo
 - Twemojis In Minecraft
@@ -95,7 +97,6 @@ This is a complete list of all mods, resource packs and shaders included in this
 - Xaero's Minimap
 - Xaero's World Map
 - XeKrSquarePattern
-- XK Redstone Display
 - YetAnotherConfigLib
 
 <!--END MOD LIST-->
@@ -162,13 +163,14 @@ This is a complete list of all mods, resource packs and shaders included in this
 - [Fastload](https://modrinth.com/mod/kCpssoSb)
 - [FlightHelper](https://modrinth.com/mod/1yyNJogn)
 - [Beenfo](https://modrinth.com/mod/Bta0Pt47)
+- [Starlight (Fabric)](https://modrinth.com/mod/H8CaAYZC)
 - [Default Dark Mode](https://modrinth.com/mod/6SLU7tS5)
 - [Twemojis In Minecraft](https://modrinth.com/mod/WdYcUVh8)
-- [XK Redstone Display](https://modrinth.com/mod/4ueVo9s5)
 - [XeKrSquarePattern](https://modrinth.com/mod/rq4lDGdf)
 - [Shiny Ores](https://modrinth.com/mod/oYrEfh82)
 - [Better Sky](https://modrinth.com/mod/Zrixe2pD)
 - [Foliage+](https://modrinth.com/mod/kXiPMJsD)
+- [Redstone Tweaks](https://modrinth.com/mod/RvfAlf4Z)
 - [MakeUp - Ultra Fast](https://modrinth.com/mod/izsIPI7a)
 
 <!--END MR LINKS LIST-->

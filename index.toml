@@ -2,7 +2,7 @@ hash-format = "sha256"
 
 [[files]]
 file = "CREDITS.md"
-hash = "59ad070dc857d65e3fdaf5fd1a43313de503d14aea57427fb00fd2417151aeed"
+hash = "935ed461fc92c202c7a35bb3c5f6a14f86829c4895973414de544473b9d025f8"
 
 [[files]]
 file = "LICENSE"
@@ -38,7 +38,7 @@ hash = "3429fa956cf7b9f29667fcfc74fdc4b505d25c4ec9a237281f33ff87e2e9df23"
 
 [[files]]
 file = "config/inventoryprofilesnext/inventoryprofiles.json"
-hash = "ada590e38f0656b5acf5f6cbb71d014756f3947356e7305a5be7cc3ab2de15bc"
+hash = "722bef518090891c6409782147d5f82c13ea6189cdbdf35812c340ea25fb0d8b"
 
 [[files]]
 file = "config/iris.properties"
@@ -99,6 +99,10 @@ hash = "3271c997d638f8a920d229b37fa99c5b7a3f28bf03c273158ec9b254432c4938"
 [[files]]
 file = "config/xaerominimap.txt"
 hash = "c26ae78ad8547bb8f62aff5cfcfc7e611401e31cb9305001b6e016027026460f"
+
+[[files]]
+file = "config/xaerominimap_entities.json"
+hash = "5867bb5696902b401c8732ed3df3ccd5b16c44e33788b26dc467f7eab2677fa1"
 
 [[files]]
 file = "config/xaeropatreon.txt"
@@ -442,7 +446,7 @@ metafile = true
 
 [[files]]
 file = "options.txt"
-hash = "d0e5c2444003b7eb810a6f5d60929aa58491a69b66397d02a748ab08aaff5111"
+hash = "f44194d553b7a083097e9410f27f651d474d5857b10566bbf1816cc4d56571f9"
 
 [[files]]
 file = "resourcepacks/bettersky.pw.toml"
