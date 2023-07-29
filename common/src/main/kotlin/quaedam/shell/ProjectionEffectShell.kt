@@ -109,17 +109,25 @@ class ProjectionEffectShell(val effect: ProjectionEffect) {
 
     fun intCycle(key: String, property: KMutableProperty0<Int>, range: IntProgression) =
         row(key) {
-            CycleButton.builder<Int> { Component.literal(it.toString()) }
+            CycleButton.builder<Int> {
+                property.set(it)
+                Component.literal(it.toString())
+            }
                 .displayOnlyValue()
                 .withValues(range.toList())
+                .withInitialValue(property.get())
                 .create(0, 0, width, height, Component.translatable(key))
         }
 
     fun boolean(key: String, property: KMutableProperty0<Boolean>) =
         row(key) {
-            CycleButton.builder<Boolean> { Component.translatable("$key.$it") }
+            CycleButton.builder<Boolean> {
+                property.set(it)
+                Component.translatable("$key.$it")
+            }
                 .displayOnlyValue()
                 .withValues(listOf(true, false))
+                .withInitialValue(property.get())
                 .create(0, 0, width, height, Component.translatable(key))
         }
 
