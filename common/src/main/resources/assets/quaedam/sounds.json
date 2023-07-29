@@ -98,23 +98,55 @@
   "quaedam.projection.noise": {
     "sounds": [
       {
-        "name": "entity.villager.work_librarian",
-        "weight": 2,
+        "name": "entity.villager.work_armorer",
+        "type": "event"
+      },
+      {
+        "name": "entity.villager.work_butcher",
+        "type": "event"
+      },
+      {
+        "name": "entity.villager.work_cartographer",
         "type": "event"
       },
       {
         "name": "entity.villager.work_cleric",
-        "weight": 2,
+        "type": "event"
+      },
+      {
+        "name": "entity.villager.work_farmer",
+        "type": "event"
+      },
+      {
+        "name": "entity.villager.work_fisherman",
+        "type": "event"
+      },
+      {
+        "name": "entity.villager.work_fletcher",
+        "type": "event"
+      },
+      {
+        "name": "entity.villager.work_leatherworker",
+        "type": "event"
+      },
+      {
+        "name": "entity.villager.work_librarian",
         "type": "event"
       },
       {
         "name": "entity.villager.work_mason",
-        "weight": 2,
         "type": "event"
       },
       {
         "name": "entity.villager.work_shepherd",
-        "weight": 2,
+        "type": "event"
+      },
+      {
+        "name": "entity.villager.work_toolsmith",
+        "type": "event"
+      },
+      {
+        "name": "entity.villager.work_weaponsmith",
         "type": "event"
       }
     ]

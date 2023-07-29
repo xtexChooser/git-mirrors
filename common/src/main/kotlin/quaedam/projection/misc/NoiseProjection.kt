@@ -70,18 +70,24 @@ object NoiseProjection {
     }
 
     private fun playRandomNoise(random: RandomSource, game: Minecraft) {
+        val volumeFactor = random.nextInt(100)
         val sound = SimpleSoundInstance(
             soundEvent.get().location,
             SoundSource.AMBIENT,
-            random.nextFloat() * 0.6f + 0.7f,
+            when (volumeFactor) {
+                in 0..8 -> random.nextFloat() * 0.65f
+                in 10..15 -> random.nextFloat() * 0.5f + 0.5f
+                in 21..50 -> random.nextFloat() * 0.3f
+                else -> random.nextFloat() * 0.2f
+            },
             random.nextFloat() + 0.4f,
             RandomSource.create(random.nextLong()),
             false,
             0,
             SoundInstance.Attenuation.NONE,
-            random.nextFloat() * 24.0 - 12,
-            random.nextFloat() * 24.0 - 12,
+            random.nextFloat() * 28.0 - 14,
             random.nextFloat() * 12.0 - 2,
+            random.nextFloat() * 28.0 - 14,
             true
         )
         game.soundManager.playDelayed(sound, random.nextInt(3))
@@ -95,7 +101,7 @@ object NoiseProjectionBlock : EntityProjectionBlock<NoiseProjectionEffect>(creat
 
 }
 
-data class NoiseProjectionEffect(var rate: Int = 10, var amount: Int = 3) : ProjectionEffect(),
+data class NoiseProjectionEffect(var rate: Int = 120, var amount: Int = 3) : ProjectionEffect(),
     ProjectionEffectShell.Provider {
 
     companion object {
