@@ -1,5 +1,8 @@
 {
     "ModSettings": {
+        "highlight_foused_items": {
+            "value": false
+        },
         "enable_updates_check": false,
         "first_run": false
     },
