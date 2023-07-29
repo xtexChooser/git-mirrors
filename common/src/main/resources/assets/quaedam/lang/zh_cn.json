@@ -18,5 +18,6 @@
   "quaedam.shell.skylight.factor": "因子",
   "quaedam.shell.noise.rate": "速率",
   "quaedam.shell.noise.amount": "数量",
-  "quaedam.shell.swarm.max_count": "最大数量"
+  "quaedam.shell.swarm.max_count": "最大数量",
+  "quaedam.shell.sound.rate": "速率"
 }

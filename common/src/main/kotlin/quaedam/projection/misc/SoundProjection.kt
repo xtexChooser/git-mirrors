@@ -10,6 +10,7 @@ import quaedam.projection.ProjectionEffectType
 import quaedam.projection.SimpleProjectionEntity
 import quaedam.shell.ProjectionEffectShell
 import quaedam.shell.buildProjectionEffectShell
+import kotlin.math.min
 
 object SoundProjection {
 
@@ -26,11 +27,11 @@ object SoundProjection {
     }!!
 
     val effect = Quaedam.projectionEffects.register(SHORT_ID) {
-        ProjectionEffectType { SoundProjectionEffect }
+        ProjectionEffectType { SoundProjectionEffect() }
     }!!
 
     val blockEntity = Quaedam.blockEntities.register(ID) {
-        SimpleProjectionEntity.createBlockEntityType(block) { SoundProjectionEffect }
+        SimpleProjectionEntity.createBlockEntityType(block) { SoundProjectionEffect() }
     }!!
 
 }
@@ -41,18 +42,28 @@ object SoundProjectionBlock : EntityProjectionBlock<SoundProjectionEffect>(creat
 
 }
 
-object SoundProjectionEffect : ProjectionEffect(), ProjectionEffectShell.Provider {
+data class SoundProjectionEffect(var rate: Int = 60) : ProjectionEffect(), ProjectionEffectShell.Provider {
+
+    companion object {
+        const val TAG_RATE = "Rate"
+    }
 
     override val type
         get() = SoundProjection.effect.get()!!
 
     override fun toNbt(tag: CompoundTag) {
+        tag.putInt(TAG_RATE, rate)
     }
 
     override fun fromNbt(tag: CompoundTag, trusted: Boolean) {
+        rate = tag.getInt(TAG_RATE)
+        if (!trusted) {
+            rate = min(rate, 210)
+        }
     }
 
     override fun createShell() = buildProjectionEffectShell(this) {
+        intSlider("quaedam.shell.sound.rate", ::rate, 0..210)
     }
 
 }
