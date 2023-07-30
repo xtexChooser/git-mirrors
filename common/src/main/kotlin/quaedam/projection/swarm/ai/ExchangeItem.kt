@@ -32,30 +32,32 @@ class ExchangeItem<E> : Behavior<E>(
         entity.brain.eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE)
     }
 
-    override fun canStillUse(level: ServerLevel, entity: E, l: Long) =
-        entity.brain.getMemory(MemoryModuleType.WALK_TARGET).isPresent || entity.brain.getMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE).isEmpty || (closeAt != null && closeAt!! < l)
+    override fun canStillUse(level: ServerLevel, owner: E, gameTime: Long) =
+        owner.brain.getMemory(MemoryModuleType.WALK_TARGET).isPresent
+                || owner.brain.getMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE).isEmpty
+                || (closeAt != null && closeAt!! < gameTime)
 
-    override fun tick(level: ServerLevel, entity: E, l: Long) {
+    override fun tick(level: ServerLevel, owner: E, gameTime: Long) {
         if (closeAt == null) {
-            if (entity.brain.getMemory(MemoryModuleType.WALK_TARGET).isEmpty) {
+            if (owner.brain.getMemory(MemoryModuleType.WALK_TARGET).isEmpty) {
                 // reached
                 val chest = level.getBlockEntity(target!!) as BaseContainerBlockEntity
                 if (chest is ChestBlockEntity) {
                     ChestBlockEntity.playSound(level, target!!, level.getBlockState(target!!), SoundEvents.CHEST_OPEN)
                 }
                 if (chest.isEmpty && level.random.nextBoolean()) {
-                    closeAt = l + 7
+                    closeAt = gameTime + 7
                 } else {
-                    closeAt = l + 10 + level.random.nextInt(100)
-                    exchangeItems(level, entity)
+                    closeAt = gameTime + 10 + level.random.nextInt(100)
+                    exchangeItems(level, owner)
                 }
             }
         }
     }
 
-    override fun stop(level: ServerLevel, entity: E, l: Long) {
-        entity.brain.eraseMemory(MemoryModuleType.WALK_TARGET)
-        entity.brain.eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE)
+    override fun stop(level: ServerLevel, owner: E, gameTime: Long) {
+        owner.brain.eraseMemory(MemoryModuleType.WALK_TARGET)
+        owner.brain.eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE)
         if (closeAt != null) {
             // opened
             val chest = level.getBlockEntity(target!!)!!
