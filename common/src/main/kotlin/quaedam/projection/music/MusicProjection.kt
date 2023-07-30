@@ -71,7 +71,7 @@ data class MusicProjectionEffect(var volumeFactor: Float = 1.0f, var particle: B
     }
 
     override fun createShell() = buildProjectionEffectShell(this) {
-        floatSlider("quaedam.shell.music.volume_factor", ::volumeFactor, 0.0f..1.0f, 0.1f)
+        floatSlider("quaedam.shell.music.volume_factor", ::volumeFactor, 0.0f..5.0f, 0.1f)
         boolean("quaedam.shell.music.particle", ::particle)
     }
 
