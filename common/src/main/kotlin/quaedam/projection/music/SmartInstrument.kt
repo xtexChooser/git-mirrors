@@ -153,6 +153,8 @@ class SmartInstrumentBlockEntity(pos: BlockPos, state: BlockState) :
         const val TAG_MUSIC = "Music"
     }
 
+    // delay MusicPlayer initialization until level is available
+    var playerData: CompoundTag? = null
     var player: MusicPlayer? = null
 
     override fun getUpdateTag(): CompoundTag = saveWithoutMetadata()
@@ -162,7 +164,11 @@ class SmartInstrumentBlockEntity(pos: BlockPos, state: BlockState) :
     override fun load(tag: CompoundTag) {
         super.load(tag)
         if (TAG_MUSIC in tag) {
-            player = MusicPlayer(tag.getCompound(TAG_MUSIC), level!!, blockPos)
+            if (level == null) {
+                playerData = tag.getCompound(TAG_MUSIC)
+            } else {
+                player = MusicPlayer(tag.getCompound(TAG_MUSIC), level!!, blockPos)
+            }
         }
     }
 
@@ -199,22 +205,27 @@ class SmartInstrumentBlockEntity(pos: BlockPos, state: BlockState) :
     }
 
     fun tick() {
-        if (checkProjections()) {
-            player?.tick()
-            if (!level!!.isClientSide) {
-                if (player?.isEnd == true) {
-                    player = null
-                    setChanged()
-                    sendBlockUpdated()
-                    if (CausalityAnchor.checkEffect(level!!, blockPos) || level!!.random.nextInt(7) != 0) {
-                        startMusic()
+        if (playerData != null) {
+            player = MusicPlayer(playerData!!, level!!, blockPos)
+        }
+        if (player != null) {
+            if (checkProjections()) {
+                player!!.tick()
+                if (!level!!.isClientSide) {
+                    if (player!!.isEnd == true) {
+                        player = null
+                        setChanged()
+                        sendBlockUpdated()
+                        if (CausalityAnchor.checkEffect(level!!, blockPos) || level!!.random.nextInt(7) != 0) {
+                            startMusic()
+                        }
                     }
                 }
+            } else {
+                player = null
+                setChanged()
+                sendBlockUpdated()
             }
-        } else {
-            player = null
-            setChanged()
-            sendBlockUpdated()
         }
     }
 
