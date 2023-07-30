@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
 import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.phys.BlockHitResult
 import quaedam.Quaedam
+import quaedam.misc.causality.CausalityAnchor
 import quaedam.projector.Projector
 import quaedam.utils.getChunksNearby
 import quaedam.utils.sendBlockUpdated
@@ -122,7 +123,9 @@ object CyberInstrumentBlock : Block(
         hand: InteractionHand,
         hit: BlockHitResult
     ): InteractionResult {
-        if (Projector.findNearbyProjections(level, pos, MusicProjection.effect.get()).isNotEmpty()) {
+        if (Projector.findNearbyProjections(level, pos, MusicProjection.effect.get()).isNotEmpty()
+            || CausalityAnchor.checkEffect(level, pos)
+        ) {
             val entity = level.getBlockEntity(pos) as CyberInstrumentBlockEntity
             if (entity.player == null) {
                 entity.startMusic()
@@ -173,6 +176,7 @@ class CyberInstrumentBlockEntity(pos: BlockPos, state: BlockState) :
 
     private fun checkProjections() =
         Projector.findNearbyProjections(level!!, blockPos, MusicProjection.effect.get()).isNotEmpty()
+                || CausalityAnchor.checkEffect(level!!, blockPos)
 
     fun startMusic(force: Boolean = false, synced: Boolean = false) {
         if ((player == null || force) && !level!!.isClientSide && checkProjections()) {
@@ -203,7 +207,7 @@ class CyberInstrumentBlockEntity(pos: BlockPos, state: BlockState) :
                     player = null
                     setChanged()
                     sendBlockUpdated()
-                    if (level!!.random.nextInt(7) != 0) {
+                    if (CausalityAnchor.checkEffect(level!!, blockPos) || level!!.random.nextInt(7) != 0) {
                         startMusic()
                     }
                 }
