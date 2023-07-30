@@ -1,0 +1,37 @@
+{
+  "display": {
+    "icon": {
+      "item": "quaedam:projector"
+    },
+    "title": {
+      "translate": "advancements.quaedam.projector.title"
+    },
+    "description": {
+      "translate": "advancements.quaedam.projector.description"
+    },
+    "background": "minecraft:textures/gui/advancements/backgrounds/husbandry.png",
+    "frame": "task"
+  },
+  "criteria": {
+    "projector": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:block_state_property",
+            "block": "quaedam:projector",
+            "properties": {}
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "projector"
+    ]
+  ],
+  "rewards": {
+    "experience": 15
+  }
+}

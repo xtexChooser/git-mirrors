@@ -27,5 +27,19 @@
   "quaedam.shell.music.volume_factor": "振幅大小",
   "quaedam.shell.music.particle": "会变色的颗粒buff",
   "quaedam.shell.music.particle.true": "打开",
-  "quaedam.shell.music.particle.false": "关掉，关掉，一定要关掉"
+  "quaedam.shell.music.particle.false": "关掉，关掉，一定要关掉",
+  "advancements.quaedam.causality_anchor.title": "因果律",
+  "advancements.quaedam.causality_anchor.description": "这不合理",
+  "advancements.quaedam.projector.title": "有些事",
+  "advancements.quaedam.projector.description": "你是黑魔法（指着 JVMTI）师吗？",
+  "advancements.quaedam.reality_stabler.title": "水滴",
+  "advancements.quaedam.reality_stabler.description": "tql，这是强互作用力做的吗",
+  "advancements.quaedam.smart_instrument.title": "SMART（消歧义）",
+  "advancements.quaedam.smart_instrument.description": "音乐盘？不需要的",
+  "advancements.quaedam.sound_projection.title": "不要偷偷摸摸",
+  "advancements.quaedam.sound_projection.description": "又没有幽（yóu）匿分贝仪、幽（yóu）匿尖叫体或大聪明，怕什么",
+  "advancements.quaedam.swarm_projection.title": "多来点，爱看",
+  "advancements.quaedam.swarm_projection.description": "",
+  "advancements.quaedam.kill_projected_person.title": "失败",
+  "advancements.quaedam.kill_projected_person.description": "投影人这么可爱，为什么要失败投影人\n\n你干嘛～～\n坏，太坏了，你不能这样。"
 }

@@ -1,0 +1,37 @@
+{
+  "display": {
+    "icon": {
+      "item": "quaedam:reality_stabler"
+    },
+    "title": {
+      "translate": "advancements.quaedam.reality_stabler.title"
+    },
+    "description": {
+      "translate": "advancements.quaedam.reality_stabler.description"
+    },
+    "frame": "goal"
+  },
+  "parent": "quaedam:projector",
+  "criteria": {
+    "reality_stabler": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:block_state_property",
+            "block": "quaedam:reality_stabler",
+            "properties": {}
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "reality_stabler"
+    ]
+  ],
+  "rewards": {
+    "experience": 30
+  }
+}

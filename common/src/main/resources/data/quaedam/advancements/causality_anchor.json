@@ -1,0 +1,37 @@
+{
+  "display": {
+    "icon": {
+      "item": "quaedam:causality_anchor"
+    },
+    "title": {
+      "translate": "advancements.quaedam.causality_anchor.title"
+    },
+    "description": {
+      "translate": "advancements.quaedam.causality_anchor.description"
+    },
+    "frame": "goal"
+  },
+  "parent": "quaedam:projector",
+  "criteria": {
+    "causality_anchor": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:block_state_property",
+            "block": "quaedam:causality_anchor",
+            "properties": {}
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "causality_anchor"
+    ]
+  ],
+  "rewards": {
+    "experience": 30
+  }
+}

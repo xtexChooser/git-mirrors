@@ -27,5 +27,19 @@
   "quaedam.shell.music.volume_factor": "Volume Factor",
   "quaedam.shell.music.particle": "Particle",
   "quaedam.shell.music.particle.true": "Display",
-  "quaedam.shell.music.particle.false": "Hidden"
+  "quaedam.shell.music.particle.false": "Hidden",
+  "advancements.quaedam.causality_anchor.title": "Causality",
+  "advancements.quaedam.causality_anchor.description": "Is there any reason for this?",
+  "advancements.quaedam.projector.title": "Quaedam",
+  "advancements.quaedam.projector.description": "Use projectors to project",
+  "advancements.quaedam.reality_stabler.title": "More Stable",
+  "advancements.quaedam.reality_stabler.description": "Use reality stabler to stable the reality",
+  "advancements.quaedam.smart_instrument.title": "Better than Note Block",
+  "advancements.quaedam.smart_instrument.description": "Use smart instrument",
+  "advancements.quaedam.sound_projection.title": "Get Noisier",
+  "advancements.quaedam.sound_projection.description": "Make a sound projection",
+  "advancements.quaedam.swarm_projection.title": "Too many people",
+  "advancements.quaedam.swarm_projection.description": "Make a swarm projection",
+  "advancements.quaedam.kill_projected_person.title": "Go away",
+  "advancements.quaedam.kill_projected_person.description": "Kill a projection person\n\nWhy are you doing this?\nThis is bad."
 }

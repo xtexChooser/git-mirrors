@@ -1,0 +1,36 @@
+{
+  "display": {
+    "icon": {
+      "item": "quaedam:smart_instrument"
+    },
+    "title": {
+      "translate": "advancements.quaedam.smart_instrument.title"
+    },
+    "description": {
+      "translate": "advancements.quaedam.smart_instrument.description"
+    }
+  },
+  "parent": "quaedam:projector",
+  "criteria": {
+    "smart_instrument": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:block_state_property",
+            "block": "quaedam:smart_instrument",
+            "properties": {}
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "smart_instrument"
+    ]
+  ],
+  "rewards": {
+    "experience": 15
+  }
+}

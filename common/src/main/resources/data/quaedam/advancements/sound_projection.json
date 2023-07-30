@@ -1,0 +1,36 @@
+{
+  "display": {
+    "icon": {
+      "item": "quaedam:sound_projection"
+    },
+    "title": {
+      "translate": "advancements.quaedam.sound_projection.title"
+    },
+    "description": {
+      "translate": "advancements.quaedam.sound_projection.description"
+    }
+  },
+  "parent": "quaedam:swarm_projection",
+  "criteria": {
+    "sound_projection": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:block_state_property",
+            "block": "quaedam:sound_projection",
+            "properties": {}
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "sound_projection"
+    ]
+  ],
+  "rewards": {
+    "experience": 15
+  }
+}

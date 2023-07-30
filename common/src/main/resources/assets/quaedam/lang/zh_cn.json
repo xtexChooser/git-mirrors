@@ -27,5 +27,19 @@
   "quaedam.shell.music.volume_factor": "响度因子",
   "quaedam.shell.music.particle": "粒子效果",
   "quaedam.shell.music.particle.true": "显示",
-  "quaedam.shell.music.particle.false": "隐藏"
+  "quaedam.shell.music.particle.false": "隐藏",
+  "advancements.quaedam.causality_anchor.title": "因果律",
+  "advancements.quaedam.causality_anchor.description": "这不合理",
+  "advancements.quaedam.projector.title": "Quaedam",
+  "advancements.quaedam.projector.description": "使用投影仪进行投影",
+  "advancements.quaedam.reality_stabler.title": "更加稳定",
+  "advancements.quaedam.reality_stabler.description": "使用现实稳定器稳定现实",
+  "advancements.quaedam.smart_instrument.title": "比音符盒更好",
+  "advancements.quaedam.smart_instrument.description": "使用智能乐器",
+  "advancements.quaedam.sound_projection.title": "更加吵闹",
+  "advancements.quaedam.sound_projection.description": "制作声音投影",
+  "advancements.quaedam.swarm_projection.title": "太多人了",
+  "advancements.quaedam.swarm_projection.description": "制作人群投影",
+  "advancements.quaedam.kill_projected_person.title": "走开",
+  "advancements.quaedam.kill_projected_person.description": "杀死一个投影人\n\n你为什么要这样做呢？\n这是不好的。"
 }
