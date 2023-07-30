@@ -33,7 +33,7 @@ class MusicPlayer(val seed: Long, val level: Level, val pos: BlockPos, val start
 
     var notes = Composer(
         noteRandom = Random(seed),
-        rhythmRandom = Random(startedAt / 20 * 15),
+        rhythmRandom = Random(startedAt / 20),
         instrument = level.getBlockState(pos).getValue(BlockStateProperties.NOTEBLOCK_INSTRUMENT)
     ).composeMusic().toMutableList()
     val totalTime = notes.sumOf { it.time }.toLong()
