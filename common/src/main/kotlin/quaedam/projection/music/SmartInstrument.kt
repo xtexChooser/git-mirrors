@@ -212,7 +212,7 @@ class SmartInstrumentBlockEntity(pos: BlockPos, state: BlockState) :
             if (checkProjections()) {
                 player!!.tick()
                 if (!level!!.isClientSide) {
-                    if (player!!.isEnd == true) {
+                    if (player!!.isEnd) {
                         player = null
                         setChanged()
                         sendBlockUpdated()
