@@ -3,6 +3,7 @@ import net.fabricmc.loom.api.LoomGradleExtensionAPI
 plugins {
     java
     kotlin("jvm") version "1.9.0"
+    kotlin("plugin.serialization") version "1.9.0"
     id("architectury-plugin") version "3.4-SNAPSHOT"
     id("dev.architectury.loom") version "1.3-SNAPSHOT" apply false
     id("com.github.johnrengelman.shadow") version "8.1.1" apply false
@@ -31,6 +32,7 @@ subprojects {
 allprojects {
     apply(plugin = "java")
     apply(plugin = "kotlin")
+    apply(plugin = "kotlinx-serialization")
     apply(plugin = "architectury-plugin")
     apply(plugin = "maven-publish")
 
@@ -47,6 +49,7 @@ allprojects {
 
     dependencies {
         compileOnly("org.jetbrains.kotlin:kotlin-stdlib")
+        compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
     }
 
     tasks.withType<JavaCompile> {

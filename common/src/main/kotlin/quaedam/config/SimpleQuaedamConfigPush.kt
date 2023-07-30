@@ -27,7 +27,7 @@ object SimpleQuaedamConfigPush {
 
     fun sendCurrent(player: ServerPlayer) = send(player, QuaedamConfig.current)
 
-    fun send(player: ServerPlayer, config: QuaedamConfig) = send(player, config.toPushNbt(forPush = true))
+    fun send(player: ServerPlayer, config: QuaedamConfig) = send(player, config.toPushNbt())
 
     private fun send(player: ServerPlayer, data: CompoundTag) {
         val buf = FriendlyByteBuf(Unpooled.buffer())

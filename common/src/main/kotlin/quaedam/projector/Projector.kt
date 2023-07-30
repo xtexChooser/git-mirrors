@@ -30,7 +30,7 @@ object Projector {
         BlockEntityType.Builder.of(::ProjectorBlockEntity, block.get()).build(null)
     }!!
 
-    val currentEffectRadius get() = QuaedamConfig.current.projectorEffectRadius
+    val currentEffectRadius get() = QuaedamConfig.current.valuesInt["projector.effect_radius"] ?: 4
 
     fun findNearbyProjectors(level: Level, pos: BlockPos) = level.getChunksNearby(pos, currentEffectRadius)
         .flatMap {
