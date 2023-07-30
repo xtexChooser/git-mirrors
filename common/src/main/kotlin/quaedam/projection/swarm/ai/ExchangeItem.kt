@@ -68,7 +68,7 @@ class ExchangeItem<E> : Behavior<E>(
     private fun exchangeItems(level: ServerLevel, entity: E) {
         val container = level.getBlockEntity(target!!) as Container
         val inventory = entity.inventory
-        for (i in 1..6) {
+        for (i in 1..10) {
             val maxCount = 1 + level.random.nextInt(16)
             if (level.random.nextBoolean()) {
                 // take
@@ -77,7 +77,7 @@ class ExchangeItem<E> : Behavior<E>(
                 if (!item.isEmpty) {
                     val takeCount = min(item.count, maxCount)
                     val takeItem = item.copyWithCount(takeCount)
-                    if (inventory.canTakeItem(container, slot, takeItem) && entity.canHoldItem(takeItem)) {
+                    if (entity.canHoldItem(takeItem)) {
                         val remaining = inventory.addItem(/*entity.equipItemIfPossible(takeItem)*/ takeItem)
                         val actualCount = takeCount - remaining.count
                         item.shrink(actualCount)
@@ -91,33 +91,31 @@ class ExchangeItem<E> : Behavior<E>(
                 if (!item.isEmpty) {
                     val takeCount = min(item.count, maxCount)
                     val takeItem = item.copyWithCount(takeCount)
-                    if (container.canTakeItem(inventory, slot, takeItem)) {
+                    for (target in 0 until container.containerSize) {
+                        val targetItem = container.getItem(target)
+                        if (ItemStack.isSameItemSameTags(targetItem, takeItem)) {
+                            val resultCount = min(targetItem.count + takeItem.count, item.maxStackSize)
+                            val putCount = resultCount - targetItem.count
+                            if (putCount != 0) {
+                                targetItem.grow(putCount)
+                                container.setItem(target, targetItem)
+                                takeItem.shrink(putCount)
+                                if (takeItem.isEmpty) break
+                            }
+                        }
+                    }
+                    if (!takeItem.isEmpty) {
                         for (target in 0 until container.containerSize) {
                             val targetItem = container.getItem(target)
-                            if (ItemStack.isSameItemSameTags(targetItem, takeItem)) {
-                                val resultCount = min(targetItem.count + takeItem.count, item.maxStackSize)
-                                val putCount = resultCount - targetItem.count
-                                if (putCount != 0) {
-                                    targetItem.grow(putCount)
-                                    container.setItem(target, targetItem)
-                                    takeItem.shrink(putCount)
-                                    if (takeItem.isEmpty) break
-                                }
+                            if (targetItem.isEmpty) {
+                                container.setItem(target, takeItem.copyAndClear())
+                                break
                             }
                         }
-                        if (!takeItem.isEmpty) {
-                            for (target in 0 until container.containerSize) {
-                                val targetItem = container.getItem(target)
-                                if (targetItem.isEmpty) {
-                                    container.setItem(target, takeItem.copyAndClear())
-                                    break
-                                }
-                            }
-                        }
-                        val putCount = takeCount - takeItem.count
-                        item.shrink(putCount)
-                        inventory.setItem(slot, item)
                     }
+                    val putCount = takeCount - takeItem.count
+                    item.shrink(putCount)
+                    inventory.setItem(slot, item)
                 }
             }
         }
