@@ -12,7 +12,7 @@ class Composer(val noteRandom: Random, val rhythmRandom: Random) {
 
     data class Note(val note: Int, val volume: Float, val time: Int)
 
-    val baseTime = arrayOf(5, 5, 3, 3, 4, 4, 2, 2, 10).random(rhythmRandom)
+    val baseTime = arrayOf(5, 5, 3, 3, 4, 4, 2, 2, 8).random(rhythmRandom)
     val baseNote = noteRandom.nextInt(5..19)
 
     fun composeMusic() = decorate(
