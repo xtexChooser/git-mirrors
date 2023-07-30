@@ -43,7 +43,7 @@ class ExchangeItem<E> : Behavior<E>(
                 if (chest is ChestBlockEntity) {
                     ChestBlockEntity.playSound(level, target!!, level.getBlockState(target!!), SoundEvents.CHEST_OPEN)
                 }
-                if (chest.isEmpty) {
+                if (chest.isEmpty && level.random.nextBoolean()) {
                     closeAt = l + 7
                 } else {
                     closeAt = l + 10 + level.random.nextInt(100)
