@@ -126,8 +126,8 @@ object CyberInstrumentBlock : Block(
             val entity = level.getBlockEntity(pos) as CyberInstrumentBlockEntity
             if (entity.player == null) {
                 entity.startMusic()
-                return InteractionResult.SUCCESS
             }
+            return InteractionResult.SUCCESS
         }
         return super.use(state, level, pos, player, hand, hit)
     }
