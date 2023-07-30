@@ -1,6 +1,7 @@
 package quaedam.projection.swarm.ai
 
 import com.google.common.collect.ImmutableList
+import net.minecraft.core.Holder
 import net.minecraft.core.registries.Registries
 import net.minecraft.tags.TagKey
 import net.minecraft.world.entity.LivingEntity
@@ -10,6 +11,8 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType
 import net.minecraft.world.entity.ai.memory.MemoryStatus
 import net.minecraft.world.entity.ai.memory.NearestVisibleLivingEntities
 import net.minecraft.world.entity.ai.sensing.SensorType
+import net.minecraft.world.entity.ai.village.poi.PoiType
+import net.minecraft.world.entity.ai.village.poi.PoiTypes
 import net.minecraft.world.entity.monster.Monster
 import net.minecraft.world.entity.schedule.Activity
 import net.minecraft.world.entity.schedule.Schedule
@@ -51,6 +54,7 @@ object ProjectedPersonAI {
 
     init {
         BedInChunkSensor
+        AmusementAI
         NearestVisibleContainer
     }
 
@@ -129,6 +133,9 @@ object ProjectedPersonAI {
     private fun initIdleActivity(brain: Brain<ProjectedPersonEntity>) {
         brain.addActivity(
             Activity.IDLE, ImmutableList.of(
+                5 weight AmusementAI.createStrollAroundPoi(),
+                7 weight AmusementAI.createStrollToPoi(),
+                9 weight AmusementAI.createAcquirePoi(),
                 10 weight createStrollBehavior(),
             )
         )
@@ -137,7 +144,10 @@ object ProjectedPersonAI {
     private fun initPlayActivity(brain: Brain<ProjectedPersonEntity>) {
         brain.addActivity(
             Activity.PLAY, ImmutableList.of(
-                7 weight GoToWantedItem.create(1.75f, true, 32),
+                3 weight GoToWantedItem.create(1.75f, true, 32),
+                5 weight AmusementAI.createStrollAroundPoiBaby(),
+                7 weight AmusementAI.createStrollToPoiBaby(),
+                9 weight AmusementAI.createAcquirePoi(),
                 10 weight JumpOnBed(1.0f),
                 10 weight createStrollBehavior(),
             )

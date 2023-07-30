@@ -39,6 +39,7 @@ object Quaedam {
     val memoryTypes = DeferredRegister.create(ID, Registries.MEMORY_MODULE_TYPE)!!
     val sensors = DeferredRegister.create(ID, Registries.SENSOR_TYPE)!!
     val soundEvents = DeferredRegister.create(ID, Registries.SOUND_EVENT)!!
+    val poiTypes = DeferredRegister.create(ID, Registries.POINT_OF_INTEREST_TYPE)!!
     val projectionEffects by lazy { DeferredRegister.create(ID, ProjectionEffectType.registryKey)!! }
 
     val creativeModeTab: RegistrySupplier<CreativeModeTab> = creativeModeTabs.register("quaedam") {
@@ -72,6 +73,7 @@ object Quaedam {
         memoryTypes.register()
         sensors.register()
         soundEvents.register()
+        poiTypes.register()
         projectionEffects.register()
     }
 
