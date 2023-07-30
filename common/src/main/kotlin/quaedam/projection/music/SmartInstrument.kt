@@ -207,6 +207,7 @@ class SmartInstrumentBlockEntity(pos: BlockPos, state: BlockState) :
     fun tick() {
         if (playerData != null) {
             player = MusicPlayer(playerData!!, level!!, blockPos)
+            playerData = null
         }
         if (player != null) {
             if (checkProjections()) {
