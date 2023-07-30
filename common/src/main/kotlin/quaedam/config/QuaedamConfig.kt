@@ -20,6 +20,7 @@ data class QuaedamConfig(
     val valuesInt: Map<String, Int> = mapOf(),
     val valuesFloat: Map<String, Float> = mapOf(),
     val valuesDouble: Map<String, Double> = mapOf(),
+    val valuesBoolean: Map<String, Boolean> = mapOf(),
 ) {
 
     companion object {
@@ -80,12 +81,14 @@ data class QuaedamConfig(
         const val TAG_VALUES_INT = "ValuesInt"
         const val TAG_VALUES_FLOAT = "ValuesFloat"
         const val TAG_VALUES_DOUBLE = "ValuesDouble"
+        const val TAG_VALUES_BOOLEAN = "ValuesBoolean"
 
         fun fromPushNbt(tag: CompoundTag): QuaedamConfig {
             return QuaedamConfig(
                 valuesInt = pushJson.decodeFromString(tag.getString(TAG_VALUES_INT)),
                 valuesFloat = pushJson.decodeFromString(tag.getString(TAG_VALUES_FLOAT)),
                 valuesDouble = pushJson.decodeFromString(tag.getString(TAG_VALUES_DOUBLE)),
+                valuesBoolean = pushJson.decodeFromString(tag.getString(TAG_VALUES_BOOLEAN)),
             )
         }
     }
@@ -94,6 +97,7 @@ data class QuaedamConfig(
         tag.putString(TAG_VALUES_INT, pushJson.encodeToString(valuesInt))
         tag.putString(TAG_VALUES_FLOAT, pushJson.encodeToString(valuesFloat))
         tag.putString(TAG_VALUES_DOUBLE, pushJson.encodeToString(valuesDouble))
+        tag.putString(TAG_VALUES_BOOLEAN, pushJson.encodeToString(valuesBoolean))
     }
 
     fun toPushNbt() = CompoundTag().also { toPushNbt(it) }

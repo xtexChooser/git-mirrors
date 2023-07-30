@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import quaedam.Quaedam
+import quaedam.config.QuaedamConfig
 import quaedam.projection.EntityProjectionBlock
 import quaedam.projection.ProjectionEffect
 import quaedam.projection.ProjectionEffectType
@@ -46,6 +47,8 @@ data class SkylightProjectionEffect(var factor: Double = 2.0) : ProjectionEffect
 
     companion object {
         const val TAG_FACTOR = "Factor"
+
+        val maxFactor get() = QuaedamConfig.current.valuesDouble["projection.skylight.max_factor"] ?: 5.0
     }
 
     override val type
@@ -58,12 +61,12 @@ data class SkylightProjectionEffect(var factor: Double = 2.0) : ProjectionEffect
     override fun fromNbt(tag: CompoundTag, trusted: Boolean) {
         factor = tag.getDouble(TAG_FACTOR)
         if (!trusted) {
-            factor = min(factor, 5.0)
+            factor = min(factor, maxFactor)
         }
     }
 
     override fun createShell() = buildProjectionEffectShell(this) {
-        doubleSlider("quaedam.shell.skylight.factor", ::factor, 0.0..5.0, 0.1)
+        doubleSlider("quaedam.shell.skylight.factor", ::factor, 0.0..maxFactor, 0.1)
     }
 
 }

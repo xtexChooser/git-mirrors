@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import quaedam.Quaedam
+import quaedam.config.QuaedamConfig
 import quaedam.projection.EntityProjectionBlock
 import quaedam.projection.ProjectionEffect
 import quaedam.projection.ProjectionEffectType
@@ -52,6 +53,9 @@ data class MusicProjectionEffect(var volumeFactor: Float = 1.0f, var particle: B
     companion object {
         const val TAG_VOLUME_FACTOR = "VolumeFactor"
         const val TAG_PARTICLE = "Particle"
+
+        val maxVolumeFactor get() = QuaedamConfig.current.valuesFloat["projection.music.max_volume_factor"] ?: 5.0f
+        val enforceParticle get() = QuaedamConfig.current.valuesBoolean["projection.music.enforce_particle"]
     }
 
     override val type
@@ -66,13 +70,16 @@ data class MusicProjectionEffect(var volumeFactor: Float = 1.0f, var particle: B
         volumeFactor = tag.getFloat(TAG_VOLUME_FACTOR)
         particle = tag.getBoolean(TAG_PARTICLE)
         if (!trusted) {
-            volumeFactor = min(volumeFactor, 5.0f)
+            volumeFactor = min(volumeFactor, maxVolumeFactor)
+            particle = enforceParticle ?: particle
         }
     }
 
     override fun createShell() = buildProjectionEffectShell(this) {
-        floatSlider("quaedam.shell.music.volume_factor", ::volumeFactor, 0.0f..5.0f, 0.1f)
-        boolean("quaedam.shell.music.particle", ::particle)
+        floatSlider("quaedam.shell.music.volume_factor", ::volumeFactor, 0.0f..maxVolumeFactor, 0.1f)
+        if (enforceParticle == null) {
+            boolean("quaedam.shell.music.particle", ::particle)
+        }
     }
 
 }

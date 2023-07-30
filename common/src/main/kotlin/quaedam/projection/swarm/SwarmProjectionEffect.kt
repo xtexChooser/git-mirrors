@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.MobSpawnType
 import net.minecraft.world.level.levelgen.Heightmap
+import quaedam.config.QuaedamConfig
 import quaedam.projection.ProjectionEffect
 import quaedam.projector.Projector
 import quaedam.projector.ProjectorBlockEntity
@@ -18,6 +19,8 @@ data class SwarmProjectionEffect(
 
     companion object {
         const val TAG_MAX_COUNT = "MaxCount"
+
+        val maxMaxCount get() = QuaedamConfig.current.valuesInt["projection.swarm.max_max_count"] ?: 250
     }
 
     override val type
@@ -30,7 +33,7 @@ data class SwarmProjectionEffect(
     override fun fromNbt(tag: CompoundTag, trusted: Boolean) {
         maxCount = tag.getInt(TAG_MAX_COUNT)
         if (!trusted) {
-            maxCount = min(maxCount, 250)
+            maxCount = min(maxCount, maxMaxCount)
         }
     }
 
@@ -60,7 +63,7 @@ data class SwarmProjectionEffect(
     }
 
     override fun createShell() = buildProjectionEffectShell(this) {
-        intSlider("quaedam.shell.swarm.max_count", ::maxCount, 0..250 step 5)
+        intSlider("quaedam.shell.swarm.max_count", ::maxCount, 0..maxMaxCount step 5)
     }
 
 }

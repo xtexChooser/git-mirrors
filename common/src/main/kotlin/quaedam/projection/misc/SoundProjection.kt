@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundTag
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import quaedam.Quaedam
+import quaedam.config.QuaedamConfig
 import quaedam.projection.EntityProjectionBlock
 import quaedam.projection.ProjectionEffect
 import quaedam.projection.ProjectionEffectType
@@ -46,6 +47,8 @@ data class SoundProjectionEffect(var rate: Int = 60) : ProjectionEffect(), Proje
 
     companion object {
         const val TAG_RATE = "Rate"
+
+        val maxRate get() = QuaedamConfig.current.valuesInt["projection.sound.max_rate"] ?: 210
     }
 
     override val type
@@ -58,12 +61,12 @@ data class SoundProjectionEffect(var rate: Int = 60) : ProjectionEffect(), Proje
     override fun fromNbt(tag: CompoundTag, trusted: Boolean) {
         rate = tag.getInt(TAG_RATE)
         if (!trusted) {
-            rate = min(rate, 210)
+            rate = min(rate, maxRate)
         }
     }
 
     override fun createShell() = buildProjectionEffectShell(this) {
-        intSlider("quaedam.shell.sound.rate", ::rate, 0..210)
+        intSlider("quaedam.shell.sound.rate", ::rate, 0..maxRate)
     }
 
 }

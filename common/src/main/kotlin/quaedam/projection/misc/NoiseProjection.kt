@@ -13,6 +13,7 @@ import net.minecraft.util.RandomSource
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
 import quaedam.Quaedam
+import quaedam.config.QuaedamConfig
 import quaedam.projection.EntityProjectionBlock
 import quaedam.projection.ProjectionEffect
 import quaedam.projection.ProjectionEffectType
@@ -107,6 +108,9 @@ data class NoiseProjectionEffect(var rate: Int = 250, var amount: Int = 3) : Pro
     companion object {
         const val TAG_RATE = "Rate"
         const val TAG_AMOUNT = "Amount"
+
+        val maxAmount get() = QuaedamConfig.current.valuesInt["projection.noise.max_amount"] ?: 8
+        val maxRate get() = QuaedamConfig.current.valuesInt["projection.noise.max_rate"] ?: 300
     }
 
     override val type
@@ -121,14 +125,14 @@ data class NoiseProjectionEffect(var rate: Int = 250, var amount: Int = 3) : Pro
         rate = tag.getInt(TAG_RATE)
         amount = tag.getInt(TAG_AMOUNT)
         if (!trusted) {
-            amount = min(amount, 8)
-            rate = min(rate, 500)
+            amount = min(amount, maxAmount)
+            rate = min(rate, maxRate)
         }
     }
 
     override fun createShell() = buildProjectionEffectShell(this) {
-        intSlider("quaedam.shell.noise.rate", ::rate, 0..300 step 5)
-        intSlider("quaedam.shell.noise.amount", ::amount, 0..8)
+        intSlider("quaedam.shell.noise.rate", ::rate, 0..maxRate step 5)
+        intSlider("quaedam.shell.noise.amount", ::amount, 0..maxAmount)
     }
 
 }
