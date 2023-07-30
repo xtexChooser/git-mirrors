@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "quaedam:projection_metal"
+  },
+  "result": "quaedam:causality_anchor",
+  "experience": 1.0,
+  "cookingtime": 1200
+}
