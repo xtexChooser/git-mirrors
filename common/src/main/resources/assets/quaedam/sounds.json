@@ -152,6 +152,26 @@
       {
         "name": "entity.villager.work_weaponsmith",
         "type": "event"
+      },
+      {
+        "name": "block.anvil.use",
+        "type": "event"
+      },
+      {
+        "name": "block.furnace.fire_crackle",
+        "type": "event"
+      },
+      {
+        "name": "block.blastfurnace.fire_crackle",
+        "type": "event"
+      },
+      {
+        "name": "block.metal.break",
+        "type": "event"
+      },
+      {
+        "name": "block.wood.break",
+        "type": "event"
       }
     ]
   }
