@@ -25,8 +25,8 @@ class Composer(val noteRandom: Random, val rhythmRandom: Random, val instrument:
     fun composeMusic(): List<Note> {
         var note = (0..rhythmRandom.nextInt(4)).flatMap { composeSection() }
         note = decorate(note)
-        if (mayDropOut && rhythmRandom.nextInt(3) != 0) {
-            val dropRate = rhythmRandom.nextInt(2..4)
+        if (mayDropOut && rhythmRandom.nextInt(6) != 0) {
+            val dropRate = arrayOf(2, 3, 3, 4, 4, 4, 4, 6).random(rhythmRandom)
             note = note.chunked(dropRate).map {
                 val first = it.first()
                 Note(first.note, first.volume, it.sumOf { note -> note.time })
