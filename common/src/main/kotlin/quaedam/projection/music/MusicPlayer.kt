@@ -31,14 +31,18 @@ class MusicPlayer(val seed: Long, val level: Level, val pos: BlockPos, val start
         tag.getLong(TAG_STARTED_AT)
     )
 
-    var notes = Composer(Random(seed), Random(startedAt / 20 * 15)).composeMusic().toMutableList()
+    var notes = Composer(
+        noteRandom = Random(seed),
+        rhythmRandom = Random(startedAt / 20 * 15),
+        instrument = level.getBlockState(pos).getValue(BlockStateProperties.NOTEBLOCK_INSTRUMENT)
+    ).composeMusic().toMutableList()
     val totalTime = notes.sumOf { it.time }.toLong()
     var remainingTime = totalTime
     val isEnd get() = remainingTime <= 0 || notes.isEmpty()
     var noteTime = 0
 
     init {
-        var currentRemaining = totalTime - (level.gameTime - startedAt)
+        val currentRemaining = totalTime - (level.gameTime - startedAt)
         while (remainingTime > currentRemaining) {
             // seek to current position
             remainingTime -= fetchNote().time

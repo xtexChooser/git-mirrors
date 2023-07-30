@@ -1,5 +1,6 @@
 package quaedam.projection.music
 
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument
 import kotlin.math.abs
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -8,16 +9,31 @@ import kotlin.random.nextInt
  * The composer for music.
  * rhythmRandom is used for a better rhythm sync between different instruments.
  */
-class Composer(val noteRandom: Random, val rhythmRandom: Random) {
+class Composer(val noteRandom: Random, val rhythmRandom: Random, val instrument: NoteBlockInstrument) {
 
     data class Note(val note: Int, val volume: Float, val time: Int)
 
     val baseTime = arrayOf(5, 5, 3, 3, 4, 4, 2, 2, 8).random(rhythmRandom)
     val baseNote = noteRandom.nextInt(5..19)
 
-    fun composeMusic() = decorate(
-        (0..rhythmRandom.nextInt(5)).flatMap { composeSection() }
+    val mayDropOut = instrument in arrayOf(
+        NoteBlockInstrument.BASEDRUM,
+        NoteBlockInstrument.HAT,
+        NoteBlockInstrument.SNARE,
     )
+
+    fun composeMusic(): List<Note> {
+        var note = (0..rhythmRandom.nextInt(4)).flatMap { composeSection() }
+        note = decorate(note)
+        if (mayDropOut && rhythmRandom.nextInt(3) != 0) {
+            val dropRate = rhythmRandom.nextInt(2..4)
+            note = note.chunked(dropRate).map {
+                val first = it.first()
+                Note(first.note, first.volume, it.sumOf { note -> note.time })
+            }
+        }
+        return note
+    }
 
     fun decorate(notes: List<Note>) = notes.map {
         if (noteRandom.nextInt(4) == 0) {
