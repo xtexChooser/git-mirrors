@@ -27,6 +27,7 @@ import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.phys.BlockHitResult
 import quaedam.Quaedam
 import quaedam.projector.Projector
+import quaedam.utils.getChunksNearby
 import quaedam.utils.sendBlockUpdated
 
 object CyberInstrument {
@@ -173,11 +174,24 @@ class CyberInstrumentBlockEntity(pos: BlockPos, state: BlockState) :
     private fun checkProjections() =
         Projector.findNearbyProjections(level!!, blockPos, MusicProjection.effect.get()).isNotEmpty()
 
-    fun startMusic() {
-        if (player == null && !level!!.isClientSide && checkProjections()) {
+    fun startMusic(force: Boolean = false, synced: Boolean = false) {
+        if ((player == null || force) && !level!!.isClientSide && checkProjections()) {
             player = MusicPlayer(level!!.random.nextLong(), level!!, blockPos)
             setChanged()
             sendBlockUpdated()
+            if (!synced) {
+                // sync start to other instruments
+                level!!.getChunksNearby(blockPos, 1)
+                    .flatMap {
+                        it.blockEntities
+                            .filterValues { entity -> entity is CyberInstrumentBlockEntity }
+                            .filterKeys { pos -> pos.distSqr(blockPos) < 100 }
+                            .values
+                    }
+                    .filterNot { it == this }
+                    .filterIsInstance<CyberInstrumentBlockEntity>()
+                    .forEach { it.startMusic(force = true, synced = true) }
+            }
         }
     }
 

@@ -31,7 +31,7 @@ class MusicPlayer(val seed: Long, val level: Level, val pos: BlockPos, val start
         tag.getLong(TAG_STARTED_AT)
     )
 
-    var notes = Composer.composeMusic(Random(seed)).toMutableList()
+    var notes = Composer(Random(seed), Random(startedAt / 20 * 15)).composeMusic().toMutableList()
     val totalTime = notes.sumOf { it.time }.toLong()
     var remainingTime = totalTime
     val isEnd get() = remainingTime <= 0 || notes.isEmpty()
