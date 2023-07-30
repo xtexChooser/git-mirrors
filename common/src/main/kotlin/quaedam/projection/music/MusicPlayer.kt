@@ -43,7 +43,7 @@ class MusicPlayer(val seed: Long, val level: Level, val pos: BlockPos, val start
 
     init {
         val currentRemaining = totalTime - (level.gameTime - startedAt)
-        while (remainingTime > currentRemaining) {
+        while (remainingTime > currentRemaining && !isEnd) {
             // seek to current position
             remainingTime -= fetchNote().time
         }
