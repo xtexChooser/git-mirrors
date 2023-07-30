@@ -94,7 +94,7 @@ class MusicPlayer(val seed: Long, val level: Level, val pos: BlockPos, val start
                     volume,
                     pitch,
                     RandomSource.create(level.random.nextLong()),
-                    false, 0, SoundInstance.Attenuation.NONE,
+                    false, 0, SoundInstance.Attenuation.LINEAR,
                     pos.x.toDouble() + 0.5,
                     pos.y.toDouble() + 0.5,
                     pos.z.toDouble() + 0.5,
