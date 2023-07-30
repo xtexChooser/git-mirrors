@@ -174,6 +174,9 @@ class SmartInstrumentBlockEntity(pos: BlockPos, state: BlockState) :
 
     override fun saveAdditional(tag: CompoundTag) {
         super.saveAdditional(tag)
+        if (playerData != null) {
+            tag.put(TAG_MUSIC, playerData!!)
+        }
         if (player != null) {
             tag.put(TAG_MUSIC, player!!.toTag())
         }
