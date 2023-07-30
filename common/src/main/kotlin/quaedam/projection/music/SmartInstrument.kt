@@ -164,10 +164,10 @@ class SmartInstrumentBlockEntity(pos: BlockPos, state: BlockState) :
     override fun load(tag: CompoundTag) {
         super.load(tag)
         if (TAG_MUSIC in tag) {
-            if (level == null) {
-                playerData = tag.getCompound(TAG_MUSIC)
-            } else {
+            try {
                 player = MusicPlayer(tag.getCompound(TAG_MUSIC), level!!, blockPos)
+            } catch (e: Throwable) {
+                playerData = tag.getCompound(TAG_MUSIC)
             }
         }
     }
@@ -185,7 +185,7 @@ class SmartInstrumentBlockEntity(pos: BlockPos, state: BlockState) :
 
     fun startMusic(force: Boolean = false, synced: Boolean = false) {
         if ((player == null || force) && !level!!.isClientSide && checkProjections()) {
-            player = MusicPlayer(level!!.random.nextLong(), level!!, blockPos)
+            player = MusicPlayer(level!!.random.nextLong(), level!!.gameTime / 20, level!!, blockPos)
             setChanged()
             sendBlockUpdated()
             if (!synced) {

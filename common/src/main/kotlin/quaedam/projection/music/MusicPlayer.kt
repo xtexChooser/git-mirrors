@@ -17,23 +17,31 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties
 import quaedam.projector.Projector
 import kotlin.random.Random
 
-class MusicPlayer(val seed: Long, val level: Level, val pos: BlockPos, val startedAt: Long = level.gameTime) {
+class MusicPlayer(
+    val noteSeed: Long,
+    val rhythmSeed: Long,
+    val level: Level,
+    val pos: BlockPos,
+    val startedAt: Long = level.gameTime
+) {
 
     companion object {
-        const val TAG_SEED = "Seed"
+        const val TAG_NOTE_SEED = "NoteSeed"
+        const val TAG_RHYTHM_SEED = "RhythmSeed"
         const val TAG_STARTED_AT = "StartedAt"
     }
 
     constructor(tag: CompoundTag, level: Level, pos: BlockPos) : this(
-        tag.getLong(TAG_SEED),
+        tag.getLong(TAG_NOTE_SEED),
+        tag.getLong(TAG_RHYTHM_SEED),
         level,
         pos,
         tag.getLong(TAG_STARTED_AT)
     )
 
     var notes = Composer(
-        noteRandom = Random(seed),
-        rhythmRandom = Random(startedAt / 20),
+        noteRandom = Random(noteSeed),
+        rhythmRandom = Random(rhythmSeed),
         instrument = level.getBlockState(pos).getValue(BlockStateProperties.NOTEBLOCK_INSTRUMENT)
     ).composeMusic().toMutableList()
     val totalTime = notes.sumOf { it.time }.toLong()
@@ -112,7 +120,8 @@ class MusicPlayer(val seed: Long, val level: Level, val pos: BlockPos, val start
     }
 
     fun toTag() = CompoundTag().apply {
-        putLong(TAG_SEED, seed)
+        putLong(TAG_NOTE_SEED, noteSeed)
+        putLong(TAG_RHYTHM_SEED, rhythmSeed)
         putLong(TAG_STARTED_AT, startedAt)
     }
 
