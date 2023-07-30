@@ -12,7 +12,6 @@ import net.minecraft.world.InteractionResult
 import net.minecraft.world.entity.player.Player
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
-import net.minecraft.world.item.context.BlockPlaceContext
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.EntityBlock
@@ -31,26 +30,26 @@ import quaedam.projector.Projector
 import quaedam.utils.getChunksNearby
 import quaedam.utils.sendBlockUpdated
 
-object CyberInstrument {
+object SmartInstrument {
 
-    const val ID = "cyber_instrument"
+    const val ID = "smart_instrument"
 
-    val block = Quaedam.blocks.register(ID) { CyberInstrumentBlock }!!
+    val block = Quaedam.blocks.register(ID) { SmartInstrumentBlock }!!
 
     val item = Quaedam.items.register(ID) {
         BlockItem(
-            CyberInstrumentBlock, Item.Properties()
+            SmartInstrumentBlock, Item.Properties()
                 .`arch$tab`(Quaedam.creativeModeTab)
         )
     }!!
 
     val blockEntity = Quaedam.blockEntities.register(ID) {
-        BlockEntityType.Builder.of(::CyberInstrumentBlockEntity, block.get()).build(null)
+        BlockEntityType.Builder.of(::SmartInstrumentBlockEntity, block.get()).build(null)
     }!!
 
 }
 
-object CyberInstrumentBlock : Block(
+object SmartInstrumentBlock : Block(
     Properties.of()
         .strength(2.7f)
         .requiresCorrectToolForDrops()
@@ -65,7 +64,7 @@ object CyberInstrumentBlock : Block(
         )
     }
 
-    override fun newBlockEntity(pos: BlockPos, state: BlockState) = CyberInstrumentBlockEntity(pos, state)
+    override fun newBlockEntity(pos: BlockPos, state: BlockState) = SmartInstrumentBlockEntity(pos, state)
 
     override fun createBlockStateDefinition(builder: StateDefinition.Builder<Block, BlockState>) {
         super.createBlockStateDefinition(builder)
@@ -107,7 +106,7 @@ object CyberInstrumentBlock : Block(
         random: RandomSource
     ) {
         if (Projector.findNearbyProjections(level, pos, MusicProjection.effect.get()).isNotEmpty()) {
-            val entity = level.getBlockEntity(pos) as CyberInstrumentBlockEntity
+            val entity = level.getBlockEntity(pos) as SmartInstrumentBlockEntity
             if (entity.player == null) {
                 entity.startMusic()
             }
@@ -126,7 +125,7 @@ object CyberInstrumentBlock : Block(
         if (Projector.findNearbyProjections(level, pos, MusicProjection.effect.get()).isNotEmpty()
             || CausalityAnchor.checkEffect(level, pos)
         ) {
-            val entity = level.getBlockEntity(pos) as CyberInstrumentBlockEntity
+            val entity = level.getBlockEntity(pos) as SmartInstrumentBlockEntity
             if (entity.player == null) {
                 entity.startMusic()
             }
@@ -141,14 +140,14 @@ object CyberInstrumentBlock : Block(
         blockEntityType: BlockEntityType<T>
     ): BlockEntityTicker<T> {
         return BlockEntityTicker { _, _, _, entity ->
-            (entity as? CyberInstrumentBlockEntity)?.tick()
+            (entity as? SmartInstrumentBlockEntity)?.tick()
         }
     }
 
 }
 
-class CyberInstrumentBlockEntity(pos: BlockPos, state: BlockState) :
-    BlockEntity(CyberInstrument.blockEntity.get(), pos, state) {
+class SmartInstrumentBlockEntity(pos: BlockPos, state: BlockState) :
+    BlockEntity(SmartInstrument.blockEntity.get(), pos, state) {
 
     companion object {
         const val TAG_MUSIC = "Music"
@@ -188,12 +187,12 @@ class CyberInstrumentBlockEntity(pos: BlockPos, state: BlockState) :
                 level!!.getChunksNearby(blockPos, 1)
                     .flatMap {
                         it.blockEntities
-                            .filterValues { entity -> entity is CyberInstrumentBlockEntity }
+                            .filterValues { entity -> entity is SmartInstrumentBlockEntity }
                             .filterKeys { pos -> pos.distSqr(blockPos) < 100 }
                             .values
                     }
                     .filterNot { it == this }
-                    .filterIsInstance<CyberInstrumentBlockEntity>()
+                    .filterIsInstance<SmartInstrumentBlockEntity>()
                     .forEach { it.startMusic(force = true, synced = true) }
             }
         }

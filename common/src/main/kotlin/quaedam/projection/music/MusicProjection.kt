@@ -35,7 +35,7 @@ object MusicProjection {
     }!!
 
     init {
-        CyberInstrument
+        SmartInstrument
     }
 
 }
