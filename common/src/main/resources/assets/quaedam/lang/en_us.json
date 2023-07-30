@@ -6,6 +6,7 @@
   "block.quaedam.sound_projection": "Sound Projection",
   "block.quaedam.noise_projection": "Noise Projection",
   "block.quaedam.music_projection": "Music Projection",
+  "block.quaedam.smart_instrument": "Smart Instrument",
   "block.quaedam.causality_anchor": "Causality Anchor",
   "block.quaedam.reality_stabler": "Reality Stabler",
   "entity.quaedam.projected_person": "Virtual Person",
