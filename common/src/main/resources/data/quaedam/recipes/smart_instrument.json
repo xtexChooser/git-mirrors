@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " ! ",
+    ".-.",
+    "..."
+  ],
+  "key": {
+    "-": {
+      "item": "minecraft:note_block"
+    },
+    "!": {
+      "item": "minecraft:redstone"
+    },
+    ".": {
+      "item": "minecraft:copper_ingot"
+    }
+  },
+  "result": {
+    "item": "quaedam:smart_instrument"
+  }
+}

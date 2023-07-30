@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "quaedam:iron_copper_metal"
+  },
+  "result": "quaedam:projection_metal",
+  "experience": 0.2,
+  "cookingtime": 600
+}

@@ -10,6 +10,7 @@ import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.ItemStack
 import org.slf4j.LoggerFactory
 import quaedam.config.QuaedamConfig
+import quaedam.misc.CraftingMaterials
 import quaedam.misc.causality.CausalityAnchor
 import quaedam.misc.reality.RealityStabler
 import quaedam.projection.ProjectionCommand
@@ -60,6 +61,7 @@ object Quaedam {
         ProjectionShell
         CausalityAnchor
         RealityStabler
+        CraftingMaterials
 
         creativeModeTabs.register()
         items.register()

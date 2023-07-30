@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "---",
+    "-.-",
+    "---"
+  ],
+  "key": {
+    "-": {
+      "item": "quaedam:projection_metal"
+    },
+    ".": {
+      "item": "minecraft:note_block"
+    }
+  },
+  "result": {
+    "item": "quaedam:music_projection"
+  }
+}
