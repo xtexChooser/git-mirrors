@@ -4,7 +4,7 @@ plugins {
 
 architectury {
     platformSetupLoomIde()
-    fabric()
+    loader("quilt")
 }
 
 loom {
@@ -13,24 +13,28 @@ loom {
 
 val common: Configuration by configurations.creating
 val shadowCommon: Configuration by configurations.creating
-val developmentFabric: Configuration by configurations.getting
+val developmentQuilt: Configuration by configurations.getting
 
 configurations {
     compileOnly.configure { extendsFrom(common) }
     runtimeOnly.configure { extendsFrom(common) }
-    developmentFabric.extendsFrom(common)
+    developmentQuilt.extendsFrom(common)
 }
 
 dependencies {
-    modImplementation("net.fabricmc:fabric-loader:${rootProject.property("fabric_loader_version")}")
-    modApi("net.fabricmc.fabric-api:fabric-api:${rootProject.property("fabric_version")}")
-    modApi("dev.architectury:architectury-fabric:${rootProject.property("architectury_version")}")
-    modImplementation("net.fabricmc:fabric-language-kotlin:${rootProject.property("fabric_kotlin_version")}")
+    modImplementation("org.quiltmc:quilt-loader:${rootProject.property("quilt_loader_version")}")
+    modApi("org.quiltmc.quilted-fabric-api:quilted-fabric-api:${rootProject.property("quilt_fabric_version")}")
+    modApi("dev.architectury:architectury-fabric:${rootProject.property("architectury_version")}") {
+        exclude("net.fabricmc")
+        exclude("net.fabricmc.fabric-api")
+    }
+    modApi("org.quiltmc:qsl:${rootProject.property("quilt_standard_library_version")}")
+    modApi("org.quiltmc.quilt-kotlin-libraries:quilt-kotlin-libraries:${rootProject.property("quilt_kotlin_libraries_version")}")
 
     common(project(":common", "namedElements")) {
         isTransitive = false
     }
-    shadowCommon(project(":common", "transformProductionFabric")){
+    shadowCommon(project(":common", "transformProductionQuilt")) {
         isTransitive = false
     }
 }
@@ -38,14 +42,14 @@ dependencies {
 tasks.processResources {
     inputs.property("version", project.version)
 
-    filesMatching("fabric.mod.json") {
+    filesMatching("quilt.mod.json") {
         expand(
             mapOf(
                 "version" to project.version,
 
                 "minecraft_version" to rootProject.property("minecraft_version"),
                 "architectury_version" to rootProject.property("architectury_version"),
-                "fabric_kotlin_version" to rootProject.property("fabric_kotlin_version")
+                "quilt_kotlin_libraries_version" to rootProject.property("quilt_kotlin_libraries_version"),
             )
         )
     }

@@ -1,0 +1,59 @@
+{
+  "_comment": "https://github.com/QuiltMC/rfcs/blob/main/specification/0002-quilt.mod.json.md",
+  "schema_version": 1,
+  "mixin": [
+    "quaedam-common.mixins.json"
+  ],
+  "quilt_loader": {
+    "metadata": {
+      "name": "Quaedam",
+      "description": "Hot hot hot!",
+      "license": "Apache-2.0",
+      "authors": [
+        "xtex"
+      ],
+      "contact": {
+        "homepage": "https://codeberg.org/xtex/quaedam",
+        "sources": "https://codeberg.org/xtex/quaedam"
+      },
+      "icon": "assets/quaedam/icon.png"
+    },
+    "group": "quaedam",
+    "id": "quaedam",
+    "version": "${version}",
+    "intermediate_mappings": "net.fabricmc:intermediary",
+    "entrypoints": {
+      "init": [
+        {
+          "adapter": "kotlin",
+          "value": "quaedam.quilt.QuaedamQuilt"
+        }
+      ]
+    },
+    "depends": [
+      {
+        "id": "quilt_loader",
+        "version": "*"
+      },
+      {
+        "id": "quilt_base",
+        "version": "*"
+      },
+      {
+        "id": "minecraft",
+        "version": ">=${minecraft_version}"
+      },
+      {
+        "id": "architectury",
+        "version": ">=${architectury_version}"
+      },
+      {
+        "id": "qkl",
+        "version": ">=${quilt_kotlin_libraries_version}"
+      }
+    ]
+  },
+  "minecraft": {
+    "environment": "*"
+  }
+}

@@ -10,6 +10,6 @@ pluginManagement {
 
 include("common")
 include("forge")
-include("fabric-like", "fabric")
+include("fabric", "quilt")
 
 rootProject.name = "quaedam"
