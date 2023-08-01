@@ -290,11 +290,10 @@ class LoginNotify implements LoggerAwareInterface {
 					$lb = MediaWikiServices::getInstance()
 						->getDBLoadBalancerFactory()
 						->getMainLB( $wiki );
-					$dbrLocal = $lb->getConnectionRef( DB_REPLICA, [], $wiki );
+					$dbrLocal = $lb->getMaintenanceConnectionRef( DB_REPLICA, [], $wiki );
 
 					if ( !$this->hasCheckUserTables( $dbrLocal ) ) {
 						// Skip this wiki, no checkuser table.
-						$lb->reuseConnection( $dbrLocal );
 						continue;
 					}
 					// FIXME The case where there are no CU entries for
@@ -306,7 +305,6 @@ class LoginNotify implements LoggerAwareInterface {
 					);
 
 					if ( $res === self::USER_KNOWN ) {
-						$lb->reuseConnection( $dbrLocal );
 						return $res;
 					}
 					if ( $result === self::USER_NO_INFO
@@ -314,7 +312,6 @@ class LoginNotify implements LoggerAwareInterface {
 					) {
 						$result = self::USER_NOT_KNOWN;
 					}
-					$lb->reuseConnection( $dbrLocal );
 					$count++;
 				}
 			}
