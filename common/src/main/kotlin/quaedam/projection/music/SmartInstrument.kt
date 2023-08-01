@@ -126,10 +126,10 @@ object SmartInstrumentBlock : Block(
             || CausalityAnchor.checkEffect(level, pos)
         ) {
             val entity = level.getBlockEntity(pos) as SmartInstrumentBlockEntity
-            if (entity.player == null) {
+            if (entity.player == null && !level.isClientSide) {
                 entity.startMusic()
             }
-            return InteractionResult.SUCCESS
+            return InteractionResult.sidedSuccess(level.isClientSide)
         }
         return super.use(state, level, pos, player, hand, hit)
     }
