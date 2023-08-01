@@ -13,6 +13,7 @@
   "item.quaedam.projection_shell": "Projection Shell",
   "item.quaedam.iron_copper_metal": "Copper-iron Alloy",
   "item.quaedam.projection_metal": "Projection Metal",
+  "quaedam.projector.radius_updated": "Current effect radius: %s",
   "quaedam.screen.projection_shell": "Projection Shell",
   "quaedam.screen.projection_shell.lock_revoked": "Timeout! Connection Lost",
   "quaedam.screen.projection_shell.lock_failed": "Permission denied!",

@@ -70,7 +70,7 @@ class ProjectorBlockEntity(pos: BlockPos, state: BlockState) :
         updateEffects(effects, notify = false)
     }
 
-    private fun updateEffectArea(radius: Int) {
+    fun updateEffectArea(radius: Int) {
         effectRadius = radius
         val chunk = ChunkPos(SectionPos.blockToSectionCoord(blockPos.x), SectionPos.blockToSectionCoord(blockPos.z))
         val minChunk = ChunkPos(chunk.x - radius, chunk.z - radius)

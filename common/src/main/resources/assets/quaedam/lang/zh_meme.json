@@ -13,6 +13,7 @@
   "item.quaedam.projection_shell": "投射滥权终端",
   "item.quaedam.iron_copper_metal": "有点生锈的铁锭",
   "item.quaedam.projection_metal": "投影Metal©",
+  "quaedam.projector.radius_updated": "现在乱七八糟的效果能碰到的范围：%s",
   "quaedam.screen.projection_shell": "控制面板",
   "quaedam.screen.projection_shell.lock_revoked": "土豆熟了",
   "quaedam.screen.projection_shell.lock_failed": "宁配吗？",

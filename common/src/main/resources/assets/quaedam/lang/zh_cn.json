@@ -13,6 +13,7 @@
   "item.quaedam.projection_shell": "投影操作面板",
   "item.quaedam.iron_copper_metal": "铜铁合金",
   "item.quaedam.projection_metal": "投影金属",
+  "quaedam.projector.radius_updated": "当前效果半径：%s",
   "quaedam.screen.projection_shell": "投影操作",
   "quaedam.screen.projection_shell.lock_revoked": "超时！连接丢失",
   "quaedam.screen.projection_shell.lock_failed": "正被使用",

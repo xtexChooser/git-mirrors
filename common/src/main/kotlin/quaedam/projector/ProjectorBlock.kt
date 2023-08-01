@@ -1,6 +1,7 @@
 package quaedam.projector
 
 import net.minecraft.core.BlockPos
+import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.util.RandomSource
 import net.minecraft.world.InteractionHand
@@ -15,6 +16,8 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.material.MapColor
 import net.minecraft.world.level.material.PushReaction
 import net.minecraft.world.phys.BlockHitResult
+import quaedam.shell.ProjectionShellItem
+import quaedam.utils.sendBlockUpdated
 
 object ProjectorBlock : Block(Properties.of()
     .jumpFactor(0.8f)
@@ -41,6 +44,21 @@ object ProjectorBlock : Block(Properties.of()
         interactionHand: InteractionHand,
         blockHitResult: BlockHitResult
     ): InteractionResult {
+        if (player.getItemInHand(interactionHand).item == ProjectionShellItem) {
+            if (!level.isClientSide) {
+                val entity = level.getBlockEntity(blockPos) as ProjectorBlockEntity
+                var newRadius = entity.effectRadius + 1
+                if (newRadius > Projector.currentEffectRadius) {
+                    newRadius = 0
+                }
+                entity.updateEffectArea(newRadius)
+                entity.setChanged()
+                entity.sendBlockUpdated()
+                checkUpdate(level, blockPos)
+                player.sendSystemMessage(Component.translatable("quaedam.projector.radius_updated", newRadius))
+            }
+            return InteractionResult.sidedSuccess(level.isClientSide)
+        }
         checkUpdate(level, blockPos)
         return InteractionResult.PASS
     }
