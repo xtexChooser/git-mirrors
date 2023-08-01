@@ -39,7 +39,7 @@ data class ProjectionEffectType<T : ProjectionEffect>(val constructor: () -> T) 
 
         val registryKey: ResourceKey<Registry<ProjectionEffectType<*>>> =
             ResourceKey.createRegistryKey(Quaedam.resource("projection_effect"))
-        val registry: Registry<ProjectionEffectType<*>> = BuiltInRegistries.registerSimple(registryKey) { null }
+        val registry: Registry<ProjectionEffectType<*>> = BuiltInRegistries.registerSimple(registryKey) { nopEffect }
 
         val nopEffect: ProjectionEffectType<NopEffect> =
             Registry.register(registry, Quaedam.resource("nop"), ProjectionEffectType { NopEffect })
