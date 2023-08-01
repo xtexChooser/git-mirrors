@@ -1,5 +1,5 @@
 architectury {
-    common("forge")
+    common("forge", "fabric", "quilt")
 }
 
 loom {

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "quaedam",
+  "version": "${version}",
+  "name": "Quaedam",
+  "description": "Hot hot hot!",
+  "authors": [
+    "xtex"
+  ],
+  "contact": {
+    "homepage": "https://codeberg.org/xtex/quaedam",
+    "sources": "https://codeberg.org/xtex/quaedam"
+  },
+  "license": "Apache-2.0",
+  "icon": "assets/quaedam/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "adapter": "kotlin",
+        "value": "quaedam.fabriclike.QuaedamFabricLike"
+      }
+    ]
+  },
+  "mixins": [
+    "quaedam-common.mixins.json"
+  ],
+  "depends": {
+    "fabric": "*",
+    "minecraft": ">=${minecraft_version}",
+    "architectury": ">=${architectury_version}",
+    "fabric-language-kotlin": ">=${fabric_kotlin_version}"
+  }
+}

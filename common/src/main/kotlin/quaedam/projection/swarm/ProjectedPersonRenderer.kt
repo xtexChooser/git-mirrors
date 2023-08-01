@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider
 import net.minecraft.client.renderer.entity.MobRenderer
 import net.minecraft.client.renderer.entity.layers.CustomHeadLayer
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer
+import quaedam.Quaedam
 
 @Environment(EnvType.CLIENT)
 class ProjectedPersonRenderer(context: EntityRendererProvider.Context) :
@@ -21,7 +22,12 @@ class ProjectedPersonRenderer(context: EntityRendererProvider.Context) :
 
     companion object {
         init {
-            EntityRendererRegistry.register(ProjectedPersonEntity.entity, ::ProjectedPersonRenderer)
+            Quaedam.lateinit += {
+                EntityRendererRegistry.register(
+                    ProjectedPersonEntity.entity,
+                    ::ProjectedPersonRenderer
+                )
+            }
         }
     }
 

@@ -45,6 +45,10 @@ allprojects {
             name = "ParchmentMC"
             setUrl("https://maven.parchmentmc.org")
         }
+        maven {
+            name = "QuiltMC"
+            setUrl("https://maven.quiltmc.org/repository/release/")
+        }
     }
 
     dependencies {

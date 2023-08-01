@@ -20,6 +20,7 @@ import quaedam.projection.misc.NoiseProjection
 import quaedam.projection.misc.SkylightProjection
 import quaedam.projection.misc.SoundProjection
 import quaedam.projection.music.MusicProjection
+import quaedam.projection.swarm.ProjectedPersonEntity
 import quaedam.projection.swarm.SwarmProjection
 import quaedam.projector.Projector
 import quaedam.shell.ProjectionShell
@@ -48,6 +49,8 @@ object Quaedam {
         }
     }
 
+    val lateinit = mutableListOf<() -> Unit>()
+
     fun init() {
         QuaedamConfig
         Projector
@@ -75,6 +78,9 @@ object Quaedam {
         soundEvents.register()
         poiTypes.register()
         projectionEffects.register()
+
+        lateinit.forEach { it() }
+        lateinit.clear()
     }
 
     fun resource(path: String) = ResourceLocation(ID, path)

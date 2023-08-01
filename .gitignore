@@ -1,4 +1,4 @@
 build
 .gradle
-forge/run
+*/run
 .idea

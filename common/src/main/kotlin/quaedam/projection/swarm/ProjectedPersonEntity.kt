@@ -60,7 +60,7 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
         }!!
 
         init {
-            EntityAttributeRegistry.register(entity, ::createAttributes)
+            Quaedam.lateinit += { EntityAttributeRegistry.register(entity, ::createAttributes) }
             if (Platform.getEnv() == EnvType.CLIENT) ProjectedPersonRenderer
             ProjectedPersonShape
             ProjectedPersonAI
