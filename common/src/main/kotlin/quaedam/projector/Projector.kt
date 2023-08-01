@@ -34,7 +34,7 @@ object Projector {
 
     fun findNearbyProjectors(level: Level, pos: BlockPos) = level.getChunksNearby(pos, currentEffectRadius)
         .flatMap {
-            it.blockEntities.filter { (_, v) -> v is ProjectorBlockEntity }
+            it.blockEntities.filter { (_, v) -> v is ProjectorBlockEntity && pos in v }
                 .keys
                 .filterNotNull()
         }

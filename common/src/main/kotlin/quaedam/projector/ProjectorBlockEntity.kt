@@ -1,6 +1,7 @@
 package quaedam.projector
 
 import net.minecraft.core.BlockPos
+import net.minecraft.core.SectionPos
 import net.minecraft.core.Vec3i
 import net.minecraft.nbt.CompoundTag
 import net.minecraft.network.protocol.Packet
@@ -17,32 +18,23 @@ import quaedam.projection.ProjectionEffect
 import quaedam.projection.ProjectionEffectType
 import quaedam.projection.ProjectionProvider
 import quaedam.utils.sendBlockUpdated
+import kotlin.math.max
+import kotlin.math.min
 
 class ProjectorBlockEntity(pos: BlockPos, state: BlockState) :
     BlockEntity(Projector.blockEntity.get(), pos, state) {
 
     companion object {
+        const val TAG_EFFECT_RADIUS = "EffectRadius"
         const val TAG_PROJECTION_EFFECTS = "ProjectionEffects"
     }
 
-    val effectAreaChunk by lazy {
-        val chunk = level!!.getChunk(pos).pos
-        ChunkPos(chunk.x - Projector.currentEffectRadius, chunk.z - Projector.currentEffectRadius) to
-                ChunkPos(chunk.x + Projector.currentEffectRadius, chunk.z + Projector.currentEffectRadius)
-    }
+    var effectRadius: Int = 0
+    lateinit var effectArea: BoundingBox
+    lateinit var effectAreaAABB: AABB
 
-    val effectArea: BoundingBox by lazy {
-        val (minChunk, maxChunk) = effectAreaChunk
-        val minBlock = BlockPos(minChunk.minBlockX, level!!.minBuildHeight, minChunk.minBlockZ)
-        val maxBlock = BlockPos(maxChunk.maxBlockX, level!!.maxBuildHeight, maxChunk.maxBlockZ)
-        BoundingBox.fromCorners(minBlock, maxBlock)
-    }
-
-    val effectAreaAABB by lazy {
-        val (minChunk, maxChunk) = effectAreaChunk
-        val minBlock = BlockPos(minChunk.minBlockX, level!!.minBuildHeight, minChunk.minBlockZ)
-        val maxBlock = BlockPos(maxChunk.maxBlockX, level!!.maxBuildHeight, maxChunk.maxBlockZ)
-        AABB(minBlock, maxBlock)
+    init {
+        updateEffectArea(Projector.currentEffectRadius)
     }
 
     val checkArea: BoundingBox by lazy {
@@ -57,11 +49,13 @@ class ProjectorBlockEntity(pos: BlockPos, state: BlockState) :
         effects.map { (type, effect) ->
             effectsTag.put(type.id.toString(), effect.toNbt())
         }
+        tag.putInt(TAG_EFFECT_RADIUS, effectRadius)
         tag.put(TAG_PROJECTION_EFFECTS, effectsTag)
     }
 
     override fun load(tag: CompoundTag) {
         super.load(tag)
+        updateEffectArea(max(min(tag.getInt(TAG_EFFECT_RADIUS), Projector.currentEffectRadius), 0))
         val effectsTag = tag[TAG_PROJECTION_EFFECTS]
         val effects = mutableMapOf<ProjectionEffectType<*>, ProjectionEffect>()
         if (effectsTag != null && effectsTag is CompoundTag) {
@@ -74,6 +68,17 @@ class ProjectorBlockEntity(pos: BlockPos, state: BlockState) :
             }
         }
         updateEffects(effects, notify = false)
+    }
+
+    private fun updateEffectArea(radius: Int) {
+        effectRadius = radius
+        val chunk = ChunkPos(SectionPos.blockToSectionCoord(blockPos.x), SectionPos.blockToSectionCoord(blockPos.z))
+        val minChunk = ChunkPos(chunk.x - radius, chunk.z - radius)
+        val maxChunk = ChunkPos(chunk.x + radius, chunk.z + radius)
+        val minBlock = BlockPos(minChunk.minBlockX, Int.MIN_VALUE, minChunk.minBlockZ)
+        val maxBlock = BlockPos(maxChunk.maxBlockX, Int.MAX_VALUE, maxChunk.maxBlockZ)
+        effectArea = BoundingBox.fromCorners(minBlock, maxBlock)
+        effectAreaAABB = AABB(minBlock, maxBlock)
     }
 
     override fun getUpdateTag(): CompoundTag = saveWithoutMetadata()
