@@ -71,7 +71,7 @@ class MusicPlayer(
                 // play note
                 val projections = Projector.findNearbyProjections(level, pos, MusicProjection.effect.get())
                     .takeIf { it.isNotEmpty() } ?: listOf(MusicProjectionEffect())
-                val volume = 3.0f * projections.maxOf { it.volumeFactor } * note.volume
+                val volume = projections.maxOf { it.volumeFactor } * note.volume
                 val particle = projections.any { it.particle }
                 val instrument = level.getBlockState(pos).getValue(BlockStateProperties.NOTEBLOCK_INSTRUMENT)
                 val pitch = if (instrument.isTunable) {
