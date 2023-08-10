@@ -41,7 +41,9 @@ class ExchangeItem<E> : Behavior<E>(
         if (closeAt == null) {
             if (owner.brain.getMemory(MemoryModuleType.WALK_TARGET).isEmpty) {
                 // reached
-                val chest = level.getBlockEntity(target!!) as BaseContainerBlockEntity
+                val chest = level.getBlockEntity(target!!) ?: return
+                if (chest !is BaseContainerBlockEntity)
+                    return
                 if (chest is ChestBlockEntity) {
                     ChestBlockEntity.playSound(level, target!!, level.getBlockState(target!!), SoundEvents.CHEST_OPEN)
                 }
@@ -68,7 +70,9 @@ class ExchangeItem<E> : Behavior<E>(
     }
 
     private fun exchangeItems(level: ServerLevel, entity: E) {
-        val container = level.getBlockEntity(target!!) as Container
+        val container = level.getBlockEntity(target!!) ?: return
+        if (container !is Container)
+            return
         val inventory = entity.inventory
         for (i in 1..10) {
             val maxCount = 1 + level.random.nextInt(16)
