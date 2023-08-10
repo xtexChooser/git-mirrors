@@ -58,14 +58,12 @@ data class SoundProjectionEffect(var rate: Int = 60, var volume: Float = 1.0f) :
 
     override fun toNbt(tag: CompoundTag) {
         tag.putInt(TAG_RATE, rate)
-        println("save $volume")
         tag.putFloat(TAG_VOLUME, volume)
     }
 
     override fun fromNbt(tag: CompoundTag, trusted: Boolean) {
         rate = tag.getInt(TAG_RATE)
         volume = tag.getFloat(TAG_VOLUME)
-        println("load $volume")
         if (!trusted) {
             rate = min(rate, maxRate)
         }
