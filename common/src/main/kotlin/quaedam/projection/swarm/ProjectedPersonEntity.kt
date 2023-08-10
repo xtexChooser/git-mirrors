@@ -237,24 +237,27 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
     }
 
     fun findNearbySoundProjection() =
-        Projector.findNearbyProjections(level(), blockPosition(), SoundProjection.effect.get()).firstOrNull()
+        Projector.findNearbyProjections(level(), blockPosition(), SoundProjection.effect.get())
 
     override fun isSilent() =
-        super.isSilent() && findNearbySoundProjection() != null
+        super.isSilent() && findNearbySoundProjection().isEmpty()
 
     override fun getAmbientSound(): SoundEvent? {
-        if (findNearbySoundProjection() != null) {
+        if (findNearbySoundProjection().isNotEmpty()) {
             // sound projection available
             return soundNoise.get()
         }
         return null
     }
 
-    override fun getSoundVolume() = super.getSoundVolume() * (random.nextFloat() * 1.1f + 0.4f)
+    override fun getSoundVolume() =
+        super.getSoundVolume() * (random.nextFloat() * 1.1f + 0.4f) *
+                findNearbySoundProjection().fold(1.0f) { v, p -> v * p.volume }
 
     override fun getVoicePitch() = super.getVoicePitch() * (random.nextFloat() * 0.55f + 0.7f)
 
-    override fun getAmbientSoundInterval() = 80 - random.nextInt((findNearbySoundProjection()?.rate ?: 1) * 5)
+    override fun getAmbientSoundInterval() =
+        80 - random.nextInt((findNearbySoundProjection().firstOrNull()?.rate ?: 1) * 5)
 
     override fun isEffectiveAi() = super.isEffectiveAi() && checkProjectionEffect()
 

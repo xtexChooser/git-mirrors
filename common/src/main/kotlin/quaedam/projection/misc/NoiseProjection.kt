@@ -59,10 +59,11 @@ object NoiseProjection {
                 if (projections.isNotEmpty()) {
                     val rate = projections.maxOf { it.rate }
                     val amount = min(projections.sumOf { it.amount }, 12)
+                    val volume = projections.fold(1.0f) { v, p -> v * p.volume }
                     if (amount != 0 && random.nextInt(1000 / rate) == 1) {
                         for (i in 0 until random.nextInt(amount)) {
                             // play random noise
-                            playRandomNoise(random, game)
+                            playRandomNoise(random, game, volume)
                         }
                     }
                 }
@@ -70,7 +71,7 @@ object NoiseProjection {
         }
     }
 
-    private fun playRandomNoise(random: RandomSource, game: Minecraft) {
+    private fun playRandomNoise(random: RandomSource, game: Minecraft, volume: Float) {
         val volumeFactor = random.nextInt(100)
         val sound = SimpleSoundInstance(
             soundEvent.get().location,
@@ -80,7 +81,7 @@ object NoiseProjection {
                 in 10..15 -> random.nextFloat() * 0.5f + 0.5f
                 in 21..50 -> random.nextFloat() * 0.3f
                 else -> random.nextFloat() * 0.2f
-            },
+            } * volume,
             random.nextFloat() + 0.4f,
             RandomSource.create(random.nextLong()),
             false,
@@ -102,12 +103,14 @@ object NoiseProjectionBlock : EntityProjectionBlock<NoiseProjectionEffect>(creat
 
 }
 
-data class NoiseProjectionEffect(var rate: Int = 250, var amount: Int = 3) : ProjectionEffect(),
+data class NoiseProjectionEffect(var rate: Int = 250, var amount: Int = 3, var volume: Float = 1.0f) :
+    ProjectionEffect(),
     ProjectionEffectShell.Provider {
 
     companion object {
         const val TAG_RATE = "Rate"
         const val TAG_AMOUNT = "Amount"
+        const val TAG_VOLUME = "Volume"
 
         val maxAmount get() = QuaedamConfig.current.valuesInt["projection.noise.max_amount"] ?: 8
         val maxRate get() = QuaedamConfig.current.valuesInt["projection.noise.max_rate"] ?: 300
@@ -119,11 +122,13 @@ data class NoiseProjectionEffect(var rate: Int = 250, var amount: Int = 3) : Pro
     override fun toNbt(tag: CompoundTag) {
         tag.putInt(TAG_RATE, rate)
         tag.putInt(TAG_AMOUNT, amount)
+        tag.putFloat(TAG_VOLUME, volume)
     }
 
     override fun fromNbt(tag: CompoundTag, trusted: Boolean) {
         rate = tag.getInt(TAG_RATE)
         amount = tag.getInt(TAG_AMOUNT)
+        volume = tag.getFloat(TAG_VOLUME)
         if (!trusted) {
             amount = min(amount, maxAmount)
             rate = min(rate, maxRate)
@@ -133,6 +138,7 @@ data class NoiseProjectionEffect(var rate: Int = 250, var amount: Int = 3) : Pro
     override fun createShell() = buildProjectionEffectShell(this) {
         intSlider("quaedam.shell.noise.rate", ::rate, 0..maxRate step 5)
         intSlider("quaedam.shell.noise.amount", ::amount, 0..maxAmount)
+        floatSlider("quaedam.shell.noise.volume", ::volume, 0.0f..1.0f, 0.1f)
     }
 
 }

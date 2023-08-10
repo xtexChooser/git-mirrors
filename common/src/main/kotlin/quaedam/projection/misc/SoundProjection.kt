@@ -43,10 +43,12 @@ object SoundProjectionBlock : EntityProjectionBlock<SoundProjectionEffect>(creat
 
 }
 
-data class SoundProjectionEffect(var rate: Int = 60) : ProjectionEffect(), ProjectionEffectShell.Provider {
+data class SoundProjectionEffect(var rate: Int = 60, var volume: Float = 1.0f) : ProjectionEffect(),
+    ProjectionEffectShell.Provider {
 
     companion object {
         const val TAG_RATE = "Rate"
+        const val TAG_VOLUME = "Volume"
 
         val maxRate get() = QuaedamConfig.current.valuesInt["projection.sound.max_rate"] ?: 210
     }
@@ -56,10 +58,12 @@ data class SoundProjectionEffect(var rate: Int = 60) : ProjectionEffect(), Proje
 
     override fun toNbt(tag: CompoundTag) {
         tag.putInt(TAG_RATE, rate)
+        tag.putFloat(TAG_VOLUME, volume)
     }
 
     override fun fromNbt(tag: CompoundTag, trusted: Boolean) {
         rate = tag.getInt(TAG_RATE)
+        volume = tag.getFloat(TAG_VOLUME)
         if (!trusted) {
             rate = min(rate, maxRate)
         }
@@ -67,6 +71,7 @@ data class SoundProjectionEffect(var rate: Int = 60) : ProjectionEffect(), Proje
 
     override fun createShell() = buildProjectionEffectShell(this) {
         intSlider("quaedam.shell.sound.rate", ::rate, 0..maxRate)
+        floatSlider("quaedam.shell.sound.volume", ::volume, 0.0f..1.0f, 0.1f)
     }
 
 }
