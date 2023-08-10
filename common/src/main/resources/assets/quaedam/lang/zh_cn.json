@@ -23,8 +23,10 @@
   "quaedam.shell.skylight.factor": "因子",
   "quaedam.shell.noise.rate": "速率",
   "quaedam.shell.noise.amount": "数量",
+  "quaedam.shell.noise.volume": "响度因子",
   "quaedam.shell.swarm.max_count": "最大数量",
   "quaedam.shell.sound.rate": "速率",
+  "quaedam.shell.sound.volume": "响度因子",
   "quaedam.shell.music.volume_factor": "响度因子",
   "quaedam.shell.music.particle": "粒子效果",
   "quaedam.shell.music.particle.true": "显示",
@@ -42,5 +44,7 @@
   "advancements.quaedam.swarm_projection.title": "太多人了",
   "advancements.quaedam.swarm_projection.description": "制作人群投影",
   "advancements.quaedam.kill_projected_person.title": "走开",
-  "advancements.quaedam.kill_projected_person.description": "杀死一个投影人\n\n你为什么要这样做呢？\n这是不好的。"
+  "advancements.quaedam.kill_projected_person.description": "杀死一个投影人\n\n你为什么要这样做呢？\n这是不好的。",
+  "quaedam.shell.noise.volume": "Volume",
+  "quaedam.shell.sound.volume": "Volume"
 }
