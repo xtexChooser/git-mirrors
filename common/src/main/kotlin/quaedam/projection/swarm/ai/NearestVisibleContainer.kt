@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.entity.BaseContainerBlockEntity
 import quaedam.Quaedam
 import quaedam.utils.getChunksNearby
 import java.util.*
+import kotlin.random.Random
 
 class NearestVisibleContainer : Sensor<LivingEntity>() {
 
@@ -33,7 +34,8 @@ class NearestVisibleContainer : Sensor<LivingEntity>() {
         if (entity.tickCount and 0b11111 == 0) { // 32gt
             val pos = level.getChunksNearby(entity.blockPosition(), 1)
                 .flatMap { it.blockEntities.filterValues { be -> be is BaseContainerBlockEntity }.keys }
-                .minByOrNull { it.distManhattan(entity.blockPosition()) }
+                .shuffled(Random(entity.random.nextLong()))
+                .minByOrNull { it.distManhattan(entity.blockPosition()) / 5 }
             entity.brain.setMemory(memory.get(), pos)
         }
     }
