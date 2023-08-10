@@ -62,7 +62,7 @@ class ExchangeItem<E> : Behavior<E>(
         owner.brain.eraseMemory(MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE)
         if (closeAt != null) {
             // opened
-            val chest = level.getBlockEntity(target!!)!!
+            val chest = level.getBlockEntity(target!!) ?: return
             if (chest is ChestBlockEntity) {
                 ChestBlockEntity.playSound(level, target!!, level.getBlockState(target!!), SoundEvents.CHEST_CLOSE)
             }
