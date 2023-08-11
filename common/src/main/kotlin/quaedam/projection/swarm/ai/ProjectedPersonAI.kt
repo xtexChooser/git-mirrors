@@ -159,7 +159,10 @@ object ProjectedPersonAI {
         brain.addActivity(
             Activity.WORK, ImmutableList.of(
                 5 weight ExchangeItem(),
+                7 weight WorkPoiAI.createStrollAroundPoi(),
+                7 weight WorkPoiAI.createStrollToPoi(),
                 10 weight createStrollBehavior(),
+                10 weight WorkPoiAI.createAcquirePoi(),
             )
         )
     }
