@@ -34,8 +34,6 @@ or `mailto:xtexchooser_AT_duck.com` or `acct:xtexchooser@neko.ci` or `matrix: @x
 - [exozyme](https://exozy.me)
 - [molyuu](https://molyuu.cyou/)
 - [chitang](https://chitang.dev/)
-- [purofle](https://blog.archlinux.tech/)
 - [dn42](https://dn42.dev)
-- [wikipedia-zh](https://zh.wikipedia.org)
 
 {{</hlist>}}
