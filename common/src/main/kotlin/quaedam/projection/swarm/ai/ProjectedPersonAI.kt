@@ -71,6 +71,7 @@ object ProjectedPersonAI {
             MemoryModuleType.CANT_REACH_WALK_TARGET_SINCE,
             MemoryModuleType.HOME,
             MemoryModuleType.LAST_WOKEN,
+            MemoryModuleType.NEAREST_BED,
             NearestVisibleContainer.memory.get(),
         )
     }
