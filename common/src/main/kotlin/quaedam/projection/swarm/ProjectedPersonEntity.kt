@@ -177,7 +177,8 @@ class ProjectedPersonEntity(entityType: EntityType<out PathfinderMob>, level: Le
         Projector.findNearbyProjections(level(), blockPosition(), SwarmProjection.effect.get()).isNotEmpty()
 
     override fun checkDespawn() {
-        super.checkDespawn()
+        // no despawn
+        // super.checkDespawn()
         if (!checkProjectionEffect() && !CausalityAnchor.checkEffect(level(), blockPosition())) {
             dropEquipment()
             remove(RemovalReason.KILLED)
