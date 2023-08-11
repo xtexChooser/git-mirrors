@@ -161,8 +161,13 @@ object ProjectedPersonAI {
                 5 weight ExchangeItem(),
                 7 weight WorkPoiAI.createStrollAroundPoi(),
                 7 weight WorkPoiAI.createStrollToPoi(),
-                10 weight createStrollBehavior(),
-                10 weight WorkPoiAI.createAcquirePoi(),
+                10 weight RunOne(
+                    mapOf(),
+                    listOf(
+                        1 weightR createStrollBehavior(),
+                        1 weightR WorkPoiAI.createAcquirePoi(),
+                    )
+                ),
             )
         )
     }
@@ -186,7 +191,7 @@ object ProjectedPersonAI {
 
     private fun createStrollBehavior() = RunOne(
         listOf(
-            2 weightR RandomStroll.stroll(1.0f),
+            2 weightR RandomStroll.stroll(1.0f, 25, 12),
             2 weightR SetWalkTargetFromLookTarget.create(1.0f, 5),
             1 weightR DoNothing(30, 60)
         )
