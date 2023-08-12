@@ -1,29 +1,36 @@
 #include "arch/boot.h"
+#include "arch/bootloader.h"
 #include "boot/boot.h"
 #include "multiboot.h"
-#include "types.h"
+#include <math.h>
 #include <stdarg.h>
 
-#define CHECK_MB_FLAG(flags, bit) ((flags) & (1 << (bit)))
-
 #define TEXT_VIDEO_BUFFER 0xB8000
+#define BOOT_INFO_SIZE 0x2000
 
-static unsigned short text_x_pos = 0, text_y_pos = 0;
-static unsigned int text_width = 0, text_height = 0;
+extern struct multiboot_header multiboot_header;
+static multiboot_info_t *mbi;
+static u16 text_x_pos = 0, text_y_pos = 0;
+static u32 text_width = 0, text_height = 0;
 static bool text_mode;
+static boot_info_t *bootinfo;
+static void *bootinfo_alloc;
 
-void cmain(unsigned long magic, multiboot_info_t *mbi);
+void cmain(u32 magic, multiboot_info_t *mbi);
 void clear();
 void putchar(char chr);
-void print(char *str);
+void print(str str);
+void *bootinfo_area_alloc(usize size);
 
-void cmain(unsigned long magic, multiboot_info_t *mbi) {
+void cmain(u32 magic, multiboot_info_t *info) {
 	// check bootloader magic
 	if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
 		text_mode = true; // assume EGA text buffer available
 		print("multiboot: boot: invalid magic number\n");
 		return;
 	}
+
+	mbi = info;
 
 	// init EGA text buffer
 	text_mode = (mbi->flags & MULTIBOOT_INFO_FRAMEBUFFER_INFO >> 12) &&
@@ -34,8 +41,64 @@ void cmain(unsigned long magic, multiboot_info_t *mbi) {
 
 	// boot
 	arch_boot();
+	bootinfo = (boot_info_t *)bootinfo_area_alloc(sizeof(boot_info_t));
+	bootinfo->load_base =
+		(void *)multiboot_header.bss_end_addr + BOOT_INFO_SIZE;
+
+	boot_reserved_mem_t *reserved_mem =
+		(boot_reserved_mem_t *)bootinfo_area_alloc(sizeof(boot_reserved_mem_t));
+	bootinfo->reserved_mem = reserved_mem;
+	reserved_mem->next = NULL;
+	reserved_mem->start = (void *)multiboot_header.load_addr;
+	reserved_mem->end = (void *)multiboot_header.bss_end_addr + BOOT_INFO_SIZE;
+
+	if (mbi->flags & MULTIBOOT_INFO_MEM_MAP) {
+		multiboot_memory_map_t *mmap;
+		for (mmap = (multiboot_memory_map_t *)mbi->mmap_addr;
+			 (void *)mmap < (void *)mbi->mmap_addr + mbi->mmap_length;
+			 mmap = (multiboot_memory_map_t *)(mmap + mmap->size +
+											   sizeof(mmap->size))) {
+			if (mmap->type != MULTIBOOT_MEMORY_AVAILABLE) {
+				reserved_mem->next = (boot_reserved_mem_t *)bootinfo_area_alloc(
+					sizeof(boot_reserved_mem_t));
+				reserved_mem = reserved_mem->next;
+				reserved_mem->start = (void *)mmap->addr;
+				reserved_mem->end = (void *)mmap->addr + mmap->len;
+			}
+		}
+	}
+
+	if (mbi->flags & MULTIBOOT_INFO_MODS) {
+		if (mbi->mods_count < 1) {
+			print("multiboot: boot: at least one module must be provided\n");
+			return;
+		}
+		multiboot_module_t *mod = (multiboot_module_t *)mbi->mods_addr;
+		boot_module_t **bootmods = &bootinfo->module;
+		u32 i;
+
+		for (i = 0; i < mbi->mods_count; i++, mod++) {
+			if (i == 0) {
+				// core
+				bootinfo->core_start = (void *)mod->mod_start;
+				bootinfo->core_end = (void *)mod->mod_end;
+			} else {
+				// module
+				boot_module_t *bootmod =
+					(boot_module_t *)bootinfo_area_alloc(sizeof(boot_module_t));
+				bootmod->start = (void *)mod->mod_start;
+				bootmod->end = (void *)mod->mod_end;
+				*bootmods = bootmod;
+				bootmods = &bootmod->next;
+			}
+		}
+	} else {
+		print("multiboot: boot: multiboot modules not available\n");
+		return;
+	}
+
 	// reserve memories
-	do_core_boot();
+	do_core_boot(bootinfo);
 }
 
 void clear() {
@@ -50,7 +113,7 @@ void clear() {
 	}
 }
 
-void print(char *str) {
+void print(str str) {
 	if (!text_mode)
 		return;
 	while (*str != 0) {
@@ -74,4 +137,45 @@ void putchar(char chr) {
 		text_y_pos = (text_y_pos + 1) % text_height;
 	}
 	text_x_pos += 1;
+}
+
+bool check_memory_available(void *start, void *end) {
+	// check BIOS memory size info
+	if (mbi->flags & MULTIBOOT_INFO_MEMORY &&
+		max((void *)mbi->mem_lower, start) > min((void *)mbi->mem_upper, end)) {
+		return false;
+	}
+	// check conflict with this bootloader
+	if (max((void *)multiboot_header.load_addr, start) >
+		min((void *)multiboot_header.bss_end_addr + BOOT_INFO_SIZE, end)) {
+		return false;
+	}
+	// check conflict with mbi itself
+	if (max((void *)mbi, start) >
+		min((void *)mbi + sizeof(multiboot_info_t), end)) {
+		return false;
+	}
+	// check conflict with mbi
+	if (mbi->flags & MULTIBOOT_INFO_MEM_MAP) {
+		multiboot_memory_map_t *mmap;
+		for (mmap = (multiboot_memory_map_t *)mbi->mmap_addr;
+			 (void *)mmap < (void *)mbi->mmap_addr + mbi->mmap_length;
+			 mmap = (multiboot_memory_map_t *)(mmap + mmap->size +
+											   sizeof(mmap->size))) {
+			if (mmap->type != MULTIBOOT_MEMORY_AVAILABLE) {
+				// not available
+				if (max((void *)mmap->size, start) >
+					min((void *)(mmap->size + mmap->len), end)) {
+					return false;
+				}
+			}
+		}
+	}
+	return true;
+}
+
+void *bootinfo_area_alloc(usize size) {
+	void *ptr = bootinfo_alloc;
+	bootinfo_alloc = bootinfo_alloc + size;
+	return ptr;
 }

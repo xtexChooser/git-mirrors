@@ -1,4 +1,3 @@
-#define ASM_FILE 1
 #include "multiboot.h"
 
 #ifdef HAVE_ASM_USCORE
@@ -19,24 +18,17 @@
 
 	.section .multiboot, "ax", @progbits
 	.align  4
+	.globl multiboot_header
 
 multiboot_header:
 	.long   MULTIBOOT_HEADER_MAGIC // magic
 	.long   MULTIBOOT_HEADER_FLAGS // flags
 	.long   -(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_FLAGS) // checksum
-#ifndef __ELF__
 	.long   multiboot_header // header_addr
 	.long   _start // load_addr
 	.long   _edata // load_end_addr
 	.long   _end // bss_end_addr
 	.long   multiboot_entry // entry_addr
-#else
-	.long   0
-	.long   0
-	.long   0
-	.long   0
-	.long   0
-#endif
 	.long 1 // mode_type
 	.long 1024 // width
 	.long 600 // height
