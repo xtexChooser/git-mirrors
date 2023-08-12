@@ -18,6 +18,8 @@ cflags		+= -fPIE
 ldflags		+= -Wl,--pie -Wl,--static
 ldflags		+= -Wl,--build-id
 
+.DELETE_ON_ERROR:
+
 define load-subdir
 $(eval curdir := $1)
 $(eval curobj := $(obj)/$1)
