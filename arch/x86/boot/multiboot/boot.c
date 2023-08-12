@@ -76,7 +76,7 @@ void cmain(unsigned long magic, unsigned long addr) {
   /* Are mods_* valid? */
   if (CHECK_FLAG(mbi->flags, 3)) {
     multiboot_module_t *mod;
-    int i;
+    unsigned int i;
 
     printf("mods_count = %d, mods_addr = 0x%x\n", (int)mbi->mods_count,
            (int)mbi->mods_addr);
