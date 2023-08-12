@@ -1,14 +1,8 @@
-ENTRY(_start)
-OUTPUT_FORMAT(elf32-i386)
+ENTRY(core_init)
  
 SECTIONS
 {
-	. = 1M;
-
-    .multiboot :
-    {
-        *(.multiboot)
-    }
+	. = 2M;
 
 	.text BLOCK(4K) : ALIGN(4K)
 	{

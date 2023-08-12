@@ -17,7 +17,7 @@ cflags		+= -O3 -g
 cflags		+= -nostdlib -ffreestanding -fno-exceptions -fno-rtti -std=gnu17 -fno-use-cxa-atexit -fno-builtin
 #cflags		+= -fcf-protection # todo: only on x86_64
 #cflags		+= -fstack-protector 
-cflags		+= -Icore/include
+cflags		+= -Icore/include -Iarch/$(ARCH)/include
 cflags		+= -fPIE
 ldflags		+= -Wl,--pie -Wl,--static
 ldflags		+= -Wl,--build-id
@@ -28,8 +28,11 @@ define load-subdir
 $(eval curdir := $1)
 $(eval curobj := $(obj)/$1)
 $(eval subobjs =)
+$(eval subcobjs =)
 $(eval subdirs =)
 $(eval include $1Makefile)
+$(eval subobjs += $$(subcobjs))
+$(foreach __subcobj,$(subcobjs),$(eval cobjs += $(obj)/$1$(__subcobj)))
 $(foreach __subobj,$(subobjs),$(eval objs += $(obj)/$1$(__subobj)))
 $(foreach __subdir,$(subdirs),$(call load-subdir,$1$(__subdir)))
 endef
@@ -94,3 +97,6 @@ clean:
 	rm -rf $(obj)/*
 
 .PHONY: clean
+
+$(obj)/core.o: core/linker.ld $(cobjs)
+	$(LD) $(LDFLAGS) -T $< -o $@ $(filter-out $<,$^)

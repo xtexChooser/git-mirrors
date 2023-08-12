@@ -1,4 +1,6 @@
-$(curobj)boot.iso: $(curobj)iso_root/boot/grub/grub.cfg $(curobj)iso_root/boot/$(NAME)/multiboot.o
+$(curobj)boot.iso: $(curobj)iso_root/boot/grub/grub.cfg \
+	$(curobj)iso_root/boot/$(NAME)/multiboot.o \
+	$(curobj)iso_root/boot/$(NAME)/core.o
 	grub2-mkrescue -o $@ --product-name=$(NAME) --product-version=$(VERSION) $(curobj)iso_root
 
 $(curobj)iso_root/boot/grub/grub.cfg: $(curdir)grub.cfg
@@ -6,6 +8,10 @@ $(curobj)iso_root/boot/grub/grub.cfg: $(curdir)grub.cfg
 	cat $< | envsubst > $@
 
 $(curobj)iso_root/boot/$(NAME)/multiboot.o: $(obj)/arch/x86/boot/multiboot/multiboot.o
+	$(call mkparent)
+	cp $< $@
+
+$(curobj)iso_root/boot/$(NAME)/core.o: $(obj)/core.o
 	$(call mkparent)
 	cp $< $@
 

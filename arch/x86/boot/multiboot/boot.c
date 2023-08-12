@@ -1,3 +1,5 @@
+#include "arch/boot.h"
+#include "boot/boot.h"
 #include "multiboot.h"
 #include "types.h"
 #include <stdarg.h>
@@ -28,8 +30,12 @@ void cmain(unsigned long magic, multiboot_info_t *mbi) {
 				mbi->framebuffer_type == MULTIBOOT_FRAMEBUFFER_TYPE_EGA_TEXT;
 	text_width = mbi->framebuffer_width;
 	text_height = mbi->framebuffer_height;
-
 	clear();
+
+	// boot
+	arch_boot();
+	// reserve memories
+	do_core_boot();
 }
 
 void clear() {

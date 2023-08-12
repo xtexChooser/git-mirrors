@@ -1,1 +1,1 @@
-subdirs += init/
+subdirs += boot/
