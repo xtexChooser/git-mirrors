@@ -51,23 +51,23 @@ $(foreach __subdir,$(subdirs),$(call load-subdir,$(__subdir)))
 
 include $(patsubst %.o,%.d,$(objs))
 
-$(obj)/%.d: %.c
+$(obj)/%.d: %.c $(obj)/compile_flags.txt
 	$(call mkparent)
 	$(CC) $(CFLAGS) -E -M $< -o $@.tmp
 	sed 's/^\(.*\):\s/$(obj)\/$(subst /,\/,$(subst .c,.o,$<)): /g' $@.tmp > $@
 	rm $@.tmp
 
-$(obj)/%.d: %.S
+$(obj)/%.d: %.S $(obj)/compile_flags.txt
 	$(call mkparent)
 	$(CC) $(CFLAGS) -E -M $< -o $@.tmp
 	sed 's/^\(.*\):\s/$(obj)\/$(subst /,\/,$(subst .c,.o,$<)): /g' $@.tmp > $@
 	rm $@.tmp
 
-$(obj)/%.o: %.c
+$(obj)/%.o: %.c $(obj)/compile_flags.txt
 	$(call mkparent)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(obj)/%.o: %.S
+$(obj)/%.o: %.S $(obj)/compile_flags.txt
 	$(call mkparent)
 	$(CC) $(CFLAGS) -c $< -o $@
 
