@@ -42,16 +42,17 @@ void cmain(u32 magic, multiboot_info_t *info) {
 	// boot
 	arch_boot();
 	bootinfo = (boot_info_t *)bootinfo_area_alloc(sizeof(boot_info_t));
-	bootinfo->load_base =
-		(void *)multiboot_header.bss_end_addr + BOOT_INFO_SIZE;
+	bootinfo->load_base = (void *)&multiboot_header +
+						  multiboot_header.bss_end_addr + BOOT_INFO_SIZE;
 	bootinfo->random = x86rand();
 
 	boot_reserved_mem_t *reserved_mem =
 		(boot_reserved_mem_t *)bootinfo_area_alloc(sizeof(boot_reserved_mem_t));
 	bootinfo->reserved_mem = reserved_mem;
 	reserved_mem->next = NULL;
-	reserved_mem->start = (void *)multiboot_header.load_addr;
-	reserved_mem->end = (void *)multiboot_header.bss_end_addr + BOOT_INFO_SIZE;
+	reserved_mem->start = (void *)&multiboot_header;
+	reserved_mem->end = (void *)&multiboot_header +
+						multiboot_header.bss_end_addr + BOOT_INFO_SIZE;
 
 	if (mbi->flags & MULTIBOOT_INFO_MEM_MAP) {
 		multiboot_memory_map_t *mmap;
