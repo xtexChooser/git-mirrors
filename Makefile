@@ -12,11 +12,12 @@ SRC			?= .
 src			:= ${SRC}
 VPATH		+= $(src)
 
-cflags		+= -Wall -Werror -Wextra
+cflags		+= -Wall -Werror -Wextra -Wno-error=unused-parameter
 cflags		+= -O3 -g
 cflags		+= -nostdlib -ffreestanding -fno-exceptions -fno-rtti -std=gnu17 -fno-use-cxa-atexit -fno-builtin
 #cflags		+= -fcf-protection # todo: only on x86_64
 #cflags		+= -fstack-protector 
+cflags		+= -Icore/include
 cflags		+= -fPIE
 ldflags		+= -Wl,--pie -Wl,--static
 ldflags		+= -Wl,--build-id

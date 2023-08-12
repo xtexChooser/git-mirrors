@@ -1,95 +1,69 @@
-#define ASM_FILE        1
+#define ASM_FILE 1
 #include "multiboot.h"
 
-//#define __ELF__
-
-/* C symbol format. HAVE_ASM_USCORE is defined by configure. */
 #ifdef HAVE_ASM_USCORE
-# define EXT_C(sym)                     _ ## sym
+# define C_FUNC(sym) _ ## sym
 #else
-# define EXT_C(sym)                     sym
+# define C_FUNC(sym) sym
 #endif
 
-/* The size of our stack (16KB). */
-#define STACK_SIZE                      0x4000
+#define STACK_SIZE	0x1000
 
-/* The flags for the Multiboot header. */
 #ifdef __ELF__
 # define AOUT_KLUDGE 0
 #else
 # define AOUT_KLUDGE MULTIBOOT_AOUT_KLUDGE
 #endif
-#define MULTIBOOT_HEADER_FLAGS                  MULTIBOOT_PAGE_ALIGN | MULTIBOOT_MEMORY_INFO | MULTIBOOT_VIDEO_MODE | AOUT_KLUDGE
-        
 
-        .section .multiboot, "wax", @progbits
-        .globl  multiboot_header
-        /* Align 32 bits boundary. */
-        .align  4
-        
-        /* Multiboot header. */
+#define MULTIBOOT_HEADER_FLAGS	MULTIBOOT_PAGE_ALIGN | MULTIBOOT_MEMORY_INFO | MULTIBOOT_VIDEO_MODE | AOUT_KLUDGE
+
+	.section .multiboot, "wax", @progbits
+	.align  4
+
 multiboot_header:
-        /* magic */
-        .long   MULTIBOOT_HEADER_MAGIC
-        /* flags */
-        .long   MULTIBOOT_HEADER_FLAGS
-        /* checksum */
-        .long   -(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_FLAGS)
+	.long   MULTIBOOT_HEADER_MAGIC // magic
+	.long   MULTIBOOT_HEADER_FLAGS // flags
+	.long   -(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_FLAGS) // checksum
 #ifndef __ELF__
-        /* header_addr */
-        .long   multiboot_header
-        /* load_addr */
-        .long   _start
-        /* load_end_addr */
-        .long   _edata
-        /* bss_end_addr */
-        .long   _end
-        /* entry_addr */
-        .long   multiboot_entry
-#else /* ! __ELF__ */
-        .long   0
-        .long   0
-        .long   0
-        .long   0
-        .long   0       
-#endif /* __ELF__ */
-        .long 1
-        .long 1024
-        .long 600
-        .long 32
+	.long   multiboot_header // header_addr
+	.long   _start // load_addr
+	.long   _edata // load_end_addr
+	.long   _end // bss_end_addr
+	.long   multiboot_entry // entry_addr
+#else
+	.long   0
+	.long   0
+	.long   0
+	.long   0
+	.long   0
+#endif
+	.long 1 // mode_type
+	.long 1024 // width
+	.long 600 // height
+	.long 32 // depth
 
-        .text
+	.text
+	.globl  _start, multiboot_entry
 
-        .globl  start, _start
-start:
 _start:
-        jmp     multiboot_entry
-
 multiboot_entry:
-        /* Initialize the stack pointer. */
-        movl    $(stack + STACK_SIZE), %esp
+	movl $(stack + STACK_SIZE), %esp
 
-        /* Reset EFLAGS. */
-        pushl   $0
-        popf
+	// reset eflags
+	pushl $0
+	popf
 
-        /* Push the pointer to the Multiboot information structure. */
-        pushl   %ebx
-        /* Push the magic value. */
-        pushl   %eax
+	pushl %ebx
+	pushl %eax
+	call C_FUNC(cmain)
 
-        /* Now enter the C main function... */
-        call    EXT_C(cmain)
+    pushl $halt_message
+	call C_FUNC(print)
+	
+loop:
+	hlt
+	jmp loop
 
-        /* Halt. */
-        pushl   $halt_message
-        call    EXT_C(printf)
-        
-loop:   hlt
-        jmp     loop
+halt_message:	.asciz "multiboot: entry: cmain() returned\nmultiboot: entry: halted"
 
-halt_message:
-        .asciz  "Halted."
-
-        /* Our stack area. */
-        .comm   stack, STACK_SIZE
+.comm stack, STACK_SIZE
