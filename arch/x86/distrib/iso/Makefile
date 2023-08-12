@@ -10,6 +10,9 @@ $(curobj)iso_root/boot/$(NAME)/multiboot.o: $(obj)/arch/x86/boot/multiboot/multi
 	cp $< $@
 
 qemu-iso: $(curobj)boot.iso
-	qemu-system-i386 -drive media=cdrom,file=$<,readonly=on,format=raw -m 256M
+	qemu-system-i386 \
+		-drive media=cdrom,file=$<,readonly=on,format=raw \
+		-serial stdio \
+		-m 256M
 
 .PHONY: qemu-iso
