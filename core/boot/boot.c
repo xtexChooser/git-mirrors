@@ -1,9 +1,7 @@
 #include "boot/boot.h"
-
-void boot_reserve_mem(void *addr, void *end) {
-	//
-}
+#include "arch/bootloader.h"
 
 void do_core_boot(boot_info_t *bootinfo) {
-	//
+	// find core load base
+	// check_arch_boot_memory_available
 }

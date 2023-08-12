@@ -1,5 +1,6 @@
 #include "arch/boot.h"
 #include "arch/bootloader.h"
+#include "arch/x86_rand.h"
 #include "boot/boot.h"
 #include "multiboot.h"
 #include <math.h>
@@ -19,7 +20,6 @@ static void *bootinfo_alloc;
 void cmain(u32 magic, multiboot_info_t *mbi);
 void clear();
 void putchar(char chr);
-void print(str str);
 void *bootinfo_area_alloc(usize size);
 
 void cmain(u32 magic, multiboot_info_t *info) {
@@ -44,6 +44,7 @@ void cmain(u32 magic, multiboot_info_t *info) {
 	bootinfo = (boot_info_t *)bootinfo_area_alloc(sizeof(boot_info_t));
 	bootinfo->load_base =
 		(void *)multiboot_header.bss_end_addr + BOOT_INFO_SIZE;
+	bootinfo->random = x86rand();
 
 	boot_reserved_mem_t *reserved_mem =
 		(boot_reserved_mem_t *)bootinfo_area_alloc(sizeof(boot_reserved_mem_t));
@@ -139,7 +140,7 @@ void putchar(char chr) {
 	text_x_pos += 1;
 }
 
-bool check_memory_available(void *start, void *end) {
+bool check_arch_boot_memory_available(void *start, void *end) {
 	// check BIOS memory size info
 	if (mbi->flags & MULTIBOOT_INFO_MEMORY &&
 		max((void *)mbi->mem_lower, start) > min((void *)mbi->mem_upper, end)) {
