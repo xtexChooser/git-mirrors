@@ -17,7 +17,7 @@ cflags		+= -O3 -g
 cflags		+= -nostdlib -ffreestanding -fno-exceptions -fno-rtti -std=gnu17 -fno-use-cxa-atexit -fno-builtin
 #cflags		+= -fcf-protection # todo: only on x86_64
 #cflags		+= -fstack-protector 
-cflags		+= -Icore/include -Iarch/$(ARCH)/include
+cflags		+= -isystemcore/include -Iarch/$(ARCH)/include -includecore/include/types.h
 cflags		+= -fPIE
 ldflags		+= -Wl,--pie -Wl,--static
 ldflags		+= -Wl,--build-id
@@ -70,7 +70,7 @@ $(obj)/%.d: %.c
 
 $(obj)/%.d: %.S
 	$(call mkparent)
-	$(CC) $(CFLAGS) -E -M $< -o $@.tmp
+	$(CC) $(CFLAGS) -D ASM_FILE -E -M $< -o $@.tmp
 	sed 's/^\(.*\):\s/$(obj)\/$(subst /,\/,$(subst .c,.o,$<)): /g' $@.tmp > $@
 	rm $@.tmp
 
@@ -80,15 +80,15 @@ $(obj)/%.o: %.c $(obj)/compile_flags.txt
 
 $(obj)/%.o: %.S $(obj)/compile_flags.txt
 	$(call mkparent)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -D ASM_FILE -c $< -o $@
 
-compile_flags_hash=$(shell echo $(CFLAGS) | sha1sum | head -c8)
+compile_flags_hash=$(shell echo "$(CFLAGS)" | sha1sum | head -c8)
 $(obj)/.compile_flags.$(compile_flags_hash):
 	rm -f $(obj)/.compile_flags.*
 	echo $(compile_flags_hash) > $@
 
 $(obj)/compile_flags.txt: $(obj)/.compile_flags.$(compile_flags_hash)
-	echo $(CFLAGS) | sed 's/\s/\n/g' | sort | uniq > $@
+	echo "$(CFLAGS)" | sed 's/\s/\n/g' | sort | uniq > $@
 
 compile_flags.txt: $(obj)/compile_flags.txt
 	cp $< $@
