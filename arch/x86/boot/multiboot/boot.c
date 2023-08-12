@@ -1,4 +1,5 @@
 #include "multiboot.h"
+#include <stdarg.h>
 
 /* Macros. */
 
@@ -46,9 +47,14 @@ void cmain(unsigned long magic, unsigned long addr) {
 
   /* Set MBI to the address of the Multiboot information structure. */
   mbi = (multiboot_info_t *)addr;
+  printf("magic = 0x%x\n", magic);
+  printf("mbi = 0x%x\n", mbi);
 
   /* Print out the flags. */
   printf("flags = 0x%x\n", (unsigned)mbi->flags);
+  char buf[20];
+  itoa(buf, 'x', (unsigned)mbi->flags);
+  printf(buf);
 
   /* Are mem_* valid? */
   if (CHECK_FLAG(mbi->flags, 0))
@@ -60,8 +66,12 @@ void cmain(unsigned long magic, unsigned long addr) {
     printf("boot_device = 0x%x\n", (unsigned)mbi->boot_device);
 
   /* Is the command line passed? */
-  if (CHECK_FLAG(mbi->flags, 2))
+  if (CHECK_FLAG(mbi->flags, 2)) {
     printf("cmdline = %s\n", (char *)mbi->cmdline);
+    if (*(unsigned int *)mbi->cmdline == 0x74736574) {
+      printf("test cmdline passed\n");
+    }
+  }
 
   /* Are mods_* valid? */
   if (CHECK_FLAG(mbi->flags, 3)) {
@@ -123,7 +133,8 @@ void cmain(unsigned long magic, unsigned long addr) {
   }
 
   /* Draw diagonal blue line. */
-  if (!CHECK_FLAG(mbi->flags, 12)) {
+  /*
+  if (CHECK_FLAG(mbi->flags, 12)) {
     multiboot_uint32_t color;
     unsigned i;
     void *fb = (void *)(unsigned long)mbi->framebuffer_addr;
@@ -185,7 +196,7 @@ void cmain(unsigned long magic, unsigned long addr) {
       } break;
       }
     }
-  }
+  }*/
 }
 
 /* Clear the screen and initialize VIDEO, XPOS and YPOS. */
@@ -262,11 +273,10 @@ static void putchar(int c) {
 /* Format a string and print it on the screen, just like the libc
    function printf. */
 void printf(const char *format, ...) {
-  char **arg = (char **)&format;
   int c;
   char buf[20];
-
-  arg++;
+  va_list valist;
+  va_start(valist, format);
 
   while ((c = *format++) != 0) {
     if (c != '%')
@@ -290,13 +300,13 @@ void printf(const char *format, ...) {
       case 'd':
       case 'u':
       case 'x':
-        itoa(buf, c, *((int *)arg++));
+        itoa(buf, c, va_arg(valist, int));
         p = buf;
         goto string;
         break;
 
       case 's':
-        p = *arg++;
+        p = va_arg(valist, char *);
         if (!p)
           p = "(null)";
 
@@ -310,9 +320,10 @@ void printf(const char *format, ...) {
         break;
 
       default:
-        putchar(*((int *)arg++));
+        putchar(va_arg(valist, int));
         break;
       }
     }
   }
+  va_end(valist);
 }
