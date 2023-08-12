@@ -71,6 +71,9 @@ $(obj)/%.o: %.S
 	$(call mkparent)
 	$(CC) $(CFLAGS) -c $< -o $@
 
+compile_flags.txt:
+	echo $(CFLAGS) | sed 's/\s/\n/g' | sort | uniq > $@
+
 clean:
 	rm -rf $(obj)/*
 
