@@ -10,13 +10,13 @@ src			:= ${SRC}
 VPATH		+= $(src)
 
 cflags		+= -Wall -Werror #-Wextra
-cflags		+= -O2 -g
+cflags		+= -O3 -g
 cflags		+= -nostdlib -ffreestanding -fno-exceptions -fno-rtti -std=gnu17 -fno-use-cxa-atexit -fno-builtin
 #cflags		+= -fcf-protection # todo: only on x86_64
 #cflags		+= -fstack-protector 
-#cflags		+= -fPIE
-#ldflags		+= -Wl,--pie -Wl,--static
-#ldflags		+= -Wl,--build-id
+cflags		+= -fPIE
+ldflags		+= -Wl,--pie -Wl,--static
+ldflags		+= -Wl,--build-id
 
 define load-subdir
 $(eval curdir := $1)
