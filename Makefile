@@ -1,3 +1,6 @@
+NAME		= xtex-os
+VERSION		= 1.0
+
 CC			= clang
 LD			= clang
 objs		:=
@@ -40,6 +43,10 @@ cflags		+= --target=$(CLANG_TARGET)
 ldflags		+= --target=$(CLANG_TARGET)
 CFLAGS		+= $(cflags)
 LDFLAGS		+= $(cflags) $(ldflags)
+
+export NAME VERSION
+export OUT SRC
+export CC LD CFLAGS LDFLAGS
 
 default: $(ARCH_DEFAULT_TARGET)
 .PHONY: default
