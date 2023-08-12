@@ -1,0 +1,2 @@
+subdirs += boot/
+subdirs += distrib/

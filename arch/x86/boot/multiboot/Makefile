@@ -1,0 +1,4 @@
+subobjs += boot.o entry.o
+
+$(curobj)multiboot.o: $(curdir)linker.ld $(curobj)entry.o $(curobj)boot.o
+	$(LD) $(LDFLAGS) -T $< -o $@ -Wl,-s,--build-id=sha1 $(filter-out $<,$^)

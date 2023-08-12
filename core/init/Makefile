@@ -1,0 +1,1 @@
+subobjs += init.o
