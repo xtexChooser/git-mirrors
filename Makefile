@@ -9,7 +9,7 @@ SRC			?= .
 src			:= ${SRC}
 VPATH		+= $(src)
 
-cflags		+= -Wall -Werror #-Wextra
+cflags		+= -Wall -Werror -Wextra
 cflags		+= -O3 -g
 cflags		+= -nostdlib -ffreestanding -fno-exceptions -fno-rtti -std=gnu17 -fno-use-cxa-atexit -fno-builtin
 #cflags		+= -fcf-protection # todo: only on x86_64
@@ -51,13 +51,13 @@ $(foreach __subdir,$(subdirs),$(call load-subdir,$(__subdir)))
 
 include $(patsubst %.o,%.d,$(objs))
 
-$(obj)/%.d: %.c $(obj)/compile_flags.txt
+$(obj)/%.d: %.c
 	$(call mkparent)
 	$(CC) $(CFLAGS) -E -M $< -o $@.tmp
 	sed 's/^\(.*\):\s/$(obj)\/$(subst /,\/,$(subst .c,.o,$<)): /g' $@.tmp > $@
 	rm $@.tmp
 
-$(obj)/%.d: %.S $(obj)/compile_flags.txt
+$(obj)/%.d: %.S
 	$(call mkparent)
 	$(CC) $(CFLAGS) -E -M $< -o $@.tmp
 	sed 's/^\(.*\):\s/$(obj)\/$(subst /,\/,$(subst .c,.o,$<)): /g' $@.tmp > $@
