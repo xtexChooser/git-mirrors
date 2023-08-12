@@ -71,8 +71,16 @@ $(obj)/%.o: %.S
 	$(call mkparent)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-compile_flags.txt:
+compile_flags_hash=$(shell echo $(CFLAGS) | sha1sum | head -c8)
+$(obj)/.compile_flags.$(compile_flags_hash):
+	rm -f $(obj)/.compile_flags.*
+	echo $(compile_flags_hash) > $@
+
+$(obj)/compile_flags.txt: $(obj)/.compile_flags.$(compile_flags_hash)
 	echo $(CFLAGS) | sed 's/\s/\n/g' | sort | uniq > $@
+
+compile_flags.txt: $(obj)/compile_flags.txt
+	cp $< $@
 
 clean:
 	rm -rf $(obj)/*
