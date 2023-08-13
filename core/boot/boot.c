@@ -8,7 +8,7 @@ void do_core_boot(boot_info_t *bootinfo) {
 	bootinfo->random = arch_boot_rand();
 	find_core_boot_mem(bootinfo);
 	load_core_elf(bootinfo);
-	if (bootinfo->core_entry) {
+	if (bootinfo->core_entry == NULL) {
 		print("boot: load_core_elf failed to locate the entrypoint\n");
 		return;
 	}
@@ -16,6 +16,7 @@ void do_core_boot(boot_info_t *bootinfo) {
 		print("boot: arch_pre_boot failed\n");
 		return;
 	}
+	print("boot: calling core_entry\n");
 	char *ret = bootinfo->core_entry(bootinfo);
 	print(ret);
 }
