@@ -58,4 +58,5 @@ loop:
 
 halt_message:	.asciz "multiboot: entry: cmain() returned\nmultiboot: entry: halted"
 
+.bss
 .comm stack, STACK_SIZE
