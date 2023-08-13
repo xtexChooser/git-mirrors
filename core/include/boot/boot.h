@@ -18,15 +18,25 @@ typedef struct boot_module boot_module_t;
 
 struct boot_info {
 	void *mem_upper;
-	/**
-	 * @brief The random number. Filled by `do_core_boot`
-	 * 
-	 */
-	u64 random;
 	void *core_start;
 	void *core_end;
 	boot_reserved_mem_t *reserved_mem;
 	boot_module_t *module;
+	/**
+	 * @brief The random number. Filled by core boot
+	 *
+	 */
+	u64 random;
+	/**
+	 * @brief The lower address to load core at. Filled by core boot
+	 *
+	 */
+	void *core_load_start;
+	/**
+	 * @brief The lower address to load core at. Filled by core boot
+	 *
+	 */
+	void *core_load_end;
 };
 typedef struct boot_info boot_info_t;
 
@@ -41,8 +51,7 @@ void do_core_boot(boot_info_t *bootinfo);
  * @brief Find a memory block that can be used to load the kernel
  *
  * @param bootinfo Boot info
- * @return void* The lower address of the block
  */
-void *find_core_boot_mem(boot_info_t *bootinfo);
+void find_core_boot_mem(boot_info_t *bootinfo);
 
 #endif
