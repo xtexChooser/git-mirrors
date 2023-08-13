@@ -39,6 +39,9 @@ void cmain(u32 magic, multiboot_info_t *info) {
 	text_height = mbi->framebuffer_height;
 	clear();
 
+	// init boot mem allocator
+	bootinfo_alloc = (void *)multiboot_header.bss_end_addr;
+
 	// boot
 	arch_boot();
 	bootinfo = (boot_info_t *)bootinfo_area_alloc(sizeof(boot_info_t));
@@ -57,9 +60,8 @@ void cmain(u32 magic, multiboot_info_t *info) {
 		(boot_reserved_mem_t *)bootinfo_area_alloc(sizeof(boot_reserved_mem_t));
 	bootinfo->reserved_mem = reserved_mem;
 	reserved_mem->next = NULL;
-	reserved_mem->start = (void *)&multiboot_header;
-	reserved_mem->end = (void *)&multiboot_header +
-						multiboot_header.bss_end_addr + BOOT_INFO_SIZE;
+	reserved_mem->start = (void *)multiboot_header.load_addr;
+	reserved_mem->end = (void *)multiboot_header.bss_end_addr + BOOT_INFO_SIZE;
 
 	if (mbi->flags & MULTIBOOT_INFO_MEM_MAP) {
 		multiboot_memory_map_t *mmap;
@@ -160,10 +162,8 @@ bool check_arch_boot_memory_available(void *start, void *end) {
 		return false;
 	}
 	// check conflict with this bootloader
-	if (max((void *)&multiboot_header, start) <
-		min((void *)&multiboot_header + multiboot_header.bss_end_addr +
-				BOOT_INFO_SIZE,
-			end)) {
+	if (max((void *)multiboot_header.load_addr, start) <
+		min((void *)multiboot_header.bss_end_addr + BOOT_INFO_SIZE, end)) {
 		return false;
 	}
 	// check conflict with mbi itself
@@ -204,5 +204,10 @@ bool check_arch_boot_memory_available(void *start, void *end) {
 void *bootinfo_area_alloc(usize size) {
 	void *ptr = bootinfo_alloc;
 	bootinfo_alloc = bootinfo_alloc + size;
+	void *memdst = ptr;
+	while (memdst < bootinfo_alloc) {
+		*(u64 *)memdst = 0;
+		memdst += sizeof(u64);
+	}
 	return ptr;
 }
