@@ -5,16 +5,22 @@
 #include <types.h>
 
 void do_core_boot(boot_info_t *bootinfo) {
-	// find core load base
-	// check_arch_boot_memory_available
 	bootinfo->random = arch_boot_rand();
 	find_core_boot_mem(bootinfo);
-
-	arch_pre_boot(bootinfo);
+	load_core_elf(bootinfo);
+	if (bootinfo->core_entry) {
+		print("boot: load_core_elf failed to locate the entrypoint\n");
+		return;
+	}
+	if (!arch_pre_boot(bootinfo)) {
+		print("boot: arch_pre_boot failed\n");
+		return;
+	}
+	char *ret = bootinfo->core_entry(bootinfo);
+	print(ret);
 }
 
 void find_core_boot_mem(boot_info_t *bootinfo) {
-	// Find with ASLR
 	void *load_base = (void *)flooru(bootinfo->random, SZ_4K) + SZ_2M;
 	usize core_size = (usize)(bootinfo->core_end - bootinfo->core_start);
 	while (1) {
@@ -47,4 +53,8 @@ void find_core_boot_mem(boot_info_t *bootinfo) {
 	bootinfo->core_load_start = load_base;
 	bootinfo->core_load_end = (void *)load_base + core_size;
 	return;
+}
+
+void load_core_elf(boot_info_t *bootinfo) {
+	
 }

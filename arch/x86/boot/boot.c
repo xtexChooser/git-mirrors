@@ -3,9 +3,9 @@
 
 void arch_boot() { __asm__("cli"); }
 
-void arch_pre_boot(boot_info_t *bootinfo) {
+bool arch_pre_boot(boot_info_t *bootinfo) {
 	_unused(bootinfo);
-	return;
+	return true;
 }
 
 /**

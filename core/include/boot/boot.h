@@ -16,6 +16,10 @@ struct boot_module {
 };
 typedef struct boot_module boot_module_t;
 
+typedef struct boot_info boot_info_t;
+
+typedef char *(boot_core_entry)(boot_info_t *bootinfo);
+
 struct boot_info {
 	void *mem_upper;
 	void *core_start;
@@ -37,12 +41,16 @@ struct boot_info {
 	 *
 	 */
 	void *core_load_end;
+	/**
+	 * @brief The entrypoint of core. Filled by core boot `load_core_elf`
+	 *
+	 */
+	boot_core_entry *core_entry;
 };
-typedef struct boot_info boot_info_t;
 
 /**
  * @brief Boot core with given info
- * 
+ *
  * @param bootinfo Boot info
  */
 void do_core_boot(boot_info_t *bootinfo);
@@ -53,5 +61,7 @@ void do_core_boot(boot_info_t *bootinfo);
  * @param bootinfo Boot info
  */
 void find_core_boot_mem(boot_info_t *bootinfo);
+
+void load_core_elf(boot_info_t *bootinfo);
 
 #endif

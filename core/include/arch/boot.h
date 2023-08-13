@@ -12,7 +12,7 @@ void arch_boot();
  * @brief Archiecture-specific logic before boot. Called by core/boot
  *
  */
-void arch_pre_boot(boot_info_t *bootinfo);
+bool arch_pre_boot(boot_info_t *bootinfo);
 
 /**
  * @brief Generates a random number for booting.
