@@ -21,6 +21,6 @@ qemu-iso: $(curout)boot.iso
 		-drive media=cdrom,file=$<,readonly=on,format=raw \
 		-serial stdio \
 		-m 256M \
-		-cpu Snowridge
+		-cpu Snowridge -s $(QEMU_FLAGS)
 
 .PHONY: qemu-iso
