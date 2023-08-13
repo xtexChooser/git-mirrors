@@ -87,6 +87,9 @@ void cmain(u32 magic, multiboot_info_t *info) {
 		u32 i;
 
 		for (i = 0; i < mbi->mods_count; i++, mod++) {
+			// there is no need to make memory block for mods reserved.
+			// those memory will be reserved by check_arch_boot_memory_available.
+			// core will reserve and release them later
 			if (i == 0) {
 				// core
 				bootinfo->core_start = (void *)mod->mod_start;
@@ -177,6 +180,17 @@ bool check_arch_boot_memory_available(void *start, void *end) {
 					min((void *)(mmap->size + mmap->len), end)) {
 					return false;
 				}
+			}
+		}
+	}
+	if (mbi->flags & MULTIBOOT_INFO_MODS) {
+		multiboot_module_t *mod = (multiboot_module_t *)mbi->mods_addr;
+		u32 i;
+
+		for (i = 0; i < mbi->mods_count; i++, mod++) {
+			if (max((void *)mod->mod_start, start) >
+				min((void *)mod->mod_end, end)) {
+				return false;
 			}
 		}
 	}
