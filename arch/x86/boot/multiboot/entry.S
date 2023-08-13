@@ -25,7 +25,7 @@ multiboot_header:
 	.long MULTIBOOT_HEADER_FLAGS // flags
 	.long -(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_FLAGS) // checksum
 	.long multiboot_header // header_addr
-	.long _start // load_addr
+	.long _load_start // load_addr
 	.long _edata // load_end_addr
 	.long _end // bss_end_addr
 	.long multiboot_entry // entry_addr

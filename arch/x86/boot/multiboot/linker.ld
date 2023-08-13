@@ -4,6 +4,7 @@ OUTPUT_FORMAT(elf32-i386)
 SECTIONS
 {
 	. = 1M;
+	_load_start = .;
 
     .multiboot :
     {
