@@ -45,8 +45,8 @@ void do_core_boot(boot_info_t *bootinfo) {
 	// check_arch_boot_memory_available
 	bootinfo->random = arch_boot_rand();
 	char buf[20];
-	void *core_start = find_core_boot_mem(bootinfo);
-	itoa(buf, 'x', (unsigned)core_start);
+	//void *core_start = find_core_boot_mem(bootinfo);
+	itoa(buf, 'x', (unsigned)bootinfo->random);
 	print(buf);
 	arch_pre_boot(bootinfo);
 }

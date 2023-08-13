@@ -1,4 +1,5 @@
 #include "arch/boot.h"
+#include <arch/bootloader.h>
 
 void arch_boot() { __asm__("cli"); }
 
@@ -31,7 +32,24 @@ u64 arch_boot_rand_randomize(u64 source) {
 }
 
 u64 arch_boot_rand() {
-	u32 low, high;
+	u32 low, high, cpu_feat;
+
+	asm volatile("cpuid" : "=c"(cpu_feat) : "a"(0x01) : "ebx", "edx");
+	if (cpu_feat >> 30 & 1) {
+		// RDRAND available
+		print("x86/boot: use RDRAND as boot RNG\n");
+		asm volatile(".arch_boot_rand_rdrand_retry0:\n\t"
+					 "rdrandl %0\n\t"
+					 "jnc .arch_boot_rand_rdrand_retry0\n\t"
+					 : "=r"(high));
+		asm volatile(".arch_boot_rand_rdrand_retry1:\n\t"
+					 "rdrandl %0\n\t"
+					 "jnc .arch_boot_rand_rdrand_retry1\n\t"
+					 : "=r"(low));
+		return ((u64)high) << 32 | low;
+	}
+
+	print("x86/boot: use RDTSC+WH as boot RNG\n");
 	asm volatile("rdtsc" : "=a"(low), "=d"(high));
 	return arch_boot_rand_randomize(((u64)high) << 32 | low);
 }

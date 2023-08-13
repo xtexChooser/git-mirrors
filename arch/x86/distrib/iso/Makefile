@@ -19,6 +19,7 @@ qemu-iso: $(curobj)boot.iso
 	qemu-system-i386 \
 		-drive media=cdrom,file=$<,readonly=on,format=raw \
 		-serial stdio \
-		-m 256M
+		-m 256M \
+		-cpu Snowridge
 
 .PHONY: qemu-iso
