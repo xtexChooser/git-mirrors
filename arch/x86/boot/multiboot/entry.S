@@ -21,21 +21,21 @@
 	.globl multiboot_header
 
 multiboot_header:
-	.long   MULTIBOOT_HEADER_MAGIC // magic
-	.long   MULTIBOOT_HEADER_FLAGS // flags
-	.long   -(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_FLAGS) // checksum
-	.long   multiboot_header // header_addr
-	.long   _start // load_addr
-	.long   _edata // load_end_addr
-	.long   _end // bss_end_addr
-	.long   multiboot_entry // entry_addr
+	.long MULTIBOOT_HEADER_MAGIC // magic
+	.long MULTIBOOT_HEADER_FLAGS // flags
+	.long -(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_FLAGS) // checksum
+	.long multiboot_header // header_addr
+	.long _start // load_addr
+	.long _edata // load_end_addr
+	.long _end // bss_end_addr
+	.long multiboot_entry // entry_addr
 	.long 1 // mode_type
 	.long 1024 // width
 	.long 600 // height
 	.long 32 // depth
 
 	.text
-	.globl  _start, multiboot_entry
+	.globl _start, multiboot_entry
 
 _start:
 multiboot_entry:
@@ -49,7 +49,7 @@ multiboot_entry:
 	pushl %eax
 	call C_FUNC(cmain)
 
-    pushl $halt_message
+	pushl $halt_message
 	call C_FUNC(print)
 	
 loop:
