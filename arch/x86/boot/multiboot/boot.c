@@ -12,7 +12,7 @@
 extern struct multiboot_header multiboot_header;
 static multiboot_info_t *mbi;
 static u16 text_x_pos = 0, text_y_pos = 0;
-static u32 text_width = 0, text_height = 0;
+static u32 text_width = 80, text_height = 24;
 static bool text_mode;
 static boot_info_t *bootinfo;
 static void *bootinfo_alloc;
