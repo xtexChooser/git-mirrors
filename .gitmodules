@@ -1,0 +1,4 @@
+[submodule "musl"]
+	path = external/musl/src
+	url = git://git.musl-libc.org/musl
+	branch = master

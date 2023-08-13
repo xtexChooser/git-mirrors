@@ -6,7 +6,7 @@ cflags		+= -O3 -g
 cflags		+= -nostdlib -ffreestanding -fno-exceptions -fno-rtti -std=gnu17 -fno-use-cxa-atexit -fno-builtin
 #cflags		+= -fcf-protection # todo: only on x86_64
 #cflags		+= -fstack-protector 
-cflags		+= -isystemcore/include -Iarch/$(ARCH)/include -includecore/include/types.h
+cincludes	+= -isystemcore/include -Iarch/$(ARCH)/include -includecore/include/types.h -I.
 
 ldflags		+= -Wl,--static,--build-id=sha1 -fuse-ld=lld
 
@@ -22,7 +22,7 @@ define cc
 $(CC) $(mk-cflags)
 endef
 define mk-cflags
-$(CFLAGS) $(if $(NO_PIE),,-fPIE -fPIC)
+$(CFLAGS) $(if $(NO_PIE),,-fPIE -fPIC) $(cincludes)
 endef
 
 define ld
