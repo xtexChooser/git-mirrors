@@ -88,8 +88,9 @@ void cmain(u32 magic, multiboot_info_t *info) {
 
 		for (i = 0; i < mbi->mods_count; i++, mod++) {
 			// there is no need to make memory block for mods reserved.
-			// those memory will be reserved by check_arch_boot_memory_available.
-			// core will reserve and release them later
+			// those memory will be reserved by
+			// check_arch_boot_memory_available. core will reserve and release
+			// them later
 			if (i == 0) {
 				// core
 				bootinfo->core_start = (void *)mod->mod_start;
@@ -154,16 +155,19 @@ void putchar(char chr) {
 bool check_arch_boot_memory_available(void *start, void *end) {
 	// check BIOS memory size info
 	if (mbi->flags & MULTIBOOT_INFO_MEMORY &&
-		max((void *)mbi->mem_lower, start) > min((void *)mbi->mem_upper, end)) {
+		(start < (void *)(mbi->mem_lower * SZ_1K) ||
+		 end > (void *)(mbi->mem_upper * SZ_1K + SZ_1M))) {
 		return false;
 	}
 	// check conflict with this bootloader
-	if (max((void *)multiboot_header.load_addr, start) >
-		min((void *)multiboot_header.bss_end_addr + BOOT_INFO_SIZE, end)) {
+	if (max((void *)&multiboot_header, start) <
+		min((void *)&multiboot_header + multiboot_header.bss_end_addr +
+				BOOT_INFO_SIZE,
+			end)) {
 		return false;
 	}
 	// check conflict with mbi itself
-	if (max((void *)mbi, start) >
+	if (max((void *)mbi, start) <
 		min((void *)mbi + sizeof(multiboot_info_t), end)) {
 		return false;
 	}
@@ -176,7 +180,7 @@ bool check_arch_boot_memory_available(void *start, void *end) {
 											   sizeof(mmap->size))) {
 			if (mmap->type != MULTIBOOT_MEMORY_AVAILABLE) {
 				// not available
-				if (max((void *)mmap->size, start) >
+				if (max((void *)mmap->size, start) <
 					min((void *)(mmap->size + mmap->len), end)) {
 					return false;
 				}
@@ -188,7 +192,7 @@ bool check_arch_boot_memory_available(void *start, void *end) {
 		u32 i;
 
 		for (i = 0; i < mbi->mods_count; i++, mod++) {
-			if (max((void *)mod->mod_start, start) >
+			if (max((void *)mod->mod_start, start) <
 				min((void *)mod->mod_end, end)) {
 				return false;
 			}
