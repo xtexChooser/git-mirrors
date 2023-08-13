@@ -35,4 +35,11 @@ typedef char *str;
 
 #define _unused(x) (void)(x)
 
+#define SZ_1K 0x400
+#define SZ_2K 0x800
+#define SZ_4K 0x1000
+#define SZ_1M 0x100000
+#define SZ_2M 0x200000
+#define SZ_4M 0x400000
+
 #endif

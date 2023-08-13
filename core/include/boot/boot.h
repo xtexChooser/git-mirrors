@@ -17,6 +17,7 @@ struct boot_module {
 typedef struct boot_module boot_module_t;
 
 struct boot_info {
+	void *mem_upper;
 	/**
 	 * @brief The random number. Filled by `do_core_boot`
 	 * 

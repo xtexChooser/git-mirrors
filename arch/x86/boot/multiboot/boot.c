@@ -4,6 +4,7 @@
 #include "multiboot.h"
 #include <math.h>
 #include <stdarg.h>
+#include <types.h>
 
 #define TEXT_VIDEO_BUFFER 0xB8000
 #define BOOT_INFO_SIZE 0x2000
@@ -41,6 +42,16 @@ void cmain(u32 magic, multiboot_info_t *info) {
 	// boot
 	arch_boot();
 	bootinfo = (boot_info_t *)bootinfo_area_alloc(sizeof(boot_info_t));
+
+	if (mbi->flags & MULTIBOOT_INFO_MEMORY) {
+		if (mbi->mem_upper >= (U32_MAX - SZ_1M) / SZ_1K)
+			bootinfo->mem_upper = (void *)U32_MAX;
+		else
+			bootinfo->mem_upper = (void *)(mbi->mem_upper * SZ_1K + SZ_1M);
+	} else {
+		print("multiboot: boot: MULTIBOOT_INFO_MEMORY not available");
+		return;
+	}
 
 	boot_reserved_mem_t *reserved_mem =
 		(boot_reserved_mem_t *)bootinfo_area_alloc(sizeof(boot_reserved_mem_t));

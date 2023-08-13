@@ -2,6 +2,7 @@
 #include "arch/boot.h"
 #include "arch/bootloader.h"
 #include "math.h"
+#include <types.h>
 
 static void itoa(char *buf, int base, int d) {
 	char *p = buf;
@@ -44,16 +45,14 @@ void do_core_boot(boot_info_t *bootinfo) {
 	// check_arch_boot_memory_available
 	bootinfo->random = arch_boot_rand();
 	char buf[20];
-	itoa(buf, 'x', (unsigned)bootinfo->random);
-	print(buf);
 	void *core_start = find_core_boot_mem(bootinfo);
 	itoa(buf, 'x', (unsigned)core_start);
-	// print(buf);
+	print(buf);
 	arch_pre_boot(bootinfo);
 }
 
 void *find_core_boot_mem(boot_info_t *bootinfo) {
 	// Find with ASLR
-	//void *load_base = (void *)flooru(bootinfo->random, 0x1000) + 0x100000;
+	//void *load_base = (void *)flooru(bootinfo->random, SZ_4K) + SZ_1M;
 	return NULL;
 }
