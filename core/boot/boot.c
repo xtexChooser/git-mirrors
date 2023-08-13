@@ -56,5 +56,12 @@ void find_core_boot_mem(boot_info_t *bootinfo) {
 }
 
 void load_core_elf(boot_info_t *bootinfo) {
-	
+	// copy core
+	void *memsrc = bootinfo->core_start;
+	void *memdst = bootinfo->core_load_start;
+	while (memsrc < bootinfo->core_end && memdst < bootinfo->core_load_end) {
+		*(u64 *)memdst = *(u64 *)memsrc;
+		memsrc += sizeof(u64);
+		memdst += sizeof(u64);
+	}
 }
