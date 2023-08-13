@@ -1,3 +1,3 @@
-subcobjs += init.o
+$(call load-objs, boot.o)
+$(call load-objs-core, init.o)
 
-subobjs += boot.o

@@ -1,4 +1,6 @@
-subobjs += boot.o entry.o
+$(call load-objs, boot.o entry.o)
 
-$(curobj)multiboot.o: $(curdir)linker.ld $(curobj)entry.o $(curobj)boot.o $(obj)/core/boot/boot.o $(obj)/arch/x86/boot/boot.o
-	$(LD) $(LDFLAGS) -T $< -o $@ -Wl,-s,--build-id=sha1 $(filter-out $<,$^)
+$(curout)%: NO_PIE = 1
+
+$(curout)multiboot.o: $(curdir)linker.ld $(curout)entry.o $(curout)boot.o $(out)/core/boot/boot.o $(out)/arch/x86/boot/boot.o
+	$(ld) -T $< -o $@ $(filter-out $<,$^)

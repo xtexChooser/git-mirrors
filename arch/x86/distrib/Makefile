@@ -1,1 +1,1 @@
-subdirs += iso/
+$(call load-dirs, iso/)

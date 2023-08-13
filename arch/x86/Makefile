@@ -1,2 +1,1 @@
-subdirs += boot/
-subdirs += distrib/
+$(call load-dirs, boot/ distrib/)

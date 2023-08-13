@@ -1,21 +1,22 @@
-$(curobj)boot.iso: $(curobj)iso_root/boot/grub/grub.cfg \
-	$(curobj)iso_root/boot/$(NAME)/multiboot.o \
-	$(curobj)iso_root/boot/$(NAME)/core.o
-	grub2-mkrescue -o $@ --product-name=$(NAME) --product-version=$(VERSION) $(curobj)iso_root
+$(curout)boot.iso: $(curout)iso_root/boot/grub/grub.cfg \
+	$(curout)iso_root/boot/$(NAME)/multiboot.o \
+	$(curout)iso_root/boot/$(NAME)/core.o
+	grub2-mkrescue -o $@ --product-name=$(NAME) --product-version=$(VERSION) $(curout)iso_root
 
-$(curobj)iso_root/boot/grub/grub.cfg: $(curdir)grub.cfg
-	$(call mkparent)
+$(curout)iso_root/boot/grub/grub.cfg: $(curdir)grub.cfg
+	$(call action,"GEN  ")
 	cat $< | envsubst > $@
 
-$(curobj)iso_root/boot/$(NAME)/multiboot.o: $(obj)/arch/x86/boot/multiboot/multiboot.o
-	$(call mkparent)
+$(curout)iso_root/boot/$(NAME)/multiboot.o: $(out)/arch/x86/boot/multiboot/multiboot.o
+	$(call action,"GEN  ")
 	cp $< $@
 
-$(curobj)iso_root/boot/$(NAME)/core.o: $(obj)/core.o
-	$(call mkparent)
+$(curout)iso_root/boot/$(NAME)/core.o: $(out)/core.o
+	$(call action,"GEN  ")
 	cp $< $@
 
-qemu-iso: $(curobj)boot.iso
+qemu-iso: $(curout)boot.iso
+	$(call action,"RUN  ",$<)
 	qemu-system-i386 \
 		-drive media=cdrom,file=$<,readonly=on,format=raw \
 		-serial stdio \

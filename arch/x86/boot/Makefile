@@ -1,3 +1,2 @@
-subobjs += boot.o
-
-subdirs += multiboot/
+$(call load-objs, boot.o)
+$(call load-dirs, multiboot/)

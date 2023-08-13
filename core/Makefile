@@ -1,1 +1,1 @@
-subdirs += boot/
+$(call load-dirs, boot/)
