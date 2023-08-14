@@ -6,7 +6,7 @@ cflags		+= -O3 -g
 cflags		+= -nostdlib -ffreestanding -fno-exceptions -fno-rtti -std=gnu17 -fno-use-cxa-atexit -fno-builtin
 #cflags		+= -fcf-protection # todo: only on x86_64
 #cflags		+= -fstack-protector 
-cincludes	+= -isystemcore/include -Iarch/$(ARCH)/include -includecore/include/types.h -I.
+cincludes	+= -isystemcore -Iarch/$(ARCH)/include -includecore/types.h -I.
 
 ldflags		+= -Wl,--static,--build-id=sha1 -fuse-ld=lld
 
