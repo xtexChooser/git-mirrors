@@ -1,12 +1,38 @@
 #include "boot/boot.h"
 #include "arch/boot.h"
 #include "arch/bootloader.h"
+#include "external/musl/src/include/elf.h"
 #include "math.h"
 #include <types.h>
 
 void do_core_boot(boot_info_t *bootinfo) {
 	bootinfo->random = arch_boot_rand();
-	find_core_boot_mem(bootinfo);
+
+	// check ELF magic
+	u8(*ident)[EI_NIDENT] = &((Elf32_Ehdr *)bootinfo->core_start)->e_ident;
+	if ((*ident)[EI_MAG0] != ELFMAG0 || (*ident)[EI_MAG1] != ELFMAG1 ||
+		(*ident)[EI_MAG2] != ELFMAG2 || (*ident)[EI_MAG3] != ELFMAG3) {
+		print("boot: invalid ELF magic in core file\n");
+		return;
+	}
+	bootinfo->do_aslr = ((Elf32_Ehdr *)bootinfo->core_start)->e_type == ET_DYN;
+	if (bootinfo->do_aslr)
+		print("boot: core is DYN, ASLR enabled\n");
+	else
+		print("boot: core is not DYN, ASLR disabled\n");
+
+	if (bootinfo->do_aslr) {
+		find_core_boot_mem(bootinfo);
+	}
+	if (bootinfo->core_load_start == NULL) {
+		bootinfo->core_load_start = bootinfo->core_start;
+		bootinfo->core_load_end = bootinfo->core_end;
+		if (!check_arch_boot_memory_available(bootinfo->core_load_start,
+											  bootinfo->core_load_end)) {
+			print("boot: ASLR disabled or failed, but the \n");
+			return;
+		}
+	}
 	load_core_elf(bootinfo);
 	if (bootinfo->core_entry == NULL) {
 		print("boot: load_core_elf failed to locate the entrypoint\n");
@@ -65,4 +91,5 @@ void load_core_elf(boot_info_t *bootinfo) {
 		memsrc += sizeof(u64);
 		memdst += sizeof(u64);
 	}
+	// parse elf
 }

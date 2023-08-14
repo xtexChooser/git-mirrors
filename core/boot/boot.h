@@ -32,6 +32,11 @@ struct boot_info {
 	 */
 	u64 random;
 	/**
+	 * @brief If the core DYN. Filled by core boot
+	 * 
+	 */
+	bool do_aslr;
+	/**
 	 * @brief The lower address to load core at. Filled by core boot
 	 *
 	 */
