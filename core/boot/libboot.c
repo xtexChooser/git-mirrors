@@ -1,4 +1,4 @@
-#include "boot/boot.h"
+#include "boot/libboot.h"
 #include "arch/boot.h"
 #include "arch/bootloader.h"
 #include "external/musl/src/include/elf.h"
@@ -45,7 +45,9 @@ void do_core_boot(boot_info_t *bootinfo) {
 	bootinfo->core_entry = (boot_core_entry *)(bootinfo->core_load_offset +
 											   (usize)bootinfo->core_entry);
 	char *ret = bootinfo->core_entry(bootinfo);
+	print("boot: core entry returned:\n");
 	print(ret);
+	print("\n");
 }
 
 void find_core_boot_mem(boot_info_t *bootinfo) {
@@ -128,6 +130,7 @@ void parse_core_elf32(boot_info_t *bootinfo) {
 				(boot_elf_load_t *)arch_boot_malloc(sizeof(boot_elf_load_t));
 			*next_core_load = core_load;
 			next_core_load = &core_load->next;
+			core_load->offset = (usize)phdr->p_offset;
 			core_load->start = (usize)phdr->p_paddr;
 			core_load->size = ceilu((usize)phdr->p_memsz, (usize)phdr->p_align);
 		}
@@ -154,6 +157,7 @@ void parse_core_elf64(boot_info_t *bootinfo) {
 				(boot_elf_load_t *)arch_boot_malloc(sizeof(boot_elf_load_t));
 			*next_core_load = core_load;
 			next_core_load = &core_load->next;
+			core_load->offset = (usize)phdr->p_offset;
 			core_load->start = (usize)phdr->p_paddr;
 			core_load->size = ceilu((usize)phdr->p_memsz, (usize)phdr->p_align);
 		}
@@ -164,7 +168,7 @@ void parse_core_elf64(boot_info_t *bootinfo) {
 void load_core(boot_info_t *bootinfo) {
 	boot_elf_load_t *load = bootinfo->core_elf_load;
 	while (load != NULL) {
-		void *memsrc = bootinfo->core_start + load->start;
+		void *memsrc = bootinfo->core_start + load->offset;
 		void *memsrc_end = memsrc + load->size;
 		void *memdst = bootinfo->core_load_offset + load->start;
 		while (memsrc < memsrc_end && memsrc < bootinfo->core_end) {
