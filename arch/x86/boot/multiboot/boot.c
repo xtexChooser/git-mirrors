@@ -63,6 +63,13 @@ void cmain(u32 magic, multiboot_info_t *info) {
 	reserved_mem->start = (void *)multiboot_header.load_addr;
 	reserved_mem->end = (void *)multiboot_header.bss_end_addr + BOOT_INFO_SIZE;
 
+	reserved_mem =
+		(boot_reserved_mem_t *)arch_boot_malloc(sizeof(boot_reserved_mem_t));
+	bootinfo->reserved_mem->next = reserved_mem;
+	reserved_mem->next = NULL;
+	reserved_mem->start = (void *)0;
+	reserved_mem->end = (void *)SZ_1M;
+
 	if (mbi->flags & MULTIBOOT_INFO_MEM_MAP) {
 		multiboot_memory_map_t *mmap;
 		for (mmap = (multiboot_memory_map_t *)mbi->mmap_addr;
@@ -155,6 +162,10 @@ void putchar(char chr) {
 }
 
 bool check_arch_boot_memory_available(void *start, void *end) {
+	// always reserve memory lower than 1M
+	if ((usize)start < SZ_1M) {
+		return false;
+	}
 	// check BIOS memory size info
 	if (mbi->flags & MULTIBOOT_INFO_MEMORY &&
 		(start < (void *)(mbi->mem_lower * SZ_1K) ||
