@@ -39,36 +39,7 @@ static void itoa(char *buf, int base, int d) {
 }
 
 char *core_init(boot_info_t *bootinfo) {
-	char *vbuf = (char *)0xB8000;
-	char str[20];
-	itoa(str, 'x', (int)&core_init);
-	char *sptr = str;
-	while (*sptr != 0) {
-		*vbuf = *sptr;
-		vbuf++;
-		*vbuf = 7;
-		vbuf++;
-		sptr++;
-	}
-	*vbuf = ' ';
-	vbuf++;
-	*vbuf = 7;
-	vbuf++;
-	itoa(str, 'x', (int)&itoa);
-	sptr = str;
-	while (*sptr != 0) {
-		*vbuf = *sptr;
-		vbuf++;
-		*vbuf = 7;
-		vbuf++;
-		sptr++;
-	}
-	*vbuf = ' ';
-	vbuf++;
-	
-	*vbuf = 7;
-	vbuf++;
-	return "TEST RETURN MESSAGE";
+	return "LOVE SC FOREVER";
 	while (1) {
 	}
 }
