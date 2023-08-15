@@ -12,9 +12,14 @@ use EchoAttributeManager;
 use EchoEvent;
 use EchoUserLocator;
 use MediaWiki\Auth\AuthenticationResponse;
+use MediaWiki\Auth\Hook\AuthManagerLoginAuthenticateAuditHook;
+use MediaWiki\Auth\Hook\LocalUserCreatedHook;
 use User;
 
-class Hooks {
+class Hooks implements
+	AuthManagerLoginAuthenticateAuditHook,
+	LocalUserCreatedHook
+{
 	/**
 	 * Add LoginNotify events to Echo
 	 *
@@ -107,9 +112,10 @@ class Hooks {
 	 * @param AuthenticationResponse $ret Is login successful?
 	 * @param User|null $user User object on successful auth
 	 * @param string $username Username for failed attempts.
+	 * @param string[] $extraData
 	 */
-	public static function onAuthManagerLoginAuthenticateAudit(
-		AuthenticationResponse $ret, $user, $username
+	public function onAuthManagerLoginAuthenticateAudit(
+		$ret, $user, $username, $extraData
 	) {
 		if ( $user ) {
 			$userObj = $user;
@@ -164,7 +170,7 @@ class Hooks {
 	 * @param User $user User created
 	 * @param bool $autocreated Whether this was an auto-created account
 	 */
-	public static function onLocalUserCreated( $user, $autocreated ) {
+	public function onLocalUserCreated( $user, $autocreated ) {
 		if ( !$autocreated ) {
 			$loginNotify = new LoginNotify();
 			$loginNotify->setCurrentAddressAsKnown( $user );

@@ -31,8 +31,13 @@
 	"Hooks": {
 		"BeforeCreateEchoEvent": "LoginNotify\\Hooks::onBeforeCreateEchoEvent",
 		"EchoGetBundleRules": "LoginNotify\\Hooks::onEchoGetBundleRules",
-		"AuthManagerLoginAuthenticateAudit": "LoginNotify\\Hooks::onAuthManagerLoginAuthenticateAudit",
-		"LocalUserCreated": "LoginNotify\\Hooks::onLocalUserCreated"
+		"AuthManagerLoginAuthenticateAudit": "main",
+		"LocalUserCreated": "main"
+	},
+	"HookHandlers": {
+		"main": {
+			"class": "LoginNotify\\Hooks"
+		}
 	},
 	"JobClasses": {
 		"LoginNotifyChecks": "LoginNotify\\DeferredChecksJob"
