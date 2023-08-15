@@ -24,6 +24,14 @@ struct boot_elf_load {
 };
 typedef struct boot_elf_load boot_elf_load_t;
 
+struct boot_elf_dynamic {
+	struct boot_elf_load *next;
+	usize offset;
+	usize start;
+	usize size;
+};
+typedef struct boot_elf_load boot_elf_load_t;
+
 typedef struct boot_info boot_info_t;
 
 typedef char *(boot_core_entry)(boot_info_t *bootinfo);
@@ -51,11 +59,12 @@ struct boot_info {
 	void *core_load_offset;
 	/**
 	 * @brief Information about ELF LOAD program headers. Filled by core boot
+	 * `parse_core_elf`
 	 *
 	 */
 	boot_elf_load_t *core_elf_load;
 	/**
-	 * @brief The entrypoint of core. Filled by core boot `load_core_elf`
+	 * @brief The entrypoint of core. Filled by core boot `parse_core_elf`
 	 *
 	 */
 	boot_core_entry *core_entry;

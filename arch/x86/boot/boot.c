@@ -60,3 +60,29 @@ bool arch_check_elf32_machine_valid(u16 machine) { return machine == EM_386; }
 bool arch_check_elf64_machine_valid(u16 machine) {
 	return machine == EM_X86_64 || machine == EM_IA_64;
 }
+
+bool arch_do_elf_reloc(arch_boot_reloc_req_t *r) {
+	u32 type = r->type;
+	if (type == R_386_NONE || type == R_386_COPY) {
+		// none
+	} else if (type == R_386_32) {
+		// S + A
+		*(u32 *)r->ptr = reloc_req_symoff(r) + r->addend;
+	} else if (type == R_386_PC32 || type == R_386_PC16 || type == R_386_PC8 ||
+			   type == R_386_PLT32) {
+		// https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/arch/x86/tools/relocs.c?id=1c2f87c22566cd057bc8cde10c37ae9da1a1bb76#n827
+		// we dont adjust it
+		// S + A - P
+		// *(u32 *)r->ptr = reloc_req_symoff(r) + r->addend - r->offset;
+	} else if (type == R_386_GOT32 || type == R_386_PLT32 ||
+			   type == R_386_GLOB_DAT || type == R_386_JMP_SLOT ||
+			   type == R_386_GOTOFF || type == R_386_GOTPC) {
+		// ignore it, idk why
+	} else if (type == R_386_RELATIVE) {
+		// B + A
+		*(u32 *)r->ptr = (u32)r->bootinfo->core_load_offset + r->addend;
+	} else {
+		return false;
+	}
+	return true;
+}

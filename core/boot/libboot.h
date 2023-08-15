@@ -36,8 +36,8 @@ bool check_core_loadable_at(boot_info_t *bootinfo, void *offset);
  */
 void parse_core_elf(boot_info_t *bootinfo);
 
-void parse_core_elf32(boot_info_t *bootinfo);
-void parse_core_elf64(boot_info_t *bootinfo);
+static void parse_core_elf32(boot_info_t *bootinfo);
+static void parse_core_elf64(boot_info_t *bootinfo);
 
 /**
  * @brief Load ELF and do relocations
@@ -45,5 +45,20 @@ void parse_core_elf64(boot_info_t *bootinfo);
  * @param bootinfo Boot info
  */
 void load_core(boot_info_t *bootinfo);
+
+static void reloc_core32(boot_info_t *bootinfo);
+static void reloc_core64(boot_info_t *bootinfo);
+
+/**
+ * @brief Try to lookup a symbol in the core SYMTAB
+ * 
+ * @param bootinfo Boot info
+ * @param index Symbol index
+ * @return usize Pointer
+ */
+usize lookup_core_symbol(boot_info_t *bootinfo, u32 table, u32 index);
+
+static usize lookup_core_symbol32(boot_info_t *bootinfo, u32 table, u32 index);
+static usize lookup_core_symbol64(boot_info_t *bootinfo, u32 table, u32 index);
 
 #endif

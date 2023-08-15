@@ -3,6 +3,7 @@
 #include "arch/bootloader.h"
 #include "external/musl/src/include/elf.h"
 #include "math.h"
+#include <limits.h>
 #include <types.h>
 
 void do_core_boot(boot_info_t *bootinfo) {
@@ -111,7 +112,7 @@ void parse_core_elf(boot_info_t *bootinfo) {
 	}
 }
 
-void parse_core_elf32(boot_info_t *bootinfo) {
+static void parse_core_elf32(boot_info_t *bootinfo) {
 	int i;
 
 	Elf32_Ehdr *ehdr = (Elf32_Ehdr *)bootinfo->core_start;
@@ -138,7 +139,7 @@ void parse_core_elf32(boot_info_t *bootinfo) {
 	}
 }
 
-void parse_core_elf64(boot_info_t *bootinfo) {
+static void parse_core_elf64(boot_info_t *bootinfo) {
 	int i;
 
 	Elf64_Ehdr *ehdr = (Elf64_Ehdr *)bootinfo->core_start;
@@ -166,6 +167,7 @@ void parse_core_elf64(boot_info_t *bootinfo) {
 }
 
 void load_core(boot_info_t *bootinfo) {
+	// Load PT_LOAD
 	boot_elf_load_t *load = bootinfo->core_elf_load;
 	while (load != NULL) {
 		void *memsrc = bootinfo->core_start + load->offset;
@@ -177,5 +179,190 @@ void load_core(boot_info_t *bootinfo) {
 			memdst += sizeof(u64);
 		}
 		load = load->next;
+	}
+	// Do relocations
+	u8(*ident)[EI_NIDENT] = &((Elf32_Ehdr *)bootinfo->core_start)->e_ident;
+	switch ((*ident)[EI_CLASS]) {
+	case ELFCLASS32:
+		reloc_core32(bootinfo);
+		break;
+	case ELFCLASS64:
+		reloc_core64(bootinfo);
+		break;
+	}
+}
+
+static void reloc_core32(boot_info_t *bootinfo) {
+	int i;
+	arch_boot_reloc_req_t req;
+	req.bootinfo = bootinfo;
+	Elf32_Ehdr *ehdr = (Elf32_Ehdr *)bootinfo->core_start;
+	Elf32_Shdr *shdr =
+		(Elf32_Shdr *)(bootinfo->core_start + (usize)ehdr->e_shoff);
+	for (i = 0; i < ehdr->e_shnum; i++) {
+		if (shdr->sh_type == SHT_REL) {
+			Elf32_Rel *rel =
+				(Elf32_Rel *)(bootinfo->core_start + (usize)shdr->sh_offset);
+			void *rel_end = (void *)rel + (usize)shdr->sh_size;
+			req.symtab = shdr->sh_link;
+			while ((void *)rel < rel_end) {
+				req.offset = (usize)rel->r_offset;
+				req.ptr = bootinfo->core_load_offset + req.offset;
+				req.info = (u64)rel->r_info;
+				req.sym = ELF32_R_SYM(req.info);
+				req.type = ELF32_R_TYPE(req.info);
+				req.addend = 0;
+				if (!arch_do_elf_reloc(&req)) {
+					print("boot: failed to do an ELF32 REL reloc\n");
+				}
+				rel ++;
+			}
+		} else if (shdr->sh_type == SHT_RELA) {
+			Elf32_Rela *rel =
+				(Elf32_Rela *)(bootinfo->core_start + (usize)shdr->sh_offset);
+			void *rel_end = (void *)rel + (usize)shdr->sh_size;
+			req.symtab = shdr->sh_link;
+			while ((void *)rel < rel_end) {
+				req.offset = (usize)rel->r_offset;
+				req.ptr = bootinfo->core_load_offset + req.offset;
+				req.info = (u64)rel->r_info;
+				req.sym = ELF32_R_SYM(req.info);
+				req.type = ELF32_R_TYPE(req.info);
+				req.addend = (u64)rel->r_addend;
+				if (!arch_do_elf_reloc(&req)) {
+					print("boot: failed to do an ELF32 RELA reloc\n");
+				}
+				rel ++;
+			}
+		}
+		shdr = (Elf32_Shdr *)((void *)shdr + (usize)ehdr->e_shentsize);
+	}
+}
+
+static void reloc_core64(boot_info_t *bootinfo) {
+	int i;
+	arch_boot_reloc_req_t req;
+	req.bootinfo = bootinfo;
+	Elf64_Ehdr *ehdr = (Elf64_Ehdr *)bootinfo->core_start;
+	Elf64_Shdr *shdr =
+		(Elf64_Shdr *)(bootinfo->core_start + (usize)ehdr->e_shoff);
+	for (i = 0; i < ehdr->e_shnum; i++) {
+		if (shdr->sh_type == SHT_REL) {
+			Elf64_Rel *rel =
+				(Elf64_Rel *)(bootinfo->core_start + (usize)shdr->sh_offset);
+			void *rel_end = (void *)rel + (usize)shdr->sh_size;
+			req.symtab = shdr->sh_link;
+			while ((void *)rel < rel_end) {
+				req.offset = (usize)rel->r_offset;
+				req.ptr = bootinfo->core_load_offset + req.offset;
+				req.info = (u64)rel->r_info;
+				req.sym = ELF64_R_SYM(req.info);
+				req.type = ELF64_R_TYPE(req.info);
+				req.addend = 0;
+				if (!arch_do_elf_reloc(&req)) {
+					print("boot: failed to do an ELF64 REL reloc\n");
+				}
+				rel++;
+			}
+		} else if (shdr->sh_type == SHT_RELA) {
+			Elf64_Rela *rel =
+				(Elf64_Rela *)(bootinfo->core_start + (usize)shdr->sh_offset);
+			void *rel_end = (void *)rel + (usize)shdr->sh_size;
+			req.symtab = shdr->sh_link;
+			while ((void *)rel < rel_end) {
+				req.offset = (usize)rel->r_offset;
+				req.ptr = bootinfo->core_load_offset + req.offset;
+				req.info = (u64)rel->r_info;
+				req.sym = ELF64_R_SYM(req.info);
+				req.type = ELF64_R_TYPE(req.info);
+				req.addend = (u64)rel->r_addend;
+				if (!arch_do_elf_reloc(&req)) {
+					print("boot: failed to do an ELF64 RELA reloc\n");
+				}
+				rel++;
+			}
+		}
+		shdr = (Elf64_Shdr *)((void *)shdr + (usize)ehdr->e_shentsize);
+	}
+}
+
+usize lookup_core_symbol(boot_info_t *bootinfo, u32 table, u32 index) {
+	u8(*ident)[EI_NIDENT] = &((Elf32_Ehdr *)bootinfo->core_start)->e_ident;
+	usize ret;
+	switch ((*ident)[EI_CLASS]) {
+	case ELFCLASS32:
+		ret = lookup_core_symbol32(bootinfo, table, index);
+	case ELFCLASS64:
+		ret = lookup_core_symbol64(bootinfo, table, index);
+	default:
+		ret = INT_MAX;
+	}
+	if (ret == INT_MAX) {
+		print("libboot: error in core symbol locating\n");
+		while (1)
+			;
+	}
+	return ret;
+}
+
+static usize lookup_core_symbol32(boot_info_t *bootinfo, u32 table, u32 index) {
+	Elf32_Ehdr *ehdr = (Elf32_Ehdr *)bootinfo->core_start;
+	if (table >= ehdr->e_shnum)
+		return INT_MAX;
+	Elf32_Shdr *shdr =
+		&((Elf32_Shdr *)(bootinfo->core_start + (usize)ehdr->e_shoff))[table];
+	usize shnum = (usize)shdr->sh_size / (usize)shdr->sh_entsize;
+	if (index >= shnum)
+		return INT_MAX;
+	Elf32_Sym *sym =
+		&((Elf32_Sym *)(bootinfo->core_start + shdr->sh_offset))[index];
+	if (sym->st_shndx == SHN_UNDEF) {
+		if (ELF32_ST_BIND(sym->st_info) & STB_WEAK) {
+			return 0;
+		} else {
+			print("libboot: failed to locate SHN_UNDEF and non-STB_WEAK "
+				   "symbols in ELF32\n");
+			return INT_MAX;
+		}
+	} else if (sym->st_shndx == SHN_ABS) {
+		return sym->st_value;
+	} else {
+		Elf32_Shdr *target =
+			&((Elf32_Shdr *)(bootinfo->core_start +
+							 (usize)ehdr->e_shoff))[sym->st_shndx];
+		if (sym->st_shndx >= shnum)
+			return INT_MAX;
+		return target->sh_addr + sym->st_value;
+	}
+}
+
+static usize lookup_core_symbol64(boot_info_t *bootinfo, u32 table, u32 index) {
+	Elf64_Ehdr *ehdr = (Elf64_Ehdr *)bootinfo->core_start;
+	if (table >= ehdr->e_shnum)
+		return INT_MAX;
+	Elf64_Shdr *shdr =
+		&((Elf64_Shdr *)(bootinfo->core_start + (usize)ehdr->e_shoff))[table];
+	usize shnum = (usize)shdr->sh_size / (usize)shdr->sh_entsize;
+	if (index >= shnum)
+		return INT_MAX;
+	Elf64_Sym *sym =
+		&((Elf64_Sym *)(bootinfo->core_start + shdr->sh_offset))[index];
+	if (sym->st_shndx == SHN_UNDEF) {
+		if (ELF64_ST_BIND(sym->st_info) & STB_WEAK) {
+			return 0;
+		} else {
+			print("libboot: failed to locate SHN_UNDEF and non-STB_WEAK "
+				   "symbols in ELF 64\n");
+			return INT_MAX;
+		}
+	} else if (sym->st_shndx == SHN_ABS) {
+		return sym->st_value;
+	} else {
+		Elf64_Shdr *target =
+			&((Elf64_Shdr *)(bootinfo->core_start +
+							 (usize)ehdr->e_shoff))[sym->st_shndx];
+		if (sym->st_shndx >= shnum)
+			return INT_MAX;
+		return target->sh_addr + sym->st_value;
 	}
 }
