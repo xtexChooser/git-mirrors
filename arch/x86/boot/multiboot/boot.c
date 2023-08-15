@@ -20,7 +20,7 @@ static void *bootinfo_alloc;
 void cmain(u32 magic, multiboot_info_t *mbi);
 void clear();
 void putchar(char chr);
-void *bootinfo_area_alloc(usize size);
+void *arch_boot_malloc(usize size);
 
 void cmain(u32 magic, multiboot_info_t *info) {
 	// check bootloader magic
@@ -44,7 +44,7 @@ void cmain(u32 magic, multiboot_info_t *info) {
 
 	// boot
 	arch_boot();
-	bootinfo = (boot_info_t *)bootinfo_area_alloc(sizeof(boot_info_t));
+	bootinfo = (boot_info_t *)arch_boot_malloc(sizeof(boot_info_t));
 
 	if (mbi->flags & MULTIBOOT_INFO_MEMORY) {
 		if (mbi->mem_upper >= (U32_MAX - SZ_1M) / SZ_1K)
@@ -57,7 +57,7 @@ void cmain(u32 magic, multiboot_info_t *info) {
 	}
 
 	boot_reserved_mem_t *reserved_mem =
-		(boot_reserved_mem_t *)bootinfo_area_alloc(sizeof(boot_reserved_mem_t));
+		(boot_reserved_mem_t *)arch_boot_malloc(sizeof(boot_reserved_mem_t));
 	bootinfo->reserved_mem = reserved_mem;
 	reserved_mem->next = NULL;
 	reserved_mem->start = (void *)multiboot_header.load_addr;
@@ -70,7 +70,7 @@ void cmain(u32 magic, multiboot_info_t *info) {
 			 mmap = (multiboot_memory_map_t *)(mmap + mmap->size +
 											   sizeof(mmap->size))) {
 			if (mmap->type != MULTIBOOT_MEMORY_AVAILABLE) {
-				reserved_mem->next = (boot_reserved_mem_t *)bootinfo_area_alloc(
+				reserved_mem->next = (boot_reserved_mem_t *)arch_boot_malloc(
 					sizeof(boot_reserved_mem_t));
 				reserved_mem = reserved_mem->next;
 				reserved_mem->start = (void *)mmap->addr;
@@ -100,7 +100,7 @@ void cmain(u32 magic, multiboot_info_t *info) {
 			} else {
 				// module
 				boot_module_t *bootmod =
-					(boot_module_t *)bootinfo_area_alloc(sizeof(boot_module_t));
+					(boot_module_t *)arch_boot_malloc(sizeof(boot_module_t));
 				bootmod->start = (void *)mod->mod_start;
 				bootmod->end = (void *)mod->mod_end;
 				*bootmods = bootmod;
@@ -201,7 +201,7 @@ bool check_arch_boot_memory_available(void *start, void *end) {
 	return true;
 }
 
-void *bootinfo_area_alloc(usize size) {
+void *arch_boot_malloc(usize size) {
 	void *ptr = bootinfo_alloc;
 	bootinfo_alloc = bootinfo_alloc + size;
 	void *memdst = ptr;

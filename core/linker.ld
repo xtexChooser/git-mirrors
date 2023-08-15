@@ -2,7 +2,7 @@ ENTRY(core_init)
  
 SECTIONS
 {
-	. = 2M;
+	# . = 2M;
 
 	.text : ALIGN(4K)
 	{

@@ -1,4 +1,5 @@
 #include "arch/boot.h"
+#include "external/musl/src/include/elf.h"
 #include <arch/bootloader.h>
 
 void arch_boot() { __asm__("cli"); }
@@ -52,4 +53,10 @@ u64 arch_boot_rand() {
 	print("x86/boot: use RDTSC+WH as boot RNG\n");
 	asm volatile("rdtsc" : "=a"(low), "=d"(high));
 	return arch_boot_rand_randomize(((u64)high) << 32 | low);
+}
+
+bool arch_check_elf32_machine_valid(u16 machine) { return machine == EM_386; }
+
+bool arch_check_elf64_machine_valid(u16 machine) {
+	return machine == EM_X86_64 || machine == EM_IA_64;
 }
