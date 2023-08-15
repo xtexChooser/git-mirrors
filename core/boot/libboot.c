@@ -13,14 +13,14 @@ void do_core_boot(boot_info_t *bootinfo) {
 	u8(*ident)[EI_NIDENT] = &((Elf32_Ehdr *)bootinfo->core_start)->e_ident;
 	if ((*ident)[EI_MAG0] != ELFMAG0 || (*ident)[EI_MAG1] != ELFMAG1 ||
 		(*ident)[EI_MAG2] != ELFMAG2 || (*ident)[EI_MAG3] != ELFMAG3) {
-		print("boot: invalid ELF magic in core file\n");
+		print("libboot: invalid ELF magic in core file\n");
 		return;
 	}
 	bootinfo->do_aslr = ((Elf32_Ehdr *)bootinfo->core_start)->e_type == ET_DYN;
 	if (bootinfo->do_aslr)
-		print("boot: core is DYN, ASLR enabled\n");
+		print("libboot: core is DYN, ASLR enabled\n");
 	else
-		print("boot: core is not DYN, ASLR disabled\n");
+		print("libboot: core is not DYN, ASLR disabled\n");
 
 	parse_core_elf(bootinfo);
 	if (bootinfo->do_aslr) {
@@ -28,25 +28,25 @@ void do_core_boot(boot_info_t *bootinfo) {
 	}
 	if (bootinfo->core_load_offset == NULL) {
 		if (!check_core_loadable_at(bootinfo, bootinfo->core_load_offset)) {
-			print("boot: ASLR disabled or failed, but the core cant be loaded "
+			print("libboot: ASLR disabled or failed, but the core cant be loaded "
 				  "at present position\n");
 			return;
 		}
 	}
 	load_core(bootinfo);
 	if (bootinfo->core_entry == NULL) {
-		print("boot: load_core_elf failed to locate the entrypoint\n");
+		print("libboot: load_core_elf failed to locate the entrypoint\n");
 		return;
 	}
 	if (!arch_pre_boot(bootinfo)) {
-		print("boot: arch_pre_boot failed\n");
+		print("libboot: arch_pre_boot failed\n");
 		return;
 	}
-	print("boot: calling core_entry\n");
+	print("libboot: calling core_entry\n");
 	bootinfo->core_entry = (boot_core_entry *)(bootinfo->core_load_offset +
 											   (usize)bootinfo->core_entry);
 	char *ret = bootinfo->core_entry(bootinfo);
-	print("boot: core entry returned:\n");
+	print("libboot: core entry returned:\n");
 	print(ret);
 	print("\n");
 }
@@ -64,7 +64,7 @@ void find_core_boot_mem(boot_info_t *bootinfo) {
 		} else
 			load_base = (void *)flooru((usize)load_base / 2, SZ_4K);
 		if ((usize)load_base <= SZ_2M) {
-			print("boot: ASLR locate failed\n");
+			print("libboot: ASLR locate failed\n");
 			bootinfo->core_load_offset = NULL;
 			return;
 		}
@@ -106,7 +106,7 @@ void parse_core_elf(boot_info_t *bootinfo) {
 		parse_core_elf64(bootinfo);
 		break;
 	default:
-		print("boot: unknown EI_CLASS ident in core ELF\n");
+		print("libboot: unknown EI_CLASS ident in core ELF\n");
 		while (1)
 			;
 	}
@@ -117,7 +117,7 @@ static void parse_core_elf32(boot_info_t *bootinfo) {
 
 	Elf32_Ehdr *ehdr = (Elf32_Ehdr *)bootinfo->core_start;
 	if (!arch_check_elf32_machine_valid(ehdr->e_machine)) {
-		print("boot: invalid e_machine in 32-bits core ELF\n");
+		print("libboot: invalid e_machine in 32-bits core ELF\n");
 		return;
 	}
 	bootinfo->core_entry = (boot_core_entry *)ehdr->e_entry;
@@ -144,7 +144,7 @@ static void parse_core_elf64(boot_info_t *bootinfo) {
 
 	Elf64_Ehdr *ehdr = (Elf64_Ehdr *)bootinfo->core_start;
 	if (!arch_check_elf64_machine_valid(ehdr->e_machine)) {
-		print("boot: invalid e_machine in 64-bits core ELF\n");
+		print("libboot: invalid e_machine in 64-bits core ELF\n");
 		return;
 	}
 	bootinfo->core_entry = (boot_core_entry *)ehdr->e_entry;
@@ -213,7 +213,7 @@ static void reloc_core32(boot_info_t *bootinfo) {
 				req.type = ELF32_R_TYPE(req.info);
 				req.addend = 0;
 				if (!arch_do_elf_reloc(&req)) {
-					print("boot: failed to do an ELF32 REL reloc\n");
+					print("libboot: failed to do an ELF32 REL reloc\n");
 				}
 				rel ++;
 			}
@@ -230,7 +230,7 @@ static void reloc_core32(boot_info_t *bootinfo) {
 				req.type = ELF32_R_TYPE(req.info);
 				req.addend = (u64)rel->r_addend;
 				if (!arch_do_elf_reloc(&req)) {
-					print("boot: failed to do an ELF32 RELA reloc\n");
+					print("libboot: failed to do an ELF32 RELA reloc\n");
 				}
 				rel ++;
 			}
@@ -260,7 +260,7 @@ static void reloc_core64(boot_info_t *bootinfo) {
 				req.type = ELF64_R_TYPE(req.info);
 				req.addend = 0;
 				if (!arch_do_elf_reloc(&req)) {
-					print("boot: failed to do an ELF64 REL reloc\n");
+					print("libboot: failed to do an ELF64 REL reloc\n");
 				}
 				rel++;
 			}
@@ -277,7 +277,7 @@ static void reloc_core64(boot_info_t *bootinfo) {
 				req.type = ELF64_R_TYPE(req.info);
 				req.addend = (u64)rel->r_addend;
 				if (!arch_do_elf_reloc(&req)) {
-					print("boot: failed to do an ELF64 RELA reloc\n");
+					print("libboot: failed to do an ELF64 RELA reloc\n");
 				}
 				rel++;
 			}
