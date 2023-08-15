@@ -8,7 +8,7 @@ cflags		+= -nostdlib -ffreestanding -fno-exceptions -fno-rtti -std=gnu17 -fno-us
 #cflags		+= -fstack-protector 
 cincludes	+= -isystemcore -Iarch/$(ARCH)/include -includecore/types.h -I.
 
-ldflags		+= -Wl,--static,--build-id=sha1 -fuse-ld=lld
+ldflags		+= -Wl,--build-id=sha1 -fuse-ld=lld
 
 cflags		+= --target=$(CLANG_TARGET)
 ldflags		+= --target=$(CLANG_TARGET)
