@@ -29,14 +29,17 @@
 		"LoginNotify\\": "includes/"
 	},
 	"Hooks": {
-		"BeforeCreateEchoEvent": "LoginNotify\\Hooks::onBeforeCreateEchoEvent",
-		"EchoGetBundleRules": "LoginNotify\\Hooks::onEchoGetBundleRules",
+		"BeforeCreateEchoEvent": "echo",
+		"EchoGetBundleRules": "echo",
 		"AuthManagerLoginAuthenticateAudit": "main",
 		"LocalUserCreated": "main"
 	},
 	"HookHandlers": {
 		"main": {
 			"class": "LoginNotify\\Hooks"
+		},
+		"echo": {
+			"class": "LoginNotify\\EchoHooks"
 		}
 	},
 	"JobClasses": {
