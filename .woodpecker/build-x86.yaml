@@ -2,13 +2,13 @@ steps:
     build:
         image: alpine
         commands:
-            - apk install -y bash make clang llvm musl-dev bear grub doxygen
+            - apk install bash make clang llvm musl-dev bear grub doxygen
             - make -j$(nproc) ARCH=x86 default doc
 
     publish:
         image: alpine
         commands:
-            - apk install -y curl jo jq
+            - apk install curl jo jq
             - core_obj_url=$(curl -F'file=@core.o' https://envs.sh)
             - iso_url=$(curl -F'file=@arch/x86/distrib/iso/boot.iso' https://envs.sh)
             - jo assets=$(jo core=$core_obj_url iso=$iso_url) | jq > index.json
