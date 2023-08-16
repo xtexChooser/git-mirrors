@@ -60,7 +60,7 @@ $(out)/.cflags.txt: $(cflags_hash_file)
 
 $(cppflags_hash_file):
 	$(Q)$(mkparent)
-	rm -f $(out)/.cpp.*
+	rm -f $(out)/.cppflags.*
 	touch $@
 
 $(out)/.cppflags.txt: $(cppflags_hash_file)
