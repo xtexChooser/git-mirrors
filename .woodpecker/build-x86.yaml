@@ -2,7 +2,7 @@ steps:
     build:
         image: alpine
         commands:
-            - apk add bash make clang llvm musl-dev bear grub doxygen cmd:envsubst
+            - apk add bash make clang llvm musl-dev bear grub doxygen cmd:envsubst coreutils
             - make -j$(nproc) ARCH=x86 default doc
 
     publish:
