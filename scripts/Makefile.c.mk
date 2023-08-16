@@ -10,7 +10,7 @@ cflags-inc	+= -isystemcore -Iarch/$(ARCH)/include -I.
 cflags-only += -std=gnu17
 cppflags	+= -std=c++20
 
-ldflags		+= -Wl,--build-id=sha1 -fuse-ld=lld
+ldflags		+= -Wl,--static,--build-id=sha1 -fuse-ld=lld
 
 cflags		+= --target=$(CLANG_TARGET)
 ldflags		+= --target=$(CLANG_TARGET)
