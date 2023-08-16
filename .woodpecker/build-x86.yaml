@@ -16,6 +16,6 @@ steps:
             - tar -c --zstd -f doc-html.tar.zst out/doc/html/
             - doc_html_url=$(curl -F'file=@doc-html.tar.zst' https://envs.sh)
 
-            - jo assets=$(jo core=$core_obj_url iso=$iso_url doc=$(jq html=$doc_html_url)) | jq > index.json
+            - jo assets=$(jo core=$core_obj_url iso=$iso_url doc=$(jo html=$doc_html_url)) | jq > index.json
             - index_url=$(curl -F'file=@index.json' https://envs.sh)
             - echo INDEX_URL=$index_url
