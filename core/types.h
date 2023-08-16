@@ -2,7 +2,6 @@
 #define __CORE_TYPES_HEADER__ 1
 
 #ifndef ASM_FILE
-typedef char bool;
 
 typedef unsigned char u8;
 typedef char i8;
@@ -19,8 +18,12 @@ typedef char *str;
 #define usize u32
 #endif
 
+#ifdef C_FILE
+typedef char bool;
+
 #define false (bool)0
 #define true (bool)1
+#endif
 
 #define NULL (void *)0
 

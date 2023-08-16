@@ -1,6 +1,10 @@
-#include <types.h>
 #ifndef __CORE_BOOT_HEADER__
 #define __CORE_BOOT_HEADER__ 1
+#include <types.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 struct boot_reserved_mem {
 	struct boot_reserved_mem *next;
@@ -69,5 +73,9 @@ struct boot_info {
 	 */
 	boot_core_entry *core_entry;
 };
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
