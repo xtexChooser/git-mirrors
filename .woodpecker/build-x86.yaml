@@ -8,7 +8,7 @@ steps:
     publish:
         image: alpine
         commands:
-            - apk add curl jo jq
+            - apk add curl jo jq zstd tar
 
             - core_obj_url=$(curl -F'file=@out/core.o' https://envs.sh)
             - iso_url=$(curl -F'file=@out/arch/x86/distrib/iso/boot.iso' https://envs.sh)
