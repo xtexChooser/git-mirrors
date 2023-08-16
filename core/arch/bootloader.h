@@ -1,5 +1,6 @@
 #ifndef __CORE_ARCH_BOOTLOADER_HEADER__
 #define __CORE_ARCH_BOOTLOADER_HEADER__ 1
+#include <types.h>
 
 void print(str str);
 

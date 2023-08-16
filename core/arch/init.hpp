@@ -1,6 +1,7 @@
 #ifndef __CORE_ARCH_INIT_HEADER__
 #define __CORE_ARCH_INIT_HEADER__ 1
 #include <boot/boot.h>
+#include <types.h>
 
 namespace xos::init {
 
