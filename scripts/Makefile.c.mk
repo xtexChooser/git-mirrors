@@ -112,6 +112,8 @@ compile_flags.txt: $(out)/.cflags.txt $(out)/.cppflags.txt
 	$(call action,"GEN  ")
 	echo "$(cflags) $(cflags-inc)" | sed 's/\s/\n/g' | sort | uniq > $@
 
-compile_commands.json:
+compile_commands.json: $(out)/.cflags.txt $(out)/.cppflags.txt
 	$(call action,"GEN  ")
 	bear --output $@ -- make ARCH=$(ARCH) $(MAKE_FLAGS) --always-make
+
+.PHONY: compile_commands.json
