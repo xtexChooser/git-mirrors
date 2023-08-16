@@ -1,2 +1,3 @@
-CLANG_TARGET = i386-pc-none-elf
-MUSL_TARGET = i386-pc-linux-unknown
+CLANG_TARGET 	= i386-pc-none-elf
+MUSL_TARGET 	= i386-pc-linux-unknown
+cflags			+= -m32
