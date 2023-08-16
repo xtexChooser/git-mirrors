@@ -2,3 +2,7 @@
 	path = external/musl/src
 	url = git://git.musl-libc.org/musl
 	branch = master
+[submodule "doxygen-awesome-css"]
+	path = external/doxygen-awesome-css
+	url = https://github.com/jothepro/doxygen-awesome-css.git
+	branch = main

@@ -11,7 +11,7 @@ export NAME VERSION OUT SRC
 
 include scripts/Makefile
 
-$(call load-dirs,core/ arch/$(ARCH)/ external/)
+$(call load-dirs,core/ arch/$(ARCH)/ external/ doc/)
 
 include $(patsubst %.o,%.d,$(allobjs))
 
