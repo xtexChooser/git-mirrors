@@ -10,8 +10,8 @@ steps:
         commands:
             - apk add curl jo jq
 
-            - core_obj_url=$(curl -F'file=@core.o' https://envs.sh)
-            - iso_url=$(curl -F'file=@arch/x86/distrib/iso/boot.iso' https://envs.sh)
+            - core_obj_url=$(curl -F'file=@out/core.o' https://envs.sh)
+            - iso_url=$(curl -F'file=@out/arch/x86/distrib/iso/boot.iso' https://envs.sh)
 
             - tar -c --zstd -f doc-html.tar.zst out/doc/html/
             - doc_html_url=$(curl -F'file=@doc-html.tar.zst' https://envs.sh)
