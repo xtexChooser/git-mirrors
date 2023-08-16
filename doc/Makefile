@@ -4,6 +4,7 @@ $(curout)Doxyfile: $(curdir)Doxyfile $(curdir)Doxyfile.subst
 	cat $(src)/doc/Doxyfile.subst | envsubst >> $@
 
 doc: $(curout)Doxyfile
+	$(call action, "DOXYGEN ")
 	doxygen $<
 
 .PHONY: doc
