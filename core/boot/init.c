@@ -1,3 +1,4 @@
+#include <arch/init.h>
 #include <boot/boot.h>
 
 char *core_init(boot_info_t *bootinfo);
@@ -39,6 +40,7 @@ static void itoa(char *buf, int base, int d) {
 }
 
 char *core_init(boot_info_t *bootinfo) {
+	arch_init(bootinfo);
 	return "LOVE SC FOREVER";
 	while (1) {
 	}
