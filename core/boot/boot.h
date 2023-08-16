@@ -3,6 +3,7 @@
 #include <types.h>
 
 #ifdef __cplusplus
+namespace xos::boot {
 extern "C" {
 #endif
 
@@ -38,13 +39,39 @@ typedef struct boot_elf_load boot_elf_load_t;
 
 typedef struct boot_info boot_info_t;
 
+/**
+ * @brief The entrypoint of core executable file. Implemented at ::core_init
+ *
+ */
 typedef char *(boot_core_entry)(boot_info_t *bootinfo);
 
 struct boot_info {
+	/**
+	 * @brief The highest address of linear-memory
+	 *
+	 */
 	void *mem_upper;
+	/**
+	 * @brief The lower address of bootloader-provided core image file
+	 *
+	 */
 	void *core_start;
+	/**
+	 * @brief The higher address of bootloader-provided core image file
+	 *
+	 */
 	void *core_end;
+	/**
+	 * @brief Machine reserved memory blocks
+	 * Note that ::core_start to ::core_end and data memory of
+	 * modules are not included in this map.
+	 *
+	 */
 	boot_reserved_mem_t *reserved_mem;
+	/**
+	 * @brief First-stage modules that is loaded by bootloader
+	 *
+	 */
 	boot_module_t *module;
 	/**
 	 * @brief The random number. Filled by core boot
@@ -62,13 +89,13 @@ struct boot_info {
 	 */
 	void *core_load_offset;
 	/**
-	 * @brief Information about ELF LOAD program headers. Filled by core boot
-	 * `parse_core_elf`
+	 * @brief Information about ELF LOAD program headers. Filled by
+	 * ::parse_core_elf
 	 *
 	 */
 	boot_elf_load_t *core_elf_load;
 	/**
-	 * @brief The entrypoint of core. Filled by core boot `parse_core_elf`
+	 * @brief The entrypoint of core. Filled by ::parse_core_elf
 	 *
 	 */
 	boot_core_entry *core_entry;
@@ -76,6 +103,7 @@ struct boot_info {
 
 #ifdef __cplusplus
 }
+} // namespace xos::boot
 #endif
 
 #endif
