@@ -25,21 +25,21 @@ define cc
 $(CC) $(mk-cflags)
 endef
 define mk-cflags
-$(CFLAGS) $(if $(NO_PIE),,-fPIE -fPIC) $(cflags-inc)
+$(CFLAGS) $(if $(NO_PIE),-fno-pie,-fPIE -fPIC) $(cflags-inc)
 endef
 
 define cc-cpp
 $(CC) $(mk-cppflags)
 endef
 define mk-cppflags
-$(CPPFLAGS) $(if $(NO_PIE),,-fPIE -fPIC) $(cflags-inc)
+$(CPPFLAGS) $(if $(NO_PIE),-fno-pie,-fPIE -fPIC) $(cflags-inc)
 endef
 
 define ld
 $(LD) $(mk-ldflags)
 endef
 define mk-ldflags
-$(LDFLAGS) $(if $(NO_PIE),,-fPIE -Wl,-pie)
+$(LDFLAGS) $(if $(NO_PIE),-fno-pie -Wl$(comma)--no-pie,-fPIE -Wl,-pie)
 endef
 
 cflags_hash=$(shell echo "$(mk-cflags)" | md5sum | head -c8)

@@ -3,6 +3,8 @@ SHELL:=bash
 
 mkparent	= @mkdir -p $$(dirname $@)
 
+comma:=,
+
 .DELETE_ON_ERROR:
 .PHONY: default
 default:
@@ -32,14 +34,14 @@ define load-dirs
 $(foreach __sub,$1,$(call load-dir,$(curdir)$(__sub)))
 endef
 
-ifeq ($(V)$(VERBOSE),)
+ifeq ($V$(VERBOSE),)
 Q:=@
 else
 Q:=
 endif
 
 define action
-$(Q)$(mkparent)
+$Q$(mkparent)
 echo $1"$(if $2,$2,$@)"
 endef
 

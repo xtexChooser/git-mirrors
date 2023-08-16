@@ -1,7 +1,12 @@
 $(curout)boot.iso: $(curout)iso_root/boot/grub/grub.cfg \
 	$(curout)iso_root/boot/$(NAME)/multiboot.o \
 	$(curout)iso_root/boot/$(NAME)/core.o
-	grub2-mkrescue -o $@ --product-name=$(NAME) --product-version=$(VERSION) $(out)/arch/x86/distrib/iso/iso_root
+	if [[ -e "$$(which grub2-mkrescue)" ]]; then
+	grub_mkrescue=grub2-mkrescue
+	else
+	grub_mkrescue=grub-mkrescue
+	fi
+	$$grub_mkrescue -o $@ --product-name=$(NAME) --product-version=$(VERSION) $(out)/arch/x86/distrib/iso/iso_root
 
 $(curout)iso_root/boot/grub/grub.cfg: $(curdir)grub.cfg
 	$(call action,"GEN  ")
