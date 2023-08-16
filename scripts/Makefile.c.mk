@@ -1,5 +1,6 @@
 CC			= clang
 LD			= clang
+AR			= llvm-ar
 
 cflags		+= -Wall -Werror -Wextra -Wno-error=unused-parameter -Wno-unused-function
 cflags		+= -O3 -g
@@ -117,3 +118,7 @@ compile_commands.json: $(out)/.cflags.txt $(out)/.cppflags.txt
 	bear --output $@ -- make ARCH=$(ARCH) $(MAKE_FLAGS) --always-make
 
 .PHONY: compile_commands.json
+
+$(out)/%.a:
+	$(call action,"AR   ")
+	$(AR) rsc $@ $^

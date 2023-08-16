@@ -1,1 +1,1 @@
-$(call load-dirs, boot/)
+$(call load-dirs, boot/ utils/)
