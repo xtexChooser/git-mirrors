@@ -4,3 +4,4 @@ compile_flags.txt
 compile_commands.json
 .cache/clangd
 .gdb_history
+local.config.mk

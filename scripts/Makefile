@@ -14,6 +14,8 @@ $(error ARCH is not specified)
 endif
 include arch/$(ARCH)/config.mk
 
+-include local.config.mk
+
 define load-dir
 $(eval curdirs += $1)
 $(eval curdir := $1)
