@@ -20,7 +20,7 @@ $(curout)override.mk: $(curout)config.mak
 	$(call action,"GEN  ")
 	grep 'ARCH =' $< | sed 's/^/override /g' > $@
 
-$(curout)lib/libc.so: $(curout)config.mak $(curout)override.mk $(compiler-rt-builtins-lib)
+$(curout)%: $(curout)config.mak $(curout)override.mk $(compiler-rt-builtins-lib)
 	$(call action,"MAKE ")
 	$(MAKE) -C $(musl-out) --always-make -f override.mk -f Makefile
 
