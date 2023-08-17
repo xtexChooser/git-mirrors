@@ -1,0 +1,12 @@
+{
+	"@metadata": {
+		"authors": [
+			"ခွန်ဖန်ဒွဲ့"
+		]
+	},
+	"categorywatch-notification-link": "အွဉ်ႏထွောင်းကဏ္ဍ: [[:$1]]",
+	"categorywatch-notification-categorywatch-remove-header": "ယားထိုꩻ[[:$1|$2]]  အဝ်ႏ[[:$3|$4]]ကို",
+	"categorywatch-notification-categorywatch-remove-summary": "ယားထိုꩻ[[:$3|$4]]အဝ်ႏ[[:$5|$6]]ကို",
+	"categorywatch-notification-categorywatch-remove-body": "ယားထိုꩻ[[User:$1|$1]] [[:$3|$3]]အဝ်ႏ[[:$4|$4]]ကို",
+	"echo-category-title-categorywatch": "အုံထွား အွဉ်ႏထွောင်းကဏ္ဍ"
+}
