@@ -15,7 +15,7 @@ bool check_arch_boot_memory_available(void *start, void *end);
 
 /**
  * @brief Allocate a memory block filled with zero
- * 
+ *
  * @param size Size
  * @return void* Pointer
  */

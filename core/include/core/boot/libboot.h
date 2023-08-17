@@ -50,7 +50,7 @@ static void reloc_core64(boot_info_t *bootinfo);
 
 /**
  * @brief Try to lookup a symbol in the core SYMTAB
- * 
+ *
  * @param bootinfo Boot info
  * @param table Symbol table section
  * @param index Symbol index
@@ -60,4 +60,3 @@ usize lookup_core_symbol(boot_info_t *bootinfo, u32 table, u32 index);
 
 static usize lookup_core_symbol32(boot_info_t *bootinfo, u32 table, u32 index);
 static usize lookup_core_symbol64(boot_info_t *bootinfo, u32 table, u32 index);
-

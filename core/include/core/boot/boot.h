@@ -8,12 +8,12 @@ extern "C" {
 
 /**
  * @brief Information about a memory block that is reserved
- * 
+ *
  */
 struct boot_reserved_mem {
 	/**
 	 * @brief Reference to next
-	 * 
+	 *
 	 */
 	struct boot_reserved_mem *next;
 	/**
@@ -23,7 +23,7 @@ struct boot_reserved_mem {
 	void *start;
 	/**
 	 * @brief The higher address
-	 * 
+	 *
 	 */
 	void *end;
 };
@@ -31,22 +31,22 @@ typedef struct boot_reserved_mem boot_reserved_mem_t;
 
 /**
  * @brief Information about a module that is loaded by bootloader
- * 
+ *
  */
 struct boot_module {
 	/**
 	 * @brief Reference to next
-	 * 
+	 *
 	 */
 	struct boot_module *next;
 	/**
 	 * @brief The lower address of the data of module
-	 * 
+	 *
 	 */
 	void *start;
 	/**
 	 * @brief The higher address of the data of module
-	 * 
+	 *
 	 */
 	void *end;
 };
@@ -54,27 +54,27 @@ typedef struct boot_module boot_module_t;
 
 /**
  * @brief Information about a LOAD program header in the core ELF file
- * 
+ *
  */
 struct boot_elf_load {
 	/**
 	 * @brief Reference to next
-	 * 
+	 *
 	 */
 	struct boot_elf_load *next;
 	/**
 	 * @brief The offset of data in the image file
-	 * 
+	 *
 	 */
 	usize offset;
 	/**
 	 * @brief The offset of data in the memory
-	 * 
+	 *
 	 */
 	usize start;
 	/**
 	 * @brief The size of data
-	 * 
+	 *
 	 */
 	usize size;
 };
@@ -90,7 +90,7 @@ typedef char *(boot_core_entry)(boot_info_t *bootinfo);
 
 /**
  * @brief Information used by libboot
- * 
+ *
  */
 struct boot_info {
 	/**

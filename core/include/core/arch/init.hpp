@@ -2,10 +2,11 @@
 #include <core/boot/boot.h>
 #include <types.h>
 
-	namespace xos::init {
+namespace xos::init {
 
 /**
- * @brief Do archiecture-specific initializations in the early initialization stage
+ * @brief Do archiecture-specific initializations in the early initialization
+ * stage
  *
  * @param bootinfo Boot info
  */
