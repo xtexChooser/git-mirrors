@@ -99,6 +99,11 @@ struct boot_info {
 	 */
 	void *mem_upper;
 	/**
+	 * @brief Core command line
+	 *
+	 */
+	char *cmdline;
+	/**
 	 * @brief The lower address of bootloader-provided core image file
 	 *
 	 */

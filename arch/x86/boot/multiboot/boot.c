@@ -56,6 +56,23 @@ void cmain(u32 magic, multiboot_info_t *info) {
 		return;
 	}
 
+	if (mbi->flags & MULTIBOOT_INFO_CMDLINE && mbi->cmdline != (u32)NULL) {
+		char *cmdline = (char *)mbi->cmdline;
+		while (*cmdline != 0)
+			cmdline++;
+		char *end = cmdline;
+		char *dst = (char *)arch_boot_malloc((u32)end - mbi->cmdline + 1);
+		bootinfo->cmdline = dst;
+		cmdline = (char *)mbi->cmdline;
+		while (cmdline <= end) {
+			*dst = *cmdline;
+			dst++;
+			cmdline++;
+		}
+	} else {
+		bootinfo->cmdline = "";
+	}
+
 	boot_reserved_mem_t *reserved_mem =
 		(boot_reserved_mem_t *)arch_boot_malloc(sizeof(boot_reserved_mem_t));
 	bootinfo->reserved_mem = reserved_mem;
