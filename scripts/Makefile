@@ -1,7 +1,7 @@
 .ONESHELL:
 SHELL:=bash
 
-mkparent	= @mkdir -p $$(dirname $@)
+mkparent	= mkdir -p $$(dirname $@)
 
 comma:=,
 
