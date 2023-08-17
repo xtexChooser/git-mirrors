@@ -21,9 +21,9 @@ $(eval curdirs += $1
 curdir := $1
 curout := $(out)/$1
 include $1Makefile
-curdirs := $(filter-out $(curdir),$(curdirs))
-curdir := $(lastword $(curdirs))
-curout := $(out)/$(curdir))
+curdirs := $$(filter-out $$(curdir),$$(curdirs))
+curdir := $$(lastword $$(curdirs))
+curout := $(out)/$$(curdir))
 endef
 
 define load-objs
