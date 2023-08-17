@@ -2,9 +2,14 @@ $(call load-dirs, boot/ utils/)
 
 define rule_core.o
 $(eval
-$$(out)/core.o: core/linker.ld $$(allobjs-core)
+$$(out)/core/core.o: core/linker.ld $$(allobjs-core)
 	$$(call action,"LD   ")
+	echo $$(NO_PIE)
 	$$(ld) -T $$< -o $$@ $$(filter-out $$<,$$^)
 )
 endef
 make-finalize += rule_core.o
+
+ifneq ($(NO_KASLR),)
+$(curout)%: NO_PIE = 1
+endif

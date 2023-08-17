@@ -23,7 +23,7 @@ $(curout)iso_root/boot/$(NAME)/multiboot.o: $(out)/arch/x86/boot/multiboot/multi
 	$(call action,"COPY ")
 	cp $< $@
 
-$(curout)iso_root/boot/$(NAME)/core.o: $(out)/core.o
+$(curout)iso_root/boot/$(NAME)/core.o: $(out)/core/core.o
 	$(call action,"COPY ")
 	cp $< $@
 

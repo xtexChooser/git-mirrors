@@ -17,12 +17,13 @@ include arch/$(ARCH)/config.mk
 -include local.config.mk
 
 define load-dir
-$(eval curdirs += $1)
-$(eval curdir := $1)
-$(eval curout := $(out)/$1)
-$(eval include $1Makefile)
-$(eval curdirs := $(filter-out $(curdir),$(curdirs)))
-$(eval curdir := $(lastword $(curdirs)))
+$(eval curdirs += $1
+curdir := $1
+curout := $(out)/$1
+include $1Makefile
+curdirs := $(filter-out $(curdir),$(curdirs))
+curdir := $(lastword $(curdirs))
+curout := $(out)/$(curdir))
 endef
 
 define load-objs
