@@ -45,49 +45,49 @@ define mk-ldflags
 $(LDFLAGS) $(if $(NO_PIE),-fno-pie -Wl$(comma)--no-pie,-fPIE -Wl,-pie) $(value ldflags-$(OBJ_GROUP))
 endef
 
-$(call saved, $(out)/.cflags, cflags_hash, $(mk-cflags))
-$(call saved, $(out)/.cppflags, cppflags_hash, $(mk-cppflags))
-$(call saved, $(out)/.ldflags, ldflags_hash, $(mk-ldflags))
+$(call saved, $(out)/.cflags, cflags, $(mk-cflags))
+$(call saved, $(out)/.cppflags, cppflags, $(mk-cppflags))
+$(call saved, $(out)/.ldflags, ldflags, $(mk-ldflags))
 
-$(out)/%.d: %.c $(cflags_hash_file)
+$(out)/%.d: %.c $(cflags_file)
 	$(Q)$(mkparent)
 	$(cc) -E -M $< -o $@.tmp
 	sed 's/^\(.*\):\s/$(out)\/$(subst /,\/,$(subst .c,.o,$<)): /g' $@.tmp > $@
 	rm $@.tmp
 
-$(out)/%.d: %.cpp $(cppflags_hash_file)
+$(out)/%.d: %.cpp $(cppflags_file)
 	$(Q)$(mkparent)
 	$(cc-cpp) -E -M $< -o $@.tmp
 	sed 's/^\(.*\):\s/$(out)\/$(subst /,\/,$(subst .cpp,.o,$<)): /g' $@.tmp > $@
 	rm $@.tmp
 
-$(out)/%.d: %.S $(cflags_hash_file)
+$(out)/%.d: %.S $(cflags_file)
 	$(Q)$(mkparent)
 	$(cc) -D ASM_FILE -E -M $< -o $@.tmp
 	sed 's/^\(.*\):\s/$(out)\/$(subst /,\/,$(subst .S,.o,$<)): /g' $@.tmp > $@
 	rm $@.tmp
 
-$(out)/%.o: %.c $(cflags_hash_file)
+$(out)/%.o: %.c $(cflags_file)
 	$(call action,"CC   ")
 	$(cc) -D C_FILE -c $< -o $@
 
-$(out)/%.o: %.S $(cflags_hash_file)
+$(out)/%.o: %.S $(cflags_file)
 	$(call action,"CC   ")
 	$(cc) -D ASM_FILE -c $< -o $@
 
-$(out)/%.o: %.cpp $(cppflags_hash_file)
+$(out)/%.o: %.cpp $(cppflags_file)
 	$(call action,"CC   ")
 	$(cc-cpp) -D CXX_FILE -D CPP_FILE -c $< -o $@
 
 $(curout)multiboot.o: $(curdir)linker.ld $(curout)entry.o $(curout)boot.o $(out)/core/boot/boot.o $(out)/arch/x86/boot/boot.o
 	$(ld) -T $< -o $@ $(filter-out $<,$^)
 
-compile_flags.txt: $(cflags_hash_file)
+compile_flags.txt: $(cflags_file)
 # exclude CPP-only and C-only flags
 	$(call action,"GEN  ")
 	echo "$(cflags) $(cflags-inc)" | sed 's/\s/\n/g' | sort | uniq > $@
 
-compile_commands.json: $(cflags_hash_file) $(cppflags_hash_file) $(ldflags_hash_file)
+compile_commands.json: $(cflags_file) $(cppflags_file) $(ldflags_file)
 	$(call action,"GEN  ")
 	bear --output $@ -- make ARCH=$(ARCH) $(MAKE_FLAGS) --always-make
 

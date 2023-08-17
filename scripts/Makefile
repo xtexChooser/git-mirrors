@@ -50,14 +50,21 @@ $(eval $(strip $1).m:
 	$$(call action,"SAVE ")
 	echo "saved_$(strip $2)=$3" > $$@
 
-include $(strip $1).m
-ifneq ($$(saved_$(strip $2)),$3)
-$$(shell rm -f $(strip $1).m)
-endif
 $(strip $2)_file=$(strip $1).m
+define saved_restore_$(strip $2)
+$$(eval
+include $(strip $1).m
+ifneq ($$$$(saved_$(strip $2)),$3)
+$$$$(shell rm -f $(strip $1).m)
+endif
+)
+endef
+make-finalize += saved_restore_$(strip $2)
 )
 endef
 
 include scripts/Makefile.c.mk
 
 include arch/$(ARCH)/base.mk
+
+$(foreach __finalize,$(make-finalize),$(call $(__finalize)))
