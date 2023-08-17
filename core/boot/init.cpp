@@ -15,7 +15,6 @@ extern "C" const char *core_init(boot_info_t *bootinfo) {
 	arch_early_init(bootinfo);
 	// mm_init(bootinfo);
 	arch_init(bootinfo);
-	INFO(bootinfo->cmdline);
-	INFO("test");
+	INFO("cmdline: %s", bootinfo->cmdline);
 	return "core_init end";
 }
