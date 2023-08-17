@@ -45,37 +45,9 @@ define mk-ldflags
 $(LDFLAGS) $(if $(NO_PIE),-fno-pie -Wl$(comma)--no-pie,-fPIE -Wl,-pie) $(value ldflags-$(OBJ_GROUP))
 endef
 
-cflags_hash=$(shell echo "$(mk-cflags)" | md5sum | head -c8)
-cppflags_hash=$(shell echo "$(mk-cppflags)" | md5sum | head -c8)
-ldflags_hash=$(shell echo "$(mk-ldflags)" | md5sum | head -c8)
-
-cflags_hash_file=$(out)/.cflags.$(cflags_hash)
-cppflags_hash_file=$(out)/.cppflags.$(cppflags_hash)
-ldflags_hash_file=$(out)/.ldflags.$(cflags_hash)
-
-$(cflags_hash_file):
-	$(Q)$(mkparent)
-	rm -f $(out)/.cflags.*
-	touch $@
-
-$(out)/.cflags.txt: $(cflags_hash_file)
-	echo "$(mk-cflags)" | sed 's/\s/\n/g' | sort | uniq > $@
-
-$(cppflags_hash_file):
-	$(Q)$(mkparent)
-	rm -f $(out)/.cppflags.*
-	touch $@
-
-$(out)/.cppflags.txt: $(cppflags_hash_file)
-	echo "$(mk-cppflags)" | sed 's/\s/\n/g' | sort | uniq > $@
-
-$(ldflags_hash_file):
-	$(Q)$(mkparent)
-	rm -f $(out)/.ldflags.*
-	touch $@
-
-$(out)/.ldflags.txt: $(ldflags_hash_file)
-	echo "$(mk-ldflags)" | sed 's/\s/\n/g' | sort | uniq > $@
+$(call saved, $(out)/.cflags, cflags_hash, $(mk-cflags))
+$(call saved, $(out)/.cppflags, cppflags_hash, $(mk-cppflags))
+$(call saved, $(out)/.ldflags, ldflags_hash, $(mk-ldflags))
 
 $(out)/%.d: %.c $(cflags_hash_file)
 	$(Q)$(mkparent)
@@ -110,12 +82,12 @@ $(out)/%.o: %.cpp $(cppflags_hash_file)
 $(curout)multiboot.o: $(curdir)linker.ld $(curout)entry.o $(curout)boot.o $(out)/core/boot/boot.o $(out)/arch/x86/boot/boot.o
 	$(ld) -T $< -o $@ $(filter-out $<,$^)
 
-compile_flags.txt: $(out)/.cflags.txt $(out)/.cppflags.txt
+compile_flags.txt: $(cflags_hash_file)
 # exclude CPP-only and C-only flags
 	$(call action,"GEN  ")
 	echo "$(cflags) $(cflags-inc)" | sed 's/\s/\n/g' | sort | uniq > $@
 
-compile_commands.json: $(out)/.cflags.txt $(out)/.cppflags.txt
+compile_commands.json: $(cflags_hash_file) $(cppflags_hash_file) $(ldflags_hash_file)
 	$(call action,"GEN  ")
 	bear --output $@ -- make ARCH=$(ARCH) $(MAKE_FLAGS) --always-make
 
