@@ -1,6 +1,7 @@
 $(curout)boot.iso: $(curout)iso_root/boot/grub/grub.cfg \
 	$(curout)iso_root/boot/$(NAME)/multiboot.o \
 	$(curout)iso_root/boot/$(NAME)/core.o
+	$(call action,"GEN  ")
 	if [[ -e "$$(which grub2-mkrescue)" ]]; then
 	grub_mkrescue=grub2-mkrescue
 	else
@@ -13,11 +14,11 @@ $(curout)iso_root/boot/grub/grub.cfg: $(curdir)grub.cfg
 	cat $< | envsubst > $@
 
 $(curout)iso_root/boot/$(NAME)/multiboot.o: $(out)/arch/x86/boot/multiboot/multiboot.o
-	$(call action,"GEN  ")
+	$(call action,"COPY ")
 	cp $< $@
 
 $(curout)iso_root/boot/$(NAME)/core.o: $(out)/core.o
-	$(call action,"GEN  ")
+	$(call action,"COPY ")
 	cp $< $@
 
 qemu-iso: $(curout)boot.iso
