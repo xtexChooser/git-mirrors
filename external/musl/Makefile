@@ -22,6 +22,6 @@ $(curout)override.mk: $(curout)config.mak
 
 $(curout)lib/libc.so: $(curout)config.mak $(curout)override.mk $(compiler-rt-builtins-lib)
 	$(call action,"MAKE ")
-	$(MAKE) -C $(musl-out) -f override.mk -f Makefile
+	$(MAKE) -C $(musl-out) --always-make -f override.mk -f Makefile
 
 default: $(curout)lib/libc.so
