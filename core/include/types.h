@@ -15,15 +15,16 @@ typedef char *str;
 
 #define isize i32
 #define usize u32
-#endif
 
-#ifdef C_FILE
+#ifndef __cplusplus
 typedef char bool;
 
 #define false (bool)0
 #define true (bool)1
 
 #define NULL (void *)0
+#endif
+
 #endif
 
 #define U8_MIN 0x00

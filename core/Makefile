@@ -1,4 +1,4 @@
-$(call load-dirs, boot/ utils/)
+$(call load-dirs, boot/ utils/ mm/)
 
 define rule_core.o
 $(eval
