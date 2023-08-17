@@ -1,7 +1,7 @@
-#include "arch/boot.h"
-#include "arch/bootloader.h"
-#include "boot/libboot.h"
 #include "multiboot.h"
+#include <core/arch/boot.h>
+#include <core/arch/bootloader.h>
+#include <core/boot/libboot.h>
 #include <math.h>
 #include <stdarg.h>
 #include <types.h>

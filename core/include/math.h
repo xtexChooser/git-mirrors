@@ -1,5 +1,5 @@
-#ifndef __CORE_UTIL_MATH_HEADER__
-#define __CORE_UTIL_MATH_HEADER__ 1
+#ifndef __CORE_MATH_HEADER__
+#define __CORE_MATH_HEADER__ 1
 
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #define max(a, b) ((a) < (b) ? (b) : (a))

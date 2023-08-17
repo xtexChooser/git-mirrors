@@ -1,7 +1,7 @@
 #ifndef __CORE_ARCH_BOOT_HEADER__
 #define __CORE_ARCH_BOOT_HEADER__ 1
-#include "boot/boot.h"
-#include "boot/libboot.h"
+#include <core/boot/boot.h>
+#include <core/boot/libboot.h>
 
 /**
  * @brief Archiecture-specific logic after bootloader initialized. Called by

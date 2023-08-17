@@ -1,4 +1,4 @@
-#include <boot/boot.h>
+#include <core/boot/boot.h>
 #include <types.h>
 #ifndef __CORE_LIBBOOT_HEADER__
 #define __CORE_LIBBOOT_HEADER__ 1

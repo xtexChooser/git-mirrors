@@ -1,6 +1,6 @@
-#include "arch/boot.h"
-#include "external/musl/src/include/elf.h"
-#include <arch/bootloader.h>
+#include "elf.h"
+#include <core/arch/boot.h>
+#include <core/arch/bootloader.h>
 
 void arch_boot() { __asm__("cli"); }
 

@@ -1,7 +1,7 @@
-#include "boot/libboot.h"
-#include "arch/boot.h"
-#include "arch/bootloader.h"
-#include "external/musl/src/include/elf.h"
+#include <core/boot/libboot.h>
+#include <core/arch/boot.h>
+#include <core/arch/bootloader.h>
+#include "elf.h"
 #include "math.h"
 #include <limits.h>
 #include <types.h>

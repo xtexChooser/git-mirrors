@@ -7,7 +7,7 @@ cflags		+= -O3 -g
 cflags		+= -nostdlib -ffreestanding -fno-exceptions -fno-rtti -fno-use-cxa-atexit -fno-builtin
 #cflags		+= -fcf-protection # todo: only on x86_64
 #cflags		+= -fstack-protector 
-cflags-inc	+= -isystemcore -Iarch/$(ARCH)/include -I.
+cflags-inc	+= -isystemcore/include -Iarch/$(ARCH)/include -I.
 cflags-only += -std=gnu17
 cflags-boot	+= -fno-vectorize -fno-tree-vectorize -fno-slp-vectorize
 cflags-core	+= -fno-vectorize -fno-tree-vectorize -fno-slp-vectorize # todo: enable AVX for core
