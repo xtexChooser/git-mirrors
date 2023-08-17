@@ -1,4 +1,4 @@
-$(call load-objs, boot.o entry.o)
+$(call load-objs, boot, boot.o entry.o)
 
 $(curout)%: NO_PIE = 1
 

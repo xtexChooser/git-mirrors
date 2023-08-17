@@ -9,6 +9,8 @@ cflags		+= -nostdlib -ffreestanding -fno-exceptions -fno-rtti -fno-use-cxa-atexi
 #cflags		+= -fstack-protector 
 cflags-inc	+= -isystemcore -Iarch/$(ARCH)/include -I.
 cflags-only += -std=gnu17
+cflags-boot	+= -fno-vectorize
+cflags-core	+= -fno-vectorize # todo: enable AVX
 cppflags	+= -std=c++20
 
 ldflags		+= -Wl,--static,--build-id=sha1 -fuse-ld=lld
@@ -26,21 +28,21 @@ define cc
 $(CC) $(mk-cflags)
 endef
 define mk-cflags
-$(CFLAGS) $(if $(NO_PIE),-fno-pie,-fPIE -fPIC) $(cflags-inc)
+$(CFLAGS) $(if $(NO_PIE),-fno-pie,-fPIE -fPIC) $(cflags-inc) $(value cflags-$(OBJ_GROUP)) $(value cflags-$(OBJ_GROUP)-only)
 endef
 
 define cc-cpp
 $(CC) $(mk-cppflags)
 endef
 define mk-cppflags
-$(CPPFLAGS) $(if $(NO_PIE),-fno-pie,-fPIE -fPIC) $(cflags-inc)
+$(CPPFLAGS) $(if $(NO_PIE),-fno-pie,-fPIE -fPIC) $(cflags-inc) $(value cflags-$(OBJ_GROUP)) $(value cppflags-$(OBJ_GROUP))
 endef
 
 define ld
 $(LD) $(mk-ldflags)
 endef
 define mk-ldflags
-$(LDFLAGS) $(if $(NO_PIE),-fno-pie -Wl$(comma)--no-pie,-fPIE -Wl,-pie)
+$(LDFLAGS) $(if $(NO_PIE),-fno-pie -Wl$(comma)--no-pie,-fPIE -Wl,-pie) $(value ldflags-$(OBJ_GROUP))
 endef
 
 cflags_hash=$(shell echo "$(mk-cflags)" | md5sum | head -c8)

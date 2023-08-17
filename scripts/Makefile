@@ -24,11 +24,9 @@ $(eval curdir := $(lastword $(curdirs)))
 endef
 
 define load-objs
-$(foreach __sub,$1,$(eval allobjs += $(out)/$(curdir)$(__sub)))
-endef
-define load-objs-core
-$(call load-objs,$1)
-$(foreach __sub,$1,$(eval allobjs-core += $(out)/$(curdir)$(__sub)))
+$(foreach __sub,$2,$(eval allobjs += $(out)/$(curdir)$(__sub))
+$(eval allobjs-$(strip $1) += $(out)/$(curdir)$(__sub))
+$(eval $(out)/$(curdir)$(__sub): OBJ_GROUP = $1))
 endef
 define load-dirs
 $(foreach __sub,$1,$(call load-dir,$(curdir)$(__sub)))
