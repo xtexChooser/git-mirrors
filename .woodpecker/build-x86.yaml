@@ -3,7 +3,7 @@ steps:
         image: alpine
         commands:
             - apk add bash make clang llvm musl-dev coreutils binutils lld 
-                bear doxygen cmd:envsubst grub{,-{bios,efi}} cmd:xorriso
+                bear doxygen cmd:envsubst grub grub-bios grub-efi cmd:xorriso
             - make -j$(nproc) ARCH=x86 default doc
 
     publish:
