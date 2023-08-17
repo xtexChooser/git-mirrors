@@ -9,6 +9,8 @@ using namespace xos::init;
  * 
  */
 extern "C" const char *core_init(boot_info_t *bootinfo) {
+	arch_early_init(bootinfo);
+	//mm_init(bootinfo);
 	arch_init(bootinfo);
-	return "LOVE SC FOREVER";
+	return "core_init end";
 }

@@ -23,9 +23,9 @@ typedef char bool;
 
 #define false (bool)0
 #define true (bool)1
-#endif
 
 #define NULL (void *)0
+#endif
 
 #define U8_MIN 0x00
 #define U8_MAX 0xff
@@ -41,6 +41,7 @@ typedef char bool;
 #define SZ_1K 0x400
 #define SZ_2K 0x800
 #define SZ_4K 0x1000
+#define SZ_16K 0x4000
 #define SZ_1M 0x100000
 #define SZ_2M 0x200000
 #define SZ_4M 0x400000
