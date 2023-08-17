@@ -1,9 +1,8 @@
-#ifndef __CORE_ARCH_INIT_HEADER__
-#define __CORE_ARCH_INIT_HEADER__ 1
+#pragma once
 #include <core/boot/boot.h>
 #include <types.h>
 
-namespace xos::init {
+	namespace xos::init {
 
 /**
  * @brief Do archiecture-specific initializations in the early initialization stage
@@ -20,5 +19,3 @@ void arch_early_init(boot::boot_info_t *bootinfo);
 void arch_init(boot::boot_info_t *bootinfo);
 
 } // namespace xos::init
-
-#endif

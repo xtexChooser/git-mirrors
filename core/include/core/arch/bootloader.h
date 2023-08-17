@@ -1,5 +1,4 @@
-#ifndef __CORE_ARCH_BOOTLOADER_HEADER__
-#define __CORE_ARCH_BOOTLOADER_HEADER__ 1
+#pragma once
 #include <types.h>
 
 void print(str str);
@@ -21,5 +20,3 @@ bool check_arch_boot_memory_available(void *start, void *end);
  * @return void* Pointer
  */
 void *arch_boot_malloc(usize size);
-
-#endif

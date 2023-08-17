@@ -1,7 +1,6 @@
 #include <core/boot/boot.h>
 #include <types.h>
-#ifndef __CORE_LIBBOOT_HEADER__
-#define __CORE_LIBBOOT_HEADER__ 1
+#pragma once
 
 /**
  * @brief Boot core with given info
@@ -62,4 +61,3 @@ usize lookup_core_symbol(boot_info_t *bootinfo, u32 table, u32 index);
 static usize lookup_core_symbol32(boot_info_t *bootinfo, u32 table, u32 index);
 static usize lookup_core_symbol64(boot_info_t *bootinfo, u32 table, u32 index);
 
-#endif

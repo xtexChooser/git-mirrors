@@ -1,5 +1,4 @@
-#ifndef __CORE_ARCH_BOOT_HEADER__
-#define __CORE_ARCH_BOOT_HEADER__ 1
+#pragma once
 #include <core/boot/boot.h>
 #include <core/boot/libboot.h>
 
@@ -110,5 +109,3 @@ typedef struct arch_boot_reloc_req arch_boot_reloc_req_t;
  * @return false Failed
  */
 bool arch_do_elf_reloc(arch_boot_reloc_req_t *r);
-
-#endif
