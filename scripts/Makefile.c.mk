@@ -9,8 +9,8 @@ cflags		+= -nostdlib -ffreestanding -fno-exceptions -fno-rtti -fno-use-cxa-atexi
 #cflags		+= -fstack-protector 
 cflags-inc	+= -isystemcore -Iarch/$(ARCH)/include -I.
 cflags-only += -std=gnu17
-cflags-boot	+= -fno-vectorize
-cflags-core	+= -fno-vectorize # todo: enable AVX
+cflags-boot	+= -fno-vectorize -fno-tree-vectorize -fno-slp-vectorize
+cflags-core	+= -fno-vectorize -fno-tree-vectorize -fno-slp-vectorize # todo: enable AVX for core
 cppflags	+= -std=c++20
 
 ldflags		+= -Wl,--static,--build-id=sha1 -fuse-ld=lld
