@@ -26,7 +26,7 @@ endef
 define load-objs
 $(foreach __sub,$2,$(eval allobjs += $(out)/$(curdir)$(__sub))
 $(eval allobjs-$(strip $1) += $(out)/$(curdir)$(__sub))
-$(eval $(out)/$(curdir)$(__sub): OBJ_GROUP = $1))
+$(eval $(out)/$(curdir)$(__sub): OBJ_GROUP=$(strip $1)))
 endef
 define load-dirs
 $(foreach __sub,$1,$(call load-dir,$(curdir)$(__sub)))
