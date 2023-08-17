@@ -67,4 +67,11 @@ include scripts/Makefile.c.mk
 
 include arch/$(ARCH)/base.mk
 
+$(call load-dirs,core/ arch/$(ARCH)/ external/ doc/)
+
+.PHONY: clean
+clean:
+	$(call action,"RM   ","$(out)/*")
+	rm -rf $(out)/*
+
 $(foreach __finalize,$(make-finalize),$(call $(__finalize)))

@@ -79,9 +79,6 @@ $(out)/%.o: %.cpp $(cppflags_file)
 	$(call action,"CC   ")
 	$(cc-cpp) -D CXX_FILE -D CPP_FILE -c $< -o $@
 
-$(curout)multiboot.o: $(curdir)linker.ld $(curout)entry.o $(curout)boot.o $(out)/core/boot/boot.o $(out)/arch/x86/boot/boot.o
-	$(ld) -T $< -o $@ $(filter-out $<,$^)
-
 compile_flags.txt: $(cflags_file)
 # exclude CPP-only and C-only flags
 	$(call action,"GEN  ")
@@ -96,3 +93,8 @@ compile_commands.json: $(cflags_file) $(cppflags_file) $(ldflags_file)
 $(out)/%.a:
 	$(call action,"AR   ")
 	$(AR) rsc $@ $^
+
+define finalize_c_load_depfiles
+$(eval include $$(patsubst %.o,%.d,$$(allobjs)))
+endef
+make-finalize += finalize_c_load_depfiles
