@@ -1,8 +1,8 @@
-#include <core/boot/libboot.h>
-#include <core/arch/boot.h>
-#include <core/arch/bootloader.h>
 #include "elf.h"
 #include "math.h"
+#include <core/arch/boot.h>
+#include <core/arch/bootloader.h>
+#include <core/boot/libboot.h>
 #include <limits.h>
 #include <types.h>
 
@@ -17,6 +17,7 @@ void do_core_boot(boot_info_t *bootinfo) {
 		return;
 	}
 	bootinfo->do_aslr = ((Elf32_Ehdr *)bootinfo->core_start)->e_type == ET_DYN;
+	bootinfo->do_aslr = false;
 	if (bootinfo->do_aslr)
 		print("libboot: core is DYN, ASLR enabled\n");
 	else
@@ -28,8 +29,8 @@ void do_core_boot(boot_info_t *bootinfo) {
 	}
 	if (bootinfo->core_load_offset == NULL) {
 		if (!check_core_loadable_at(bootinfo, bootinfo->core_load_offset)) {
-			print("libboot: ASLR disabled or failed, but the core cant be loaded "
-				  "at present position\n");
+			print("libboot: ASLR disabled or failed, but the core cant be "
+				  "loaded at present position\n");
 			return;
 		}
 	}
@@ -215,7 +216,7 @@ static void reloc_core32(boot_info_t *bootinfo) {
 				if (!arch_do_elf_reloc(&req)) {
 					print("libboot: failed to do an ELF32 REL reloc\n");
 				}
-				rel ++;
+				rel++;
 			}
 		} else if (shdr->sh_type == SHT_RELA) {
 			Elf32_Rela *rel =
@@ -232,7 +233,7 @@ static void reloc_core32(boot_info_t *bootinfo) {
 				if (!arch_do_elf_reloc(&req)) {
 					print("libboot: failed to do an ELF32 RELA reloc\n");
 				}
-				rel ++;
+				rel++;
 			}
 		}
 		shdr = (Elf32_Shdr *)((void *)shdr + (usize)ehdr->e_shentsize);
@@ -321,7 +322,7 @@ static usize lookup_core_symbol32(boot_info_t *bootinfo, u32 table, u32 index) {
 			return 0;
 		} else {
 			print("libboot: failed to locate SHN_UNDEF and non-STB_WEAK "
-				   "symbols in ELF32\n");
+				  "symbols in ELF32\n");
 			return INT_MAX;
 		}
 	} else if (sym->st_shndx == SHN_ABS) {
@@ -352,7 +353,7 @@ static usize lookup_core_symbol64(boot_info_t *bootinfo, u32 table, u32 index) {
 			return 0;
 		} else {
 			print("libboot: failed to locate SHN_UNDEF and non-STB_WEAK "
-				   "symbols in ELF 64\n");
+				  "symbols in ELF 64\n");
 			return INT_MAX;
 		}
 	} else if (sym->st_shndx == SHN_ABS) {
