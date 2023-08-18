@@ -12,3 +12,4 @@
 	path = external/llvm/src
 	url = git@github.com:llvm/llvm-project.git
 	branch = main
+	shallow = true
