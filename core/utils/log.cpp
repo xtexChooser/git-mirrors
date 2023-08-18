@@ -17,7 +17,7 @@ void kprintf(const str tag, const LogLevel level, const str fmt, ...) {
 }
 void kvprintf(const str tag, const LogLevel level, const str fmt,
 			  std::va_list args) {
-	printf((char *)"%s: %s: ", tag, level_text[level]);
+	printf((char *)"%s: %s: ", level_text[level], tag);
 	vprintf(fmt, args);
 	putchar('\n');
 	return;
