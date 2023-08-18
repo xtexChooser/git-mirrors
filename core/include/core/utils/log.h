@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdarg>
 #include <types.h>
 
 #ifdef __cplusplus
@@ -37,6 +38,16 @@ typedef enum log_level log_level_t;
  * @param ... Arguments
  */
 void kprintf(const str tag, const LogLevel level, const str fmt, ...);
+
+/**
+ * @brief Print a core log message
+ *
+ * @param tag Tag
+ * @param level Level
+ * @param fmt Format
+ * @param ... Arguments
+ */
+void kvprintf(const str tag, const LogLevel level, const str fmt, std::va_list args);
 
 #ifdef __cplusplus
 }

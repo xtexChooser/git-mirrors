@@ -10,11 +10,15 @@ namespace xos::log {
 static const char(level_text[])[6] = {"DEBUG", "INFO", "WARN", "ERROR",
 									  "PANIC"};
 void kprintf(const str tag, const LogLevel level, const str fmt, ...) {
+	va_list args;
+	va_start(args, fmt);
+	kvprintf(tag, level, fmt, args);
+	va_end(args);
+}
+void kvprintf(const str tag, const LogLevel level, const str fmt,
+			  std::va_list args) {
 	printf((char *)"%s: %s: ", tag, level_text[level]);
-	va_list valist;
-	va_start(valist, fmt);
-	vprintf(fmt, valist);
-	va_end(valist);
+	vprintf(fmt, args);
 	putchar('\n');
 	return;
 }
