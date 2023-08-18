@@ -13,7 +13,7 @@ ifneq ($(CONFIG_NO_KASLR),)
 GRUB_EXTRA_CMDLINE += nokaslr
 endif
 
-$(call saved, $(curout).grub.cfg, x86_iso_grub_cfg_ext_cmdline, $(GRUB_EXTRA_CMDLINE))
+$(call saved, $(curout).grub.cfg, x86_iso_grub_cfg_ext_cmdline, GRUB_EXTRA_CMDLINE)
 
 $(curout)iso_root/boot/grub/grub.cfg: $(curdir)grub.cfg $(x86_iso_grub_cfg_ext_cmdline_file)
 	$(call action,"GEN  ")

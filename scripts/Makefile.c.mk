@@ -11,7 +11,7 @@ cflags-inc	+= -isystemcore/include -Iarch/$(ARCH)/include -I.
 cflags-only += -std=gnu17
 cflags-boot	+= -fno-vectorize -fno-tree-vectorize -fno-slp-vectorize
 cflags-core	+= -fno-vectorize -fno-tree-vectorize -fno-slp-vectorize # todo: enable AVX for core
-cppflags	+= -std=c++20
+cppflags	+= -std=c++20 --stdlib=libc++
 
 ldflags		+= -Wl,--static,--build-id=sha1 -fuse-ld=lld
 
@@ -49,9 +49,9 @@ define mk-ldflags
 $(LDFLAGS) $(if $(NO_PIE),-fno-pie -Wl$(comma)--no-pie,-fPIE -Wl,-pie) $(value ldflags-$(OBJ_GROUP))
 endef
 
-$(call saved, $(out)/.cflags, cflags, $(mk-cflags))
-$(call saved, $(out)/.cppflags, cppflags, $(mk-cppflags))
-$(call saved, $(out)/.ldflags, ldflags, $(mk-ldflags))
+$(call saved, $(out)/.cflags, cflags, mk-cflags)
+$(call saved, $(out)/.cppflags, cppflags, mk-cppflags)
+$(call saved, $(out)/.ldflags, ldflags, mk-ldflags)
 
 $(out)/%.d: %.c $(cflags_file)
 	$(Q)$(mkparent)
