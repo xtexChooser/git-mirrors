@@ -5,11 +5,11 @@
 	shallow = true
 [submodule "doxygen-awesome-css"]
 	path = external/doxygen-awesome-css
-	url = git@github.com:jothepro/doxygen-awesome-css.git
+	url = https://github.com/jothepro/doxygen-awesome-css.git
 	branch = main
 	shallow = true
 [submodule "llvm-project"]
 	path = external/llvm/src
-	url = git@github.com:llvm/llvm-project.git
+	url = https://github.com/llvm/llvm-project.git
 	branch = main
 	shallow = true
