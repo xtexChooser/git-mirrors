@@ -33,7 +33,8 @@ qemu-iso: $(curout)boot.iso
 		-drive media=cdrom,file=$<,readonly=on,format=raw \
 		-serial stdio \
 		-m 256M \
-		-cpu Snowridge \
+		-machine q35 \
+		-cpu IvyBridge \
 		-s \
 		-name $(NAME) \
 		$(QEMU_FLAGS)
