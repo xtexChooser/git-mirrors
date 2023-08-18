@@ -8,8 +8,3 @@
 	url = https://github.com/jothepro/doxygen-awesome-css.git
 	branch = main
 	shallow = true
-[submodule "llvm-project"]
-	path = external/llvm/src
-	url = https://github.com/llvm/llvm-project.git
-	branch = main
-	shallow = true
