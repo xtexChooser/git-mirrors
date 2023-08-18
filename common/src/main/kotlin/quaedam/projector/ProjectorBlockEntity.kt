@@ -75,8 +75,11 @@ class ProjectorBlockEntity(pos: BlockPos, state: BlockState) :
         val chunk = ChunkPos(SectionPos.blockToSectionCoord(blockPos.x), SectionPos.blockToSectionCoord(blockPos.z))
         val minChunk = ChunkPos(chunk.x - radius, chunk.z - radius)
         val maxChunk = ChunkPos(chunk.x + radius, chunk.z + radius)
-        val minBlock = BlockPos(minChunk.minBlockX, Int.MIN_VALUE, minChunk.minBlockZ)
-        val maxBlock = BlockPos(maxChunk.maxBlockX, Int.MAX_VALUE, maxChunk.maxBlockZ)
+        // Y is not the limit value of Int because at
+        // Lnet/minecraft/world/level/entity/EntitySectionStorage;forEachAccessibleNonEmptySection(Lnet/minecraft/world/phys/AABB;Lnet/minecraft/util/AbortableIterationConsumer;)V
+        // it may get overflow
+        val minBlock = BlockPos(minChunk.minBlockX, Short.MIN_VALUE.toInt(), minChunk.minBlockZ)
+        val maxBlock = BlockPos(maxChunk.maxBlockX, Short.MAX_VALUE.toInt(), maxChunk.maxBlockZ)
         effectArea = BoundingBox.fromCorners(minBlock, maxBlock)
         effectAreaAABB = AABB(minBlock, maxBlock)
     }
