@@ -9,7 +9,7 @@ $(curout)boot.iso: $(curout)iso_root/boot/grub/grub.cfg \
 	fi
 	$$grub_mkrescue -o $@ --product-name=$(NAME) --product-version=$(VERSION) $(out)/arch/x86/distrib/iso/iso_root
 
-ifneq ($(NO_KASLR),)
+ifneq ($(CONFIG_NO_KASLR),)
 GRUB_EXTRA_CMDLINE += nokaslr
 endif
 

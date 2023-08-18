@@ -18,9 +18,13 @@ ldflags		+= -Wl,--static,--build-id=sha1 -fuse-ld=lld
 cflags		+= --target=$(CLANG_TARGET)
 ldflags		+= --target=$(CLANG_TARGET)
 
-CFLAGS		+= $(cflags) $(cflags-only)
-CPPFLAGS	+= $(cflags) $(cppflags)
-LDFLAGS		+= $(cflags) $(ldflags)
+CFLAGS		= $(cflags) $(cflags-only)
+CPPFLAGS	= $(cflags) $(cppflags)
+LDFLAGS		= $(cflags) $(ldflags)
+
+ifneq ($(CONFIG_DEBUG),)
+cflags		+= -g
+endif
 
 export CC LD CFLAGS LDFLAGS
 

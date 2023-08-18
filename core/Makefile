@@ -9,6 +9,6 @@ $$(out)/core/core.o: core/linker.ld $$(allobjs-core)
 endef
 make-finalize += rule_core.o
 
-ifneq ($(NO_KASLR),)
+ifneq ($(CONFIG_NO_KASLR),)
 $(curout)%: NO_PIE = 1
 endif
