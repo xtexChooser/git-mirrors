@@ -34,8 +34,9 @@ class NearestVisibleContainer : Sensor<LivingEntity>() {
         if (entity.tickCount and 0b11111 == 0) { // 32gt
             val pos = level.getChunksNearby(entity.blockPosition(), 1)
                 .flatMap { it.blockEntities.filterValues { be -> be is BaseContainerBlockEntity }.keys }
-                .shuffled(Random(entity.random.nextLong()))
-                .minByOrNull { it.distManhattan(entity.blockPosition()) / 5 }
+                .sortedBy { it.distManhattan(entity.blockPosition()) / 5 }
+                .shuffled(Random(System.currentTimeMillis() / 10000))
+                .first()
             entity.brain.setMemory(memory.get(), pos)
         }
     }
