@@ -8,3 +8,7 @@
 	url = https://github.com/jothepro/doxygen-awesome-css.git
 	branch = main
 	shallow = true
+[submodule "libcxxrt"]
+	path = external/libcxxrt/src
+	url = git@github.com:libcxxrt/libcxxrt.git
+	branch = master

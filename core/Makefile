@@ -5,6 +5,7 @@ $(eval
 $$(out)/core/core.o: core/linker.ld $$(allobjs-core)
 	$$(call action,"LD   ")
 	$$(ld) -T $$< -o $$@ $$(filter-out $$<,$$^)
+$$(info $$(allobjs-core))
 )
 endef
 make-finalize += rule_core.o

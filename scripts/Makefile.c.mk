@@ -2,7 +2,6 @@ CC			= clang
 LD			= clang
 AR			= llvm-ar
 
-cflags		+= -Wall -Werror -Wextra -Wno-error=unused-parameter -Wno-unused-function
 cflags		+= -O3 -g
 cflags		+= -nostdlib -ffreestanding -fno-exceptions -fno-rtti -fno-use-cxa-atexit -fno-builtin
 #cflags		+= -fcf-protection # todo: only on x86_64
@@ -11,6 +10,7 @@ cflags-inc	+= -isystemcore/include -Iarch/$(ARCH)/include -I.
 cflags-only += -std=gnu17 -fPIC
 cflags-boot	+= -fno-vectorize -fno-tree-vectorize -fno-slp-vectorize
 cflags-core	+= -fno-vectorize -fno-tree-vectorize -fno-slp-vectorize # todo: enable AVX for core
+cflags-error+= -Wall -Werror -Wextra -Wno-error=unused-parameter -Wno-unused-function
 cppflags	+= -std=c++20 -fPIC
 
 ldflags		+= -Wl,--static,--build-id=sha1 -fuse-ld=lld
@@ -28,25 +28,29 @@ endif
 
 export CC LD CFLAGS LDFLAGS
 
+define mk-cflags-error
+$(if $(NO_CFLAGS_ERROR),,$(cflags-error))
+endef
+
 define cc
 $(CC) $(mk-cflags)
 endef
 define mk-cflags
-$(CFLAGS) $(if $(NO_PIE),-fno-pie,-fPIE) $(cflags-inc) $(value cflags-$(OBJ_GROUP)) $(value cflags-$(OBJ_GROUP)-only)
+$(CFLAGS) $(if $(NO_PIE),-fno-pie,-fPIE) $(call mk-cflags-error) $(cflags-inc) $(value cflags-$(OBJ_GROUP)) $(value cflags-$(OBJ_GROUP)-only)
 endef
 
 define cc-cpp
 $(CC) $(mk-cppflags)
 endef
 define mk-cppflags
-$(CPPFLAGS) $(if $(NO_PIE),-fno-pie,-fPIE) $(cflags-inc) $(value cflags-$(OBJ_GROUP)) $(value cppflags-$(OBJ_GROUP))
+$(CPPFLAGS) $(if $(NO_PIE),-fno-pie,-fPIE) $(call mk-cflags-error) $(cflags-inc) $(value cflags-$(OBJ_GROUP)) $(value cppflags-$(OBJ_GROUP))
 endef
 
 define ld
 $(LD) $(mk-ldflags)
 endef
 define mk-ldflags
-$(LDFLAGS) $(if $(NO_PIE),-fno-pie -Wl$(comma)--no-pie,-fPIE -Wl,-pie) $(value ldflags-$(OBJ_GROUP))
+$(LDFLAGS) $(if $(NO_PIE),-fno-pie -Wl$(comma)--no-pie,-fPIE -Wl,-pie) $(call mk-cflags-error) $(value ldflags-$(OBJ_GROUP))
 endef
 
 $(call saved, $(out)/.cflags, cflags, mk-cflags)

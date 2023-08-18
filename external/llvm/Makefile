@@ -1,1 +1,1 @@
-$(call load-dirs, compiler-rt/)
+$(call load-dirs, compiler-rt/ runtimes/)
