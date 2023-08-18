@@ -1,5 +1,5 @@
 #include "elf.h"
-#include "math.h"
+#include <core/math.h>
 #include <core/arch/boot.h>
 #include <core/arch/bootloader.h>
 #include <core/boot/libboot.h>

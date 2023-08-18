@@ -27,6 +27,8 @@ $(musl-out)%: $(musl-out)config.mak $(musl-out)override.mk $(musl-out-base)arith
 	rm -f $@
 	$(MAKE) -C $(musl-out) -f override.mk -f Makefile
 
+cflags-inc += -isystem $(musl-src)arch/$(MUSL_ARCH)/
+
 default: $(musl-out)lib/libc.so
 
 musl-compiler-rt-builtins := mulxc3.o mulsc3.o muldc3.o udivdi3.o divdi3.o umoddi3.o moddi3.o udivmoddi4.o

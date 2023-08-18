@@ -1,11 +1,10 @@
-$(call load-dirs, boot/ utils/ mm/)
+$(call load-dirs, boot/ cxx/ utils/ mm/)
 
 define rule_core.o
 $(eval
 $$(out)/core/core.o: core/linker.ld $$(allobjs-core)
 	$$(call action,"LD   ")
 	$$(ld) -T $$< -o $$@ $$(filter-out $$<,$$^)
-$$(info $$(allobjs-core))
 )
 endef
 make-finalize += rule_core.o

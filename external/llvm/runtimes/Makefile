@@ -1,7 +1,6 @@
 llvm-rt-src:=$(src)/external/llvm/src/
 llvm-rt-out:=$(curout)
 
-
 llvm-rt-out-user:=$(curout)user/
 
 $(llvm-rt-out-user)Makefile: $(llvm-rt-src)runtimes/ $(llvm-rt-src)libcxx/ $(llvm-rt-src)runtimes/CMakeLists.txt

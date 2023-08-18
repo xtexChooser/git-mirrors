@@ -2,7 +2,7 @@
 #include <core/arch/boot.h>
 #include <core/arch/bootloader.h>
 #include <core/boot/libboot.h>
-#include <math.h>
+#include <core/math.h>
 #include <stdarg.h>
 #include <types.h>
 
