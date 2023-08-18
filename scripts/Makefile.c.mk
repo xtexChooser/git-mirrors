@@ -8,10 +8,10 @@ cflags		+= -nostdlib -ffreestanding -fno-exceptions -fno-rtti -fno-use-cxa-atexi
 #cflags		+= -fcf-protection # todo: only on x86_64
 #cflags		+= -fstack-protector 
 cflags-inc	+= -isystemcore/include -Iarch/$(ARCH)/include -I.
-cflags-only += -std=gnu17
+cflags-only += -std=gnu17 -fPIC
 cflags-boot	+= -fno-vectorize -fno-tree-vectorize -fno-slp-vectorize
 cflags-core	+= -fno-vectorize -fno-tree-vectorize -fno-slp-vectorize # todo: enable AVX for core
-cppflags	+= -std=c++20 --stdlib=libc++
+cppflags	+= -std=c++20 -fPIC
 
 ldflags		+= -Wl,--static,--build-id=sha1 -fuse-ld=lld
 
@@ -32,14 +32,14 @@ define cc
 $(CC) $(mk-cflags)
 endef
 define mk-cflags
-$(CFLAGS) $(if $(NO_PIE),-fno-pie,-fPIE -fPIC) $(cflags-inc) $(value cflags-$(OBJ_GROUP)) $(value cflags-$(OBJ_GROUP)-only)
+$(CFLAGS) $(if $(NO_PIE),-fno-pie,-fPIE) $(cflags-inc) $(value cflags-$(OBJ_GROUP)) $(value cflags-$(OBJ_GROUP)-only)
 endef
 
 define cc-cpp
 $(CC) $(mk-cppflags)
 endef
 define mk-cppflags
-$(CPPFLAGS) $(if $(NO_PIE),-fno-pie,-fPIE -fPIC) $(cflags-inc) $(value cflags-$(OBJ_GROUP)) $(value cppflags-$(OBJ_GROUP))
+$(CPPFLAGS) $(if $(NO_PIE),-fno-pie,-fPIE) $(cflags-inc) $(value cflags-$(OBJ_GROUP)) $(value cppflags-$(OBJ_GROUP))
 endef
 
 define ld

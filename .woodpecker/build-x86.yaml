@@ -2,7 +2,7 @@ steps:
     build:
         image: alpine
         commands:
-            - apk add bash make clang llvm musl-dev coreutils binutils lld 
+            - apk add bash make cmake clang llvm musl-dev coreutils binutils lld 
                 bear doxygen cmd:envsubst grub grub-bios grub-efi cmd:xorriso cmd:mtools
             - make -j$(nproc) ARCH=x86 default doc
 
