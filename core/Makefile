@@ -10,5 +10,5 @@ endef
 make-finalize += rule_core.o
 
 ifneq ($(CONFIG_NO_KASLR),)
-$(curout)%: NO_PIE = 1
+$(curout)core.o: NO_PIE = 1
 endif
