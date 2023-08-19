@@ -4,7 +4,7 @@ namespace LoginNotify;
 
 use Exception;
 use Job;
-use Title;
+use MediaWiki\Title\Title;
 use User;
 
 /**
