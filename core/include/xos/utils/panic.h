@@ -1,7 +1,8 @@
-#pragma once
+#ifndef __XOS_UTILS_PANIC_H__
+#define __XOS_UTILS_PANIC_H__
 
-#include <xos/utils/log.h>
 #include <types.h>
+#include <xos/utils/log.h>
 
 #ifdef __cplusplus
 namespace xos {
@@ -24,8 +25,9 @@ __attribute__((__noreturn__)) void kpanic(const str tag, const str fmt, ...);
 
 /// Throw a core panic
 #ifdef __cplusplus
-#define PANIC(fmt, ...)                                                        \
-	xos::kpanic(klog_tag(), (char *)fmt, ##__VA_ARGS__)
+#define PANIC(fmt, ...) xos::kpanic(klog_tag(), (char *)fmt, ##__VA_ARGS__)
 #else
 #define PANIC(fmt, ...) kpanic(klog_tag(), fmt, ##__VA_ARGS__)
+#endif
+
 #endif

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __XOS_ARCH_BOOTLOADER_H__
+#define __XOS_ARCH_BOOTLOADER_H__
+
 #include <types.h>
 
 void print(str str);
@@ -20,3 +22,5 @@ bool check_arch_boot_memory_available(void *start, void *end);
  * @return void* Pointer
  */
 void *arch_boot_malloc(usize size);
+
+#endif

@@ -1,6 +1,8 @@
+#ifndef __XOS_BOOT_LIBBOOT_H__
+#define __XOS_BOOT_LIBBOOT_H__
+
 #include <xos/boot/boot.h>
 #include <types.h>
-#pragma once
 
 /**
  * @brief Boot core with given info
@@ -60,3 +62,5 @@ usize lookup_core_symbol(boot_info_t *bootinfo, u32 table, u32 index);
 
 static usize lookup_core_symbol32(boot_info_t *bootinfo, u32 table, u32 index);
 static usize lookup_core_symbol64(boot_info_t *bootinfo, u32 table, u32 index);
+
+#endif

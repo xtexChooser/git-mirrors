@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __XOS_ARCH_BOOT_H__
+#define __XOS_ARCH_BOOT_H__
+
 #include <xos/boot/boot.h>
 #include <xos/boot/libboot.h>
 
@@ -109,3 +111,5 @@ typedef struct arch_boot_reloc_req arch_boot_reloc_req_t;
  * @return false Failed
  */
 bool arch_do_elf_reloc(arch_boot_reloc_req_t *r);
+
+#endif

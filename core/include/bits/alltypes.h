@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __BITS_ALLTYPES_H__
+#define __BITS_ALLTYPES_H__
 
 #define __LITTLE_ENDIAN 1234
 #define __BIG_ENDIAN 4321
@@ -160,3 +161,5 @@ typedef struct {
 #undef _Addr
 #undef _Int64
 #undef _Reg
+
+#endif

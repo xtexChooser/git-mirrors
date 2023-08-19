@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __ARCH_BITS_ALLTYPES_H__
+#define __ARCH_BITS_ALLTYPES_H__
 
 #define _REDIR_TIME64 1
 #define _Addr int
@@ -42,3 +43,5 @@ typedef struct {
 #endif
 
 #include_next <bits/alltypes.h>
+
+#endif

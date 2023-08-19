@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __XOS_UTILS_LOG_H__
+#define __XOS_UTILS_LOG_H__
 
 #include <cstdarg>
 #include <types.h>
@@ -85,3 +86,5 @@ static inline str klog_tag();
 
 /// Log an error message
 #define ERROR(fmt, ...) LOG(KLOG_ERROR, fmt, ##__VA_ARGS__)
+
+#endif

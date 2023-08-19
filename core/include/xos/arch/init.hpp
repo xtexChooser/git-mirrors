@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __XOS_ARCH_INIT_HPP__
+#define __XOS_ARCH_INIT_HPP__
+
 #include <xos/boot/boot.h>
 #include <types.h>
 
@@ -20,3 +22,5 @@ void arch_early_init(boot::boot_info_t *bootinfo);
 void arch_init(boot::boot_info_t *bootinfo);
 
 } // namespace xos::init
+
+#endif

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef __XOS_BOOT_BOOT_H__
+#define __XOS_BOOT_BOOT_H__
+
 #include <types.h>
 
 #ifdef __cplusplus
@@ -156,4 +158,6 @@ struct boot_info {
 #ifdef __cplusplus
 }
 } // namespace xos::boot
+#endif
+
 #endif
