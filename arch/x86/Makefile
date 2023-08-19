@@ -1,1 +1,1 @@
-$(call load-dirs, boot/ distrib/)
+$(call load-dirs, boot/ distrib/ core/)

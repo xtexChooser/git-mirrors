@@ -7,7 +7,6 @@ void kpanic(const str tag, const str fmt, ...) {
 	va_start(args, fmt);
 	log::kvprintf(tag, log::LogLevel::KLOG_PANIC, fmt, args);
 	va_end(args);
-	while (1) {
-	}
+	khalt();
 }
 } // namespace xos

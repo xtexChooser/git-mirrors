@@ -1,1 +1,1 @@
-$(call load-objs, core, phymm.o)
+$(call load-objs, core, phymm.o buddy.o)

@@ -1,10 +1,10 @@
 #include "multiboot.h"
+#include <stdarg.h>
+#include <types.h>
 #include <xos/arch/boot.h>
 #include <xos/arch/bootloader.h>
 #include <xos/boot/libboot.h>
 #include <xos/math.h>
-#include <stdarg.h>
-#include <types.h>
 
 #define TEXT_VIDEO_BUFFER 0xB8000
 #define BOOT_INFO_SIZE 0x2000
@@ -79,6 +79,7 @@ void cmain(u32 magic, multiboot_info_t *info) {
 	reserved_mem->next = NULL;
 	reserved_mem->start = (void *)multiboot_header.load_addr;
 	reserved_mem->end = (void *)multiboot_header.bss_end_addr + BOOT_INFO_SIZE;
+	reserved_mem->flag = BOOT_RESERVED_MEM_BOOTLOADER;
 
 	reserved_mem =
 		(boot_reserved_mem_t *)arch_boot_malloc(sizeof(boot_reserved_mem_t));

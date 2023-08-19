@@ -28,8 +28,22 @@ struct boot_reserved_mem {
 	 *
 	 */
 	void *end;
+	/**
+	 * @brief Flags for this reserved block
+	 * Possible values:
+	 *   1. ::BOOT_RESERVED_MEM_BOOTLOADER
+	 *
+	 */
+	u32 flag;
 };
 typedef struct boot_reserved_mem boot_reserved_mem_t;
+
+/**
+ * @brief Indicates the reserved memory block is used by bootloader, including
+ * boot malloc and bootloader
+ *
+ */
+#define BOOT_RESERVED_MEM_BOOTLOADER 0x1
 
 /**
  * @brief Information about a module that is loaded by bootloader
