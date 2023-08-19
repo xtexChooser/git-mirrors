@@ -34,6 +34,7 @@ void do_core_boot(boot_info_t *bootinfo) {
 			return;
 		}
 	}
+	reserve_core_mem(bootinfo);
 	load_core(bootinfo);
 	if (bootinfo->core_entry == NULL) {
 		print("libboot: load_core_elf failed to locate the entrypoint\n");
@@ -166,6 +167,21 @@ static void parse_core_elf64(boot_info_t *bootinfo) {
 			core_load->mem_size = (usize)phdr->p_memsz;
 		}
 		phdr = (Elf64_Phdr *)((void *)phdr + (usize)ehdr->e_phentsize);
+	}
+}
+
+void reserve_core_mem(boot_info_t *bootinfo) {
+	boot_reserved_mem_t *reserved_mem;
+	boot_elf_load_t *load = bootinfo->core_elf_load;
+	while (load != NULL) {
+		reserved_mem = (boot_reserved_mem_t *)arch_boot_malloc(
+			sizeof(boot_reserved_mem_t));
+		reserved_mem->next = bootinfo->reserved_mem;
+		bootinfo->reserved_mem = reserved_mem;
+		reserved_mem->start = bootinfo->core_load_offset + load->start;
+		reserved_mem->end =
+			reserved_mem->start + max(load->mem_size, load->size);
+		load = load->next;
 	}
 }
 

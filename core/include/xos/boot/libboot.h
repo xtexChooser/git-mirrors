@@ -1,8 +1,8 @@
 #ifndef __XOS_BOOT_LIBBOOT_H__
 #define __XOS_BOOT_LIBBOOT_H__
 
-#include <xos/boot/boot.h>
 #include <types.h>
+#include <xos/boot/boot.h>
 
 /**
  * @brief Boot core with given info
@@ -39,6 +39,13 @@ void parse_core_elf(boot_info_t *bootinfo);
 
 static void parse_core_elf32(boot_info_t *bootinfo);
 static void parse_core_elf64(boot_info_t *bootinfo);
+
+/**
+ * @brief Add core LOAD memory blocks to ::reserved_mem
+ * 
+ * @param bootinfo Boot info
+ */
+void reserve_core_mem(boot_info_t *bootinfo);
 
 /**
  * @brief Load ELF and do relocations
