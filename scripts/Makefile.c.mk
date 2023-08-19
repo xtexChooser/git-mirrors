@@ -5,7 +5,7 @@ AR			= llvm-ar
 cflags		+= -O3 -g
 cflags		+= -nostdlib -ffreestanding -fno-exceptions -fno-rtti -fno-use-cxa-atexit -fno-builtin
 #cflags		+= -fcf-protection # todo: only on x86_64
-#cflags		+= -fstack-protector 
+cflags		+= -fstack-protector
 cflags-inc	+= -isystem arch/$(ARCH)/include -isystemcore/include -I.
 cflags-only += -std=gnu17 -fPIC
 cflags-boot	+= -fno-vectorize -fno-tree-vectorize -fno-slp-vectorize
