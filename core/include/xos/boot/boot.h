@@ -79,6 +79,13 @@ struct boot_elf_load {
 	 *
 	 */
 	usize size;
+	/**
+	 * @brief The size of memory
+	 * The part of memory that is not covered with ::size will be filled with
+	 * zero.
+	 *
+	 */
+	usize mem_size;
 };
 typedef struct boot_elf_load boot_elf_load_t;
 

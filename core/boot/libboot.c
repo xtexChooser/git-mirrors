@@ -1,10 +1,10 @@
 #include "elf.h"
-#include <xos/math.h>
+#include <limits.h>
+#include <types.h>
 #include <xos/arch/boot.h>
 #include <xos/arch/bootloader.h>
 #include <xos/boot/libboot.h>
-#include <limits.h>
-#include <types.h>
+#include <xos/math.h>
 
 void do_core_boot(boot_info_t *bootinfo) {
 	bootinfo->random = arch_boot_rand();
@@ -134,7 +134,8 @@ static void parse_core_elf32(boot_info_t *bootinfo) {
 			next_core_load = &core_load->next;
 			core_load->offset = (usize)phdr->p_offset;
 			core_load->start = (usize)phdr->p_paddr;
-			core_load->size = ceilu((usize)phdr->p_memsz, (usize)phdr->p_align);
+			core_load->size = (usize)phdr->p_filesz;
+			core_load->mem_size = (usize)phdr->p_memsz;
 		}
 		phdr = (Elf32_Phdr *)((void *)phdr + (usize)ehdr->e_phentsize);
 	}
@@ -161,7 +162,8 @@ static void parse_core_elf64(boot_info_t *bootinfo) {
 			next_core_load = &core_load->next;
 			core_load->offset = (usize)phdr->p_offset;
 			core_load->start = (usize)phdr->p_paddr;
-			core_load->size = ceilu((usize)phdr->p_memsz, (usize)phdr->p_align);
+			core_load->size = (usize)phdr->p_filesz;
+			core_load->mem_size = (usize)phdr->p_memsz;
 		}
 		phdr = (Elf64_Phdr *)((void *)phdr + (usize)ehdr->e_phentsize);
 	}
@@ -178,6 +180,11 @@ void load_core(boot_info_t *bootinfo) {
 			*(u64 *)memdst = *(u64 *)memsrc;
 			memsrc += sizeof(u64);
 			memdst += sizeof(u64);
+		}
+		// Fill remaining area with zero
+		void *memdst_end = memsrc + load->mem_size;
+		while (memdst < memdst_end) {
+			*(u64 *)memdst = 0;
 		}
 		load = load->next;
 	}

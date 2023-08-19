@@ -1,7 +1,7 @@
-#include <xos/utils/log.h>
 #include <stdarg.h>
+#include <xos/utils/log.h>
 
-static u16 term_x, term_y;
+static u16 term_x = 0, term_y = 0;
 static void printf(const str fmt, ...);
 static void vprintf(const str fmt, va_list valist);
 static void putchar(int chr);
