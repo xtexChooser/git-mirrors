@@ -1,0 +1,7 @@
+{
+    "recommendations": [
+        "ms-vscode.makefile-tools",
+        "webfreak.debug",
+        "llvm-vs-code-extensions.vscode-clangd"
+    ]
+}

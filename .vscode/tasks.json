@@ -1,0 +1,24 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build",
+			"type": "shell",
+			"command": "make",
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"label": "Debug",
+			"type": "shell",
+			"command": "make debug",
+			"dependsOn": [
+				"Build"
+			],
+			"problemMatcher": []
+		}
+	]
+}
