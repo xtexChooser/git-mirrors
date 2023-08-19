@@ -48,7 +48,7 @@ bool arch_check_elf64_machine_valid(u16 machine);
  */
 struct arch_boot_reloc_req {
 	/**
-	 * @brief Reference to the ::boot_info struct
+	 * @brief Reference to the xos::boot::boot_info struct
 	 *
 	 */
 	boot_info_t *bootinfo;

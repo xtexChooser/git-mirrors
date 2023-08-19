@@ -46,7 +46,7 @@ void kprintf(const str tag, const LogLevel level, const str fmt, ...);
  * @param tag Tag
  * @param level Level
  * @param fmt Format
- * @param ... Arguments
+ * @param args Arguments
  */
 void kvprintf(const str tag, const LogLevel level, const str fmt, std::va_list args);
 

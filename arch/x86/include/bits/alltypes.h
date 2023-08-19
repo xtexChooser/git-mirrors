@@ -1,3 +1,7 @@
+#ifdef DOXYGEN
+#define __ARCH_BITS_ALLTYPES_H__
+#endif
+
 #ifndef __ARCH_BITS_ALLTYPES_H__
 #define __ARCH_BITS_ALLTYPES_H__
 

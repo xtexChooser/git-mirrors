@@ -16,7 +16,7 @@ extern "C" {
  * @param fmt Message format string
  * @param ... Format arguments
  */
-__attribute__((__noreturn__)) void kpanic(const str tag, const str fmt, ...);
+void kpanic(const str tag, const str fmt, ...) __attribute__((__noreturn__));
 
 #ifdef __cplusplus
 }
