@@ -27,7 +27,7 @@ $(musl-out)%: $(musl-out)config.mak $(musl-out)override.mk $(musl-out-base)arith
 	rm -f $@
 	$(MAKE) -C $(musl-out) -f override.mk -f Makefile
 
-cflags-inc += -isystem $(musl-src)arch/$(MUSL_ARCH)/
+cflags-inc += -isystem $(musl-src)arch/$(MUSL_ARCH)/ -I $(musl-src)arch/generic/
 
 default: $(musl-out)lib/libc.so
 
