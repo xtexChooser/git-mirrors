@@ -1,5 +1,5 @@
 #pragma once
-#include <core/boot/boot.h>
+#include <xos/boot/boot.h>
 #include <types.h>
 
 namespace xos::init {

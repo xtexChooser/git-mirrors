@@ -1,5 +1,5 @@
-#include "core/utils/panic.h"
-#include <core/utils/log.h>
+#include <xos/utils/panic.h"
+#include <xos/utils/log.h>
 
 namespace xos {
 __attribute__((__noreturn__)) void kpanic(const str tag, const str fmt, ...) {

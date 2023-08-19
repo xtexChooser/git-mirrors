@@ -1,7 +1,7 @@
-#include <core/arch/init.hpp>
-#include <core/boot/boot.h>
-#include <core/utils/log.h>
-#include <core/mm/mm.hpp>
+#include <xos/arch/init.hpp>
+#include <xos/boot/boot.h>
+#include <xos/utils/log.h>
+#include <xos/mm/mm.hpp>
 
 using namespace xos::boot;
 using namespace xos::init;

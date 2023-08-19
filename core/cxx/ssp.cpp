@@ -1,4 +1,4 @@
-#include <core/utils/panic.h>
+#include <xos/utils/panic.h>
 #include <stdint.h>
 #include <types.h>
 

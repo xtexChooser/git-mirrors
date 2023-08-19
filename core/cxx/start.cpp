@@ -1,4 +1,4 @@
-#include <core/boot/boot.h>
+#include <xos/boot/boot.h>
 
 extern "C" {
 

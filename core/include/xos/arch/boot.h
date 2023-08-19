@@ -1,6 +1,6 @@
 #pragma once
-#include <core/boot/boot.h>
-#include <core/boot/libboot.h>
+#include <xos/boot/boot.h>
+#include <xos/boot/libboot.h>
 
 /**
  * @brief Archiecture-specific logic after bootloader initialized. Called by

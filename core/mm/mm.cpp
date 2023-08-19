@@ -1,6 +1,6 @@
-#include <core/mm/mm.hpp>
-#include <core/mm/phy/phymm.hpp>
-#include <core/utils/log.h>
+#include <xos/mm/mm.hpp>
+#include <xos/mm/phy/phymm.hpp>
+#include <xos/utils/log.h>
 
 LOG_TAG("mm");
 

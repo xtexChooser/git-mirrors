@@ -1,6 +1,6 @@
 #pragma once
 
-#include <core/utils/log.h>
+#include <xos/utils/log.h>
 #include <types.h>
 
 #ifdef __cplusplus
