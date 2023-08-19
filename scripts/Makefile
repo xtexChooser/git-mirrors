@@ -67,6 +67,7 @@ make-finalize += saved_restore_$(strip $2)
 endef
 
 include scripts/Makefile.c.mk
+include scripts/Makefile.tools.mk
 
 include arch/$(ARCH)/base.mk
 
