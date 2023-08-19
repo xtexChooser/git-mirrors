@@ -8,9 +8,11 @@ extern "C" {
 void _init();
 void _fini();
 
-// CXA
+// CXX ABI
 /// Call atexit entries
 void __cxa_finalize(void *f);
+/// Pure virtual function handler
+void __cxa_pure_virtual();
 
 // SSP
 /// SSP random number
