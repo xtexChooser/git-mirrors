@@ -1,1 +1,1 @@
-$(call load-dirs, libcxxrt/ llvm/ musl/)
+$(call load-dirs, llvm/ musl/)
