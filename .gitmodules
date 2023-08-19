@@ -10,5 +10,6 @@
 	shallow = true
 [submodule "libcxxrt"]
 	path = external/libcxxrt/src
-	url = git@github.com:libcxxrt/libcxxrt.git
+	url = https://github.com/libcxxrt/libcxxrt.git
 	branch = master
+	shallow = true
