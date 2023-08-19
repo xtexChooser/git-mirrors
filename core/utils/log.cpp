@@ -1,4 +1,4 @@
-#include <xos/utils/log.h"
+#include <xos/utils/log.h>
 #include <stdarg.h>
 
 static u16 term_x, term_y;

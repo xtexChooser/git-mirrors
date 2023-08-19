@@ -1,4 +1,4 @@
-#include <xos/utils/panic.h"
+#include <xos/utils/panic.h>
 #include <xos/utils/log.h>
 
 namespace xos {
