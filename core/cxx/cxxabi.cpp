@@ -48,7 +48,5 @@ void __cxa_finalize(void *f) {
 	}
 }
 
-void __cxa_pure_virtual() {
-	PANIC("pure virtual function called");
-}
+void __cxa_pure_virtual() { PANIC("pure virtual function called"); }
 }

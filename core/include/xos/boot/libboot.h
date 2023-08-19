@@ -42,7 +42,7 @@ static void parse_core_elf64(boot_info_t *bootinfo);
 
 /**
  * @brief Add core LOAD memory blocks to ::reserved_mem
- * 
+ *
  * @param bootinfo Boot info
  */
 void reserve_core_mem(boot_info_t *bootinfo);

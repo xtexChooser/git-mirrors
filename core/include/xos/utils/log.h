@@ -48,7 +48,8 @@ void kprintf(const str tag, const LogLevel level, const str fmt, ...);
  * @param fmt Format
  * @param args Arguments
  */
-void kvprintf(const str tag, const LogLevel level, const str fmt, std::va_list args);
+void kvprintf(const str tag, const LogLevel level, const str fmt,
+			  std::va_list args);
 
 #ifdef __cplusplus
 }

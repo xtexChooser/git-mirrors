@@ -20,8 +20,9 @@ void kpanic(const str tag, const str fmt, ...) __attribute__((__noreturn__));
 
 /**
  * @brief Infinity loop
- * This is platform-dependent and should be defined by arch. Because simply `while (1);` is undefined behaviour.
- * 
+ * This is platform-dependent and should be defined by arch. Because simply
+ * `while (1);` is undefined behaviour.
+ *
  */
 void khalt() __attribute__((__noreturn__));
 

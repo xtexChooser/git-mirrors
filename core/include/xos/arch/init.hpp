@@ -1,8 +1,8 @@
 #ifndef __XOS_ARCH_INIT_HPP__
 #define __XOS_ARCH_INIT_HPP__
 
-#include <xos/boot/boot.h>
 #include <types.h>
+#include <xos/boot/boot.h>
 
 namespace xos::init {
 
