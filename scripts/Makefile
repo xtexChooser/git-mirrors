@@ -6,15 +6,17 @@ mkparent	= mkdir -p $$(dirname $@)
 comma:=,
 
 .DELETE_ON_ERROR:
-.PHONY: default
+.PHONY: default debug
 default:
+
+-include local.config.mk
+ARCH ?= $(CONFIG_ARCH)
+ARCH := $(ARCH)
 
 ifeq ($(ARCH),)
 $(error ARCH is not specified)
 endif
 include arch/$(ARCH)/config.mk
-
--include local.config.mk
 
 define load-dir
 $(eval curdirs += $1
