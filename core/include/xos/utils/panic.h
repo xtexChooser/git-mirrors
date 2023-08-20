@@ -38,4 +38,19 @@ void khalt() __attribute__((__noreturn__));
 #define PANIC(fmt, ...) kpanic(klog_tag(), fmt, ##__VA_ARGS__)
 #endif
 
+/// Assert
+#define ASSERT(cond, fmt, ...)                                                 \
+	if (!(cond)) {                                                             \
+		PANIC("assertion failed: " #cond " " #fmt, ##__VA_ARGS__);             \
+	}
+
+/// Assert the condition is true
+#define ASSERT_TRUE(cond) ASSERT(cond, "")
+/// Assert the condition is false
+#define ASSERT_FALSE(cond) ASSERT(!(cond), "")
+/// Assert two numbers are equal
+#define ASSERT_EQ(a, b) ASSERT((a) == (b), "%d %d", (a), (b))
+/// Assert two numbers are not equal
+#define ASSERT_NEQ(a, b) ASSERT((a) != (b), "%d %d", (a), (b))
+
 #endif
