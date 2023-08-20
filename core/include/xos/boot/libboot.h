@@ -41,7 +41,7 @@ static void parse_core_elf32(boot_info_t *bootinfo);
 static void parse_core_elf64(boot_info_t *bootinfo);
 
 /**
- * @brief Add core LOAD memory blocks to ::reserved_mem
+ * @brief Add core LOAD memory blocks to xos::boot::boot_info::reserved_mem
  *
  * @param bootinfo Boot info
  */
