@@ -15,6 +15,7 @@ namespace impl {
 #pragma clang diagnostic ignored "-Wall"
 #pragma clang diagnostic ignored "-Wextra"
 #pragma clang diagnostic ignored "-Wconstant-logical-operand"
+#define BUDDY_PRINTF INFO
 #include "external/buddy_alloc/buddy_alloc.h"
 #pragma clang diagnostic pop
 } // namespace impl
@@ -35,6 +36,7 @@ usize BuddyAllocator::get_size(usize mem_sz) {
 	return sizeof(BuddyAllocator) + impl::buddy_sizeof(mem_sz);
 }
 
+/// \todo buddy alloc must be synchronized
 void *BuddyAllocator::malloc(usize size) {
 	return impl::buddy_malloc(backend, size);
 }
