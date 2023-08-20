@@ -46,9 +46,11 @@ void init(boot::boot_info_t *bootinfo) {
 		BuddyAllocator(pmem_size, &metadata_alloc);
 	ASSERT_EQ(buddy_base + buddy_size, (usize)metadata_alloc);
 	// reserve memory blocks
+	main_alloc->reserve((void *)buddy_base, buddy_size);
 	boot::boot_reserved_mem *reserved_mem = bootinfo->reserved_mem;
 	while (reserved_mem != nullptr) {
-		main_alloc->reserve(reserved_mem->start,
+		main_alloc->reserve((void *)max((usize)reserved_mem->start, PAGE_SIZE),
+							// the first page is not managed by buddy allocator
 							(usize)reserved_mem->end -
 								(usize)reserved_mem->start);
 		reserved_mem = reserved_mem->next;
