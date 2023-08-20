@@ -1,5 +1,5 @@
-#ifndef __XOS_ARCH_BOOTLOADER_H__
-#define __XOS_ARCH_BOOTLOADER_H__
+#ifndef __XOS_BOOT_BOOTLOADER_H__
+#define __XOS_BOOT_BOOTLOADER_H__
 
 #include <types.h>
 

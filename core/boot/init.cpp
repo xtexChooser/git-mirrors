@@ -1,4 +1,4 @@
-#include <xos/arch/init.hpp>
+#include <xos/init/arch.hpp>
 #include <xos/boot/boot.h>
 #include <xos/mm/mm.hpp>
 #include <xos/utils/log.h>

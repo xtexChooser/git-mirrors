@@ -1,4 +1,4 @@
-#include <xos/arch/init.hpp>
+#include <xos/init/arch.hpp>
 
 namespace xos::init {
 

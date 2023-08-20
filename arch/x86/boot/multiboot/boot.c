@@ -1,8 +1,8 @@
 #include "multiboot.h"
 #include <stdarg.h>
 #include <types.h>
-#include <xos/arch/boot.h>
-#include <xos/arch/bootloader.h>
+#include <xos/boot/arch.h>
+#include <xos/boot/bootloader.h>
 #include <xos/boot/libboot.h>
 #include <xos/math.h>
 

@@ -1,8 +1,8 @@
 #include "elf.h"
 #include <limits.h>
 #include <types.h>
-#include <xos/arch/boot.h>
-#include <xos/arch/bootloader.h>
+#include <xos/boot/arch.h>
+#include <xos/boot/bootloader.h>
 #include <xos/boot/libboot.h>
 #include <xos/math.h>
 
@@ -54,18 +54,19 @@ void do_core_boot(boot_info_t *bootinfo) {
 }
 
 void find_core_boot_mem(boot_info_t *bootinfo) {
-	void *load_base = (void *)flooru(bootinfo->random, SZ_4K) + SZ_2M;
+	void *load_base = (void *)flooru(bootinfo->random, BOOT_PAGE_SIZE) +
+					  BOOT_MEMORY_LOWER_RESERVED;
 	usize core_size = (usize)(bootinfo->core_end - bootinfo->core_start);
 	while (1) {
 		void *load_end = load_base + core_size;
-		if (load_end < (bootinfo->mem_upper - SZ_1M)) {
+		if (load_end < (bootinfo->mem_upper - BOOT_MEMORY_HIGH_RESERVED)) {
 			if (check_core_loadable_at(bootinfo, load_base)) {
 				break;
 			}
-			load_base = (void *)load_base - SZ_4K;
+			load_base = (void *)load_base - BOOT_PAGE_SIZE;
 		} else
-			load_base = (void *)flooru((usize)load_base / 2, SZ_4K);
-		if ((usize)load_base <= SZ_2M) {
+			load_base = (void *)flooru((usize)load_base / 2, BOOT_PAGE_SIZE);
+		if ((usize)load_base <= BOOT_MEMORY_LOWER_RESERVED) {
 			print("libboot: ASLR locate failed\n");
 			bootinfo->core_load_offset = NULL;
 			return;

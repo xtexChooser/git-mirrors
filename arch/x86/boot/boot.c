@@ -1,6 +1,6 @@
 #include "elf.h"
-#include <xos/arch/boot.h>
-#include <xos/arch/bootloader.h>
+#include <xos/boot/arch.h>
+#include <xos/boot/bootloader.h>
 
 void arch_boot() { __asm__("cli"); }
 

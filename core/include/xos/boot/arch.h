@@ -1,5 +1,5 @@
-#ifndef __XOS_ARCH_BOOT_H__
-#define __XOS_ARCH_BOOT_H__
+#ifndef __XOS_BOOT_ARCH_H__
+#define __XOS_BOOT_ARCH_H__
 
 #include <xos/boot/boot.h>
 #include <xos/boot/libboot.h>
