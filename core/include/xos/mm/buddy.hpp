@@ -1,11 +1,11 @@
-#ifndef __XOS_MM_PHY_BUDDY_HPP__
-#define __XOS_MM_PHY_BUDDY_HPP__
+#ifndef __XOS_MM_BUDDY_HPP__
+#define __XOS_MM_BUDDY_HPP__
 
 #include <types.h>
 #include <xos/arch.hpp>
 #include <xos/mm/mm.hpp>
 
-namespace xos::mm::phy::buddy {
+namespace xos::mm::buddy {
 
 namespace impl {
 #define BUDDY_ALLOC_ALIGN PAGE_SIZE
@@ -47,9 +47,9 @@ public:
 	void *calloc(usize num, usize size) override;
 	void *realloc(void *ptr, usize new_size) override;
 
-	void reserve(void *ptr, usize size) override;
-	void unreserve(void *ptr, usize size) override;
+	bool reserve(void *ptr, usize size) override;
+	bool unreserve(void *ptr, usize size) override;
 };
-} // namespace xos::mm::phy::buddy
+} // namespace xos::mm::buddy
 
 #endif

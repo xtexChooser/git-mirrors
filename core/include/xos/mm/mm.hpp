@@ -50,15 +50,19 @@ public:
 	 *
 	 * @param ptr Pointer
 	 * @param size Size
+	 * @return true Succeeded
+	 * @return false Unsupported for failed
 	 */
-	virtual void reserve(void *ptr, usize size);
+	virtual bool reserve(void *ptr, usize size);
 	/**
 	 * @brief Un-reserve a memory block as not used
-	 * 
+	 *
 	 * @param ptr Pointer
 	 * @param size Size
+	 * @return true Succeeded
+	 * @return false Unsupported for failed
 	 */
-	virtual void unreserve(void *ptr, usize size);
+	virtual bool unreserve(void *ptr, usize size);
 };
 } // namespace xos::mm
 

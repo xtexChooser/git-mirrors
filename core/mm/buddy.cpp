@@ -5,7 +5,7 @@
 
 LOG_TAG("mm/buddy");
 
-namespace xos::mm::phy::buddy {
+namespace xos::mm::buddy {
 
 namespace impl {
 #define BUDDY_ALLOC_IMPLEMENTATION
@@ -49,11 +49,13 @@ void *BuddyAllocator::realloc(void *ptr, usize new_size) {
 	return impl::buddy_realloc(backend, ptr, new_size);
 }
 
-void BuddyAllocator::reserve(void *ptr, usize size) {
+bool BuddyAllocator::reserve(void *ptr, usize size) {
 	impl::buddy_reserve_range(backend, ptr, size);
+	return true;
 }
-void BuddyAllocator::unreserve(void *ptr, usize size) {
+bool BuddyAllocator::unreserve(void *ptr, usize size) {
 	impl::buddy_unsafe_release_range(backend, ptr, size);
+	return true;
 }
 
-} // namespace xos::mm::phy::buddy
+} // namespace xos::mm::buddy

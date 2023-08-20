@@ -16,7 +16,7 @@ void *MemAllocator::calloc(usize num, usize size) {
 
 void *MemAllocator::realloc(void *ptr, usize new_size) { return nullptr; }
 
-void MemAllocator::reserve(void *ptr, usize size) {}
-void MemAllocator::unreserve(void *ptr, usize size) {}
+bool MemAllocator::reserve(void *ptr, usize size) { return false; }
+bool MemAllocator::unreserve(void *ptr, usize size) { return false; }
 
 } // namespace xos::mm

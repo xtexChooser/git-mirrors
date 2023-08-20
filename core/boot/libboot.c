@@ -183,8 +183,8 @@ void reserve_core_mem(boot_info_t *bootinfo) {
 		reserved_mem->next = bootinfo->reserved_mem;
 		bootinfo->reserved_mem = reserved_mem;
 		reserved_mem->start = bootinfo->core_load_offset + load->start;
-		reserved_mem->end =
-			reserved_mem->start + ceilu(max(load->mem_size, load->size), load->align);
+		reserved_mem->end = reserved_mem->start +
+							ceilu(max(load->mem_size, load->size), load->align);
 		load = load->next;
 	}
 }
