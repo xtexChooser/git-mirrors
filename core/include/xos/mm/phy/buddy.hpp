@@ -3,6 +3,7 @@
 
 #include <types.h>
 #include <xos/arch.hpp>
+#include <xos/mm/mm.hpp>
 
 namespace xos::mm::phy::buddy {
 
@@ -15,7 +16,7 @@ namespace impl {
  * @brief A Buddy memory allocator
  *
  */
-class BuddyAllocator {
+class BuddyAllocator: public MemAllocator {
 private:
 	struct impl::buddy *backend;
 
@@ -30,11 +31,14 @@ public:
 
 	static usize get_size(usize mem_sz);
 
-	void *alloc(usize size);
-	void free(void *ptr);
+	void *malloc(usize size) override;
+	void free(void *ptr) override;
 
-	void reserve(void *ptr, usize size);
-	void unreserve(void *ptr, usize size);
+	void *calloc(usize num, usize size) override;
+	void *realloc(void *ptr, usize new_size) override;
+
+	void reserve(void *ptr, usize size) override;
+	void unreserve(void *ptr, usize size) override;
 };
 } // namespace xos::mm::phy::buddy
 

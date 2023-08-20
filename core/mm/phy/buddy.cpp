@@ -9,7 +9,8 @@ namespace xos::mm::phy::buddy {
 
 namespace impl {
 #define BUDDY_ALLOC_IMPLEMENTATION
-/*! \file buddy.cpp \todo waiting https://github.com/spaskalev/buddy_alloc/pull/75 to be merged */
+/*! \file buddy.cpp \todo waiting
+ * https://github.com/spaskalev/buddy_alloc/pull/75 to be merged */
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wall"
 #pragma clang diagnostic ignored "-Wextra"
@@ -34,15 +35,21 @@ usize BuddyAllocator::get_size(usize mem_sz) {
 	return sizeof(BuddyAllocator) + impl::buddy_sizeof(mem_sz);
 }
 
-void *BuddyAllocator::alloc(usize size) {
+void *BuddyAllocator::malloc(usize size) {
 	return impl::buddy_malloc(backend, size);
 }
 void BuddyAllocator::free(void *ptr) { impl::buddy_free(backend, ptr); }
 
+void *BuddyAllocator::calloc(usize num, usize size) {
+	return impl::buddy_calloc(backend, num, size);
+}
+void *BuddyAllocator::realloc(void *ptr, usize new_size) {
+	return impl::buddy_realloc(backend, ptr, new_size);
+}
+
 void BuddyAllocator::reserve(void *ptr, usize size) {
 	impl::buddy_reserve_range(backend, ptr, size);
 }
-
 void BuddyAllocator::unreserve(void *ptr, usize size) {
 	impl::buddy_unsafe_release_range(backend, ptr, size);
 }

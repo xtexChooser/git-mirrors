@@ -5,5 +5,22 @@
 LOG_TAG("mm");
 
 namespace xos::mm {
-void mm_init(boot::boot_info_t *bootinfo) { phy::phymm_init(bootinfo); }
+
+void mm_init(boot::boot_info_t *bootinfo) { phy::init(bootinfo); }
+
+void *MemAllocator::calloc(usize num, usize size) {
+	void *ptr = malloc(num * size);
+	std::memset(ptr, 0, num * size);
+	return ptr;
+}
+
+void *MemAllocator::realloc(void *ptr, usize new_size) {
+	_unused(ptr);
+	_unused(new_size);
+	return nullptr;
+}
+
+void MemAllocator::reserve(void *ptr, usize size) {}
+void MemAllocator::unreserve(void *ptr, usize size) {}
+
 } // namespace xos::mm
