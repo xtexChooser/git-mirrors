@@ -29,6 +29,7 @@ typedef long double float_t;
 typedef long double double_t;
 #endif
 
+#if !defined(max_align_t)
 #if !defined(__cplusplus)
 typedef struct {
 	_Alignas(8) long long __ll;
@@ -44,6 +45,7 @@ typedef struct {
 	alignas(8) long long __ll;
 	long double __ld;
 } max_align_t;
+#endif
 #endif
 
 #include_next <bits/alltypes.h>
