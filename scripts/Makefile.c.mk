@@ -10,7 +10,7 @@ cflags-inc	+= -isystem arch/$(ARCH)/include -isystemcore/include -I.
 cflags-only += -std=gnu17 -fPIC
 cflags-boot	+= -fno-vectorize -fno-tree-vectorize -fno-slp-vectorize
 cflags-core	+= -fno-vectorize -fno-tree-vectorize -fno-slp-vectorize # todo: enable AVX for core
-cflags-error+= -Wall -Werror -Wextra -Wno-error=unused-parameter -Wno-unused-function
+cflags-error+= -Wall -Werror -Wextra -Wno-unused-parameter -Wno-unused-function
 cppflags	+= -std=c++20 -fPIC
 
 ldflags		+= -Wl,--static,--build-id=sha1 -fuse-ld=lld

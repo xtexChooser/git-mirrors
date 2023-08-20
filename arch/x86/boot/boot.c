@@ -4,10 +4,7 @@
 
 void arch_boot() { __asm__("cli"); }
 
-bool arch_pre_boot(boot_info_t *bootinfo) {
-	_unused(bootinfo);
-	return true;
-}
+bool arch_pre_boot(boot_info_t *bootinfo) { return true; }
 
 /**
  * @brief Randomize a number. Modified from Wichmann-Hill.

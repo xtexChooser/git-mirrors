@@ -14,11 +14,7 @@ void *MemAllocator::calloc(usize num, usize size) {
 	return ptr;
 }
 
-void *MemAllocator::realloc(void *ptr, usize new_size) {
-	_unused(ptr);
-	_unused(new_size);
-	return nullptr;
-}
+void *MemAllocator::realloc(void *ptr, usize new_size) { return nullptr; }
 
 void MemAllocator::reserve(void *ptr, usize size) {}
 void MemAllocator::unreserve(void *ptr, usize size) {}
