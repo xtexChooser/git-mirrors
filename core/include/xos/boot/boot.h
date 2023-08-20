@@ -100,6 +100,11 @@ struct boot_elf_load {
 	 *
 	 */
 	usize mem_size;
+	/**
+	 * @brief The alignment
+	 *
+	 */
+	usize align;
 };
 typedef struct boot_elf_load boot_elf_load_t;
 

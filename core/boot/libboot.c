@@ -139,6 +139,7 @@ static void parse_core_elf32(boot_info_t *bootinfo) {
 			core_load->start = (usize)phdr->p_paddr;
 			core_load->size = (usize)phdr->p_filesz;
 			core_load->mem_size = (usize)phdr->p_memsz;
+			core_load->align = (usize)phdr->p_align;
 		}
 		phdr = (Elf32_Phdr *)((void *)phdr + (usize)ehdr->e_phentsize);
 	}
@@ -167,6 +168,7 @@ static void parse_core_elf64(boot_info_t *bootinfo) {
 			core_load->start = (usize)phdr->p_paddr;
 			core_load->size = (usize)phdr->p_filesz;
 			core_load->mem_size = (usize)phdr->p_memsz;
+			core_load->align = (usize)phdr->p_align;
 		}
 		phdr = (Elf64_Phdr *)((void *)phdr + (usize)ehdr->e_phentsize);
 	}
@@ -182,7 +184,7 @@ void reserve_core_mem(boot_info_t *bootinfo) {
 		bootinfo->reserved_mem = reserved_mem;
 		reserved_mem->start = bootinfo->core_load_offset + load->start;
 		reserved_mem->end =
-			reserved_mem->start + max(load->mem_size, load->size);
+			reserved_mem->start + ceilu(max(load->mem_size, load->size), load->align);
 		load = load->next;
 	}
 }
