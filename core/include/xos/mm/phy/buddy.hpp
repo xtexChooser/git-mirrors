@@ -1,39 +1,40 @@
 #ifndef __XOS_MM_PHY_BUDDY_HPP__
 #define __XOS_MM_PHY_BUDDY_HPP__
 
-/**
- * @brief Count of orders of a buddy allocator
- *
- */
-#define BUDDY_ALLOC_ORDERS
-#undef BUDDY_ALLOC_ORDERS
-
-#include <xos/arch/mm/buddy.hpp>
+#include <types.h>
+#include <xos/arch.hpp>
 
 namespace xos::mm::phy::buddy {
+
+namespace impl {
+#define BUDDY_ALLOC_ALIGN PAGE_SIZE
+#include "external/buddy_alloc/buddy_alloc.h"
+} // namespace impl
+
 /**
- * @brief Size of orders of buddy allocators
+ * @brief A Buddy memory allocator
  *
  */
-extern const int order_sizes[BUDDY_ALLOC_ORDERS];
-
-#define BUDDY_ALLOC_MAX_ORDER_SIZE order_sizes[BUDDY_ALLOC_ORDERS - 1]
-
-typedef u8 Bitmap[];
-
 class BuddyAllocator {
 private:
-	const usize mem_size;
+	struct impl::buddy *backend;
 
 public:
-	Bitmap *bitmaps[BUDDY_ALLOC_ORDERS];
+	/**
+	 * @brief Construct a new Buddy Allocator object
+	 *
+	 * @param mem_sz Memory size
+	 * @param metadata_alloc Metadata allocator
+	 */
+	BuddyAllocator(usize mem_sz, void **metadata_alloc);
 
-	BuddyAllocator(usize mem_sz, void *bitmap_alloc);
+	static usize get_size(usize mem_sz);
 
-	static usize get_bitmap_size(usize mem_sz);
+	void *alloc(usize size);
+	void free(void *ptr);
 
-	usize alloc(usize size);
-	void free(usize ptr, usize size);
+	void reserve(void *ptr, usize size);
+	void unreserve(void *ptr, usize size);
 };
 } // namespace xos::mm::phy::buddy
 

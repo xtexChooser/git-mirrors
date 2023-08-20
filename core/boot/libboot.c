@@ -1,6 +1,7 @@
 #include "elf.h"
 #include <limits.h>
 #include <types.h>
+#include <xos/arch/boot.h>
 #include <xos/boot/arch.h>
 #include <xos/boot/bootloader.h>
 #include <xos/boot/libboot.h>
