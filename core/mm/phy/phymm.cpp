@@ -1,3 +1,4 @@
+#include <types.h>
 #include <xos/math.h>
 #include <xos/mm/phy/buddy.hpp>
 #include <xos/mm/phy/phymm.hpp>
@@ -11,7 +12,7 @@ using namespace buddy;
 
 buddy::BuddyAllocator *main_alloc;
 
-void phymm_init(boot::boot_info_t *bootinfo) {
+void init(boot::boot_info_t *bootinfo) {
 	// find base address
 	usize pmem_size = (usize)bootinfo->mem_upper;
 	usize buddy_size = BuddyAllocator::get_size((usize)bootinfo->mem_upper);
@@ -44,8 +45,13 @@ void phymm_init(boot::boot_info_t *bootinfo) {
 	main_alloc = new (reinterpret_cast<void *>(buddy_base))
 		BuddyAllocator(pmem_size, &metadata_alloc);
 	ASSERT_EQ(buddy_base + buddy_size, (usize)metadata_alloc);
-	for (int i = 0; i < 10; i++) {
-		INFO("alloc 4k: 0x%x", main_alloc->alloc(SZ_4K));
+	// reserve memory blocks
+	boot::boot_reserved_mem *reserved_mem = bootinfo->reserved_mem;
+	while (reserved_mem != nullptr) {
+		main_alloc->reserve(reserved_mem->start,
+							(usize)reserved_mem->end -
+								(usize)reserved_mem->start);
+		reserved_mem = reserved_mem->next;
 	}
 }
 } // namespace xos::mm::phy

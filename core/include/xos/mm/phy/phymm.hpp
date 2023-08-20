@@ -7,7 +7,10 @@
 namespace xos::mm::phy {
 extern buddy::BuddyAllocator *main_alloc;
 
-void phymm_init(boot::boot_info_t *bootinfo);
+void init(boot::boot_info_t *bootinfo);
+
+void *alloc(usize size);
+void free(void *ptr);
 }
 
 #endif
