@@ -16,7 +16,7 @@ namespace impl {
  * @brief A Buddy memory allocator
  *
  */
-class BuddyAllocator: public MemAllocator {
+class BuddyAllocator : public MemAllocator {
 private:
 	struct impl::buddy *backend;
 
@@ -29,6 +29,13 @@ public:
 	 */
 	BuddyAllocator(usize mem_sz, void **metadata_alloc);
 
+	/**
+	 * @brief Get the size of a buddy allocator (`sizeof(BuddyAllocator) +
+	 * metadata_size`) in bytes
+	 *
+	 * @param mem_sz Memory size
+	 * @return usize Size of the allocator
+	 */
 	static usize get_size(usize mem_sz);
 
 	void *malloc(usize size) override;
