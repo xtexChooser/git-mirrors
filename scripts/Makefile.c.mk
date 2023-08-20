@@ -11,7 +11,7 @@ cflags-only += -std=gnu17 -fPIC
 cflags-boot	+= -fno-vectorize -fno-tree-vectorize -fno-slp-vectorize
 cflags-core	+= -fno-vectorize -fno-tree-vectorize -fno-slp-vectorize # todo: enable AVX for core
 cflags-error+= -Wall -Werror -Wextra -Wno-unused-parameter -Wno-unused-function
-cppflags	+= -std=c++20 -fPIC
+cppflags	+= -std=c++20 -fPIC -fsized-deallocation
 
 ldflags		+= -Wl,--static,--build-id=sha1 -fuse-ld=lld
 
