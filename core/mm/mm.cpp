@@ -1,5 +1,5 @@
 #include <xos/mm/mm.hpp>
-#include <xos/mm/phy/phymm.hpp>
+#include <xos/mm/phymm.hpp>
 #include <xos/utils/log.h>
 
 LOG_TAG("mm");

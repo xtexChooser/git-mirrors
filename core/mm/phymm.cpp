@@ -1,7 +1,7 @@
 #include <types.h>
 #include <xos/math.h>
-#include <xos/mm/phy/buddy.hpp>
-#include <xos/mm/phy/phymm.hpp>
+#include <xos/mm/buddy.hpp>
+#include <xos/mm/phymm.hpp>
 #include <xos/utils/log.h>
 #include <xos/utils/panic.h>
 

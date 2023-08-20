@@ -1,2 +1,1 @@
-$(call load-dirs, phy/)
-$(call load-objs, core, mm.o)
+$(call load-objs, core, mm.o phymm.o buddy.o)
