@@ -15,6 +15,6 @@
 	shallow = true
 [submodule "buddy_alloc"]
 	path = external/buddy_alloc
-	url = git@github.com:spaskalev/buddy_alloc.git
+	url = https://github.com/spaskalev/buddy_alloc.git
 	branch = main
 	shallow = true
