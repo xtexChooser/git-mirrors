@@ -9,7 +9,7 @@ namespace xos::mm::phy::buddy {
 
 namespace impl {
 #define BUDDY_ALLOC_IMPLEMENTATION
-// todo: waiting https://github.com/spaskalev/buddy_alloc/pull/75 to be merged
+/// \todo waiting https://github.com/spaskalev/buddy_alloc/pull/75 to be merged
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wall"
 #pragma clang diagnostic ignored "-Wextra"
