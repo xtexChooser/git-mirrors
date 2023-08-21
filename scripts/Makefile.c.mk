@@ -7,11 +7,11 @@ cflags		+= -nostdlib -ffreestanding -fno-exceptions -fno-rtti -fno-use-cxa-atexi
 #cflags		+= -fcf-protection # todo: only on x86_64
 cflags		+= -fstack-protector
 cflags-inc	+= -isystem arch/$(ARCH)/include -isystemcore/include -I.
-cflags-only += -std=gnu17 -fPIC
+cflags-only += -std=gnu17 -fPIC -nostdinc
 cflags-boot	+= -fno-vectorize -fno-tree-vectorize -fno-slp-vectorize
 cflags-core	+= -fno-vectorize -fno-tree-vectorize -fno-slp-vectorize # todo: enable AVX for core
 cflags-error+= -Wall -Werror -Wextra -Wno-unused-parameter -Wno-unused-function
-cppflags	+= -std=c++20 -fPIC -fsized-deallocation
+cppflags	+= -std=c++20 -fPIC -fsized-deallocation -nostdinc -nostdlib++ -nostdinc++
 
 ldflags		+= -Wl,--static,--build-id=sha1 -fuse-ld=lld
 

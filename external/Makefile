@@ -1,1 +1,1 @@
-$(call load-dirs, llvm/ musl/)
+$(call load-dirs, musl/ llvm/)
