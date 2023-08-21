@@ -9,9 +9,6 @@ namespace xos::mm::buddy {
 
 namespace impl {
 #define BUDDY_ALLOC_ALIGN PAGE_SIZE
-/*! \file buddy.hpp \todo waiting
- * https://github.com/spaskalev/buddy_alloc/pull/77 to be merged */
-#define _LIBCPP_STDIO_H
 #include "external/buddy_alloc/buddy_alloc.h"
 } // namespace impl
 

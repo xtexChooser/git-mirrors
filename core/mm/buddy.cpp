@@ -24,11 +24,9 @@ BuddyAllocator::BuddyAllocator(usize mem_sz, void **metadata_alloc) {
 	void *metadata = (void *)*metadata_alloc;
 	*metadata_alloc =
 		(void *)((usize)*metadata_alloc + impl::buddy_sizeof(mem_sz));
-	backend = impl::buddy_init((unsigned char *)metadata,
-							   /*nullptr*/ (unsigned char *)PAGE_SIZE,
-							   flooru(mem_sz, PAGE_SIZE));
-	/// \todo we always skipped the first page because
-	/// https://github.com/spaskalev/buddy_alloc/issues/76
+	backend =
+		impl::buddy_init((unsigned char *)metadata, (unsigned char *)PAGE_SIZE,
+						 flooru(mem_sz, PAGE_SIZE));
 	ASSERT_NEQ(backend, nullptr);
 }
 
