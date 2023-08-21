@@ -36,7 +36,7 @@ class NearestVisibleContainer : Sensor<LivingEntity>() {
                 .flatMap { it.blockEntities.filterValues { be -> be is BaseContainerBlockEntity }.keys }
                 .sortedBy { it.distManhattan(entity.blockPosition()) / 5 }
                 .shuffled(Random(System.currentTimeMillis() / 10000))
-                .first()
+                .firstOrNull()
             entity.brain.setMemory(memory.get(), pos)
         }
     }
