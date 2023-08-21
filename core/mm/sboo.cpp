@@ -152,7 +152,17 @@ void SbooAllocator::free(void *ptr) {
 	}
 }
 
-void *SbooAllocator::realloc(void *ptr, usize new_size) { return nullptr; }
+void *SbooAllocator::realloc(void *ptr, usize new_size) {
+	if (ptr == nullptr)
+		return malloc(new_size);
+	if (new_size == 0) {
+		free(ptr);
+		return nullptr;
+	}
+	if (new_size >= objsize)
+		return nullptr;
+	return ptr;
+}
 
 bool SbooAllocator::reserve(void *ptr, usize size) { return false; }
 
