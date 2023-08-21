@@ -51,34 +51,25 @@ void init(boot::boot_info_t *bootinfo) {
 		BuddyAllocator(pmem_size, &metadata_alloc);
 	ASSERT_EQ(buddy_base + buddy_size, (usize)metadata_alloc);
 	// reserve memory blocks
-	bool ret = main_alloc->reserve((void *)buddy_base, buddy_size);
-	ASSERT(ret, "reserve memory for the buddy allocator: base: %x, size: %x",
-		   buddy_base, buddy_size);
+	reserve((void *)buddy_base, buddy_size);
 	boot::boot_reserved_mem *reserved_mem = bootinfo->reserved_mem;
 	while (reserved_mem != nullptr) {
 		// the first page is not managed by buddy allocator
-		ret = main_alloc->reserve(
-			(void *)max((usize)reserved_mem->start, PAGE_SIZE),
-			(usize)reserved_mem->end - (usize)reserved_mem->start);
-		ASSERT(ret, "reserve memory from %x to %x", reserved_mem->start,
-			   reserved_mem->end);
+		reserve((void *)max((usize)reserved_mem->start, PAGE_SIZE),
+				(usize)reserved_mem->end - (usize)reserved_mem->start);
 		reserved_mem = reserved_mem->next;
 	}
-	// test 0x215b30
-	void *ptr;
-	slob::SlobAllocator slob_alloc(main_alloc);
-	sboo::SbooAllocator sboo_alloc(main_alloc, &slob_alloc, 64);
-	usize size = 0;
-	do {
-		ptr = sboo_alloc.malloc(64);
-		size += 64;
-		_unused(ptr);
-		INFO("         %x %dM          ", ptr, size / 1024 / 1024);
-		//   INFO("FULL %x PART %x    ", sboo_alloc.full, sboo_alloc.partial);
-	} while (ptr != nullptr);
-	INFO("END! sz %d M", size / 1024 / 1024);
-	INFO("NEXT %x", main_alloc->malloc(4096));
-	sboo_alloc.~SbooAllocator();
-	slob_alloc.~SlobAllocator();
+}
+
+void *alloc(usize size) { return main_alloc->malloc(size); }
+void free(void *ptr) { return main_alloc->free(ptr); }
+
+void reserve(void *ptr, usize size) {
+	ASSERT(main_alloc->reserve(ptr, size), "reserve phy mem: %p + %p", ptr,
+		   size);
+}
+void unreserve(void *ptr, usize size) {
+	ASSERT(main_alloc->unreserve(ptr, size), "unreserve phy mem: %p + %p", ptr,
+		   size);
 }
 } // namespace xos::mm::phy

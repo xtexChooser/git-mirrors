@@ -11,6 +11,9 @@ void init(boot::boot_info_t *bootinfo);
 
 void *alloc(usize size);
 void free(void *ptr);
+
+void reserve(void *ptr, usize size);
+void unreserve(void *ptr, usize size);
 } // namespace xos::mm::phy
 
 #endif
