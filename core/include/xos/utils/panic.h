@@ -49,8 +49,8 @@ void khalt() __attribute__((__noreturn__));
 /// Assert the condition is false
 #define ASSERT_FALSE(cond) ASSERT(!(cond), "")
 /// Assert two numbers are equal
-#define ASSERT_EQ(a, b) ASSERT((a) == (b), "%d %d", (a), (b))
+#define ASSERT_EQ(a, b) ASSERT((a) == (b), "%d %d", (u32)(a), (u32)(b))
 /// Assert two numbers are not equal
-#define ASSERT_NEQ(a, b) ASSERT((a) != (b), "%d %d", (a), (b))
+#define ASSERT_NEQ(a, b) ASSERT((a) != (b), "%d %d", (u32)(a), (u32)(b))
 
 #endif
