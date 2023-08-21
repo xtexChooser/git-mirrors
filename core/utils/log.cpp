@@ -35,7 +35,7 @@ static void itoa(char *buf, int base, int d) {
 		*p++ = '-';
 		buf++;
 		ud = -d;
-	} else if (base == 'x')
+	} else if (base == 'x' || base == 'p')
 		divisor = 16;
 
 	/* Divide UD by DIVISOR until UD == 0. */
@@ -110,6 +110,12 @@ static void vprintf(str fmt, va_list valist) {
 			case 'u':
 			case 'x':
 				itoa(buf, c, va_arg(valist, int));
+				p = buf;
+				goto string;
+				break;
+
+			case 'p':
+				itoa(buf, c, (usize)va_arg(valist, void *));
 				p = buf;
 				goto string;
 				break;
