@@ -1,1 +1,1 @@
-$(call load-objs, core, mm.o phymm.o buddy.o slob.o sboo.o)
+$(call load-objs, core, mm.o phymm.o buddy.o slob.o sboo.o kalloc.o)

@@ -1,5 +1,5 @@
-#include <xos/init/arch.hpp>
 #include <xos/boot/boot.h>
+#include <xos/init/arch.hpp>
 #include <xos/mm/mm.hpp>
 #include <xos/utils/log.h>
 #include <xos/utils/panic.h>
