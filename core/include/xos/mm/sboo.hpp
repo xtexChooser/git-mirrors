@@ -1,6 +1,7 @@
 #ifndef __XOS_MM_SBOO_HPP__
 #define __XOS_MM_SBOO_HPP__
 
+#include <xos/arch.hpp>
 #include <xos/mm/mm.hpp>
 
 /**
@@ -29,9 +30,10 @@ private:
 public:
 	const u32 objsize;
 	const u32 bitmap_size;
+	const usize page_size;
 
 	SbooAllocator(MemAllocator *arena_alloc, MemAllocator *bitmap_alloc,
-				  u32 object_size);
+				  u32 object_size, usize page_size = PAGE_SIZE);
 	~SbooAllocator();
 
 	__attribute__((malloc)) void *malloc(usize size) override;
