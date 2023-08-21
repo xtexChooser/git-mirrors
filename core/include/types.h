@@ -51,10 +51,16 @@ typedef char bool;
 
 #ifdef __cplusplus
 #include <cstddef>
-inline void *operator new(size_t, void *p) throw() { return p; }
+#include <new>
+/*inline void *operator new(size_t, void *p) throw() { return p; }
 inline void *operator new[](size_t, void *p) throw() { return p; }
 inline void operator delete(void *, void *) throw(){};
-inline void operator delete[](void *, void *) throw(){};
+inline void operator delete[](void *, void *) throw(){};*/
+
+/*inline void *operator new(size_t) throw() { return kmalloc(); }
+inline void *operator new[](size_t) throw() { return p; }
+inline void operator delete(void *, void *) throw(){};
+inline void operator delete[](void *, void *) throw(){};*/
 #endif
 
 #endif
