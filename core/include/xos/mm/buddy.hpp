@@ -5,6 +5,10 @@
 #include <xos/arch.hpp>
 #include <xos/mm/mm.hpp>
 
+/**
+ * @brief The Buddy Allocator
+ * 
+ */
 namespace xos::mm::buddy {
 
 namespace impl {
@@ -39,7 +43,7 @@ public:
 	 */
 	static usize get_size(usize mem_sz);
 
-	void *malloc(usize size) override;
+	__attribute__((malloc)) void *malloc(usize size) override;
 	void free(void *ptr) override;
 
 	void *calloc(usize num, usize size) override;

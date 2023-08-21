@@ -17,7 +17,7 @@ public:
 	 * @param size Size
 	 * @return void* Pointer
 	 */
-	virtual void *malloc(usize size) = 0;
+	__attribute__((malloc)) virtual void *malloc(usize size) = 0;
 
 	/**
 	 * @brief Release a memory block

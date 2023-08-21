@@ -3,6 +3,10 @@
 
 #include <xos/mm/mm.hpp>
 
+/**
+ * @brief The SLOB (Simple List of Block) Allocator
+ * 
+ */
 namespace xos::mm::slob {
 
 typedef struct slob_entry slob_entry_t;
@@ -33,7 +37,7 @@ public:
 	 */
 	~SlobAllocator();
 
-	void *malloc(usize size) override;
+	__attribute__((malloc)) void *malloc(usize size) override;
 	void free(void *ptr) override;
 
 	void *realloc(void *ptr, usize new_size) override;
