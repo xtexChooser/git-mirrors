@@ -14,11 +14,9 @@ using namespace std;
 namespace xos::mm::sboo {
 
 SbooAllocator::SbooAllocator(MemAllocator *arena_alloc,
-							 MemAllocator *bitmap_alloc, u32 object_size,
-							 usize page_size)
+							 MemAllocator *bitmap_alloc, u32 object_size)
 	: arena_alloc(arena_alloc), bitmap_alloc(bitmap_alloc),
-	  objsize(object_size), bitmap_size(max(PAGE_SIZE / object_size / 8, 1u)),
-	  page_size(page_size) {
+	  objsize(object_size), bitmap_size(max(PAGE_SIZE / object_size / 8, 1u)) {
 	if (objsize < 128) {
 		// put pointer to pool object before the first object
 		first_bitmap = 1; // for the first object

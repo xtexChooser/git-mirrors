@@ -7,7 +7,7 @@
 
 /**
  * @brief The Buddy Allocator
- * 
+ *
  */
 namespace xos::mm::buddy {
 

@@ -30,10 +30,9 @@ private:
 public:
 	const u32 objsize;
 	const u32 bitmap_size;
-	const usize page_size;
 
 	SbooAllocator(MemAllocator *arena_alloc, MemAllocator *bitmap_alloc,
-				  u32 object_size, usize page_size = PAGE_SIZE);
+				  u32 object_size);
 	~SbooAllocator();
 
 	__attribute__((malloc)) void *malloc(usize size) override;
