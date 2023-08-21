@@ -14,6 +14,7 @@ namespace xos::mm::buddy {
 namespace impl {
 #define BUDDY_ALLOC_ALIGN PAGE_SIZE
 #define BUDDY_CPP_MANGLED
+#define BUDDY_PRINTF INFO
 #include "external/buddy_alloc/buddy_alloc.h"
 } // namespace impl
 

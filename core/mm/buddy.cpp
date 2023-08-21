@@ -15,7 +15,6 @@ namespace impl {
 #pragma clang diagnostic ignored "-Wall"
 #pragma clang diagnostic ignored "-Wextra"
 #pragma clang diagnostic ignored "-Wconstant-logical-operand"
-#define BUDDY_PRINTF INFO
 #include "external/buddy_alloc/buddy_alloc.h"
 #pragma clang diagnostic pop
 } // namespace impl
