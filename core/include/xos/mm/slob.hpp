@@ -1,11 +1,12 @@
 #ifndef __XOS_MM_SLOB_HPP__
 #define __XOS_MM_SLOB_HPP__
 
+#include <xos/arch.hpp>
 #include <xos/mm/mm.hpp>
 
 /**
  * @brief The SLOB (Simple List of Block) Allocator
- * 
+ *
  */
 namespace xos::mm::slob {
 
@@ -28,7 +29,9 @@ private:
 	MemAllocator *base_alloc;
 
 public:
-	SlobAllocator(MemAllocator *base);
+	const usize page_size;
+
+	SlobAllocator(MemAllocator *base, usize page_size = PAGE_SIZE);
 	/**
 	 * @brief Destroy the Slob Allocator object (unsafe)
 	 * Note that this operation is unsafe if the base allocator does not support

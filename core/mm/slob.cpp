@@ -8,25 +8,26 @@ LOG_TAG("mm/slob");
 
 namespace xos::mm::slob {
 
-SlobAllocator::SlobAllocator(MemAllocator *base) : base_alloc(base) {}
+SlobAllocator::SlobAllocator(MemAllocator *base, usize page_size)
+	: base_alloc(base), page_size(page_size) {}
 
 SlobAllocator::~SlobAllocator() {
 	slob_entry_t *entry = first_entry;
 	usize page = 0;
 	while (entry != nullptr) {
-		usize p0 = (usize)entry / PAGE_SIZE;
+		usize p0 = (usize)entry / page_size;
 		if (p0 != page) {
 			if (page != 0)
-				if (!base_alloc->unreserve((void *)(page * PAGE_SIZE),
-										   PAGE_SIZE))
-					base_alloc->free((void *)(page * PAGE_SIZE));
+				if (!base_alloc->unreserve((void *)(page * page_size),
+										   page_size))
+					base_alloc->free((void *)(page * page_size));
 			page = p0;
 		}
 		entry = entry->next;
 	}
 	if (page != 0)
-		if (!base_alloc->unreserve((void *)(page * PAGE_SIZE), PAGE_SIZE))
-			base_alloc->free((void *)(page * PAGE_SIZE));
+		if (!base_alloc->unreserve((void *)(page * page_size), page_size))
+			base_alloc->free((void *)(page * page_size));
 }
 
 void *SlobAllocator::malloc(u32 size) {
@@ -54,7 +55,7 @@ void *SlobAllocator::malloc(u32 size) {
 		entry = entry->next;
 	}
 	// alloc new page
-	usize alloc_size = ceilu(size + SLOB_ENTRY_SIZE, PAGE_SIZE);
+	usize alloc_size = ceilu(size + SLOB_ENTRY_SIZE, page_size);
 	void *new_pg = base_alloc->malloc(alloc_size);
 	if (new_pg == nullptr)
 		return nullptr;
