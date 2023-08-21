@@ -38,8 +38,8 @@ void init(boot::boot_info_t *bootinfo) {
 				memblock = memblock->next;
 			}
 			if (memblock != nullptr)
-				buddy_base += min((usize)memblock->end - buddy_base * 2,
-									   (usize)SZ_4M);
+				buddy_base +=
+					min((usize)memblock->end - buddy_base * 2, (usize)SZ_4M);
 			else
 				break;
 		}
