@@ -52,5 +52,9 @@ void khalt() __attribute__((__noreturn__));
 #define ASSERT_EQ(a, b) ASSERT((a) == (b), "%d %d", (u32)(a), (u32)(b))
 /// Assert two numbers are not equal
 #define ASSERT_NEQ(a, b) ASSERT((a) != (b), "%d %d", (u32)(a), (u32)(b))
+/// Assert a pointer is null
+#define ASSERT_NULL(cond) ASSERT((cond) == nullptr, "")
+/// Assert a pointer is not null
+#define ASSERT_NONNULL(cond) ASSERT((cond) != nullptr, "")
 
 #endif
