@@ -128,8 +128,4 @@ void *SlobAllocator::realloc(void *ptr, usize new_size) {
 	return nullptr;
 }
 
-bool SlobAllocator::reserve(void *ptr, usize size) { return false; }
-
-bool SlobAllocator::unreserve(void *ptr, usize size) { return false; }
-
 } // namespace xos::mm::slob

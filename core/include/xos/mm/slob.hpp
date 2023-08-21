@@ -41,9 +41,6 @@ public:
 	void free(void *ptr) override;
 
 	void *realloc(void *ptr, usize new_size) override;
-
-	bool reserve(void *ptr, usize size) override;
-	bool unreserve(void *ptr, usize size) override;
 };
 
 } // namespace xos::mm::slob

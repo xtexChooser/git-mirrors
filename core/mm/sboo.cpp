@@ -164,8 +164,4 @@ void *SbooAllocator::realloc(void *ptr, usize new_size) {
 	return ptr;
 }
 
-bool SbooAllocator::reserve(void *ptr, usize size) { return false; }
-
-bool SbooAllocator::unreserve(void *ptr, usize size) { return false; }
-
 } // namespace xos::mm::sboo
