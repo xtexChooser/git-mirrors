@@ -20,7 +20,10 @@ void init(boot::boot_info_t *bootinfo) {
 	// find base address
 	usize pmem_size = (usize)bootinfo->mem_upper;
 	usize buddy_size = BuddyAllocator::get_size((usize)bootinfo->mem_upper);
-	usize buddy_base = (usize)ceilu((usize)bootinfo->core_load_offset, SZ_4K);
+	usize buddy_base =
+		bootinfo->do_aslr
+			? (usize)ceilu((usize)bootinfo->core_load_offset, SZ_4K)
+			: (usize)flooru((usize)bootinfo->random, SZ_4K);
 	while (1) {
 		usize buddy_end = buddy_base + buddy_size;
 		if (buddy_base > pmem_size)
