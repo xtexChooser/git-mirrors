@@ -28,26 +28,26 @@ typedef char bool;
 
 #endif
 
-#define U8_MIN 0x00
-#define U8_MAX 0xff
-#define U16_MIN 0x0000
-#define U16_MAX 0xffff
-#define U32_MIN 0x00000000
-#define U32_MAX 0xffffffff
-#define U64_MIN 0x0000000000000000
-#define U64_MAX 0xffffffffffffffff
+#define U8_MIN 0x00u
+#define U8_MAX 0xffu
+#define U16_MIN 0x0000u
+#define U16_MAX 0xffffu
+#define U32_MIN 0x00000000u
+#define U32_MAX 0xffffffffu
+#define U64_MIN 0x0000000000000000u
+#define U64_MAX 0xffffffffffffffffu
 
 #define _unused(x) (void)(x)
 
-#define SZ_1K 0x400
-#define SZ_2K 0x800
-#define SZ_4K 0x1000
-#define SZ_16K 0x4000
-#define SZ_32K 0x8000
-#define SZ_64K 0x10000
-#define SZ_1M 0x100000
-#define SZ_2M 0x200000
-#define SZ_4M 0x400000
+#define SZ_1K 0x400u
+#define SZ_2K 0x800u
+#define SZ_4K 0x1000u
+#define SZ_16K 0x4000u
+#define SZ_32K 0x8000u
+#define SZ_64K 0x10000u
+#define SZ_1M 0x100000u
+#define SZ_2M 0x200000u
+#define SZ_4M 0x400000u
 
 #ifdef __cplusplus
 #include <cstddef>
