@@ -22,9 +22,10 @@ CFLAGS		= $(cflags) $(cflags-only)
 CPPFLAGS	= $(cflags) $(cppflags)
 LDFLAGS		= $(cflags) $(ldflags)
 
-ifneq ($(CONFIG_DEBUG),)
-cflags		+= -g
-endif
+cflags		+= $(if $(CONFIG_DEBUG),-g)
+ldflags		+= $(if $(CONFIG_NORELRO),-z norelro,-z now -z relro)
+ldflags		+= $(if $(CONFIG_EXECSTACK),-z execstack,-z noexecstack)
+ldflags		+= $(if $(CONFIG_NOCOMBRELOC),-z nocombreloc,-z combreloc)
 
 export CC LD CFLAGS LDFLAGS
 
