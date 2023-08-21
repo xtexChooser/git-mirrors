@@ -77,7 +77,8 @@ bool arch_do_elf_reloc(arch_boot_reloc_req_t *r) {
 		// ignore it, idk why
 	} else if (type == R_386_RELATIVE) {
 		// B + A
-		*(u32 *)r->ptr = (u32)r->bootinfo->core_load_offset + r->addend;
+		// this is used only by linker (?, so we dont touch it
+		// *(u32 *)r->ptr = (u32)r->bootinfo->core_load_offset + r->addend;
 	} else {
 		return false;
 	}
