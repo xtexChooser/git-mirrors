@@ -17,7 +17,7 @@ SbooAllocator::SbooAllocator(MemAllocator *arena_alloc,
 							 MemAllocator *bitmap_alloc, u32 object_size)
 	: arena_alloc(arena_alloc), bitmap_alloc(bitmap_alloc),
 	  objsize(object_size), bitmap_size(max(PAGE_SIZE / object_size / 8, 1u)) {
-	if (objsize > 64) {
+	if (objsize < 128) {
 		// put pointer to pool object before the first object
 		first_bitmap = 1; // for the first object
 		usize bits = std::max(ceilu(sizeof(sboo_pool), objsize), 1u);
@@ -84,6 +84,9 @@ void *SbooAllocator::malloc(u32 size) {
 				// we move the pool to full list
 				partial = pool->next;
 				pool->next = full;
+				pool->prev = nullptr;
+				partial->prev = nullptr;
+				full->prev = pool;
 				full = pool;
 			}
 		}
@@ -100,12 +103,13 @@ void *SbooAllocator::malloc(u32 size) {
 			return nullptr;
 		pool->full = false;
 		pool->next = nullptr;
+		pool->prev = nullptr;
 		pool->page = page;
 		usize bitmap = (usize)pool + sizeof(sboo_pool);
 		memset((void *)bitmap, 0, bitmap_size);
 		// memset((void *)page, 0, PAGE_SIZE);
-		// place the pointer to the pool object and allocate the first object
 		if (first_bitmap != 0) {
+			// place fast pointer
 			*(u8 *)bitmap = first_bitmap;
 			*(sboo_pool_t **)page = pool;
 			return reinterpret_cast<void *>((usize)page + first_object_offset);
@@ -117,11 +121,35 @@ void *SbooAllocator::malloc(u32 size) {
 }
 
 void SbooAllocator::free(void *ptr) {
-	/*sboo_pool_t *pool;
-	if (first_bitmap != 0) {
+	sboo_pool_t *pool;
+	if (first_bitmap != 0)
 		// fast pointer available
-
-	}*/
+		pool = *(sboo_pool_t **)(flooru((usize)ptr, PAGE_SIZE));
+	else {
+		pool = full;
+		void *page = (void *)flooru((usize)ptr, PAGE_SIZE);
+		while (pool != nullptr && pool->page != page)
+			pool = pool->next;
+		if (pool == nullptr) {
+			pool = partial;
+			while (pool != nullptr && pool->page != page)
+				pool = pool->next;
+		}
+		ASSERT_NONNULL(pool);
+	}
+	usize offset = ((usize)ptr % PAGE_SIZE) / objsize;
+	u8 *bitmap = (u8 *)((usize)pool + sizeof(sboo_pool) + (offset / 8));
+	*bitmap &= ~(1 << (offset % 8));
+	if (pool->full) {
+		// move to partial list
+		pool->full = false;
+		pool->prev->next = pool->next;
+		pool->next->prev = pool->prev;
+		pool->prev = nullptr;
+		pool->next = partial;
+		partial->prev = pool;
+		partial = pool;
+	}
 }
 
 void *SbooAllocator::realloc(void *ptr, usize new_size) { return nullptr; }

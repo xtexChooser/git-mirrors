@@ -12,6 +12,7 @@ namespace xos::mm::sboo {
 typedef struct sboo_pool sboo_pool_t;
 struct sboo_pool {
 	void *page;
+	sboo_pool_t *prev;
 	sboo_pool_t *next;
 	bool full;
 };
