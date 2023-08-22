@@ -1,1 +1,1 @@
-$(call load-objs, core, panic.o)
+$(call load-objs, core, panic.o gdt.o)
