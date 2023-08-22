@@ -31,6 +31,7 @@ SbooAllocator::SbooAllocator(MemAllocator *arena_alloc,
 	for (; bits > 0; bits--) {
 		first_bitmap <<= 1;
 		first_bitmap |= 1;
+		ASSERT_NEQ(first_bitmap, U8_MAX);
 	}
 }
 
