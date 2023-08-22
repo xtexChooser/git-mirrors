@@ -5,8 +5,8 @@
 
 extern "C" {
 // CRT
-void _init();
-void _fini();
+__attribute__((weak)) void _init();
+__attribute__((weak)) void _fini();
 
 // CXX ABI
 /// Call atexit entries
