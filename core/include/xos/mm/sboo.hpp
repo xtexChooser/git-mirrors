@@ -10,6 +10,10 @@
  */
 namespace xos::mm::sboo {
 
+#define SBOO_PAGE_MAGIC 0x43a5dc0eu
+
+typedef u32 sboo_page_magic_t;
+
 typedef struct sboo_pool sboo_pool_t;
 struct sboo_pool {
 	void *page;

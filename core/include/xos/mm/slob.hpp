@@ -10,8 +10,11 @@
  */
 namespace xos::mm::slob {
 
+#define SLOB_ENTRY_MAGIC 0xeffc692du
+
 typedef struct slob_entry slob_entry_t;
 struct slob_entry {
+	u32 magic;
 	slob_entry_t *prev;
 	/**
 	 * @brief The size of this block. The size is always 2-bytes aligned. And

@@ -34,6 +34,7 @@ void *SlobAllocator::malloc(u32 size) {
 	size = (size + 1) & ~1; // ceil to 2
 	slob_entry_t *entry = first_entry;
 	while (entry != nullptr) {
+		ASSERT_EQ(entry->magic, SLOB_ENTRY_MAGIC);
 		if ((entry->size & 1) == 0 && entry->size >= size) {
 			if (entry->size == size ||
 				(entry->size - size) < (SLOB_ENTRY_SIZE + 4)) {
@@ -44,6 +45,7 @@ void *SlobAllocator::malloc(u32 size) {
 				entry->size = size | 1;
 				slob_entry_t *next_entry =
 					(slob_entry_t *)((usize)entry + SLOB_ENTRY_SIZE + size);
+				next_entry->magic = SLOB_ENTRY_MAGIC;
 				next_entry->prev = entry;
 				next_entry->size = orig_size - size - SLOB_ENTRY_SIZE;
 				next_entry->next = entry->next;
@@ -60,11 +62,13 @@ void *SlobAllocator::malloc(u32 size) {
 	if (new_pg == nullptr)
 		return nullptr;
 	slob_entry_t *first_entry = (slob_entry_t *)new_pg;
+	first_entry->magic = SLOB_ENTRY_MAGIC;
 	first_entry->prev = nullptr;
 	first_entry->size = size | 1;
 	if (alloc_size > SLOB_ENTRY_SIZE * 2 + size) {
 		slob_entry_t *second_entry =
 			(slob_entry_t *)((usize)new_pg + SLOB_ENTRY_SIZE + size);
+		second_entry->magic = SLOB_ENTRY_MAGIC;
 		first_entry->next = second_entry;
 		second_entry->prev = first_entry;
 		second_entry->size = (alloc_size - (SLOB_ENTRY_SIZE * 2) - size) & ~1;
@@ -78,12 +82,14 @@ void *SlobAllocator::malloc(u32 size) {
 void SlobAllocator::free(void *ptr) {
 	// mark as unused
 	slob_entry_t *entry = (slob_entry_t *)((usize)ptr - SLOB_ENTRY_SIZE);
+	ASSERT_EQ(entry->magic, SLOB_ENTRY_MAGIC);
 	entry->size &= ~1;
 	// merge upper
 	if ((usize)entry->next == (usize)ptr + entry->size &&
 		(entry->next->size & 1) == 0) {
 		// next entry is just after the current entry and is not allocated
 		slob_entry_t *next = entry->next;
+		next->magic = 0;
 		entry->next = next->next;
 		entry->next->prev = entry;
 		entry->size += next->size + SLOB_ENTRY_SIZE;
@@ -97,6 +103,7 @@ void SlobAllocator::free(void *ptr) {
 		prev->next = entry->next;
 		entry->next->prev = prev;
 		prev->size += entry->size + SLOB_ENTRY_SIZE;
+		entry->magic = 0;
 	}
 }
 
@@ -116,6 +123,7 @@ void *SlobAllocator::realloc(void *ptr, usize new_size) {
 			return ptr;
 		// split and call free with new entry
 		slob_entry_t *next_entry = (slob_entry_t *)((usize)ptr + new_size);
+		next_entry->magic = SLOB_ENTRY_MAGIC;
 		entry->size = size | 1;
 		next_entry->prev = entry;
 		next_entry->next = entry->next;
