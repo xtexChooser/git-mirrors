@@ -12,6 +12,8 @@ default:
 -include local.config.mk
 ARCH ?= $(CONFIG_ARCH)
 ARCH := $(ARCH)
+CONFIG_CI ?= $(CI)
+CONFIG_CI := $(CONFIG_CI)
 
 ifeq ($(ARCH),)
 $(error ARCH is not specified)

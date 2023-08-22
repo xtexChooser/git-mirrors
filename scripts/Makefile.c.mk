@@ -106,4 +106,4 @@ $(out)/%.a:
 define finalize_c_load_depfiles
 $(eval include $$(patsubst %.o,%.d,$$(allobjs)))
 endef
-make-finalize += finalize_c_load_depfiles
+make-finalize += $(if $(CONFIG_CI),,finalize_c_load_depfiles)
