@@ -25,6 +25,10 @@ struct sboo_pool {
 class SbooAllocator : public MemAllocator {
 private:
 	MemAllocator *arena_alloc;
+	/**
+	 * @brief Allocator for the bitmap, nullptr if bitmap is put after magic.
+	 *
+	 */
 	MemAllocator *bitmap_alloc;
 	sboo_pool_t *full = nullptr;
 	sboo_pool_t *partial = nullptr;
@@ -35,6 +39,14 @@ public:
 	const u32 objsize;
 	const u32 bitmap_size;
 
+	/**
+	 * @brief Construct a new Sboo Allocator object
+	 *
+	 * @param arena_alloc Arena allocator
+	 * @param bitmap_alloc Bitmap allocator. nullptr to let bitmap put in arena
+	 * (after magic), i.e. internal bitmap
+	 * @param object_size Object size
+	 */
 	SbooAllocator(MemAllocator *arena_alloc, MemAllocator *bitmap_alloc,
 				  u32 object_size);
 	~SbooAllocator();

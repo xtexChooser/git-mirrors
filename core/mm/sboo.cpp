@@ -17,12 +17,16 @@ SbooAllocator::SbooAllocator(MemAllocator *arena_alloc,
 							 MemAllocator *bitmap_alloc, u32 object_size)
 	: arena_alloc(arena_alloc), bitmap_alloc(bitmap_alloc),
 	  objsize(object_size), bitmap_size(max(PAGE_SIZE / object_size / 8, 1u)) {
-	// put pointer to pool object before the first object
+	if (sizeof(sboo_page_magic_t) + sizeof(sboo_pool) + bitmap_size < objsize)
+		this->bitmap_alloc = nullptr;
+
 	first_bitmap = 1; // for the first object
-	usize bits = std::max(
-		ceilu(sizeof(sboo_page_magic_t) + sizeof(sboo_pool *), objsize) /
-			objsize,
-		1u);
+	usize header_size;
+	if (this->bitmap_alloc == nullptr)
+		header_size = sizeof(sboo_page_magic_t) + sizeof(sboo_pool);
+	else
+		header_size = sizeof(sboo_page_magic_t) + sizeof(sboo_pool *);
+	usize bits = std::max(ceilu(header_size, objsize) / objsize, 1u);
 	first_object_offset = bits * objsize;
 	for (; bits > 0; bits--) {
 		first_bitmap <<= 1;
@@ -94,30 +98,31 @@ void *SbooAllocator::malloc(u32 size) {
 										objsize * (offset * 8 + bit));
 	} else {
 		// alloc new page
-		partial = pool = reinterpret_cast<sboo_pool_t *>(
-			bitmap_alloc->malloc(sizeof(sboo_pool_t) + bitmap_size));
-		if (pool == nullptr)
-			return nullptr;
 		void *page = arena_alloc->malloc(PAGE_SIZE);
 		if (page == nullptr)
 			return nullptr;
+		*(sboo_page_magic_t *)page = SBOO_PAGE_MAGIC;
+		if (bitmap_alloc != nullptr) {
+			// external bitmap
+			partial = pool = reinterpret_cast<sboo_pool_t *>(
+				bitmap_alloc->malloc(sizeof(sboo_pool_t) + bitmap_size));
+			if (pool == nullptr)
+				return nullptr;
+			*(sboo_pool_t **)((usize)page + sizeof(sboo_page_magic_t)) = pool;
+		} else {
+			// internal bitmap
+			partial = pool = reinterpret_cast<sboo_pool_t *>(
+				(usize)page + sizeof(sboo_page_magic_t));
+		}
 		pool->full = false;
 		pool->next = nullptr;
 		pool->prev = nullptr;
 		pool->page = page;
 		usize bitmap = (usize)pool + sizeof(sboo_pool);
 		memset((void *)bitmap, 0, bitmap_size);
-		// memset((void *)page, 0, PAGE_SIZE);
-		if (first_bitmap != 0) {
-			// place fast pointer
-			*(u8 *)bitmap = first_bitmap;
-			*(u32 *)page = SBOO_PAGE_MAGIC;
-			*(sboo_pool_t **)((usize)page + sizeof(u32)) = pool;
-			return reinterpret_cast<void *>((usize)page + first_object_offset);
-		} else {
-			*(u8 *)bitmap = 1;
-			return page;
-		}
+
+		*(u8 *)bitmap = first_bitmap;
+		return reinterpret_cast<void *>((usize)page + first_object_offset);
 	}
 }
 
@@ -125,8 +130,11 @@ void SbooAllocator::free(void *ptr) {
 	sboo_page_magic_t *magic =
 		(sboo_page_magic_t *)flooru((usize)ptr, PAGE_SIZE);
 	ASSERT_EQ(*magic, SBOO_PAGE_MAGIC);
-	sboo_pool_t *pool =
-		*(sboo_pool_t **)((usize)magic + sizeof(sboo_page_magic_t));
+	sboo_pool_t *pool;
+	if (bitmap_alloc != nullptr)
+		pool = *(sboo_pool_t **)((usize)magic + sizeof(sboo_page_magic_t));
+	else
+		pool = (sboo_pool_t *)((usize)magic + sizeof(sboo_page_magic_t));
 	usize offset = ((usize)ptr % PAGE_SIZE) / objsize;
 	u8 *bitmap = (u8 *)((usize)pool + sizeof(sboo_pool) + (offset / 8));
 	*bitmap &= ~(1 << (offset % 8));
