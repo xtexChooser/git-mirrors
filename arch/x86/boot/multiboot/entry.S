@@ -18,7 +18,7 @@
 
 	.section .multiboot, "ax", @progbits
 	.align  4
-	.globl multiboot_header
+	.global multiboot_header
 
 multiboot_header:
 	.long MULTIBOOT_HEADER_MAGIC // magic
@@ -35,7 +35,7 @@ multiboot_header:
 	.long 32 // depth
 
 	.text
-	.globl _start, multiboot_entry
+	.global _start, multiboot_entry
 
 _start:
 multiboot_entry:
