@@ -44,7 +44,7 @@ public:
 	 */
 	static usize get_size(usize mem_sz);
 
-	__attribute__((malloc)) void *malloc(usize size) override;
+	[[gnu::malloc]] void *malloc(usize size) override;
 	void free(void *ptr) override;
 
 	void *calloc(usize num, usize size) override;

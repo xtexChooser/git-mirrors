@@ -12,7 +12,7 @@
 namespace xos::mm::kalloc {
 
 void init();
-void *malloc(usize size) __attribute__((malloc));
+[[gnu::malloc]] void *malloc(usize size);
 void free(void *ptr);
 
 /**
@@ -22,7 +22,7 @@ void free(void *ptr);
  */
 class KallocAllocator : public MemAllocator {
 public:
-	__attribute__((malloc)) void *malloc(usize size) override;
+	[[gnu::malloc]] void *malloc(usize size) override;
 	void free(void *ptr) override;
 };
 
@@ -36,12 +36,12 @@ extern KallocAllocator kalloc_allocator;
 
 namespace xos {
 
-__attribute__((malloc)) inline void *kmalloc(usize size) {
+[[gnu::malloc]] inline void *kmalloc(usize size) {
 	return mm::kalloc::malloc(size);
 }
 inline void kfree(void *ptr) { mm::kalloc::free(ptr); }
 
-__attribute__((malloc)) void *kzmalloc(usize size);
+[[gnu::malloc]] void *kzmalloc(usize size);
 
 } // namespace xos
 

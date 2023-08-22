@@ -45,7 +45,7 @@ public:
 	 */
 	~SlobAllocator();
 
-	__attribute__((malloc)) void *malloc(usize size) override;
+	[[gnu::malloc]] void *malloc(usize size) override;
 	void free(void *ptr) override;
 
 	void *realloc(void *ptr, usize new_size) override;

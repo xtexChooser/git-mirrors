@@ -53,7 +53,7 @@ public:
 				  u32 object_size, u32 magic = SBOO_PAGE_MAGIC);
 	~SbooAllocator();
 
-	__attribute__((malloc)) void *malloc(usize size) override;
+	[[gnu::malloc]] void *malloc(usize size) override;
 	void free(void *ptr) override;
 
 	void *realloc(void *ptr, usize new_size) override;

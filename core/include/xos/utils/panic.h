@@ -16,7 +16,7 @@ extern "C" {
  * @param fmt Message format string
  * @param ... Format arguments
  */
-void kpanic(const str tag, const str fmt, ...) __attribute__((__noreturn__));
+[[noreturn]] void kpanic(const str tag, const str fmt, ...);
 
 /**
  * @brief Infinity loop
@@ -24,7 +24,7 @@ void kpanic(const str tag, const str fmt, ...) __attribute__((__noreturn__));
  * `while (1);` is undefined behaviour.
  *
  */
-void khalt() __attribute__((__noreturn__));
+[[noreturn]] void khalt();
 
 #ifdef __cplusplus
 }
