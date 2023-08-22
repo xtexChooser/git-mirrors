@@ -66,4 +66,17 @@ public:
 };
 } // namespace xos::mm
 
+inline void *operator new(std::size_t size, xos::mm::MemAllocator *alloc) {
+	return alloc->malloc(size);
+}
+inline void *operator new[](std::size_t size, xos::mm::MemAllocator *alloc) {
+	return alloc->malloc(size);
+}
+inline void operator delete[](void *ptr, xos::mm::MemAllocator *alloc) {
+	alloc->free(ptr);
+}
+inline void operator delete(void *ptr, xos::mm::MemAllocator *alloc) {
+	alloc->free(ptr);
+}
+
 #endif
