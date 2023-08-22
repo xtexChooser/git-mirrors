@@ -11,7 +11,8 @@
  */
 namespace xos::mm::kalloc {
 
-__attribute__((malloc)) void *malloc(usize size);
+void init();
+void *malloc(usize size) __attribute__((malloc));
 void free(void *ptr);
 
 /**

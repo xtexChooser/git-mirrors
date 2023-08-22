@@ -1,3 +1,4 @@
+#include <xos/mm/kalloc.hpp>
 #include <xos/mm/mm.hpp>
 #include <xos/mm/phymm.hpp>
 #include <xos/utils/log.h>
@@ -6,7 +7,10 @@ LOG_TAG("mm");
 
 namespace xos::mm {
 
-void mm_init(boot::boot_info_t *bootinfo) { phy::init(bootinfo); }
+void mm_init(boot::boot_info_t *bootinfo) {
+	phy::init(bootinfo);
+	kalloc::init();
+}
 
 void *MemAllocator::calloc(usize num, usize size) {
 	void *ptr = malloc(num * size);
