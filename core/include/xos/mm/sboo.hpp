@@ -36,6 +36,7 @@ private:
 	u8 first_object_offset;
 
 public:
+	const u32 magic;
 	const u32 objsize;
 	const u32 bitmap_size;
 
@@ -46,9 +47,10 @@ public:
 	 * @param bitmap_alloc Bitmap allocator. nullptr to let bitmap put in arena
 	 * (after magic), i.e. internal bitmap
 	 * @param object_size Object size
+	 * @param magic The magic value
 	 */
 	SbooAllocator(MemAllocator *arena_alloc, MemAllocator *bitmap_alloc,
-				  u32 object_size);
+				  u32 object_size, u32 magic = SBOO_PAGE_MAGIC);
 	~SbooAllocator();
 
 	__attribute__((malloc)) void *malloc(usize size) override;

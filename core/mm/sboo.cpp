@@ -14,8 +14,9 @@ using namespace std;
 namespace xos::mm::sboo {
 
 SbooAllocator::SbooAllocator(MemAllocator *arena_alloc,
-							 MemAllocator *bitmap_alloc, u32 object_size)
-	: arena_alloc(arena_alloc), bitmap_alloc(bitmap_alloc),
+							 MemAllocator *bitmap_alloc, u32 object_size,
+							 u32 magic)
+	: arena_alloc(arena_alloc), bitmap_alloc(bitmap_alloc), magic(magic),
 	  objsize(object_size), bitmap_size(max(PAGE_SIZE / object_size / 8, 1u)) {
 	if (sizeof(sboo_page_magic_t) + sizeof(sboo_pool) + bitmap_size < objsize)
 		this->bitmap_alloc = nullptr;
@@ -102,7 +103,7 @@ void *SbooAllocator::malloc(u32 size) {
 		void *page = arena_alloc->malloc(PAGE_SIZE);
 		if (page == nullptr)
 			return nullptr;
-		*(sboo_page_magic_t *)page = SBOO_PAGE_MAGIC;
+		*(sboo_page_magic_t *)page = this->magic;
 		if (bitmap_alloc != nullptr) {
 			// external bitmap
 			partial = pool = reinterpret_cast<sboo_pool_t *>(
@@ -130,7 +131,7 @@ void *SbooAllocator::malloc(u32 size) {
 void SbooAllocator::free(void *ptr) {
 	sboo_page_magic_t *magic =
 		(sboo_page_magic_t *)flooru((usize)ptr, PAGE_SIZE);
-	ASSERT_EQ(*magic, SBOO_PAGE_MAGIC);
+	ASSERT_EQ(*magic, this->magic);
 	sboo_pool_t *pool;
 	if (bitmap_alloc != nullptr)
 		pool = *(sboo_pool_t **)((usize)magic + sizeof(sboo_page_magic_t));

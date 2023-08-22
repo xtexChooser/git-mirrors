@@ -32,9 +32,11 @@ private:
 	MemAllocator *base_alloc;
 
 public:
+	const u32 magic;
 	const usize page_size;
 
-	SlobAllocator(MemAllocator *base, usize page_size = PAGE_SIZE);
+	SlobAllocator(MemAllocator *base, usize page_size = PAGE_SIZE,
+				  u32 magic = SLOB_ENTRY_MAGIC);
 	/**
 	 * @brief Destroy the Slob Allocator object (unsafe)
 	 * Note that this operation is unsafe if the base allocator does not support
