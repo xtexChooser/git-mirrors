@@ -9,7 +9,7 @@ extern buddy::BuddyAllocator *main_alloc;
 
 void init(boot::boot_info_t *bootinfo);
 
-void *alloc(usize size);
+void *malloc(usize size);
 void free(void *ptr);
 
 void reserve(void *ptr, usize size);

@@ -64,7 +64,7 @@ void init(boot::boot_info_t *bootinfo) {
 	}
 }
 
-void *alloc(usize size) { return main_alloc->malloc(size); }
+void *malloc(usize size) { return main_alloc->malloc(size); }
 void free(void *ptr) { return main_alloc->free(ptr); }
 
 void reserve(void *ptr, usize size) {
