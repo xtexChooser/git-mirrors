@@ -37,14 +37,14 @@ define cc
 $(CC) $(mk-cflags)
 endef
 define mk-cflags
-$(CFLAGS) $(if $(NO_PIE),-fno-pie,-fPIE) $(call mk-cflags-error) $(cflags-inc) $(value cflags-$(OBJ_GROUP)) $(value cflags-$(OBJ_GROUP)-only)
+$(CFLAGS) $(if $(NO_PIE),-fno-pie,-fPIE) $(mk-cflags-error) $(cflags-inc) $(cflags-$(OBJ_GROUP)) $(cflags-$(OBJ_GROUP)-only)
 endef
 
 define cc-cpp
 $(CC) $(mk-cppflags)
 endef
 define mk-cppflags
-$(CPPFLAGS) $(if $(NO_PIE),-fno-pie,-fPIE) $(call mk-cflags-error) $(cflags-inc) $(value cflags-$(OBJ_GROUP)) $(value cppflags-$(OBJ_GROUP))
+$(CPPFLAGS) $(if $(NO_PIE),-fno-pie,-fPIE) $(mk-cflags-error) $(cflags-inc) $(cflags-$(OBJ_GROUP)) $(cppflags-$(OBJ_GROUP))
 endef
 
 define ld
