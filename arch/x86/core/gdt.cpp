@@ -40,8 +40,7 @@ void load_data_seg(segment_selector seg) {
 void load_code_seg(segment_selector seg) {
 	asm volatile("pushl %%ecx\n\t"
 				 ".byte 0xe8\n\t.long 0\n\t" // CALL rel32
-				 ".byte 0x83\n\t.byte 0x04\n\t"
-				 ".byte 0x24\n\t.byte 5\n\t" // ADD DWORD [ESP], 5
+				 ".byte 0x83, 0x04, 0x24, 5\n\t" // ADD DWORD [ESP], 5
 				 "lret\n\t"
 				 :
 				 : "c"(seg));
