@@ -29,6 +29,11 @@ void init() {
 	load_idtr(&ptr);
 	memset(&intr_handlers, 0, sizeof(intr_handlers));
 	handlers::init();
+	// disable the 8259 PIC, or else it will generate interrupt 8 for its timer
+	asm volatile("movb $0xff, %%al\n\t"
+				 "outb %%al, $0xa1\n\t"
+				 "outb %%al, $0x21\n\t" ::
+					 : "al");
 	enable_intr();
 }
 
@@ -60,10 +65,7 @@ void OF(isr_param_t *isr) {
 void UD(isr_param_t *isr) {
 	PANIC("undefined instruction at 0x%x:0x%x", isr->cs, isr->eip);
 }
-void DF(isr_param_t *isr) {
-	WARN("ignoring unknown #DF interrupt");
-	return;
-}
+void DF(isr_param_t *isr) { PANIC("double fault (#DF)"); }
 void TS(isr_param_t *isr) { PANIC("invalid TSS (#TS)"); }
 void NP(isr_param_t *isr) { PANIC("segment not present (#NP)"); }
 void SS(isr_param_t *isr) {

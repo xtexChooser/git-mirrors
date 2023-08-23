@@ -111,7 +111,7 @@ isr_wrapper 4
 isr_wrapper 5
 isr_wrapper 6
 isr_wrapper 7
-isr_wrapper 8//, error_code=1
+isr_wrapper 8, error_code=1
 isr_wrapper 9
 isr_wrapper 10, error_code=1
 isr_wrapper 11, error_code=1
