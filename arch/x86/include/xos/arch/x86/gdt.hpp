@@ -46,14 +46,14 @@ inline gdt_type code(bool read, bool conforming = false,
 #define GDT_INDEX_USER_CODE 3
 #define GDT_INDEX_USER_DATA 4
 
-inline segment_selector gdt_seg_sel(u16 index, u8 rpl) {
+inline segment_selector seg_selector(u16 index, u8 rpl) {
 	return (index << 3) | (0 << 2) | (rpl & 0b11);
 }
 
-struct gdtr {
+struct [[gnu::packed]] gdtr {
 	u16 limit;
 	u32 base;
-} __attribute__((packed));
+};
 typedef struct gdtr gdtr_t;
 
 extern gdt_desc descriptors[GDT_COUNT];

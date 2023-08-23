@@ -23,8 +23,8 @@ void init() {
 		.base = reinterpret_cast<u32>(&descriptors),
 	};
 	load_gdtr(&gdt_ptr);
-	load_data_seg(gdt_seg_sel(GDT_INDEX_CORE_DATA, 0));
-	load_code_seg(gdt_seg_sel(GDT_INDEX_CORE_CODE, 0));
+	load_data_seg(seg_selector(GDT_INDEX_CORE_DATA, 0));
+	load_code_seg(seg_selector(GDT_INDEX_CORE_CODE, 0));
 }
 
 void load_data_seg(segment_selector seg) {
@@ -38,12 +38,12 @@ void load_data_seg(segment_selector seg) {
 }
 
 // inline will lead to label duplication
-__attribute__((noinline)) void load_code_seg(segment_selector seg) {
+[[gnu::noinline]] void load_code_seg(segment_selector seg) {
 	asm volatile("pushl %%ecx\n\t"
-				 "pushl $_gdt_load_code_seg_end\n\t"
+				 ".byte 0xe8\n\t.long 0\n\t" // CALL rel32
+				 ".byte 0x83\n\t.byte 0x04\n\t"
+				 ".byte 0x24\n\t.byte 5\n\t" // ADD DWORD [ESP], 5
 				 "lret\n\t"
-				 "_gdt_load_code_seg_end:\n\t"
-				 ".internal _gdt_load_code_seg_end\n\t"
 				 :
 				 : "c"(seg));
 }
