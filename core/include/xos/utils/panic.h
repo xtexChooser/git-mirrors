@@ -20,8 +20,23 @@ extern "C" {
 
 /**
  * @brief Infinity loop
- * This is platform-dependent and should be defined by arch. Because simply
- * `while (1);` is undefined behaviour.
+ *
+ * This is architecture-dependent.
+ * An example implementation is:
+ * ```
+ * volatile int __infloop = 1;
+ * while (__infloop)
+ *     ; // architecture ways to halt the processor. to save power.
+ * ```
+ *
+ * Because simply `while (1);` (side-effect-free infinity-loop) is undefined
+ * (or compiler-defined) behaviour in C (ref: WG14/N1528)
+ * (defined at C23 standard(WG14/N3096,ISO/IEC 9899:2023) 6.8.5), we have to use
+ * a `volatile` to force the compiler keep the loop. `[[clang::optnone]]` can be
+ * used as need, too.
+ *
+ * @see https://github.com/Minep/lunaix-os/issues/16
+ * @see https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1528.htm
  *
  */
 [[noreturn]] void khalt();
