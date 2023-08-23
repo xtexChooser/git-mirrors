@@ -189,7 +189,7 @@ object ProjectedPersonAI {
 
     private fun createStrollBehavior() = RunOne(
         listOf(
-            2 weightR RandomStroll.stroll(1.0f, 25, 12),
+            2 weightR RandomStroll.stroll(1.0f, 42, 12),
             2 weightR SetWalkTargetFromLookTarget.create(1.0f, 5),
             1 weightR DoNothing(30, 60)
         )
