@@ -56,7 +56,7 @@ struct [[gnu::packed]] gdtr {
 };
 typedef struct gdtr gdtr_t;
 
-extern gdt_desc descriptors[GDT_COUNT];
+[[gnu::aligned(0x10)]] extern gdt_desc descriptors[GDT_COUNT];
 
 void init();
 

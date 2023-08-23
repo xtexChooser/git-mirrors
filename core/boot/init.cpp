@@ -21,6 +21,7 @@ extern "C" const char *core_init(boot_info_t *bootinfo) {
 	INFO("memory size: %dM", (u64)bootinfo->mem_upper / 1024 / 1024);
 	mm_init(bootinfo);
 	arch_init(bootinfo);
+	INFO("init finished");
 	khalt();
 	return "core_init end";
 }

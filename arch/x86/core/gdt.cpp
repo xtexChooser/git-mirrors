@@ -5,7 +5,7 @@ namespace xos::arch::x86::gdt {
 using namespace desc;
 using namespace type;
 
-gdt_desc descriptors[] = {
+[[gnu::aligned(0x10)]] gdt_desc descriptors[] = {
 	0,
 	code_data() | seg_type(code(true)) | dpl(0) | base32(0) | limit32(0xfffff) |
 		present() | avl() | bits(true, false) | granularity(),

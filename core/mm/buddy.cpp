@@ -26,7 +26,7 @@ BuddyAllocator::BuddyAllocator(usize mem_sz, void **metadata_alloc) {
 	*metadata_alloc = (void *)((usize)*metadata_alloc + metadata_sz);
 	backend =
 		impl::buddy_init((unsigned char *)metadata, (unsigned char *)PAGE_SIZE,
-						 flooru(mem_sz, PAGE_SIZE));
+						 flooru(mem_sz, PAGE_SIZE) - PAGE_SIZE);
 	ASSERT_NEQ(backend, nullptr);
 }
 
