@@ -37,8 +37,7 @@ void load_data_seg(segment_selector seg) {
 				 : "c"(seg));
 }
 
-// inline will lead to label duplication
-[[gnu::noinline]] void load_code_seg(segment_selector seg) {
+void load_code_seg(segment_selector seg) {
 	asm volatile("pushl %%ecx\n\t"
 				 ".byte 0xe8\n\t.long 0\n\t" // CALL rel32
 				 ".byte 0x83\n\t.byte 0x04\n\t"
