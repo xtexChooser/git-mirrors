@@ -29,8 +29,8 @@ object ProjectedPersonAI {
     val defaultSchedule = Quaedam.schedules.register("projected_person_default") {
         ScheduleBuilder(Schedule()).changeActivityAt(10, Activity.IDLE)
             .changeActivityAt(10, Activity.IDLE)
-            .changeActivityAt(2000, Activity.WORK)
-            .changeActivityAt(7300, Activity.IDLE)
+            .changeActivityAt(900, Activity.WORK)
+            .changeActivityAt(6300, Activity.IDLE)
             .changeActivityAt(9000, Activity.WORK)
             .changeActivityAt(10700, Activity.IDLE)
             .changeActivityAt(11000, Activity.PLAY)
