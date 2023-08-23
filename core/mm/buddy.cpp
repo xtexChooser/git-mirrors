@@ -21,8 +21,9 @@ namespace impl {
 
 BuddyAllocator::BuddyAllocator(usize mem_sz, void **metadata_alloc) {
 	void *metadata = (void *)*metadata_alloc;
-	*metadata_alloc =
-		(void *)((usize)*metadata_alloc + impl::buddy_sizeof(mem_sz));
+	usize metadata_sz = impl::buddy_sizeof(mem_sz);
+	memset(metadata, 0, metadata_sz);
+	*metadata_alloc = (void *)((usize)*metadata_alloc + metadata_sz);
 	backend =
 		impl::buddy_init((unsigned char *)metadata, (unsigned char *)PAGE_SIZE,
 						 flooru(mem_sz, PAGE_SIZE));
