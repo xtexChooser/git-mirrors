@@ -2,11 +2,11 @@
 
 namespace LoginNotify;
 
-use EchoAttributeManager;
-use EchoEvent;
-use EchoUserLocator;
+use MediaWiki\Extension\Notifications\AttributeManager;
 use MediaWiki\Extension\Notifications\Hooks\BeforeCreateEchoEventHook;
 use MediaWiki\Extension\Notifications\Hooks\EchoGetBundleRulesHook;
+use MediaWiki\Extension\Notifications\Model\Event;
+use MediaWiki\Extension\Notifications\UserLocator;
 
 /**
  * Hooks from Echo extension,
@@ -40,8 +40,8 @@ class EchoHooks implements
 		];
 
 		$loginBase = [
-			EchoAttributeManager::ATTR_LOCATORS => [
-				[ [ EchoUserLocator::class, 'locateEventAgent' ] ],
+			AttributeManager::ATTR_LOCATORS => [
+				[ [ UserLocator::class, 'locateEventAgent' ] ],
 			],
 			'canNotifyAgent' => true,
 			'category' => 'login-fail',
@@ -86,10 +86,10 @@ class EchoHooks implements
 	}
 
 	/**
-	 * @param EchoEvent $event
+	 * @param Event $event
 	 * @param string &$bundleString
 	 */
-	public function onEchoGetBundleRules( EchoEvent $event, string &$bundleString ) {
+	public function onEchoGetBundleRules( Event $event, string &$bundleString ) {
 		switch ( $event->getType() ) {
 			case 'login-fail-new':
 				$bundleString = 'login-fail';

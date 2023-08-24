@@ -10,12 +10,12 @@ namespace LoginNotify;
 
 use BagOStuff;
 use Config;
-use EchoEvent;
 use Exception;
 use ExtensionRegistry;
 use IBufferingStatsdDataFactory;
 use JobSpecification;
 use MediaWiki\Extension\CentralAuth\User\CentralAuthUser;
+use MediaWiki\Extension\Notifications\Model\Event;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\WikiMap\WikiMap;
@@ -710,7 +710,7 @@ class LoginNotify implements LoggerAwareInterface {
 		if ( $count !== null ) {
 			$extra['count'] = $count;
 		}
-		EchoEvent::create( [
+		Event::create( [
 			'type' => $type,
 			'extra' => $extra,
 			'agent' => $user,
