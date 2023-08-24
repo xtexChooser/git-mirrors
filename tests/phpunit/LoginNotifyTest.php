@@ -1,20 +1,23 @@
 <?php
 
 use LoginNotify\LoginNotify;
+use MediaWiki\CheckUser as CU;
+use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\Request\FauxRequest;
-use Psr\Log\NullLogger;
 use Wikimedia\TestingAccessWrapper;
 
 /**
  * @covers \LoginNotify\LoginNotify
  * @group LoginNotify
+ * @group Database
  */
 class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 
+	/** @var LoginNotify|TestingAccessWrapper */
 	private $inst;
 
-	public function setUpLoginNotify() {
-		$config = new HashConfig( [
+	public function setUpLoginNotify( $configValues = [] ) {
+		$config = new HashConfig( $configValues + [
 			"LoginNotifyAttemptsKnownIP" => 15,
 			"LoginNotifyExpiryKnownIP" => 604800,
 			"LoginNotifyAttemptsNewIP" => 5,
@@ -34,7 +37,7 @@ class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 				new HashBagOStuff
 			)
 		);
-		$this->inst->setLogger( new NullLogger );
+		$this->inst->setLogger( LoggerFactory::getInstance( 'LoginNotify' ) );
 	}
 
 	public function setUp(): void {
@@ -324,5 +327,134 @@ class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 			LoginNotify::USER_NOT_KNOWN,
 			$this->inst->userIsInCache( $u, $request )
 		);
+	}
+
+	public function testRecordFailureKnownCache() {
+		$this->setupRecordFailure();
+		$user = $this->getTestUser()->getUser();
+		$this->inst->setCurrentAddressAsKnown( $user );
+
+		// Record a failure, does not notify because the interval is 2
+		$this->inst->recordFailure( $user );
+		$this->assertNotificationCount( $user, 'login-fail-known', 0 );
+
+		// Record a second failure
+		$this->inst->recordFailure( $user );
+		$this->assertNotificationCount( $user, 'login-fail-known', 1 );
+		$this->assertNotificationCount( $user, 'login-fail-new', 0 );
+
+		// None of our jobs are expected
+		$this->runJobs( [ 'numJobs' => 0 ], [ 'type' => 'LoginNotifyChecks' ] );
+	}
+
+	public function testRecordFailureKnownCheckUser() {
+		$this->setupRecordFailureWithCheckUser();
+		$helper = new TestRecentChangesHelper;
+		$user = $this->getTestUser()->getUser();
+
+		// Make a fake edit in CheckUser
+		$rc = $helper->makeEditRecentChange( $user, 'LoginNotifyTest',
+			1, 1, 1, wfTimestampNow(), 0, 0 );
+		CU\Hooks::updateCheckUserData( $rc );
+
+		// Record failed login attempt from the same IP
+		$this->inst->recordFailure( $user );
+		$this->runJobs();
+		$this->assertNotificationCount( $user, 'login-fail-known', 0 );
+
+		// Second failure will send a notification
+		$this->inst->recordFailure( $user );
+		$this->runJobs();
+		$this->assertNotificationCount( $user, 'login-fail-known', 1 );
+		$this->assertNotificationCount( $user, 'login-fail-new', 0 );
+	}
+
+	public function testRecordFailureUnknownCheckUser() {
+		$this->setupRecordFailureWithCheckUser();
+		$helper = new TestRecentChangesHelper;
+		$user = $this->getTestUser()->getUser();
+
+		// Make a fake edit in CheckUser
+		$rc = $helper->makeEditRecentChange( $user, 'LoginNotifyTest',
+			1, 1, 1, wfTimestampNow(), 0, 0 );
+		CU\Hooks::updateCheckUserData( $rc );
+
+		// Change the IP and record a failure
+		RequestContext::getMain()->getRequest()->setIP( '127.1.0.0' );
+		$this->inst->recordFailure( $user );
+		$this->runJobs();
+		$this->assertNotificationCount( $user, 'login-fail-new', 0 );
+
+		// Record another failure and notify the user
+		$this->inst->recordFailure( $user );
+		$this->runJobs();
+		$this->assertNotificationCount( $user, 'login-fail-new', 1 );
+		$this->assertNotificationCount( $user, 'login-fail-known', 0 );
+	}
+
+	public function testSendSuccessNotice() {
+		$this->setupRecordFailureWithCheckUser();
+		$helper = new TestRecentChangesHelper;
+		$user = $this->getTestUser()->getUser();
+		$user->setEmail( 'test@test.mediawiki.org' );
+		$user->confirmEmail();
+		$user->saveSettings();
+
+		$emailSent = false;
+		$this->setTemporaryHook( 'EchoAbortEmailNotification',
+			static function () use ( &$emailSent ) {
+				$emailSent = true;
+				return false;
+			}
+		);
+
+		// Make a fake edit in CheckUser
+		$rc = $helper->makeEditRecentChange( $user, 'LoginNotifyTest',
+			1, 1, 1, wfTimestampNow(), 0, 0 );
+		CU\Hooks::updateCheckUserData( $rc );
+
+		// Change the IP and record a success
+		RequestContext::getMain()->getRequest()->setIP( '127.1.0.0' );
+		$this->inst->sendSuccessNotice( $user );
+		$this->runJobs();
+		$this->assertTrue( $emailSent );
+	}
+
+	private function setupRecordFailure() {
+		$config = [
+			'LoginNotifyAttemptsKnownIP' => 2,
+			'LoginNotifyAttemptsNewIP' => 2,
+		];
+		$this->setUpLoginNotify( $config );
+		$this->overrideConfigValues( $config );
+		$this->tablesUsed[] = 'user';
+		$this->tablesUsed[] = 'echo_event';
+		$this->tablesUsed[] = 'echo_notification';
+	}
+
+	private function setupRecordFailureWithCheckUser() {
+		$this->markTestSkippedIfExtensionNotLoaded( 'CheckUser' );
+		$this->setupRecordFailure();
+		$this->tablesUsed[] = 'comment';
+		$this->tablesUsed[] = 'cu_changes';
+	}
+
+	/**
+	 * Check that the user has been notified the expected number of times
+	 *
+	 * @param User $user
+	 * @param string $type
+	 * @param int $expected
+	 */
+	private function assertNotificationCount( $user, $type, $expected ) {
+		$this->newSelectQueryBuilder()
+			->select( 'COUNT(*)' )
+			->from( 'echo_notification' )
+			->join( 'echo_event', null, 'event_id=notification_event' )
+			->where( [
+				'notification_user' => $user->getId(),
+				'event_type' => $type
+			] )
+			->assertFieldValue( $expected );
 	}
 }
