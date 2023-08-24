@@ -53,6 +53,9 @@
 			]
 		}
 	},
+	"ServiceWiringFiles": [
+		"includes/ServiceWiring.php"
+	],
 	"config": {
 		"LoginNotifyAttemptsKnownIP": {
 			"description": "The number of failed login attempts to permit from a known IP before a notification is triggered.",

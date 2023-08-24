@@ -2,6 +2,7 @@
 
 use LoginNotify\LoginNotify;
 use MediaWiki\CheckUser as CU;
+use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\Request\FauxRequest;
 use MediaWiki\User\UserFactory;
@@ -28,17 +29,22 @@ class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 			"LoginNotifyExpiryNewIP" => 1209600,
 			"LoginNotifyCheckKnownIPs" => true,
 			"LoginNotifyEnableOnSuccess" => true,
-			"LoginNotifyEnableForPriv" => [ "editinterface", "userrights" ],
 			"LoginNotifySecretKey" => "Secret Stuff!",
+			"SecretKey" => "",
 			"LoginNotifyCookieExpire" => 15552000,
 			"LoginNotifyCookieDomain" => null,
 			"LoginNotifyMaxCookieRecords" => 6,
 			"LoginNotifyCacheLoginIPExpiry" => 60 * 60 * 24 * 60
 		] );
+		$services = $this->getServiceContainer();
 		$this->inst = TestingAccessWrapper::newFromObject(
 			new LoginNotify(
-				$config,
-				new HashBagOStuff
+				new ServiceOptions( LoginNotify::CONSTRUCTOR_OPTIONS, $config ),
+				new HashBagOStuff,
+				LoggerFactory::getInstance( 'LoginNotify' ),
+				$services->getStatsdDataFactory(),
+				$services->getDBLoadBalancerFactory(),
+				$services->getJobQueueGroup()
 			)
 		);
 		$this->inst->setLogger( LoggerFactory::getInstance( 'LoginNotify' ) );

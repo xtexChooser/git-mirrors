@@ -55,7 +55,7 @@ class DeferredChecksJob extends Job {
 		}
 		$resultSoFar = $this->params['resultSoFar'];
 
-		$loginNotify = new LoginNotify();
+		$loginNotify = LoginNotify::getInstance();
 
 		switch ( $checkType ) {
 			case self::TYPE_LOGIN_FAILED:

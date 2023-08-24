@@ -9,27 +9,27 @@
 namespace LoginNotify;
 
 use BagOStuff;
-use Config;
 use Exception;
 use ExtensionRegistry;
 use IBufferingStatsdDataFactory;
+use JobQueueGroup;
 use JobSpecification;
+use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Extension\CentralAuth\User\CentralAuthUser;
 use MediaWiki\Extension\Notifications\Model\Event;
-use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\WikiMap\WikiMap;
 use MWCryptRand;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
-use RequestContext;
 use UnexpectedValueException;
 use User;
 use WebRequest;
 use Wikimedia\Assert\Assert;
 use Wikimedia\IPUtils;
-use Wikimedia\Rdbms\IDatabase;
 use Wikimedia\Rdbms\IMaintainableDatabase;
+use Wikimedia\Rdbms\IReadableDatabase;
+use Wikimedia\Rdbms\LBFactory;
 
 /**
  * Handle sending notifications on login from unknown source.
@@ -37,6 +37,21 @@ use Wikimedia\Rdbms\IMaintainableDatabase;
  * @author Brian Wolff
  */
 class LoginNotify implements LoggerAwareInterface {
+
+	public const CONSTRUCTOR_OPTIONS = [
+		'LoginNotifyAttemptsKnownIP',
+		'LoginNotifyAttemptsNewIP',
+		'LoginNotifyCacheLoginIPExpiry',
+		'LoginNotifyCheckKnownIPs',
+		'LoginNotifyCookieDomain',
+		'LoginNotifyCookieExpire',
+		'LoginNotifyEnableOnSuccess',
+		'LoginNotifyExpiryKnownIP',
+		'LoginNotifyExpiryNewIP',
+		'LoginNotifyMaxCookieRecords',
+		'LoginNotifySecretKey',
+		'SecretKey',
+	];
 
 	private const COOKIE_NAME = 'loginnotify_prevlogins';
 
@@ -50,7 +65,7 @@ class LoginNotify implements LoggerAwareInterface {
 
 	/** @var BagOStuff */
 	private $cache;
-	/** @var Config */
+	/** @var ServiceOptions */
 	private $config;
 	/** @var LoggerInterface Usually instance of LoginNotify log */
 	private $log;
@@ -60,22 +75,33 @@ class LoginNotify implements LoggerAwareInterface {
 	private $secret;
 	/** @var IBufferingStatsdDataFactory */
 	private $stats;
+	/** @var LBFactory */
+	private $lbFactory;
+	/** @var JobQueueGroup */
+	private $jobQueueGroup;
+
+	public static function getInstance(): self {
+		return MediaWikiServices::getInstance()->get( 'LoginNotify.LoginNotify' );
+	}
 
 	/**
-	 * Constructor
-	 *
-	 * @param Config|null $cfg Optional. Set if you have handy.
-	 * @param BagOStuff|null $cache Optional. Set if you want to override default caching behaviour.
+	 * @param ServiceOptions $options
+	 * @param BagOStuff $cache
+	 * @param LoggerInterface $log
+	 * @param IBufferingStatsdDataFactory $stats
+	 * @param LBFactory $lbFactory
+	 * @param JobQueueGroup $jobQueueGroup
 	 */
-	public function __construct( Config $cfg = null, BagOStuff $cache = null ) {
-		if ( !$cache ) {
-			$cache = MediaWikiServices::getInstance()->getMainObjectStash();
-		}
-		if ( !$cfg ) {
-			$cfg = RequestContext::getMain()->getConfig();
-		}
+	public function __construct(
+		ServiceOptions $options,
+		BagOStuff $cache,
+		LoggerInterface $log,
+		IBufferingStatsdDataFactory $stats,
+		LBFactory $lbFactory,
+		JobQueueGroup $jobQueueGroup
+	) {
+		$this->config = $options;
 		$this->cache = $cache;
-		$this->config = $cfg;
 
 		if ( $this->config->get( 'LoginNotifySecretKey' ) !== null ) {
 			$this->secret = $this->config->get( 'LoginNotifySecretKey' );
@@ -83,11 +109,10 @@ class LoginNotify implements LoggerAwareInterface {
 			$globalSecret = $this->config->get( 'SecretKey' );
 			$this->secret = hash( 'sha256', $globalSecret . 'LoginNotify' );
 		}
-
-		$log = LoggerFactory::getInstance( 'LoginNotify' );
 		$this->log = $log;
-
-		$this->stats = MediaWikiServices::getInstance()->getStatsdDataFactory();
+		$this->stats = $stats;
+		$this->lbFactory = $lbFactory;
+		$this->jobQueueGroup = $jobQueueGroup;
 	}
 
 	/**
@@ -251,7 +276,7 @@ class LoginNotify implements LoggerAwareInterface {
 			return self::USER_NOT_KNOWN;
 		}
 
-		$dbr = wfGetDB( DB_REPLICA );
+		$dbr = $this->lbFactory->getReplicaDatabase();
 		$result = $this->checkUserOneWiki( $user->getId(), $subnet, $dbr );
 		if ( $result === self::USER_KNOWN ) {
 			return $result;
@@ -289,9 +314,7 @@ class LoginNotify implements LoggerAwareInterface {
 					}
 
 					$wiki = $localInfo['wiki'];
-					$lb = MediaWikiServices::getInstance()
-						->getDBLoadBalancerFactory()
-						->getMainLB( $wiki );
+					$lb = $this->lbFactory->getMainLB( $wiki );
 					$dbrLocal = $lb->getMaintenanceConnectionRef( DB_REPLICA, [], $wiki );
 
 					if ( !$this->hasCheckUserTables( $dbrLocal ) ) {
@@ -325,10 +348,10 @@ class LoginNotify implements LoggerAwareInterface {
 	 * @note This catches and ignores database errors.
 	 * @param int $userId User ID number (Not necessarily for the local wiki)
 	 * @param string $ipFragment Prefix to match against cuc_ip (from $this->getIPNetwork())
-	 * @param IDatabase $dbr A database connection (possibly foreign)
+	 * @param IReadableDatabase $dbr A database connection (possibly foreign)
 	 * @return string One of USER_* constants
 	 */
-	private function checkUserOneWiki( $userId, $ipFragment, IDatabase $dbr ) {
+	private function checkUserOneWiki( $userId, $ipFragment, IReadableDatabase $dbr ) {
 		// The index is on (cuc_actor, cuc_ip, cuc_timestamp), instead of
 		// cuc_ip_hex which would be ideal, but CheckUser was not designed for
 		// this specific use case and we couldn't be bothered to update it.
@@ -357,10 +380,10 @@ class LoginNotify implements LoggerAwareInterface {
 	 * an unknown IP, since user has no known IPs.
 	 *
 	 * @param int $userId User id number (possibly on foreign wiki)
-	 * @param IDatabase $dbr DB connection (possibly to foreign wiki)
+	 * @param IReadableDatabase $dbr DB connection (possibly to foreign wiki)
 	 * @return bool
 	 */
-	private function userHasCheckUserData( $userId, IDatabase $dbr ) {
+	private function userHasCheckUserData( $userId, IReadableDatabase $dbr ) {
 		$haveIPInfo = $dbr->newSelectQueryBuilder()
 			->select( '1' )
 			->from( 'cu_changes' )
@@ -852,7 +875,7 @@ class LoginNotify implements LoggerAwareInterface {
 				'resultSoFar' => $resultSoFar,
 			]
 		);
-		MediaWikiServices::getInstance()->getJobQueueGroup()->lazyPush( $job );
+		$this->jobQueueGroup->lazyPush( $job );
 
 		$this->log->debug( 'Login {status}, creating a job to verify {user}, result so far: {result}',
 			[

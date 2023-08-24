@@ -61,7 +61,7 @@ class Hooks implements
 	 * @param User $user The user who logged in.
 	 */
 	public static function doSuccessfulLogin( User $user ) {
-		$loginNotify = new LoginNotify();
+		$loginNotify = LoginNotify::getInstance();
 		$loginNotify->clearCounters( $user );
 		$loginNotify->sendSuccessNotice( $user );
 		$loginNotify->setCurrentAddressAsKnown( $user );
@@ -73,7 +73,7 @@ class Hooks implements
 	 * @param User $user The user that failed to log in.
 	 */
 	public static function doFailedLogin( User $user ) {
-		$loginNotify = new LoginNotify();
+		$loginNotify = LoginNotify::getInstance();
 		$loginNotify->recordFailure( $user );
 	}
 
@@ -88,7 +88,7 @@ class Hooks implements
 	 */
 	public function onLocalUserCreated( $user, $autocreated ) {
 		if ( !$autocreated ) {
-			$loginNotify = new LoginNotify();
+			$loginNotify = LoginNotify::getInstance();
 			$loginNotify->setCurrentAddressAsKnown( $user );
 		}
 	}
