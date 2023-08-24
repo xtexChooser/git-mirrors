@@ -4,6 +4,7 @@ use LoginNotify\LoginNotify;
 use MediaWiki\CheckUser as CU;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\Request\FauxRequest;
+use MediaWiki\User\UserFactory;
 use Wikimedia\TestingAccessWrapper;
 
 /**
@@ -15,6 +16,9 @@ class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 
 	/** @var LoginNotify|TestingAccessWrapper */
 	private $inst;
+
+	/** @var UserFactory */
+	private $userFactory;
 
 	public function setUpLoginNotify( $configValues = [] ) {
 		$config = new HashConfig( $configValues + [
@@ -38,6 +42,7 @@ class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 			)
 		);
 		$this->inst->setLogger( LoggerFactory::getInstance( 'LoginNotify' ) );
+		$this->userFactory = $this->getServiceContainer()->getUserFactory();
 	}
 
 	public function setUp(): void {
@@ -89,27 +94,32 @@ class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 	/**
 	 * @dataProvider provideIsUserRecordGivenCookie
 	 */
-	public function testIsUserRecordGivenCookie( User $user, $cookieRecord, $expected, $desc ) {
+	public function testIsUserRecordGivenCookie( $cookieOptions, $expected, $desc ) {
+		$user = $this->userFactory->newFromName( 'Foo', UserFactory::RIGOR_NONE );
+		if ( is_string( $cookieOptions ) ) {
+			$cookieRecord = $cookieOptions;
+		} else {
+			[ $userName, $year, $salt ] = $cookieOptions + [ false, false, false ];
+			$cookieRecord = $this->inst->generateUserCookieRecord( $userName, $year, $salt );
+		}
 		$actual = $this->inst->isUserRecordGivenCookie( $user, $cookieRecord );
 		$this->assertEquals( $expected, $actual, "For {$user->getName()} on test $desc." );
 	}
 
-	public function provideIsUserRecordGivenCookie() {
-		$this->setUpLoginNotify();
-		$u = User::newFromName( 'Foo', false );
-		$cookie1 = $this->inst->generateUserCookieRecord( 'Foo2' );
-		$cookie2 = $this->inst->generateUserCookieRecord( 'Foo' );
-		$cookie3 = $this->inst->generateUserCookieRecord( 'Foo', gmdate( 'Y' ) - 2 );
-		$cookie4 = $this->inst->generateUserCookieRecord( 'Foo', gmdate( 'Y' ), 'RAND' );
-		$cookie5 = $this->inst->generateUserCookieRecord( 'Foo', gmdate( 'Y' ) - 4 );
+	public static function provideIsUserRecordGivenCookie() {
+		$cookie1 = [ 'Foo2' ];
+		$cookie2 = [ 'Foo' ];
+		$cookie3 = [ 'Foo', gmdate( 'Y' ) - 2 ];
+		$cookie4 = [ 'Foo', gmdate( 'Y' ), 'RAND' ];
+		$cookie5 = [ 'Foo', gmdate( 'Y' ) - 4 ];
 		return [
-			[ $u, '2015-in65gc2i9czojfopkeieijc0ek8j5vu', false, "no salt" ],
-			[ $u, '2011-A4321f-in65gc2i9czojfopkeieijc0ek8j5vu', false, "too old" ],
-			[ $u, $cookie1, false, "name mismatch" ],
-			[ $u, $cookie2, true, "normal" ],
-			[ $u, $cookie3, true, "2 year old" ],
-			[ $u, $cookie4, true, "Specific salt" ],
-			[ $u, $cookie5, false, "4 year old" ],
+			[ '2015-in65gc2i9czojfopkeieijc0ek8j5vu', false, "no salt" ],
+			[ '2011-A4321f-in65gc2i9czojfopkeieijc0ek8j5vu', false, "too old" ],
+			[ $cookie1, false, "name mismatch" ],
+			[ $cookie2, true, "normal" ],
+			[ $cookie3, true, "2 year old" ],
+			[ $cookie4, true, "Specific salt" ],
+			[ $cookie5, false, "4 year old" ],
 		];
 	}
 
@@ -124,10 +134,10 @@ class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function testGetKey() {
-		$user1 = User::newFromName( 'Foo_bar' );
+		$user1 = $this->userFactory->newFromName( 'Foo_bar' );
 		// Make sure proper normalization happens.
-		$user2 = User::newFromName( 'Foo__bar' );
-		$user3 = User::newFromName( 'Somebody' );
+		$user2 = $this->userFactory->newFromName( 'Foo__bar' );
+		$user3 = $this->userFactory->newFromName( 'Somebody' );
 
 		$this->assertEquals(
 			'global:loginnotify:new:ok2qitd5efi25tzjy2l3el4n57g6l3l',
@@ -171,7 +181,7 @@ class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 	 * @dataProvider provideClearCounters
 	 */
 	public function testClearCounters( $key ) {
-		$user = User::newFromName( "Fred" );
+		$user = $this->userFactory->newFromName( "Fred" );
 		$key = $this->inst->getKey( $user, $key );
 
 		$this->inst->checkAndIncKey( $key, 1, 3600 );
@@ -195,12 +205,12 @@ class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 	 * @dataProvider provideCheckAndGenerateCookie
 	 */
 	public function testCheckAndGenerateCookie(
-		User $user,
 		$cookie,
 		$expectedSeenBefore,
 		$expectedNewCookie,
 		$desc
 	) {
+		$user = $this->userFactory->newFromName( 'Foo' );
 		list( $actualSeenBefore, $actualNewCookie ) =
 			$this->inst->checkAndGenerateCookie( $user, $cookie );
 
@@ -218,27 +228,23 @@ class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 		$this->assertEquals( $expectedNewCookie, $newCookieParts[1], "[Cookie] $desc" );
 	}
 
-	public function provideCheckAndGenerateCookie() {
-		$this->setUpLoginNotify();
+	public static function provideCheckAndGenerateCookie() {
 		$y = gmdate( 'Y' );
 		$oldYear = $y - 4;
-		$u1 = User::newFromName( 'Foo' );
 
-		$cookie1 = $this->inst->generateUserCookieRecord( 'Foo' );
-		$cookie2 = $this->inst->generateUserCookieRecord( 'Foo' );
-		$cookieOld = $this->inst->generateUserCookieRecord( 'Foo', 2001 );
+		$cookie1 = '2023-1skf7bc-5j58f37f3t9m7rhwrrpvi4jigsyn750';
+		$cookie2 = '2023-99isim-ab5ms8f8581tpocpumgb78tof6f96yj';
+		$cookieOld = '2001-1skf7bc-48j27cdz9fmkv2yf667axiwvdy9z673';
 		$cookieOtherUser = "$y-1veusdo-tr049njztrrvkkz4tk3kre8rm1zb134";
 		return [
-			[ $u1, '', false, '', "no cookie" ],
+			[ '', false, '', "no cookie" ],
 			[
-				$u1,
-				"$cookieOtherUser",
+				$cookieOtherUser,
 				false,
-				"$cookieOtherUser",
+				$cookieOtherUser,
 				"not in cookie"
 			],
 			[
-				$u1,
 				"$cookieOtherUser.$y-.$y-abcdefg-8oerxg4l59zpiu0by7m2to1b4cjeer4.$oldYear-" .
 					"1234567-tpnsk00419wba6vjh1upif21qtst1cv",
 				false,
@@ -246,21 +252,18 @@ class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 				"old values in cookie"
 			],
 			[
-				$u1,
 				$cookieOld,
 				false,
 				"",
 				"Only old value"
 			],
 			[
-				$u1,
 				$cookie1,
 				true,
 				"",
 				"Normal success"
 			],
 			[
-				$u1,
 				"$cookieOtherUser.$cookie1.$cookie2."
 					. "$y-1234567-tpnsk00419wba6vjh1upif21qtst1cv.$cookie1",
 				true,
@@ -268,7 +271,6 @@ class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 				"Remove all of current user."
 			],
 			[
-				$u1,
 				"$cookieOtherUser.$cookieOtherUser.$cookieOtherUser."
 					. "$cookieOtherUser.$cookieOtherUser.$cookieOtherUser."
 					. "$cookieOtherUser.$cookieOtherUser.$cookieOtherUser."
@@ -308,7 +310,7 @@ class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function testUserIsInCache() {
-		$u = User::newFromName( 'Xyzzy' );
+		$u = $this->userFactory->newFromName( 'Xyzzy' );
 		$this->assertSame(
 			LoginNotify::USER_NO_INFO,
 			$this->inst->userIsInCache( $u, new FauxRequest() )

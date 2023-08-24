@@ -8,7 +8,7 @@ use MediaWiki\Auth\AuthenticationResponse;
 use MediaWiki\Language\RawMessage;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Request\FauxRequest;
-use User;
+use MediaWiki\User\UserFactory;
 
 $IP = getenv( 'MW_INSTALL_PATH' );
 if ( $IP === false ) {
@@ -59,7 +59,8 @@ class LoginAttempt extends Maintenance {
 		$wgRequest->setIP( $ip );
 		$wgRequest->setHeader( 'User-Agent', $ua );
 
-		$user = User::newFromName( $username, 'usable' );
+		$user = $this->getServiceContainer()->getUserFactory()
+			->newFromName( $username, UserFactory::RIGOR_USABLE );
 		if ( !$user || !$user->isRegistered() ) {
 			$this->output( "User {$username} does not exist!\n" );
 			return;

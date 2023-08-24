@@ -36,14 +36,22 @@
 	},
 	"HookHandlers": {
 		"main": {
-			"class": "LoginNotify\\Hooks"
+			"class": "LoginNotify\\Hooks",
+			"services": [
+				"UserFactory"
+			]
 		},
 		"echo": {
 			"class": "LoginNotify\\EchoHooks"
 		}
 	},
 	"JobClasses": {
-		"LoginNotifyChecks": "LoginNotify\\DeferredChecksJob"
+		"LoginNotifyChecks": {
+			"class": "LoginNotify\\DeferredChecksJob",
+			"services": [
+				"UserFactory"
+			]
+		}
 	},
 	"config": {
 		"LoginNotifyAttemptsKnownIP": {

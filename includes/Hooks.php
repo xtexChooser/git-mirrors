@@ -11,12 +11,20 @@ namespace LoginNotify;
 use MediaWiki\Auth\AuthenticationResponse;
 use MediaWiki\Auth\Hook\AuthManagerLoginAuthenticateAuditHook;
 use MediaWiki\Auth\Hook\LocalUserCreatedHook;
+use MediaWiki\User\UserFactory;
 use User;
 
 class Hooks implements
 	AuthManagerLoginAuthenticateAuditHook,
 	LocalUserCreatedHook
 {
+	/** @var UserFactory */
+	private $userFactory;
+
+	public function __construct( UserFactory $userFactory ) {
+		$this->userFactory = $userFactory;
+	}
+
 	/**
 	 * Hook for login auditing
 	 *
@@ -31,7 +39,7 @@ class Hooks implements
 		if ( $user ) {
 			$userObj = $user;
 		} else {
-			$userObj = User::newFromName( $username, 'usable' );
+			$userObj = $this->userFactory->newFromName( $username, UserFactory::RIGOR_USABLE );
 		}
 		if ( !$userObj ) {
 			return;

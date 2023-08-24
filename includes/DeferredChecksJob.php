@@ -5,7 +5,7 @@ namespace LoginNotify;
 use Exception;
 use Job;
 use MediaWiki\Title\Title;
-use User;
+use MediaWiki\User\UserFactory;
 
 /**
  * Class DeferredChecksJob
@@ -15,11 +15,14 @@ class DeferredChecksJob extends Job {
 	public const TYPE_LOGIN_FAILED = 'failed';
 	public const TYPE_LOGIN_SUCCESS = 'success';
 
+	private $userFactory;
+
 	/**
 	 * @param Title $title
 	 * @param array $params
 	 */
-	public function __construct( Title $title, array $params = [] ) {
+	public function __construct( Title $title, array $params, UserFactory $userFactory ) {
+		$this->userFactory = $userFactory;
 		parent::__construct( 'LoginNotifyChecks', $title, $params );
 	}
 
@@ -30,8 +33,11 @@ class DeferredChecksJob extends Job {
 	public function run() {
 		$checkType = $this->params['checkType'];
 		$userId = $this->params['userId'];
-		$user = User::newFromId( $userId );
-		if ( !$user || $user->isAnon() ) {
+		$user = $this->userFactory->newFromId( $userId );
+		// The ID is marked as a loaded field by the factory. To check if the
+		// user_id exists in the database, we need to explicitly load.
+		$user->load();
+		if ( !$user->getId() ) {
 			throw new Exception( "Can't find user for user id=" . print_r( $userId, true ) );
 		}
 		if ( !isset( $this->params['subnet'] ) || !is_string( $this->params['subnet'] ) ) {
