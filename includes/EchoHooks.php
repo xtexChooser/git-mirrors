@@ -47,14 +47,6 @@ class EchoHooks implements
 			'category' => 'login-fail',
 			'group' => 'negative',
 			'presentation-model' => PresentationModel::class,
-			// fixme, what does this actually do?
-			'title-message' => 'loginnotify-login-fail',
-			'title-params' => [],
-			// FIXME Should count be a parameter
-			'email-subject-params' => [ 'agent', 'count' ],
-			'email-body-batch-params' => [ 'agent', 'count' ],
-			// FIXME is it ok not to set batch email messages, since
-			// we have immediate flag?
 			'icon' => 'LoginNotify-user-avatar',
 			'immediate' => true,
 		];

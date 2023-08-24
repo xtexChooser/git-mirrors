@@ -1,7 +1,5 @@
 <?php
 /**
- * Body of LoginNotify extension
- *
  * @file
  * @ingroup Extensions
  */
