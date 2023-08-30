@@ -4,17 +4,22 @@
  * @ingroup Extensions
  */
 
+// phpcs:disable MediaWiki.NamingConventions.LowerCamelFunctionsName
+
 namespace LoginNotify;
 
 use MediaWiki\Auth\AuthenticationResponse;
 use MediaWiki\Auth\Hook\AuthManagerLoginAuthenticateAuditHook;
 use MediaWiki\Auth\Hook\LocalUserCreatedHook;
+use MediaWiki\Hook\RecentChange_saveHook;
 use MediaWiki\User\UserFactory;
+use RecentChange;
 use User;
 
 class Hooks implements
 	AuthManagerLoginAuthenticateAuditHook,
-	LocalUserCreatedHook
+	LocalUserCreatedHook,
+	RecentChange_saveHook
 {
 	/** @var UserFactory */
 	private $userFactory;
@@ -64,7 +69,7 @@ class Hooks implements
 		$loginNotify = LoginNotify::getInstance();
 		$loginNotify->clearCounters( $user );
 		$loginNotify->sendSuccessNotice( $user );
-		$loginNotify->setCurrentAddressAsKnown( $user );
+		$loginNotify->recordKnownWithCookie( $user );
 	}
 
 	/**
@@ -89,7 +94,16 @@ class Hooks implements
 	public function onLocalUserCreated( $user, $autocreated ) {
 		if ( !$autocreated ) {
 			$loginNotify = LoginNotify::getInstance();
-			$loginNotify->setCurrentAddressAsKnown( $user );
+			$loginNotify->recordKnownWithCookie( $user );
 		}
+	}
+
+	/**
+	 * @param RecentChange $recentChange
+	 */
+	public function onRecentChange_save( $recentChange ) {
+		$loginNotify = LoginNotify::getInstance();
+		$user = $this->userFactory->newFromUserIdentity( $recentChange->getPerformerIdentity() );
+		$loginNotify->recordKnown( $user );
 	}
 }

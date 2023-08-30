@@ -9,6 +9,7 @@
 namespace LoginNotify;
 
 use BagOStuff;
+use CentralIdLookup;
 use Exception;
 use ExtensionRegistry;
 use IBufferingStatsdDataFactory;
@@ -27,6 +28,8 @@ use User;
 use WebRequest;
 use Wikimedia\Assert\Assert;
 use Wikimedia\IPUtils;
+use Wikimedia\Rdbms\IDatabase;
+use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\IMaintainableDatabase;
 use Wikimedia\Rdbms\IReadableDatabase;
 use Wikimedia\Rdbms\LBFactory;
@@ -50,7 +53,14 @@ class LoginNotify implements LoggerAwareInterface {
 		'LoginNotifyExpiryNewIP',
 		'LoginNotifyMaxCookieRecords',
 		'LoginNotifySecretKey',
+		'LoginNotifySeenBucketSize',
+		'LoginNotifySeenCluster',
+		'LoginNotifySeenDatabase',
+		'LoginNotifySeenExpiry',
+		'LoginNotifyUseCheckUser',
+		'LoginNotifyUseSeenTable',
 		'SecretKey',
+		'UpdateRowsPerQuery'
 	];
 
 	private const COOKIE_NAME = 'loginnotify_prevlogins';
@@ -79,6 +89,10 @@ class LoginNotify implements LoggerAwareInterface {
 	private $lbFactory;
 	/** @var JobQueueGroup */
 	private $jobQueueGroup;
+	/** @var CentralIdLookup */
+	private $centralIdLookup;
+	/** @var int|null */
+	private $fakeTime;
 
 	public static function getInstance(): self {
 		return MediaWikiServices::getInstance()->get( 'LoginNotify.LoginNotify' );
@@ -91,6 +105,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 * @param IBufferingStatsdDataFactory $stats
 	 * @param LBFactory $lbFactory
 	 * @param JobQueueGroup $jobQueueGroup
+	 * @param CentralIdLookup $centralIdLookup
 	 */
 	public function __construct(
 		ServiceOptions $options,
@@ -98,7 +113,8 @@ class LoginNotify implements LoggerAwareInterface {
 		LoggerInterface $log,
 		IBufferingStatsdDataFactory $stats,
 		LBFactory $lbFactory,
-		JobQueueGroup $jobQueueGroup
+		JobQueueGroup $jobQueueGroup,
+		CentralIdLookup $centralIdLookup
 	) {
 		$this->config = $options;
 		$this->cache = $cache;
@@ -113,6 +129,7 @@ class LoginNotify implements LoggerAwareInterface {
 		$this->stats = $stats;
 		$this->lbFactory = $lbFactory;
 		$this->jobQueueGroup = $jobQueueGroup;
+		$this->centralIdLookup = $centralIdLookup;
 	}
 
 	/**
@@ -177,14 +194,35 @@ class LoginNotify implements LoggerAwareInterface {
 	 * @return string One of USER_* constants
 	 */
 	private function isKnownSystemFast( User $user, WebRequest $request ) {
+		$logContext = [ 'user' => $user->getName() ];
 		$result = $this->userIsInCookie( $user, $request );
-
-		if ( $result !== self::USER_KNOWN ) {
-			$result = $this->mergeResults( $result, $this->userIsInCache( $user, $request ) );
+		if ( $result === self::USER_KNOWN ) {
+			$this->log->debug( 'Found user {user} in cookie', $logContext );
+			return $result;
 		}
 
-		$this->log->debug( 'Checking cookies and cache for {user}: {result}', [
-			'function' => __METHOD__,
+		if ( $this->config->get( 'LoginNotifyUseSeenTable' ) ) {
+			$id = $this->getMaybeCentralId( $user );
+			$hash = $this->getSeenHash( $request, $id );
+			$result = $this->mergeResults( $result, $this->userIsInSeenTable( $id, $hash ) );
+			if ( $result === self::USER_KNOWN ) {
+				$this->log->debug( 'Found user {user} in table', $logContext );
+				return $result;
+			}
+		}
+
+		// No need for caching unless CheckUser will be used
+		if ( $this->config->get( 'LoginNotifyUseCheckUser' ) ) {
+			$result = $this->mergeResults( $result, $this->userIsInCache( $user, $request ) );
+			if ( $result === self::USER_KNOWN ) {
+				$this->log->debug( 'Found user {user} in cache', $logContext );
+				return $result;
+			}
+		} else {
+			$result = self::USER_NOT_KNOWN;
+		}
+
+		$this->log->debug( 'Fast checks for {user}: {result}', [
 			'user' => $user->getName(),
 			'result' => $result,
 		] );
@@ -253,6 +291,223 @@ class LoginNotify implements LoggerAwareInterface {
 			return $res === $ipPrefix ? self::USER_KNOWN : self::USER_NOT_KNOWN;
 		}
 		return self::USER_NO_INFO;
+	}
+
+	/**
+	 * Check if the user is in our own table in a non-expired bucket
+	 *
+	 * @param int $centralUserId
+	 * @param int|string $hash
+	 * @return string One of USER_* constants
+	 */
+	private function userIsInSeenTable( int $centralUserId, $hash ) {
+		if ( !$centralUserId ) {
+			return self::USER_NO_INFO;
+		}
+		$dbr = $this->getSeenPrimaryDb();
+		$seen = $dbr->newSelectQueryBuilder()
+			->select( '1' )
+			->from( 'loginnotify_seen_net' )
+			->where( [
+				'lsn_user' => $centralUserId,
+				'lsn_subnet' => $hash,
+				'lsn_time_bucket >= ' . $dbr->addQuotes( $this->getMinBucket() )
+			] )
+			->caller( __METHOD__ )
+			->fetchField();
+		if ( $seen ) {
+			return self::USER_KNOWN;
+		} elseif ( $this->config->get( 'LoginNotifyUseCheckUser' ) ) {
+			// We still need to check CheckUser
+			return self::USER_NO_INFO;
+		} else {
+			return self::USER_NOT_KNOWN;
+		}
+	}
+
+	/**
+	 * Check if the user is in our table in the current bucket
+	 *
+	 * @param int $centralUserId
+	 * @param string $hash
+	 * @param bool $usePrimary
+	 * @return bool
+	 */
+	private function userIsInCurrentSeenBucket( int $centralUserId, $hash, $usePrimary = false ) {
+		if ( !$centralUserId ) {
+			return false;
+		}
+		if ( $usePrimary ) {
+			$dbr = $this->getSeenPrimaryDb();
+		} else {
+			$dbr = $this->getSeenReplicaDb();
+		}
+		return (bool)$dbr->newSelectQueryBuilder()
+			->select( '1' )
+			->from( 'loginnotify_seen_net' )
+			->where( [
+				'lsn_user' => $centralUserId,
+				'lsn_subnet' => $hash,
+				'lsn_time_bucket' => $this->getCurrentBucket(),
+			] )
+			->caller( __METHOD__ )
+			->fetchField();
+	}
+
+	/**
+	 * Combine the user ID and IP prefix into a 64-bit hash. Return the hash
+	 * as either an integer or a decimal string.
+	 *
+	 * @param WebRequest $request
+	 * @param int $centralUserId
+	 * @return int|string
+	 * @throws Exception
+	 */
+	private function getSeenHash( WebRequest $request, int $centralUserId ) {
+		$ipPrefix = $this->getIPNetwork( $request->getIP() );
+		$hash = hash_hmac( 'sha1', "$centralUserId|$ipPrefix", $this->secret, true );
+		// Truncate to 64 bits
+		return self::packedSignedInt64ToDecimal( substr( $hash, 0, 8 ) );
+	}
+
+	/**
+	 * Convert an 8-byte string to a 64-bit integer, and return it either as a
+	 * native integer, or if PHP integers are 32 bits, as a decimal string.
+	 *
+	 * Signed 64-bit integers are a compact and portable way to store a 64-bit
+	 * hash in a DBMS. On a 64-bit platform, PHP can easily generate and handle
+	 * such integers, but on a 32-bit platform it is a bit awkward.
+	 *
+	 * @param string $str
+	 * @return int|string
+	 */
+	private static function packedSignedInt64ToDecimal( $str ) {
+		if ( PHP_INT_SIZE >= 8 ) {
+			// The manual is confusing -- this does in fact return a signed number
+			return unpack( 'Jv', $str )['v'];
+		} else {
+			// PHP has precious few facilities for manipulating 64-bit numbers on a
+			// 32-bit platform. String bitwise operators are a nice hack though.
+			if ( ( $str[0] & "\x80" ) !== "\x00" ) {
+				// The number is negative. Find 2's complement and add minus sign.
+				$sign = '-';
+				$str = ~$str;
+				$carry = 1;
+				// Add with carry in big endian order
+				for ( $i = 7; $i >= 0 && $carry; $i-- ) {
+					$sum = ord( $str[$i] ) + $carry;
+					$carry = ( $sum & 0x100 ) >> 8;
+					$str[$i] = chr( $sum & 0xff );
+				}
+			} else {
+				$sign = '';
+			}
+			return $sign . \Wikimedia\base_convert( bin2hex( $str ), 16, 10 );
+		}
+	}
+
+	/**
+	 * Get read a connection to the database holding the loginnotify_seen_net table.
+	 *
+	 * @return IReadableDatabase
+	 */
+	private function getSeenReplicaDb(): IReadableDatabase {
+		$dbName = $this->config->get( 'LoginNotifySeenDatabase' ) ?? false;
+		return $this->getSeenLoadBalancer()->getConnection( DB_REPLICA, [], $dbName );
+	}
+
+	/**
+	 * Get a write connection to the database holding the loginnotify_seen_net table.
+	 *
+	 * @return IDatabase
+	 */
+	private function getSeenPrimaryDb(): IDatabase {
+		$dbName = $this->config->get( 'LoginNotifySeenDatabase' ) ?? false;
+		return $this->getSeenLoadBalancer()->getConnection( DB_PRIMARY, [], $dbName );
+	}
+
+	/**
+	 * Is the database holding the loginnotify_seen_net table replicated to
+	 * multiple servers?
+	 *
+	 * @return bool
+	 */
+	private function isSeenDbReplicated() {
+		return $this->getSeenLoadBalancer()->hasReplicaServers();
+	}
+
+	/**
+	 * Get the LoadBalancer holding the loginnotify_seen_net table.
+	 *
+	 * @return ILoadBalancer
+	 */
+	private function getSeenLoadBalancer() {
+		$cluster = $this->config->get( 'LoginNotifySeenCluster' );
+		if ( $cluster ) {
+			return $this->lbFactory->getExternalLB( $cluster );
+		} else {
+			$dbName = $this->config->get( 'LoginNotifySeenDatabase' ) ?? false;
+			return $this->lbFactory->getMainLB( $dbName );
+		}
+	}
+
+	/**
+	 * Get the lowest time bucket index which is not expired.
+	 *
+	 * @return int
+	 */
+	private function getMinBucket() {
+		$now = $this->getCurrentTime();
+		$expiry = $this->config->get( 'LoginNotifySeenExpiry' );
+		$size = $this->config->get( 'LoginNotifySeenBucketSize' );
+		return (int)( ( $now - $expiry ) / $size );
+	}
+
+	/**
+	 * Get the current time bucket index.
+	 *
+	 * @return int
+	 */
+	private function getCurrentBucket() {
+		return (int)( $this->getCurrentTime() / $this->config->get( 'LoginNotifySeenBucketSize' ) );
+	}
+
+	/**
+	 * Get the current UNIX time
+	 *
+	 * @return int
+	 */
+	private function getCurrentTime() {
+		return $this->fakeTime ?? time();
+	}
+
+	/**
+	 * Set a fake time to be returned by getCurrentTime(), for testing.
+	 *
+	 * @param int|null $time
+	 */
+	public function setFakeTime( $time ) {
+		$this->fakeTime = $time;
+	}
+
+	/**
+	 * If LoginNotifySeenDatabase is configured, indicating a shared table,
+	 * get the central user ID. Otherwise, get the local user ID.
+	 *
+	 * If CentralAuth is not installed, $this->centralIdLookup will be a
+	 * LocalIdLookup and the local user ID will be returned regardless. But
+	 * using CentralIdLookup unconditionally can fail if CentralAuth is
+	 * installed but no users are attached to it, as is the case in CI.
+	 *
+	 * @param User $user
+	 * @return int
+	 */
+	private function getMaybeCentralId( User $user ) {
+		if ( ( $this->config->get( 'LoginNotifySeenDatabase' ) ?? false ) !== false ) {
+			return $this->centralIdLookup->centralIdFromLocalUser( $user );
+		} else {
+			return $user->getId();
+		}
 	}
 
 	/**
@@ -429,7 +684,7 @@ class LoginNotify implements LoggerAwareInterface {
 	private function setLoginCookie( User $user ) {
 		$cookie = $this->getPrevLoginCookie( $user->getRequest() );
 		list( , $newCookie ) = $this->checkAndGenerateCookie( $user, $cookie );
-		$expire = time() + $this->config->get( 'LoginNotifyCookieExpire' );
+		$expire = $this->getCurrentTime() + $this->config->get( 'LoginNotifyCookieExpire' );
 		$resp = $user->getRequest()->response();
 		$resp->setCookie(
 			self::COOKIE_NAME,
@@ -444,15 +699,32 @@ class LoginNotify implements LoggerAwareInterface {
 	}
 
 	/**
-	 * Give the user a cookie and cache address in memcache
+	 * Give the user a cookie and store the address in memcached and the DB.
 	 *
 	 * It is expected this be called upon successful log in.
 	 *
 	 * @param User $user The user in question.
 	 */
-	public function setCurrentAddressAsKnown( User $user ) {
-		$this->cacheLoginIP( $user );
+	public function recordKnownWithCookie( User $user ) {
+		if ( !$user->isNamed() ) {
+			return;
+		}
 		$this->setLoginCookie( $user );
+		$this->recordKnown( $user );
+	}
+
+	/**
+	 * Store the user's IP address in memcached and the DB
+	 *
+	 * @param User $user
+	 * @return void
+	 */
+	public function recordKnown( User $user ) {
+		if ( !$user->isNamed() ) {
+			return;
+		}
+		$this->cacheLoginIP( $user );
+		$this->recordUserInSeenTable( $user );
 
 		$this->log->debug( 'Recording user {user} as known',
 			[
@@ -472,10 +744,136 @@ class LoginNotify implements LoggerAwareInterface {
 		// It's assumed that most of the time, we'll be able to rely on
 		// the cookie or CheckUser data.
 		$expiry = $this->config->get( 'LoginNotifyCacheLoginIPExpiry' );
-		if ( $expiry !== false ) {
+		$useCU = $this->config->get( 'LoginNotifyUseCheckUser' );
+		if ( $useCU && $expiry !== false ) {
 			$ipPrefix = $this->getIPNetwork( $user->getRequest()->getIP() );
 			$key = $this->getKey( $user, 'prevSubnet' );
 			$this->cache->set( $key, $ipPrefix, $expiry );
+		}
+	}
+
+	/**
+	 * If the user/subnet combination is not already in the database, add it.
+	 * Also queue a job to clean up expired rows, if necessary.
+	 *
+	 * @param User $user
+	 * @return void
+	 */
+	private function recordUserInSeenTable( User $user ) {
+		if ( !$this->config->get( 'LoginNotifyUseSeenTable' ) ) {
+			return;
+		}
+		$id = $this->getMaybeCentralId( $user );
+		if ( !$id ) {
+			return;
+		}
+
+		$request = $user->getRequest();
+		$hash = $this->getSeenHash( $request, $id );
+
+		// Check if the user/hash is in the replica DB
+		if ( $this->userIsInCurrentSeenBucket( $id, $hash ) ) {
+			return;
+		}
+
+		// Check whether purging is required
+		if ( !mt_rand( 0, (int)( $this->config->get( 'UpdateRowsPerQuery' ) / 4 ) ) ) {
+			$minId = $this->getMinExpiredId();
+			if ( $minId !== null ) {
+				$this->log->debug( 'Queueing purge job starting from lsn_id={minId}',
+					[ 'minId' => $minId ] );
+				// Deferred call to purgeSeen()
+				// removeDuplicates effectively limits concurrency to 1, since
+				// no more work will be queued until the DELETE is committed.
+				$job = new JobSpecification(
+					'LoginNotifyPurgeSeen',
+					[ 'minId' => $minId ],
+					[ 'removeDuplicates' => true ]
+				);
+				$this->jobQueueGroup->push( $job );
+			}
+		}
+
+		// Insert a row
+		$dbw = $this->getSeenPrimaryDb();
+		$isReplicated = $this->isSeenDbReplicated();
+		$fname = __METHOD__;
+		$dbw->onTransactionCommitOrIdle(
+			function () use ( $dbw, $id, $hash, $isReplicated, $fname ) {
+				// Check if the user/hash is in the primary DB, as late as
+				// possible before the insert. (Trying to reduce the number of
+				// no-op queries in the binlog)
+				if ( $isReplicated && $this->userIsInCurrentSeenBucket( $id, $hash, true ) ) {
+					return;
+				}
+
+				$dbw->newInsertQueryBuilder()
+					->insert( 'loginnotify_seen_net' )
+					->ignore()
+					->row( [
+						'lsn_time_bucket' => $this->getCurrentBucket(),
+						'lsn_user' => $id,
+						'lsn_subnet' => $hash
+					] )
+					->caller( $fname )
+					->execute();
+			}
+		);
+	}
+
+	/**
+	 * Estimate the minimum lsn_id which has an expired time bucket.
+	 *
+	 * The primary key is approximately monotonic in time. Guess whether
+	 * purging is required by looking at the first row ordered by
+	 * primary key. If this check misses a row, it will be cleaned up
+	 * when the next bucket expires.
+	 *
+	 * @return int|null
+	 */
+	public function getMinExpiredId() {
+		$minRow = $this->getSeenPrimaryDb()->newSelectQueryBuilder()
+			->select( [ 'lsn_id', 'lsn_time_bucket' ] )
+			->from( 'loginnotify_seen_net' )
+			->orderBy( 'lsn_id' )
+			->limit( 1 )
+			->caller( __METHOD__ )
+			->fetchRow();
+		if ( !$minRow ) {
+			return null;
+		} elseif ( $minRow->lsn_time_bucket < $this->getMinBucket() ) {
+			return (int)$minRow->lsn_id;
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Purge rows from the loginnotify_seen_net table that are expired.
+	 *
+	 * @param int $minId The lsn_id to start at
+	 * @return int|null The lsn_id to continue at, or null if no more expired
+	 *   rows are expected.
+	 */
+	public function purgeSeen( $minId ) {
+		$dbw = $this->getSeenPrimaryDb();
+		$maxId = $minId + $this->config->get( 'UpdateRowsPerQuery' );
+
+		$dbw->newDeleteQueryBuilder()
+			->delete( 'loginnotify_seen_net' )
+			->where( [
+				'lsn_id >= ' . $dbw->addQuotes( $minId ),
+				'lsn_id < ' . $dbw->addQuotes( $maxId ),
+				'lsn_time_bucket < ' . $dbw->addQuotes( $this->getMinBucket() )
+			] )
+			->caller( __METHOD__ )
+			->execute();
+
+		// If there were affected rows, tell the maintenance script to keep looking
+		if ( $dbw->affectedRows() ) {
+			return $maxId;
+		} else {
+			return null;
 		}
 	}
 
@@ -793,10 +1191,12 @@ class LoginNotify implements LoggerAwareInterface {
 		$known = $this->isKnownSystemFast( $user, $user->getRequest() );
 		if ( $known === self::USER_KNOWN ) {
 			$this->recordLoginFailureFromKnownSystem( $user );
-		} else {
+		} elseif ( $this->config->get( 'LoginNotifyUseCheckUser' ) ) {
 			$this->createJob( DeferredChecksJob::TYPE_LOGIN_FAILED,
 				$user, $user->getRequest(), $known
 			);
+		} else {
+			$this->recordLoginFailureFromUnknownSystem( $user );
 		}
 	}
 
@@ -827,10 +1227,15 @@ class LoginNotify implements LoggerAwareInterface {
 		}
 		$this->incrStats( 'success.total' );
 		$result = $this->isKnownSystemFast( $user, $user->getRequest() );
-		if ( $result !== self::USER_KNOWN ) {
+		if ( $result === self::USER_KNOWN ) {
+			// No need to notify
+		} elseif ( $this->config->get( 'LoginNotifyUseCheckUser' ) ) {
 			$this->createJob( DeferredChecksJob::TYPE_LOGIN_SUCCESS,
 				$user, $user->getRequest(), $result
 			);
+		} elseif ( $result === self::USER_NOT_KNOWN ) {
+			$this->incrStats( 'success.notifications' );
+			$this->sendNotice( $user, 'login-success' );
 		}
 	}
 

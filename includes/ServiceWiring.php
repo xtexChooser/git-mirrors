@@ -16,7 +16,8 @@ return [
 			LoggerFactory::getInstance( 'LoginNotify' ),
 			$services->getStatsdDataFactory(),
 			$services->getDBLoadBalancerFactory(),
-			$services->getJobQueueGroup()
+			$services->getJobQueueGroup(),
+			$services->getCentralIdLookup()
 		);
 	}
 ];
