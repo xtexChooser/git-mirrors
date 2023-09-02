@@ -1,10 +1,10 @@
-FROM caddy:builder AS builder
+FROM docker.io/library/caddy:builder AS builder
 
 RUN xcaddy build \
     --with github.com/caddyserver/replace-response@v0 \
     --with github.com/hairyhenderson/caddy-teapot-module@v0.0.3-0
 
-FROM caddy:latest
+FROM docker.io/library/caddy:latest
 
 COPY --from=builder /usr/bin/caddy /usr/bin/caddy
 

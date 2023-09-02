@@ -3,9 +3,9 @@ pipeline:
         image: bash
         commands:
             - sed -e "s?UNKNOWN?$(git describe --all --long --always)?" src/static/includes/version.html > src/static/includes/version.html
-            - podman build --force-rm --squash --tag exozy.me:xtex/home .
+            - podman build --force-rm --squash --tag exozy.me/xtex/home .
             - podman run --name home
               --replace --restart on-failure:5 --detach
               --memory 64m
               --mount type=bind,source=/home/xtex/home,destination=/srv/run
-              exozy.me:xtex/home
+              exozy.me/xtex/home
