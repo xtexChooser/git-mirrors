@@ -1,8 +1,10 @@
 FROM docker.io/library/caddy:builder AS builder
 
 RUN xcaddy build \
-    --with github.com/caddyserver/replace-response@v0 \
-    --with github.com/hairyhenderson/caddy-teapot-module@v0.0.3-0
+    --with github.com/caddyserver/replace-response \
+    --with github.com/hairyhenderson/caddy-teapot-module \
+	--with github.com/caddyserver/cache-handler
+#	--with github.com/mholt/caddy-ratelimit
 
 FROM docker.io/library/caddy:latest
 
@@ -18,3 +20,5 @@ LABEL org.opencontainers.image.source="https://codeberg.org/xtex/home"
 COPY Caddyfile /etc/caddy/Caddyfile
 COPY src /srv/src
 RUN mkdir /srv/run
+
+ENV PROD true
