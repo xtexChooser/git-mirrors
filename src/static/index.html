@@ -54,15 +54,7 @@
 		<script type="text/javascript" async defer>
 			if (!localStorage["xtex-home:stat:opt-out"]) {
 				var xhr = new XMLHttpRequest();
-				const rp = localStorage["xtex-home:stat:no-rp"]
-					? ""
-					: "https://rp.chitang.dev/";
-				xhr.open(
-					"GET",
-					rp +
-						"https://healthchecks.projectsegfau.lt/ping/1ee24229-a06f-46b5-a521-a13385f00766",
-					true
-				);
+				xhr.open("GET", "/stats_ping", true);
 				xhr.send(null);
 			}
 		</script>

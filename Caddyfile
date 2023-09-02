@@ -56,6 +56,12 @@ http://:8080 {
 	handle @templated {
 		templates
 	}
+
+	handle /stats_ping {
+		request_header Host healthchecks.projectsegfau.lt
+		uri replace /stats_ping /ping/1ee24229-a06f-46b5-a521-a13385f00766
+		reverse_proxy https://healthchecks.projectsegfau.lt
+	}
 }
 
 http://blog.xtexx.eu.org {
