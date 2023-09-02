@@ -33,12 +33,12 @@
 	}
 }
 
-http://localhost:8080 {
+http://:8080 {
 	@prod vars {env.PROD} true
 	bind unix/run/server.sock tcp/localhost
 
 	root * src/static
-	try_files {path}.html {path} {path}/ =404
+	try_files {path}.html {path} {path}/
 	file_server
 
 	redir /blog/* https://blog.xtexx.eu.org/misc/migration-to-home/ permanent
