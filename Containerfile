@@ -18,3 +18,5 @@ COPY src /srv/src
 RUN mkdir /srv/run
 
 ENV PROD true
+ENV UDS_DIR_ADMIN run
+ENV UDS_DIR run

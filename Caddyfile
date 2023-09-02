@@ -1,5 +1,5 @@
 {
-	admin unix/run/caddy-admin.sock
+	admin unix/{$UDS_DIR_ADMIN:.}/caddy-admin.sock
 
 	auto_https off
 	http_port 8080
@@ -15,7 +15,7 @@
 	log default {
 		exclude http.handlers.cache
 	}
-	servers unix/run/server.sock {
+	servers unix/{$UDS_DIR:.}/xtexhome.sock {
 		name unix-home
 		timeouts {
 			read_body 1m
@@ -23,7 +23,7 @@
 			write 1h
 		}
 	}
-	servers unix/run/blog.sock {
+	servers unix/{$UDS_DIR:.}/xtexblog.sock {
 		name unix-blog
 		timeouts {
 			read_body 15s
@@ -35,7 +35,7 @@
 
 http://:8080 {
 	@prod vars {env.PROD} true
-	bind unix/run/server.sock tcp/localhost
+	bind unix/{$UDS_DIR:.}/xtexhome.sock tcp/localhost
 
 	root * src
 	try_files {path}.html {path} {path}/
@@ -65,7 +65,7 @@ http://:8080 {
 }
 
 http://blog.xtexx.eu.org {
-	bind unix/run/blog.sock
+	bind unix/{$UDS_DIR:.}/xtexblog.sock
 
 	root * blog
 	try_files {path} {path}.html {path}/ =404
