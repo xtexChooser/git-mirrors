@@ -1,0 +1,6 @@
+rule md2html
+    command = pandoc --from=markdown_mmd --to=html --number-sections --email-obfuscation=references --output $out $in
+    description = Convert Markdown to HTML: $out
+
+build src/doc/index-cmn.html: md2html src/doc/index-cmn.md
+build src/doc/index-eng.html: md2html src/doc/index-eng.md
