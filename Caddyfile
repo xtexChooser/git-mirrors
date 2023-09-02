@@ -15,10 +15,21 @@
 	log default {
 		exclude http.handlers.cache
 	}
-	timeouts {
-		read_body 1m
-		read_header 1m
-		write 1h
+	servers unix/run/server.sock {
+		name unix-home
+		timeouts {
+			read_body 1m
+			read_header 1m
+			write 1h
+		}
+	}
+	servers unix/run/blog.sock {
+		name unix-blog
+		timeouts {
+			read_body 15s
+			read_header 15s
+			write 2m
+		}
 	}
 }
 
