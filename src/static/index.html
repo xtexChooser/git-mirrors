@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		{{import "/includes/head.html"}} {{template "head"}}
+		<title>xtex's Home</title>
+		<meta name="description" content="xtex's Home" />
+		<meta property="og:title" content="xtex's Home" />
+		<link rel="stylesheet" href="/index.css" />
+	</head>
+	<body>
+		<main class="main">
+			<header>
+				<h1>xtex</h1>
+				<p>碳基的，一个人</p>
+				<p>A Carbon-Based Humanoid Entity</p>
+			</header>
+			<p>Note: this website is in refactor and is WIP.</p>
+			<ul>
+				<li>
+					<a
+						href="https://blog.xtexx.eu.org/about"
+						target="_blank"
+						rel="noreferrer"
+					>
+						About
+					</a>
+				</li>
+				<li>
+					<a
+						href="https://blog.xtexx.eu.org/about/contact.html"
+						target="_blank"
+						rel="noreferrer"
+					>
+						Contact
+					</a>
+				</li>
+			</ul>
+		</main>
+
+		<footer>
+			<ul class="hlist">
+				<li>
+					<a
+						href="/site_about"
+						target="_blank"
+						title="About this website"
+						>About</a
+					>
+				</li>
+			</ul>
+		</footer>
+
+		<!-- Tracker -->
+		<script type="text/javascript" async defer>
+			if (!localStorage["xtex-home:stat:opt-out"]) {
+				var xhr = new XMLHttpRequest();
+				const rp = localStorage["xtex-home:stat:no-rp"]
+					? ""
+					: "https://rp.chitang.dev/";
+				xhr.open(
+					"GET",
+					rp +
+						"https://healthchecks.projectsegfau.lt/ping/1ee24229-a06f-46b5-a521-a13385f00766",
+					true
+				);
+				xhr.send(null);
+			}
+		</script>
+	</body>
+</html>

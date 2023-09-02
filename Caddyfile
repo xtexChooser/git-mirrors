@@ -1,0 +1,22 @@
+{
+	admin unix/caddy-admin.sock
+
+	auto_https off
+	http_port 8080
+	https_port 8443
+}
+
+localhost:8080 {
+	bind unix/server.sock tcp/localhost
+
+	root * src/static
+	try_files {path}.html {path} {path}/ {path}/index.html =404
+	file_server
+	templates
+
+	redir /blog/* https://blog.xtexx.eu.org/misc/migration-to-home/ permanent
+
+	header Server xtex-home
+	header Strict-Transport-Security "max-age=31536000";
+	header Access-Control-Allow-Origin *;
+}
