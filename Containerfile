@@ -11,8 +11,8 @@ COPY --from=builder /usr/bin/caddy /usr/bin/caddy
 LABEL org.opencontainers.image.title="xtex's Home"
 LABEL org.opencontainers.image.description="xtex's Home Directory"
 LABEL org.opencontainers.image.url=https://xtexx.eu.org
-LABEL org.opencontainers.image.vendor="xtex"
-LABEL org.opencontainers.image.licenses= MPL-2.0
+LABEL org.opencontainers.image.vendor=xtex
+LABEL org.opencontainers.image.licenses=MPL-2.0
 LABEL org.opencontainers.image.source="https://codeberg.org/xtex/home"
 
 COPY Caddyfile /etc/caddy/Caddyfile
