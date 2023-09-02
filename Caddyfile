@@ -50,10 +50,6 @@ http://localhost:8080 {
 	@templated path */ *.html
 	handle @templated {
 		templates
-		cache @prod {
-			stale 24h
-			ttl 10m
-		}
 	}
 }
 
