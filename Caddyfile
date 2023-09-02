@@ -8,9 +8,6 @@
 	order cache before rewrite
 	cache {
 		allowed_http_verbs GET POST
-		api {
-			prometheus
-		}
 		cache_name Caddy
 		ttl 10m
 		default_cache_control public
