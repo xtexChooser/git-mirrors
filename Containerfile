@@ -1,14 +1,10 @@
-FROM docker.io/library/caddy:builder AS builder
-
-RUN xcaddy build \
-    --with github.com/caddyserver/replace-response \
-    --with github.com/hairyhenderson/caddy-teapot-module \
-	--with github.com/caddyserver/cache-handler
-#	--with github.com/mholt/caddy-ratelimit
-
 FROM docker.io/library/caddy:latest
 
-COPY --from=builder /usr/bin/caddy /usr/bin/caddy
+RUN caddy add-package \
+	github.com/caddyserver/replace-response \
+    github.com/hairyhenderson/caddy-teapot-module \
+	github.com/caddyserver/cache-handler
+#	github.com/mholt/caddy-ratelimit
 
 LABEL org.opencontainers.image.title="xtex's Home"
 LABEL org.opencontainers.image.description="xtex's Home Directory"
