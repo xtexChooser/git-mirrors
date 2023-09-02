@@ -43,3 +43,37 @@ localhost:8080 {
 		}
 	}
 }
+
+blog.xtexx.eu.org {
+	bind unix/run/blog.sock
+
+	root * blog
+	try_files {path} {path}.html {path}/ =404
+	file_server
+
+	header Server xtex-blog
+	header Strict-Transport-Security "max-age=15768000; includeSubDomains";
+	header Access-Control-Allow-Origin *;
+
+	handle_errors {
+		@404 expression `{err.status_code} == 404`
+		handle @404 {
+			try_files 404.html
+		}
+	}
+
+	@code-asset *.eot *.otf *.woff *.ttf *.css *.js
+	handle @code-asset {
+		header Cache-Control max-age=1800
+	}
+
+	@image-asset *.svg *.jpg *.jpeg *.gif *.png *.ico *.bmp *.webp
+	handle @image-asset {
+		header Cache-Control stale-while-revalidate=604800
+	}
+
+	@no-cache-asset *.xml
+	handle @no-cache-asset {
+		header Cache-Control no-cache
+	}
+}

@@ -8,4 +8,5 @@ pipeline:
               --replace --restart on-failure:5 --detach
               --memory 64m
               --mount type=bind,source=/home/xtex/home,destination=/srv/run
+              --mount type=bind,source=/srv/http/pages/xtex,destination=/srv/blog
               exozy.me/xtex/home
