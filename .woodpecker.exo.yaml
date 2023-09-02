@@ -2,7 +2,7 @@ pipeline:
     build:
         image: bash
         commands:
-            - sed -e "s?UNKNOWN?$(git describe --all --long --always)?" src/static/includes/version.html > src/static/includes/version.html
+            - git describe --all --long --always > src/static/version.txt
             - podman build --force-rm --squash --tag exozy.me/xtex/home .
             - podman run --name home
               --replace --restart on-failure:5 --detach
