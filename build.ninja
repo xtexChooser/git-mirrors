@@ -1,5 +1,5 @@
 rule md2html
-    command = pandoc --from=markdown --to=html --email-obfuscation=references --output $out $in
+    command = pandoc --from=markdown --to=html --strip-comments --section-divs --output $out $in
     description = Convert Markdown to HTML: $out
 
 build src/doc/index-cmn.html: md2html src/doc/index-cmn.md
