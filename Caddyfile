@@ -15,6 +15,11 @@
 	log default {
 		exclude http.handlers.cache
 	}
+	timeouts {
+		read_body 1m
+		read_header 1m
+		write 1h
+	}
 }
 
 http://localhost:8080 {
