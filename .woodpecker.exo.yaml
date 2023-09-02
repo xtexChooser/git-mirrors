@@ -5,7 +5,7 @@ pipeline:
             - git describe --all --long --always | tr -d '\n' > src/static/version.txt
             - podman build --force-rm --squash --tag exozy.me/xtex/home .
             - podman run --name home
-              --replace --restart on-failure:5 --detach
+              --replace --restart unless-stopped --detach
               --memory 16m
               --mount type=bind,source=/home/xtex/home,destination=/srv/run
               --mount type=bind,source=/srv/http/pages/xtex,destination=/srv/blog
