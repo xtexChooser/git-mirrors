@@ -62,17 +62,17 @@ blog.xtexx.eu.org {
 		}
 	}
 
-	@code-asset *.eot *.otf *.woff *.ttf *.css *.js
+	@code-asset path *.eot *.otf *.woff *.ttf *.css *.js
 	handle @code-asset {
 		header Cache-Control max-age=1800
 	}
 
-	@image-asset *.svg *.jpg *.jpeg *.gif *.png *.ico *.bmp *.webp
+	@image-asset path *.svg *.jpg *.jpeg *.gif *.png *.ico *.bmp *.webp
 	handle @image-asset {
 		header Cache-Control stale-while-revalidate=604800
 	}
 
-	@no-cache-asset *.xml
+	@no-cache-asset path *.xml
 	handle @no-cache-asset {
 		header Cache-Control no-cache
 	}
