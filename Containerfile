@@ -17,3 +17,4 @@ LABEL org.opencontainers.image.source="https://codeberg.org/xtex/home"
 
 COPY Caddyfile /etc/caddy/Caddyfile
 COPY src /srv/src
+RUN mkdir /srv/run
