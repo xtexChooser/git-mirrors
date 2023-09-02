@@ -20,7 +20,7 @@
 	}
 }
 
-localhost:8080 {
+http://localhost:8080 {
 	@prod vars {env.PROD} true
 	bind unix/run/server.sock tcp/localhost
 
@@ -44,7 +44,7 @@ localhost:8080 {
 	}
 }
 
-blog.xtexx.eu.org {
+http://blog.xtexx.eu.org {
 	bind unix/run/blog.sock
 
 	root * blog
