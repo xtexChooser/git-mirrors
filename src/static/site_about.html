@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		{{ import "/includes/head.html" }} {{ template "head" }}
+		<title>xtex's Home :: Site About</title>
+		<meta name="description" content="xtex's Home :: Site About" />
+		<meta property="og:title" content="xtex's Home :: Site About" />
+	</head>
+	<body>
+		<main>
+			<header>
+				<h1>About</h1>
+				<p>Things about xtex's Home</p>
+			</header>
+			<p>
+				This site is mainly the personal homepage for me (xtex) and
+				other interesting stuff.
+			</p>
+
+			<h2 id="source-code">Source Code<a href="#source-code"></a></h2>
+			<p>
+				The source code of this website is available at
+				<a
+					href="https://codeberg.org/xtex/home.git"
+					title="git repository of this website"
+					>https://codeberg.org/xtex/home.git</a
+				>.
+			</p>
+			<h3 id="license">License<a href="#license"></a></h3>
+			<p>
+				This project is an open source project and is released under the
+				Mozilla Public License Version 2.0 license (SPDX identifier:
+				<code>MPL-2.0</code>).
+			</p>
+			<p>
+				A copy of the license text is available as the
+				<code>LICENSE</code> file in the source code.<br />
+				You can also get the license text
+				<a
+					href="https://www.mozilla.org/MPL/2.0/"
+					title="Mozilla Public License Version 2.0 text"
+					>from Mozilla</a
+				>.
+			</p>
+			<blockquote>
+				This Source Code Form is subject to the terms of the Mozilla
+				Public License, v. 2.0. If a copy of the MPL was not distributed
+				with this file, You can obtain one at
+				http://mozilla.org/MPL/2.0/.
+			</blockquote>
+
+			<h2 id="deployment">Deployment<a href="#deployment"></a></h2>
+			<p>
+				This website is currently running on
+				<a href="https://exozy.me/" title="exozyme">exozyme</a>. (<a
+					href="https://ci.exozy.me/repos/156"
+					title="exoci repository for this website"
+					target="_blank"
+					>CI status</a
+				>)
+			</p>
+			<p>Current version is <code>{{ include "version.txt" }}</code></p>
+		</main>
+	</body>
+</html>
