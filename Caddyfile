@@ -48,8 +48,9 @@ http://localhost:8080 {
 	header Access-Control-Allow-Origin *
 	header Referrer-Policy no-referrer
 	header X-Content-Type-Options nosniff
-	header Content-Security-Policy: frame-ancestors 'none'
-	header X-Frame-Options: DENY
+	header Content-Security-Policy "frame-ancestors 'none'"
+	header X-Frame-Options DENY
+	header X-XSS-Protection 0
 
 	@templated path */ *.html
 	handle @templated {
@@ -69,8 +70,9 @@ http://blog.xtexx.eu.org {
 	header Access-Control-Allow-Origin *
 	header Referrer-Policy no-referrer, strict-origin-when-cross-origin
 	header X-Content-Type-Options nosniff
-	header Content-Security-Policy: frame-ancestors 'none'
-	header X-Frame-Options: DENY
+	header Content-Security-Policy "frame-ancestors 'none'"
+	header X-Frame-Options DENY
+	header X-XSS-Protection 0
 
 	handle_errors {
 		@404 expression `{err.status_code} == 404`
