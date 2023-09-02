@@ -18,3 +18,7 @@ body {
 .double-col>:last-child {
 	flex: 1;
 }
+
+.larger-h2 {
+	font-size: 170%;
+}

@@ -1,15 +1,19 @@
-.hlist {
+.hlist,
+.hlist-wrapper>* {
 	padding-left: 0;
 }
 
-.hlist li {
+.hlist li,
+.hlist-wrapper>* li {
 	display: inline;
 }
 
-.hlist li::after {
+.hlist li::after,
+.hlist-wrapper>* li::after {
 	content: " | ";
 }
 
-.hlist li:last-child::after {
+.hlist li:last-child::after,
+.hlist-wrapper>* li:last-child::after {
 	content: "";
 }
