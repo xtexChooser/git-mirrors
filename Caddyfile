@@ -1,5 +1,5 @@
 {
-	admin unix/caddy-admin.sock
+	admin unix/run/caddy-admin.sock
 
 	auto_https off
 	http_port 8080
@@ -7,7 +7,7 @@
 }
 
 localhost:8080 {
-	bind unix/server.sock tcp/localhost
+	bind unix/run/server.sock tcp/localhost
 
 	root * src/static
 	try_files {path}.html {path} {path}/ {path}/index.html =404
