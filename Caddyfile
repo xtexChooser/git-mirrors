@@ -34,7 +34,7 @@ localhost:8080 {
 	header Strict-Transport-Security "max-age=31536000";
 	header Access-Control-Allow-Origin *;
 
-	@templated path */ /*.html
+	@templated path */ *.html
 	handle @templated {
 		templates
 		cache @prod {
