@@ -1,2 +1,2 @@
 {{- /* this will be replaced on production by CI */ -}}
-UNKNOWN
+local
