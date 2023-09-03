@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<XRD xmlns="http://docs.oasis-open.org/ns/xri/xrd-1.0">
-	<Link rel="icon" href="/favicon.ico" />
-	<Link rel="about" href="/site_about" />
-	<Link rel="copyright" href="/site_about#license" />
-	<Link rel="author" href="mailto:xtex@xtexx.eu.org" />
-	<Link rel="license" href="MIT-2.0" />
-    <Link rel="lrdd" type="application/xrd+xml" href="https://xtexx.eu.org/.well-known/webfinger?resource={uri}" />
-</XRD>

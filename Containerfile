@@ -1,10 +1,10 @@
 FROM docker.io/library/alpine:latest AS builder
 
-RUN apk add --no-cache ninja pandoc
+RUN apk add --no-cache make pandoc jq jo
 
 COPY . /src/
 WORKDIR /src
-RUN ninja -j4
+RUN make -j4
 
 FROM docker.io/library/caddy:latest
 

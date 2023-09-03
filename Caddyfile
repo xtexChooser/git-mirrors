@@ -68,10 +68,15 @@ object-src 'none';
 
 	@templated path */ *.html
 	handle @templated {
+		header Content-Type "application/xhtml+xml; utf-8"
 		templates {
 			mime "text/plain" "text/html" "application/xhtml+xml"
 		}
-		header Content-Type "application/xhtml+xml; utf-8"
+	}
+
+	handle /.well-known/host-meta {
+		header Content-Type "application/xrd+xml"
+		rewrite * /gen/xrd-host-meta.xml
 	}
 
 	handle_path /stats_ping/* {
