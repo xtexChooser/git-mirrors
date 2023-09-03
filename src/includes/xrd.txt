@@ -1,0 +1,6 @@
+<rel="icon" href="/favicon.ico">
+<rel="about" href="https://xtexx.eu.org/site_about">
+<rel="copyright" href="https://xtexx.eu.org/site_about#license">
+<rel="author" href="mailto:xtex@xtexx.eu.org">
+<rel="license" href="MIT-2.0">
+<rel="lrdd" type="application/xrd+xml" href="https://xtexx.eu.org/.well-known/webfinger?resource={uri}">
