@@ -2,6 +2,6 @@ rule md2html
     command = pandoc --from=markdown --to=html --strip-comments --section-divs --output $out $in
     description = Convert Markdown to HTML: $out
 
-build src/doc/index-cmn.html: md2html src/doc/index-cmn.md
-build src/doc/index-eng.html: md2html src/doc/index-eng.md
-build src/doc/index-ext.html: md2html src/doc/index-ext.md
+build src/doc/about-cmn.html: md2html src/doc/about-cmn.md
+build src/doc/about-eng.html: md2html src/doc/about-eng.md
+build src/doc/about-ext.html: md2html src/doc/about-ext.md
