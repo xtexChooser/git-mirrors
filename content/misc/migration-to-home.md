@@ -8,8 +8,7 @@ You are visiting a page that have been moved.
 
 Calm, this is not 404.
 
-- For about page, see https://xtexx.eu.org/
-- For contact page, see https://xtexx.eu.org/contact
+- For about & contact page, see https://xtexx.eu.org/
 - For dn42 peering, see https://w.xvnet.eu.org/wiki/DN42
 
 Sorry for the inconvenience.
