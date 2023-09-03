@@ -16,3 +16,14 @@
 - [osu](https://osu.ppy.sh/)
 
 </div>
+
+### Communities
+
+<div class="hlist-wrapper">
+
+- [exozyme](https://exozy.me/)
+- [Project Segfault](https://projectsegfau.lt/)
+- [envs.net](https://envs.net/)
+- mcwzh tea-house
+
+</div>
