@@ -77,6 +77,21 @@
 					We do not log any information other than your browser
 					User-Agent. These information will only be transferred to
 					the Project Segfault Healthchecks service. <br />
+					If you wish not to send us these statistics, please
+					<button onclick="tracker_optout()">opt-out</button>.
+					You can also <button onclick="tracker_optin()">opt-in</button> again at any time.
+				</p>
+				<script type="text/javascript">
+					function tracker_optout() {
+						localStorage["xtex-home:stat:opt-out"] = true;
+						alert("We won't send any statistics information anymore.");
+					}
+					function tracker_optin() {
+						delete localStorage["xtex-home:stat:opt-out"];
+						alert("Opt-in succeeded.");
+					}
+				</script>
+				<p>
 					Otherwise we will not collect any of your private
 					information without notification.
 				</p>
