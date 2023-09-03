@@ -78,6 +78,10 @@ object-src 'none';
 		header Content-Type "application/xrd+xml"
 		rewrite * /gen/xrd-host-meta.xml
 	}
+	handle /.well-known/host-meta.json {
+		header Content-Type "application/json"
+		rewrite * /gen/xrd-host-meta.json
+	}
 
 	handle_path /stats_ping/* {
 		request_header Host healthchecks.projectsegfau.lt
