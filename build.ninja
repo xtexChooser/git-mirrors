@@ -2,6 +2,13 @@ rule md2html
     command = pandoc --from=markdown --to=html --strip-comments --section-divs --output $out $in
     description = Convert Markdown to HTML: $out
 
+rule html-rm-id
+    command = sed -e 's/\sid=".*"//g' $in > $out
+    description = Remove HTML id fields in $in
+
 build src/doc/about-cmn.html: md2html src/doc/about-cmn.md
+build src/doc/about-cmn-noid.html: html-rm-id src/doc/about-cmn.html
 build src/doc/about-eng.html: md2html src/doc/about-eng.md
+build src/doc/about-eng-noid.html: html-rm-id src/doc/about-eng.html
 build src/doc/about-ext.html: md2html src/doc/about-ext.md
+build src/doc/about-ext-noid.html: html-rm-id src/doc/about-ext.html
