@@ -10,9 +10,12 @@
 	<body>
 		<main>
 			<header>
-				<h1>xtex</h1>
-				<p>碳基的，一个人</p>
-				<p>A Carbon-Based Humanoid Entity</p>
+				<img src="avatar.webp" alt="xtex's avatar" />
+				<div>
+					<h1>xtex</h1>
+					<p>碳基的，一个人</p>
+					<p>A Carbon-Based Humanoid Entity</p>
+				</div>
 			</header>
 			<div class="double-col">
 				<div>
@@ -36,10 +39,7 @@
 			</div>
 		</main>
 
-		{{ include "includes/simple_footer.html" }}
-		
-		{{- /* Tracker */ -}}
-		{{ import "includes/tracker.html" }}
-		{{ template "tracker" "about" }}
+		{{ include "includes/simple_footer.html" }} {{- /* Tracker */ -}} {{
+		import "includes/tracker.html" }} {{ template "tracker" "about" }}
 	</body>
 </html>

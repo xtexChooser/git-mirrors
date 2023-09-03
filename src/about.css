@@ -2,6 +2,16 @@ body {
 	max-width: 60em;
 }
 
+header div {
+	display: inline-block;
+	padding-left: 3em;
+}
+
+header img {
+	width: 8em;
+	height: 8em;
+}
+
 .double-col {
 	display: flex;
 }
