@@ -15,7 +15,7 @@
 	log default {
 		exclude http.handlers.cache
 	}
-	servers unix/{$UDS_DIR:.}/xtexhome.sock {
+	servers unix/{$UDS_DIR:.}/xtexhome.sock|0777 {
 		name unix-home
 		timeouts {
 			read_body 1m
@@ -23,7 +23,7 @@
 			write 1h
 		}
 	}
-	servers unix/{$UDS_DIR:.}/xtexblog.sock {
+	servers unix/{$UDS_DIR:.}/xtexblog.sock|0777 {
 		name unix-blog
 		timeouts {
 			read_body 15s
@@ -35,7 +35,7 @@
 
 http://:8080 {
 	@prod vars {env.PROD} true
-	bind unix/{$UDS_DIR:.}/xtexhome.sock tcp/localhost
+	bind unix/{$UDS_DIR:.}/xtexhome.sock|0777 tcp/localhost
 
 	root * src
 	try_files {path}.html {path} {path}/
@@ -65,7 +65,7 @@ http://:8080 {
 }
 
 http://blog.xtexx.eu.org {
-	bind unix/{$UDS_DIR:.}/xtexblog.sock
+	bind unix/{$UDS_DIR:.}/xtexblog.sock|0777
 
 	root * blog
 	try_files {path} {path}.html {path}/ =404
