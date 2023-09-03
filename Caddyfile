@@ -33,6 +33,27 @@
 	}
 }
 
+(httpsec) {
+	header {
+		# Strict-Transport-Security "max-age=31536000"
+		Access-Control-Allow-Origin *
+		Referrer-Policy no-referrer
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		# X-XSS-Protection 0
+		Content-Security-Policy "
+default-src 'none';
+base-uri 'self';
+frame-ancestors 'none';
+form-action 'self';
+script-src 'strict-dynamic';
+style-src 'self' 'https://unpkg.com/';
+object-src 'none';
+require-trusted-types-for 'script';
+		"
+	}
+}
+
 http://:8080 {
 	@prod vars {env.PROD} true
 	bind unix/{$UDS_DIR:.}/xtexhome{$UDS_SUFFIX:.sock}|0777 tcp/localhost
@@ -44,13 +65,7 @@ http://:8080 {
 	redir /blog/* https://blog.xtexx.eu.org/misc/migration-to-home/ permanent
 
 	header Server xtex-home
-	header Strict-Transport-Security "max-age=31536000"
-	header Access-Control-Allow-Origin *
-	header Referrer-Policy no-referrer
-	header X-Content-Type-Options nosniff
-	header Content-Security-Policy "frame-ancestors 'none'"
-	header X-Frame-Options DENY
-	header X-XSS-Protection 0
+	import httpsec
 
 	@templated path */ *.html
 	handle @templated {
@@ -76,13 +91,7 @@ http://blog.xtexx.eu.org http://xtexblog.exozy.me {
 	file_server
 
 	header Server xtex-blog
-	header Strict-Transport-Security "max-age=15768000; includeSubDomains"
-	header Access-Control-Allow-Origin *
-	header Referrer-Policy no-referrer, strict-origin-when-cross-origin
-	header X-Content-Type-Options nosniff
-	header Content-Security-Policy "frame-ancestors 'none'"
-	header X-Frame-Options DENY
-	header X-XSS-Protection 0
+	import httpsec
 
 	handle_errors {
 		@404 expression `{err.status_code} == 404`
