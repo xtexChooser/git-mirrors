@@ -9,4 +9,6 @@ pipeline:
               --memory 16m
               --mount type=bind,source=/home/xtex/home,destination=/srv/run
               --mount type=bind,source=/srv/http/pages/xtex,destination=/srv/blog
+              --mount type=bind,source=/srv/http/pages,destination=/srv/exopages
+              --env "UDS_DIR=exopages"
               exozy.me/xtex/home
