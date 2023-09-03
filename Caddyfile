@@ -61,7 +61,7 @@ default-src 'self';
 base-uri 'self';
 frame-ancestors 'none';
 form-action 'self';
-script-src 'self' 'nonce-tracker';
+script-src 'self' 'nonce-dHJhY2tlcgo=';
 style-src 'self' 'unsafe-inline' https://unpkg.com;
 object-src 'none';
 		"

@@ -1,7 +1,7 @@
 {{ define "tracker" }}
 <!-- Tracker -->
 <!-- It is secure here to use a unique nonce -->
-<script nonce="tracker">
+<script nonce="dHJhY2tlcgo=">
 	if (!localStorage["xtex-home:stat:opt-out"]) {
 		var xhr = new XMLHttpRequest();
 		xhr.open("GET", "/stats_ping/{{ . }}", true);
