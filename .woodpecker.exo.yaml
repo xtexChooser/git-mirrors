@@ -2,7 +2,7 @@ pipeline:
     build:
         image: bash
         commands:
-            - git describe --all --long --always | tr -d '\n' > src/version.txt
+            - git describe --long --always | tr -d '\n' > src/version.txt
             - podman build --force-rm --squash --tag exozy.me/xtex/home .
             - podman run --name home
               --replace --restart unless-stopped --detach
