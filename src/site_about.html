@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 	<head>
-		{{ import "/includes/head.html" }} {{ template "head" "xtex's Home :: Site About" }}
+		{{ import "/includes/head.html" }} {{ template "head" "xtex's Home ::
+		Site About" }}
 	</head>
 	<body>
 		<main>
@@ -69,25 +70,17 @@
 
 			<section id="privacy">
 				<h2>Privacy<a href="#privacy"></a></h2>
+				<script type="text/javascript" src="tracker.js" />
 				<p>
 					We log when you visit some pages on this website.<br />
 					We do not log any information other than your browser
 					User-Agent. These information will only be transferred to
 					the Project Segfault Healthchecks service. <br />
 					If you wish not to send us these statistics, please
-					<button onclick="tracker_optout()">opt-out</button>.
-					You can also <button onclick="tracker_optin()">opt-in</button> again at any time.
+					<button onclick="tracker_optout">opt-out</button>. You can
+					also <button onclick="tracker_optin">opt-in</button> again
+					at any time.
 				</p>
-				<script nonce="dHJhY2tlcgo=">
-					function tracker_optout() {
-						localStorage["xtex-home:stat:opt-out"] = true;
-						alert("We won't send any statistics information anymore.");
-					}
-					function tracker_optin() {
-						delete localStorage["xtex-home:stat:opt-out"];
-						alert("Opt-in succeeded.");
-					}
-				</script>
 				<p>
 					Otherwise we will not collect any of your private
 					information without notification.

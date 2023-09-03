@@ -1,3 +1,18 @@
+header h1 {
+	font-size: 4rem;
+}
+
+header p {
+	line-height: 50%;
+	font-size: 0.9rem;
+	opacity: 50%;
+}
+
+footer {
+	text-align: center;
+	border-top: 1px dashed #666;
+}
+
 .hlist,
 .hlist-wrapper>* {
 	padding-left: 0;

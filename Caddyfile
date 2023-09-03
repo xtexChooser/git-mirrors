@@ -61,11 +61,7 @@ default-src 'self';
 base-uri 'self';
 frame-ancestors 'none';
 form-action 'self';
-script-src 'self' 'nonce-MlFvf8mrRZCWL2XnXhk2lUFvVd0D6geKagRaHsVIQ0HCfIGdFOwZ3kBj2XmigizdSt9zlV+M1KVT
-xPcDh+4hu8ofwNaiFz/6j1hAhIL9UHrG85JYmjL34Hl4u+jNi6sUe9EeTVtY+GXowp9+pp6gcAVd
-En5s1R0OjwmWjr/Rv4JyhOw75fFzDMdqnMxMGJFytkKDr4rNBFylo0oUjjjZZGAvvE1Y/GRrvb3u
-Pq4iXPswEfxW6IR02VBmuBVyaOQxtlCPRzcfPM85wr4OPQF4NqcTYGAOh7EQbKDR0mJDJlSAKkBk
-TK5BlE4sfWnfUDh29d+1BSc2SzbKgEY2MWkftg==' 'unsafe-inline';
+script-src 'self';
 style-src 'self' 'unsafe-inline' https://unpkg.com;
 object-src 'none';
 		"
