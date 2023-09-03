@@ -12,7 +12,8 @@ header img {
 	height: 8em;
 }
 
-@media screen and (max-width:650px) {
+@media print,
+screen and (max-width:650px) {
 	header img {
 		display: none;
 	}
@@ -37,7 +38,8 @@ header img {
 	}
 }
 
-@media screen and (max-width:650px) {
+@media print,
+screen and (max-width:650px) {
 	.double-col {
 		display: block;
 	}
