@@ -57,9 +57,10 @@ http://:8080 {
 		templates
 	}
 
-	handle /stats_ping {
+	handle_path /stats_ping/* {
 		request_header Host healthchecks.projectsegfau.lt
-		uri replace /stats_ping /ping/1ee24229-a06f-46b5-a521-a13385f00766
+		uri replace /index /ping/d77dbc1b-6f92-4ac4-a5ea-d4972edc7373
+		uri replace /about /ping/514a7388-893d-4bdd-993d-208b11109a89
 		reverse_proxy https://healthchecks.projectsegfau.lt
 	}
 }

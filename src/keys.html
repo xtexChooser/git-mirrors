@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh,en">
+	<head>
+		{{ import "/includes/head.html" }} {{ template "head" }}
+		<title>xtex's Home :: Keys</title>
+		<meta name="description" content="xtex's Home :: Keys" />
+		<meta property="og:title" content="xtex's Home :: Keys" />
+		<link rel="stylesheet" href="/index.css" />
+	</head>
+	<body>
+		<main>
+			<header>
+				<h1>xtex :: Keys</h1>
+			</header>
+			<section id="ssh">
+				<h2>SSH Keys<a href="#ssh"></a></h2>
+				<ul>
+					<li>
+						<p>
+							<strong>Main ED25519 key</strong><br />
+							<code
+								>ssh-ed25519
+								AAAAC3NzaC1lZDI1NTE5AAAAIC9Xq225dYzTPQLc3ixSeRSlaq/8pSTAVI+flvSMMApe
+								xtex@xtexx.eu.org</code
+							>
+						</p>
+						<details title="Fingerprint">
+							<summary>Fingerprint</summary>
+							<code
+								>256
+								SHA256:IEYEjkZlkUTr5U9GiDAmZU/4eZus2t2RsxusyhQqwao
+								xtex@xtexx.eu.org (ED25519)</code
+							>
+						</details>
+					</li>
+					<li>
+						<p>
+							<strong
+								>Main
+								<abbr title="Security Key (Hardware Keys)"
+									>SK</abbr
+								>
+								key</strong
+							><br />
+							<code
+								>sk-ssh-ed25519@openssh.com
+								AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIBec9mnzRi149os0tSb2zA0aJf/c7/6wF6W5weK8+fHPAAAABHNzaDo=
+								xtex.sk@xtexx.eu.org</code
+							>
+						</p>
+						<details title="Fingerprint">
+							<summary>Fingerprint</summary>
+							<code
+								>SHA256:5mjvhkvAqcJ0brNDPTTO2cBEnl285gxDHrHab71Kkzo
+								xtex.sk@xtexx.eu.org</code
+							>
+						</details>
+					</li>
+					<li>
+						<details>
+							<summary>
+								<strong
+									>Server Key @
+									<a href="https://exozy.me/" title="exozyme"
+										>exozyme</a
+									></strong
+								>
+							</summary>
+							<p>
+								<code
+									>ssh-ed25519
+									AAAAC3NzaC1lZDI1NTE5AAAAIFHOReB18Sb/+wXYrDryppK/sjt5WC9MEpbfsjyaVhLm
+									xtex@exozyme</code
+								><br />
+								<strong>Fingerprint</strong><br />
+								<code
+									>SHA256:wqZ3zZ63vHKc0aR6filIiy3O2oWNHE2Dk74msikokJU
+									xtex@exozyme</code
+								>
+							</p>
+						</details>
+					</li>
+					<li>
+						<details>
+							<summary>
+								<strong
+									>Server Key @
+									<a href="https://envs.net/" title="envs.net"
+										>envs.net</a
+									></strong
+								>
+							</summary>
+							<p>
+								<code
+									>ssh-ed25519
+									AAAAC3NzaC1lZDI1NTE5AAAAIHq+SeiKjc5tX3EqDu2BTurorurRLbs4OefIqrm1yAFL
+									xtex@core.envs.net</code
+								><br />
+								<strong>Fingerprint</strong><br />
+								<code
+									>SHA256:aVZKEMId9J1W/1T5kfhkvLlNhoS+NEXgsgNgmcYTWvE
+									xtex@core.envs.net</code
+								>
+							</p>
+						</details>
+					</li>
+				</ul>
+			</section>
+			<section id="gpg">
+				<h2>GPG Keys<a href="#gpg"></a></h2>
+				<ul>
+					<li>
+						<strong>Main EdDSA key</strong><br />
+						<p>
+							Fingerprint:
+							<code
+								>7231804B052C670F15A6771DB918086ED8045B91</code
+							>
+						</p>
+						<a
+							href="/keys/gpg-main.asc"
+							title="Full Public Key"
+							target="_blank"
+							>View Full Public Key</a
+						>
+					</li>
+					<li>
+						<details>
+							<summary><strong>Old RSA-4096 key</strong></summary>
+							<p>
+								Fingerprint:
+								<code
+									>43D55EC7285804D1E9FEAAFB978F2E760D9DB0EB</code
+								>
+							</p>
+							<a
+								href="/keys/gpg-0x0D9DB0EB.asc"
+								title="Full Public Key & Revocation Certification"
+								target="_blank"
+								>View Full Public Key & Revocation
+								Certification</a
+							>
+						</details>
+					</li>
+				</ul>
+			</section>
+		</main>
+
+		{{ include "includes/simple_footer.html" }}
+	</body>
+</html>

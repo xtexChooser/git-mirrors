@@ -1,0 +1,10 @@
+{{ define "tracker" }}
+<!-- Tracker -->
+<script type="text/javascript" async defer>
+	if (!localStorage["xtex-home:stat:opt-out"]) {
+		var xhr = new XMLHttpRequest();
+		xhr.open("GET", "/stats_ping/{{ . }}", true);
+		xhr.send(null);
+	}
+</script>
+{{ end }}
