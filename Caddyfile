@@ -44,7 +44,7 @@
 	}
 }
 
-http://:8080 {
+http://:8080 http://xtexx.eu.org http://xtexhome.exozy.me {
 	@prod vars {env.PROD} true
 	bind unix/{$UDS_DIR:.}/xtexhome{$UDS_SUFFIX:.sock}|0777 tcp/localhost
 
