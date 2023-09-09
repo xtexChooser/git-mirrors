@@ -1,10 +1,10 @@
-DIRECTORY_VARS=V_TARGET_NAME V_POST V_DEPS V_PATH V_EXIST V_USER V_USER_ID V_GROUP V_GROUP_ID V_RECURSIVE V_ACCESS
-define directory0
+FS_DIRECTORY_VARS=V_TARGET_NAME V_POST V_DEPS V_PATH V_EXIST V_USER V_USER_ID V_GROUP V_GROUP_ID V_RECURSIVE V_ACCESS
+define fs-directory0
 $(if $(call not,$(call is-false,$(V_EXIST))),
 $(eval V_TARGET_NAME?=$(V_PATH))
 
-$(call mktrace,Define exist directory target: $(V_UNIT))
-$(call mktrace-vars,$(DIRECTORY_VARS))
+$(call mktrace,Define exist fs-directory target: $(V_UNIT))
+$(call mktrace-vars,$(FS_DIRECTORY_VARS))
 $(if $(V_GROUP),$(if $(V_GROUP_ID),$(error Both V_GROUP and V_GROUP_ID is defined for $(V_PATH))))
 $(if $(V_USER),$(if $(V_USER_ID),$(error Both V_USER and V_USER_ID is defined for $(V_PATH))))
 
@@ -45,8 +45,8 @@ $(V_PATH): $(V_DEPS)
 ,
 $(eval V_TARGET_NAME?=dir-$(V_PATH))
 
-$(call mktrace,Define non-exist directory target: $(V_UNIT))
-$(call mktrace-vars,$(DIRECTORY_VARS))
+$(call mktrace,Define non-exist fs-directory target: $(V_UNIT))
+$(call mktrace-vars,$(FS_DIRECTORY_VARS))
 
 $(call apply-target,$(V_TARGET_NAME))
 $(call vt-target,$(V_TARGET_NAME))
@@ -62,4 +62,4 @@ $(V_TARGET_NAME): $(V_DEPS)
 $(call unset-vars)
 endef
 
-$(call define-func, directory)
+$(call define-func, fs-directory)
