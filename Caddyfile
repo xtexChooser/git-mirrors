@@ -78,6 +78,8 @@ object-src 'none';
 		rewrite * /gen/xrd-host-meta.xml
 	}
 	rewrite /.well-known/host-meta.json /gen/xrd-host-meta.json
+	rewrite /.well-known/nodeinfo /.well-known/nodeinfo.json
+	header /nodeinfo/2.1.json Content-Type `application/json; profile="http://nodeinfo.diaspora.software/ns/schema/2.1#"`
 }
 
 http://blog.xtexx.eu.org http://xtexblog.exozy.me {

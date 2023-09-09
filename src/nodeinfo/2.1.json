@@ -1,0 +1,30 @@
+{
+	"version": "2.1",
+	"software": {
+		"name": "xtex-home",
+		"version": "{{ include `version.txt` }}",
+		"repository": "https://codeberg.org/xtex/home",
+		"homepage": "https://codeberg.org/xtex/home"
+	},
+	"protocols": [],
+	"services": {
+		"inbound": [
+			"imap",
+			"pop3"
+		],
+		"outbound": [
+			"smtp"
+		]
+	},
+	"openRegistrations": false,
+	"usage": {
+		"users": {
+			"total": 1,
+			"activeHalfyear": 1,
+			"activeMonth": 1
+		},
+		"localPosts": 0,
+		"localComments": 0
+	},
+	"metadata": {}
+}
