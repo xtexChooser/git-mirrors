@@ -91,7 +91,7 @@ object-src 'none';
 	}
 	handle @webfinger {
 		rewrite * /webfinger/{query.resource}
-		@webfinger-acct path_regexp acct ^\/webfinger\/(.+):([a-zA-Z0-9\s.]+)@(.+)$
+		@webfinger-acct path_regexp acct ^\/webfinger\/(.+):([a-zA-Z0-9\s+.]+)@(.+)$
 		route @webfinger-acct {
 			rewrite * /webfinger/{re.acct.3}/{re.acct.1}/{re.acct.2}.json
 		}
