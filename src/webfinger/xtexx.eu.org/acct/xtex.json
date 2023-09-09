@@ -1,0 +1,50 @@
+{
+	"subject": "acct:xtex@xtexx.eu.org",
+	"aliases": [
+		"mailto:xtex@xtexx.eu.org",
+		"mailto:xtexchooser@duck.com",
+		"https://xtexx.eu.org/"
+	],
+	"links": [
+		{
+			"rel": "http://webfinger.net/rel/profile-page",
+			"type": "application/xhtml+xml",
+			"href": "https://xtexx.eu.org/"
+		},
+		{
+			"rel": "http://webfinger.net/rel/profile-page",
+			"type": "text/html",
+			"href": "https://xtexx.eu.org/"
+		},
+		{
+			"rel": "about",
+			"type": "application/xhtml+xml",
+			"href": "https://xtexx.eu.org/"
+		},
+		{
+			"rel": "about",
+			"type": "text/html",
+			"href": "https://xtexx.eu.org/"
+		},
+		{
+			"rel": "http://webfinger.net/rel/avatar",
+			"type": "image/webp",
+			"href": "https://xtexx.eu.org/avatar.webp"
+		},
+		{
+			"rel": "http://webfinger.net/rel/avatar",
+			"type": "image/png",
+			"href": "https://xtexx.eu.org/avatar.png"
+		},
+		{
+			"rel": "icon",
+			"type": "image/webp",
+			"href": "https://xtexx.eu.org/avatar.webp"
+		},
+		{
+			"rel": "icon",
+			"type": "image/png",
+			"href": "https://xtexx.eu.org/avatar.png"
+		}
+	]
+}
