@@ -101,4 +101,3 @@ Hello, I am xtex (aka. xtexChooser).
 - Hackergame 2022: No. 185
 - DN42 Ping Challenge
 - TeaCon 2023 (in progress)
-- CSP-S 2023 (upcoming)

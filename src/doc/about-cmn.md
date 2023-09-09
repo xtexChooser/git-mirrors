@@ -101,4 +101,3 @@
 - Hackergame 2022：第185名
 - DN42 Ping Challenge
 - TeaCon 2023（进行中）
-- CSP-S 2023（即将到来）
