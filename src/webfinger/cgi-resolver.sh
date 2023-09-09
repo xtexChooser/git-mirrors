@@ -3,7 +3,8 @@
 #resource=$1
 file=${PATH_INFO/%.json/.txt}
 file=${file#\/}
-file=${file// /+}
+file=${file// /.}
+file=${file//+/.}
 
 if [[ -f "$file" ]]; then
 	target=$(< "$file")
