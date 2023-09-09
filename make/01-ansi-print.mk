@@ -55,3 +55,11 @@ endef
 define succ
 $(if $(findstring false,$(LEONIS_PRINT_INFO)),,$(call printc,32,- $(strip $(1))))
 endef
+
+define warn
+$(call printc,31,- $(strip $(1)))
+endef
+
+define err
+$(call warn,$(1)); exit 1
+endef
