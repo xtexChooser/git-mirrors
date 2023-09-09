@@ -66,8 +66,10 @@ style-src 'self' https://unpkg.com;
 object-src 'none';
 		"
 
-	@xhtml path */ *.html
-	header @xhtml Content-Type "application/xhtml+xml; utf-8"
+	@xhtml path */ /*.html
+	handle @xhtml {
+		header Content-Type "application/xhtml+xml; utf-8"
+	}
 	templates {
 		mime "application/xhtml+xml" "application/json"
 	}
