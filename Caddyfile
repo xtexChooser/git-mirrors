@@ -82,13 +82,6 @@ object-src 'none';
 		header Content-Type "application/json"
 		rewrite * /gen/xrd-host-meta.json
 	}
-
-	handle_path /stats_ping/* {
-		request_header Host healthchecks.projectsegfau.lt
-		uri replace /index /ping/d77dbc1b-6f92-4ac4-a5ea-d4972edc7373
-		uri replace /about /ping/514a7388-893d-4bdd-993d-208b11109a89
-		reverse_proxy https://healthchecks.projectsegfau.lt
-	}
 }
 
 http://blog.xtexx.eu.org http://xtexblog.exozy.me {
