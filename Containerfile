@@ -8,6 +8,8 @@ RUN make -j4
 
 FROM docker.io/library/caddy:latest
 
+RUN apk add --no-cache bash
+
 RUN caddy add-package \
 	github.com/caddyserver/replace-response \
     github.com/hairyhenderson/caddy-teapot-module \
