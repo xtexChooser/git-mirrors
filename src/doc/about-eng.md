@@ -24,7 +24,7 @@ Hello, I am xtex (aka. xtexChooser).
   - xtexchooser *AT* duck.com
   - xtex *AT* xtexx.eu.org
 - Misskey:
-  - [acct:xtexChooser@neko.ci](https://neko.ci/@xtexChooser) (primary)
+  - [acct:xtex.activity@xtexx.eu.org](https://neko.ci/@xtex.activity@xtexx.eu.org) ([acct:xtexChooser@neko.ci](https://neko.ci/@xtexChooser)) (primary)
   - [acct:xtexChooser@wxw.cat](https://wxw.cat/@xtexChooser) (backup)
   - [acct:xtexChooser@wxw.moe](https://wxw.moe/@xtexChooser) (backup)
 - Matrix

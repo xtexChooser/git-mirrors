@@ -24,7 +24,7 @@
   - xtexchooser *AT* duck.com
   - xtex *AT* xtexx.eu.org
 - Misskey:
-  - [acct:xtexChooser@neko.ci](https://neko.ci/@xtexChooser)（主要）
+  - [acct:xtex.activity@xtexx.eu.org](https://neko.ci/@xtex.activity@xtexx.eu.org)（[acct:xtexChooser@neko.ci](https://neko.ci/@xtexChooser)）（主要）
   - [acct:xtexChooser@wxw.cat](https://wxw.cat/@xtexChooser)（备用）
   - [acct:xtexChooser@wxw.moe](https://wxw.moe/@xtexChooser)（备用）
 - Matrix
