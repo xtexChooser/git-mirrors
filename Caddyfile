@@ -66,22 +66,18 @@ style-src 'self' https://unpkg.com;
 object-src 'none';
 		"
 
-	@templated path */ *.html
-	handle @templated {
-		header Content-Type "application/xhtml+xml; utf-8"
-		templates {
-			mime "text/plain" "text/html" "application/xhtml+xml"
-		}
+	@xhtml path */ *.html
+	header @xhtml Content-Type "application/xhtml+xml; utf-8"
+	templates {
+		mime "application/xhtml+xml" "application/json"
 	}
 
+	# Well-known URLs
 	handle /.well-known/host-meta {
 		header Content-Type "application/xrd+xml"
 		rewrite * /gen/xrd-host-meta.xml
 	}
-	handle /.well-known/host-meta.json {
-		header Content-Type "application/json"
-		rewrite * /gen/xrd-host-meta.json
-	}
+	rewrite /.well-known/host-meta.json /gen/xrd-host-meta.json
 }
 
 http://blog.xtexx.eu.org http://xtexblog.exozy.me {
