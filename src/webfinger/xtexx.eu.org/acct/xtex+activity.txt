@@ -1,0 +1,1 @@
+https://neko.ci/.well-known/webfinger?resource=acct%3Axtexchooser%40neko.ci

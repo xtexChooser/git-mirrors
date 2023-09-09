@@ -11,7 +11,8 @@ FROM docker.io/library/caddy:latest
 RUN caddy add-package \
 	github.com/caddyserver/replace-response \
     github.com/hairyhenderson/caddy-teapot-module \
-	github.com/caddyserver/cache-handler
+	github.com/aksdb/caddy-cgi/v2
+#	github.com/caddyserver/cache-handler
 #	github.com/mholt/caddy-ratelimit
 
 LABEL org.opencontainers.image.title="xtex's Home"

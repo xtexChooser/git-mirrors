@@ -6,6 +6,7 @@
 	https_port 8443
 
 	order cache before rewrite
+	order cgi before respond
 	cache {
 		allowed_http_verbs GET POST
 		cache_name Caddy
@@ -90,13 +91,22 @@ object-src 'none';
 	}
 	handle @webfinger {
 		rewrite * /webfinger/{query.resource}
-		@webfinger-acct path_regexp acct ^\/webfinger\/(.+):([a-zA-Z0-9]+)@(.+)$
+		@webfinger-acct path_regexp acct ^\/webfinger\/(.+):([a-zA-Z0-9\s.]+)@(.+)$
 		route @webfinger-acct {
 			rewrite * /webfinger/{re.acct.3}/{re.acct.1}/{re.acct.2}.json
 		}
 		@webfinger-http path_regexp ^\/webfinger\/(https|http):\/+([^@]+)(\/.*|)$
 		route @webfinger-http {
 			rewrite * /gen/host-webfinger.json
+		}
+		@webfinger-redir {
+			path /webfinger/*/*/*.json
+			not file {path}
+		}
+		route @webfinger-redir {
+			cgi * webfinger/cgi-resolver.sh {query.resource} {
+				dir src
+			}
 		}
 	}
 }
