@@ -77,11 +77,28 @@ object-src 'none';
 	# Well-known URLs
 	handle /.well-known/host-meta {
 		header Content-Type "application/xrd+xml"
-		rewrite * /gen/xrd-host-meta.xml
+		rewrite * /gen/host-meta.xml
 	}
-	rewrite /.well-known/host-meta.json /gen/xrd-host-meta.json
+	rewrite /.well-known/host-meta.json /gen/host-meta.json
 	rewrite /.well-known/nodeinfo /.well-known/nodeinfo.json
 	header /nodeinfo/2.1.json Content-Type `application/json; profile="http://nodeinfo.diaspora.software/ns/schema/2.1#"`
+
+	# WebFinger
+	@webfinger {
+		path /.well-known/webfinger
+		query resource=*
+	}
+	handle @webfinger {
+		rewrite * /webfinger/{query.resource}
+		@webfinger-acct path_regexp acct ^\/webfinger\/(.+):([a-zA-Z0-9]+)@(.+)$
+		route @webfinger-acct {
+			rewrite * /webfinger/{re.acct.3}/{re.acct.1}/{re.acct.2}.json
+		}
+		@webfinger-http path_regexp ^\/webfinger\/(https|http):\/+([^@]+)(\/.*|)$
+		route @webfinger-http {
+			rewrite * /gen/host-webfinger.json
+		}
+	}
 }
 
 http://blog.xtexx.eu.org http://xtexblog.exozy.me {

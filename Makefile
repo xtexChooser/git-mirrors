@@ -37,4 +37,4 @@ src/gen/host-meta.json: src/gen/host-jrd.json
 
 src/gen/host-webfinger.json: src/gen/host-jrd.json
 	@echo "Generate host WebFinger JRD"
-	@jo -p subject="https://host@xtexx.eu.org" links=$$(cat src/gen/host-jrd.json | $(JSONMIN)) | $(JSONFMT) > $@
+	@jo -p subject="https://xtexx.eu.org" links=$$(cat src/gen/host-jrd.json | $(JSONMIN)) | $(JSONFMT) > $@
