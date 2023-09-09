@@ -6,7 +6,9 @@
 		"repository": "https://codeberg.org/xtex/home",
 		"homepage": "https://codeberg.org/xtex/home"
 	},
-	"protocols": [],
+	"protocols": [
+		"activitypub"
+	],
 	"services": {
 		"inbound": [
 			"imap",
