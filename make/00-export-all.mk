@@ -5,5 +5,5 @@ $(call not,$(subst A,,$(subst B,,$(subst C,,$(subst D,,$(subst E,,$(subst F,,$(s
 endef
 
 define export-all
-$(foreach var,$(.VARIABLES),$(if $(call streq,$(origin $(var)),override)$(call streq,$(origin $(var)),file),$(if $(call should-export,$(var)),$(if $(LEONIS_TRACE_EXPORT),$(info export $(var)),$(eval export $(var))))))
+$(foreach var,$(.VARIABLES),$(if $(call streq,$(origin $(var)),override)$(call streq,$(origin $(var)),file),$(if $(call should-export,$(var)),$(if $(LEONIS_TRACE_EXPORT),$(info export $(var)))$(eval export $(var)))))
 endef
