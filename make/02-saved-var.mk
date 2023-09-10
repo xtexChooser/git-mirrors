@@ -8,6 +8,7 @@ define saved-var-$1-restore
 include $(saved-var-$1)
 ifneq ($$$$(saved_var_$1),$$($2))
 $$$$(shell $(RM) -f $(saved-var-$1))
+saved_var_$1_changed=1
 $$$$(call mktrace,Invalidated variable cache $1)
 endif
 endef
