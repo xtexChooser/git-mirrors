@@ -29,8 +29,7 @@ include $(VENDOR_MAKE_DIR)/*.mk
 $(call end-all)
 
 # Core tasks
-
-.PHONY: default build test apply
+$(call vt-target, default build test apply)
 
 build: $(LEONIS_BUILD_DEPS)
 
