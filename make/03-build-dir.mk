@@ -1,6 +1,7 @@
 $(call define-mkdir-target,$(BUILD_DIR),)
 $(call define-mkdir-target,$(APPLY_DIR),$(BUILD_DIR))
 $(call define-mkdir-target,$(STAMPS_DIR),$(APPLY_DIR))
+$(call define-mkdir-target,$(VARS_DIR),$(APPLY_DIR))
 $(call define-touch-target,$(STAMP_APPLICATION),$(STAMPS_DIR),,1)
 $(call define-touch-target,$(STAMP_REF),$(STAMPS_DIR),-d -365days,1)
 
