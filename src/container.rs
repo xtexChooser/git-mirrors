@@ -558,6 +558,7 @@ impl cmp::PartialEq<InspectContainerData> for ContainerCreated {
         self.name == other.name.unwrap()
             && self.labels == config.labels.unwrap_or_default()
             && self.apparmor_profile == other.app_armor_profile.unwrap_or_default()
+            && self.hostname.unwrap_or_default() == config.hostname.unwrap_or_default()
     }
 }
 
