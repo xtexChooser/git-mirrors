@@ -13,6 +13,7 @@ $(error LEONIS_BASE_DIR is not specified)
 endif
 LEONIS_MAKE_DIR ?= $(LEONIS_BASE_DIR)/make
 LEONIS_MODULES_DIR ?= $(LEONIS_BASE_DIR)/modules
+LEONIS_EXTERNAL_DIR ?= $(LEONIS_BASE_DIR)/external
 
 # Vendor paths
 VENDOR_CODE_DIR ?= .
