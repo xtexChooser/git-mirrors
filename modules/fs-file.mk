@@ -74,7 +74,7 @@ $(call define-func, fs-file)
 
 $(call vt-target,mkfile-empty mkfile-download)
 mkfile-empty:
-	$(TOUCH) $(E_PATH)
+	$(file >$(E_PATH))
 
 mkfile-download:
 	if which curl $(DROP_STDOUT); then
