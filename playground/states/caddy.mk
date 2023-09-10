@@ -88,3 +88,19 @@ V_FLAGS =append
 V_MATCH = Value\s*=\s*False
 V_LINE = Value = True
 $(call end)
+
+$(call fs-file)
+V_PATH		= $(BUILD_DIR)/test-caddy/Caddyfile
+V_COPY		= $(STATES_DIR)/caddy/Caddyfile
+$(call end)
+
+CADDY_DIR=$(shell readlink -e $(BUILD_DIR)/test-caddy)
+$(call fs-file)
+V_PATH		= $(BUILD_DIR)/test-caddy/caddy.yaml
+V_TEMPLATE	= bash-tpl $(STATES_DIR)/caddy/caddy.yaml
+$(call end)
+
+$(call stamp)
+V_NAME		= caddy-kube-conf-test
+V_DEPS		= $(BUILD_DIR)/test-caddy/caddy.yaml
+$(call end)
