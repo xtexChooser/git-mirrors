@@ -44,4 +44,5 @@ endef
 $(if $(CUSTOM_APPLY),,$(eval $(call default-apply)))
 
 # Call deferred functions
-$(foreach fn,$(deffered-fn-stack),$(eval $(call $(fn))))
+$(export-all)
+$(call-deferred-fns)

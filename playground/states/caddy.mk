@@ -7,8 +7,8 @@ $(call end)
 
 $(call package)
 V_PKG		= caddy
-V_INSTALLED	= n
-V_INST_FILE	= /usr/bin/caddy
+#V_INSTALLED	= y
+#V_INST_FILE	= /usr/bin/caddy
 $(call end)
 
 $(call cmd)
