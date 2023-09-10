@@ -12,3 +12,6 @@ PRINTF ?= printf
 RM ?= rm
 CHOWN ?= chown
 CHMOD ?= chmod
+MV ?= mv
+CP ?= cp
+SED ?= sed
