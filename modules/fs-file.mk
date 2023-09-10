@@ -10,7 +10,6 @@ $(call mktrace,Define exist fs-file target: $(V_UNIT))
 $(call mktrace-vars,$(FS_FILE_VARS))
 $(if $(V_GROUP),$(if $(V_GROUP_ID),$(error Both V_GROUP and V_GROUP_ID is defined for $(V_PATH))))
 $(if $(V_USER),$(if $(V_USER_ID),$(error Both V_USER and V_USER_ID is defined for $(V_PATH))))
-$(if $(call not,$(V_CREATE)),$(error V_CREATE is not defined for $(V_PATH). Please specific the way to create file when not found))
 
 $(call apply-target,$(V_PATH))
 $(if $(call strneq,$(V_TARGET_NAME),$(V_PATH)),
@@ -22,7 +21,9 @@ $(V_PATH): $(V_DEPS) $(V_TPL_DEPS)
 	export E_MAJOR=fs-file E_PATH=$(V_PATH)
 	if [[ ! -e $(V_PATH) $(foreach tpldep,$(V_TPL_DEPS),|| "$(tpldep)" -nt "$(V_PATH)" ) ]]; then
 		$(MKDIR) -p $(dir $(V_PATH))
-		$(MAKE) $(MAKE_FLAGS) E_MAJOR=fs-file-create E_PATH=$(V_PATH) mkfile-$(V_CREATE)
+		$(if $(V_CREATE),
+		$(MAKE) $(MAKE_FLAGS) E_MAJOR=fs-file-create E_PATH=$(V_PATH) mkfile-$(V_CREATE),
+		$(call err,File $(V_PATH) is missing but V_CREATE is not defined))
 		if [[ ! -e $(V_PATH) ]]; then
 			$(call err, Failed to create file $(V_PATH))
 		fi
