@@ -24,5 +24,5 @@ endef
 $(call define-inline-func,save-var)
 
 define dep-vars
-$(foreach var,$1,$(call save-var,dep-var-$(var),$(var))$(saved-var-dep-var-$(var)))
+$(foreach var,$1,$(call save-var,$(var),$(var))$(saved-var-$(var)))
 endef
