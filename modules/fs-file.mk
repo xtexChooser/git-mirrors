@@ -84,4 +84,11 @@ mkfile-download:
 		$(call err, Neither of curl or wget is available)
 	fi
 
-$(if $(call streq,$(E_MAJOR),fs-file-create),$(if $(TARGET),$(eval mkfile-run: $(TARGET))$(call vt-target,mkfile-run)))
+define mkfile-run0
+$(if $(TARGET),$(if $(CMD),$(error Both TARGET and CMD is defined for $(E_PATH))))
+$(if $(TARGET),mkfile-run: $(TARGET))
+$(if $(CMD),mkfile-run:
+	$(CMD))
+endef
+
+$(if $(call streq,$(E_MAJOR),fs-file-create),$(eval $(mkfile-run0))$(call vt-target,mkfile-run))
