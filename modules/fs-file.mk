@@ -79,10 +79,10 @@ mkfile-empty:
 	$(file >$(E_PATH))
 
 mkfile-download:
-	if which curl $(DROP_STDOUT); then
+	if which curl $(DROP_STDOUT_ERR); then
 		$(call trace, Download $(URL) to $(E_PATH) with cURL)
 		curl -L -o $(E_PATH) $(URL)
-	elif which wget $(DROP_STDOUT); then
+	elif which wget $(DROP_STDOUT_ERR); then
 		$(call trace, Download $(URL) to $(E_PATH) with wget)
 		wget --max-redirect 10 -v -O $(E_PATH) $(URL)
 	else
