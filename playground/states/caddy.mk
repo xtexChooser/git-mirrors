@@ -68,7 +68,7 @@ $(call end)
 
 $(call fs-line)
 V_NAME = caddy-line
-V_PATH = $(BUILD_DIR)/test-caddy/test.txt
+V_PATH = $(BUILD_DIR)/test-caddy/file-line.txt
 V_FLAGS =append
 V_MATCH = Value\s*=\s*False
 V_LINE = Value = True
