@@ -41,7 +41,7 @@ $(PRINTF) -- "$(strip $(1))$(ansi-clear)\n"
 endef
 
 define printc
-$(call print-ansi, $(call ansi-color, $(1))$(2))
+@$(call print-ansi, $(call ansi-color, $(1))$(2))
 endef
 
 define trace

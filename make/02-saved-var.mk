@@ -7,12 +7,12 @@ endef
 define save-var1
 $(eval saved-var-$1:=$(VARS_DIR)/$1.txt)
 $(saved-var-$1): $(VARS_DIR)
-	$$(file >$$@,saved_var_$1=$$($2))
-	@$(call trace,Saved variable cache $1)
+	@echo "saved_var_$1=$$($2)" > $$@
+	$(call trace,Saved variable cache $1)
 
 define saved-var-$1-restore
 include $(saved-var-$1)
-ifneq ($$$$(saved_var_$1),$$($2))
+ifneq ($$$$(saved_var_$1),$$$$($2))
 $$$$(shell $(RM) -f $(saved-var-$1))
 saved_var_$1_changed=1
 $$$$(call mktrace,Invalidated variable cache $1)
@@ -24,5 +24,5 @@ endef
 $(call define-inline-func,save-var)
 
 define dep-vars
-$(foreach var,$1,$(call save-var,dep-var-$(var),$(var))$(saved-var-$(var)))
+$(foreach var,$1,$(call save-var,dep-var-$(var),$(var))$(saved-var-dep-var-$(var)))
 endef
