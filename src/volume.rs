@@ -104,13 +104,13 @@ pub struct VolumeCreated {
     pub labels: HashMap<String, String>,
 }
 
-impl Into<VolumeCreateOptsBuilder> for VolumeCreated {
-    fn into(self) -> VolumeCreateOptsBuilder {
+impl From<VolumeCreated> for VolumeCreateOptsBuilder {
+    fn from(val: VolumeCreated) -> Self {
         VolumeCreateOpts::builder()
-            .name(self.name)
-            .driver(self.driver)
-            .options(self.options)
-            .labels(self.labels)
+            .name(val.name)
+            .driver(val.driver)
+            .options(val.options)
+            .labels(val.labels)
     }
 }
 

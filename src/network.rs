@@ -232,8 +232,8 @@ impl From<Subnet> for SubnetConfig {
         Self {
             subnet: value.subnet,
             gateway: value.gateway,
-            lease_from: value.lease_range.clone().map(|f| f.start_ip).flatten(),
-            lease_to: value.lease_range.map(|f| f.end_ip).flatten(),
+            lease_from: value.lease_range.clone().and_then(|f| f.start_ip),
+            lease_to: value.lease_range.and_then(|f| f.end_ip),
         }
     }
 }

@@ -122,13 +122,13 @@ pub struct ImagePulled {
     pub variant: Option<String>,
 }
 
-impl Into<PullOptsBuilder> for ImagePulled {
-    fn into(self) -> PullOptsBuilder {
+impl From<ImagePulled> for PullOptsBuilder {
+    fn from(val: ImagePulled) -> Self {
         let mut builder = PullOpts::builder()
-            .reference(self.name)
-            .all_tags(self.all_tags.unwrap_or(false))
+            .reference(val.name)
+            .all_tags(val.all_tags.unwrap_or(false))
             .policy(
-                self.policy
+                val.policy
                     .map(|p| match p.as_str() {
                         "always" => PullPolicy::Always,
                         "missing" => PullPolicy::Missing,
@@ -137,14 +137,14 @@ impl Into<PullOptsBuilder> for ImagePulled {
                     })
                     .unwrap_or(PullPolicy::Missing),
             )
-            .tls_verify(self.tls_verify.unwrap_or(true));
-        if let Some(value) = self.arch {
+            .tls_verify(val.tls_verify.unwrap_or(true));
+        if let Some(value) = val.arch {
             builder = builder.arch(value);
         }
-        if let Some(value) = self.os {
+        if let Some(value) = val.os {
             builder = builder.os(value);
         }
-        if let Some(value) = self.variant {
+        if let Some(value) = val.variant {
             builder = builder.variant(value);
         }
         builder

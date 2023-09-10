@@ -88,10 +88,10 @@ impl Resources {
 pub async fn apply(base: &PathBuf, podman: &Podman, keep: bool) -> Result<()> {
     let res = Resources::load(base)?;
     info!("configuration loaded");
-    res.apply(&podman).await.context("apply resources")?;
+    res.apply(podman).await.context("apply resources")?;
     info!("resources applied");
     if !keep {
-        res.purge(&podman).await.context("purge resources")?;
+        res.purge(podman).await.context("purge resources")?;
     }
     Ok(())
 }
