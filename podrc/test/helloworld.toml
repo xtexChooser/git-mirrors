@@ -1,0 +1,46 @@
+[[image.pulled]]
+name = "docker.io/testcontainers/helloworld:latest"
+#all_tags = false
+#arch = "amd64"
+#os = "linux"
+#policy = "missing"
+#tls_verify = true
+#variant = ""
+
+[[image.removed]]
+name = "docker.io/library/ubuntu:latest"
+#force = false
+
+[[volume.created]]
+name = "podrc-test"
+driver = "local"
+#options = {}
+#labels = {}
+
+[[volume.removed]]
+name = "podrc-test-removed"
+#force = false
+
+[[network.created]]
+name = "podrc-test"
+driver = "bridge"
+#options = {}
+#labels = {}
+#dns = true
+#internal = false
+#ipam_options = {}
+#ipv6 = false
+#iface = ""
+#subnets = []
+
+[[network.removed]]
+name = "podrc-test-removed"
+#force = false
+
+[[container.created]]
+name = "podrc-test"
+image = "docker.io/testcontainers/helloworld:latest"
+net_namespace = { nsmode = "host" }
+
+[[container.removed]]
+name = "podrc-test-removed"
