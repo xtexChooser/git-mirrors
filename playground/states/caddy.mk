@@ -32,5 +32,17 @@ V_PATH		= $(BUILD_DIR)/test-caddy
 V_EXIST		= y
 #V_USER		= root
 #V_GROUP		= root
-#V_ACCESS	= 0700
+V_RECURSIVE	= y
+V_ACCESS	= 0777
+$(call end)
+
+$(call fs-file)
+V_PATH		= $(BUILD_DIR)/test-caddy/Caddyfile-old
+V_EXIST		= n
+$(call end)
+
+$(call fs-file)
+V_PATH		= $(BUILD_DIR)/test-caddy/Caddyfile-static
+V_EXIST		= y
+V_CREATE	= empty
 $(call end)
