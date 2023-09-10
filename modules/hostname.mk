@@ -1,7 +1,7 @@
 HOSTNAME_ETC = /etc/hostname
 HOSTNAMECTL = /usr/bin/hostnamectl
 
-HOSTNAME_VARS=V_TARGET_NAME V_POST V_DEPS V_HOSTNAME V_PRETTYNAME
+HOSTNAME_VARS=V_TARGET_NAME V_POST $(v-deps-var) V_HOSTNAME V_PRETTYNAME
 define hostname0
 $(eval V_TARGET_NAME?=hostname)
 $(if $(V_HOSTNAME),,$(error V_HOSTNAME is not defined))
@@ -11,7 +11,7 @@ $(call mktrace-vars,$(HOSTNAME_VARS))
 $(if $(call streq,$(V_HOSTNAME),$(HOSTNAME)),,$(call apply-target,$(V_TARGET_NAME)))
 $(call vt-target,$(V_TARGET_NAME))
 
-$(V_TARGET_NAME): $(V_DEPS)
+$(V_TARGET_NAME): $(v-deps)
 	export E_MAJOR=hostname E_HOSTNAME=$(V_HOSTNAME) E_PRETTYNAME=$(V_PRETTYNAME)
 	$(MAKE) $(MAKE_FLAGS) hostname-set
 	$(call vpost, E_MINOR=run)

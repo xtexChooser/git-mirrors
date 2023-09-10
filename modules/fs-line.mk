@@ -1,4 +1,4 @@
-FS_LINE_VARS=V_TARGET_NAME V_NAME V_POST V_DEPS V_PATH V_FLAGS V_MATCH V_LINE
+FS_LINE_VARS=V_TARGET_NAME V_NAME V_POST $(v-deps-var) V_PATH V_FLAGS V_MATCH V_LINE
 define fs-line0
 $(eval V_TARGET_NAME?=fs-line-$(V_PATH)-$(V_NAME))
 
@@ -10,7 +10,7 @@ $(if $(call streq,$(V_TARGET_NAME),$(V_PATH)),$(call err,fs-line target name ($(
 $(call apply-target,$(V_TARGET_NAME))
 $(call vt-target,$(V_TARGET_NAME))
 
-$(V_TARGET_NAME): $(if $(call not,$(findstring no-dep,$(V_FLAGS))$(findstring append,$(V_FLAGS))),$(V_PATH)) $(V_DEPS)
+$(V_TARGET_NAME): $(if $(call not,$(findstring no-dep,$(V_FLAGS))$(findstring append,$(V_FLAGS))),$(V_PATH)) $(v-deps)
 	export E_MAJOR=fs-line E_NAME=$(V_NAME) E_PATH=$(V_PATH)
 	if [[ -e $(V_PATH) ]]; then
 		if ! grep -F '$(subst ','"'"',$(V_LINE))' $(V_PATH) $(DROP_STDOUT); then

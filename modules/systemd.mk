@@ -1,7 +1,7 @@
 SYSTEMCTL = systemctl
 SYSTEMCTL_USER = $(SYSTEMCTL) --user
 
-SYSTEMD_UNIT_VARS=V_TARGET_NAME V_UNIT V_ENABLED V_RUNNING V_USER V_SYSTEMCTL V_POST V_DEPS
+SYSTEMD_UNIT_VARS=V_TARGET_NAME V_UNIT V_ENABLED V_RUNNING V_USER V_SYSTEMCTL V_POST $(v-deps-var)
 define systemd-unit0
 $(eval V_TARGET_NAME?=systemd-$(V_UNIT))
 $(eval V_SYSTEMCTL ?= $(if $(V_USER),$(SYSTEMCTL_USER),$(SYSTEMCTL)))
@@ -11,7 +11,7 @@ $(call mktrace,Define systemd unit target: $(V_UNIT))
 $(call mktrace-vars,$(SYSTEMD_UNIT_VARS))
 $(call apply-target,$(V_TARGET_NAME))
 $(call vt-target,$(V_TARGET_NAME))
-$(V_TARGET_NAME): $(V_DEPS)
+$(V_TARGET_NAME): $(v-deps)
 	export E_MAJOR=systemd E_UNIT=$(V_UNIT)
 $(if $(call is-true,$(V_ENABLED)),
 	if ! $(V_SYSTEMCTL) is-enabled $(V_UNIT) > /dev/null; then
