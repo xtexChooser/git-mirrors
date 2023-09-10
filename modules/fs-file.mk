@@ -20,7 +20,7 @@ $(V_TARGET_NAME): $(V_PATH)
 $(if $(V_USER)$(V_USER_ID)$(V_GROUP)$(V_GROUP_ID)$(V_ACCESS),$(call vt-target,$(V_PATH)))
 $(V_PATH): $(v-deps) $(V_TPL_DEPS)
 	export E_MAJOR=fs-file E_PATH=$(V_PATH)
-	if [[ ! -e $(V_PATH) $(foreach tpldep,$(V_TPL_DEPS),|| "$(tpldep)" -nt "$(V_PATH)" ) ]]; then
+	if [[ ! -e $(V_PATH) $(foreach tpldep,$(V_TPL_DEPS) $(v-var-dep-files),|| "$(tpldep)" -nt "$(V_PATH)" ) ]]; then
 		$(MKDIR) -p $(dir $(V_PATH))
 		$(if $(V_CREATE),
 		$(MAKE) $(MAKE_FLAGS) E_MAJOR=fs-file-create E_PATH=$(V_PATH) mkfile-$(V_CREATE),
