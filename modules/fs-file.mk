@@ -19,7 +19,7 @@ $(V_PATH): $(V_DEPS)
 	export E_MAJOR=fs-file E_PATH=$(V_PATH)
 	if [[ ! -e $(V_PATH) ]]; then
 		$(MKDIR) -p $(dir $(V_PATH))
-		$(MAKE) $(MAKE_FLAGS) E_PATH=$(V_PATH) mkfile-$(V_CREATE)
+		$(MAKE) $(MAKE_FLAGS) E_MAJOR=fs-file-create E_PATH=$(V_PATH) mkfile-$(V_CREATE)
 		if [[ ! -e $(V_PATH) ]]; then
 			$(call err, Failed to create file $(V_PATH))
 		fi
@@ -74,7 +74,7 @@ mkfile-empty:
 	$(TOUCH) $(E_PATH)
 
 mkfile-download:
-	if which curla $(DROP_STDOUT); then
+	if which curl $(DROP_STDOUT); then
 		$(call trace, Download $(URL) to $(E_PATH) with cURL)
 		curl -L -o $(E_PATH) $(URL)
 	elif which wget $(DROP_STDOUT); then
@@ -83,3 +83,5 @@ mkfile-download:
 	else
 		$(call err, Neither of curl or wget is available)
 	fi
+
+$(if $(call streq,$(E_MAJOR),fs-file-create),$(if $(TARGET),$(eval mkfile-run: $(TARGET))$(call vt-target,mkfile-run)))
