@@ -5,17 +5,14 @@ use podman_api::{
     api::Containers,
     models::*,
     opts::{
-        ContainerCreateOpts, ContainerCreateOptsBuilder, ContainerDeleteOpts, ContainerListFilter,
-        ContainerListOpts,
+        ContainerCreateOpts, ContainerCreateOptsBuilder, ContainerDeleteOpts, ContainerListOpts,
+        ContainerRestartPolicy, ImageVolumeMode, SeccompPolicy, SocketNotifyMode, SystemdEnabled,
     },
 };
 use serde::{Deserialize, Serialize};
 use tracing::info;
 
-use crate::{
-    constant::{ENV_PURGE_RUNNING_CTRS, LABEL_NO_PURGE, LABEL_NO_PURGE_VAL},
-    direct_into_build,
-};
+use crate::{constant::ENV_PURGE_RUNNING_CTRS, direct_into_build};
 
 #[derive(Debug, PartialEq, Eq, Serialize, Deserialize, Clone, Default)]
 pub struct ContainerResources {
@@ -69,13 +66,14 @@ impl ContainerResources {
 
     pub async fn purge(&self, api: &Containers) -> Result<()> {
         // todo: skip podrc container
+        // todo: https://github.com/containers/podman/pull/19911
         let container = api
             .list(
                 &ContainerListOpts::builder()
-                    .filter([ContainerListFilter::NoLabelKeyVal(
+                    /* .filter([ContainerListFilter::NoLabelKeyVal(
                         LABEL_NO_PURGE.to_string(),
                         LABEL_NO_PURGE_VAL.to_string(),
-                    )])
+                    )])*/
                     .build(),
             )
             .await?;
@@ -98,8 +96,7 @@ impl ContainerResources {
                     .inspect()
                     .await?
                     .state
-                    .map(|f| f.running)
-                    .flatten()
+                    .and_then(|f| f.running)
                     .unwrap_or_default()
                     && env::var(ENV_PURGE_RUNNING_CTRS).unwrap() != "true"
                 {
@@ -125,19 +122,19 @@ pub struct ContainerCreated {
     #[serde(default)]
     pub apparmor_profile: String,
     #[serde(default)]
-    pub add_capabilities: Vec<String>,
+    pub add_caps: Vec<String>,
     #[serde(default)]
-    pub drop_capabilities: Vec<String>,
+    pub drop_caps: Vec<String>,
     #[serde(default)]
     pub cgroup_parent: Option<String>,
     #[serde(default)]
-    pub cgroup_namespace: Option<Namespace>,
+    pub cgroup_ns: Option<Namespace>,
     #[serde(default)]
     pub cgroup_mode: Option<String>,
     #[serde(default)]
-    pub chroot_directories: Vec<String>,
+    pub chroot_dirs: Vec<String>,
     #[serde(default)]
-    pub command: Option<Vec<String>>,
+    pub cmd: Option<Vec<String>>,
     #[serde(default)]
     pub common_pid_file: Option<String>,
     #[serde(default)]
@@ -192,6 +189,8 @@ pub struct ContainerCreated {
     #[serde(default)]
     pub image_variant: Option<String>,
     #[serde(default)]
+    pub image_volume_mode: Option<ImageVolumeMode>,
+    #[serde(default)]
     pub image_volumes: Option<Vec<ImageVolume>>,
     #[serde(default)]
     pub init: bool,
@@ -207,6 +206,8 @@ pub struct ContainerCreated {
     pub log_configuration: Option<LogConfig>,
     #[serde(default)]
     pub mask: Option<Vec<String>>,
+    #[serde(default)]
+    pub mounts: Vec<ContainerMount>,
     pub name: String,
     #[serde(default)]
     pub namespace: String,
@@ -251,6 +252,8 @@ pub struct ContainerCreated {
     #[serde(default)]
     pub resource_limits: Option<LinuxResources>,
     #[serde(default)]
+    pub restart_policy: Option<ContainerRestartPolicy>,
+    #[serde(default)]
     pub restart_tries: u64,
     #[serde(default)]
     pub rootfs: String,
@@ -258,6 +261,12 @@ pub struct ContainerCreated {
     pub rootfs_overlay: bool,
     #[serde(default)]
     pub rootfs_propagation: Option<String>,
+    #[serde(default)]
+    pub sdnotify_mode: Option<SocketNotifyMode>,
+    #[serde(default)]
+    pub seccomp_policy: Option<SeccompPolicy>,
+    #[serde(default)]
+    pub seccomp_profile_path: Option<String>,
     #[serde(default)]
     pub secret_env: HashMap<String, String>,
     #[serde(default)]
@@ -276,6 +285,8 @@ pub struct ContainerCreated {
     pub storage_opts: HashMap<String, String>,
     #[serde(default)]
     pub sysctl: HashMap<String, String>,
+    #[serde(default)]
+    pub systemd: Option<SystemdEnabled>,
     #[serde(default)]
     pub terminal: bool,
     #[serde(default)]
@@ -326,198 +337,212 @@ fn value_true() -> bool {
     true
 }
 
-impl Into<ContainerCreateOptsBuilder> for ContainerCreated {
-    fn into(self) -> ContainerCreateOptsBuilder {
+impl From<ContainerCreated> for ContainerCreateOptsBuilder {
+    fn from(val: ContainerCreated) -> Self {
         let mut builder = ContainerCreateOpts::builder()
-            .apparmor_profile(self.apparmor_profile)
-            .add_capabilities(self.add_capabilities)
-            .drop_capabilities(self.drop_capabilities)
-            .chroot_directories(self.chroot_directories)
-            .cpu_period(self.cpu_period)
-            .cpu_quota(self.cpu_quota)
-            .create_working_dir(self.create_working_dir)
-            .dependency_containers(self.dependency_containers)
-            .devices(self.devices)
-            .dns_option(self.dns_option)
-            .dns_search(self.dns_search)
-            .dns_server(self.dns_server)
-            .env(self.env)
-            .env_host(self.env_host)
-            .envmerge(self.envmerge)
-            .groups(self.groups)
-            .host_device_list(self.host_device_list)
-            .hosts_add(self.hosts_add)
-            .hostusers(self.hostusers)
-            .http_proxy(self.http_proxy)
-            .image(self.image)
-            .init(self.init)
-            .labels(self.labels)
-            .name(self.name)
-            .namespace(self.namespace)
-            .networks(self.networks)
-            .no_new_privilages(self.no_new_privilages)
-            .overlay_volumes(self.overlay_volumes)
-            .portmappings(self.portmappings)
-            .privileged(self.privileged)
-            .publish_image_ports(self.publish_image_ports)
-            .r_limits(self.r_limits)
-            .read_only_fs(self.read_only_fs)
-            .remove(self.remove)
-            .restart_tries(self.restart_tries)
-            .rootfs(self.rootfs)
-            .rootfs_overlay(self.rootfs_overlay)
-            .secret_env(self.secret_env)
-            .secrets(self.secrets)
-            .selinux_opts(self.selinux_opts)
-            .stdin(self.stdin)
-            .storage_opts(self.storage_opts)
-            .sysctl(self.sysctl)
-            .terminal(self.terminal)
-            .throttle_read_bps_device(self.throttle_read_bps_device)
-            .throttle_read_iops_device(self.throttle_read_iops_device)
-            .throttle_write_bps_device(self.throttle_write_bps_device)
-            .throttle_write_iops_device(self.throttle_write_iops_device)
-            .timeout(self.timeout)
-            .unified(self.unified)
-            // todo: https://github.com/containers/podman/pull/18849
-            //.unmask(self.unmask)
-            .unset_env(self.unset_env)
-            .unset_env_all(self.unset_env_all)
-            .use_image_hosts(self.use_image_hosts)
-            .use_image_resolv_conf(self.use_image_resolv_conf)
-            .volatile(self.volatile)
-            .volumes(self.volumes);
-        // todo: https://github.com/containers/podman/pull/18849
-        if !self.unmask.is_empty() {
-            builder = builder.unmask(self.unmask);
-        }
-        if let Some(value) = self.annotations {
+            .apparmor_profile(val.apparmor_profile)
+            .add_capabilities(val.add_caps)
+            .drop_capabilities(val.drop_caps)
+            .chroot_directories(val.chroot_dirs)
+            .cpu_period(val.cpu_period)
+            .cpu_quota(val.cpu_quota)
+            .create_working_dir(val.create_working_dir)
+            .dependency_containers(val.dependency_containers)
+            .devices(val.devices)
+            .dns_option(val.dns_option)
+            .dns_search(val.dns_search)
+            .dns_server(val.dns_server)
+            .env(val.env)
+            .env_host(val.env_host)
+            .envmerge(val.envmerge)
+            .groups(val.groups)
+            .host_device_list(val.host_device_list)
+            .hosts_add(val.hosts_add)
+            .hostusers(val.hostusers)
+            .http_proxy(val.http_proxy)
+            .image(val.image)
+            .init(val.init)
+            .labels(val.labels)
+            .mounts(val.mounts)
+            .name(val.name)
+            .namespace(val.namespace)
+            .networks(val.networks)
+            .no_new_privilages(val.no_new_privilages)
+            .overlay_volumes(val.overlay_volumes)
+            .portmappings(val.portmappings)
+            .privileged(val.privileged)
+            .publish_image_ports(val.publish_image_ports)
+            .r_limits(val.r_limits)
+            .read_only_fs(val.read_only_fs)
+            .remove(val.remove)
+            .restart_tries(val.restart_tries)
+            .rootfs(val.rootfs)
+            .rootfs_overlay(val.rootfs_overlay)
+            .secret_env(val.secret_env)
+            .secrets(val.secrets)
+            .selinux_opts(val.selinux_opts)
+            .stdin(val.stdin)
+            .storage_opts(val.storage_opts)
+            .sysctl(val.sysctl)
+            .terminal(val.terminal)
+            .throttle_read_bps_device(val.throttle_read_bps_device)
+            .throttle_read_iops_device(val.throttle_read_iops_device)
+            .throttle_write_bps_device(val.throttle_write_bps_device)
+            .throttle_write_iops_device(val.throttle_write_iops_device)
+            .timeout(val.timeout)
+            .unified(val.unified)
+            .unmask(val.unmask)
+            .unset_env(val.unset_env)
+            .unset_env_all(val.unset_env_all)
+            .use_image_hosts(val.use_image_hosts)
+            .use_image_resolv_conf(val.use_image_resolv_conf)
+            .volatile(val.volatile)
+            .volumes(val.volumes);
+        if let Some(value) = val.annotations {
             builder = builder.annotations(value);
         }
-        if let Some(value) = self.cgroup_parent {
+        if let Some(value) = val.cgroup_parent {
             builder = builder.cgroup_parent(value);
         }
-        if let Some(value) = self.cgroup_namespace {
+        if let Some(value) = val.cgroup_ns {
             builder = builder.cgroup_namespace(value);
         }
-        if let Some(value) = self.cgroup_mode {
+        if let Some(value) = val.cgroup_mode {
             builder = builder.cgroup_mode(value);
         }
-        if let Some(value) = self.command {
+        if let Some(value) = val.cmd {
             builder = builder.command(value);
         }
-        if let Some(value) = self.common_pid_file {
+        if let Some(value) = val.common_pid_file {
             builder = builder.common_pid_file(value);
         }
-        if let Some(value) = self.device_cgroup_rule {
+        if let Some(value) = val.device_cgroup_rule {
             builder = builder.device_cgroup_rule(value);
         }
-        if let Some(value) = self.entrypoint {
+        if let Some(value) = val.entrypoint {
             builder = builder.entrypoint(value);
         }
-        if let Some(value) = self.health_check_on_failure_action {
+        if let Some(value) = val.health_check_on_failure_action {
             builder = builder.health_check_on_failure_action(value);
         }
-        if let Some(value) = self.health_config {
+        if let Some(value) = val.health_config {
             builder = builder.health_config(value);
         }
-        if let Some(value) = self.hostname {
+        if let Some(value) = val.hostname {
             builder = builder.hostname(value);
         }
-        if let Some(value) = self.id_mappings {
+        if let Some(value) = val.id_mappings {
             builder = builder.id_mappings(value);
         }
-        if let Some(value) = self.image_arch {
+        if let Some(value) = val.image_arch {
             builder = builder.image_arch(value);
         }
-        if let Some(value) = self.image_os {
+        if let Some(value) = val.image_os {
             builder = builder.image_os(value);
         }
-        if let Some(value) = self.image_variant {
+        if let Some(value) = val.image_variant {
             builder = builder.image_variant(value);
         }
-        if let Some(value) = self.image_volumes {
+        if let Some(value) = val.image_volume_mode {
+            builder = builder.image_volume_mode(value);
+        }
+        if let Some(value) = val.image_volumes {
             builder = builder.image_volumes(value);
         }
-        if let Some(value) = self.init_container_type {
+        if let Some(value) = val.init_container_type {
             builder = builder.init_container_type(value);
         }
-        if let Some(value) = self.init_path {
+        if let Some(value) = val.init_path {
             builder = builder.init_path(value);
         }
-        if let Some(value) = self.ipc_namespace {
+        if let Some(value) = val.ipc_namespace {
             builder = builder.ipc_namespace(value);
         }
-        if let Some(value) = self.log_configuration {
+        if let Some(value) = val.log_configuration {
             builder = builder.log_configuration(value);
         }
-        if let Some(value) = self.mask {
+        if let Some(value) = val.mask {
             builder = builder.mask(value);
         }
-        if let Some(value) = self.net_namespace {
+        if let Some(value) = val.net_namespace {
             builder = builder.net_namespace(value);
         }
-        if let Some(value) = self.network_options {
+        if let Some(value) = val.network_options {
             builder = builder.network_options(value);
         }
-        if let Some(value) = self.oci_runtime {
+        if let Some(value) = val.oci_runtime {
             builder = builder.oci_runtime(value);
         }
-        if let Some(value) = self.oom_score_adj {
+        if let Some(value) = val.oom_score_adj {
             builder = builder.oom_score_adj(value);
         }
-        if let Some(value) = self.passwd_entry {
+        if let Some(value) = val.passwd_entry {
             builder = builder.passwd_entry(value);
         }
-        if let Some(value) = self.personality {
+        if let Some(value) = val.personality {
             builder = builder.personality(value);
         }
-        if let Some(value) = self.pid_namespace {
+        if let Some(value) = val.pid_namespace {
             builder = builder.pid_namespace(value);
         }
-        if let Some(value) = self.pod {
+        if let Some(value) = val.pod {
             builder = builder.pod(value);
         }
-        if let Some(value) = self.procfs_opts {
+        if let Some(value) = val.procfs_opts {
             builder = builder.procfs_opts(value);
         }
-        if let Some(value) = self.raw_image_name {
+        if let Some(value) = val.raw_image_name {
             builder = builder.raw_image_name(value);
         }
-        if let Some(value) = self.resource_limits {
+        if let Some(value) = val.resource_limits {
             builder = builder.resource_limits(value);
         }
-        if let Some(value) = self.rootfs_propagation {
+        if let Some(value) = val.restart_policy {
+            builder = builder.restart_policy(value);
+        }
+        if let Some(value) = val.rootfs_propagation {
             builder = builder.rootfs_propagation(value);
         }
-        if let Some(value) = self.shm_size {
+        if let Some(value) = val.sdnotify_mode {
+            builder = builder.sdnotify_mode(value);
+        }
+        if let Some(value) = val.seccomp_policy {
+            builder = builder.seccomp_policy(value);
+        }
+        if let Some(value) = val.seccomp_profile_path {
+            builder = builder.seccomp_profile_path(value);
+        }
+        if let Some(value) = val.shm_size {
             builder = builder.shm_size(value);
         }
-        if let Some(value) = self.stop_signal {
+        if let Some(value) = val.stop_signal {
             builder = builder.stop_signal(value);
         }
-        if let Some(value) = self.stop_timeout {
+        if let Some(value) = val.stop_timeout {
             builder = builder.stop_timeout(value);
         }
-        if let Some(value) = self.timezone {
+        if let Some(value) = val.systemd {
+            builder = builder.systemd(value);
+        }
+        if let Some(value) = val.timezone {
             builder = builder.timezone(value);
         }
-        if let Some(value) = self.umask {
+        if let Some(value) = val.umask {
             builder = builder.umask(value);
         }
-        if let Some(value) = self.user {
+        if let Some(value) = val.user {
             builder = builder.user(value);
         }
-        if let Some(value) = self.user_namespace {
+        if let Some(value) = val.user_namespace {
             builder = builder.user_namespace(value);
         }
-        if let Some(value) = self.uts_namespace {
+        if let Some(value) = val.uts_namespace {
             builder = builder.uts_namespace(value);
         }
-        if let Some(value) = self.weight_device {
+        if let Some(value) = val.weight_device {
             builder = builder.weight_device(value);
         }
-        if let Some(value) = self.work_dir {
+        if let Some(value) = val.work_dir {
             builder = builder.work_dir(value);
         }
         builder
@@ -530,7 +555,9 @@ impl cmp::PartialEq<InspectContainerData> for ContainerCreated {
     fn eq(&self, other: &InspectContainerData) -> bool {
         let other = other.to_owned();
         let config = other.config.unwrap();
-        self.name == other.name.unwrap() && self.labels == config.labels.unwrap_or_default()
+        self.name == other.name.unwrap()
+            && self.labels == config.labels.unwrap_or_default()
+            && self.apparmor_profile == other.app_armor_profile.unwrap_or_default()
     }
 }
 
