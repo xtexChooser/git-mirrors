@@ -1,4 +1,4 @@
-*:80 {
-	root * .
-	file_server
+http://:80 http://:8080 {
+	root * /etc/caddy/
+	file_server browse
 }

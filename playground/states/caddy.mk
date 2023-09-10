@@ -105,3 +105,10 @@ $(call stamp)
 V_NAME		= caddy-kube-conf-test
 V_DEPS		= $(BUILD_DIR)/test-caddy/caddy.yaml
 $(call end)
+
+$(call podman-kube)
+V_NAME		= caddy
+V_POD		= caddy
+V_FILE		= $(BUILD_DIR)/test-caddy/caddy.yaml
+V_DEPS		+= $(BUILD_DIR)/test-caddy/Caddyfile
+$(call end)
