@@ -6,19 +6,20 @@ endef
 
 define save-var1
 $(eval saved-var-$1:=$(VARS_DIR)/$1.txt)
-$(saved-var-$1): $(VARS_DIR)
-	@echo "saved_var_$1_value=$$($2)" > $$@
+$(saved-var-$1):
+	@$(MKDIR) -p $(VARS_DIR)
+	echo "saved_var_$1_value=$$($2)" > $$@
 
-define saved-var-$1-restore
--include $(saved-var-$1)
-ifneq ($$$$(saved_var_$1_value),$$$$($2))
-$$$$(shell echo "saved_var_$1_value=$$$$($2)" > $$$$(saved-var-$1))
+$ define saved-var-$1-restore
+$$$$(eval -include $(saved-var-$1))
+$ ifneq ($$$$(saved_var_$1_value),$$($2))
+$$$$(file >$$$$(saved-var-$1),saved_var_$1_value=$$($2))
+$$$$(call mktrace,Invalidated variable cache $1. Old: $$$$(saved_var_$1_value) New: $$($2))
+$$$$(eval saved_var_$1_changed=1)
+$$$$(eval saved_var_$1_value:=$$($2))
 $$$$(call mksucc,Updated variable cache for $1)
-$$$$(call mktrace,Invalidated variable cache $1. Old: $$$$(saved_var_$1_value) New: $$$$($2))
-saved_var_$1_changed=1
-saved_var_$1_value=$$$$($2)
-endif
-endef
+$ endif
+$ endef
 $(call defer,saved-var-$1-restore)
 endef
 
