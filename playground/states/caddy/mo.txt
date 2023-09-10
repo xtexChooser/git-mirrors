@@ -1,0 +1,8 @@
+test file
+templated by {{ HOST_USER }}
+hostname is {{HOSTNAME}}
+kernel is {{HOST_KERNEL}}
+
+{{#LEONIS_APPLY_DEPS}}
+- {{@key}} {{.}}
+{{/LEONIS_APPLY_DEPS}}

@@ -1,0 +1,8 @@
+test file
+templated by <% $HOST_USER %>
+hostname is <% $HOSTNAME %>
+kernel is <% $HOST_KERNEL %>
+
+% for dep in $LEONIS_APPLY_DEPS; do
+- <% $dep %>
+% done

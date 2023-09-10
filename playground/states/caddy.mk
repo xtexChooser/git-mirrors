@@ -37,16 +37,26 @@ V_ACCESS	= 0777
 $(call end)
 
 $(call fs-file)
-V_PATH		= $(BUILD_DIR)/test-caddy/Caddyfile-old
+V_PATH		= $(BUILD_DIR)/test-caddy/file-old
 V_EXIST		= n
 $(call end)
 
 $(call fs-file)
-V_PATH		= $(BUILD_DIR)/test-caddy/Caddyfile-empty
+V_PATH		= $(BUILD_DIR)/test-caddy/file-empty
 V_CREATE	= empty
 $(call end)
 
 $(call fs-file)
 V_PATH		= $(BUILD_DIR)/test-caddy/test.html
 V_CREATE	= download URL="https://raw.githubusercontent.com/cbracco/html5-test-page/master/index.html"
+$(call end)
+
+$(call fs-file)
+V_PATH		= $(BUILD_DIR)/test-caddy/file-template-bash-tpl
+V_TEMPLATE	= bash-tpl $(STATES_DIR)/caddy/bash-tpl.txt
+$(call end)
+
+$(call fs-file)
+V_PATH		= $(BUILD_DIR)/test-caddy/file-template-mo
+V_TEMPLATE	= mo $(STATES_DIR)/caddy/mo.txt
 $(call end)

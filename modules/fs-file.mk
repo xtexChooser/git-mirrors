@@ -1,7 +1,10 @@
-FS_FILE_VARS=V_TARGET_NAME V_POST V_DEPS V_PATH V_EXIST V_CREATE V_USER V_USER_ID V_GROUP V_GROUP_ID V_ACCESS
+FS_FILE_VARS=V_TARGET_NAME V_POST V_DEPS V_PATH V_EXIST V_CREATE V_TEMPLATE V_TPL_DEPS V_USER V_USER_ID V_GROUP V_GROUP_ID V_ACCESS
 define fs-file0
 $(if $(call not,$(call is-false,$(V_EXIST))),
 $(eval V_TARGET_NAME?=$(V_PATH))
+
+$(if $(V_TEMPLATE),$(eval V_CREATE=template BACKEND=$(word 1,$(V_TEMPLATE)) SRC=$(word 2,$(V_TEMPLATE)))
+$(eval V_TPL_DEPS += $(word 2,$(V_TEMPLATE))))
 
 $(call mktrace,Define exist fs-file target: $(V_UNIT))
 $(call mktrace-vars,$(FS_FILE_VARS))
@@ -15,9 +18,9 @@ $(call vt-target,$(V_TARGET_NAME))
 $(V_TARGET_NAME): $(V_PATH)
 )
 $(if $(V_USER)$(V_USER_ID)$(V_GROUP)$(V_GROUP_ID)$(V_ACCESS),$(call vt-target,$(V_PATH)))
-$(V_PATH): $(V_DEPS)
+$(V_PATH): $(V_DEPS) $(V_TPL_DEPS)
 	export E_MAJOR=fs-file E_PATH=$(V_PATH)
-	if [[ ! -e $(V_PATH) ]]; then
+	if [[ ! -e $(V_PATH) $(foreach tpldep,$(V_TPL_DEPS),|| "$(tpldep)" -nt "$(V_PATH)" ) ]]; then
 		$(MKDIR) -p $(dir $(V_PATH))
 		$(MAKE) $(MAKE_FLAGS) E_MAJOR=fs-file-create E_PATH=$(V_PATH) mkfile-$(V_CREATE)
 		if [[ ! -e $(V_PATH) ]]; then
@@ -92,3 +95,12 @@ $(if $(CMD),mkfile-run:
 endef
 
 $(if $(call streq,$(E_MAJOR),fs-file-create),$(eval $(mkfile-run0))$(call vt-target,mkfile-run))
+
+define mkfile-template0
+mkfile-template: template
+TPL_BACKEND := $(BACKEND)
+TPL_IN := $(SRC)
+TPL_OUT := $(E_PATH)
+endef
+$(if $(call streq,$(E_MAJOR),fs-file-create),$(eval $(mkfile-template0))$(call vt-target,mkfile-template))
+$(call vt-target,mkfile-template)
