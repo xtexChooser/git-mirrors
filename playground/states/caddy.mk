@@ -42,7 +42,11 @@ V_EXIST		= n
 $(call end)
 
 $(call fs-file)
-V_PATH		= $(BUILD_DIR)/test-caddy/Caddyfile-static
-V_EXIST		= y
+V_PATH		= $(BUILD_DIR)/test-caddy/Caddyfile-empty
 V_CREATE	= empty
+$(call end)
+
+$(call fs-file)
+V_PATH		= $(BUILD_DIR)/test-caddy/test.html
+V_CREATE	= download URL="https://raw.githubusercontent.com/cbracco/html5-test-page/master/index.html"
 $(call end)

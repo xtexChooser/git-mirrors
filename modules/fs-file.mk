@@ -69,5 +69,17 @@ endef
 
 $(call define-func, fs-file)
 
+$(call vt-target,mkfile-empty mkfile-download)
 mkfile-empty:
 	$(TOUCH) $(E_PATH)
+
+mkfile-download:
+	if which curla $(DROP_STDOUT); then
+		$(call trace, Download $(URL) to $(E_PATH) with cURL)
+		curl -L -o $(E_PATH) $(URL)
+	elif which wget $(DROP_STDOUT); then
+		$(call trace, Download $(URL) to $(E_PATH) with wget)
+		wget --max-redirect 10 -v -O $(E_PATH) $(URL)
+	else
+		$(call err, Neither of curl or wget is available)
+	fi
