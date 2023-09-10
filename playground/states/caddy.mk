@@ -62,12 +62,17 @@ V_TEMPLATE	= mo $(STATES_DIR)/caddy/mo.txt
 $(call end)
 
 $(call fs-file)
+V_PATH		= $(BUILD_DIR)/test-caddy/file-template-envsubst
+V_TEMPLATE	= envsubst $(STATES_DIR)/caddy/envsubst.txt
+$(call end)
+
+$(call fs-file)
 V_PATH		= $(BUILD_DIR)/test-caddy/file-template-nop
 V_TEMPLATE	= nop $(STATES_DIR)/caddy/mo.txt
 $(call end)
 
 $(call fs-file)
-V_PATH		= $(BUILD_DIR)/test-caddy/file-template-copy
+V_PATH		= $(BUILD_DIR)/test-caddy/file-copy
 V_COPY		= $(STATES_DIR)/caddy/mo.txt
 $(call end)
 

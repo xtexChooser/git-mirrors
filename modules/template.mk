@@ -14,6 +14,10 @@ define template-backend-nop
 cat < $(1) > $(2)
 endef
 
+define template-backend-envsubst
+envsubst < $(1) > $(2)
+endef
+
 define template0
 template:
 	$(call template-backend-$(TPL_BACKEND),$(TPL_IN),$(TPL_OUT))
