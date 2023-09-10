@@ -1,10 +1,11 @@
-FS_FILE_VARS=V_TARGET_NAME V_POST V_DEPS V_PATH V_EXIST V_CREATE V_TEMPLATE V_TPL_DEPS V_USER V_USER_ID V_GROUP V_GROUP_ID V_ACCESS
+FS_FILE_VARS=V_TARGET_NAME V_POST V_DEPS V_PATH V_EXIST V_CREATE V_TEMPLATE V_TPL_DEPS V_COPY V_USER V_USER_ID V_GROUP V_GROUP_ID V_ACCESS
 define fs-file0
 $(if $(call not,$(call is-false,$(V_EXIST))),
 $(eval V_TARGET_NAME?=$(V_PATH))
 
 $(if $(V_TEMPLATE),$(eval V_CREATE=template BACKEND=$(word 1,$(V_TEMPLATE)) SRC=$(word 2,$(V_TEMPLATE)))
 $(eval V_TPL_DEPS += $(word 2,$(V_TEMPLATE))))
+$(if $(V_COPY),$(eval V_CREATE=copy SRC=$(V_COPY))$(eval V_TPL_DEPS += $(V_COPY)))
 
 $(call mktrace,Define exist fs-file target: $(V_UNIT))
 $(call mktrace-vars,$(FS_FILE_VARS))
@@ -73,7 +74,7 @@ endef
 
 $(call define-func, fs-file)
 
-$(call vt-target,mkfile-empty mkfile-download)
+$(call vt-target,mkfile-empty mkfile-download mkfile-copy)
 mkfile-empty:
 	$(file >$(E_PATH))
 
@@ -87,6 +88,9 @@ mkfile-download:
 	else
 		$(call err, Neither of curl or wget is available)
 	fi
+
+mkfile-copy:
+	$(file >$(E_PATH),$(file <$(SRC)))
 
 define mkfile-run0
 $(if $(TARGET),$(if $(CMD),$(error Both TARGET and CMD is defined for $(E_PATH))))

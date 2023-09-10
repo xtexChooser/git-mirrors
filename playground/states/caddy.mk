@@ -61,6 +61,16 @@ V_PATH		= $(BUILD_DIR)/test-caddy/file-template-mo
 V_TEMPLATE	= mo $(STATES_DIR)/caddy/mo.txt
 $(call end)
 
+$(call fs-file)
+V_PATH		= $(BUILD_DIR)/test-caddy/file-template-nop
+V_TEMPLATE	= nop $(STATES_DIR)/caddy/mo.txt
+$(call end)
+
+$(call fs-file)
+V_PATH		= $(BUILD_DIR)/test-caddy/file-template-copy
+V_COPY		= $(STATES_DIR)/caddy/mo.txt
+$(call end)
+
 #$(call fs-file)
 #V_PATH		= $(BUILD_DIR)/test-caddy/file-exist
 #V_ACCESS	= 0777
