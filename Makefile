@@ -42,3 +42,6 @@ apply: test $(LEONIS_APPLY_DEPS)
 	@$(MAKE) $(MAKE_JOBSERVER_FLAGS) $(MAKE_FLAGS) $(if $(T),$(T),$(APPLY_TARGETS))
 endef
 $(if $(CUSTOM_APPLY),,$(eval $(call default-apply)))
+
+# Call deferred functions
+$(foreach fn,$(deffered-fn-stack),$(eval $(call $(fn))))
