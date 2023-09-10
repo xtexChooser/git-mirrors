@@ -1,6 +1,3 @@
-# Default task
-default: build test
-
 # Variables
 LEONIS_BUILD_DEPS = $(empty)
 LEONIS_TEST_DEPS = $(empty)
