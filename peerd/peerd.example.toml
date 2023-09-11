@@ -1,0 +1,30 @@
+[etcd]
+endpoints = [ "127.0.0.1:2379" ]
+#[etcd.auth]
+#user = ""
+#password = ""
+#[etcd.tls]
+#domain = ""
+#ca_cert_file = ""
+#client_cert_file = ""
+#client_key_file = ""
+
+[wireguard]
+#xplatform_exec = ""
+#crc_if_peer_name = false
+#prefer_ipv6 = true
+
+[bird]
+#generated_conf = "/etc/bird/.peerd.generated.conf"
+#do_reconfigure = true
+#control_sock = "/var/run/bird.ctl"
+
+#[[zone]]
+#name = "dn42"
+#etcd_prefix = "/net/peers/dn42/test/"
+#ip_prefixes = [ "172.1.1.1/24", "fd00::1/8" ]
+#[zone.wireguard]
+#ifname_prefix = "peer42"
+#[zone.bird]
+#protocol_prefix = "dn42_peer_"
+#bgp_template = "dn42_peer"
