@@ -17,7 +17,8 @@ return [
 			$services->getStatsdDataFactory(),
 			$services->getDBLoadBalancerFactory(),
 			$services->getJobQueueGroup(),
-			$services->getCentralIdLookup()
+			$services->getCentralIdLookup(),
+			$services->getAuthManager()
 		);
 	}
 ];

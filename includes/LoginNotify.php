@@ -15,6 +15,7 @@ use ExtensionRegistry;
 use IBufferingStatsdDataFactory;
 use JobQueueGroup;
 use JobSpecification;
+use MediaWiki\Auth\AuthManager;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Extension\CentralAuth\User\CentralAuthUser;
 use MediaWiki\Extension\Notifications\Model\Event;
@@ -91,6 +92,8 @@ class LoginNotify implements LoggerAwareInterface {
 	private $jobQueueGroup;
 	/** @var CentralIdLookup */
 	private $centralIdLookup;
+	/** @var AuthManager */
+	private $authManager;
 	/** @var int|null */
 	private $fakeTime;
 
@@ -106,6 +109,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 * @param LBFactory $lbFactory
 	 * @param JobQueueGroup $jobQueueGroup
 	 * @param CentralIdLookup $centralIdLookup
+	 * @param AuthManager $authManager
 	 */
 	public function __construct(
 		ServiceOptions $options,
@@ -114,7 +118,8 @@ class LoginNotify implements LoggerAwareInterface {
 		IBufferingStatsdDataFactory $stats,
 		LBFactory $lbFactory,
 		JobQueueGroup $jobQueueGroup,
-		CentralIdLookup $centralIdLookup
+		CentralIdLookup $centralIdLookup,
+		AuthManager $authManager
 	) {
 		$this->config = $options;
 		$this->cache = $cache;
@@ -130,6 +135,7 @@ class LoginNotify implements LoggerAwareInterface {
 		$this->lbFactory = $lbFactory;
 		$this->jobQueueGroup = $jobQueueGroup;
 		$this->centralIdLookup = $centralIdLookup;
+		$this->authManager = $authManager;
 	}
 
 	/**
@@ -1183,6 +1189,14 @@ class LoginNotify implements LoggerAwareInterface {
 			// Login failed because user doesn't exist
 			// skip this user.
 			$this->log->debug( "Skipping recording failure for {user} - no account",
+				[ 'user' => $user->getName() ]
+			);
+			return;
+		}
+
+		// No need to notify if the user can't authenticate (e.g. system or temporary users)
+		if ( !$this->authManager->userCanAuthenticate( $user->getName() ) ) {
+			$this->log->debug( "Skipping recording failure for user {user} - can't authenticate",
 				[ 'user' => $user->getName() ]
 			);
 			return;

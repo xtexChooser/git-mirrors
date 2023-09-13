@@ -62,7 +62,8 @@ class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 						'LocalDatabases' => []
 					] ),
 					$services->getDBLoadBalancerFactory()
-				)
+				),
+				$services->getAuthManager()
 			)
 		);
 		$this->inst->setLogger( LoggerFactory::getInstance( 'LoginNotify' ) );
@@ -462,6 +463,24 @@ class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 		$this->inst->recordFailure( $user );
 		$this->assertNotificationCount( $user, 'login-fail-new', 1 );
 		$this->assertNotificationCount( $user, 'login-fail-known', 1 );
+	}
+
+	public function testRecordFailureNoPassword() {
+		// Don't notify temp users (T329774)
+		$this->setupRecordFailure( [
+			'LoginNotifyAttemptsKnownIP' => 1,
+			'LoginNotifyAttemptsNewIP' => 1,
+		] );
+		$user = $this->getTestUser()->getUser();
+		$this->getDb()->newUpdateQueryBuilder()
+			->update( 'user' )
+			->set( [ 'user_password' => '' ] )
+			->where( [ 'user_id' => $user->getId() ] )
+			->caller( __METHOD__ )
+			->execute();
+		$this->inst->recordFailure( $user );
+		$this->assertNotificationCount( $user, 'login-fail-known', 0 );
+		$this->assertNotificationCount( $user, 'login-fail-new', 0 );
 	}
 
 	public function testSendSuccessNoticeCheckUser() {
