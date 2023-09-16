@@ -1,0 +1,5 @@
+- name: Push Master configuration
+  hosts: nl-alk1
+  become: true
+  roles:
+    - salt-sync-master-config

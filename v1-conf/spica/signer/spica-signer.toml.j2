@@ -1,0 +1,21 @@
+listen_addr = "0.0.0.0:80"
+otp_required = true
+
+[[cert]]
+    id = "A1"
+    file = "/etc/spica/signer/A1.pem"
+[cert.openssl_opt]
+    basicConstraints = "CA:FALSE"
+
+[[role]]
+    id = "node_tls"
+    auth = "{{ pillar["node_tls"]["spica-auth"] }}"
+    otp_required = false
+[[role.acl]]
+    certs = [ "A1" ]
+    max_expire = "14d"
+    allowed_san_dns = [ ".*\\.xvnet\\.eu\\.org" ]
+
+[log]
+    url = "https://ntfy.xvnet.eu.org/ca-log"
+    token = "{{ pillar["spica"]["log-token"] }}"

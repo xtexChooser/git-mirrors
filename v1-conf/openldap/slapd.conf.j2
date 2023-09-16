@@ -1,0 +1,52 @@
+loglevel	stats config
+
+pidfile     /var/run/slapd.pid
+argsfile    /var/run/slapd.args
+
+include /olo/schema/core.schema
+include /olo/schema/cosine.schema
+include /olo/schema/inetorgperson.schema
+
+modulepath /dist/libexec/openldap
+moduleload back_mdb.la
+moduleload autoca.la
+moduleload otp.la
+moduleload memberof.la
+
+password-hash {CRYPT} {SSHA}
+# slappasswd -h "{CRYPT}" -c "\$6\$%.16s" -s
+password-crypt-salt-format "$6$%.16s"
+
+# security ssf=1 update_ssf=112 simple_bind=64
+
+access to attrs=userPassword,userPKCS12
+    by self write
+    by dn.base="cn=Manager,dc=xvn" write
+    by * auth
+access to attrs=givenName,sn,mail,photo
+    by self write
+access to *
+    by dn.base="cn=Manager,dc=xvn" write
+    by users read
+
+TLSCACertificateFile    /opt/ca.crt
+TLSCACertificatePath    /usr/share/ca-certificates/trust-source
+TLSCertificateFile      /opt/tls/bundle.crt
+TLSCertificateKeyFile   /opt/tls/crt.key
+TLSVerifyClient         allow
+
+database config
+
+database mdb
+# maxsize 1073741824
+suffix  "dc=xvn"
+rootdn  "cn=Manager,dc=xvn"
+rootpw  "{{ pillar['openldap']['manager_passwd'] }}"
+directory /var/openldap-data
+index   objectClass eq
+index   uid         pres,eq
+index   mail        pres,sub,eq
+index   cn,sn       pres,sub,eq
+index   dc          eq
+
+database monitor

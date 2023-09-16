@@ -1,0 +1,16 @@
+[tun]
+
+[dns]
+mname = "mekbuda.xvnet.eu.org."
+rname = "mekbuda.xvnet.eu.org."
+serial = 1
+
+[[dns.listen]]
+udp = "fd00:443a:ef14:4:ffff:ffff:ffff:0000:53"
+
+[[subnet]]
+subnet = "fd00:443a:ef14:4::"
+
+[[resolver]]
+path = "https://codeberg.org/xvnet/mekbuda-db/raw/branch/main/data/"
+format_width = 12

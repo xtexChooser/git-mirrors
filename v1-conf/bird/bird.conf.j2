@@ -1,0 +1,56 @@
+# XV-NET Generated BIRD Configuration for {{ pillar['name'] }}
+
+{% set router_id    = pillar['network']['router_id'] -%}
+{% set dn42_ipv4    = pillar['network']['dn42']['ipv4'] -%}
+{% set xvnet_asn    = pillar['network']['xvnet']['asn'] -%}
+{% set xvnet_ipv6   = pillar['network']['xvnet']['ipv6'] -%}
+
+router id {{ router_id }};
+{% if dn42_ipv4 is defined -%}
+define DN42_SELF_IP = {{ dn42_ipv4 }};
+{% endif -%}
+define XVNET_ASN = {{ xvnet_asn }};
+define XVNET_SELF_IP = {{ xvnet_ipv6 }};
+
+protocol device {}
+
+protocol direct {
+    ipv4;
+    ipv6;
+}
+
+{% include './prefixes.conf.j2' %}
+{% include './community.conf.j2' %}
+
+protocol kernel kernel4 {
+    ipv4 {
+        import none;
+        export filter {
+{% if dn42_ipv4 is defined -%}
+            if is_dn42_prefix() then krt_prefsrc = DN42_SELF_IP;
+{% endif -%}
+            accept;
+        };
+    };
+};
+
+protocol kernel kernel6 {
+    ipv6 {
+        import none;
+        export filter {
+            if is_dn42_prefix() then krt_prefsrc = XVNET_SELF_IP;
+            accept;
+        };
+    };
+};
+
+protocol static static6 {
+    route fd00:443a:ef14::/48 reject;
+
+    ipv6 { import all; export none; };
+}
+
+{% include './confed.conf.j2' %}
+
+{% include './dn42.conf.j2' %}
+{% include './cn.conf.j2' %}

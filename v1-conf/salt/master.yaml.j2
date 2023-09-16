@@ -1,0 +1,42 @@
+interface: 0.0.0.0
+#ipv6: False
+
+state_top: top.sls
+top_file_merging_strategy: same
+
+fileserver_backend:
+  - git
+  - roots
+gitfs_provider: pygit2
+gitfs_remotes:
+  - git@codeberg.org:xvnet/conf.git:
+    - name: conf
+    - base: main
+    - pubkey: /etc/salt/ssh_key.pub
+    - privkey: /etc/salt/ssh_key
+  - git@codeberg.org:xvnet/internal-conf.git:
+    - name: internal-conf
+    - base: main
+    - pubkey: /etc/salt/ssh_key.pub
+    - privkey: /etc/salt/ssh_key
+gitfs_refspecs:
+  - "+refs/heads/main:refs/remotes/origin/main"
+
+ext_pillar_first: True
+git_pillar_provider: pygit2
+ext_pillar:
+  - git:
+    - main git@codeberg.org:xvnet/conf.git:
+      - env: base
+      - pubkey: /etc/salt/ssh_key.pub
+      - privkey: /etc/salt/ssh_key
+      - root: pillar
+    - main git@codeberg.org:xvnet/internal-conf.git:
+      - env: base
+      - pubkey: /etc/salt/ssh_key.pub
+      - privkey: /etc/salt/ssh_key
+      - root: pillar
+
+file_roots:
+  base:
+    - /srv/salt

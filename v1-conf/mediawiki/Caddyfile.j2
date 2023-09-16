@@ -1,0 +1,8 @@
+w.xvnet.eu.org {
+	root * /srv/mw/w
+	php_fastcgi mediawiki:9000 {
+		try_files {path} {path}/index.php =404
+	}
+	#rewrite /wiki/* /index.php?title={file_match.relative}
+	#reverse_proxy mediawiki:9000
+}

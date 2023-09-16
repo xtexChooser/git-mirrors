@@ -1,0 +1,12 @@
+{% macro roa_table(name) -%}
+roa4 table {{ name }}_roa4;
+roa6 table {{ name }}_roa6;
+
+function check_roa_{{ name }}() {
+    case net.type {
+        NET_IP4: return roa_check({{ name }}_roa4, net, bgp_path.last);
+        NET_IP6: return roa_check({{ name }}_roa6, net, bgp_path.last);
+        else: print "check_roa_{{ name }}: unexpected net.type ", net.type, " ", net; return false;
+    }
+}
+{%- endmacro %}

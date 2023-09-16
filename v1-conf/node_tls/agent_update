@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+cd /opt/node_tls/ || exit
+
+if podman container exists pgsql; then
+    cp -f /opt/tls/crt.crt /var/lib/postgresql/data/server.crt
+    cp -f /opt/tls/crt.key /var/lib/postgresql/data/server.key
+    podman run --rm -it -v /var/lib/postgresql/data:/data --entrypoint chown docker.io/library/postgres:alpine postgres:postgres /data/server.crt
+    podman run --rm -it -v /var/lib/postgresql/data:/data --entrypoint chown docker.io/library/postgres:alpine postgres:postgres /data/server.key
+    podman run --rm -it -v /var/lib/postgresql/data:/data --entrypoint chmod docker.io/library/postgres:alpine 400 /data/server.crt
+    podman run --rm -it -v /var/lib/postgresql/data:/data --entrypoint chmod docker.io/library/postgres:alpine 400 /data/server.key
+fi

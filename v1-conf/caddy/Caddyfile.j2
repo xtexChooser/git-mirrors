@@ -1,0 +1,13 @@
+{
+  email acme@xvnet.eu.org
+}
+
+{% if pillar['service']['ntfy'] is defined %}
+{% include '../ntfy/Caddyfile.j2' %}
+{% endif %}
+
+{% if salt['pillar.fetch']('spica:signer') is true %}
+{% include '../spica/signer/Caddyfile.j2' %}
+{% endif %}
+
+import /etc/caddy/sites/*

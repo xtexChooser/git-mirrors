@@ -1,0 +1,7 @@
+ntfy.xvnet.eu.org {
+	handle /docs/* {
+		redir https://ntfy.sh{path} permanent
+	}
+
+	reverse_proxy unix//var/run/ntfy/ntfy.sock
+}

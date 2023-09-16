@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+chain=A1
+
+cd /opt/node_tls/ || exit
+
+function log() {
+    curl -d "$1" https://ntfy.xvnet.eu.org/xvn-node-tls
+}
+
+log "start updating per-node TLS cert, CA chain: $chain"
+curl -o cert_ca.crt https://signer.pki.xvnet.eu.org/$chain/cert.crt
+
+salt '*' --preview-target --no-color | sed -e 's/- //' | while read -r node; do
+    payload="{\"name\": {\"O\": \"Xensor V Network\", \"OU\": \"$node.svr.xvnet.eu.org\"}, \"hosts\": [ \"$node.svr.xvnet.eu.org\", \"*.xvnet.eu.org\" ]}"
+    log "processing for $node: $payload"
+    # shellcheck disable=SC2140
+    resp=$(curl -H "Content-Type: application/json" -u "node_tls:{{ pillar["node_tls"]["spica-auth"] }}" -d "$payload" "https://signer.pki.xvnet.eu.org/$chain/sign/json")
+    cert=$(echo "$resp" | openssl x509)
+    if [[ -z "$cert" ]]; then
+        log "failed to request cert for $node: $resp"
+    else
+        privkey=$(echo "$resp" | openssl pkey)
+        log "requested cert for $node: $(echo "$cert" | openssl x509 -text)"
+        echo "$cert" > "cert_$node.crt"
+        echo "$privkey" > "cert_$node.key"
+        echo "$cert" > "cert_${node}_bundle.crt"
+        cat cert_ca.crt >> "cert_${node}_bundle.crt"
+        salt-cp "$node" "cert_$node.crt" "/opt/tls/crt.crt"
+        salt-cp "$node" "cert_$node.key" "/opt/tls/crt.key"
+        salt-cp "$node" "cert_${node}_bundle.crt" "/opt/tls/bundle.crt"
+        salt-cp "$node" "cert_ca.crt" "/opt/ca.crt"
+        salt "$node" cmd.run "bash /opt/node_tls/agent_update"
+        log "updated TLS cert for $node"
+    fi
+done
+
+log "all node tls updated"

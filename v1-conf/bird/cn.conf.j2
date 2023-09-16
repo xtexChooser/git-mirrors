@@ -1,0 +1,126 @@
+{# ROA #}
+{% from './macros.roa.conf.j2' import roa_table %}
+{{ roa_table('cn') }}
+
+{# TODO: Static ROAs #}
+
+{# Static Routes #}
+protocol static cn_static6 {
+    route 2a12:dd47:df10::/44 reject;
+
+    ipv6 { import all; export none; };
+};
+
+{# RPKI #}
+protocol rpki cn_rpki_cf {
+  roa4 { table cn_roa4; };
+  roa6 { table cn_roa6; };
+
+  remote "rtr.rpki.cloudflare.com" port 8282;
+
+  retry keep 90;
+  refresh keep 1800;
+  expire keep 172800;
+}
+
+{# Filter #}
+function is_cn_net_len_too_long(){
+    case net.type {
+        NET_IP4: return net.len > 24;
+        NET_IP6: return net.len > 64;
+        else: print "cn_net_len_too_long: unexpected net.type ", net.type, " ", net; return false;
+    }
+}
+
+function cn_filter_import() {
+    if is_bogon_prefix() then reject;
+    if is_cn_net_len_too_long() then reject;
+    if is_bogon_asn() then reject;
+    if COMMUNITY_XVN_DONT_ACCEPT ~ bgp_large_community then reject;
+}
+
+function cn_filter_export() {
+    if is_bogon_prefix() then reject;
+    if is_cn_net_len_too_long() then reject;
+    strip_confed_as();
+    if is_bogon_asn() then reject;
+}
+
+function cn_filter_import_peer() {
+    cn_filter_import();
+    if bgp_path.len > 20 then {
+        print "[cn] BGP path too long ", net, " len ", bgp_path.len, " proto ", proto, bgp_path;
+        reject;
+    }
+    if (check_roa_cn() = ROA_INVALID) then {
+        print "[cn] ROA failed for ", net, " ASN ", bgp_path.last, " proto ", proto;
+        reject;
+    }
+}
+
+function cn_filter_export_peer() {
+    if COMMUNITY_XVN_FROM_UPSTREAM ~ bgp_large_community then reject;
+    cn_filter_export();
+    bgp_large_community.delete(COMMUNITY_XVN_LOCAL_DIRECTION); 
+}
+
+function cn_filter_import_upstream() {
+    cn_filter_import();
+    if bgp_path.len > 20 then {
+        print "[cn] BGP path too long ", net, " len ", bgp_path.len, " proto ", proto, bgp_path;
+        reject;
+    }
+    if (check_roa_cn() = ROA_INVALID) then {
+        print "[cn] ROA failed for ", net, " ASN ", bgp_path.last, " proto ", proto;
+        reject;
+    }
+}
+
+function cn_filter_export_upstream() {
+    if COMMUNITY_XVN_FROM_UPSTREAM ~ bgp_large_community then reject;
+    cn_filter_export();
+    bgp_large_community.delete(COMMUNITY_XVN_LOCAL_DIRECTION); 
+}
+
+filter cn_import_peer { bgp_large_community.add(COMMUNITY_XVN_FROM_PEER); cn_filter_import_peer(); accept; }
+filter cn_export_peer { cn_filter_export_peer(); accept; }
+
+filter cn_import_upstream { bgp_large_community.add(COMMUNITY_XVN_FROM_UPSTREAM); cn_filter_import_upstream(); accept; }
+filter cn_export_upstream { cn_filter_export_upstream(); accept; }
+
+{# Template #}
+template bgp cn_peer {
+    local as 199304;
+
+    ipv4 {
+        import none;
+        export none;
+    };
+
+    ipv6 {
+        import filter cn_import_peer;
+        export filter cn_export_peer;
+        {# import limit 1000 action block; #}
+        rpki reload on;
+        import table on;
+    };
+}
+
+template bgp cn_upstream {
+    local as 199304;
+
+    ipv4 {
+        import none;
+        export none;
+    };
+
+    ipv6 {
+        import filter cn_import_upstream;
+        export filter cn_export_upstream;
+        {# import limit 1000 action block; #}
+        rpki reload on;
+        import table on;
+    };
+}
+
+include "/etc/bird/cn.conf";

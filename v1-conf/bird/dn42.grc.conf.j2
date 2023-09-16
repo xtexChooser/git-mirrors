@@ -1,0 +1,13 @@
+{# GRC #}
+protocol bgp dn42_grc from dn42_peer {
+    neighbor fd42:4242:2601:ac12::1 as 4242422602;
+    multihop;
+    ipv4 {
+        add paths tx;
+        import none;
+    };
+    ipv6 {
+        add paths tx;
+        import none;
+    };
+};
