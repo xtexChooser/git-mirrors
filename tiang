@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function tiang::trace {
-	[[ "$TIANG_TRACE" == "true" ]] && echo -e "\e[0;30m${FUNCNAME[1]}: ${BASH_LINENO[0]}: $*\e[0m"
+	[ "$TIANG_TRACE" == "true" ] && echo -e "\e[0;30m${FUNCNAME[1]}: ${BASH_LINENO[0]}: $*\e[0m"
 }
 
 function tiang::error {
@@ -38,8 +38,14 @@ XXX
 }
 
 function tiang::target {
-	[[ $# -ne 3 ]] && tiang::error "tiang::target <ADDRESS[:PORT]>"
+	[ $# -ne 3 ] && tiang::error "tiang::target <ADDRESS[:PORT]>"
 	return 0
+}
+
+declare -a tiangCommandHandlers
+function tiang::defineCommand {
+	[ $# -ne 1 ] && tiang::error "tiang::defineCommand <HANDLER>"
+	tiangCommandHandlers+=("$1")
 }
 
 function tiang::loadProfiles {
@@ -53,7 +59,7 @@ function tiang::loadProfiles {
 	[[ -f ".tianguan/profile.bash" ]] && tiangProfileFiles+=(".tianguan/profile.bash")
 
 	local tiangProfile
-	[[ ${#tiangProfileFiles[@]} -eq 0 ]] && tiang::error "no profile scripts found"
+	[ ${#tiangProfileFiles[@]} -eq 0 ] && tiang::error "no profile scripts found"
 	for tiangProfile in "${tiangProfileFiles[@]}"; do
 		tiang::trace "sourcing $tiangProfile"
 		# shellcheck source=/dev/null
@@ -61,15 +67,29 @@ function tiang::loadProfiles {
 	done
 }
 
-[[ $# -eq 0 ]] && tiang::usage && exit
+function tiang::main {
+	[ $# -eq 0 ] && tiang::usage && exit
 
-tiang::loadProfiles
+	tiang::loadProfiles
 
-while [ $# -ne 0 ]; do
-	case $1 in
-	-? | --help | *)
-		tiang::usage
-		exit 1
-		;;
-	esac
-done
+	while [ $# -ne 0 ]; do
+		case $1 in
+		-? | --help)
+			tiang::usage
+			exit
+			;;
+		*)
+			local tiangCommandHandler tiangPrevParames
+			tiangPrevParames=$#
+			for tiangCommandHandler in "${tiangCommandHandlers[@]}"; do
+				"$tiangCommandHandler"
+				[ $# -ne $tiangPrevParames ] && break
+			done
+			[ $# -eq $tiangPrevParames ] && tiang::error "unknown option: $1"
+			;;
+		esac
+	done
+}
+
+# shellcheck disable=SC2068
+tiang::main $@
