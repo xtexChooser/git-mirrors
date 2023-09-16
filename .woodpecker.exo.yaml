@@ -4,11 +4,12 @@ pipeline:
         commands:
             - git describe --long --always | tr -d '\n' > src/version.txt
             - podman build --force-rm --squash --tag exozy.me/xtex/home .
-            - podman run --name home
-              --replace --detach
-              --memory 16m
-              --mount type=bind,source=/home/xtex/home,destination=/srv/run
-              --mount type=bind,source=/srv/http/pages/xtex,destination=/srv/blog
-              --mount type=bind,source=/srv/http/pages,destination=/srv/exopages
-              --env "UDS_DIR=exopages" --env "UDS_SUFFIX="
-              exozy.me/xtex/home
+            - systemctl --user restart xtex-home.service
+#            - podman run --name home
+#              --replace --detach
+#              --memory 16m
+#              --mount type=bind,source=/home/xtex/home,destination=/srv/run
+#              --mount type=bind,source=/srv/http/pages/xtex,destination=/srv/blog
+#              --mount type=bind,source=/srv/http/pages,destination=/srv/exopages
+#              --env "UDS_DIR=exopages" --env "UDS_SUFFIX="
+#              exozy.me/xtex/home
