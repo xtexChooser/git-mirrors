@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+
+function tiang::trace {
+	[[ "$TIANG_TRACE" == "true" ]] && echo -e "\e[0;30m${FUNCNAME[1]}: ${BASH_LINENO[0]}: $*\e[0m"
+}
+
+function tiang::error {
+	echo -e "\e[0;31mtiang: $*\e[0m"
+	exit 1
+}
+
+function tiang::succ {
+	echo -e "\e[0;32m$*\e[0m"
+}
+
+function tiang::usage {
+	tiang::trace "print usage"
+	cat <<XXX
+usage: $0 [OPTIONS] <COMMANDS>
+
+OPTIONS:
+
+  -? --help        Print usage
+
+COMMANDS:
+
+  FILTERING:
+    -f --filter   [CONDITIONS]  Filter targets with jq filters
+    -g --grep     [NAME]        Filter targets with name
+    -r --regex    [REGEX]       Filter targets with name regex
+  
+  EXECUTING:
+    -c --command  [COMMAND]     Run command on targets
+    -t --copy     [FILE] [DEST] Copy a file to targets
+    -s --script   [FILE] [ARGS] Copy a script to targets and run it
+
+XXX
+}
+
+function tiang::target {
+	[[ $# -ne 3 ]] && tiang::error "tiang::target <ADDRESS[:PORT]>"
+	return 0
+}
+
+function tiang::loadProfiles {
+	declare -a tiangProfileFiles
+	[[ "$TIANG_PROFILE" != "" ]] && tiangProfileFiles+=("$TIANG_PROFILE")
+	[[ -f ".tianguan.sh" ]] && tiangProfileFiles+=(".tianguan.sh")
+	[[ -f ".tianguan.bash" ]] && tiangProfileFiles+=(".tianguan.bash")
+	[[ -f ".tianguan.profile.sh" ]] && tiangProfileFiles+=(".tianguan.profile.sh")
+	[[ -f ".tianguan/profile" ]] && tiangProfileFiles+=(".tianguan/profile")
+	[[ -f ".tianguan/profile.sh" ]] && tiangProfileFiles+=(".tianguan/profile.sh")
+	[[ -f ".tianguan/profile.bash" ]] && tiangProfileFiles+=(".tianguan/profile.bash")
+
+	local tiangProfile
+	[[ ${#tiangProfileFiles[@]} -eq 0 ]] && tiang::error "no profile scripts found"
+	for tiangProfile in "${tiangProfileFiles[@]}"; do
+		tiang::trace "sourcing $tiangProfile"
+		# shellcheck source=/dev/null
+		source "$tiangProfile"
+	done
+}
+
+[[ $# -eq 0 ]] && tiang::usage && exit
+
+tiang::loadProfiles
+
+while [ $# -ne 0 ]; do
+	case $1 in
+	-? | --help | *)
+		tiang::usage
+		exit 1
+		;;
+	esac
+done
