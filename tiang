@@ -35,6 +35,7 @@ COMMANDS:
   
   EXECUTING:
     -p --print                  Print all selected targets
+	-k --confirm                Print selected targets and ask for confirm
     -c --command  [COMMAND]     Run command on targets
     -t --copy     [FILE] [DEST] Copy a file to targets
     -s --script   [FILE] [ARGS] Copy a script to targets and run it
@@ -111,6 +112,18 @@ function tiang::main {
 			;;
 		-p | --print)
 			echo "${tiangAllTargets[@]}"
+			shift 1
+			;;
+		-k | --confirm)
+			tiang::succ "Targets (${#tiangAllTargets[*]}):"
+			local tiangTgt tiangChoice="."
+			for tiangTgt in "${tiangTargets[@]}"; do echo "  - $tiangTgt"; done
+			while [ "$tiangChoice" != "" ] && [ "$tiangChoice" != "y" ] && [ "$tiangChoice" != "n" ]; do
+				printf "\x1b[38;5;22m(y/n): \e[0m"
+				read -p "" -n1 -r tiangChoice
+				[ "$tiangChoice" != "" ] && printf "\n"
+			done
+			[ "$tiangChoice" == "n" ] && exit 1
 			shift 1
 			;;
 		*)
