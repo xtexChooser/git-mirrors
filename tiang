@@ -220,8 +220,7 @@ function tiang::cmd::confirm {
 	for tiangTgt in "${tiangTargets[@]}"; do echo "  - $tiangTgt"; done
 	while [ "$tiangChoice" != "" ] && [ "$tiangChoice" != "y" ] && [ "$tiangChoice" != "n" ]; do
 		printf "\x1b[38;5;22m(y/n): \e[0m"
-		read -p "" -n1 -r tiangChoice
-		[ "$tiangChoice" != "" ] && printf "\n"
+		read -p "" -r tiangChoice
 	done
 	[ "$tiangChoice" == "n" ] && exit 1
 }
