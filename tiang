@@ -20,7 +20,9 @@ usage: $0 [OPTIONS] <COMMANDS>
 
 OPTIONS:
 
-    -? --help        Print usage
+    -? --help                   Print usage
+	--trace                     Enable tracing logs
+	-j --jobs     [JOBS]        Set parallel execution count (default: 4)
 
 COMMANDS:
 
@@ -165,6 +167,14 @@ function tiang::main {
 		-\? | --help)
 			tiang::usage
 			exit
+			;;
+		--trace)
+			TIANG_TRACE=true
+			shift
+			;;
+		-j | --jobs)
+			tiangRunParallel=$2
+			shift 2
 			;;
 		-a | --target)
 			tiang::cmd::target "$@"
