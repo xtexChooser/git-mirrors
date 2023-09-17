@@ -37,10 +37,14 @@ COMMANDS:
 XXX
 }
 
-declare -A tiangTargets
+declare -a tiangTargets tiangTargetSSH tiangTargetSSHPort tiangTargetData
 function tiang::target {
-	[ $# -ne 3 ] && tiang::error "tiang::target <NAME> <SSH ADDRESS[:PORT]>"
-	return 0
+	[ $# -lt 2 ] || [ $# -gt 3 ] && tiang::error "tiang::target <NAME> <SSH ADDRESS[:PORT]> [DATA]"
+	tiangTargets+=("$1")
+	IFS=":" read -r tiangAddr tiangPort <<<"$2"
+	tiangTargetSSH+=("$tiangAddr")
+	tiangTargetSSHPort+=("$tiangPort")
+	tiangTargetData+=("$3")
 }
 
 declare -a tiangCommandHandlers
@@ -66,6 +70,8 @@ function tiang::loadProfiles {
 		# shellcheck source=/dev/null
 		source "$tiangProfile"
 	done
+
+	[ ${#tiangTargets[@]} -eq 0 ] && tiang::error "no targets defined"
 }
 
 function tiang::main {
@@ -80,8 +86,7 @@ function tiang::main {
 			exit
 			;;
 		*)
-			local tiangCommandHandler tiangPrevParames
-			tiangPrevParames=$#
+			local tiangCommandHandler tiangPrevParames=$#
 			for tiangCommandHandler in "${tiangCommandHandlers[@]}"; do
 				"$tiangCommandHandler"
 				[ $# -ne $tiangPrevParames ] && break
