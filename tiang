@@ -207,6 +207,18 @@ function tiang::cmd::copy {
 	tiang::runParallelOnTargets tiang::runSCP "$2" "$3"
 }
 
+function tiang::runScript {
+	local tiangTmp
+	tiangTmp=/tmp/tiang.script.$(head -c64 /dev/urandom | md5sum | head -c10)
+	tiang::runSCP "$1" "$2" "$tiangTmp"
+	tiang::runSSH "$1" "chmod +x $tiangTmp; $tiangTmp; rm -f $tiangTmp"
+}
+
+function tiang::cmd::script {
+	[ $# -lt 2 ] && tiang::error "1 parameter is required for --script"
+	tiang::runParallelOnTargets tiang::runScript "$2"
+}
+
 function tiang::main {
 	[ $# -eq 0 ] && tiang::usage && exit
 
