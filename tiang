@@ -85,26 +85,26 @@ function tiang::loadProfiles {
 }
 
 function tiang::cmd::target {
-	[ $# -lt 2 ] && tiang::error "2 parameters are required for --target"
+	[ $# -lt 3 ] && tiang::error "2 parameters are required for --target"
 	tiang::target "$2" "$3"
 	tiangTargets+=("$2")
 }
 
 function tiang::cmd::remove {
-	[ $# -lt 1 ] && tiang::error "1 parameter is required for --remove"
+	[ $# -lt 2 ] && tiang::error "1 parameter is required for --remove"
 	tiangTargets=("${tiangTargets[@]/$2/}")
 }
 
 function tiang::cmd::include {
-	[ $# -lt 1 ] && tiang::error "1 parameter is required for --include"
+	[ $# -lt 2 ] && tiang::error "1 parameter is required for --include"
 	[[ " ${tiangAllTargets[*]} " = *" $2 "* ]] || tiang::error "target $2 is never defined. use -a instead"
 	tiangTargets+=("$2")
 }
 
 function tiang::cmd::filter {
-	[ $# -lt 1 ] && tiang::error "1 parameter is required for --filter"
-	local -a tiangTgts
+	[ $# -lt 2 ] && tiang::error "1 parameter is required for --filter"
 	local tiangTgt tiangTgtData tiangTgtJq
+	local -a tiangTgts
 	for tiangTgt in "${tiangTargets[@]}"; do
 		tiangTgtData=${tiangTargetData[$tiangTgt]}
 		[ "$tiangTgtData" == "" ] && continue
