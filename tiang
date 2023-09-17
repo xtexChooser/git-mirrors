@@ -125,7 +125,7 @@ function tiang::runSSH {
 
 function tiang::runSCP {
 	[ $# -lt 3 ] && tiang::error "tiang::runSCP <TARGET> <SOURCE> <DEST>"
-	${SCP:-scp} "$2" "${tiangTargetSSH[$1]/#ssh\:\/\//scp\:\/\/}/$3"
+	${SCP:-scp} ${SCP_FLAGS} "$2" "${tiangTargetSSH[$1]/#ssh\:\/\//scp\:\/\/}/$3"
 }
 
 function tiang::cmd::target {
@@ -210,7 +210,11 @@ function tiang::cmd::copy {
 function tiang::runScript {
 	local tiangTmp
 	tiangTmp=/tmp/tiang.script.$(head -c64 /dev/urandom | md5sum | head -c10)
-	tiang::runSCP "$1" "$2" "$tiangTmp"
+	{
+		local SCP_FLAGS
+		SCP_FLAGS+=-q
+		tiang::runSCP "$1" "$2" "$tiangTmp"
+	}
 	tiang::runSSH "$1" "chmod +x $tiangTmp; $tiangTmp; rm -f $tiangTmp"
 }
 
