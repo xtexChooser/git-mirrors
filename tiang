@@ -154,6 +154,7 @@ function tiang::runSSH {
 
 function tiang::runSCP {
 	[ $# -lt 3 ] && tiang::error "tiang::runSCP <TARGET> <SOURCE> <DEST>"
+	# shellcheck disable=SC2086
 	${SCP:-scp} ${SCP_FLAGS} "$2" "${tiangTargetSSH[$1]/#ssh\:\/\//scp\:\/\/}/$3"
 }
 
