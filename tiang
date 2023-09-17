@@ -13,20 +13,14 @@ function tiang::succ {
 	echo -e "\e[0;32m$*\e[0m"
 }
 
-function tiang::usage {
-	tiang::trace "print usage"
-	cat 1>&2 <<XXX
-usage: $0 [OPTIONS] <COMMANDS>
-
-OPTIONS:
-
+tiangOptionsUsage="""
     -? --help                   Print usage
-	--trace                     Enable tracing logs
-	-j --jobs     [JOBS]        Set parallel execution count (default: 4)
-	--tty                       Force SSH to allocate a TTY on remote host
+    --trace                     Enable tracing logs
+    -j --jobs     [JOBS]        Set parallel execution count (default: 4)
+    --tty                       Force SSH to allocate a TTY on remote host
+"""
 
-COMMANDS:
-
+tiangCommandsUsage="""
   TARGETING:
     -a --target   [NAME] [ADDR] Add a new target with given ssh address
     -n --remove   [NAME]        Remove a target from target list
@@ -46,7 +40,17 @@ COMMANDS:
     -c --command  [COMMAND]     Run command on targets
     -t --copy     [FILE] [DEST] Copy a file to targets
     -s --script   [FILE]        Copy a script to targets and run it
+"""
 
+function tiang::usage {
+	tiang::trace "print usage"
+	cat 1>&2 <<XXX
+usage: $0 [OPTIONS] <COMMANDS>
+
+OPTIONS:
+$tiangOptionsUsage
+COMMANDS:
+$tiangCommandsUsage
 XXX
 }
 
