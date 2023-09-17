@@ -15,12 +15,12 @@ function tiang::succ {
 
 function tiang::usage {
 	tiang::trace "print usage"
-	cat <<XXX
+	cat 1>&2 <<XXX
 usage: $0 [OPTIONS] <COMMANDS>
 
 OPTIONS:
 
-  -? --help        Print usage
+    -? --help        Print usage
 
 COMMANDS:
 
@@ -34,7 +34,7 @@ COMMANDS:
     -g! --grep!   [NAME]        Filter targets with no name literal
     -r --regex    [REGEX]       Filter targets with name regex
     -r! --regex!  [REGEX]       Filter targets with no name regex
-  
+
   EXECUTING:
     -p --print                  Print all selected targets
     -pa --print-all             Print all available targets
