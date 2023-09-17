@@ -38,7 +38,8 @@ COMMANDS:
   EXECUTING:
     -p --print                  Print all selected targets
     -pa --print-all             Print all available targets
-	-k --confirm                Print selected targets and ask for confirm
+    -k --confirm                Print selected targets and ask for confirm
+
     -c --command  [COMMAND]     Run command on targets
     -t --copy     [FILE] [DEST] Copy a file to targets
     -s --script   [FILE] [ARGS] Copy a script to targets and run it
