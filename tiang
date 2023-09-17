@@ -116,11 +116,13 @@ function tiang::cmd::filter {
 }
 
 function tiang::cmd::print {
-	echo "${tiangTargets[@]}"
+	local IFS=$'\n'
+	echo "${tiangTargets[*]}"
 }
 
 function tiang::cmd::printAll {
-	echo "${tiangAllTargets[@]}"
+	local IFS=$'\n'
+	echo "${tiangAllTargets[*]}"
 }
 
 function tiang::cmd::confirm {
