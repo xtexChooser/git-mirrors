@@ -50,13 +50,11 @@ XXX
 }
 
 declare -a tiangTargets tiangAllTargets
-declare -A tiangTargetSSH tiangTargetSSHPort tiangTargetData
+declare -A tiangTargetSSH tiangTargetData
 function tiang::target {
-	[ $# -lt 2 ] || [ $# -gt 3 ] && tiang::error "tiang::target <NAME> <SSH ADDRESS[:PORT]> [DATA]"
+	[ $# -lt 2 ] || [ $# -gt 3 ] && tiang::error "tiang::target <NAME> <SSH URI> [DATA]"
 	tiangAllTargets+=("$1")
-	IFS=":" read -r tiangAddr tiangPort <<<"$2"
-	tiangTargetSSH[$1]="$tiangAddr"
-	tiangTargetSSHPort[$1]="$tiangPort"
+	tiangTargetSSH[$1]="$2"
 	[ "$3" == "" ] || tiangTargetData[$1]="$3"
 }
 
@@ -113,6 +111,14 @@ function tiang::runParallelOnTargets {
 	# sync all jobs
 	# shellcheck disable=SC2068
 	wait -f ${tiangParaIds[@]}
+}
+
+function tiang::runSSH {
+	[ $# -lt 2 ] && tiang::error "tiang::runSSH <TARGET> <COMMAND>..."
+	local tiangTgt=$1
+	shift
+	# shellcheck disable=SC2086,SC2068
+	${SSH:-ssh} ${SSH_FLAGS} ${tiangTargetSSH[$tiangTgt]} $@
 }
 
 function tiang::cmd::target {
