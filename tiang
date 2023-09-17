@@ -30,11 +30,14 @@ COMMANDS:
     -y --include  [NAME]        Add a target to target list
 
     -f --filter   [FILTER]      Filter targets with jq filters
-    -g --grep     [NAME]        Filter targets with name
+    -g --grep     [NAME]        Filter targets with name literal
+    -g! --grep!   [NAME]        Filter targets with no name literal
     -r --regex    [REGEX]       Filter targets with name regex
+    -r! --regex!  [REGEX]       Filter targets with no name regex
   
   EXECUTING:
     -p --print                  Print all selected targets
+    -pa --print-all             Print all available targets
 	-k --confirm                Print selected targets and ask for confirm
     -c --command  [COMMAND]     Run command on targets
     -t --copy     [FILE] [DEST] Copy a file to targets
@@ -51,7 +54,7 @@ function tiang::target {
 	IFS=":" read -r tiangAddr tiangPort <<<"$2"
 	tiangTargetSSH[$1]="$tiangAddr"
 	tiangTargetSSHPort[$1]="$tiangPort"
-	tiangTargetData[$1]="$3"
+	[ "$3" == "" ] || tiangTargetData[$1]="$3"
 }
 
 declare -a tiangCommandHandlers
@@ -81,6 +84,57 @@ function tiang::loadProfiles {
 	[ ${#tiangAllTargets[@]} -eq 0 ] && tiang::error "no targets are defined"
 }
 
+function tiang::cmd::target {
+	[ $# -lt 2 ] && tiang::error "2 parameters are required for --target"
+	tiang::target "$2" "$3"
+	tiangTargets+=("$2")
+}
+
+function tiang::cmd::remove {
+	[ $# -lt 1 ] && tiang::error "1 parameter is required for --remove"
+	tiangTargets=("${tiangTargets[@]/$2/}")
+}
+
+function tiang::cmd::include {
+	[ $# -lt 1 ] && tiang::error "1 parameter is required for --include"
+	[[ " ${tiangAllTargets[*]} " = *" $2 "* ]] || tiang::error "target $2 is never defined. use -a instead"
+	tiangTargets+=("$2")
+}
+
+function tiang::cmd::filter {
+	[ $# -lt 1 ] && tiang::error "1 parameter is required for --filter"
+	local -a tiangTgts
+	local tiangTgt tiangTgtData tiangTgtJq
+	for tiangTgt in "${tiangTargets[@]}"; do
+		tiangTgtData=${tiangTargetData[$tiangTgt]}
+		[ "$tiangTgtData" == "" ] && continue
+		tiangTgtJq=$(jq -c "$2" <<<"$tiangTgtData")
+		{ [ "$tiangTgtJq" == "null" ] || [ "$tiangTgtJq" == "false" ]; } && continue
+		tiangTgts+=("$tiangTgt")
+	done
+	tiangTargets=("${tiangTgts[@]}")
+}
+
+function tiang::cmd::print {
+	echo "${tiangTargets[@]}"
+}
+
+function tiang::cmd::printAll {
+	echo "${tiangAllTargets[@]}"
+}
+
+function tiang::cmd::confirm {
+	tiang::succ "Targets (${#tiangAllTargets[*]}):"
+	local tiangTgt tiangChoice="."
+	for tiangTgt in "${tiangTargets[@]}"; do echo "  - $tiangTgt"; done
+	while [ "$tiangChoice" != "" ] && [ "$tiangChoice" != "y" ] && [ "$tiangChoice" != "n" ]; do
+		printf "\x1b[38;5;22m(y/n): \e[0m"
+		read -p "" -n1 -r tiangChoice
+		[ "$tiangChoice" != "" ] && printf "\n"
+	done
+	[ "$tiangChoice" == "n" ] && exit 1
+}
+
 function tiang::main {
 	[ $# -eq 0 ] && tiang::usage && exit
 
@@ -94,36 +148,31 @@ function tiang::main {
 			exit
 			;;
 		-a | --target)
-			[ $# -lt 2 ] && tiang::error "2 parameters are required for --target"
-			tiang::target "$2" "$3"
-			tiangTargets+=("$2")
+			tiang::cmd::target "$@"
 			shift 3
 			;;
 		-n | --remove)
-			[ $# -lt 1 ] && tiang::error "1 parameter is required for --remove"
-			tiangTargets=("${tiangTargets[@]/$2/}")
+			tiang::cmd::remove "$@"
 			shift 2
 			;;
 		-y | --include)
-			[ $# -lt 1 ] && tiang::error "1 parameter is required for --include"
-			[[ " ${tiangAllTargets[*]} " = *" $2 "* ]] || tiang::error "target $2 is never defined. use -a instead"
-			tiangTargets+=("$2")
+			tiang::cmd::include "$@"
+			shift 2
+			;;
+		-f | --filter)
+			tiang::cmd::filter "$@"
 			shift 2
 			;;
 		-p | --print)
-			echo "${tiangAllTargets[@]}"
+			tiang::cmd::print "$@"
+			shift 1
+			;;
+		-pa | --print-all)
+			tiang::cmd::printAll "$@"
 			shift 1
 			;;
 		-k | --confirm)
-			tiang::succ "Targets (${#tiangAllTargets[*]}):"
-			local tiangTgt tiangChoice="."
-			for tiangTgt in "${tiangTargets[@]}"; do echo "  - $tiangTgt"; done
-			while [ "$tiangChoice" != "" ] && [ "$tiangChoice" != "y" ] && [ "$tiangChoice" != "n" ]; do
-				printf "\x1b[38;5;22m(y/n): \e[0m"
-				read -p "" -n1 -r tiangChoice
-				[ "$tiangChoice" != "" ] && printf "\n"
-			done
-			[ "$tiangChoice" == "n" ] && exit 1
+			tiang::cmd::confirm "$@"
 			shift 1
 			;;
 		*)
@@ -138,5 +187,4 @@ function tiang::main {
 	done
 }
 
-# shellcheck disable=SC2068
-tiang::main $@
+tiang::main "$@"
