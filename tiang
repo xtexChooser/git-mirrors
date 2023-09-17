@@ -120,7 +120,16 @@ function tiang::runSSH {
 	local tiangTgt=$1
 	shift
 	# shellcheck disable=SC2086,SC2068
-	${SSH:-ssh} ${SSH_FLAGS} ${tiangTargetSSH[$tiangTgt]} $@
+	if [ "${TIANG_ROLLING_OUTPUT:-true}" == "true" ]; then
+		local tiangOut tiangStatus tiangTitle=$tiangTgt
+		tiangOut=$(${SSH:-ssh} ${SSH_FLAGS} ${tiangTargetSSH[$tiangTgt]} "$@" 2>&1)
+		tiangStatus=$?
+		(( tiangStatus != 0 )) && tiangTitle+=" ($tiangStatus)"
+		echo -e "\e[1;32m---------- $tiangTitle ----------\e[0m"
+		printf "%s\n\n\n" "$tiangOut"
+	else
+		${SSH:-ssh} ${SSH_FLAGS} ${tiangTargetSSH[$tiangTgt]} "$@"
+	fi
 }
 
 function tiang::runSCP {
