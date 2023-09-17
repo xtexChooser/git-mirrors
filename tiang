@@ -26,8 +26,8 @@ COMMANDS:
 
   TARGETING:
     -a --target   [NAME] [ADDR] Add a new target with given ssh address
-    -r --remove   [NAME]        Remove a target from target list
-    -i --include  [NAME]        Add a target to target list
+    -n --remove   [NAME]        Remove a target from target list
+    -y --include  [NAME]        Add a target to target list
 
     -f --filter   [FILTER]      Filter targets with jq filters
     -g --grep     [NAME]        Filter targets with name
@@ -98,12 +98,12 @@ function tiang::main {
 			tiangTargets+=("$2")
 			shift 3
 			;;
-		-r | --remove)
+		-n | --remove)
 			[ $# -lt 1 ] && tiang::error "1 parameter is required for --remove"
 			tiangTargets=("${tiangTargets[@]/$2/}")
 			shift 2
 			;;
-		-i | --include)
+		-y | --include)
 			[ $# -lt 1 ] && tiang::error "1 parameter is required for --include"
 			[[ " ${tiangAllTargets[*]} " = *" $2 "* ]] || tiang::error "target $2 is never defined. use -a instead"
 			tiangTargets+=("$2")
