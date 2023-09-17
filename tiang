@@ -87,6 +87,33 @@ function tiang::loadProfiles {
 	[ ${#tiangAllTargets[@]} -eq 0 ] && tiang::error "no targets are defined"
 }
 
+declare tiangRunParallel=${TIANG_PARALLEL:-4}
+function tiang::runParallelOnTargets {
+	[ $# -ne 1 ] && tiang::error "tiang::runParallelOnTargets <FUNC>"
+	tiang::trace parallel execution $1
+	local tiangTgt tiangParaCount=0 tiangRetId
+	local -a tiangParaIds
+	for tiangTgt in "${tiangTargets[@]}"; do
+		# wait slot
+		if ((tiangParaCount >= tiangRunParallel)); then
+			# shellcheck disable=SC2068
+			wait -f -n -p tiangRetId ${tiangParaIds[@]}
+			for i in "${!tiangParaIds[@]}"; do [ "${tiangParaIds[$i]}" == "$tiangRetId" ] && {
+				unset "tiangParaIds[$i]"
+				break
+			}; done
+			((tiangParaCount--))
+		fi
+		# start new job
+		((tiangParaCount++))
+		"$1" "$tiangTgt" &
+		tiangParaIds+=($!)
+	done
+	# sync all jobs
+	# shellcheck disable=SC2068
+	wait -f ${tiangParaIds[@]}
+}
+
 function tiang::cmd::target {
 	[ $# -lt 3 ] && tiang::error "2 parameters are required for --target"
 	tiang::target "$2" "$3"
