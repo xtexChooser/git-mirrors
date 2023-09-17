@@ -115,6 +115,22 @@ function tiang::cmd::filter {
 	tiangTargets=("${tiangTgts[@]}")
 }
 
+function tiang::cmd::grep {
+	[ $# -lt 2 ] && tiang::error "1 parameter is required for --grep"
+	local tiangTgts
+	local -a tiangGrepFlags=(-i)
+	{ [ "$1" == '-g' ] || [ "$1" == '--grep' ]; } && tiangGrepFlags+=(-F)
+	{ [ "$1" == '-g!' ] || [ "$1" == '--grep!' ]; } && tiangGrepFlags+=(-F -v)
+	{ [ "$1" == '-r' ] || [ "$1" == '--regex' ]; } && tiangGrepFlags+=(-E)
+	{ [ "$1" == '-r!' ] || [ "$1" == '--regex!' ]; } && tiangGrepFlags+=(-E -v)
+	# shellcheck disable=SC2068
+	tiangTgts=$( (
+		local IFS=$'\n'
+		echo "${tiangTargets[*]}"
+	) | grep ${tiangGrepFlags[@]} "$2")
+	readarray -d $'\n' -t tiangTargets <<<"$tiangTgts"
+}
+
 function tiang::cmd::print {
 	local IFS=$'\n'
 	echo "${tiangTargets[*]}"
@@ -163,6 +179,10 @@ function tiang::main {
 			;;
 		-f | --filter)
 			tiang::cmd::filter "$@"
+			shift 2
+			;;
+		-g | --grep | -g! | --grep! | -r | --regex | -r! | --regex!)
+			tiang::cmd::grep "$@"
 			shift 2
 			;;
 		-p | --print)
