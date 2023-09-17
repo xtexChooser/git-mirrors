@@ -45,7 +45,7 @@ COMMANDS:
 
     -c --command  [COMMAND]     Run command on targets
     -t --copy     [FILE] [DEST] Copy a file to targets
-    -s --script   [FILE] [ARGS] Copy a script to targets and run it
+    -s --script   [FILE]        Copy a script to targets and run it
 
 XXX
 }
@@ -123,6 +123,11 @@ function tiang::runSSH {
 	${SSH:-ssh} ${SSH_FLAGS} ${tiangTargetSSH[$tiangTgt]} $@
 }
 
+function tiang::runSCP {
+	[ $# -lt 3 ] && tiang::error "tiang::runSCP <TARGET> <SOURCE> <DEST>"
+	${SCP:-scp} "$2" "${tiangTargetSSH[$1]/#ssh\:\/\//scp\:\/\/}/$3"
+}
+
 function tiang::cmd::target {
 	[ $# -lt 3 ] && tiang::error "2 parameters are required for --target"
 	tiang::target "$2" "$3"
@@ -197,6 +202,11 @@ function tiang::cmd::command {
 	tiang::runParallelOnTargets tiang::runSSH "$2"
 }
 
+function tiang::cmd::copy {
+	[ $# -lt 3 ] && tiang::error "2 parameters are required for --copy"
+	tiang::runParallelOnTargets tiang::runSCP "$2" "$3"
+}
+
 function tiang::main {
 	[ $# -eq 0 ] && tiang::usage && exit
 
@@ -255,6 +265,14 @@ function tiang::main {
 			;;
 		-c | --command)
 			tiang::cmd::command "$@"
+			shift 2
+			;;
+		-t | --copy)
+			tiang::cmd::copy "$@"
+			shift 3
+			;;
+		-s | --script)
+			tiang::cmd::script "$@"
 			shift 2
 			;;
 		*)
