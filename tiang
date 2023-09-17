@@ -94,9 +94,9 @@ function tiang::makeSectionHeader {
 	[ $# -ne 1 ] && tiang::error "tiang::makeSectionHeader <TITLE>"
 	local tiangTitleLen=${#1}
 	local tiangTitle=""
-	for (( i=0;i<(80 - tiangTitleLen - 2) / 2;i++ )); do tiangTitle+='\u2501'; done
+	for ((i = 0; i < (80 - tiangTitleLen - 2) / 2; i++)); do tiangTitle+='\u2501'; done
 	tiangTitle+=" $1 "
-	for (( i=0;i<(80 - tiangTitleLen - 2) / 2;i++ )); do tiangTitle+='\u2501'; done
+	for ((i = 0; i < (80 - tiangTitleLen - 2) / 2; i++)); do tiangTitle+='\u2501'; done
 	echo -ne "\e[1;32m$tiangTitle\e[0m"
 }
 
