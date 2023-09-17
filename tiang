@@ -90,6 +90,16 @@ function tiang::loadProfiles {
 	[ ${#tiangAllTargets[@]} -eq 0 ] && tiang::error "no targets are defined"
 }
 
+function tiang::makeSectionHeader {
+	[ $# -ne 1 ] && tiang::error "tiang::makeSectionHeader <TITLE>"
+	local tiangTitleLen=${#1}
+	local tiangTitle=""
+	for (( i=0;i<(80 - tiangTitleLen - 2) / 2;i++ )); do tiangTitle+='\u2501'; done
+	tiangTitle+=" $1 "
+	for (( i=0;i<(80 - tiangTitleLen - 2) / 2;i++ )); do tiangTitle+='\u2501'; done
+	echo -ne "\e[1;32m$tiangTitle\e[0m"
+}
+
 declare tiangRunParallel=${TIANG_PARALLEL:-4} tiangParaCount=0
 declare -a tiangParaIds
 function tiang::runParallelOnTargets {
@@ -111,7 +121,7 @@ function tiang::runParallelOnTargets {
 				tiangOut=$($tiangFunc "$tiangTgt" $@ 2>&1)
 				tiangStatus=$?
 				((tiangStatus != 0)) && tiangTitle+=" ($tiangStatus)"
-				echo -e "\e[1;32m---------- $tiangTitle ----------\e[0m\n$tiangOut" &>"$tiangTmp.$BASHPID"
+				echo -e "$(tiang::makeSectionHeader "$tiangTitle")\n$tiangOut" &>"$tiangTmp.$BASHPID"
 			else
 				$tiangFunc "$tiangTgt" $@
 			fi
