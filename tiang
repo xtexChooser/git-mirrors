@@ -87,9 +87,10 @@ function tiang::loadProfiles {
 
 declare tiangRunParallel=${TIANG_PARALLEL:-4}
 function tiang::runParallelOnTargets {
-	[ $# -lt 1 ] && tiang::error "tiang::runParallelOnTargets <FUNC>..."
-	tiang::trace parallel execution $1
-	local tiangTgt tiangParaCount=0 tiangRetId
+	[ $# -lt 1 ] && tiang::error "tiang::runParallelOnTargets <FUNC> [ARGS]..."
+	tiang::trace "parallel execution: $*"
+	local tiangTgt tiangParaCount=0 tiangRetId tiangFunc=$1
+	shift
 	local -a tiangParaIds
 	for tiangTgt in "${tiangTargets[@]}"; do
 		# wait slot
@@ -105,7 +106,7 @@ function tiang::runParallelOnTargets {
 		# start new job
 		((tiangParaCount++))
 		# shellcheck disable=SC2068
-		$@ "$tiangTgt" &
+		$tiangFunc "$tiangTgt" $@ &
 		tiangParaIds+=($!)
 	done
 	# sync all jobs
@@ -190,6 +191,11 @@ function tiang::cmd::confirm {
 	[ "$tiangChoice" == "n" ] && exit 1
 }
 
+function tiang::cmd::command {
+	[ $# -lt 2 ] && tiang::error "1 parameter is required for --command"
+	tiang::runParallelOnTargets tiang::runSSH "$2"
+}
+
 function tiang::main {
 	[ $# -eq 0 ] && tiang::usage && exit
 
@@ -241,6 +247,10 @@ function tiang::main {
 		-k | --confirm)
 			tiang::cmd::confirm "$@"
 			shift 1
+			;;
+		-c | --command)
+			tiang::cmd::command "$@"
+			shift 2
 			;;
 		*)
 			local tiangCommandHandler tiangPrevParames=$#
