@@ -89,7 +89,7 @@ function tiang::loadProfiles {
 
 declare tiangRunParallel=${TIANG_PARALLEL:-4}
 function tiang::runParallelOnTargets {
-	[ $# -ne 1 ] && tiang::error "tiang::runParallelOnTargets <FUNC>"
+	[ $# -lt 1 ] && tiang::error "tiang::runParallelOnTargets <FUNC>..."
 	tiang::trace parallel execution $1
 	local tiangTgt tiangParaCount=0 tiangRetId
 	local -a tiangParaIds
@@ -106,7 +106,8 @@ function tiang::runParallelOnTargets {
 		fi
 		# start new job
 		((tiangParaCount++))
-		"$1" "$tiangTgt" &
+		# shellcheck disable=SC2068
+		$@ "$tiangTgt" &
 		tiangParaIds+=($!)
 	done
 	# sync all jobs
