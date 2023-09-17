@@ -24,12 +24,17 @@ OPTIONS:
 
 COMMANDS:
 
-  FILTERING:
-    -f --filter   [CONDITIONS]  Filter targets with jq filters
+  TARGETING:
+    -a --target   [NAME] [ADDR] Add a new target with given ssh address
+    -r --remove   [NAME]        Remove a target from target list
+    -i --include  [NAME]        Add a target to target list
+
+    -f --filter   [FILTER]      Filter targets with jq filters
     -g --grep     [NAME]        Filter targets with name
     -r --regex    [REGEX]       Filter targets with name regex
   
   EXECUTING:
+    -p --print                  Print all selected targets
     -c --command  [COMMAND]     Run command on targets
     -t --copy     [FILE] [DEST] Copy a file to targets
     -s --script   [FILE] [ARGS] Copy a script to targets and run it
@@ -37,14 +42,15 @@ COMMANDS:
 XXX
 }
 
-declare -a tiangTargets tiangTargetSSH tiangTargetSSHPort tiangTargetData
+declare -a tiangTargets tiangAllTargets
+declare -A tiangTargetSSH tiangTargetSSHPort tiangTargetData
 function tiang::target {
 	[ $# -lt 2 ] || [ $# -gt 3 ] && tiang::error "tiang::target <NAME> <SSH ADDRESS[:PORT]> [DATA]"
-	tiangTargets+=("$1")
+	tiangAllTargets+=("$1")
 	IFS=":" read -r tiangAddr tiangPort <<<"$2"
-	tiangTargetSSH+=("$tiangAddr")
-	tiangTargetSSHPort+=("$tiangPort")
-	tiangTargetData+=("$3")
+	tiangTargetSSH[$1]="$tiangAddr"
+	tiangTargetSSHPort[$1]="$tiangPort"
+	tiangTargetData[$1]="$3"
 }
 
 declare -a tiangCommandHandlers
@@ -71,19 +77,41 @@ function tiang::loadProfiles {
 		source "$tiangProfile"
 	done
 
-	[ ${#tiangTargets[@]} -eq 0 ] && tiang::error "no targets defined"
+	[ ${#tiangAllTargets[@]} -eq 0 ] && tiang::error "no targets are defined"
 }
 
 function tiang::main {
 	[ $# -eq 0 ] && tiang::usage && exit
 
 	tiang::loadProfiles
+	tiangTargets=("${tiangAllTargets[@]}")
 
 	while [ $# -ne 0 ]; do
 		case $1 in
 		-\? | --help)
 			tiang::usage
 			exit
+			;;
+		-a | --target)
+			[ $# -lt 2 ] && tiang::error "2 parameters are required for --target"
+			tiang::target "$2" "$3"
+			tiangTargets+=("$2")
+			shift 3
+			;;
+		-r | --remove)
+			[ $# -lt 1 ] && tiang::error "1 parameter is required for --remove"
+			tiangTargets=("${tiangTargets[@]/$2/}")
+			shift 2
+			;;
+		-i | --include)
+			[ $# -lt 1 ] && tiang::error "1 parameter is required for --include"
+			[[ " ${tiangAllTargets[*]} " = *" $2 "* ]] || tiang::error "target $2 is never defined. use -a instead"
+			tiangTargets+=("$2")
+			shift 2
+			;;
+		-p | --print)
+			echo "${tiangAllTargets[@]}"
+			shift 1
 			;;
 		*)
 			local tiangCommandHandler tiangPrevParames=$#
