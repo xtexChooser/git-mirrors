@@ -9,7 +9,7 @@
 
 ## Use
 
-Reference to [xvnet/conf-leonis](https://codeberg.org/xvnet/conf-leonis).
+Reference to [xvnet/conf](https://codeberg.org/xvnet/conf).
 
 ## Trivia
 
