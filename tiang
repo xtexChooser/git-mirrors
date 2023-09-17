@@ -86,33 +86,48 @@ function tiang::loadProfiles {
 	[ ${#tiangAllTargets[@]} -eq 0 ] && tiang::error "no targets are defined"
 }
 
-declare tiangRunParallel=${TIANG_PARALLEL:-4}
+declare tiangRunParallel=${TIANG_PARALLEL:-4} tiangParaCount=0
+declare -a tiangParaIds
 function tiang::runParallelOnTargets {
 	[ $# -lt 1 ] && tiang::error "tiang::runParallelOnTargets <FUNC> [ARGS]..."
 	tiang::trace "parallel execution: $*"
-	local tiangTgt tiangParaCount=0 tiangRetId tiangFunc=$1
+	local tiangTgt tiangFunc=$1 tiangTmp
 	shift
-	local -a tiangParaIds
+	tiangTmp=/tmp/tiang.parallel.$(head -c64 /dev/urandom | md5sum | head -c10)
+
 	for tiangTgt in "${tiangTargets[@]}"; do
-		# wait slot
 		if ((tiangParaCount >= tiangRunParallel)); then
-			# shellcheck disable=SC2068
-			wait -f -n -p tiangRetId ${tiangParaIds[@]}
-			for i in "${!tiangParaIds[@]}"; do [ "${tiangParaIds[$i]}" == "$tiangRetId" ] && {
-				unset "tiangParaIds[$i]"
-				break
-			}; done
-			((tiangParaCount--))
+			tiang::waitParallelExecution
 		fi
-		# start new job
 		((tiangParaCount++))
 		# shellcheck disable=SC2068
-		$tiangFunc "$tiangTgt" $@ &
+		{
+			if [ "${TIANG_OUTPUT_SYNC:-true}" == "true" ]; then
+				local tiangOut tiangStatus tiangTitle=$tiangTgt
+				tiangOut=$($tiangFunc "$tiangTgt" $@ 2>&1)
+				tiangStatus=$?
+				((tiangStatus != 0)) && tiangTitle+=" ($tiangStatus)"
+				echo -e "\e[1;32m---------- $tiangTitle ----------\e[0m\n$tiangOut" &>"$tiangTmp.$BASHPID"
+			else
+				$tiangFunc "$tiangTgt" $@
+			fi
+		} &
 		tiangParaIds+=($!)
 	done
-	# sync all jobs
+
+	while ((tiangParaCount > 0)); do tiang::waitParallelExecution; done
+}
+function tiang::waitParallelExecution {
+	local tiangRetId
 	# shellcheck disable=SC2068
-	wait -f ${tiangParaIds[@]}
+	wait -f -n -p tiangRetId ${tiangParaIds[@]}
+	for i in "${!tiangParaIds[@]}"; do [ "${tiangParaIds[$i]}" == "$tiangRetId" ] && {
+		unset "tiangParaIds[$i]"
+		break
+	}; done
+	cat "$tiangTmp.$tiangRetId"
+	rm "$tiangTmp.$tiangRetId"
+	((tiangParaCount--))
 }
 
 function tiang::runSSH {
@@ -120,16 +135,7 @@ function tiang::runSSH {
 	local tiangTgt=$1
 	shift
 	# shellcheck disable=SC2086,SC2068
-	if [ "${TIANG_ROLLING_OUTPUT:-true}" == "true" ]; then
-		local tiangOut tiangStatus tiangTitle=$tiangTgt
-		tiangOut=$(${SSH:-ssh} ${SSH_FLAGS} ${tiangTargetSSH[$tiangTgt]} "$@" 2>&1)
-		tiangStatus=$?
-		(( tiangStatus != 0 )) && tiangTitle+=" ($tiangStatus)"
-		echo -e "\e[1;32m---------- $tiangTitle ----------\e[0m"
-		printf "%s\n\n\n" "$tiangOut"
-	else
-		${SSH:-ssh} ${SSH_FLAGS} ${tiangTargetSSH[$tiangTgt]} "$@"
-	fi
+	${SSH:-ssh} ${SSH_FLAGS} ${tiangTargetSSH[$tiangTgt]} "$@"
 }
 
 function tiang::runSCP {
