@@ -2,7 +2,7 @@ hash-format = "sha256"
 
 [[files]]
 file = "CREDITS.md"
-hash = "62db6c7a1361d76e224119dcc33ec80b3ec7aa24979cf40a86692de6fc1228f2"
+hash = "7b8ec331a85de9dba68de382d6d236b09beccb77ff96539a24b88d6c74bff51a"
 
 [[files]]
 file = "LICENSE"
@@ -256,7 +256,7 @@ metafile = true
 
 [[files]]
 file = "mods/indium.pw.toml"
-hash = "ca2c62934680ee8e5a58a1a0011203406b0f067b0cfed60d088981dfa8579f99"
+hash = "85daf558c36022a664c9e2bc3d9a9bc21cb9fa62977890f142c20ccc155eae36"
 metafile = true
 
 [[files]]
