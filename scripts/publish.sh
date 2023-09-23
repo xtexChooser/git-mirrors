@@ -5,7 +5,8 @@ if git tag | grep -q "$version"; then
     echo "$version" is already tagged
     exit
 fi
-changelog=$(git log "$(git tag | tail -n1)"..HEAD --oneline --decorate=no --abbrev)
+changelog=$(mktemp)
+git log "$(git tag | tail -n1)"..HEAD --oneline --decorate=no --abbrev | tee "$changelog"
 
 rm -f -- *.mrpack *.zip
 
@@ -22,3 +23,4 @@ packwiz curseforge export
 
 scripts/sync-readme.sh
 CHANGELOG="$changelog" scripts/upload-to-mr.sh
+rm -f "$changelog"
