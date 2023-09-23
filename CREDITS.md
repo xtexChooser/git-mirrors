@@ -70,6 +70,7 @@ This is a complete list of all mods, resource packs and shaders included in this
 - MakeUp - Ultra Fast
 - MaLiLib
 - mcwzh-meme-resourcepack
+- MixinTrace
 - Mod Menu
 - More Culling
 - No Chat Reports
@@ -86,6 +87,7 @@ This is a complete list of all mods, resource packs and shaders included in this
 - Sodium Extra
 - Sofron oCd
 - spark
+- StackDeobfuscator
 - Starlight (Fabric)
 - TweakerMore
 - Tweakeroo
@@ -164,6 +166,8 @@ This is a complete list of all mods, resource packs and shaders included in this
 - [FlightHelper](https://modrinth.com/mod/1yyNJogn)
 - [Beenfo](https://modrinth.com/mod/Bta0Pt47)
 - [Starlight (Fabric)](https://modrinth.com/mod/H8CaAYZC)
+- [MixinTrace](https://modrinth.com/mod/sGmHWmeL)
+- [StackDeobfuscator](https://modrinth.com/mod/NusMqsjF)
 - [Default Dark Mode](https://modrinth.com/mod/6SLU7tS5)
 - [Twemojis In Minecraft](https://modrinth.com/mod/WdYcUVh8)
 - [XeKrSquarePattern](https://modrinth.com/mod/rq4lDGdf)
