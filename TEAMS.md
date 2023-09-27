@@ -113,20 +113,3 @@ Team members:
 ## [Github organisation](https://github.com/forgejo) owners
 
 - ???
-
-## FreeBSD
-
-Purpose: to provide advice when needed about FreeBSD builds and the FreeBSD
-ports tree.
-
-Accountabilities:
-
-Be a point of contact for all FreeBSD & Forgejo related matters
-
-Resources maintained:
-
-https://codeberg.org/forgejo-contrib/freebsd
-
-Team members:
-
-- ???
