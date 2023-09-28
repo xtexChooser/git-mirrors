@@ -136,7 +136,7 @@ metafile = true
 
 [[files]]
 file = "mods/appleskin.pw.toml"
-hash = "6869de1ca55dc09beabb3c234727e84be4d4fbdcbad2c8081c03010713f374e1"
+hash = "e3dfb2478e6bb096667d4ec89b0ddfef627747939373bdefee02f358d6e3dee1"
 metafile = true
 
 [[files]]
@@ -166,7 +166,7 @@ metafile = true
 
 [[files]]
 file = "mods/c2me-fabric.pw.toml"
-hash = "671faa7e6db70f1ef76f171a7f22f0f71275bbfe6554a8b3c0dbde8b81ec68b5"
+hash = "7721e78d990cc15c02f1a03cd6d7652ea995b271a3d19a6ae44829b4c69acbf0"
 metafile = true
 
 [[files]]
@@ -176,7 +176,7 @@ metafile = true
 
 [[files]]
 file = "mods/chat-heads.pw.toml"
-hash = "83005146b4c78677bb1fefadce2da308344d4682be5c17d2cd701c49e22f49bb"
+hash = "0159525d452d7e755045223330b3bfc0a3df5491c4a83beee9f00af0b68b8758"
 metafile = true
 
 [[files]]
@@ -256,7 +256,7 @@ metafile = true
 
 [[files]]
 file = "mods/indium.pw.toml"
-hash = "85daf558c36022a664c9e2bc3d9a9bc21cb9fa62977890f142c20ccc155eae36"
+hash = "0c5e71addef34c8dcd1c81dfc2ad851a3e274b9d8d3a7d388e1113d4139bf8d8"
 metafile = true
 
 [[files]]
@@ -281,7 +281,7 @@ metafile = true
 
 [[files]]
 file = "mods/language-reload.pw.toml"
-hash = "409d820a08baf91ace8443e3abb9ef8914083b053e1e24cb989419aaef8b3f5d"
+hash = "cd9e975f57957445016f58556136ed293ad29919ac5735aaa587d5c5c251aac0"
 metafile = true
 
 [[files]]
@@ -356,7 +356,7 @@ metafile = true
 
 [[files]]
 file = "mods/qsl.pw.toml"
-hash = "7d29724ac05ef8982475b92f0e77adf4a4830c249f0e8c1515a19777fbf05f09"
+hash = "6c7c8c7f424804a1efcfa2a6828d365c3a68eb38016e31f48967f45172de47ee"
 metafile = true
 
 [[files]]
@@ -441,7 +441,7 @@ metafile = true
 
 [[files]]
 file = "mods/xaeros-minimap.pw.toml"
-hash = "f130f4654ea7904c73f6c1e828d2a7b39670912a550ec6c0842f5f5fb5ead634"
+hash = "bc0ca9370e45f2a1e6e76f8bb9cf556121dd46b513b7ac796758e3ebe69880ec"
 metafile = true
 
 [[files]]
@@ -451,7 +451,7 @@ metafile = true
 
 [[files]]
 file = "mods/yacl.pw.toml"
-hash = "5128dafec4140a625b5c388f56e9989b8f6780dcce41134ef799bd9be3d5ae1a"
+hash = "d8bca5ce77fe1a27939ccabc71d6ea996cc5950d023883d34cb48da9e1250784"
 metafile = true
 
 [[files]]
