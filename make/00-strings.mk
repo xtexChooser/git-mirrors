@@ -25,3 +25,7 @@ endef
 define not
 $(if $(1),,y)
 endef
+
+comma:= ,
+empty:=
+space:= $(empty) $(empty)
