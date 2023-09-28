@@ -112,3 +112,14 @@ V_POD		= caddy
 V_FILE		= $(BUILD_DIR)/test-caddy/caddy.yaml
 V_DEPS		+= $(BUILD_DIR)/test-caddy/Caddyfile
 $(call end)
+
+$(call user)
+V_NAME		= caddy
+V_EXIST		= true
+V_UID		= 10064
+V_GID		= 10064
+V_GROUPS	+= a
+V_GROUPS	+= b
+V_NOLOGINIT = true
+V_SHELL		= /usr/bin/fish
+$(call end)
