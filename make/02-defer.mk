@@ -1,5 +1,5 @@
 define defer
-$(eval deffered-fn-stack += $(1))
+$(eval deffered-fn-stack += $1)
 endef
 
 define call-deferred-fns
