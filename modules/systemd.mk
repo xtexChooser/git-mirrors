@@ -14,28 +14,28 @@ $(call vt-target,$(V_TARGET_NAME))
 $(V_TARGET_NAME): $(v-deps)
 	export E_MAJOR=systemd E_UNIT=$(V_UNIT)
 $(if $(call is-true,$(V_ENABLED)),
-	if ! $(V_SYSTEMCTL) is-enabled $(V_UNIT) > /dev/null; then
+	if ! $(V_SYSTEMCTL) is-enabled $(V_UNIT) $(DROP_STDOUT); then
 		$(V_SYSTEMCTL) enable $(V_UNIT)
 		$(call succ, Enabled SD unit $(V_UNIT))
 		$(call vpost, E_MINOR=enabled)
 	fi
 )
 $(if $(call is-false,$(V_ENABLED)),
-	if $(V_SYSTEMCTL) is-enabled $(V_UNIT) > /dev/null; then
+	if $(V_SYSTEMCTL) is-enabled $(V_UNIT) $(DROP_STDOUT); then
 		$(V_SYSTEMCTL) enable $(V_UNIT)
 		$(call succ, Disabled SD unit $(V_UNIT))
 		$(call vpost, E_MINOR=disabled)
 	fi
 )
 $(if $(call is-true,$(V_RUNNING)),
-	if ! $(V_SYSTEMCTL) is-active $(V_UNIT) > /dev/null; then
+	if ! $(V_SYSTEMCTL) is-active $(V_UNIT) $(DROP_STDOUT); then
 		$(V_SYSTEMCTL) start $(V_UNIT)
 		$(call succ, Started SD unit $(V_UNIT))
 		$(call vpost, E_MINOR=activated)
 	fi
 )
 $(if $(call is-false,$(V_RUNNING)),
-	if $(V_SYSTEMCTL) is-active $(V_UNIT) > /dev/null; then
+	if $(V_SYSTEMCTL) is-active $(V_UNIT) $(DROP_STDOUT); then
 		$(V_SYSTEMCTL) stop $(V_UNIT)
 		$(call succ, Stopped SD unit $(V_UNIT))
 		$(call vpost, E_MINOR=deactivated)

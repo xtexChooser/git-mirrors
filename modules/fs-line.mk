@@ -13,8 +13,8 @@ $(call vt-target,$(V_TARGET_NAME))
 $(V_TARGET_NAME): $(if $(call not,$(findstring no-dep,$(V_FLAGS))$(findstring append,$(V_FLAGS))),$(V_PATH)) $(v-deps)
 	export E_MAJOR=fs-line E_NAME=$(V_NAME) E_PATH=$(V_PATH)
 	if [[ -e $(V_PATH) ]]; then
-		if ! grep -F '$(subst ','"'"',$(V_LINE))' $(V_PATH) $(DROP_STDOUT_ERR); then
-			if grep -E '$(subst ','"'"',$(V_MATCH))' $(V_PATH) $(DROP_STDOUT_ERR); then
+		if ! grep -F '$(subst ','"'"',$(V_LINE))' $(V_PATH) $(DROP_STDOUT); then
+			if grep -E '$(subst ','"'"',$(V_MATCH))' $(V_PATH) $(DROP_STDOUT); then
 				$(MV) $(V_PATH) $(V_PATH).bak
 				$(SED) -E -e 's/$(subst ','"'"',$(V_MATCH))/$(subst ','"'"',$(V_LINE))/g' $(V_PATH).bak > $(V_PATH)
 				$(call succ, Replaced line with '$(V_LINE)' in $(V_PATH))
