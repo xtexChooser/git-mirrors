@@ -1,13 +1,14 @@
 USERADD = useradd
 USERMOD = usermod
 USERDEL = userdel -r
+USER_PASSWD_FILES := /etc/passwd $$([[ -e /etc/shadow ]] && echo /etc/shadow || true)
 
 USER_VARS=V_TARGET_NAME V_NAME V_POST $(v-deps-var) V_EXIST V_UID V_GID V_SYSTEM \
 	V_HOME_DIR V_EXPIRE V_INACTIVE V_GROUPS V_NOLOGINIT V_NON_UNIQUE V_PASSWORD V_SHELL \
 	V_USERGROUP
 define user0
 $(eval V_TARGET_NAME?=user-$(V_NAME))
-$(if $(V_PASSWORD),$(call mkwarn,Password for $(V_NAME) is defined in makefile. This is insecure!))
+$(if $(V_PASSWORD),$(call mkwarn,Password for user $(V_NAME) is defined in makefile. This is insecure!))
 
 $(call mktrace,Define shadow user target: $(V_UNIT))
 $(call mktrace-vars,$(USER_VARS))
@@ -19,7 +20,7 @@ $(V_TARGET_NAME): $(v-deps) \
 	$(if $(V_SHELL),$(call empty-rules,$(V_SHELL)))
 	export E_MAJOR=user E_NAME=$(V_NAME)
 $(if $(call is-true,$(V_EXIST)),
-	if ! grep -E '^$(V_NAME):' /etc/passwd /etc/shadow $(DROP_STDOUT); then
+	if ! grep -E '^$(V_NAME):' $(USER_PASSWD_FILES) $(DROP_STDOUT); then
 		$(USERADD) $(if $(V_UID),--uid $(V_UID)) $(if $(V_GID),--gid $(V_GID)) $(if $(V_SYSTEM),--system) \
 			$(if $(V_HOME_DIR),--home-dir $(V_HOME_DIR)) $(if $(V_EXPIRE),--expiredate $(V_EXPIRE)) \
 			$(if $(V_INACTIVE),--inactive $(V_INACTIVE)) \
@@ -34,7 +35,7 @@ $(if $(call is-true,$(V_EXIST)),
 	fi
 )
 $(if $(call is-false,$(V_EXIST)),
-	if grep -E '^$(V_NAME):' /etc/passwd /etc/shadow $(DROP_STDOUT); then
+	if grep -E '^$(V_NAME):' $(USER_PASSWD_FILES) $(DROP_STDOUT); then
 		$(USERDEL) $(E_NAME)
 		$(call succ, Deleted user $(V_NAME))
 		$(call vpost, E_MINOR=deleted)
