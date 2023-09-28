@@ -4,7 +4,7 @@ CMD_VARS=V_TARGET_NAME V_NAME V_SHELL V_POST $(v-deps-var) V_CMD V_APPLY
 define cmd0
 $(eval V_TARGET_NAME?=cmd-$(V_NAME))
 $(eval V_SHELL ?= $(CMD_SHELL))
-$(if $(V_NAME),,$(error V_NAME is not defined))
+$(if $(V_NAME),,$(call mkerr, V_NAME is not defined))
 
 $(call mktrace,Define command target: $(V_NAME))
 $(call mktrace-vars,$(CMD_VARS))

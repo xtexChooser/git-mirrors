@@ -1,6 +1,6 @@
 define save-var0
 $(if $(saved-var-$1),$(if $(call strneq,$(saved-var-$1),$(VARS_DIR)/$1.txt),
-$(error Saved var $1 is already defined with different path: $(saved-var-$1))),
+$(call mkerr, Saved var $1 is already defined with different path: $(saved-var-$1))),
 $(eval $(call save-var1,$1,$2)))
 endef
 

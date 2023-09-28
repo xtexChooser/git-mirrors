@@ -9,8 +9,8 @@ $(if $(V_COPY),$(eval V_CREATE=copy SRC=$(V_COPY))$(eval V_TPL_DEPS += $(V_COPY)
 
 $(call mktrace,Define exist fs-file target: $(V_UNIT))
 $(call mktrace-vars,$(FS_FILE_VARS))
-$(if $(V_GROUP),$(if $(V_GROUP_ID),$(error Both V_GROUP and V_GROUP_ID is defined for $(V_PATH))))
-$(if $(V_USER),$(if $(V_USER_ID),$(error Both V_USER and V_USER_ID is defined for $(V_PATH))))
+$(if $(V_GROUP),$(if $(V_GROUP_ID),$(call mkerr, Both V_GROUP and V_GROUP_ID is defined for $(V_PATH))))
+$(if $(V_USER),$(if $(V_USER_ID),$(call mkerr, Both V_USER and V_USER_ID is defined for $(V_PATH))))
 
 $(call apply-target,$(V_PATH))
 $(if $(call strneq,$(V_TARGET_NAME),$(V_PATH)),
@@ -24,7 +24,7 @@ $(V_PATH): $(v-deps) $(V_TPL_DEPS)
 		$(MKDIR) -p $(dir $(V_PATH))
 		$(if $(V_CREATE),
 		$(MAKE) $(MAKE_FLAGS) E_MAJOR=fs-file-create E_PATH=$(V_PATH) mkfile-$(V_CREATE),
-		$(call err,File $(V_PATH) is missing but V_CREATE is not defined))
+		$(call err, File $(V_PATH) is missing but V_CREATE is not defined))
 		if [[ ! -e $(V_PATH) ]]; then
 			$(call err, Failed to create file $(V_PATH))
 		fi
@@ -93,7 +93,7 @@ mkfile-copy:
 	$(file >$(E_PATH),$(file <$(SRC)))
 
 define mkfile-run0
-$(if $(TARGET),$(if $(CMD),$(error Both TARGET and CMD is defined for $(E_PATH))))
+$(if $(TARGET),$(if $(CMD),$(call mkerr, Both TARGET and CMD is defined for $(E_PATH))))
 $(if $(TARGET),mkfile-run: $(TARGET))
 $(if $(CMD),mkfile-run:
 	$(CMD))

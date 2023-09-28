@@ -5,7 +5,7 @@ SYSTEMD_UNIT_VARS=V_TARGET_NAME V_UNIT V_ENABLED V_RUNNING V_USER V_SYSTEMCTL V_
 define systemd-unit0
 $(eval V_TARGET_NAME?=systemd-$(V_UNIT))
 $(eval V_SYSTEMCTL ?= $(if $(V_USER),$(SYSTEMCTL_USER),$(SYSTEMCTL)))
-$(if $(findstring .,$(V_UNIT)),,$(error V_UNIT $(V_UNIT) should include the suffix, e.g. .service and .timer))
+$(if $(findstring .,$(V_UNIT)),,$(call mkerr, V_UNIT $(V_UNIT) should include the suffix, e.g. .service and .timer))
 
 $(call mktrace,Define systemd unit target: $(V_UNIT))
 $(call mktrace-vars,$(SYSTEMD_UNIT_VARS))

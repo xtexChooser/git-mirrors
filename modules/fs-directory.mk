@@ -5,8 +5,8 @@ $(eval V_TARGET_NAME?=$(V_PATH))
 
 $(call mktrace,Define exist fs-directory target: $(V_UNIT))
 $(call mktrace-vars,$(FS_DIRECTORY_VARS))
-$(if $(V_GROUP),$(if $(V_GROUP_ID),$(error Both V_GROUP and V_GROUP_ID is defined for $(V_PATH))))
-$(if $(V_USER),$(if $(V_USER_ID),$(error Both V_USER and V_USER_ID is defined for $(V_PATH))))
+$(if $(V_GROUP),$(if $(V_GROUP_ID),$(call mkerr, Both V_GROUP and V_GROUP_ID is defined for $(V_PATH))))
+$(if $(V_USER),$(if $(V_USER_ID),$(call mkerr, Both V_USER and V_USER_ID is defined for $(V_PATH))))
 
 $(call apply-target,$(V_PATH))
 $(if $(call strneq,$(V_TARGET_NAME),$(V_PATH)),

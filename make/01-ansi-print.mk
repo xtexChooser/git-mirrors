@@ -69,5 +69,5 @@ $(call printc,31,- $(strip $1))
 endef
 
 define err
-$(call print-ansi,$(call ansi-color-bold,31)$1); exit 1
+{ $(call print-ansi,$(call ansi-color-bold,31)$1); exit 1; }
 endef

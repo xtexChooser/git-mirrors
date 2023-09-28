@@ -4,8 +4,8 @@ $(eval $(call define-func0,$(strip $1),$(strip $(if $2,$2,$10))))
 endef
 
 define define-func0
-$(if $(value $1),$(error Define function $1 with impl $2 but wrapper macro is defined))
-$(if $(value $2),,$(error Define function $1 but impl $2 is not implemented))
+$(if $(value $1),$(call mkerr, Define function $1 with impl $2 but wrapper macro is defined))
+$(if $(value $2),,$(call mkerr, Define function $1 but impl $2 is not implemented))
 $ define $1
 $$(call push-fn-stack,$2)
 $ endef
@@ -30,8 +30,8 @@ $(eval $(call define-inline-func0,$(strip $1),$(strip $(if $2,$2,$10))))
 endef
 
 define define-inline-func0
-$(if $(value $1),$(error Define inline function $1 with impl $2 but wrapper macro is defined))
-$(if $(value $2),,$(error Define inline function $1 but impl $2 is not implemented))
+$(if $(value $1),$(call mkerr, Define inline function $1 with impl $2 but wrapper macro is defined))
+$(if $(value $2),,$(call mkerr, Define inline function $1 but impl $2 is not implemented))
 $ define $1
 $$(eval $$(call $2,$$(strip $$1),$$(strip $$2),$$(strip $$3),$$(strip $$4),$$(strip $$5),$$(strip $$6),$$(strip $$7),$$(strip $$8),$$(strip $$9),$$(strip $$(10))))
 $ endef

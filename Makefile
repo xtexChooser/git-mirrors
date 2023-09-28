@@ -6,7 +6,7 @@ APPLY_TARGETS ?= $(empty)
 
 # Leonis paths
 ifndef LEONIS_BASE_DIR
-$(error LEONIS_BASE_DIR is not specified)
+$(call mkerr, LEONIS_BASE_DIR is not specified)
 endif
 LEONIS_MAKE_DIR ?= $(LEONIS_BASE_DIR)/make
 LEONIS_MODULES_DIR ?= $(LEONIS_BASE_DIR)/modules
@@ -34,7 +34,7 @@ test: build $(LEONIS_TEST_DEPS)
 
 CUSTOM_APPLY ?= $(empty)
 define default-apply
-$(if $(APPLY_TARGETS),,$(error APPLY_TARGETS is empty))
+$(if $(APPLY_TARGETS),,$(call mkerr, APPLY_TARGETS is empty))
 apply: test $(LEONIS_APPLY_DEPS)
 	@$(MAKE) $(MAKE_JOBSERVER_FLAGS) $(MAKE_FLAGS) $(if $(T),$(T),$(APPLY_TARGETS))
 endef

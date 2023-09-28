@@ -5,7 +5,7 @@ $(eval V_TARGET_NAME?=fs-line-$(V_PATH)-$(V_NAME))
 $(call mktrace,Define exist fs-line target: $(V_UNIT))
 $(call mktrace-vars,$(FS_LINE_VARS))
 
-$(if $(call streq,$(V_TARGET_NAME),$(V_PATH)),$(call err,fs-line target name ($(V_TARGET_NAME)) can't be the same as V_PATH))
+$(if $(call streq,$(V_TARGET_NAME),$(V_PATH)),$(call err, fs-line target name ($(V_TARGET_NAME)) can't be the same as V_PATH))
 
 $(call apply-target,$(V_TARGET_NAME))
 $(call vt-target,$(V_TARGET_NAME))
@@ -31,7 +31,7 @@ $(V_TARGET_NAME): $(if $(call not,$(findstring no-dep,$(V_FLAGS))$(findstring ap
 		echo '$(subst ','"'"',$(V_LINE))' > $(V_PATH)
 		$(call succ, Appended line '$(V_LINE)' to $(V_PATH))
 		$(call vpost, E_MINOR=appended),
-		$(call err,fs-line target file $(V_PATH) not found))
+		$(call err, fs-line target file $(V_PATH) not found))
 	fi
 
 $(call unset-vars)
