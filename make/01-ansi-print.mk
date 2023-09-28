@@ -1,11 +1,11 @@
 ifneq "$(LEONIS_ANSI)" "false"
-define ansi-color
-\033[0;$(strip $1)m
-endef
+ansi-color=\033[0;$(strip $1)m
+ansi-color-bold=\033[1;$(strip $1)m
 ansi-clear=\033[0m
 else
-ansi-color=
-ansi-clear=
+ansi-color:=
+ansi-color-bold:=
+ansi-clear:=
 endif
 
 # ========== Print in Makefiles ==========
@@ -15,7 +15,7 @@ $(info $(shell $(PRINTF) -- '$(strip $1)$(ansi-clear)'))
 endef
 
 define mkprintc
-$(call mkprint-ansi, $(call ansi-color, $1)$2)
+$(call mkprint-ansi,$(call ansi-color,$1)$2)
 endef
 
 define mktrace
@@ -38,6 +38,10 @@ define mksucc
 $(if $(findstring false,$(LEONIS_PRINT_INFO)),,$(call mkprintc,32,- $(strip $1)))
 endef
 
+define mkerr
+$(call mkprint-ansi,$(call ansi-color-bold,31)$1)$(error $1)
+endef
+
 # ========== Print in Recipes ==========
 
 define print-ansi
@@ -45,7 +49,7 @@ $(PRINTF) -- "$(strip $1)$(ansi-clear)\n"
 endef
 
 define printc
-$(call print-ansi, $(call ansi-color, $1)$2)
+$(call print-ansi,$(call ansi-color,$1)$2)
 endef
 
 define trace
@@ -65,5 +69,5 @@ $(call printc,31,- $(strip $1))
 endef
 
 define err
-$(call warn,$1); exit 1
+$(call print-ansi,$(call ansi-color-bold,31)$1); exit 1
 endef
