@@ -30,6 +30,10 @@ define mklog
 $(if $(findstring false,$(LEONIS_PRINT_INFO)),,$(call mkprintc,37,- $(strip $(1))))
 endef
 
+define mkwarn
+$(call mkprintc,31,- $(strip $(1)))
+endef
+
 define mksucc
 $(if $(findstring false,$(LEONIS_PRINT_INFO)),,$(call mkprintc,32,- $(strip $(1))))
 endef
