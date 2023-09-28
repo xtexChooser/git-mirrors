@@ -47,7 +47,11 @@ endef
 
 $(call define-func, user)
 
-$(call vt-target,user-delete)
+$(call vt-target,user-create user-delete)
+user-create:
+	$(USERADD) $(E_NAME)
+	$(call succ, Created user $(E_NAME))
+
 user-delete:
 	$(USERDEL) $(E_NAME)
 	$(call succ, Deleted user $(E_NAME))

@@ -26,6 +26,6 @@ define not
 $(if $1,,y)
 endef
 
-comma:= ,
-empty:=
-space:= $(empty) $(empty)
+define is-number
+$(call not,$(subst 0,,$(subst 1,,$(subst 2,,$(subst 3,,$(subst 4,,$(subst 5,,$(subst 6,,$(subst 7,,$(subst 8,,$(subst 9,,$1)))))))))))
+endef
