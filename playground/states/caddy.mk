@@ -118,8 +118,12 @@ $(call end)
 #V_EXIST		= true
 #V_UID		= 10064
 #V_GID		= 10064
-#V_GROUPS	+= a
-#V_GROUPS	+= b
+#V_GROUPS	+= caddy
 #V_NOLOGINIT = true
 #V_SHELL		= /usr/bin/fish
+#$(call end)
+
+#$(call group)
+#V_NAME		= caddy
+#V_EXIST		= true
 #$(call end)
