@@ -39,7 +39,7 @@ $(if $(findstring false,$(LEONIS_PRINT_INFO)),,$(call mkprintc,32,- $(strip $1))
 endef
 
 define mkerr
-$(call mkprint-ansi,$(call ansi-color-bold,31)$1)$(error $1)
+$(call mkprint-ansi,$(call ansi-color-bold,31)$(strip $1))$(error $(strip $1))
 endef
 
 # ========== Print in Recipes ==========
@@ -69,5 +69,5 @@ $(call printc,31,- $(strip $1))
 endef
 
 define err
-{ $(call print-ansi,$(call ansi-color-bold,31)$1); exit 1; }
+{ $(call print-ansi,$(call ansi-color-bold,31)$(strip $1)); exit 1; }
 endef
