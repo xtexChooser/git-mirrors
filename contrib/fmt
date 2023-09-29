@@ -1,3 +1,4 @@
 #!/usr/bin/bash
 
-sed --in-place -E -f contrib/format.txt -- **/**.mk **/Makefile
+# shellcheck disable=SC2046
+sed --in-place -E -f "${LEONIS_CONTRIB_DIR:-contrib}/format.txt" -- $(find . -name '*.mk' -or -name 'Makefile')

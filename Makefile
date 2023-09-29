@@ -10,6 +10,7 @@ $(call mkerr, LEONIS_BASE_DIR is not specified)
 endif
 LEONIS_MAKE_DIR ?= $(LEONIS_BASE_DIR)/make
 LEONIS_MODULES_DIR ?= $(LEONIS_BASE_DIR)/modules
+LEONIS_CONTRIB_DIR ?= $(LEONIS_BASE_DIR)/contrib
 LEONIS_EXTERNAL_DIR ?= $(LEONIS_BASE_DIR)/external
 
 # Vendor paths
@@ -26,7 +27,7 @@ include $(VENDOR_MAKE_DIR)/*.mk
 $(call end-all)
 
 # Core tasks
-$(call vt-target, default build test apply)
+$(call vt-target, default build test apply fmt)
 
 build: $(LEONIS_BUILD_DEPS)
 
@@ -39,6 +40,9 @@ apply: test $(LEONIS_APPLY_DEPS)
 	@$(MAKE) $(MAKE_JOBSERVER_FLAGS) $(MAKE_FLAGS) $(if $(T),$(T),$(APPLY_TARGETS))
 endef
 $(if $(CUSTOM_APPLY),,$(eval $(call default-apply)))
+
+fmt:
+	@$(LEONIS_CONTRIB_DIR)/fmt
 
 # Call deferred functions
 $(export-all)

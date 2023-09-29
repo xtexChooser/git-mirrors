@@ -7,8 +7,8 @@ $(call end)
 
 $(call package)
 V_PKG		= caddy
-#V_INSTALLED	= y
-#V_INST_FILE	= /usr/bin/caddy
+# V_INSTALLED	= y
+# V_INST_FILE	= /usr/bin/caddy
 $(call end)
 
 $(call cmd)
@@ -18,20 +18,20 @@ $(call end)
 
 $(call refresh-timer)
 V_NAME		= caddy-daily
-#V_POST		= pkg-refresh cmd-sd-reload-caddy
-#V_TIME		= 10secs
+# V_POST		= pkg-refresh cmd-sd-reload-caddy
+# V_TIME		= 10secs
 V_TIME		= 1days
 $(call end)
 
-#$(call hostname)
-#V_HOSTNAME	= a-caddy-servier
-#$(call end)
+# $(call hostname)
+# V_HOSTNAME	= a-caddy-servier
+# $(call end)
 
 $(call fs-directory)
 V_PATH		= $(BUILD_DIR)/test-caddy
 V_EXIST		= y
-#V_USER		= root
-#V_GROUP		= root
+# V_USER		= root
+# V_GROUP		= root
 V_RECURSIVE	= y
 V_ACCESS	= 0777
 $(call end)
@@ -76,10 +76,10 @@ V_PATH		= $(BUILD_DIR)/test-caddy/file-copy
 V_COPY		= $(STATES_DIR)/caddy/mo.txt
 $(call end)
 
-#$(call fs-file)
-#V_PATH		= $(BUILD_DIR)/test-caddy/file-exist
-#V_ACCESS	= 0777
-#$(call end)
+# $(call fs-file)
+# V_PATH		= $(BUILD_DIR)/test-caddy/file-exist
+# V_ACCESS	= 0777
+# $(call end)
 
 $(call fs-line)
 V_NAME = caddy-line
@@ -113,17 +113,17 @@ V_FILE		= $(BUILD_DIR)/test-caddy/caddy.yaml
 V_DEPS		+= $(BUILD_DIR)/test-caddy/Caddyfile
 $(call end)
 
-#$(call user)
-#V_NAME		= caddy
-#V_EXIST		= true
-#V_UID		= 10064
-#V_GID		= 10064
-#V_GROUPS	+= caddy
-#V_NOLOGINIT = true
-#V_SHELL		= /usr/bin/fish
-#$(call end)
+# $(call user)
+# V_NAME		= caddy
+# V_EXIST		= true
+# V_UID		= 10064
+# V_GID		= 10064
+# V_GROUPS	+= caddy
+# V_NOLOGINIT = true
+# V_SHELL		= /usr/bin/fish
+# $(call end)
 
-#$(call group)
-#V_NAME		= caddy
-#V_EXIST		= true
-#$(call end)
+# $(call group)
+# V_NAME		= caddy
+# V_EXIST		= true
+# $(call end)
