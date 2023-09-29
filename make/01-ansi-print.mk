@@ -8,7 +8,7 @@ ansi-color-bold:=
 ansi-clear:=
 endif
 
-# ========== Print in Makefiles ==========
+# ========================= Print in Makefiles =========================
 
 define mkprint-ansi
 $(info $(shell $(PRINTF) -- '$(strip $1)$(ansi-clear)'))
@@ -42,7 +42,7 @@ define mkerr
 $(call mkprint-ansi,$(call ansi-color-bold,31)$(strip $1))$(error $(strip $1))
 endef
 
-# ========== Print in Recipes ==========
+# ========================= Print in Recipes =========================
 
 define print-ansi
 $(PRINTF) -- "$(strip $1)$(ansi-clear)\n"

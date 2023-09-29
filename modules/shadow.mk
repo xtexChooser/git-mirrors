@@ -1,4 +1,4 @@
-# ========== Users ==========
+# ========================= Users =========================
 
 USERADD = useradd
 USERMOD = usermod
@@ -62,7 +62,7 @@ user-delete:
 	$(USERDEL) $(E_NAME)
 	$(call succ, Deleted user $(E_NAME))
 
-# ========== Groups ==========
+# ========================= Groups =========================
 
 GROUPADD = groupadd
 GROUPMOD = groupmod

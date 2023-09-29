@@ -1,4 +1,4 @@
-# ========== Build ==========
+# ========================= Build =========================
 BUILD_DIR ?= $(VENDOR_CODE_DIR)/out
 APPLY_DIR = $(BUILD_DIR)/apply
 STAMPS_DIR = $(APPLY_DIR)/stamps

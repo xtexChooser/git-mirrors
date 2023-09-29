@@ -1,4 +1,4 @@
-# ========== Variable Functions ==========
+# ========================= Variable Functions =========================
 define define-func
 $(eval $(call define-func0,$(strip $1),$(strip $(if $2,$2,$10))))
 endef
@@ -24,7 +24,7 @@ define end-all
 $(foreach fn,$(fn-stack),$(eval $(call $(fn))))
 endef
 
-# ========== Inline Functions ==========
+# ========================= Inline Functions =========================
 define define-inline-func
 $(eval $(call define-inline-func0,$(strip $1),$(strip $(if $2,$2,$10))))
 endef
@@ -37,7 +37,7 @@ $$(eval $$(call $2,$$(strip $$1),$$(strip $$2),$$(strip $$3),$$(strip $$4),$$(st
 $ endef
 endef
 
-# ========== Utilities Functions ==========
+# ========================= Utilities Functions =========================
 define unset-vars
 $(foreach var,$(.VARIABLES),$(if $(call starts-with,V_,$(var)),$(eval undefine $(var))))
 endef

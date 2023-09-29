@@ -22,3 +22,7 @@ s/\$\(call (mktrace-vars|apply-target|vt-target),\s+\$/\$\(call \1,\$/g
 # add spaces to variable definitions
 s/^([a-zA-Z0-9_\.]+)([:?+]|)=/\1 \2=/g
 s/^([a-zA-Z0-9_\.]+)\s+([:?+]|)=(\s\s+|)([^ ].*)$/\1 \2= \4/g
+
+# format split lines
+s/^# =+\s*(((\s|)[^ =]+\b)+)\s*=*/# ========================= \1 =========================/g
+
