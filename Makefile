@@ -1,9 +1,9 @@
-# Variables
+# ========================= Variables =========================
 LEONIS_BUILD_DEPS = $(empty)
 LEONIS_APPLY_DEPS = $(empty)
 APPLY_TARGETS ?= $(empty)
 
-# Leonis paths
+# ========================= Paths =========================
 ifndef LEONIS_BASE_DIR
 $(call mkerr, LEONIS_BASE_DIR is not specified)
 endif
@@ -12,20 +12,19 @@ LEONIS_MODULES_DIR ?= $(LEONIS_BASE_DIR)/modules
 LEONIS_CONTRIB_DIR ?= $(LEONIS_BASE_DIR)/contrib
 LEONIS_EXTERNAL_DIR ?= $(LEONIS_BASE_DIR)/external
 
-# Vendor paths
 VENDOR_CODE_DIR ?= .
 VENDOR_MAKE_DIR ?= $(VENDOR_CODE_DIR)/make
 VENDOR_MODULES_DIR ?= $(VENDOR_CODE_DIR)/modules
 STATES_DIR ?= $(VENDOR_CODE_DIR)/states
 
-# Include make files
+# ========================= Modules =========================
 include $(LEONIS_MAKE_DIR)/*.mk
 include $(LEONIS_MODULES_DIR)/*.mk
 include $(VENDOR_MAKE_DIR)/*.mk
 -include $(VENDOR_MODULES_DIR)/*.mk
 $(call end-all)
 
-# Core tasks
+# ========================= Core tasks =========================
 $(call vt-target, default build apply fmt)
 
 build: $(LEONIS_BUILD_DEPS)
@@ -41,6 +40,6 @@ $(if $(CUSTOM_APPLY),,$(eval $(call default-apply)))
 fmt:
 	@$(LEONIS_CONTRIB_DIR)/fmt
 
-# Call deferred functions
+# ========================= Finalization =========================
 $(export-all)
 $(call-deferred-fns)
