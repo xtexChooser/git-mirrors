@@ -37,7 +37,7 @@ CUSTOM_APPLY ?= $(empty)
 define default-apply
 $(if $(APPLY_TARGETS),,$(call mkerr, APPLY_TARGETS is empty))
 apply: test $(LEONIS_APPLY_DEPS)
-	@$(MAKE) $(MAKE_JOBSERVER_FLAGS) $(MAKE_FLAGS) $(if $(T),$(T),$(APPLY_TARGETS))
+	@$(MAKE) $(MAKE_JOBSERVER_FLAGS) $(MAKE_FLAGS) $(if $T,$T,$(APPLY_TARGETS))
 endef
 $(if $(CUSTOM_APPLY),,$(eval $(call default-apply)))
 

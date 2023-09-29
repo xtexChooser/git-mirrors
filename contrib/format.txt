@@ -1,5 +1,5 @@
-# shorten argument reference, $(n) -> $n
-s/\$\(([0-9])\)/\$\1/g
+# shorten variable references, $(n) -> $n
+s/\$\(([0-9a-zA-Z])\)/\$\1/g
 
 # remove extra spaces after functions, $(xxx\s\s\s -> $(xxx\s
 s/\$\((.*)\b\s\s+/\$\(\1 /g
