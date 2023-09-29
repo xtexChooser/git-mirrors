@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := default
-default: build test
+default: build
 
 .PHONY: force
 force: ;

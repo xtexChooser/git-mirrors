@@ -1,6 +1,5 @@
 # Variables
 LEONIS_BUILD_DEPS = $(empty)
-LEONIS_TEST_DEPS = $(empty)
 LEONIS_APPLY_DEPS = $(empty)
 APPLY_TARGETS ?= $(empty)
 
@@ -27,16 +26,14 @@ include $(VENDOR_MAKE_DIR)/*.mk
 $(call end-all)
 
 # Core tasks
-$(call vt-target, default build test apply fmt)
+$(call vt-target, default build apply fmt)
 
 build: $(LEONIS_BUILD_DEPS)
-
-test: build $(LEONIS_TEST_DEPS)
 
 CUSTOM_APPLY ?= $(empty)
 define default-apply
 $(if $(APPLY_TARGETS),,$(call mkerr, APPLY_TARGETS is empty))
-apply: test $(LEONIS_APPLY_DEPS)
+apply: build $(LEONIS_APPLY_DEPS)
 	@$(MAKE) $(MAKE_JOBSERVER_FLAGS) $(MAKE_FLAGS) $(if $T,$T,$(APPLY_TARGETS))
 endef
 $(if $(CUSTOM_APPLY),,$(eval $(call default-apply)))
