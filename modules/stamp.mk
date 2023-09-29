@@ -3,7 +3,7 @@ define stamp0
 $(eval V_TARGET_NAME?=stamp-$(V_NAME))
 $(eval V_PATH?=$(STAMPS_DIR)/stamp-$(V_NAME))
 
-$(call mktrace,Define stamp target: $(V_UNIT))
+$(call mktrace, Define stamp target: $(V_UNIT))
 $(call mktrace-vars,$(STAMP_VARS))
 
 $(call apply-target,$(V_TARGET_NAME))

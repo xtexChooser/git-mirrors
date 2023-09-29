@@ -10,9 +10,9 @@ USER_VARS=V_TARGET_NAME V_NAME V_POST $(v-deps-var) V_EXIST V_UID V_GID V_SYSTEM
 	V_USERGROUP
 define user0
 $(eval V_TARGET_NAME?=user-$(V_NAME))
-$(if $(V_PASSWORD),$(call mkwarn,Password for user $(V_NAME) is defined in makefile. This is insecure!))
+$(if $(V_PASSWORD),$(call mkwarn, Password for user $(V_NAME) is defined in makefile. This is insecure!))
 
-$(call mktrace,Define shadow user target: $(V_NAME))
+$(call mktrace, Define shadow user target: $(V_NAME))
 $(call mktrace-vars,$(USER_VARS))
 $(call apply-target,$(V_TARGET_NAME))
 $(call vt-target,$(V_TARGET_NAME))
@@ -53,7 +53,7 @@ endef
 
 $(call define-func, user)
 
-$(call vt-target,user-create user-delete)
+$(call vt-target, user-create user-delete)
 user-create:
 	$(USERADD) $(E_NAME)
 	$(call succ, Created user $(E_NAME))
@@ -73,9 +73,9 @@ GROUP_VARS=V_TARGET_NAME V_NAME V_POST $(v-deps-var) V_EXIST V_GID V_SYSTEM \
 	V_USERS V_NON_UNIQUE V_PASSWORD
 define group0
 $(eval V_TARGET_NAME?=group-$(V_NAME))
-$(if $(V_PASSWORD),$(call mkwarn,Password for group $(V_NAME) is defined in makefile. This is insecure!))
+$(if $(V_PASSWORD),$(call mkwarn, Password for group $(V_NAME) is defined in makefile. This is insecure!))
 
-$(call mktrace,Define shadow group target: $(V_NAME))
+$(call mktrace, Define shadow group target: $(V_NAME))
 $(call mktrace-vars,$(GROUP_VARS))
 $(call apply-target,$(V_TARGET_NAME))
 $(call vt-target,$(V_TARGET_NAME))
@@ -107,7 +107,7 @@ endef
 
 $(call define-func, group)
 
-$(call vt-target,group-create group-delete)
+$(call vt-target, group-create group-delete)
 group-create:
 	$(GROUPADD) $(E_NAME)
 	$(call succ, Created group $(E_NAME))

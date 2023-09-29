@@ -2,7 +2,7 @@ FS_LINE_VARS=V_TARGET_NAME V_NAME V_POST $(v-deps-var) V_PATH V_FLAGS V_MATCH V_
 define fs-line0
 $(eval V_TARGET_NAME?=fs-line-$(V_PATH)-$(V_NAME))
 
-$(call mktrace,Define exist fs-line target: $(V_UNIT))
+$(call mktrace, Define exist fs-line target: $(V_UNIT))
 $(call mktrace-vars,$(FS_LINE_VARS))
 
 $(if $(call streq,$(V_TARGET_NAME),$(V_PATH)),$(call err, fs-line target name ($(V_TARGET_NAME)) can't be the same as V_PATH))

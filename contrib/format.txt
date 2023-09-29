@@ -6,3 +6,15 @@ s/\$\((.*)\b\s\s+/\$\(\1 /g
 
 # add spaces after comments, #xx -> # xx
 s/^(#+)([^# ])/\1 \2/g
+
+# add spaces after functions
+s/\$\(call (trace|log|succ|warn|err|mktrace|mklog|mkwarn|mksucc|mkerr),([^ ])/\$\(call \1, \2/g
+
+# remove spaces after functions
+s/\$\(call (print-ansi|printc|mkprint-ansi|mkprintc),\s+/\$\(call \1,/g
+
+# add spaces after functions for literal argument
+s/\$\(call (mktrace-vars|apply-target|vt-target),([^ \$])/\$\(call \1, \2/g
+
+# remove spaces after functions for variable argument
+s/\$\(call (mktrace-vars|apply-target|vt-target),\s+\$/\$\(call \1,\$/g

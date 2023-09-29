@@ -6,7 +6,7 @@ $(eval V_TARGET_NAME?=cmd-$(V_NAME))
 $(eval V_SHELL ?= $(CMD_SHELL))
 $(if $(V_NAME),,$(call mkerr, V_NAME is not defined))
 
-$(call mktrace,Define command target: $(V_NAME))
+$(call mktrace, Define command target: $(V_NAME))
 $(call mktrace-vars,$(CMD_VARS))
 $(if $(V_APPLY),$(call apply-target,$(V_TARGET_NAME)))
 $(call vt-target,$(V_TARGET_NAME))
@@ -22,7 +22,7 @@ endef
 
 $(call define-func, cmd)
 
-$(call vt-target,cmd-run)
+$(call vt-target, cmd-run)
 cmd-run:
 	$(CMD_SHELL) $(E_CMD)
 	$(call succ, Executed $(E_CMD))

@@ -6,7 +6,7 @@ define hostname0
 $(eval V_TARGET_NAME?=hostname)
 $(if $(V_HOSTNAME),,$(call mkerr, V_HOSTNAME is not defined))
 
-$(call mktrace,Define hostname target: $(V_TARGET_NAME))
+$(call mktrace, Define hostname target: $(V_TARGET_NAME))
 $(call mktrace-vars,$(HOSTNAME_VARS))
 $(if $(call streq,$(V_HOSTNAME),$(HOSTNAME)),,$(call apply-target,$(V_TARGET_NAME)))
 $(call vt-target,$(V_TARGET_NAME))
@@ -21,7 +21,7 @@ endef
 
 $(call define-func, hostname)
 
-$(call vt-target,hostname-set)
+$(call vt-target, hostname-set)
 hostname-set:
 	if [[ -e $(HOSTNAME_ETC) ]]; then
 		echo $(E_HOSTNAME) > $(HOSTNAME_ETC)

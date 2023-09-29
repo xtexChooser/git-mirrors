@@ -7,7 +7,7 @@ $(if $(V_TEMPLATE),$(eval V_CREATE=template BACKEND=$(word 1,$(V_TEMPLATE)) SRC=
 $(eval V_TPL_DEPS += $(word 2,$(V_TEMPLATE))))
 $(if $(V_COPY),$(eval V_CREATE=copy SRC=$(V_COPY))$(eval V_TPL_DEPS += $(V_COPY)))
 
-$(call mktrace,Define exist fs-file target: $(V_UNIT))
+$(call mktrace, Define exist fs-file target: $(V_UNIT))
 $(call mktrace-vars,$(FS_FILE_VARS))
 $(if $(V_GROUP),$(if $(V_GROUP_ID),$(call mkerr, Both V_GROUP and V_GROUP_ID is defined for $(V_PATH))))
 $(if $(V_USER),$(if $(V_USER_ID),$(call mkerr, Both V_USER and V_USER_ID is defined for $(V_PATH))))
@@ -55,7 +55,7 @@ $(V_PATH): $(v-deps) $(V_TPL_DEPS)
 ,
 $(eval V_TARGET_NAME?=file-$(V_PATH))
 
-$(call mktrace,Define non-exist fs-file target: $(V_UNIT))
+$(call mktrace, Define non-exist fs-file target: $(V_UNIT))
 $(call mktrace-vars,$(FS_FILE_VARS))
 
 $(call apply-target,$(V_TARGET_NAME))
@@ -74,7 +74,7 @@ endef
 
 $(call define-func, fs-file)
 
-$(call vt-target,mkfile-empty mkfile-download mkfile-copy)
+$(call vt-target, mkfile-empty mkfile-download mkfile-copy)
 mkfile-empty:
 	$(file >$(E_PATH))
 
@@ -99,7 +99,7 @@ $(if $(CMD),mkfile-run:
 	$(CMD))
 endef
 
-$(if $(call streq,$(E_MAJOR),fs-file-create),$(eval $(mkfile-run0))$(call vt-target,mkfile-run))
+$(if $(call streq,$(E_MAJOR),fs-file-create),$(eval $(mkfile-run0))$(call vt-target, mkfile-run))
 
 define mkfile-template0
 mkfile-template: template
@@ -107,5 +107,5 @@ TPL_BACKEND := $(BACKEND)
 TPL_IN := $(SRC)
 TPL_OUT := $(E_PATH)
 endef
-$(if $(call streq,$(E_MAJOR),fs-file-create),$(eval $(mkfile-template0))$(call vt-target,mkfile-template))
-$(call vt-target,mkfile-template)
+$(if $(call streq,$(E_MAJOR),fs-file-create),$(eval $(mkfile-template0))$(call vt-target, mkfile-template))
+$(call vt-target, mkfile-template)

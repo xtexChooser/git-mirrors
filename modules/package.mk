@@ -5,7 +5,7 @@ define package0
 $(eval V_TARGET_NAME?=pkg-$(V_PKG))
 $(eval V_PKCON ?= $(PKCON))
 
-$(call mktrace,Define package target: $(V_UNIT))
+$(call mktrace, Define package target: $(V_UNIT))
 $(call mktrace-vars,$(PACKAGE_VARS))
 $(call apply-target,$(V_TARGET_NAME))
 $(call vt-target,$(V_TARGET_NAME))
@@ -42,7 +42,7 @@ endef
 
 $(call define-func, package)
 
-$(call vt-target,pkg-refresh pkg-update)
+$(call vt-target, pkg-refresh pkg-update)
 pkg-refresh:
 	$(PKCON) refresh
 	$(call succ, Refreshed package cache)

@@ -6,7 +6,7 @@ define podman-kube0
 $(eval V_TARGET_NAME?=podman-kube-$(V_NAME))
 $(eval V_PATH?=$(VARS_DIR)/podman-kube-$(V_NAME).sha1sum)
 
-$(call mktrace,Define podman-kube target: $(V_UNIT))
+$(call mktrace, Define podman-kube target: $(V_UNIT))
 $(call mktrace-vars,$(PODMAN_KUBE_VARS))
 
 $(call apply-target,$(V_TARGET_NAME))

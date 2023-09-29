@@ -7,7 +7,7 @@ $(eval V_TARGET_NAME?=systemd-$(V_UNIT))
 $(eval V_SYSTEMCTL ?= $(if $(V_USER),$(SYSTEMCTL_USER),$(SYSTEMCTL)))
 $(if $(findstring .,$(V_UNIT)),,$(call mkerr, V_UNIT $(V_UNIT) should include the suffix, e.g. .service and .timer))
 
-$(call mktrace,Define systemd unit target: $(V_UNIT))
+$(call mktrace, Define systemd unit target: $(V_UNIT))
 $(call mktrace-vars,$(SYSTEMD_UNIT_VARS))
 $(call apply-target,$(V_TARGET_NAME))
 $(call vt-target,$(V_TARGET_NAME))
@@ -47,7 +47,7 @@ endef
 
 $(call define-func, systemd-unit)
 
-$(call vt-target,systemd-restart systemd-reload systemd-daemon-reload systemd-user-daemon-reload)
+$(call vt-target, systemd-restart systemd-reload systemd-daemon-reload systemd-user-daemon-reload)
 systemd-restart:
 	$(SYSTEMCTL) restart $(E_UNIT)
 	$(call succ, Restarted SD unit $(E_UNIT))

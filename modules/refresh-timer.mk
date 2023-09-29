@@ -3,7 +3,7 @@ define refresh-timer0
 $(eval V_TARGET_NAME?=refresh-timer-$(V_NAME))
 $(eval V_STAMP_FILE?=$(STAMPS_DIR)/target-$(V_TARGET_NAME))
 
-$(call mktrace,Define refresh timer target: $(V_NAME))
+$(call mktrace, Define refresh timer target: $(V_NAME))
 $(call mktrace-vars,$(REFRESH_TIMER_VARS))
 $(call apply-target,$(V_TARGET_NAME))
 $(call vt-target,$(V_TARGET_NAME))
