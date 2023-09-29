@@ -1,4 +1,4 @@
-STAMP_VARS=V_TARGET_NAME V_NAME V_POST $(v-deps-var) V_PATH
+STAMP_VARS = V_TARGET_NAME V_NAME V_POST $(v-deps-var) V_PATH
 define stamp0
 $(eval V_TARGET_NAME?=stamp-$(V_NAME))
 $(eval V_PATH?=$(STAMPS_DIR)/stamp-$(V_NAME))

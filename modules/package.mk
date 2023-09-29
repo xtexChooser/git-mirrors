@@ -1,6 +1,6 @@
 PKCON = pkcon -y --plain
 
-PACKAGE_VARS=V_TARGET_NAME V_PKCON V_POST $(v-deps-var) V_PKG V_INSTALLED V_INST_FILE
+PACKAGE_VARS = V_TARGET_NAME V_PKCON V_POST $(v-deps-var) V_PKG V_INSTALLED V_INST_FILE
 define package0
 $(eval V_TARGET_NAME?=pkg-$(V_PKG))
 $(eval V_PKCON ?= $(PKCON))

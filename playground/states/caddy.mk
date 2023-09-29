@@ -84,7 +84,7 @@ $(call end)
 $(call fs-line)
 V_NAME = caddy-line
 V_PATH = $(BUILD_DIR)/test-caddy/file-line.txt
-V_FLAGS =append
+V_FLAGS = append
 V_MATCH = Value\s*=\s*False
 V_LINE = Value = True
 $(call end)
@@ -94,7 +94,7 @@ V_PATH		= $(BUILD_DIR)/test-caddy/Caddyfile
 V_COPY		= $(STATES_DIR)/caddy/Caddyfile
 $(call end)
 
-CADDY_DIR=$(shell readlink -e $(BUILD_DIR)/test-caddy)
+CADDY_DIR = $(shell readlink -e $(BUILD_DIR)/test-caddy)
 $(call fs-file)
 V_PATH		= $(BUILD_DIR)/test-caddy/caddy.yaml
 V_TEMPLATE	= bash-tpl $(STATES_DIR)/caddy/caddy.yaml

@@ -1,7 +1,7 @@
 PODMAN = podman
 PODMAN_FILTER_KUBE = sed -e 's/^  creationTimestamp: .*//g' -e 's/^$#.*//g'
 
-PODMAN_KUBE_VARS=V_TARGET_NAME V_NAME V_POST $(v-deps-var) V_PATH V_POD V_FILE V_RUNNING
+PODMAN_KUBE_VARS = V_TARGET_NAME V_NAME V_POST $(v-deps-var) V_PATH V_POD V_FILE V_RUNNING
 define podman-kube0
 $(eval V_TARGET_NAME?=podman-kube-$(V_NAME))
 $(eval V_PATH?=$(VARS_DIR)/podman-kube-$(V_NAME).sha1sum)

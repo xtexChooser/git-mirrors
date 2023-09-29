@@ -1,7 +1,7 @@
 HOSTNAME_ETC = /etc/hostname
 HOSTNAMECTL = /usr/bin/hostnamectl
 
-HOSTNAME_VARS=V_TARGET_NAME V_POST $(v-deps-var) V_HOSTNAME V_PRETTYNAME
+HOSTNAME_VARS = V_TARGET_NAME V_POST $(v-deps-var) V_HOSTNAME V_PRETTYNAME
 define hostname0
 $(eval V_TARGET_NAME?=hostname)
 $(if $(V_HOSTNAME),,$(call mkerr, V_HOSTNAME is not defined))

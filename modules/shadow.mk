@@ -5,7 +5,7 @@ USERMOD = usermod
 USERDEL = userdel -r
 USER_PASSWD_FILES := /etc/passwd $$([[ -e /etc/shadow ]] && echo /etc/shadow || true)
 
-USER_VARS=V_TARGET_NAME V_NAME V_POST $(v-deps-var) V_EXIST V_UID V_GID V_SYSTEM \
+USER_VARS = V_TARGET_NAME V_NAME V_POST $(v-deps-var) V_EXIST V_UID V_GID V_SYSTEM \
 	V_HOME_DIR V_EXPIRE V_INACTIVE V_GROUPS V_NOLOGINIT V_NON_UNIQUE V_PASSWORD V_SHELL \
 	V_USERGROUP
 define user0
@@ -69,7 +69,7 @@ GROUPMOD = groupmod
 GROUPDEL = groupdel
 GROUP_PASSWD_FILES := /etc/group $$([[ -e /etc/gshadow ]] && echo /etc/gshadow || true)
 
-GROUP_VARS=V_TARGET_NAME V_NAME V_POST $(v-deps-var) V_EXIST V_GID V_SYSTEM \
+GROUP_VARS = V_TARGET_NAME V_NAME V_POST $(v-deps-var) V_EXIST V_GID V_SYSTEM \
 	V_USERS V_NON_UNIQUE V_PASSWORD
 define group0
 $(eval V_TARGET_NAME?=group-$(V_NAME))
