@@ -6,6 +6,7 @@
 	https_port 8443
 
 	order cgi before respond
+	order teapot before respond
 	#order cache before rewrite
 	#cache {
 	#	allowed_http_verbs GET POST
@@ -108,6 +109,10 @@ object-src 'none';
 				dir src
 			}
 		}
+	}
+
+	handle /tea {
+		teapot
 	}
 }
 
