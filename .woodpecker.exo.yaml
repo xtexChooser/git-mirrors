@@ -4,8 +4,7 @@ pipeline:
         commands:
             - git describe --long --always | tr -d '\n' > src/version.txt
             - podman build --force-rm --squash --tag exozy.me/xtex/home .
-            - DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus
-            - export DBUS_SESSION_BUS_ADDRESS
+            - export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus
             - systemctl --user restart xtex-home.service
 #            - podman run --name home
 #              --replace --detach
