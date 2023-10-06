@@ -1044,7 +1044,9 @@ class LoginNotify implements LoggerAwareInterface {
 
 		// TODO: would be nice to truncate the hash, but we would need b/c
 		$res = hash_hmac( 'sha1', $username . '|' . $year . $salt, $this->secret );
+		'@phan-var string|false $res';
 		if ( !is_string( $res ) ) {
+			// Throws ValueError under php8 in case of error, remove this when mininum is php8
 			throw new UnexpectedValueException( "Hash failed" );
 		}
 		$encoded = $year . '-' . $salt . '-' . \Wikimedia\base_convert( $res, 16, 36 );
