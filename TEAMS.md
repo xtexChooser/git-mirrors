@@ -29,11 +29,32 @@ Team members:
 
 ## Contributors
 
-Purpose: Improve Forgejo. The team has write access to all repositories but no access to Forgejo credentials.
+Purpose: Improve Forgejo. Anyone can become a member of the team, as long as they need the associated permissions to contribute to Forgejo. Anyone can ask that an existing member confirms their membership in accordance to the [decision making process](DECISION-MAKING.md).
+
+The team has access to most Forgejo repositories ([discussions](https://codeberg.org/forgejo/discussions), [docs](https://codeberg.org/forgejo/docs), [forgejo](https://codeberg.org/forgejo/forgejo), [governance](https://codeberg.org/forgejo/governance), [pages](https://codeberg.org/forgejo/pages), [sustainability](https://codeberg.org/forgejo/sustainability), [test](https://codeberg.org/forgejo/test-env), [website](https://codeberg.org/forgejo/website)) with the following permissions:
+
+| Unit | 	Permission |
+| -- | -- |
+| Code | 	Read |
+| Issues | 	Write |
+| Pull | Requests 	Write |
+| Releases | 	Read |
+| Wiki | 	Write |
+| Projects | 	Write |
+| Packages | 	Read |
+| Actions | 	Write |
 
 Team members:
 
-* ???
+* https://codeberg.org/alex19srv
+* https://codeberg.org/DanielGibson
+* https://codeberg.org/fluzz
+* https://codeberg.org/gmem
+* https://codeberg.org/JakobDev
+* https://codeberg.org/KaKi87
+* https://codeberg.org/n0toose
+* https://codeberg.org/realaravinth
+* https://codeberg.org/rome-user
 
 ## Releases
 
