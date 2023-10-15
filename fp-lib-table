@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "micro-usb-U-G-M5WS-W-01")(type "KiCad")(uri "${KIPRJMOD}/micro-usb-U-G-M5WS-W-01/micro-usb-U-G-M5WS-W-01.pretty")(options "")(descr ""))
+)
