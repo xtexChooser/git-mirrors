@@ -49,6 +49,12 @@ Each item has 4 pieces of info:
   - Duration: 1 year
   - Review: 1 Feb 2024
 
+## Licensing
+
+Forgejo accepts contributions compatible with the [GPLv3-or-later](https://spdx.org/licenses/GPL-3.0-or-later.html) license. The license under which Forgejo is distributed will be changed upon the acceptance of such contributions. See the [LICENSE file](https://codeberg.org/forgejo/forgejo/src/branch/forgejo/LICENSE) for the current license.
+
+Furthermore, contribution authors must comply with the [Developer Certificate of Origin (DCO)](https://codeberg.org/forgejo/forgejo/src/branch/forgejo/CONTRIBUTING/DCO.md).
+
 ## Branding: Forgejo name, tagline, logo and mascot
 
 The name of the project is Forgejo, the tagline is `Beyond coding. We forge.`. See [here for details](BRANDING.md).
