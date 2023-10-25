@@ -2039,7 +2039,7 @@ class Query {
 		foreach ( $option as $comparisonType => $titles ) {
 			foreach ( $titles as $title ) {
 				if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-					$_or = "LOWER(CONVERT({$field} USING utf8mb4)) {$comparisonType} LOWER(" . $this->dbr->addQuotes( $title ) . ')';
+					$_or = "LOWER(CONVERT({$field} USING utf8mb4)) {$comparisonType} LOWER(CONVERT(" . $this->dbr->addQuotes( $title ) . ' USING utf8mb4))';
 				} else {
 					$_or = "{$field} {$comparisonType} " . $this->dbr->addQuotes( $title );
 				}
@@ -2069,7 +2069,7 @@ class Query {
 		foreach ( $option as $comparisonType => $titles ) {
 			foreach ( $titles as $title ) {
 				if ( $this->parameters->getParameter( 'ignorecase' ) ) {
-					$_or = "LOWER(CONVERT({$field} USING utf8mb4)) {$comparisonType} LOWER(" . $this->dbr->addQuotes( $title ) . ')';
+					$_or = "LOWER(CONVERT({$field} USING utf8mb4)) {$comparisonType} LOWER(CONVERT(" . $this->dbr->addQuotes( $title ) . ' USING utf8mb4))';
 				} else {
 					$_or = "{$field} {$comparisonType} " . $this->dbr->addQuotes( $title );
 				}
