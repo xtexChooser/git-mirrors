@@ -56,6 +56,18 @@ Team members:
 * https://codeberg.org/realaravinth
 * https://codeberg.org/rome-user
 
+## User Research
+
+Purpose: Conduct User Research in the context of Forgejo Forgejo. Anyone can become a member of the team, as long as they need the associated permissions to contribute to work on the [User Research repository](https://codeberg.org/forgejo/user-research). Anyone can ask that an existing member confirms their membership in accordance to the [decision making process](DECISION-MAKING.md).
+
+Team members:
+
+* https://codeberg.org/ei8fdb
+* https://codeberg.org/caesar
+* https://codeberg.org/earl-warren
+* https://codeberg.org/dachary
+* https://codeberg.org/fnetX
+
 ## Releases
 
 Purpose: [See the documentation](https://codeberg.org/forgejo/forgejo/src/branch/forgejo/CONTRIBUTING/RELEASE.md). The team is trusted with the primary GPG key used to sign Forgejo releases.
