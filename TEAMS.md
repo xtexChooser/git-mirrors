@@ -106,6 +106,7 @@ Accountability:
 Team members:
 
 * https://codeberg.org/earl-warren [May 2023 Agreement](https://codeberg.org/forgejo/governance/issues/10)
+* https://codeberg.org/caesar ([Oct 2023 Agreement](https://codeberg.org/forgejo/governance/issues/35))
 
 ## Decision-making
 
