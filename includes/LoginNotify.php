@@ -30,7 +30,6 @@ use WebRequest;
 use Wikimedia\Assert\Assert;
 use Wikimedia\IPUtils;
 use Wikimedia\Rdbms\IDatabase;
-use Wikimedia\Rdbms\ILoadBalancer;
 use Wikimedia\Rdbms\IMaintainableDatabase;
 use Wikimedia\Rdbms\IReadableDatabase;
 use Wikimedia\Rdbms\LBFactory;
@@ -55,11 +54,10 @@ class LoginNotify implements LoggerAwareInterface {
 		'LoginNotifyMaxCookieRecords',
 		'LoginNotifySecretKey',
 		'LoginNotifySeenBucketSize',
-		'LoginNotifySeenCluster',
-		'LoginNotifySeenDatabase',
 		'LoginNotifySeenExpiry',
 		'LoginNotifyUseCheckUser',
 		'LoginNotifyUseSeenTable',
+		'LoginNotifyUseCentralId',
 		'SecretKey',
 		'UpdateRowsPerQuery'
 	];
@@ -418,8 +416,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 * @return IReadableDatabase
 	 */
 	private function getSeenReplicaDb(): IReadableDatabase {
-		$dbName = $this->config->get( 'LoginNotifySeenDatabase' ) ?? false;
-		return $this->getSeenLoadBalancer()->getConnection( DB_REPLICA, [], $dbName );
+		return $this->lbFactory->getReplicaDatabase( 'virtual-LoginNotify' );
 	}
 
 	/**
@@ -428,33 +425,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 * @return IDatabase
 	 */
 	private function getSeenPrimaryDb(): IDatabase {
-		$dbName = $this->config->get( 'LoginNotifySeenDatabase' ) ?? false;
-		return $this->getSeenLoadBalancer()->getConnection( DB_PRIMARY, [], $dbName );
-	}
-
-	/**
-	 * Is the database holding the loginnotify_seen_net table replicated to
-	 * multiple servers?
-	 *
-	 * @return bool
-	 */
-	private function isSeenDbReplicated() {
-		return $this->getSeenLoadBalancer()->hasReplicaServers();
-	}
-
-	/**
-	 * Get the LoadBalancer holding the loginnotify_seen_net table.
-	 *
-	 * @return ILoadBalancer
-	 */
-	private function getSeenLoadBalancer() {
-		$cluster = $this->config->get( 'LoginNotifySeenCluster' );
-		if ( $cluster ) {
-			return $this->lbFactory->getExternalLB( $cluster );
-		} else {
-			$dbName = $this->config->get( 'LoginNotifySeenDatabase' ) ?? false;
-			return $this->lbFactory->getMainLB( $dbName );
-		}
+		return $this->lbFactory->getPrimaryDatabase( 'virtual-LoginNotify' );
 	}
 
 	/**
@@ -497,7 +468,7 @@ class LoginNotify implements LoggerAwareInterface {
 	}
 
 	/**
-	 * If LoginNotifySeenDatabase is configured, indicating a shared table,
+	 * If LoginNotifyUseCentralId is true, indicating a shared table,
 	 * get the central user ID. Otherwise, get the local user ID.
 	 *
 	 * If CentralAuth is not installed, $this->centralIdLookup will be a
@@ -509,7 +480,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 * @return int
 	 */
 	private function getMaybeCentralId( User $user ) {
-		if ( ( $this->config->get( 'LoginNotifySeenDatabase' ) ?? false ) !== false ) {
+		if ( $this->config->get( 'LoginNotifyUseCentralId' ) ) {
 			return $this->centralIdLookup->centralIdFromLocalUser( $user );
 		} else {
 			return $user->getId();
@@ -802,17 +773,9 @@ class LoginNotify implements LoggerAwareInterface {
 
 		// Insert a row
 		$dbw = $this->getSeenPrimaryDb();
-		$isReplicated = $this->isSeenDbReplicated();
 		$fname = __METHOD__;
 		$dbw->onTransactionCommitOrIdle(
-			function () use ( $dbw, $id, $hash, $isReplicated, $fname ) {
-				// Check if the user/hash is in the primary DB, as late as
-				// possible before the insert. (Trying to reduce the number of
-				// no-op queries in the binlog)
-				if ( $isReplicated && $this->userIsInCurrentSeenBucket( $id, $hash, true ) ) {
-					return;
-				}
-
+			function () use ( $dbw, $id, $hash, $fname ) {
 				$dbw->newInsertQueryBuilder()
 					->insert( 'loginnotify_seen_net' )
 					->ignore()
