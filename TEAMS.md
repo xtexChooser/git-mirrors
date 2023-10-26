@@ -58,7 +58,7 @@ Team members:
 
 ## User Research
 
-Purpose: Conduct User Research in the context of Forgejo Forgejo. Anyone can become a member of the team, as long as they need the associated permissions to contribute to work on the [User Research repository](https://codeberg.org/forgejo/user-research). Anyone can ask that an existing member confirms their membership in accordance to the [decision making process](DECISION-MAKING.md).
+Purpose: Conduct User Research in the context of Forgejo. Anyone can become a member of the team, as long as they need the associated permissions to contribute to work on the [User Research repository](https://codeberg.org/forgejo/user-research). Anyone can ask that an existing member confirms their membership in accordance to the [decision making process](DECISION-MAKING.md).
 
 Team members:
 
