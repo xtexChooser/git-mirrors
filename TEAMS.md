@@ -98,13 +98,18 @@ Team members:
 
 ## Social account
 
-Purpose: [See the documentation](teams/SOCIAL.md)
+Purpose: Reply to questions and publish news on https://floss.social/@forgejo
 
-Accountability: reply to questions and publish news.
+Accountability:
+
+* Sign the toots that are not discussed before being published. If a toot is published by a Forgejo contributor without consultation with anyone, it must be signed with `~ @name` that links to the social account of the contributor.
+* If a toot is agreed upon, in a public space, by other Forgejo contributors it does not need to be signed.
+* Attach an alt text to images for accessibility.
 
 Team members:
 
-* ???
+* All members of the release team.
+* All members of the moderation team.
 
 ## Moderation
 
