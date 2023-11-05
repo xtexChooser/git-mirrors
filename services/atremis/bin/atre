@@ -4,7 +4,7 @@ atreDir=/srv/atremis
 svc="sudo -u services"
 
 function atre::log {
-	echo -e "\e[0;30m${FUNCNAME[1]}: $*\e[0m"
+	echo -e "\e[0;34m${FUNCNAME[1]}: $*\e[0m"
 }
 
 function atre::error {
