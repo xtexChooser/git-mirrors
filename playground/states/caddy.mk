@@ -76,6 +76,11 @@ V_PATH		= $(BUILD_DIR)/test-caddy/file-copy
 V_COPY		= $(STATES_DIR)/caddy/mo.txt
 $(call end)
 
+$(call fs-file)
+V_PATH		= $(BUILD_DIR)/test-caddy/file-symlink
+V_SYMLINK	= file-copy
+$(call end)
+
 # $(call fs-file)
 # V_PATH		= $(BUILD_DIR)/test-caddy/file-exist
 # V_ACCESS	= 0777

@@ -1,4 +1,4 @@
-FS_FILE_VARS = V_TARGET_NAME V_POST $(v-deps-var) V_PATH V_EXIST V_CREATE V_TEMPLATE V_TPL_DEPS V_COPY V_USER V_USER_ID V_GROUP V_GROUP_ID V_ACCESS
+FS_FILE_VARS = V_TARGET_NAME V_POST $(v-deps-var) V_PATH V_EXIST V_CREATE V_TEMPLATE V_TPL_DEPS V_COPY V_USER V_USER_ID V_GROUP V_GROUP_ID V_ACCESS V_SYMLINK
 define fs-file0
 $(if $(call not,$(call is-false,$(V_EXIST))),
 $(eval V_TARGET_NAME?=$(V_PATH))
@@ -20,6 +20,15 @@ $(V_TARGET_NAME): $(V_PATH)
 $(if $(V_USER)$(V_USER_ID)$(V_GROUP)$(V_GROUP_ID)$(V_ACCESS),$(call vt-target,$(V_PATH)))
 $(V_PATH): $(v-deps) $(V_TPL_DEPS)
 	export E_MAJOR=fs-file E_PATH=$(V_PATH)
+	$(if $(V_SYMLINK),
+	if [[ ! -e "$(V_PATH)" || "$$$$(realpath $(V_PATH))" != "$(V_SYMLINK)" ]]; then
+		$(RM) -f $(V_PATH)
+		ln -s $(V_SYMLINK) $(V_PATH)
+		$(call succ, Created symlink $(V_PATH))
+		$(call vpost, E_MINOR=symlink)
+	fi
+	)
+	$(if $(call not,$(V_SYMLINK)),
 	if [[ ! -e $(V_PATH) $(foreach tpldep,$(V_TPL_DEPS) $(v-var-dep-files),|| "$(tpldep)" -nt "$(V_PATH)" ) ]]; then
 		$(MKDIR) -p $(dir $(V_PATH))
 		$(if $(V_CREATE),
@@ -31,6 +40,7 @@ $(V_PATH): $(v-deps) $(V_TPL_DEPS)
 		$(call succ, Created file ($(firstword $(V_CREATE))) $(V_PATH))
 		$(call vpost, E_MINOR=created)
 	fi
+	)
 	$(if $(V_USER)$(V_USER_ID),
 	if [[ "$$$$(stat -c "%$(if $(V_USER),U,u)" $(V_PATH))" != "$(V_USER)$(V_USER_ID)" ]]; then
 		$(CHOWN) $(V_USER)$(V_USER_ID):$$(stat -c "%g" $(V_PATH)) $(V_PATH)
@@ -74,7 +84,7 @@ endef
 
 $(call define-func, fs-file)
 
-$(call vt-target, mkfile-empty mkfile-download mkfile-copy)
+$(call vt-target, mkfile-empty mkfile-download mkfile-copy mkfile-symlink)
 mkfile-empty:
 	$(file >$(E_PATH))
 
@@ -91,6 +101,9 @@ mkfile-download:
 
 mkfile-copy:
 	$(file >$(E_PATH),$(file <$(SRC)))
+
+mkfile-symlink:
+	ln -s $(SRC) $(E_PATH)
 
 define mkfile-run0
 $(if $(TARGET),$(if $(CMD),$(call mkerr, Both TARGET and CMD is defined for $(E_PATH))))
