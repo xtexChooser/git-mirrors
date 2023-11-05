@@ -9,7 +9,7 @@
 
 ## Use
 
-Reference to [xvnet/conf](https://codeberg.org/xvnet/conf).
+Reference to [xvnet/atremis](https://codeberg.org/xvnet/atremis).
 
 ## Trivia
 
