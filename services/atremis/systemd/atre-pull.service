@@ -1,0 +1,10 @@
+[Unit]
+Description=Pull Atremis configurations
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/atre pull
+User=services
+
+[Install]
+WantedBy=default.target

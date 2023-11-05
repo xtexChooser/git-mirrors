@@ -1,0 +1,9 @@
+[Unit]
+Description=Pull Atremis configurations automatically
+
+[Timer]
+OnStartupSec=5
+OnUnitActiveSec=5min
+
+[Install]
+WantedBy=timers.target

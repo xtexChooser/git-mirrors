@@ -6,7 +6,7 @@ sudo pacman -S fish
 
 sudo usermod -a -G root "$(whoami)"
 [[ -e "/srv" ]] || sudo mkdir /srv
-sudo chmod g+w -R /srv /usr/local/bin
+sudo chmod g+w -R /srv /usr/local/bin /etc/systemd/system
 
 sudo useradd -G root -m -r -U -s /usr/bin/fish services
 sudo usermod -a -G services "$(whoami)"
