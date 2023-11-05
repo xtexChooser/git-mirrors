@@ -47,7 +47,7 @@ endef
 
 $(call define-func, systemd-unit)
 
-$(call vt-target, systemd-restart systemd-reload systemd-daemon-reload systemd-user-daemon-reload)
+$(call vt-target, systemd-restart systemd-reload systemd-daemon-reload systemd-sudo-daemon-reload systemd-user-daemon-reload)
 systemd-restart:
 	$(SYSTEMCTL) restart $(E_UNIT)
 	$(call succ, Restarted SD unit $(E_UNIT))
@@ -56,6 +56,9 @@ systemd-reload:
 	$(call succ, Reloaded SD unit $(E_UNIT))
 systemd-daemon-reload:
 	$(SYSTEMCTL) daemon-reload
+	$(call succ, Reloaded systemd daemon)
+systemd-sudo-daemon-reload:
+	sudo $(SYSTEMCTL) daemon-reload
 	$(call succ, Reloaded systemd daemon)
 systemd-user-daemon-reload:
 	$(SYSTEMCTL_USER) daemon-reload
