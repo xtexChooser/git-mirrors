@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+sudo pacman -Sy archlinux-keyring
+sudo pacman -Syuu
+sudo pacman -S fish
+
+sudo useradd -G root -m -r -U -s /usr/bin/fish services
+sudo usermod -a -G services "$(whoami)"
+
+[[ -e "/srv" ]] || mkdir /srv
+cd /srv || exit
+sudo -u services git clone --depth 1 https://codeberg.org/xvnet/atremis.git
+git config --global --add safe.directory /srv/atremis
+
+cd atremis || exit
+./atre pull
+
+which atre
+sudo reboot
