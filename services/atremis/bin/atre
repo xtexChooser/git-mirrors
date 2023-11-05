@@ -46,7 +46,8 @@ function atre::pull {
 
 function atre::apply {
 	pushd $atreDir || exit
-	atre::log "Apply changes"
+	atre::log "Apply configuration"
+	make apply
 	popd || exit
 }
 
