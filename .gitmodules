@@ -2,3 +2,7 @@
 	path = external/leonis
 	url = https://codeberg.org/xvnet/leonis.git
 	shallow = true
+[submodule "external/tianguan"]
+	path = external/tianguan
+	url = https://codeberg.org/xvnet/tianguan.git
+	shallow = true
