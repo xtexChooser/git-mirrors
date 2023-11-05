@@ -28,7 +28,7 @@ XXX
 }
 
 function atre::pull {
-	pushd $atreDir || exit
+	cd $atreDir || exit
 
 	atre::log "Pull updates"
 	git fetch --force --depth 1 origin
@@ -42,15 +42,13 @@ function atre::pull {
 	git show --oneline --no-patch --no-abbrev-commit HEAD
 	git submodule foreach git show --oneline --no-patch --no-abbrev-commit HEAD
 
-	popd || exit
 	atre::apply
 }
 
 function atre::apply {
-	pushd $atreDir || exit
+	cd $atreDir || exit
 	atre::log "Apply configuration"
 	$svc make apply
-	popd || exit
 }
 
 function atre::main {
