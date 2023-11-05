@@ -1,3 +1,4 @@
 [submodule "external/leonis"]
 	path = external/leonis
 	url = https://codeberg.org/xvnet/leonis.git
+	shallow = true
