@@ -31,7 +31,8 @@ function atre::pull {
 	pushd $atreDir || exit
 
 	atre::log "Pull updates"
-	git pull --force --depth 1 origin
+	git fetch --force --depth 1 origin
+	git reset --hard origin/main
 	git submodule update --init --recursive
 	git -c gc.reflogExpire=1 -c gc.reflogExpireUnreachable=0 \
 		-c gc.rerereResolved=0 -c gc.rerereUnresolved=0 \
