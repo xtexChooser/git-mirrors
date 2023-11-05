@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+
+atreDir=/srv/atremis
+
+function atre::log {
+	echo -e "\e[0;30m${FUNCNAME[1]}: $*\e[0m"
+}
+
+function atre::error {
+	echo -e "\e[0;31matre: $*\e[0m" 1>&2
+	exit 1
+}
+
+function atre::succ {
+	echo -e "\e[0;32m$*\e[0m"
+}
+
+function atre::usage {
+	cat 1>&2 <<XXX
+usage: $0 <COMMAND>
+
+COMMAND:
+    help                        Print usage
+    pull                        Pull changes from repository
+    apply                       Apply configuration
+XXX
+}
+
+function atre::pull {
+	pushd $atreDir || exit
+
+	atre::log "Pull updates"
+	git pull --force --depth 1 origin
+	git submodule update --init --recursive
+	git -c gc.reflogExpire=1 -c gc.reflogExpireUnreachable=0 \
+		-c gc.rerereResolved=0 -c gc.rerereUnresolved=0 \
+		-c gc.pruneExpire=now gc
+
+	atre::log "Current commits"
+	git show --oneline --no-patch --no-abbrev-commit HEAD
+	git submodule foreach git show --oneline --no-patch --no-abbrev-commit HEAD
+
+	popd || exit
+	atre::apply
+}
+
+function atre::apply {
+	pushd $atreDir || exit
+	atre::log "Apply changes"
+	popd || exit
+}
+
+function atre::main {
+	[ $# -eq 0 ] && atre::usage && exit
+	[ ! -d "$atreDir" ] && atre::error "$atreDir does not exist"
+
+	case $1 in
+	help | --help)
+		atre::usage "$@"
+		exit
+		;;
+	pull)
+		atre::pull "$@"
+		;;
+	apply)
+		atre::apply "$@"
+		;;
+	*)
+		atre::error "unknown option: $1"
+		;;
+	esac
+}
+
+atre::main "$@"
