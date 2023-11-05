@@ -24,6 +24,10 @@ include $(VENDOR_MAKE_DIR)/*.mk
 -include $(VENDOR_MODULES_DIR)/*.mk
 $(call end-all)
 
+# ========================= Finalization =========================
+$(export-all)
+$(call-deferred-fns)
+
 # ========================= Core tasks =========================
 $(call vt-target, default build apply fmt)
 
@@ -39,7 +43,3 @@ $(if $(CUSTOM_APPLY),,$(eval $(call default-apply)))
 
 fmt:
 	@$(LEONIS_CONTRIB_DIR)/fmt
-
-# ========================= Finalization =========================
-$(export-all)
-$(call-deferred-fns)
