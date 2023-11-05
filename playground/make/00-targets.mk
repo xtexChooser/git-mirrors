@@ -1,1 +1,1 @@
-$(call load-state, caddy.mk)
+$(call load-state, caddy)

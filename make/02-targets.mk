@@ -17,7 +17,7 @@ endef
 define load-state0
 $(call mktrace, Loading vendor state $1)
 LEONIS_LOADED_STATES += $1
-include $(STATES_DIR)/$1
+-include $(STATES_DIR)/$1.mk include $(STATES_DIR)/$1/base.mk
 endef
 $(call define-inline-func,load-state)
 
