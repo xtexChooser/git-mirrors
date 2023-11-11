@@ -75,7 +75,7 @@ samp {
     border: var(--color-code-inline-border) 0.1rem solid;
     padding: 0 0.4rem 0 0.4rem;
     max-width: 100%;
-    overflow: scroll;
+    overflow: auto;
     display: inline-flex;
 }
 
