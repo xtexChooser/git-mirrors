@@ -2,6 +2,10 @@
 
 atreDir=/srv/atremis
 svc="sudo -u service"
+if [[ "$(id -un)" == "service" ]]; then
+	svc=""
+	isSvcUser="true"
+fi
 
 set -e
 
@@ -52,7 +56,7 @@ function atre::pull {
 
 function atre::apply {
 	cd $atreDir
-	if [[ "$(id -un)" == "service" ]]; then
+	if [[ "$isSvcUser" == "true" ]]; then
 		atre::log "Apply configuration"
 		DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus
 		export DBUS_SESSION_BUS_ADDRESS
