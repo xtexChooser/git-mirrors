@@ -31,3 +31,4 @@ RUN mkdir /srv/run
 ENV PROD true
 ENV UDS_DIR_ADMIN run
 ENV UDS_DIR run
+ENV BLOG_DIR blog

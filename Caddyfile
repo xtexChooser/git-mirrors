@@ -119,7 +119,7 @@ object-src 'none';
 http://blog.xtexx.eu.org http://xtexblog.exozy.me {
 	bind unix/{$UDS_DIR:.}/xtexblog{$UDS_SUFFIX:.sock}|0777
 
-	root * blog
+	root * {$BLOG_DIR:blog}
 	try_files {path} {path}.html {path}/ =404
 	file_server
 
