@@ -33,12 +33,15 @@ function atre::pull {
 	cd $atreDir
 
 	atre::log "Pull updates"
-	$svc git fetch --force --depth 1 origin
-	$svc git reset --hard origin/main
-	$svc git submodule update --init --recursive
-	$svc git -c gc.reflogExpire=1 -c gc.reflogExpireUnreachable=0 \
-		-c gc.rerereResolved=0 -c gc.rerereUnresolved=0 \
-		-c gc.pruneExpire=now gc
+	{
+		set +e
+		$svc git fetch --force --depth 1 origin
+		$svc git reset --hard origin/main
+		$svc git submodule update --init --recursive
+		$svc git -c gc.reflogExpire=1 -c gc.reflogExpireUnreachable=0 \
+			-c gc.rerereResolved=0 -c gc.rerereUnresolved=0 \
+			-c gc.pruneExpire=now gc
+	}
 
 	atre::log "Current commits"
 	git show --oneline --no-patch --no-abbrev-commit HEAD
