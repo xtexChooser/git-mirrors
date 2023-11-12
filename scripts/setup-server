@@ -3,9 +3,7 @@
 set -xet
 
 # Update system
-su -c "pacman -Sy archlinux-keyring"
-su -c "pacman -Syuu"
-su -c "pacman -S bash fish make coreutils busybox sudo"
+su -c "pacman -Sy archlinux-keyring; pacman -Syuu; pacman -S bash fish make coreutils busybox sudo"
 
 # Configure system basics
 sudo usermod -a -G root "$(whoami)"
