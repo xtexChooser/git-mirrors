@@ -52,8 +52,15 @@ function atre::pull {
 
 function atre::apply {
 	cd $atreDir
-	atre::log "Apply configuration"
-	$svc make apply
+	if [[ "$(id -un)" == "service" ]]; then
+		atre::log "Apply configuration"
+		DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus
+		export DBUS_SESSION_BUS_ADDRESS
+		make apply
+	else
+		atre::log "Restart Atremis as service user"
+		$svc atre apply
+	fi
 }
 
 function atre::main {
