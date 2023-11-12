@@ -7,3 +7,7 @@ endef
 define v-var-dep-files
 $(foreach var,$(V_DEP_VARS),$(saved-var-$(var)))
 endef
+
+define implict-dep
+$(eval $1:)$1
+endef
