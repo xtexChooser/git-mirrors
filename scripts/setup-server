@@ -1,23 +1,28 @@
 #!/usr/bin/env bash
 
-sudo pacman -Sy archlinux-keyring
-sudo pacman -Syuu
-sudo pacman -S fish
+set -xet
 
+# Update system
+su -c "pacman -Sy archlinux-keyring"
+su -c "pacman -Syuu"
+su -c "pacman -S bash fish make coreutils busybox sudo"
+
+# Configure system basics
 sudo usermod -a -G root "$(whoami)"
 [[ -e "/srv" ]] || sudo mkdir /srv
 sudo chmod g+w -R /srv /usr/local/bin /etc/systemd/system
 
-sudo useradd -G root -m -r -U -s /usr/bin/fish services
-sudo usermod -a -G services "$(whoami)"
+# Create service user
+sudo useradd -G root -m -r -U -s /usr/bin/fish service
+sudo chmod g+w -R /home/service
+sudo usermod -a -G service "$(whoami)"
 
-cd /srv || exit
-sudo -u services git clone --depth 1 https://codeberg.org/xvnet/atremis.git
-git config --global --add safe.directory /srv/atremis
-sudo git config --global --add safe.directory /srv/atremis
+# Fetch atremis
+cd /srv
+sudo -u service git clone --depth 1 https://codeberg.org/xvnet/atremis.git
+sudo chmod 0655 -R atremis
 
-cd atremis || exit
+cd atremis
 ./atre pull
 
 which atre
-sudo reboot
