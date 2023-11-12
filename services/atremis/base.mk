@@ -25,6 +25,7 @@ $(call end)
 
 $(call systemd-unit)
 V_UNIT		= atre-pull.timer
+V_USER		= y
 V_ENABLED	= y
 V_DEPS		= $(ATRE_SYSTEMD_USER_DIR)/atre-pull.timer
 $(call end)

@@ -14,6 +14,7 @@ sudo chmod g+w -R /srv /usr/local/bin /etc/systemd/system
 sudo useradd -G root -m -r -U -s /usr/bin/fish service
 sudo chmod g+w -R /home/service
 sudo usermod -a -G service "$(whoami)"
+sudo systemctl start user@service.service
 
 # Fetch atremis
 cd /srv
