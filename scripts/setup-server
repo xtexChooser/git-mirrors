@@ -18,7 +18,7 @@ sudo usermod -a -G service "$(whoami)"
 # Fetch atremis
 cd /srv
 sudo -u service git clone --depth 1 https://codeberg.org/xvnet/atremis.git
-sudo chmod 0655 -R atremis
+sudo chmod a-w+r+x,u+rw atremis
 
 cd atremis
 ./atre pull
