@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 
 atreDir=/srv/atremis
-svc="sudo -u services"
+svc="sudo -u service"
+
+set -e
 
 function atre::log {
 	echo -e "\e[0;34m${FUNCNAME[1]}: $*\e[0m"
@@ -28,7 +30,7 @@ XXX
 }
 
 function atre::pull {
-	cd $atreDir || exit
+	cd $atreDir
 
 	atre::log "Pull updates"
 	$svc git fetch --force --depth 1 origin
@@ -46,7 +48,7 @@ function atre::pull {
 }
 
 function atre::apply {
-	cd $atreDir || exit
+	cd $atreDir
 	atre::log "Apply configuration"
 	$svc make apply
 }
