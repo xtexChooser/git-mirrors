@@ -2,7 +2,7 @@ steps:
   build:
     image: bash
     commands:
-      - hugo
+      - hugo --enableGitInfo --minify
       - git status
       - cp -R public /srv/http/pages/xtex1
       - rm -rf /srv/http/pages/xtex

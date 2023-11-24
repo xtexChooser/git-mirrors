@@ -3,4 +3,4 @@ steps:
     image: alpine
     commands:
       - apk add --no-cache hugo
-      - hugo
+      - hugo --enableGitInfo --minify
