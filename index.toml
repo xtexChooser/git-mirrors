@@ -33,8 +33,16 @@ file = "config/debugify.json"
 hash = "6996193d411b58e087ab2c76c0a209a28d075e847ca8416cd5f3e74fe1633903"
 
 [[files]]
+file = "config/durabilityviewer.json"
+hash = "1150874b1d86a2bc9c081232194f618e67ae0be3362d515d484b2f67f8e4f788"
+
+[[files]]
 file = "config/dynamicfps.toml"
 hash = "3429fa956cf7b9f29667fcfc74fdc4b505d25c4ec9a237281f33ff87e2e9df23"
+
+[[files]]
+file = "config/inventoryhud.json"
+hash = "9d3505d6b302466c65a1b4d72f0b30463173da4d02f1ba724ea9b88bb0faca80"
 
 [[files]]
 file = "config/inventoryprofilesnext/inventoryprofiles.json"
@@ -481,7 +489,7 @@ metafile = true
 
 [[files]]
 file = "options.txt"
-hash = "f44194d553b7a083097e9410f27f651d474d5857b10566bbf1816cc4d56571f9"
+hash = "a14ffe79f04376d1d21d9c894b356d82bb13646f99b7c25de4870e61226f0a8a"
 
 [[files]]
 file = "resourcepacks/bettersky.pw.toml"
