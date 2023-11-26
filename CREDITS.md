@@ -28,6 +28,7 @@ This is a complete list of all mods, resource packs and shaders included in this
 - AdvancementInfo
 - AppleSkin
 - Architectury API
+- AudioShutdown
 - bad packets
 - Beenfo
 - BetterF3
@@ -140,7 +141,6 @@ This is a complete list of all mods, resource packs and shaders included in this
 - [Log Cleaner](https://modrinth.com/mod/hwRo6mwQ)
 - [Mod Menu](https://modrinth.com/mod/mOgUt4GM)
 - [More Culling](https://modrinth.com/mod/51shyZVL)
-- [ViaFabricPlus](https://modrinth.com/mod/rIC2XJV4)
 - [No Chat Reports](https://modrinth.com/mod/qQyHxfxd)
 - [Quick Hotkeys](https://modrinth.com/mod/24LuV3ge)
 - [Reese's Sodium Options](https://modrinth.com/mod/Bh37bMuy)
@@ -168,6 +168,8 @@ This is a complete list of all mods, resource packs and shaders included in this
 - [MixinTrace](https://modrinth.com/mod/sGmHWmeL)
 - [StackDeobfuscator](https://modrinth.com/mod/NusMqsjF)
 - [Indium](https://modrinth.com/mod/Orvt0mRa)
+- [ViaFabricPlus](https://modrinth.com/mod/rIC2XJV4)
+- [AudioShutdown](https://modrinth.com/mod/cSJudN5h)
 - [Default Dark Mode](https://modrinth.com/mod/6SLU7tS5)
 - [Twemojis In Minecraft](https://modrinth.com/mod/WdYcUVh8)
 - [XeKrSquarePattern](https://modrinth.com/mod/rq4lDGdf)
