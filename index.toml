@@ -185,6 +185,11 @@ hash = "cf7630fc7cb67645d9721797b28b300ac24506ae7d21c2b615edec015a181536"
 metafile = true
 
 [[files]]
+file = "mods/chest-tracker.pw.toml"
+hash = "b7c5ffcb08e6f1298234091c4a390891181af24dbf1971339e30551c26bc6741"
+metafile = true
+
+[[files]]
 file = "mods/clickthrough.pw.toml"
 hash = "7703705832bac583d57f9c7c4abf04a669273f3bbf047fb8b333b52e9f5bb3ed"
 metafile = true
