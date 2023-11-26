@@ -1,13 +1,13 @@
 name = "Foliage+"
-filename = "Foliage+ V1.5.9.3.zip"
+filename = "Foliage+ V1.5.9.4.zip"
 side = "client"
 
 [download]
-url = "https://cdn.modrinth.com/data/kXiPMJsD/versions/yBxO9EyV/Foliage%2B%20V1.5.9.3.zip"
+url = "https://cdn.modrinth.com/data/kXiPMJsD/versions/9JB1Uk4E/Foliage%2B%20V1.5.9.4.zip"
 hash-format = "sha1"
-hash = "5030eebe144dc9127beb4b8aba5981e87b533b09"
+hash = "9d5158ce6bf6833cc4921923f6362679904b9f4a"
 
 [update]
 [update.modrinth]
 mod-id = "kXiPMJsD"
-version = "yBxO9EyV"
+version = "9JB1Uk4E"
