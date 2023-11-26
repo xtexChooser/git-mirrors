@@ -6,7 +6,7 @@ directionalAudio:true
 gamma:0.5
 guiScale:2
 particles:1
-resourcePacks:["vanilla","file/Default-Dark-Mode-1.20-2023.7.0.zip","file/Twemojis in MInecraft 1.2.1.zip","file/Redstone Tweaks 2.3.zip","file/shiny ores 1.20 v1.2.zip","file/mcwzh-meme-resourcepack.zip"]
+resourcePacks:["vanilla","file/Default-Dark-Mode-1.20-2023.7.0.zip","file/Twemoji Visibility 1.2.2.zip","file/Redstone Tweaks 2.3.zip","file/shiny ores 1.20 v1.2.zip","file/mcwzh-meme-resourcepack.zip"]
 lang:zh_meme
 tutorialStep:none
 joinedFirstServer:true
@@ -14,7 +14,15 @@ hideBundleTutorial:true
 allowServerListing:true
 onlyShowSecureChat:false
 key_key.custom-crosshair-mod.edit_crosshair:key.keyboard.unknown
+key_key.durabilityviewer.showhide:key.keyboard.unknown
 key_key.saveToolbarActivator:key.keyboard.unknown
 key_key.loadToolbarActivator:key.keyboard.unknown
 key_key.imblocker.switchIMEState:key.keyboard.f6
+key_key.quit.fast_quit:key.keyboard.unknown
+key_key.quit.boss_key:key.keyboard.unknown
+key_key.chesttracker.opengui:key.keyboard.y
+key_key.whereisit.finditem:key.keyboard.unknown
+key_key.inventoryhud.toggle:key.keyboard.unknown
+key_key.inventoryhud.openconfig:key.keyboard.unknown
+key_gui.xaero_minimap_settings:key.keyboard.unknown
 soundCategory_music:0.0
