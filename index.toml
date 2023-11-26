@@ -275,6 +275,11 @@ hash = "0c5e71addef34c8dcd1c81dfc2ad851a3e274b9d8d3a7d388e1113d4139bf8d8"
 metafile = true
 
 [[files]]
+file = "mods/inventory-hud-forge.pw.toml"
+hash = "5119a0543adb0568199f56f22c883e797f78078a4f8544a3cdf3207f00bf10c6"
+metafile = true
+
+[[files]]
 file = "mods/inventory-profiles-next.pw.toml"
 hash = "dd8dadd99d99c0535beb51accbb85be19bd2d26944c2836f816f9709f51bb59d"
 metafile = true
@@ -377,6 +382,11 @@ metafile = true
 [[files]]
 file = "mods/quick_hotkeys.pw.toml"
 hash = "d01901c3ddefb29da936aaf79e31a1fba298810cbae0a411bb9c0ef7486e1761"
+metafile = true
+
+[[files]]
+file = "mods/quit.pw.toml"
+hash = "7b9d8e31005486370dbdc3736c1dafe50391aaf89e8164f5663792a39afe2708"
 metafile = true
 
 [[files]]
