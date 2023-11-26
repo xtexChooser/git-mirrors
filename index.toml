@@ -145,6 +145,11 @@ hash = "a243675bc757485925b293932ee289b9fbcfb3b75bd3ba74eca7603f191cedad"
 metafile = true
 
 [[files]]
+file = "mods/audioshutdown.pw.toml"
+hash = "50fbed1892efd715ae0dc1499ef95492f86446823d111d489cdbf22cc4ef8906"
+metafile = true
+
+[[files]]
 file = "mods/badpackets.pw.toml"
 hash = "e5a68e0e0d90aac1d965ab7cab5858c474e875be9012a7c8a3adf96420faa726"
 metafile = true
