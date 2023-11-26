@@ -1,13 +1,13 @@
 name = "XeKrSquarePattern"
-filename = "XKSPv3.14forMC1.20.zip"
+filename = "XKSPv3.14forMC1.20.2.zip"
 side = "client"
 
 [download]
-url = "https://cdn.modrinth.com/data/rq4lDGdf/versions/QmfAFSri/XKSPv3.14forMC1.20.zip"
+url = "https://cdn.modrinth.com/data/rq4lDGdf/versions/FGl5MHcQ/XKSPv3.14forMC1.20.2.zip"
 hash-format = "sha1"
-hash = "224e2d127c152b8fad0fd27c4320a19c6d5c519d"
+hash = "7ee3e86c956e7114246a7864c9aae2c5069b6d49"
 
 [update]
 [update.modrinth]
 mod-id = "rq4lDGdf"
-version = "QmfAFSri"
+version = "FGl5MHcQ"
