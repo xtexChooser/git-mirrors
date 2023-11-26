@@ -36,6 +36,7 @@ This is a complete list of all mods, resource packs and shaders included in this
 - Better Sky
 - Carpet
 - Chat Heads
+- Chest Tracker
 - ClickThrough
 - Cloth Config API
 - Concurrent Chunk Management Engine (Fabric)
@@ -44,6 +45,7 @@ This is a complete list of all mods, resource packs and shaders included in this
 - DashLoader
 - Debugify
 - Default Dark Mode
+- Durability Viewer
 - Dynamic FPS
 - e4mc
 - Entity Culling
@@ -55,6 +57,7 @@ This is a complete list of all mods, resource packs and shaders included in this
 - IMBlockerFabric
 - ImmediatelyFast
 - Indium
+- Inventory HUD+
 - Inventory Profiles Next
 - Iris Shaders
 - Krypton
@@ -78,6 +81,7 @@ This is a complete list of all mods, resource packs and shaders included in this
 - Quick Hotkeys
 - Quilted Fabric API (QFAPI) / Quilt Standard Libraries (QSL)
 - Quilt Kotlin Libraries (QKL)
+- Quit
 - Redstone Tweaks
 - Reese's Sodium Options
 - ReplayMod
@@ -170,6 +174,9 @@ This is a complete list of all mods, resource packs and shaders included in this
 - [Indium](https://modrinth.com/mod/Orvt0mRa)
 - [ViaFabricPlus](https://modrinth.com/mod/rIC2XJV4)
 - [AudioShutdown](https://modrinth.com/mod/cSJudN5h)
+- [Durability Viewer](https://modrinth.com/mod/LTM1f0yY)
+- [Chest Tracker](https://modrinth.com/mod/ni4SrKmq)
+- [Quit](https://modrinth.com/mod/bcIar9jW)
 - [Default Dark Mode](https://modrinth.com/mod/6SLU7tS5)
 - [Twemojis In Minecraft](https://modrinth.com/mod/WdYcUVh8)
 - [XeKrSquarePattern](https://modrinth.com/mod/rq4lDGdf)

@@ -2,7 +2,7 @@ hash-format = "sha256"
 
 [[files]]
 file = "CREDITS.md"
-hash = "4b9b8e191668266311ade65f84fd7824b766db53c28c578013459fe4565e3493"
+hash = "7e477248f60651f2cbe09c68d441901fa3e4c04f8ba47f434f798e04a30d9648"
 
 [[files]]
 file = "LICENSE"
