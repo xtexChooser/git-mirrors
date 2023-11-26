@@ -6,7 +6,9 @@ if git tag | grep -q "$version"; then
     exit
 fi
 changelog=$(mktemp)
-git log "$(git tag --sort=creatordate | tail -n1)"..HEAD --oneline --decorate=no --abbrev | tee "$changelog"
+printf '```changelog\n' > "$changelog"
+git log "$(git tag --sort=creatordate | tail -n1)"..HEAD --oneline --decorate=no --abbrev | tee --append "$changelog"
+printf '```\n' >> "$changelog"
 
 rm -f -- *.mrpack *.zip
 
