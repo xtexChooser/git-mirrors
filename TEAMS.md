@@ -55,6 +55,8 @@ Team members:
 * https://codeberg.org/n0toose
 * https://codeberg.org/realaravinth
 * https://codeberg.org/rome-user
+* https://codeberg.org/wetneb
+* https://codeberg.org/zareck
 
 ## User Research
 
