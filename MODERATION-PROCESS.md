@@ -4,6 +4,8 @@ The moderation team is responsible for putting an end to behaviors going against
 
 People who would like to become members of the moderation team apply by posting an application in the [governance tracker](https://codeberg.org/forgejo/governance). If there is an agreement according to the decision making process, they become part of the moderation team for a period of one year.
 
+Members of the moderation team are expected to recuse themselves from decision-making in any potential moderation action in which they could be seen to have a conflict of interest, so long as other team members remain available to act.
+
 ## Moderation contact
 
 The moderation team can be contacted at any time by sending a mail to moderation@forgejo.org. These discussions are private and will only be disclosed in accordance with the moderation process.
