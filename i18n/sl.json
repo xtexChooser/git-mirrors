@@ -1,13 +1,14 @@
 {
 	"@metadata": {
 		"authors": [
-			"Eleassar"
+			"Eleassar",
+			"Upwinxp"
 		]
 	},
 	"categorywatch-desc": "Razširi funkcionalnost soiska nadzorov, da vključuje obvestilo o spremembah članov opazovanih kategorij",
 	"categorywatch-emailsubject": "Dejavnost, ki vključuje opazovano kategorijo »$1«",
-	"categorywatch-catmovein": "je vključil_a stran $1 v kategorijo $2 in jo odstranil_a iz kategorije $3",
-	"categorywatch-catmoveout": "je prestavil_a stran $1 iz kategorije $2 v kategorijo $3",
+	"categorywatch-catmovein": "je vključil/a stran $1 v kategorijo $2 in jo odstranil/a iz kategorije $3",
+	"categorywatch-catmoveout": "je prestavil/a stran $1 iz kategorije $2 v kategorijo $3",
 	"categorywatch-catadd": "je dodal_a stran $1 v kategorijo $2",
 	"categorywatch-catsub": "je odstranil_a stran $1 iz kategorije $2",
 	"categorywatch-autocat": "Samodejno opazuje $1",
