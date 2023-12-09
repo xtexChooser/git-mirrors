@@ -4,6 +4,7 @@ date: 2023-07-03T20:29:05+08:00
 ---
 
 > 列向量渲染效果不好可以看[codeberg](https://codeberg.org/xtex/blog/src/branch/main/content/post/2023/07/03-linear-algebra-quickstart.md)
+> 用于测试 LaTeX 数学公式渲染的
 
 ## 前言
 
