@@ -10,45 +10,45 @@ hasCJKLanguage = true
 rssLimit = 30
 timeZone = "Asia/Shanghai"
 
-[author]
-    name = 'xtex'
-
 [params]
-    description = "xtex's personal blog"
-    index_list = false
+description = "xtex's personal blog"
+index_list = false
+
+[params.author]
+name = 'xtex'
 
 [[params.links]]
-    text = "index"
-    url = "/"
+text = "index"
+url = "/"
 
 [[params.links]]
-    text = "posts"
-    url = "/post"
+text = "posts"
+url = "/post"
 
 [[params.links]]
-    text = "rss"
-    url = "/post/index.xml"
+text = "rss"
+url = "/post/index.xml"
 
 [[params.links]]
-    text = "archives"
-    url = "/archives"
+text = "archives"
+url = "/archives"
 
 [[params.links]]
-    text = "home"
-    url = "https://xtexx.eu.org/"
-    target = "_blank"
+text = "home"
+url = "https://xtexx.eu.org/"
+target = "_blank"
 
 [params.icon]
-    type = "image/png"
-    url = "/icon.png"
+type = "image/png"
+url = "/icon.png"
 
 [sitemap]
-    changefreq = 'weekly'
-    filename = 'sitemap.xml'
-    priority = 0.5
+changefreq = 'weekly'
+filename = 'sitemap.xml'
+priority = 0.5
 
 [permalinks]
-    post = '/:year/:month/:slugorfilename'
+post = '/:year/:month/:slugorfilename'
 
 [minify]
-    minifyOutput = true
+minifyOutput = true
