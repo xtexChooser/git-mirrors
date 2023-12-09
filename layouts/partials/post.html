@@ -1,19 +1,24 @@
 <article>
-  {{ if .Title }}
-  <header>
-    <h1 class="title">{{ .Title | markdownify }}</h1>
-    {{ if $date := .Params.date }}
-    <p class="date">{{ with .Params.author }}{{.}} - {{ end }}{{ $date }}</p>
-    {{ end }} {{ with .Params.subtitle }}
-    <h3 class="subtitle">{{ . }}</h3>
-    {{ end }} {{ with .Params.description }}
-    <p class="description">{{ . }}</p>
-    {{ end }} {{ with .Params.tags }}
-    <p class="tags">{{ range . }}#{{ . }} {{ end }}</p>
-    {{ end }}
-  </header>
-  {{ end }} {{with .Content }}
-  <div class="content">{{ . }}</div>
-  {{end}}
-  <footer class="footer">{{ partial "x-post-footer.html" . }}</footer>
+    {{ if .Title }}
+    <header>
+        <h1 class="title">{{ .Title | markdownify }}</h1>
+        {{ if $date := .Params.date }}
+        <p class="date">
+            {{ with .Params.author }}{{.}} - {{ end }}{{ $date }}
+        </p>
+        {{ end }}
+        {{ with .Params.subtitle }}
+        <h3 class="subtitle">{{ . }}</h3>
+        {{ end }}
+        {{ with .Params.description }}
+        <p class="description">{{ . }}</p>
+        {{ end }}
+        {{ with .Params.tags }}
+        <p class="tags">{{ range . }}#{{ . }} {{ end }}</p>
+        {{ end }}
+    </header>
+    {{ end }} {{with .Content }}
+    <div class="content">{{ . }}</div>
+    {{end}}
+    <footer class="footer">{{ partial "x-post-footer.html" . }}</footer>
 </article>

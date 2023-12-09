@@ -1,6 +1,7 @@
 <li>
-  <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
-  {{ with .Date }} - <span class="date">{{ .Format "2006-01-02" }}</span>{{end}}
-  <!-- -->
-  {{ with .Params.author }} <span class="author">({{ . }})</span>{{end}}
+    <a href="{{ .Permalink }}">{{ .Title | markdownify }}</a>
+    {{ with .Date }} -
+    <span class="date">{{ .Format "2006-01-02" }}</span>{{end}}
+    <!-- -->
+    {{ with .Params.author }} <span class="author">({{ . }})</span>{{end}}
 </li>

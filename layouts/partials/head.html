@@ -12,10 +12,10 @@
 
 <!-- -->
 {{ range .AlternativeOutputFormats -}} {{ printf `<link
-  rel="%s"
-  type="%s"
-  href="%s"
-  title="%s"
+    rel="%s"
+    type="%s"
+    href="%s"
+    title="%s"
 />` .Rel .MediaType.Type .Permalink $.Site.Title | safeHTML }} {{ end -}}
 
 <!-- -->
@@ -28,6 +28,4 @@
 <link rel="stylesheet" href='{{ "css/arc.css" | absURL }}' />
 <link rel="stylesheet" href='{{ "css/custom.css" | absURL }}' />
 
-{{ with .Site.Params.ext_head }} {{ . }} {{ end }}
-
-{{ partial "x-head.html" . }}
+{{ with .Site.Params.ext_head }} {{ . }} {{ end }} {{ partial "x-head.html" . }}

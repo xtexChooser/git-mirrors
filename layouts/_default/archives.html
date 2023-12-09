@@ -1,19 +1,20 @@
 {{ define "main" }} {{ partial "post" . }}
 <section>
-  {{ $type := .Params.target }} {{ $.Scratch.Set "count" 1 }} {{ range
-  (.Site.RegularPages.GroupByDate "2006") }} {{ if and (gt .Key 1) (gt (where
-  .Pages "Type" $type) 0) }} {{ range (where .Pages "Type" $type) }} {{ if (eq
-  ($.Scratch.Get "count") 1) }} {{ $.Scratch.Set "count" 0 }}
-  <h1>{{ .Date.Format "2006" }}</h1>
-  {{ end }} {{ end }} {{ $.Scratch.Set "count" 1 }}
-  <ul>
-    {{ range (where .Pages "Type" $type) }} {{ if (ne .Params.hidden true) }}
-    <li>
-      {{ .Date.Format "01-02" }}
-      <a href="{{ .Permalink }}">{{ .Title }}</a>
-    </li>
+    {{ $type := .Params.target }} {{ $.Scratch.Set "count" 1 }} {{ range
+    (.Site.RegularPages.GroupByDate "2006") }} {{ if and (gt .Key 1) (gt (where
+    .Pages "Type" $type) 0) }} {{ range (where .Pages "Type" $type) }} {{ if (eq
+    ($.Scratch.Get "count") 1) }} {{ $.Scratch.Set "count" 0 }}
+    <h1>{{ .Date.Format "2006" }}</h1>
+    {{ end }} {{ end }} {{ $.Scratch.Set "count" 1 }}
+    <ul>
+        {{ range (where .Pages "Type" $type) }} {{ if (ne .Params.hidden true)
+        }}
+        <li>
+            {{ .Date.Format "01-02" }}
+            <a href="{{ .Permalink }}">{{ .Title }}</a>
+        </li>
+        {{ end }} {{ end }}
+    </ul>
     {{ end }} {{ end }}
-  </ul>
-  {{ end }} {{ end }}
 </section>
 {{ end }}

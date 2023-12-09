@@ -1,18 +1,18 @@
 <div class="header">
-  <h1 class="title">{{ .Site.Title }}</h1>
+    <h1 class="title">{{ .Site.Title }}</h1>
 
-  <ul class="links hlist">
-    {{ range .Site.Params.links }}
-    <li>
-      <a
-        href="{{ .url }}"
-        target="{{ with .target }}{{ . }}{{ else }}_self{{ end }}"
-      >
-        {{ .text }}
-      </a>
-    </li>
-    {{ end }}
-  </ul>
+    <ul class="links hlist">
+        {{ range .Site.Params.links }}
+        <li>
+            <a
+                href="{{ .url }}"
+                target="{{ with .target }}{{ . }}{{ else }}_self{{ end }}"
+            >
+                {{ .text }}
+            </a>
+        </li>
+        {{ end }}
+    </ul>
 </div>
 
 {{ partial "x-header.html" . }}
