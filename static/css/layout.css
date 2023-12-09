@@ -33,16 +33,10 @@ main {
     display: inline;
 }
 
-.hlist li:not(:last-child) {
-    padding-right: 0.286em;
-}
-
-.hlist li:not(:last-child)::before {
-    content: "";
-}
-
 .hlist li:not(:last-child)::after {
     content: "/";
+    padding-left: 0.286em;
+    padding-right: 0.286em;
 }
 
 .hlist li ul li:first-child::before {
