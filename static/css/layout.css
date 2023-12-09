@@ -41,10 +41,14 @@ main {
 
 .hlist li ul li:first-child::before {
     content: "(";
+    padding-left: 0.2em;
+    padding-right: 0.2em;
 }
 
 .hlist li ul li:last-child::after {
     content: ")";
+    padding-left: 0.2em;
+    padding-right: 0.2em;
 }
 
 .pager {
