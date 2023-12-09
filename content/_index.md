@@ -9,9 +9,9 @@
 
 这算是我的博客[v....3](/2023/06/11-new-blog)？
 
-这里没有自我介绍，`HTTP 303 See Other\nLocation: https://xtexx.eu.org/`
+这里没有自我介绍，`HTTP 303 See Other` `Location: https://xtexx.eu.org/`
 
-## Eng (US) Ver.
+## Eng Ver.
 
 Hey, hello, welcome,
 
@@ -23,7 +23,7 @@ There is no self-introduction for myself, see https://xtexx.eu.org/ pls.
 
 ## Contact
 
-Look at [there](https://xtexx.eu.org/contact)
+Look at [there](https://xtexx.eu.org/about#contact)
 
 or `mailto:xtexchooser_AT_duck.com` or `acct:xtexchooser@neko.ci` or `matrix: @xtexchooser:sakura.ci`
 
@@ -35,5 +35,15 @@ or `mailto:xtexchooser_AT_duck.com` or `acct:xtexchooser@neko.ci` or `matrix: @x
 - [molyuu](https://molyuu.cyou/)
 - [chitang](https://chitang.dev/)
 - [dn42](https://dn42.dev)
+- [minecraft wiki](https://zh.minecraft.wiki/)
+
+{{</hlist>}}
+
+[exoring](https://ring.exozy.me/):
+{{<hlist>}}
+
+- [prev](https://ring.exozy.me/previous?id=xtex)
+- [rand](https://ring.exozy.me/random)
+- [next](https://ring.exozy.me/next?id=xtex)
 
 {{</hlist>}}
