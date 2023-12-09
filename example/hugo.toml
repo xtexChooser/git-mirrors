@@ -6,17 +6,13 @@ themesDir = "../.."
 paginate = 10
 enableRobotsTXT = true
 copyright = 'CC'
-[author]
-  name = 'the author'
 
 [params]
 description = "test site"
 index_list = false
 
-[[params.links]]
-text = "exozyme"
-url = "https://exozy.me/"
-target = "_blank"
+[params.author]
+name = 'the author'
 
 [[params.links]]
 text = "xtex"
