@@ -17,8 +17,9 @@
         <p class="tags">{{ range . }}<span>{{ . }}</span>{{ end }}</p>
         {{ end }}
     </header>
-    {{ end }} {{with .Content }}
+    {{ end }}
+    {{ with .Content }}
     <div class="content">{{ . }}</div>
-    {{end}}
+    {{ end }}
     <footer class="footer">{{ partial "x-post-footer.html" . }}</footer>
 </article>
