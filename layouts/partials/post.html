@@ -14,7 +14,7 @@
         <p class="description">{{ . }}</p>
         {{ end }}
         {{ with .Params.tags }}
-        <p class="tags">{{ range . }}#{{ . }} {{ end }}</p>
+        <p class="tags">{{ range . }}<span>{{ . }}</span>{{ end }}</p>
         {{ end }}
     </header>
     {{ end }} {{with .Content }}

@@ -3,6 +3,7 @@
     --color-body-fg: #333333;
     --color-link-fg: #3366ff;
     --color-article-header-bottom: #222222;
+    --color-article-tag: #535353;
     --color-code-block-bg: #393939;
     --color-code-block-border: #ffffff;
     --color-title-top: #222222;
@@ -22,6 +23,7 @@
         --color-body-fg: #cccccc;
         --color-link-fg: #33aaff;
         --color-article-header-bottom: #ffffff;
+        --color-article-tag: #848484;
         --color-code-block-bg: #282828;
         --color-code-block-border: #101010;
         --color-title-top: #808080;

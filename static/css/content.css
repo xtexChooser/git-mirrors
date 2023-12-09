@@ -27,6 +27,16 @@ article header .date {
     float: right;
 }
 
+article header .tags span:not(:last-child) {
+    padding-right: 0.3em;
+}
+
+article header .tags span::before {
+    content: "#";
+    color: var(--color-article-tag);
+    font-family: sans-serif;
+}
+
 .content {
     padding-top: 2rem;
     line-height: 140%;
