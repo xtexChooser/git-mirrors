@@ -4,7 +4,7 @@
         <h1 class="title">{{ .Title | markdownify }}</h1>
         {{ if $date := .Params.date }}
         <p class="date">
-            {{ with .Params.author }}{{.}} - {{ end }}{{ $date }}
+            {{ with .Params.author }}{{.}} - {{ end }}{{ time.Format "2006-01-02 03:04:05 -07:00" $date }}
         </p>
         {{ end }}
         {{ with .Params.subtitle }}
