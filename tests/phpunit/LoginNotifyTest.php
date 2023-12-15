@@ -60,7 +60,8 @@ class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 						'SharedTables' => [],
 						'LocalDatabases' => []
 					] ),
-					$services->getDBLoadBalancerFactory()
+					$services->getDBLoadBalancerFactory(),
+					$services->getHideUserUtils()
 				),
 				$services->getAuthManager()
 			)
