@@ -316,7 +316,7 @@ class Parse {
 			'DPL_firstTitle' => $firstTitleFound,
 			'DPL_lastNamespace' => $lastNamespaceFound,
 			'DPL_lastTitle' => $lastTitleFound,
-			'DPL_scrollDir' => $this->parameters->getParameter( 'scrolldir' ) ?? '',
+			'DPL_scrollDir' => $this->parameters->getParameter( 'scrolldir' ),
 			'DPL_time' => $dplTime,
 			'DPL_count' => $this->parameters->getParameter( 'count' ),
 			'DPL_totalPages' => $foundRows,
