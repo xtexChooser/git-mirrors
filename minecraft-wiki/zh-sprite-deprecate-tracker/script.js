@@ -28,7 +28,7 @@ mw.loader
 
 		function findAlternativeIn(data, name, callback) {
 			const ids = data.ids;
-			const d = ids[name] || data[normKey(name)];
+			const d = ids[name] || ids[normKey(name)];
 			var alts = {};
 			for (k in ids) {
 				if (k == name) continue;
