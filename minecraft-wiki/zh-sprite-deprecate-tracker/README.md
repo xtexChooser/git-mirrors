@@ -5,3 +5,7 @@
 ```javascript
 mw.loader.load('https://xtex.codeberg.page/mw-gadgets/@main/minecraft-wiki/zh-sprite-deprecate-tracker/script.js');
 ```
+
+```javascript
+mw.loader.load('https://xtex.codeberg.page/mw-gadgets/@stable/minecraft-wiki/zh-sprite-deprecate-tracker/script.js');
+```
