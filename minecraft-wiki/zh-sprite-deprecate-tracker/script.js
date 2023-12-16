@@ -15,12 +15,28 @@ mw.loader
 		if (!config.wgCategories.includes('使用已弃用Sprite的页面')) return;
 
 		mw.util.addCSS(
-			'.mcwzh-sprite-deprecate-tracker { background: none; padding: 0.5em; }'
+			'.mcwzh-sprite-deprecate-tracker { background: none; padding: 0.5em; }\n\
+			.mcwzh-sprite-deprecate-data { display: none; }\n\
+			.mcwzh-sprite-deprecate-alter { padding: 1em; }'
 		);
 
 		const api = new mw.Api();
 
-		function findAlternativeIn(data, name, callback) {}
+		function normKey(str) {
+			return str.toLowerCase().replaceAll(/[\s_]/g, '-');
+		}
+
+		function findAlternativeIn(data, name, callback) {
+			const ids = data.ids;
+			const d = ids[name] || data[normKey(name)];
+			var alts = {};
+			for (k in ids) {
+				if (k == name) continue;
+				if (ids[k].pos == d.pos && !(ids[k].deprecated || false))
+					alts[k] = ids[k];
+			}
+			callback(data, alts);
+		}
 
 		var cachedData = {};
 		function findAlternative(data, name, callback) {
@@ -38,6 +54,26 @@ mw.loader
 					findAlternativeIn(out, name, callback);
 				});
 			}
+		}
+
+		function showAlternative(data, alts) {
+			var text = '';
+			if (alts.length == 0) text = '<无>';
+			for (k in alts) {
+				text += k;
+				if ('section' in alts[k]) {
+					const section = '<错误>';
+					for (sec of data.sections) {
+						if (sec.id == alts[k].section) {
+							section = sec.name;
+							break;
+						}
+					}
+					text += `（${section}）`;
+				}
+				text += '\n';
+			}
+			OO.ui.alert(text, { size: 'large', title: '替代' });
 		}
 
 		api.get({
@@ -78,7 +114,7 @@ mw.loader
 					for (const c in data) {
 						text += `* [[Module:${c}|${c}]]\n`;
 						for (const n of data[c]) {
-							text += `** <code>${n}</code><span class="mcwzh-sprite-deprecate-alter" x-data-mod="${c}" x-name="${n}"></span>\n`;
+							text += `** <code>${n}</code><span class="mcwzh-sprite-deprecate-data">${c}/${n}</span><span class="mcwzh-sprite-deprecate-alter"></span>\n`;
 						}
 					}
 
@@ -96,17 +132,23 @@ mw.loader
 					mw.hook('wikipage.content').fire(
 						$(pt).appendTo('#bodyContent')
 					);
-					$('.mcwzh-sprite-deprecate-alter').each(function (alter) {
-						const button = new OO.ui.ButtonWidget({
-							framed: false,
-							label: '替代',
-						});
-						const el = alter;
-						button.on('click', function () {
-							console.log(el);
-						});
-						$(alter).append(button.$element);
-					});
+					$('.mcwzh-sprite-deprecate-alter').each(
+						function (_i, alter) {
+							const text =
+								alter.parentNode.childNodes[1].innerText;
+							const data = text.substring(0, text.indexOf('/'));
+							const name = text.substring(text.indexOf('/') + 1);
+
+							const button = new OO.ui.ButtonWidget({
+								framed: false,
+								label: '替代',
+							});
+							button.on('click', function () {
+								findAlternative(data, name, showAlternative);
+							});
+							$(button.$element).appendTo(alter);
+						}
+					);
 				});
 			});
 		});
