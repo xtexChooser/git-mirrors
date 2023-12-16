@@ -1,13 +1,12 @@
 mw.loader
 	.using(['mediawiki.util', 'mediawiki.api', 'oojs-ui-windows'])
 	.done(function () {
-		const config = mw.config.get(['wgWikiID', 'wgCategories']);
-		window.loadedMCWZHSpriteDeprecateTracker = true;
+		const config = mw.config.get(['wgWikiID', 'wgCategories', 'wgPageName']);
 		if (config.wgWikiID !== 'zh_mcwiki')
 			return OO.ui.alert(
 				'minecraft-wiki zh-sprite-deprecate-tracker only works on zh mcwiki!'
 			);
-
+		window.loadedMCWZHSpriteDeprecateTracker = true;
 		if (!config.wgCategories.includes('使用已弃用Sprite的页面')) return;
 
 		const api = new mw.Api();
@@ -22,24 +21,14 @@ mw.loader
 					```'[[Category:SPRITE DEPRECATE TRACK/' .. args.data .. '/' .. ( mw.text.trim( tostring( args[1] or '' ) ) ) .. ']]'```);
 			api.get({
 				action: 'parse',
-				page: 'Java版Infdev 20100615',
+				page: config.wgPageName,
 				prop: 'categories',
 				templatesandboxtitle: 'Module:Sprite',
 				templatesandboxtext: spriteSrc,
 				templatesandboxcontentmodel: 'Scribunto',
 				formatversion: 2,
 			}).done(function (data) {
-				var user = data.query.users[0];
-				var block;
-				if (user.blockid)
-					block = {
-						user: username,
-						by: user.blockedby,
-						timestamp: user.blockedtimestamp,
-						expiry: user.blockexpiry,
-						reason: user.blockreason,
-					};
-				formatProfile(user, block);
+				console.log(data)
 			});
 		});
 
