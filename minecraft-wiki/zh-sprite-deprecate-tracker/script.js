@@ -43,19 +43,22 @@ mw.loader
 					.map((c) => c.category)
 					.filter((c) => c.startsWith(catPrefix))
 					.map((c) => c.substring(catPrefix.length + 1));
-				var deprecated = {};
+				console.log(data);
+				console.log(parsed);
+				var data = {};
 				var text = '已弃用精灵图：\n';
-				for (c of parsed) {
+				for (const c of parsed) {
 					const dataset = c.substring(0, c.indexOf('/'));
 					const name = c.substring(c.indexOf('/') + 1);
-					if (!(dataset in deprecated)) {
-						deprecated[dataset] = [];
+					if (!(dataset in data)) {
+						data[dataset] = [];
 					}
-					deprecated[dataset].push(name);
+					data[dataset].push(name);
 				}
-				for (c in deprecated) {
-					text += `* ${c}\n`;
-					for (n of deprecated[c]) {
+				console.log(data);
+				for (const c in data) {
+					text += `* [[Module:${c}|${c}]]\n`;
+					for (const n of data[c]) {
 						text += `** ${n}\n`;
 					}
 				}
