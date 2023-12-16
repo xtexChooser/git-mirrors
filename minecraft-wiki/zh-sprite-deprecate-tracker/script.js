@@ -23,7 +23,7 @@ mw.loader
 		const api = new mw.Api();
 
 		function normKey(str) {
-			return str.toLowerCase().replaceAll(/[\s_]/g, '-');
+			return str.toLowerCase().replaceAll(/[\s_+]/g, '-');
 		}
 
 		function findAlternativeIn(data, name, callback) {
