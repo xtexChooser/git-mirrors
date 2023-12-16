@@ -58,7 +58,7 @@ mw.loader
 
 		function showAlternative(data, alts) {
 			var text = '';
-			if (alts.length == 0) text = '<无>';
+			if (Object.keys(alts).length == 0) text = '<无>';
 			for (k in alts) {
 				text += k;
 				if ('section' in alts[k]) {
