@@ -27,7 +27,7 @@ mw.loader
 		}).done(function (spriteMod) {
 			const spriteSrc = spriteMod.parse.wikitext.replace(
 				"categories[#categories + 1] = '[[Category:使用已弃用Sprite的页面]]'",
-				"categories[#categories + 1] = '[[Category:SPRITE DEPRECATE TRACK/' .. args.data .. '/' .. ( mw.text.trim( tostring( args[1] or '' ) ) ) .. ']]'"
+				"categories[#categories + 1] = '[[Category:SPRITE_DEPRECATE_TRACK/' .. args.data .. '/' .. ( mw.text.trim( tostring( args[1] or '' ) ) ) .. ']]'"
 			);
 			api.post({
 				action: 'parse',
@@ -38,13 +38,11 @@ mw.loader
 				templatesandboxcontentmodel: 'Scribunto',
 				formatversion: 2,
 			}).done(function (data) {
-				const catPrefix = 'SPRITE DEPRECATE TRACK';
+				const catPrefix = 'SPRITE_DEPRECATE_TRACK';
 				const parsed = data.parse.categories
 					.map((c) => c.category)
 					.filter((c) => c.startsWith(catPrefix))
 					.map((c) => c.substring(catPrefix.length + 1));
-				console.log(data);
-				console.log(parsed);
 				var data = {};
 				var text = '已弃用精灵图：\n';
 				for (const c of parsed) {
@@ -55,7 +53,6 @@ mw.loader
 					}
 					data[dataset].push(name);
 				}
-				console.log(data);
 				for (const c in data) {
 					text += `* [[Module:${c}|${c}]]\n`;
 					for (const n of data[c]) {
