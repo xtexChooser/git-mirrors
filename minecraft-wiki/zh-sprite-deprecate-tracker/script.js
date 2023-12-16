@@ -62,7 +62,7 @@ mw.loader
 			for (k in alts) {
 				text += k;
 				if ('section' in alts[k]) {
-					const section = '<错误>';
+					var section = '<错误>';
 					for (sec of data.sections) {
 						if (sec.id == alts[k].section) {
 							section = sec.name;
