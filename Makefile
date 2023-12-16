@@ -1,7 +1,9 @@
 .PHONY: stable fmt
 
 stable:
-	git merge --stat --no-edi --into-name stable main
+	git switch stable
+	git merge --stat --no-edit main
+	git switch main
 	git push origin main stable
 
 fmt:
