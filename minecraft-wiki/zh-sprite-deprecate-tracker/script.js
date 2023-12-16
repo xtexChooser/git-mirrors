@@ -56,7 +56,7 @@ mw.loader
 				for (const c in data) {
 					text += `* [[Module:${c}|${c}]]\n`;
 					for (const n of data[c]) {
-						text += `** ${n}\n`;
+						text += `** <code>${n}</code>\n`;
 					}
 				}
 
