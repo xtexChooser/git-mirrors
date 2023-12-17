@@ -49,7 +49,7 @@ function atre::pull {
 
 	atre::log "Current commits"
 	git show --oneline --no-patch --no-abbrev-commit HEAD
-	git submodule foreach git show --oneline --no-patch --no-abbrev-commit HEAD
+	git submodule -q foreach git show --oneline --no-patch --no-abbrev-commit HEAD
 
 	atre::apply
 }
