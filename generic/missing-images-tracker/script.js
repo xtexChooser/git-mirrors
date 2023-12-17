@@ -1,6 +1,7 @@
 mw.loader
 	.using(['mediawiki.util', 'mediawiki.api', 'oojs-ui-windows'])
 	.done(function () {
+		const CATS = ['含有受损文件链接的页面', 'Pages with broken file links'];
 		const config = mw.config.get([
 			'wgWikiID',
 			'wgCategories',
@@ -8,8 +9,7 @@ mw.loader
 			'wgUserLanguage',
 		]);
 		window.loadedMWMissingImgTracker = true;
-		if (!(config.wgCategories.includes('含有受损文件链接的页面') || config.wgCategories.includes('Pages with broken file links')))
-			// @todo: i18n
+		if (CATS.find((c) => config.wgCategories.includes(c)) == undefined)
 			return;
 
 		mw.util.addCSS(
@@ -54,8 +54,7 @@ mw.loader
 
 			function showMissing() {
 				let text = '缺少的图片：\n';
-				if (missing.length == 0)
-					text += '<无>\n';
+				if (missing.length == 0) text += '<无>\n';
 				for (const c of missing) {
 					text += `* <code>${c}</code>\n`;
 				}
