@@ -52,7 +52,6 @@ $(call package)
 V_PKG		= dinit-systemd
 V_INSTALLED	= y
 V_INST_FILE	= /usr/lib/systemd/system/dinit.service
-V_DEPS		= pkg-dinit
 $(call end)
 
 $(call systemd-unit)
