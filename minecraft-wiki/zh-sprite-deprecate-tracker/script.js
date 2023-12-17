@@ -29,7 +29,7 @@ mw.loader
 		function findAlternativeIn(data, name, callback) {
 			const ids = data.ids;
 			const d = ids[name] || ids[normKey(name)];
-			var alts = {};
+			let alts = {};
 			for (k in ids) {
 				if (k == name) continue;
 				if (ids[k].pos == d.pos && !(ids[k].deprecated || false))
@@ -38,7 +38,7 @@ mw.loader
 			callback(data, alts);
 		}
 
-		var cachedData = {};
+		let cachedData = {};
 		function findAlternative(data, name, callback) {
 			if (data in cachedData) {
 				findAlternativeIn(cachedData[data], name, callback);
@@ -57,12 +57,12 @@ mw.loader
 		}
 
 		function showAlternative(data, alts) {
-			var text = '';
+			let text = '';
 			if (Object.keys(alts).length == 0) text = '<无>';
 			for (k in alts) {
 				text += k;
 				if ('section' in alts[k]) {
-					var section = '<错误>';
+					let section = '<错误>';
 					for (sec of data.sections) {
 						if (sec.id == alts[k].section) {
 							section = sec.name;
@@ -101,7 +101,7 @@ mw.loader
 						.map((c) => c.category)
 						.filter((c) => c.startsWith(catPrefix))
 						.map((c) => c.substring(catPrefix.length + 1));
-					var data = {};
+					let data = {};
 					for (const c of parsed) {
 						const dataset = c.substring(0, c.indexOf('/'));
 						const name = c.substring(c.indexOf('/') + 1);
@@ -110,7 +110,7 @@ mw.loader
 						}
 						data[dataset].push(name);
 					}
-					var text = '';
+					let text = '';
 					for (const c in data) {
 						text += `* [[Module:${c}|${c}]]\n`;
 						for (const n of data[c]) {

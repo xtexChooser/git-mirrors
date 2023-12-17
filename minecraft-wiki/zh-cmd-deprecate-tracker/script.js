@@ -62,8 +62,8 @@ mw.loader
 					return OO.ui.alert(
 						'minecraft-wiki zh-cmd-deprecate-tracker failed to process page!'
 					);
-				var data = {};
-				var cmds = [];
+				let data = {};
+				let cmds = [];
 				for (const c of parsed) {
 					const k = c.substring(0, c.indexOf('='));
 					const v = c.substring(c.indexOf('=') + 1);
@@ -74,7 +74,7 @@ mw.loader
 					}
 				}
 
-				var text = '已弃用的{{Template link|cmd}}用法：\n';
+				let text = '已弃用的{{Template link|cmd}}用法：\n';
 				for (const c of cmds) {
 					text += `* <code>${
 						c.cmd
