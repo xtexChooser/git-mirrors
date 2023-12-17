@@ -47,3 +47,17 @@ V_PKG		= dinit
 V_INSTALLED	= y
 V_INST_FILE	= /usr/bin/dinit
 $(call end)
+
+$(call package)
+V_PKG		= dinit-systemd
+V_INSTALLED	= y
+V_INST_FILE	= /usr/lib/systemd/system/dinit.service
+V_DEPS		= pkg-dinit
+$(call end)
+
+$(call systemd-unit)
+V_UNIT		= dinit.service
+V_USER		= y
+V_ENABLED	= y
+V_DEPS		= pkg-dinit-systemd
+$(call end)
