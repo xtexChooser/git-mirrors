@@ -10,7 +10,7 @@ $(call mktrace, Define dinit service target: $(V_SERVICE))
 $(call mktrace-vars,$(DINIT_SERVICE_VARS))
 $(call apply-target,$(V_TARGET_NAME))
 $(call vt-target,$(V_TARGET_NAME))
-$(V_TARGET_NAME): $(v-deps) $(call imp-dep,$(HOME).config/dinit.d/$(V_SERVICE)) \
+$(V_TARGET_NAME): $(v-deps) $(call imp-dep,pkg,dinit) \
 		$(if $(V_SYSTEM),$(call file-imp-dep,/etc/dinit.d/$(V_SERVICE)) \
 		$(call file-imp-dep,/lib/dinit.d/$(V_SERVICE)) \
 		$(call file-imp-dep,/run/dinit.d/$(V_SERVICE)) \
