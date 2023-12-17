@@ -12,7 +12,7 @@ $(call vt-target,$(V_TARGET_NAME))
 $(V_TARGET_NAME): $(v-deps) $(if $(call is-true,$(V_INSTALLED)),$(V_INST_FILE))
 	export E_MAJOR=pkg E_PKG=$(V_PKG)
 $(if $(call is-true,$(V_INSTALLED)),$(if $(call not,$(V_INST_FILE)),
-	if ! $(V_PKCON) resolve $(V_PKG) | grep 'installed:' $(DROP_STDOUT); then
+	if ! $(V_PKCON) resolve $(V_PKG) | grep 'installed' $(DROP_STDOUT); then
 		$(V_PKCON) install $(V_PKG)
 		$(call succ, Installed package $(V_UNIT))
 		$(call vpost, E_MINOR=installed)
@@ -21,7 +21,7 @@ $(if $(call is-true,$(V_INSTALLED)),$(if $(call not,$(V_INST_FILE)),
 $(if $(call is-false,$(V_INSTALLED)),
 $(if $(V_INST_FILE),
 	if [[ -e $(V_INST_FILE) ]]; then,
-	if $(V_PKCON) resolve $(V_PKG) | grep 'installed:' $(DROP_STDOUT); then
+	if $(V_PKCON) resolve $(V_PKG) | grep 'installed' $(DROP_STDOUT); then
 )
 		$(V_PKCON) remove $(V_PKG)
 		$(call succ, Removed package $(V_UNIT))
