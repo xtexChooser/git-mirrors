@@ -8,7 +8,7 @@ define v-var-dep-files
 $(foreach var,$(V_DEP_VARS),$(saved-var-$(var)))
 endef
 
-define implict-dep
+define imp-dep
 $(if $2,$(eval $1-$2:)$1-$2)
 endef
 

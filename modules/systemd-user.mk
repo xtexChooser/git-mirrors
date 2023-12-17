@@ -9,7 +9,7 @@ $(call mktrace-vars,$(LOGINCTL_VARS))
 $(call apply-target,$(V_TARGET_NAME))
 $(call vt-target,$(V_TARGET_NAME))
 
-$(V_TARGET_NAME): $(v-deps) $(call implict-dep,user,$(V_USER))
+$(V_TARGET_NAME): $(v-deps) $(call imp-dep,user,$(V_USER))
 	export E_MAJOR=loginctl E_USER=$(V_USER)
 $(if $(call is-true,$(V_LINGER)),
 	if [[ ! -e "/var/lib/systemd/linger/$(V_USER)" ]]; then
