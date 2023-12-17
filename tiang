@@ -25,6 +25,8 @@ tiangCommandsUsage="""
     -a --target   [NAME] [ADDR] Add a new target with given ssh address
     -n --remove   [NAME]        Remove a target from target list
     -y --include  [NAME]        Add a target to target list
+    -o --only     [NAME]        Set target list to the given target
+    --none                      Clear target list
 
     -f --filter   [FILTER]      Filter targets with jq filters
     -g --grep     [NAME]        Filter targets with name literal
@@ -175,6 +177,16 @@ function tiang::cmd::include {
 	tiangTargets+=("$2")
 }
 
+function tiang::cmd::only {
+	[ $# -lt 2 ] && tiang::error "1 parameter is required for --only"
+	[[ " ${tiangAllTargets[*]} " = *" $2 "* ]] || tiang::error "target $2 is never defined. use -a instead"
+	tiangTargets=("$2")
+}
+
+function tiang::cmd::none {
+	tiangTargets=()
+}
+
 function tiang::cmd::filter {
 	[ $# -lt 2 ] && tiang::error "1 parameter is required for --filter"
 	local tiangTgt tiangTgtData tiangTgtJq
@@ -287,6 +299,14 @@ function tiang::main {
 		-y | --include)
 			tiang::cmd::include "$@"
 			shift 2
+			;;
+		-o | --only)
+			tiang::cmd::only "$@"
+			shift 2
+			;;
+		--none)
+			tiang::cmd::none "$@"
+			shift 1
 			;;
 		-f | --filter)
 			tiang::cmd::filter "$@"
