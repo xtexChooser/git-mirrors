@@ -11,3 +11,7 @@ endef
 define implict-dep
 $(if $2,$(eval $1-$2:)$1-$2)
 endef
+
+define file-imp-dep
+$(if $1,$(eval $1:)$1)
+endef
