@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Dr-Taher",
 			"Meno25",
 			"OsamaK",
 			"ديفيد"
@@ -20,7 +21,7 @@
 	"categorywatch-notification-categorywatch-remove-header": "[[:$1|$2]] تمت إزالتها من [[:$3|$4]]",
 	"categorywatch-notification-categorywatch-remove-summary": "[[:$3|$4]] تمت إزالتها من [[:$5|$6]]",
 	"categorywatch-notification-categorywatch-remove-body": "[[User:$1|$1]] أزال [[:$3|$3]] من [[:$4|$4]]",
-	"categorywatch-notification-bundle": "$1 تغييرات في التصنيف في {{SITENAME}}",
+	"categorywatch-notification-bundle": "$1 {{PLURAL:$1|لا تغيير|تغيير واحد|تغييران|$1 تغييرات|$1 تغييرًا|$1 تغييرٍ}} في التصنيف في {{SITENAME}}",
 	"categorywatch-add-title": "تمت إضافة العنوان إلى تصنيف مُراقَب",
 	"categorywatch-remove-title": "تمت إزالة العنوان من تصنيف مُراقَب",
 	"categorywatch-page-watch-pref": "أضف جميع الصفحات في إحدى التصنيفات إلى قائمة مراقبتك عند إضافة تصنيف",
