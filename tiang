@@ -116,16 +116,15 @@ function tiang::runParallelOnTargets {
 			tiang::waitParallelExecution
 		fi
 		((tiangParaCount++))
-		# shellcheck disable=SC2068
 		{
 			if [ "${TIANG_OUTPUT_SYNC:-true}" == "true" ]; then
 				local tiangOut tiangStatus tiangTitle=$tiangTgt
-				tiangOut=$($tiangFunc "$tiangTgt" $@ 2>&1)
+				tiangOut=$($tiangFunc "$tiangTgt" "$@" 2>&1)
 				tiangStatus=$?
 				((tiangStatus != 0)) && tiangTitle+=" ($tiangStatus)"
 				echo -e "$(tiang::makeSectionHeader "$tiangTitle")\n$tiangOut" &>"$tiangTmp.$BASHPID"
 			else
-				$tiangFunc "$tiangTgt" $@
+				$tiangFunc "$tiangTgt" "$@"
 			fi
 		} &
 		tiangParaIds+=($!)
