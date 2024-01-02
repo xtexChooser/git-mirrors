@@ -31,7 +31,12 @@ Team members:
 
 Purpose: Improve Forgejo. Anyone can become a member of the team, as long as they need the associated permissions to contribute to Forgejo. Anyone can ask that an existing member confirms their membership in accordance to the [decision making process](DECISION-MAKING.md).
 
-The team has access to most Forgejo repositories ([discussions](https://codeberg.org/forgejo/discussions), [docs](https://codeberg.org/forgejo/docs), [forgejo](https://codeberg.org/forgejo/forgejo), [governance](https://codeberg.org/forgejo/governance), [pages](https://codeberg.org/forgejo/pages), [sustainability](https://codeberg.org/forgejo/sustainability), [test](https://codeberg.org/forgejo/test-env), [website](https://codeberg.org/forgejo/website)) with the following permissions:
+The team has access to most Forgejo repositories:
+
+* On codeberg.org: ([discussions](https://codeberg.org/forgejo/discussions), [docs](https://codeberg.org/forgejo/docs), [forgejo](https://codeberg.org/forgejo/forgejo), [governance](https://codeberg.org/forgejo/governance), [pages](https://codeberg.org/forgejo/pages), [sustainability](https://codeberg.org/forgejo/sustainability), [test](https://codeberg.org/forgejo/test-env), [website](https://codeberg.org/forgejo/website)).
+* On code.forgejo.org: all repositories in the https://code.forgejo.org/forgejo and https://code.forgejo.org/actions organizations.
+
+The permissions of the team are:
 
 | Unit | 	Permission |
 | -- | -- |
@@ -47,16 +52,27 @@ The team has access to most Forgejo repositories ([discussions](https://codeberg
 Team members:
 
 * https://codeberg.org/alex19srv
+* https://codeberg.org/algernon
 * https://codeberg.org/DanielGibson
 * https://codeberg.org/fluzz
 * https://codeberg.org/gmem
 * https://codeberg.org/JakobDev
+* https://codeberg.org/jerger
 * https://codeberg.org/KaKi87
 * https://codeberg.org/n0toose
 * https://codeberg.org/realaravinth
 * https://codeberg.org/rome-user
+* https://codeberg.org/viceice
 * https://codeberg.org/wetneb
 * https://codeberg.org/zareck
+
+## Mergers
+
+Purpose: Review and merge pull requests in Forgejo repositories in accordance to the [pull request agreement](PullRequestsAgreement.md). The team is responsible for the same repositories as the contributors team.
+
+Team members:
+
+* ???
 
 ## User Research
 
