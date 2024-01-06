@@ -9,7 +9,6 @@
 namespace LoginNotify;
 
 use BagOStuff;
-use CentralIdLookup;
 use Exception;
 use ExtensionRegistry;
 use IBufferingStatsdDataFactory;
@@ -20,13 +19,14 @@ use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Extension\CentralAuth\User\CentralAuthUser;
 use MediaWiki\Extension\Notifications\Model\Event;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Request\WebRequest;
+use MediaWiki\User\CentralId\CentralIdLookup;
+use MediaWiki\User\User;
 use MediaWiki\WikiMap\WikiMap;
 use MWCryptRand;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use UnexpectedValueException;
-use User;
-use WebRequest;
 use Wikimedia\Assert\Assert;
 use Wikimedia\IPUtils;
 use Wikimedia\Rdbms\IDatabase;
