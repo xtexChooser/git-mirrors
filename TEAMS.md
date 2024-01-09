@@ -168,6 +168,12 @@ Team members:
   [Email](mailto:pere@towards.vision);
   `fr33domlover` on Libera Chat)
 
-## [Github organisation](https://github.com/forgejo) owners
+## [GitHub organisation](https://github.com/forgejo) owners as of 2024-01-09
 
-- ???
+This organisation is only use to prevent squatting. Its information must be kept up-to-date (website, forge and social links).
+
+- [caesar](https://github.com/caesar)
+- [crystal](https://github.com/crystalcommunication)
+- [gapodo](https://github.com/gapodo)
+- [gusted](https://github.com/Gusted)
+- [oliverpool](https://github.com/oliverpool)
