@@ -8,6 +8,7 @@ This repository is about things revolving around Forgejo.
 * [Decision making](DECISION-MAKING.md)
 * [Branding](branding/README.md)
 * [Moderation process](MODERATION-PROCESS.md)
+* [Merging Pull Requests](PullRequestsAgreement.md)
 * [Related projects](CONTRIB.md)
 * [Money](https://codeberg.org/forgejo/governance/issues?labels=157754)
 
