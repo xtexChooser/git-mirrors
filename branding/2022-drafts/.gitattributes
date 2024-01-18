@@ -1,0 +1,2 @@
+squirrel-darkmode.xcf filter=lfs diff=lfs merge=lfs -text
+squirrel-lightmode.xcf filter=lfs diff=lfs merge=lfs -text
