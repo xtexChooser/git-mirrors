@@ -72,7 +72,7 @@ Purpose: Review and merge pull requests in Forgejo repositories in accordance to
 
 Team members:
 
-* ???
+* https://codeberg.org/wetneb
 
 ## User Research
 
