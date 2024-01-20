@@ -545,19 +545,11 @@ class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 		];
 		$this->setUpLoginNotify( $config );
 		$this->overrideConfigValues( $config ); // for jobs
-		$this->tablesUsed[] = 'user';
-		$this->tablesUsed[] = 'echo_event';
-		$this->tablesUsed[] = 'echo_notification';
-		if ( $config['LoginNotifyUseSeenTable'] ?? true ) {
-			$this->tablesUsed[] = 'loginnotify_seen_net';
-		}
 	}
 
 	private function setupRecordFailureWithCheckUser() {
 		$this->markTestSkippedIfExtensionNotLoaded( 'CheckUser' );
 		$this->setupRecordFailure( [ 'LoginNotifyUseCheckUser' => true ] );
-		$this->tablesUsed[] = 'comment';
-		$this->tablesUsed[] = 'cu_changes';
 	}
 
 	/**
@@ -603,8 +595,6 @@ class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 
 	public function testPurgeSeen() {
 		$this->setupLoginNotify( [ 'UpdateRowsPerQuery' => 1 ] );
-		$this->tablesUsed[] = 'user';
-		$this->tablesUsed[] = 'loginnotify_seen_net';
 		$user = $this->getTestUser()->getUser();
 		$day = 86400;
 		$this->inst->setFakeTime( 0 );
@@ -634,8 +624,6 @@ class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 
 	public function testPurgeViaJob() {
 		$this->setupLoginNotify( [ 'UpdateRowsPerQuery' => 1 ] );
-		$this->tablesUsed[] = 'user';
-		$this->tablesUsed[] = 'loginnotify_seen_net';
 		$user = $this->getTestUser()->getUser();
 
 		$this->inst->setFakeTime( 0 ); // 1970
