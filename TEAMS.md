@@ -74,6 +74,20 @@ Team members:
 
 * https://codeberg.org/wetneb
 
+## Localization
+
+Purpose: Manage the [Weblate localization](https://translate.codeberg.org/projects/forgejo/) project.
+
+Accountability:
+
+* Develop the software and workflows required for the transations to be available and updated in the Forgejo codebase.
+* Document the localization process.
+* Actively look for new translators to improve the quality and completness of the project.
+
+Team members:
+
+* ???
+
 ## User Research
 
 Purpose: Conduct User Research in the context of Forgejo. Anyone can become a member of the team, as long as they need the associated permissions to contribute to work on the [User Research repository](https://codeberg.org/forgejo/user-research). Anyone can ask that an existing member confirms their membership in accordance to the [decision making process](DECISION-MAKING.md).
