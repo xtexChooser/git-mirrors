@@ -808,13 +808,12 @@ class LoginNotify implements LoggerAwareInterface {
 			->limit( 1 )
 			->caller( __METHOD__ )
 			->fetchRow();
-		if ( !$minRow ) {
-			return null;
-		} elseif ( $minRow->lsn_time_bucket < $this->getMinBucket() ) {
+
+		if ( $minRow && ( $minRow->lsn_time_bucket < $this->getMinBucket() ) ) {
 			return (int)$minRow->lsn_id;
-		} else {
-			return null;
 		}
+
+		return null;
 	}
 
 	/**
