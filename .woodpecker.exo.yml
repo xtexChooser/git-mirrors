@@ -4,6 +4,6 @@ steps:
     commands:
       - hugo --enableGitInfo --minify
       - git status
-      - cp -R public /srv/http/pages/xtex1
-      - rm -rf /srv/http/pages/xtex
-      - mv /srv/http/pages/xtex1 /srv/http/pages/xtex
+      - cp -R public /srv/http/xtex1
+      - rm -rf /srv/http/xtex
+      - mv /srv/http/xtex1 /srv/http/xtex
