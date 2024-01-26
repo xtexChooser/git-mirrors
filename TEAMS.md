@@ -140,6 +140,10 @@ Team members:
 * https://codeberg.org/earl-warren [May 2023 Agreement](https://codeberg.org/forgejo/governance/issues/10)
 * https://codeberg.org/caesar ([Oct 2023 Agreement](https://codeberg.org/forgejo/governance/issues/35))
 
+Observer (access to team discussions and history of actions, without any moderation rights):
+
+* https://codeberg.org/oliverpool ([Jan 2024 Agreement](https://codeberg.org/forgejo/governance/issues/55))
+
 ## Decision-making
 
 Purpose: The Forgejo team effectively and successfully makes collaborative
