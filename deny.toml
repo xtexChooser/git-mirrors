@@ -1,0 +1,32 @@
+targets = [
+	{ triple = "x86_64-unknown-linux-musl" },
+	{ triple = "wasm32-unknown-unknown" },
+]
+
+[advisories]
+vulnerability = "deny"
+unmaintained = "warn"
+yanked = "deny"
+notice = "warn"
+ignore = []
+
+[licenses]
+unlicensed = "deny"
+allow = ["Apache-2.0", "MIT"]
+copyleft = "deny"
+allow-osi-fsf-free = "neither"
+exceptions = []
+
+[bans]
+multiple-versions = "deny"
+wildcards = "allow"
+deny = [
+	{ name = "cmake" },
+	# prefer rustls
+	{ name = "openssl-sys" },
+	{ name = "openssl" },
+]
+
+[sources]
+unknown-registry = "warn"
+unknown-git = "warn"
