@@ -1,11 +1,3 @@
-FROM docker.io/library/alpine:latest AS builder
-
-RUN apk add --no-cache make pandoc jq jo
-
-COPY . /src/
-WORKDIR /src
-RUN make -j4
-
 FROM docker.io/library/caddy:latest
 
 RUN apk add --no-cache bash
@@ -25,7 +17,7 @@ LABEL org.opencontainers.image.licenses=MPL-2.0
 LABEL org.opencontainers.image.source="https://codeberg.org/xtex/home"
 
 COPY Caddyfile /etc/caddy/Caddyfile
-COPY --from=builder /src/src /srv/src
+COPY src /srv/src
 RUN mkdir /srv/run
 
 ENV PROD true
