@@ -1,29 +1,36 @@
 <!-- markdownlint-disable MD033 -->
 <!-- markdownlint-disable-next-line MD041 -->
-### Operating Systems
 
-- Desktop workstation: [openSUSE Tumbleweed](https://www.opensuse.org/)
-- Server: [Arch Linux](https://archlinux.org/)
-- Mobile phone: [Android](https://android.com/) forks
+Using openSUSE Tumbleweed, Arch Linux, Alpine Linux, postmarketOS and LineageOS.
 
-### Games
+Killing time with Minecraft, Mindustry, Unciv and osu.
 
-<div class="hlist-wrapper">
+Sometimes appears in exozyme project and Chinese Minecraft Wiki editors' chat groups.
 
-- [Minecraft](https://www.minecraft.net/)
-- [Mindustry](https://github.com/Anuken/Mindustry)
-- [Unciv](https://github.com/yairm210/Unciv)
-- [osu](https://osu.ppy.sh/)
+Also in [#xtex:sakura.ci](https://matrix.to/#/#xtex:sakura.ci).
 
-</div>
 
-### Communities
 
-<div class="hlist-wrapper">
+## Contact
 
-- [exozyme](https://exozy.me/)
-- [Project Segfault](https://projectsegfau.lt/)
-- [envs.net](https://envs.net/)
-- mcwzh tea-house
+- E-mail:
+  <div class="hlist-wrapper">
+  - xtexchooser *AT* duck.com
+  - xtex *AT* xtexx.eu.org
+  </div>
+- Matrix
+  - [@xtexchooser:sakura.ci](https://matrix.to/#/@xtexchooser:sakura.ci) (preferred)
+  - [@xtex:exozy.me](https://matrix.to/#/@xtex:exozy.me)
+- ActivityPub (only Notes are supported)
+  - [acct:xtexChooser@neko.ci](https://neko.ci/@xtexChooser) (preferred)
+  - [acct:xtexChooser@wxw.cat](https://wxw.cat/@xtexChooser)
+- Wikis
+  - [Chinese Minecraft Wiki](https://zh.minecraft.wiki/w/User:XtexChooser)
+  - [Wikipedia](https://zh.wikipedia.org/wiki/User:XtexChooser)
+  - [Project Archive](https://lakeus.xyz/wiki/User:XtexChooser)
+- Forge
+  - [Codeberg](https://codeberg.org/xtex) (preferred)
+  - [exogit](https://git.exozy.me/xtex)
+  - [Source Hut](https://sr.ht/~xtex/)
+  - [GitHub](https://github.com/xtexChooser)
 
-</div>

@@ -1,6 +1,6 @@
 default: src/gen/about-cmn.html src/gen/about-cmn-noid.html \
-	src/gen/about-eng.html src/gen/about-eng-noid.html \
-	src/gen/about-ext.html src/gen/about-ext-noid.html \
+	src/gen/about-eng.html \
+	src/gen/about-ext.html \
 	src/gen/xrd.html src/gen/host-meta.xml src/gen/host-meta.json \
 	src/gen/host-webfinger.json
 
