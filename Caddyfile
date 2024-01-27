@@ -87,10 +87,8 @@ object-src 'none';
 	}
 
 	# Well-known URLs
-	handle /.well-known/host-meta {
-		header Content-Type "application/xrd+xml"
-		rewrite * /gen/host-meta.xml
-	}
+	header /.well-known/host-meta Content-Type "application/xrd+xml"
+	rewrite /.well-known/host-meta /gen/host-meta.xml
 	rewrite /.well-known/host-meta.json /gen/host-meta.json
 	rewrite /.well-known/nodeinfo /.well-known/nodeinfo.json
 	header /nodeinfo/2.1.json Content-Type `application/json; profile="http://nodeinfo.diaspora.software/ns/schema/2.1#"`
