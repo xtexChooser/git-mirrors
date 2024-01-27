@@ -7,9 +7,7 @@ Killing time with Minecraft, Mindustry, Unciv and osu.
 
 Sometimes appears in exozyme project and Chinese Minecraft Wiki editors' chat groups.
 
-Also in [#xtex:sakura.ci](https://matrix.to/#/#xtex:sakura.ci).
-
-
+Also in <span>#xtex:sakura.ci</span>.
 
 ## Contact
 
