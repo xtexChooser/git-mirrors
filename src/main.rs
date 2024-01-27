@@ -2,7 +2,13 @@ use anyhow::Result;
 use tracing::{info, level_filters::LevelFilter};
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
-#[tokio::main]
+use crate::app::App;
+
+pub mod app;
+pub mod linter;
+pub mod web;
+
+#[tokio::main(flavor = "multi_thread")]
 async fn main() -> Result<()> {
 	tracing::subscriber::set_global_default(
 		FmtSubscriber::builder()
@@ -16,7 +22,12 @@ async fn main() -> Result<()> {
 			.finish(),
 	)?;
 
-	info!("Init");
+	info!("spock.start");
+	let app = App::new();
+
+	tokio::spawn(web::run_server(app.to_owned()));
+
+	linter::run_linter(app.to_owned()).await;
 
 	Ok(())
 }

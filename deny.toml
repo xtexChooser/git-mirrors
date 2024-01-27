@@ -12,13 +12,25 @@ ignore = []
 
 [licenses]
 unlicensed = "deny"
-allow = ["Apache-2.0", "MIT"]
+allow = [
+	"Apache-2.0",
+	"MIT",
+	"BSD-3-Clause",
+	"ISC",
+	"Unicode-DFS-2016",
+	"OpenSSL",
+]
 copyleft = "deny"
 allow-osi-fsf-free = "neither"
 exceptions = []
 
+[[licenses.clarify]]
+name = "ring"
+expression = "MIT AND ISC AND OpenSSL"
+license-files = [{ path = "LICENSE", hash = 0xbd0eed23 }]
+
 [bans]
-multiple-versions = "deny"
+multiple-versions = "allow"
 wildcards = "allow"
 deny = [
 	{ name = "cmake" },
