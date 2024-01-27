@@ -69,9 +69,15 @@ object-src 'none';
 		"
 
 	@xhtml path */ /*.html
-	handle @xhtml {
-		header Content-Type "application/xhtml+xml; utf-8"
+	header @xhtml Content-Type "application/xhtml+xml; utf-8"
+
+	@indexjsonld {
+		path /
+		header Accept *application/ld+json*
 	}
+	rewrite @indexjsonld /index.jsonld
+	header @indexjsonld Content-Type "application/ld+json"
+
 	templates {
 		mime "application/xhtml+xml" "application/json"
 	}
@@ -99,15 +105,6 @@ object-src 'none';
 		@webfinger-http path_regexp ^\/webfinger\/(https|http):\/+([^@]+)(\/.*|)$
 		route @webfinger-http {
 			rewrite * /gen/host-webfinger.json
-		}
-		@webfinger-redir {
-			path /webfinger/*/*/*.json
-			not file {path}
-		}
-		route @webfinger-redir {
-			cgi * webfinger/cgi-resolver.sh {query.resource} {
-				dir src
-			}
 		}
 	}
 
