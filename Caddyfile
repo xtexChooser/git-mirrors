@@ -115,16 +115,6 @@ object-src 'none';
 	handle /tea {
 		teapot
 	}
-
-	# Indie Auth
-	header / Link `<https://xtexx.eu.org/.well-known/oauth-authorization-server>; rel="indieauth-metadata"`
-	handle /idserv {
-		cgi /idserv/auth /cgi/indieauth/auth.sh {
-			env AUTH_CLIENT_ID={query.client_id}
-			env AUTH_REDIR_URL={query.redirect_uri}
-			dir src
-		}
-	}
 }
 
 http://blog.xtexx.eu.org http://xtexblog.exozy.me {
