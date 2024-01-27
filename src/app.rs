@@ -1,6 +1,5 @@
 use std::sync::Arc;
 
-use parking_lot::RwLock;
 use tokio::sync::Notify;
 
 pub struct App {
