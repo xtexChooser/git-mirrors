@@ -1,2 +1,4 @@
+s/^<rel="lrdd".*//
+
 s/</<link /g
 s/>/ \/>/g
