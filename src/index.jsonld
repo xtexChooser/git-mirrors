@@ -1,0 +1,71 @@
+{
+	"@context": "http://schema.org/",
+	"id": "https://xtexx.eu.org/",
+	"type": "Person",
+	"alternateName": [
+		"xtexChooser",
+		"xtexx"
+	],
+	"description": [
+		{
+			"@language": "en",
+			"@value": "A Carbon-Based Humanoid Entity"
+		},
+		{
+			"@language": "zh-cmn",
+			"@value": "碳基的，一个人"
+		}
+	],
+	"email": [
+		"xtex@xtexx.eu.org",
+		"xtexchooser@duck.com"
+	],
+	"gender": "/dev/null",
+	"identifier": "https://xtexx.eu.org/",
+	"image": {
+		"id": "https://xtexx.eu.org/#avatar",
+		"type": "ImageObject",
+		"caption": {
+			"@language": "en",
+			"@value": "xtex's Avatar"
+		},
+		"contentUrl": [
+			"https://xtexx.eu.org/avatar.png",
+			"https://xtexx.eu.org/avatar.webp"
+		],
+		"copyrightHolder": "xtex",
+		"description": {
+			"@language": "en",
+			"@value": "xtex's Avatar"
+		},
+		"identifier": "https://xtexx.eu.org/#avatar"
+	},
+	"knowsLanguage": [
+		"cmn",
+		"en",
+		"zh-cmn",
+		"zh-cmn-Hans",
+		"zh-Hans",
+		"zh-Hans-CN",
+		"zh-Hant",
+		"zh-yue"
+	],
+	"memberOf": [
+		{
+			"@language": "en",
+			"@value": "Xensor V Network"
+		},
+		{
+			"@language": "en",
+			"@value": "Unknown Domain Games"
+		},
+		"Chi_Tang UI",
+		"SCP Sharp"
+	],
+	"name": "xtex",
+	"potentialAction": {
+		"@language": "en",
+		"@value": "ignore"
+	},
+	"url": "https://xtexx.eu.org"
+}
