@@ -4,15 +4,18 @@ version = "0.1.0"
 edition = "2021"
 authors = ["xtex"]
 license = "GPL-3.0-or-later"
+repository = "https://codeberg.org/xtex/spock.git"
 
 [dependencies]
 anyhow = "1.0.79"
 axum = "0.7.4"
 chrono = "0.4.33"
+dotenvy = "0.15.7"
 mwbot = { version = "0.6.1", features = ["linter"] }
 parking_lot = "0.12.1"
 reqwest = { version = "0.11.23", features = ["json", "rustls"], default-features = false }
-sea-orm = { version = "0.12.12", features = ["sqlx-sqlite", "runtime-tokio-rustls", "macros", "with-chrono", "with-json", "with-uuid"] }
+sea-orm = { version = "0.12.12", features = ["sqlx-sqlite", "runtime-tokio-rustls", "macros", "with-json", "with-uuid", "with-time", "sqlx-postgres"] }
+sea-orm-migration = { version = "0.12.12", features = ["with-json", "with-chrono", "with-uuid", "with-time"] }
 serde = { version = "1.0.196", features = ["derive"] }
 serde_json = "1.0.112"
 tokio = { version = "1.35.1", features = ["full"] }

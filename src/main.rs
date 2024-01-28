@@ -5,11 +5,13 @@ use tracing_subscriber::{EnvFilter, FmtSubscriber};
 use crate::app::App;
 
 pub mod app;
+pub mod db;
 pub mod linter;
 pub mod web;
 
 #[tokio::main(flavor = "multi_thread")]
 async fn main() -> Result<()> {
+	dotenvy::dotenv()?;
 	tracing::subscriber::set_global_default(
 		FmtSubscriber::builder()
 			.with_env_filter(
@@ -22,12 +24,12 @@ async fn main() -> Result<()> {
 			.finish(),
 	)?;
 
-	info!("spock.start");
-	let app = App::new();
+	info!("Startup");
+	App::init().await?;
 
-	tokio::spawn(web::run_server(app.to_owned()));
+	tokio::spawn(web::run_server());
 
-	linter::run_linter(app.to_owned()).await;
+	linter::run_linter().await;
 
 	Ok(())
 }

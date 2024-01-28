@@ -1,0 +1,129 @@
+use chrono::DateTime;
+use sea_orm_migration::prelude::*;
+
+#[derive(DeriveMigrationName)]
+pub struct Migration;
+
+#[async_trait::async_trait]
+impl MigrationTrait for Migration {
+	async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+		manager
+			.create_table(
+				Table::create()
+					.table(WikiPage::Table)
+					.if_not_exists()
+					.col(
+						ColumnDef::new(WikiPage::Id)
+							.uuid()
+							.not_null()
+							.primary_key()
+							.unique_key(),
+					)
+					.col(ColumnDef::new(WikiPage::Lang).string_len(8).not_null())
+					.col(
+						ColumnDef::new(WikiPage::Namespace)
+							.string_len(255)
+							.not_null(),
+					)
+					.col(ColumnDef::new(WikiPage::Name).string_len(255).not_null())
+					.col(
+						ColumnDef::new(WikiPage::LastChecked)
+							.timestamp()
+							.default(DateTime::UNIX_EPOCH)
+							.not_null(),
+					)
+					.col(
+						ColumnDef::new(WikiPage::NeedCheck)
+							.boolean()
+							.default(true)
+							.not_null(),
+					)
+					.col(
+						ColumnDef::new(WikiPage::Issues)
+							.integer()
+							.default(0)
+							.not_null(),
+					)
+					.to_owned(),
+			)
+			.await?;
+		manager
+			.create_index(
+				Index::create()
+					.name("wiki_pages_id")
+					.table(WikiPage::Table)
+					.if_not_exists()
+					.col(WikiPage::Id)
+					.unique()
+					.index_type(IndexType::BTree)
+					.to_owned(),
+			)
+			.await?;
+		manager
+			.create_index(
+				Index::create()
+					.name("wiki_pages_with_issues")
+					.table(WikiPage::Table)
+					.if_not_exists()
+					.col(WikiPage::Issues)
+					.to_owned(),
+			)
+			.await?;
+		manager
+			.create_index(
+				Index::create()
+					.name("wiki_pages_need_check")
+					.table(WikiPage::Table)
+					.if_not_exists()
+					.col(WikiPage::NeedCheck)
+					.to_owned(),
+			)
+			.await?;
+		manager
+			.create_index(
+				Index::create()
+					.name("wiki_pages_by_name")
+					.table(WikiPage::Table)
+					.if_not_exists()
+					.col(WikiPage::Lang)
+					.col(WikiPage::Namespace)
+					.col(WikiPage::Name)
+					.unique()
+					.index_type(IndexType::BTree)
+					.to_owned(),
+			)
+			.await?;
+		Ok(())
+	}
+
+	async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+		manager
+			.drop_table(Table::drop().table(WikiPage::Table).to_owned())
+			.await?;
+		manager
+			.drop_index(Index::drop().table(WikiPage::Table).name("wiki_pages_id").to_owned())
+			.await?;
+		manager
+			.drop_index(Index::drop().table(WikiPage::Table).name("wiki_pages_with_issues").to_owned())
+			.await?;
+		manager
+			.drop_index(Index::drop().table(WikiPage::Table).name("wiki_pages_need_check").to_owned())
+			.await?;
+		manager
+			.drop_index(Index::drop().table(WikiPage::Table).name("wiki_pages_by_name").to_owned())
+			.await?;
+		Ok(())
+	}
+}
+
+#[derive(DeriveIden)]
+enum WikiPage {
+	Table,
+	Id,
+	Lang,
+	Namespace,
+	Name,
+	LastChecked,
+	NeedCheck,
+	Issues,
+}

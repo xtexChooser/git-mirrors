@@ -1,8 +1,12 @@
-use std::sync::Arc;
-
 use crate::app::App;
 
-pub async fn run_linter(app: Arc<App>) {
+pub async fn run_linter() {
+	let app = App::get();
+
+	let _ = app.wiki("zh").await.unwrap();
+	let _ = app.wiki("en").await.unwrap();
+	// tracing::info!(p=app.wiki("en").await.unwrap().page("a").unwrap(), "");
+
 	loop {
 		tokio::select! {
 			_ = app.linter_notify.notified()=>{},
