@@ -79,9 +79,9 @@ Purpose: Manage the [Weblate localization](https://translate.codeberg.org/projec
 
 Accountability:
 
-* Develop the software and workflows required for the transations to be available and updated in the Forgejo codebase.
+* Develop the software and workflows required for the translations to be available and updated in the Forgejo codebase.
 * Document the localization process.
-* Actively look for new translators to improve the quality and completness of the project.
+* Actively look for new translators to improve the quality and completeness of the project.
 
 Team members:
 
