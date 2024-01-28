@@ -20,7 +20,7 @@ impl MigrationTrait for Migration {
 							.unique_key(),
 					)
 					.col(ColumnDef::new(Page::Lang).string_len(8).not_null())
-					.col(ColumnDef::new(Page::Name).string_len(255).not_null())
+					.col(ColumnDef::new(Page::Title).string_len(255).not_null())
 					.col(
 						ColumnDef::new(Page::LastChecked)
 							.timestamp()
@@ -29,13 +29,12 @@ impl MigrationTrait for Migration {
 					)
 					.col(
 						ColumnDef::new(Page::NeedCheck)
-							.boolean()
-							.default(true)
-							.not_null(),
+							.timestamp()
+							.null(),
 					)
 					.col(
 						ColumnDef::new(Page::Issues)
-							.integer()
+							.unsigned()
 							.default(0)
 							.not_null(),
 					)
@@ -81,7 +80,7 @@ impl MigrationTrait for Migration {
 					.table(Page::Table)
 					.if_not_exists()
 					.col(Page::Lang)
-					.col(Page::Name)
+					.col(Page::Title)
 					.unique()
 					.index_type(IndexType::BTree)
 					.to_owned(),
@@ -115,7 +114,7 @@ enum Page {
 	Table,
 	Id,
 	Lang,
-	Name,
+	Title,
 	LastChecked,
 	NeedCheck,
 	Issues,

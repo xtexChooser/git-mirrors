@@ -9,6 +9,8 @@ use crate::app::App;
 pub mod migration;
 pub mod model;
 
+pub use model::*;
+
 pub struct DatabaseManager {
 	pub conn: Arc<DatabaseConnection>,
 }
@@ -31,4 +33,8 @@ impl DatabaseManager {
 	pub fn get() -> Arc<Self> {
 		App::get().db.to_owned()
 	}
+}
+
+pub fn get() -> Arc<DatabaseConnection> {
+	DatabaseManager::get().conn.clone()
 }

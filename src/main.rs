@@ -7,6 +7,7 @@ use crate::app::App;
 pub mod app;
 pub mod db;
 pub mod linter;
+pub mod page;
 pub mod web;
 
 #[tokio::main(flavor = "multi_thread")]

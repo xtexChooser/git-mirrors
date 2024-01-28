@@ -8,6 +8,8 @@ use parking_lot::RwLock;
 use tokio::sync::Notify;
 
 pub use mwbot::Bot as MwBot;
+pub use mwbot::Page as MwPage;
+
 use tracing::info;
 
 use crate::db::DatabaseManager;
@@ -77,7 +79,7 @@ impl App {
 		Ok(builder.build().await?)
 	}
 
-	pub async fn wiki(&self, lang: &str) -> Result<Arc<MwBot>> {
+	pub async fn mwbot(&self, lang: &str) -> Result<Arc<MwBot>> {
 		if let Some(bot) = self.bots.read().get(lang) {
 			return Ok(bot.to_owned());
 		}
