@@ -10,36 +10,31 @@ impl MigrationTrait for Migration {
 		manager
 			.create_table(
 				Table::create()
-					.table(WikiPage::Table)
+					.table(Page::Table)
 					.if_not_exists()
 					.col(
-						ColumnDef::new(WikiPage::Id)
+						ColumnDef::new(Page::Id)
 							.uuid()
 							.not_null()
 							.primary_key()
 							.unique_key(),
 					)
-					.col(ColumnDef::new(WikiPage::Lang).string_len(8).not_null())
+					.col(ColumnDef::new(Page::Lang).string_len(8).not_null())
+					.col(ColumnDef::new(Page::Name).string_len(255).not_null())
 					.col(
-						ColumnDef::new(WikiPage::Namespace)
-							.string_len(255)
-							.not_null(),
-					)
-					.col(ColumnDef::new(WikiPage::Name).string_len(255).not_null())
-					.col(
-						ColumnDef::new(WikiPage::LastChecked)
+						ColumnDef::new(Page::LastChecked)
 							.timestamp()
 							.default(DateTime::UNIX_EPOCH)
 							.not_null(),
 					)
 					.col(
-						ColumnDef::new(WikiPage::NeedCheck)
+						ColumnDef::new(Page::NeedCheck)
 							.boolean()
 							.default(true)
 							.not_null(),
 					)
 					.col(
-						ColumnDef::new(WikiPage::Issues)
+						ColumnDef::new(Page::Issues)
 							.integer()
 							.default(0)
 							.not_null(),
@@ -50,10 +45,10 @@ impl MigrationTrait for Migration {
 		manager
 			.create_index(
 				Index::create()
-					.name("wiki_pages_id")
-					.table(WikiPage::Table)
+					.name("pages_id")
+					.table(Page::Table)
 					.if_not_exists()
-					.col(WikiPage::Id)
+					.col(Page::Id)
 					.unique()
 					.index_type(IndexType::BTree)
 					.to_owned(),
@@ -62,32 +57,31 @@ impl MigrationTrait for Migration {
 		manager
 			.create_index(
 				Index::create()
-					.name("wiki_pages_with_issues")
-					.table(WikiPage::Table)
+					.name("pages_with_issues")
+					.table(Page::Table)
 					.if_not_exists()
-					.col(WikiPage::Issues)
+					.col(Page::Issues)
 					.to_owned(),
 			)
 			.await?;
 		manager
 			.create_index(
 				Index::create()
-					.name("wiki_pages_need_check")
-					.table(WikiPage::Table)
+					.name("pages_need_check")
+					.table(Page::Table)
 					.if_not_exists()
-					.col(WikiPage::NeedCheck)
+					.col(Page::NeedCheck)
 					.to_owned(),
 			)
 			.await?;
 		manager
 			.create_index(
 				Index::create()
-					.name("wiki_pages_by_name")
-					.table(WikiPage::Table)
+					.name("pages_by_name")
+					.table(Page::Table)
 					.if_not_exists()
-					.col(WikiPage::Lang)
-					.col(WikiPage::Namespace)
-					.col(WikiPage::Name)
+					.col(Page::Lang)
+					.col(Page::Name)
 					.unique()
 					.index_type(IndexType::BTree)
 					.to_owned(),
@@ -98,30 +92,29 @@ impl MigrationTrait for Migration {
 
 	async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
 		manager
-			.drop_table(Table::drop().table(WikiPage::Table).to_owned())
+			.drop_index(Index::drop().table(Page::Table).name("pages_id").to_owned())
 			.await?;
 		manager
-			.drop_index(Index::drop().table(WikiPage::Table).name("wiki_pages_id").to_owned())
+			.drop_index(Index::drop().table(Page::Table).name("pages_with_issues").to_owned())
 			.await?;
 		manager
-			.drop_index(Index::drop().table(WikiPage::Table).name("wiki_pages_with_issues").to_owned())
+			.drop_index(Index::drop().table(Page::Table).name("pages_need_check").to_owned())
 			.await?;
 		manager
-			.drop_index(Index::drop().table(WikiPage::Table).name("wiki_pages_need_check").to_owned())
+			.drop_index(Index::drop().table(Page::Table).name("pages_by_name").to_owned())
 			.await?;
 		manager
-			.drop_index(Index::drop().table(WikiPage::Table).name("wiki_pages_by_name").to_owned())
+			.drop_table(Table::drop().table(Page::Table).to_owned())
 			.await?;
 		Ok(())
 	}
 }
 
 #[derive(DeriveIden)]
-enum WikiPage {
+enum Page {
 	Table,
 	Id,
 	Lang,
-	Namespace,
 	Name,
 	LastChecked,
 	NeedCheck,

@@ -5,7 +5,6 @@ pub async fn run_linter() {
 
 	let _ = app.wiki("zh").await.unwrap();
 	let _ = app.wiki("en").await.unwrap();
-	// tracing::info!(p=app.wiki("en").await.unwrap().page("a").unwrap(), "");
 
 	loop {
 		tokio::select! {

@@ -7,6 +7,7 @@ use sea_orm_migration::MigratorTrait;
 use crate::app::App;
 
 pub mod migration;
+pub mod model;
 
 pub struct DatabaseManager {
 	pub conn: Arc<DatabaseConnection>,
