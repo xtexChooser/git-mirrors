@@ -22,7 +22,7 @@ impl DatabaseManager {
 			.sqlx_logging_level(tracing::log::LevelFilter::Trace)
 			.sqlx_slow_statements_logging_settings(
 				tracing::log::LevelFilter::Warn,
-				Duration::from_millis(50),
+				Duration::from_millis(500),
 			);
 		let conn = Arc::new(sea_orm::Database::connect(opts).await?);
 		migration::Migrator::up(conn.as_ref(), None).await?;
