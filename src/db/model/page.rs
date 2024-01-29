@@ -11,6 +11,7 @@ pub struct Model {
 	pub last_checked: DateTime<Utc>,
 	pub need_check: Option<DateTime<Utc>>,
 	pub issues: u32,
+	pub suggests: u32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

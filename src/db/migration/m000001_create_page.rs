@@ -38,6 +38,12 @@ impl MigrationTrait for Migration {
 							.default(0)
 							.not_null(),
 					)
+					.col(
+						ColumnDef::new(Page::Suggests)
+							.unsigned()
+							.default(0)
+							.not_null(),
+					)
 					.to_owned(),
 			)
 			.await?;
@@ -60,6 +66,16 @@ impl MigrationTrait for Migration {
 					.table(Page::Table)
 					.if_not_exists()
 					.col(Page::Issues)
+					.to_owned(),
+			)
+			.await?;
+		manager
+			.create_index(
+				Index::create()
+					.name("pages_with_suggests")
+					.table(Page::Table)
+					.if_not_exists()
+					.col(Page::Suggests)
 					.to_owned(),
 			)
 			.await?;
@@ -97,6 +113,9 @@ impl MigrationTrait for Migration {
 			.drop_index(Index::drop().table(Page::Table).name("pages_with_issues").to_owned())
 			.await?;
 		manager
+			.drop_index(Index::drop().table(Page::Table).name("pages_with_suggests").to_owned())
+			.await?;
+		manager
 			.drop_index(Index::drop().table(Page::Table).name("pages_need_check").to_owned())
 			.await?;
 		manager
@@ -118,4 +137,5 @@ enum Page {
 	LastChecked,
 	NeedCheck,
 	Issues,
+	Suggests,
 }
