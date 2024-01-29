@@ -12,6 +12,7 @@ axum = "0.7.4"
 chrono = "0.4.33"
 dotenvy = "0.15.7"
 mwbot = { version = "0.6.1", features = ["linter"], git = "https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git" }
+parking_lot = { version = "0.12.1", features = ["send_guard"] }
 phf = { version = "0.11.2", features = ["macros"] }
 reqwest = { version = "0.11.23", features = ["json", "rustls"], default-features = false }
 sea-orm = { version = "0.12.12", features = ["sqlx-sqlite", "runtime-tokio-rustls", "macros", "with-json", "with-uuid", "with-time", "sqlx-postgres"] }

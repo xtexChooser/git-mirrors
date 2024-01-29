@@ -4,7 +4,8 @@ use std::{
 };
 
 use anyhow::{bail, Result};
-use tokio::sync::{Notify, RwLock};
+use parking_lot::RwLock;
+use tokio::sync::Notify;
 
 pub use mwbot::Bot as MwBot;
 pub use mwbot::Page as MwPage;
@@ -76,11 +77,11 @@ impl App {
 	}
 
 	pub async fn mwbot(&self, lang: &str) -> Result<MwBot> {
-		if let Some(bot) = self.bots.read().await.get(lang) {
+		if let Some(bot) = self.bots.read().get(lang) {
 			return Ok(bot.clone());
 		}
 
-		let mut bots = self.bots.write().await;
+		let mut bots = self.bots.write();
 		if let Some(bot) = bots.get(lang) {
 			Ok(bot.clone())
 		} else {

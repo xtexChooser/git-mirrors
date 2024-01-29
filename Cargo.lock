@@ -1569,7 +1569,7 @@ dependencies = [
 [[package]]
 name = "mwapi"
 version = "0.6.0"
-source = "git+https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git#a19281c53065b594e1c78858ea42ab12922a6f25"
+source = "git+https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git#34c11b6910a2143a792e8178265a0ec22ce88703"
 dependencies = [
  "js-sys",
  "reqwest",
@@ -1585,7 +1585,7 @@ dependencies = [
 [[package]]
 name = "mwapi_responses"
 version = "0.4.2"
-source = "git+https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git#a19281c53065b594e1c78858ea42ab12922a6f25"
+source = "git+https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git#34c11b6910a2143a792e8178265a0ec22ce88703"
 dependencies = [
  "mwapi",
  "mwapi_responses_derive",
@@ -1596,7 +1596,7 @@ dependencies = [
 [[package]]
 name = "mwapi_responses_derive"
 version = "0.4.2"
-source = "git+https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git#a19281c53065b594e1c78858ea42ab12922a6f25"
+source = "git+https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git#34c11b6910a2143a792e8178265a0ec22ce88703"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1608,7 +1608,7 @@ dependencies = [
 [[package]]
 name = "mwbot"
 version = "0.6.1"
-source = "git+https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git#a19281c53065b594e1c78858ea42ab12922a6f25"
+source = "git+https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git#34c11b6910a2143a792e8178265a0ec22ce88703"
 dependencies = [
  "dirs",
  "libc",
@@ -1632,7 +1632,7 @@ dependencies = [
 [[package]]
 name = "mwbot_derive"
 version = "0.6.0"
-source = "git+https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git#a19281c53065b594e1c78858ea42ab12922a6f25"
+source = "git+https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git#34c11b6910a2143a792e8178265a0ec22ce88703"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1642,7 +1642,7 @@ dependencies = [
 [[package]]
 name = "mwtimestamp"
 version = "0.1.0"
-source = "git+https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git#a19281c53065b594e1c78858ea42ab12922a6f25"
+source = "git+https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git#34c11b6910a2143a792e8178265a0ec22ce88703"
 dependencies = [
  "chrono",
  "serde",
@@ -1651,7 +1651,7 @@ dependencies = [
 [[package]]
 name = "mwtitle"
 version = "0.2.3"
-source = "git+https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git#a19281c53065b594e1c78858ea42ab12922a6f25"
+source = "git+https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git#34c11b6910a2143a792e8178265a0ec22ce88703"
 dependencies = [
  "bytemuck",
  "regex",
@@ -1858,7 +1858,7 @@ dependencies = [
 [[package]]
 name = "parsoid"
 version = "0.9.1"
-source = "git+https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git#a19281c53065b594e1c78858ea42ab12922a6f25"
+source = "git+https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git#34c11b6910a2143a792e8178265a0ec22ce88703"
 dependencies = [
  "indexmap 2.2.1",
  "kuchikiki",
@@ -2962,6 +2962,7 @@ dependencies = [
  "chrono",
  "dotenvy",
  "mwbot",
+ "parking_lot",
  "phf 0.11.2",
  "reqwest",
  "sea-orm",

@@ -103,6 +103,10 @@ impl Page {
 		self.0.issues
 	}
 
+	pub fn suggests_count(&self) -> u32 {
+		self.0.suggests
+	}
+
 	pub async fn mark_check(self) -> Result<()> {
 		let mut model = self.0.into_active_model();
 		model.need_check = ActiveValue::Set(Some(Utc::now()));
