@@ -1,5 +1,5 @@
 use anyhow::Result;
-use spock::{app::App, linter, page, web};
+use spock::{app::App, linter, page, rcsyncer, web};
 use tracing::{info, level_filters::LevelFilter};
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
 
@@ -23,6 +23,7 @@ async fn main() -> Result<()> {
 
 	tokio::spawn(web::run_server());
 	tokio::spawn(page::run_page_list_syncer());
+	tokio::spawn(rcsyncer::run_rc_syncer());
 
 	linter::run_linter().await;
 

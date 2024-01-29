@@ -1,4 +1,3 @@
-use chrono::{DateTime, Utc};
 use sea_orm::entity::prelude::*;
 
 #[derive(Clone, Debug, PartialEq, Eq, Hash, DeriveEntityModel)]
@@ -8,22 +7,22 @@ pub struct Model {
 	pub id: Uuid,
 	pub lang: String,
 	pub title: String,
-	pub last_checked: DateTime<Utc>,
-	pub need_check: Option<DateTime<Utc>>,
+	pub last_checked: DateTimeUtc,
+	pub need_check: Option<DateTimeUtc>,
 	pub issues: u32,
 	pub suggests: u32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(has_many = "super::issue::Entity")]
+	#[sea_orm(has_many = "super::issue::Entity")]
 	Issue,
 }
 
 impl Related<super::issue::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::Issue.def()
-    }
+	fn to() -> RelationDef {
+		Relation::Issue.def()
+	}
 }
 
 impl ActiveModelBehavior for ActiveModel {}

@@ -27,11 +27,7 @@ impl MigrationTrait for Migration {
 							.default(DateTime::UNIX_EPOCH)
 							.not_null(),
 					)
-					.col(
-						ColumnDef::new(Page::NeedCheck)
-							.timestamp()
-							.null(),
-					)
+					.col(ColumnDef::new(Page::NeedCheck).timestamp().null())
 					.col(
 						ColumnDef::new(Page::Issues)
 							.unsigned()
@@ -110,16 +106,36 @@ impl MigrationTrait for Migration {
 			.drop_index(Index::drop().table(Page::Table).name("pages_id").to_owned())
 			.await?;
 		manager
-			.drop_index(Index::drop().table(Page::Table).name("pages_with_issues").to_owned())
+			.drop_index(
+				Index::drop()
+					.table(Page::Table)
+					.name("pages_with_issues")
+					.to_owned(),
+			)
 			.await?;
 		manager
-			.drop_index(Index::drop().table(Page::Table).name("pages_with_suggests").to_owned())
+			.drop_index(
+				Index::drop()
+					.table(Page::Table)
+					.name("pages_with_suggests")
+					.to_owned(),
+			)
 			.await?;
 		manager
-			.drop_index(Index::drop().table(Page::Table).name("pages_need_check").to_owned())
+			.drop_index(
+				Index::drop()
+					.table(Page::Table)
+					.name("pages_need_check")
+					.to_owned(),
+			)
 			.await?;
 		manager
-			.drop_index(Index::drop().table(Page::Table).name("pages_by_name").to_owned())
+			.drop_index(
+				Index::drop()
+					.table(Page::Table)
+					.name("pages_by_name")
+					.to_owned(),
+			)
 			.await?;
 		manager
 			.drop_table(Table::drop().table(Page::Table).to_owned())

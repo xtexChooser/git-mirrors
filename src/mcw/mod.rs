@@ -1,4 +1,5 @@
 use phf::{phf_map, phf_set};
+use uuid::{uuid, Uuid};
 
 pub fn get_wiki_url(lang: &str) -> String {
 	if lang == "en" {
@@ -8,7 +9,9 @@ pub fn get_wiki_url(lang: &str) -> String {
 	}
 }
 
-pub const SYNC_ALL_PAGES_NAMESPACES: phf::Map<&str, phf::Set<&str>> = phf_map! {
+pub const ROOT_UUID_NS: Uuid = uuid!("5dd8c71e-1bed-44a3-b4ec-05d08ad9c2ec");
+
+pub const ALLOWED_NAMESPACES: phf::Map<&str, phf::Set<&str>> = phf_map! {
 	"zh" => phf_set![
 			"",
 			"Minecraft Wiki",
@@ -42,3 +45,8 @@ pub const SYNC_ALL_PAGES_NAMESPACES: phf::Map<&str, phf::Set<&str>> = phf_map! {
 			"Minecraft Legends",
 		],
 };
+
+pub const SYNC_ALL_PAGES_PEROID: u64 = 60*60*24;
+
+pub const SYNC_RC: phf::Set<&str> = phf_set!["zh", "en"];
+pub const SYNC_RC_PEROID: u64 = 30;
