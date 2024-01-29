@@ -7,7 +7,7 @@ pub struct Model {
 	pub id: Uuid,
 	pub page: Uuid,
 	pub issue_type: String,
-	pub data: serde_json::Value,
+	pub details: serde_json::Value,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
