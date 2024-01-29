@@ -1,14 +1,7 @@
 use anyhow::Result;
+use spock::{app::App, linter, page, web};
 use tracing::{info, level_filters::LevelFilter};
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
-
-use crate::app::App;
-
-pub mod app;
-pub mod db;
-pub mod linter;
-pub mod page;
-pub mod web;
 
 #[tokio::main(flavor = "multi_thread")]
 async fn main() -> Result<()> {
@@ -29,6 +22,7 @@ async fn main() -> Result<()> {
 	App::init().await?;
 
 	tokio::spawn(web::run_server());
+	tokio::spawn(page::run_page_list_syncer());
 
 	linter::run_linter().await;
 

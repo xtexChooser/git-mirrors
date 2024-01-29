@@ -4,15 +4,14 @@ use std::{
 };
 
 use anyhow::{bail, Result};
-use parking_lot::RwLock;
-use tokio::sync::Notify;
+use tokio::sync::{Notify, RwLock};
 
 pub use mwbot::Bot as MwBot;
 pub use mwbot::Page as MwPage;
 
 use tracing::info;
 
-use crate::db::DatabaseManager;
+use crate::{db::DatabaseManager, site};
 
 pub const USER_AGENT: &str = concat!(
 	env!("CARGO_PKG_NAME"),
@@ -24,9 +23,10 @@ pub const USER_AGENT: &str = concat!(
 );
 
 pub struct App {
-	pub linter_notify: Notify,
-	pub bots: RwLock<BTreeMap<String, Arc<MwBot>>>,
+	pub bots: RwLock<BTreeMap<String, MwBot>>,
 	pub db: Arc<DatabaseManager>,
+	pub linter_notify: Notify,
+	pub resync_pages_notify: Notify,
 }
 
 static GLOBAL_APP: OnceLock<Arc<App>> = OnceLock::new();
@@ -34,9 +34,10 @@ static GLOBAL_APP: OnceLock<Arc<App>> = OnceLock::new();
 impl App {
 	async fn new() -> Result<Arc<Self>> {
 		Ok(Arc::new(Self {
-			linter_notify: Notify::const_new(),
 			bots: RwLock::new(BTreeMap::new()),
 			db: Arc::new(DatabaseManager::new().await?),
+			linter_notify: Notify::new(),
+			resync_pages_notify: Notify::new(),
 		}))
 	}
 
@@ -51,23 +52,17 @@ impl App {
 		GLOBAL_APP.get().expect("App is not initialized").to_owned()
 	}
 
-	fn get_wiki_url(lang: &str) -> String {
-		if lang == "en" {
-			"https://minecraft.wiki".to_owned()
-		} else {
-			format!("https://{}.minecraft.wiki", lang)
-		}
-	}
-
 	async fn new_bot(&self, lang: &str) -> Result<MwBot> {
 		info!(lang, "Init mwbot");
 		let mut builder = MwBot::builder(
-			format!("{}/api.php", Self::get_wiki_url(lang)),
-			format!("{}/rest.php/", Self::get_wiki_url(lang)),
-		)
-		.set_mark_as_bot(true)
-		.set_respect_nobots(true)
-		.set_user_agent(USER_AGENT.into());
+			format!("{}/api.php", site::get_wiki_url(lang)),
+			format!("{}/rest.php/", site::get_wiki_url(lang)),
+		);
+		builder = builder
+			.set_mark_as_bot(true)
+			.set_respect_nobots(true)
+			.set_user_agent(USER_AGENT.into());
+
 		let username = std::env::var("SPOCK_WIKI_BOT_USERNAME")?;
 		if let Ok(oauth_token) = std::env::var("SPOCK_WIKI_BOT_TOKEN") {
 			builder = builder.set_oauth2_token(username, oauth_token);
@@ -76,20 +71,21 @@ impl App {
 		} else {
 			bail!("bot auth creds not found")
 		}
+
 		Ok(builder.build().await?)
 	}
 
-	pub async fn mwbot(&self, lang: &str) -> Result<Arc<MwBot>> {
-		if let Some(bot) = self.bots.read().get(lang) {
-			return Ok(bot.to_owned());
+	pub async fn mwbot(&self, lang: &str) -> Result<MwBot> {
+		if let Some(bot) = self.bots.read().await.get(lang) {
+			return Ok(bot.clone());
 		}
 
-		let mut bots = self.bots.write();
+		let mut bots = self.bots.write().await;
 		if let Some(bot) = bots.get(lang) {
-			Ok(bot.to_owned())
+			Ok(bot.clone())
 		} else {
-			bots.insert(lang.to_string(), Arc::new(self.new_bot(lang).await?));
-			Ok(bots.get(lang).unwrap().to_owned())
+			bots.insert(lang.to_string(), self.new_bot(lang).await?);
+			Ok(bots.get(lang).unwrap().clone())
 		}
 	}
 }

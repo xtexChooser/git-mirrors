@@ -1008,7 +1008,7 @@ dependencies = [
  "futures-sink",
  "futures-util",
  "http 0.2.11",
- "indexmap 2.1.0",
+ "indexmap 2.2.1",
  "slab",
  "tokio",
  "tokio-util",
@@ -1027,7 +1027,7 @@ dependencies = [
  "futures-sink",
  "futures-util",
  "http 1.0.0",
- "indexmap 2.1.0",
+ "indexmap 2.2.1",
  "slab",
  "tokio",
  "tokio-util",
@@ -1333,9 +1333,9 @@ dependencies = [
 
 [[package]]
 name = "indexmap"
-version = "2.1.0"
+version = "2.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d530e1a18b1cb4c484e6e34556a0d948706958449fca0cab753d649f2bce3d1f"
+checksum = "433de089bd45971eecf4668ee0ee8f4cec17db4f8bd8f7bc3197a6ce37aa7d9b"
 dependencies = [
  "equivalent",
  "hashbrown 0.14.3",
@@ -1569,8 +1569,7 @@ dependencies = [
 [[package]]
 name = "mwapi"
 version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6a8f461d3cccda28e941ec9c2377b9e50bf7138b84a874e69ef0c2013a1d3ca4"
+source = "git+https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git#a19281c53065b594e1c78858ea42ab12922a6f25"
 dependencies = [
  "js-sys",
  "reqwest",
@@ -1586,8 +1585,7 @@ dependencies = [
 [[package]]
 name = "mwapi_responses"
 version = "0.4.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "82a1f9e84222b3bad75184c6b01dab24e51cc79ee7982a93cdd2fe67e4facab2"
+source = "git+https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git#a19281c53065b594e1c78858ea42ab12922a6f25"
 dependencies = [
  "mwapi",
  "mwapi_responses_derive",
@@ -1598,8 +1596,7 @@ dependencies = [
 [[package]]
 name = "mwapi_responses_derive"
 version = "0.4.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "128ba2e8b9e7989c62d31e5f6da126cee21774a6899e92d670bfaac958b727ba"
+source = "git+https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git#a19281c53065b594e1c78858ea42ab12922a6f25"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1611,8 +1608,7 @@ dependencies = [
 [[package]]
 name = "mwbot"
 version = "0.6.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c9bd2541dc62753f72872960a187ec77b0b4ca48aaaea00ecdbe8af7064e204b"
+source = "git+https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git#a19281c53065b594e1c78858ea42ab12922a6f25"
 dependencies = [
  "dirs",
  "libc",
@@ -1636,8 +1632,7 @@ dependencies = [
 [[package]]
 name = "mwbot_derive"
 version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ea3afd8634ecfc06aea0408ae86160ed79f635d25a9e6bf855df2b13eca03ee3"
+source = "git+https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git#a19281c53065b594e1c78858ea42ab12922a6f25"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1647,8 +1642,7 @@ dependencies = [
 [[package]]
 name = "mwtimestamp"
 version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "17bb1c2935b8fb180f2285bbb14750bbcc0f72b2ed4383892e57a38635b10e7a"
+source = "git+https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git#a19281c53065b594e1c78858ea42ab12922a6f25"
 dependencies = [
  "chrono",
  "serde",
@@ -1657,8 +1651,7 @@ dependencies = [
 [[package]]
 name = "mwtitle"
 version = "0.2.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "84435cfcb360542c8be82f7a832c92fe3bd7d9f11c79b407da6faee112ccc6f5"
+source = "git+https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git#a19281c53065b594e1c78858ea42ab12922a6f25"
 dependencies = [
  "bytemuck",
  "regex",
@@ -1865,10 +1858,9 @@ dependencies = [
 [[package]]
 name = "parsoid"
 version = "0.9.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fab95986bac9fc8dc8ad4d8d5fba986232e0ae3d693a6a0cf705b3ba2e055056"
+source = "git+https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git#a19281c53065b594e1c78858ea42ab12922a6f25"
 dependencies = [
- "indexmap 2.1.0",
+ "indexmap 2.2.1",
  "kuchikiki",
  "lazy_static",
  "markup5ever",
@@ -1910,7 +1902,7 @@ version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3dfb61232e34fcb633f43d12c58f83c1df82962dcdfa565a4e866ffc17dafe12"
 dependencies = [
- "phf_macros",
+ "phf_macros 0.8.0",
  "phf_shared 0.8.0",
  "proc-macro-hack",
 ]
@@ -1922,6 +1914,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fabbf1ead8a5bcbc20f5f8b939ee3f5b0f6f281b6ad3468b84656b658b455259"
 dependencies = [
  "phf_shared 0.10.0",
+]
+
+[[package]]
+name = "phf"
+version = "0.11.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ade2d8b8f33c7333b51bcf0428d37e217e9f32192ae4772156f65063b8ce03dc"
+dependencies = [
+ "phf_macros 0.11.2",
+ "phf_shared 0.11.2",
 ]
 
 [[package]]
@@ -1965,6 +1967,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "phf_generator"
+version = "0.11.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "48e4cc64c2ad9ebe670cb8fd69dd50ae301650392e81c05f9bfcb2d5bdbc24b0"
+dependencies = [
+ "phf_shared 0.11.2",
+ "rand 0.8.5",
+]
+
+[[package]]
 name = "phf_macros"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1976,6 +1988,19 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 1.0.109",
+]
+
+[[package]]
+name = "phf_macros"
+version = "0.11.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3444646e286606587e49f3bcf1679b8cef1dc2c5ecc29ddacaffc305180d464b"
+dependencies = [
+ "phf_generator 0.11.2",
+ "phf_shared 0.11.2",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.48",
 ]
 
 [[package]]
@@ -1992,6 +2017,15 @@ name = "phf_shared"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b6796ad771acdc0123d2a88dc428b5e38ef24456743ddb1744ed628f9815c096"
+dependencies = [
+ "siphasher",
+]
+
+[[package]]
+name = "phf_shared"
+version = "0.11.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "90fcb95eef784c2ac79119d1dd819e162b5da872ce6f3c3abe1e8ca1c082f72b"
 dependencies = [
  "siphasher",
 ]
@@ -2928,7 +2962,7 @@ dependencies = [
  "chrono",
  "dotenvy",
  "mwbot",
- "parking_lot",
+ "phf 0.11.2",
  "reqwest",
  "sea-orm",
  "sea-orm-migration",
@@ -2988,7 +3022,7 @@ dependencies = [
  "futures-util",
  "hashlink",
  "hex",
- "indexmap 2.1.0",
+ "indexmap 2.2.1",
  "log",
  "memchr",
  "once_cell",
@@ -3500,7 +3534,7 @@ version = "0.21.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d34d383cd00a163b4a5b85053df514d45bc330f6de7737edfe0a93311d1eaa03"
 dependencies = [
- "indexmap 2.1.0",
+ "indexmap 2.2.1",
  "serde",
  "serde_spanned",
  "toml_datetime",

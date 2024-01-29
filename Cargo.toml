@@ -11,8 +11,8 @@ anyhow = "1.0.79"
 axum = "0.7.4"
 chrono = "0.4.33"
 dotenvy = "0.15.7"
-mwbot = { version = "0.6.1", features = ["linter"] }
-parking_lot = "0.12.1"
+mwbot = { version = "0.6.1", features = ["linter"], git = "https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git" }
+phf = { version = "0.11.2", features = ["macros"] }
 reqwest = { version = "0.11.23", features = ["json", "rustls"], default-features = false }
 sea-orm = { version = "0.12.12", features = ["sqlx-sqlite", "runtime-tokio-rustls", "macros", "with-json", "with-uuid", "with-time", "sqlx-postgres"] }
 sea-orm-migration = { version = "0.12.12", features = ["with-json", "with-chrono", "with-uuid", "with-time"] }
@@ -22,3 +22,11 @@ tokio = { version = "1.35.1", features = ["full"] }
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["json", "env-filter"] }
 uuid = { version = "1.7.0", features = ["fast-rng", "v4", "v5", "macro-diagnostics"] }
+
+[features]
+default = [ "site-mcw", "checker-wp" ]
+site-mcw = [ "checker-basic", "checker-mcw" ]
+site-wp = [ "checker-basic", "checker-wp" ]
+checker-basic = []
+checker-mcw = []
+checker-wp = []

@@ -44,3 +44,6 @@ deny = [
 [sources]
 unknown-registry = "warn"
 unknown-git = "warn"
+allow-git = [
+    "https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git",
+]
