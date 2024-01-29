@@ -125,7 +125,7 @@ pub async fn sync_rc(lang: &str) -> Result<()> {
 	state.last_synced_at = ActiveValue::Set(end_time);
 	state.last_rc_id = ActiveValue::Set(last_rcid);
 	state.update(db::get().as_ref()).await?;
-	
+
 	Ok(())
 }
 
@@ -134,7 +134,7 @@ pub async fn run_rc_syncer() {
 
 	loop {
 		tokio::select! {
-			_ = app.linter_notify.notified()=>{},
+			_ = app.resync_pages_notify.notified()=>{},
 			_ = tokio::time::sleep(std::time::Duration::from_secs(site::SYNC_RC_PEROID))=>{}
 		}
 		for lang in &site::SYNC_RC {

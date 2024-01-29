@@ -1,0 +1,73 @@
+@use 'modern-normalize.css'
+
+$color-blue: #007bff
+$color-indigo: #6610f2
+$color-purple: #6f42c1
+$color-pink: #e83e8c
+$color-red: #dc3545
+$color-orange: #fd7e14
+$color-yellow: #ffc107
+$color-green: #28a745
+$color-teal: #20c997
+$color-cyan: #17a2b8
+$color-white: #fff
+$color-gray: #6c757d
+$color-gray-dark: #343a40
+$color-primary: #007bff
+$color-secondary: #6c757d
+$color-success: #28a745
+$color-info: #17a2b8
+$color-warning: #ffc107
+$color-danger: #dc3545
+$color-light: #f8f9fa
+$color-dark: #343a40
+
+*, ::before, ::after
+	box-sizing: border-box
+
+body
+	background-color: #fcfcfc
+	color: #333333
+
+	margin: 2% 10% 2% 10%
+
+@media(prefers-color-scheme: dark)
+	body
+		background-color: #212529
+		color: #f8f9fa
+
+@mixin underlined-link()
+	text-decoration: underline
+	&:hover
+		text-decoration: none
+
+nav
+	padding: .5rem 1rem
+	#brand
+		padding: 0 1.5em 0 1.5em
+		display: inline
+	ul
+		padding: 0
+		display: inline
+		li
+			display: inline
+		a
+			padding: 0 1em 0 1em
+			color: dimgray
+			@media(prefers-color-scheme: dark)
+				color: #78828a
+			&:hover
+				color: $color-white
+	#login-nav
+		float: right
+		a
+			@include underlined-link()
+			color: $color-white
+
+a
+	color: #0242f2
+	text-decoration: none
+	background-color: initial
+	-webkit-text-decoration-skip: objects
+	&:hover
+		text-decoration: underline
