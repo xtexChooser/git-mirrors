@@ -124,21 +124,21 @@ struct StatsPage {
 	users_count: u64,
 	langs: Vec<LangStat>,
 	need_check_count: u64,
-	langs_need_check: HashMap<String, u64>,
+	langs_need_check: HashMap<String, u32>,
 }
 
 #[derive(Debug, FromQueryResult)]
 struct LangStat {
 	lang: String,
-	count: u64,
-	issues: u64,
-	suggests: u64,
+	count: u32,
+	issues: u32,
+	suggests: u32,
 }
 
 #[derive(Debug, FromQueryResult)]
 struct LangNeedCheckStat {
 	lang: String,
-	count: u64,
+	count: u32,
 }
 
 async fn stats_handler(RequireSysop(auth): RequireSysop) -> WebResult {
