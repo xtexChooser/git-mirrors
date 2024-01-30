@@ -2,7 +2,7 @@
 {% block title %}sysop - spock{% endblock %}
 {% block body %}
 {%- let current_page = "/sysop" -%}
-{% include "includes/sysop.html" %}
+{% include "sysop/base.html" %}
 
 <form method="post">
 	<button formaction="/sysop/trigger-syncers">Trigger syncers</button>

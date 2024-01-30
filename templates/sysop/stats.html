@@ -1,0 +1,10 @@
+{% extends "includes/base.html" %}
+{% block title %}stats - spock{% endblock %}
+{% block body %}
+{%- let current_page = "/sysop/stats" -%}
+{% include "sysop/base.html" %}
+
+<p>Page count: <span>{{ page_count }}</span></p>
+<p>Issue count: <span>{{ issue_count }}</span></p>
+<p>User count: <span>{{ user_count }}</span></p>
+{% endblock %}

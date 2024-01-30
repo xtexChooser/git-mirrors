@@ -1,0 +1,32 @@
+{% extends "includes/base.html" %}
+{% block title %}rc syncer - spock{% endblock %}
+{% block body %}
+{%- let current_page = "/sysop/rcsyncer" -%}
+{% include "sysop/base.html" %}
+
+<p>Synchronize peroid: <span>{{ crate::site::SYNC_RC_PEROID }}s</span></p>
+
+<div class="scroll-table">
+	<table>
+		<caption>RecentChanges Synchronizer State of Spock Bot ({{ state.len() }} langs.)</caption>
+		<thead>
+			<tr>
+				<th scope="col">Language</th>
+				<th scope="col">UUID</th>
+				<th scope="col">Last Sync At</th>
+				<th scope="col">Last RC ID</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for (lang, state) in state -%}
+			<tr>
+				<th scope="row">{{ lang }}</th>
+				<td>{{ state.id }}</td>
+				<td>{{ state.last_synced_at.to_rfc3339_opts(chrono::SecondsFormat::Secs, true) }}</td>
+				<td>{{ state.last_rc_id }}</td>
+			</tr>
+			{%- endfor %}
+		</tbody>
+	</table>
+</div>
+{% endblock %}

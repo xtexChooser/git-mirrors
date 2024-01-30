@@ -1,15 +1,22 @@
+use std::collections::HashMap;
+
 use askama::Template;
 use axum::{
+	response::IntoResponse,
 	routing::{get, post},
 	Router,
 };
+use sea_orm::{
+	ColumnTrait, ConnectionTrait, EntityTrait, PaginatorTrait, QueryFilter, QueryOrder, QuerySelect,
+};
 use tracing::{error, info};
 
-use crate::{app::App, page::Page};
+use crate::{app::App, db, page::Page, site};
 
 use super::{
 	auth::{AuthResult, RequireSysop},
 	meta::MessagePage,
+	WebResult,
 };
 
 #[derive(Template)]
@@ -24,6 +31,8 @@ pub fn new_router() -> Router {
 			"/",
 			get(|RequireSysop(auth): RequireSysop| async { InfoPage { auth } }),
 		)
+		.route("/rcsyncer", get(rcsyncer_state_handler))
+		.route("/stats", get(stats_handler))
 		.route(
 			"/trigger-syncers",
 			post(|RequireSysop(auth): RequireSysop| async {
@@ -77,4 +86,48 @@ pub fn new_router() -> Router {
 				}
 			}),
 		)
+}
+
+#[derive(Template)]
+#[template(path = "sysop/rcsyncer.html")]
+struct RcSyncerPage {
+	auth: AuthResult,
+	state: Vec<(String, db::rcsyncer::Model)>,
+}
+
+async fn rcsyncer_state_handler(RequireSysop(auth): RequireSysop) -> WebResult {
+	let mut langs = HashMap::new();
+	for lang in &site::SYNC_RC {
+		langs.insert(Page::get_lang_id(lang), lang);
+	}
+	Ok(RcSyncerPage {
+		auth,
+		state: db::rcsyncer::Entity::find()
+			.order_by_asc(db::rcsyncer::Column::Id)
+			.all(&*db::get())
+			.await?
+			.into_iter()
+			.map(|state| (langs[&state.id].to_string(), state))
+			.collect(),
+	}
+	.into_response())
+}
+
+#[derive(Template)]
+#[template(path = "sysop/stats.html")]
+struct StatsPage {
+	auth: AuthResult,
+	page_count: u64,
+	issue_count: u64,
+	user_count: u64,
+}
+
+async fn stats_handler(RequireSysop(auth): RequireSysop) -> WebResult {
+	Ok(StatsPage {
+		auth,
+		page_count: db::page::Entity::find().count(&*db::get()).await?,
+		issue_count: db::issue::Entity::find().count(&*db::get()).await?,
+		user_count: db::user::Entity::find().count(&*db::get()).await?,
+	}
+	.into_response())
 }

@@ -1,4 +1,5 @@
 @use 'modern-normalize.css'
+@use 'table.sass'
 
 $color-blue: #007bff
 $color-indigo: #6610f2
@@ -23,16 +24,13 @@ $color-danger: #dc3545
 $color-light: #f8f9fa
 $color-dark: #343a40
 
-*, ::before, ::after
-	box-sizing: border-box
-
 body
 	background-color: #fcfcfc
 	color: #333333
-
+	white-space: nowrap
 	margin: 2% 10% 2% 10%
 
-@media(prefers-color-scheme: dark)
+@media (prefers-color-scheme: dark)
 	body
 		background-color: #212529
 		color: #f8f9fa
@@ -53,12 +51,14 @@ nav ul
 	li
 		display: inline
 	a
-		padding: 0 1em 0 1em
+		padding: 0 1em
 		color: dimgray
-		@media(prefers-color-scheme: dark)
+		@media (prefers-color-scheme: dark)
 			color: #78828a
 		&:hover
 			color: $color-white
+	@media (width <= 320px)
+		display: block
 
 nav#main-nav
 	padding: 0.5rem 1rem 1.5rem 1rem
@@ -70,11 +70,16 @@ nav#main-nav
 		a
 			@include underlined-link()
 			color: $color-white
+	@media (width <= 320px)
+		#login-nav
+			float: left
+		a
+			padding: 0
 
 nav.tab-nav
 	border: none
 	border-bottom: 3px solid #dddddd
-	@media(prefers-color-scheme: dark)
+	@media (prefers-color-scheme: dark)
 		border-bottom-color: #131618
 		margin: 0 0 1rem 0
 		display: inline-flex
@@ -88,7 +93,7 @@ nav.tab-nav
 			float: left
 			&.active-tab
 				background-color: #dddddd
-				@media(prefers-color-scheme: dark)
+				@media (prefers-color-scheme: dark)
 					background-color: #131618
 			@include no-underline()
 
@@ -119,8 +124,6 @@ button, a.button
 		box-shadow: 0 0 0 0.2rem #007bff40
 	&:not(:disabled)
 		cursor: pointer
-	& ~ &
-		margin-top: 0.5em
 	&.button-primary
 		background-color: $color-primary
 		border-color: #011831
