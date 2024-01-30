@@ -35,7 +35,7 @@ impl Ord for RcSyncerState {
 impl RcSyncerState {
 	pub async fn get_by_id(id: Uuid) -> Result<Option<Self>> {
 		Ok(db::rcsyncer::Entity::find_by_id(id)
-			.one(db::get().as_ref())
+			.one(&*db::get())
 			.await?
 			.map(RcSyncerState))
 	}
@@ -53,7 +53,7 @@ impl RcSyncerState {
 				last_synced_at: ActiveValue::Set(Utc::now()),
 				last_rc_id: ActiveValue::Set(0),
 			};
-			Ok(Self(new.insert(db::get().as_ref()).await?))
+			Ok(Self(new.insert(&*db::get()).await?))
 		}
 	}
 
@@ -124,7 +124,7 @@ pub async fn sync_rc(lang: &str) -> Result<()> {
 	let mut state = state.0.into_active_model();
 	state.last_synced_at = ActiveValue::Set(end_time);
 	state.last_rc_id = ActiveValue::Set(last_rcid);
-	state.update(db::get().as_ref()).await?;
+	state.update(&*db::get()).await?;
 
 	Ok(())
 }

@@ -1,4 +1,6 @@
-use std::{collections::HashMap, convert::Infallible, env, str::FromStr, sync::LazyLock};
+use std::{
+	collections::HashMap, convert::Infallible, env, fmt::Display, str::FromStr, sync::LazyLock,
+};
 
 use anyhow::{bail, Result};
 use askama::{filters::urlencode, Template};
@@ -137,7 +139,7 @@ async fn auth_handler(auth: AuthResult, Query(params): Query<AuthParams>) -> imp
 			let mrid = resp.id;
 			let user = db::user::Entity::find()
 				.filter(db::user::Column::ModrinthId.eq(&mrid))
-				.one(db::get().as_ref())
+				.one(&*db::get())
 				.await?;
 			let user = match user {
 				Some(u) => u,
@@ -149,7 +151,7 @@ async fn auth_handler(auth: AuthResult, Query(params): Query<AuthParams>) -> imp
 						modrinth_id: ActiveValue::Set(mrid.clone()),
 						sysop: ActiveValue::Set(mrid == *OAUTH_SYSOP),
 					}
-					.insert(db::get().as_ref())
+					.insert(&*db::get())
 					.await?
 				}
 			};
@@ -177,13 +179,11 @@ async fn auth_handler(auth: AuthResult, Query(params): Query<AuthParams>) -> imp
 			},
 		)
 			.into_response()
-	} else {
-		if auth.0.is_some() {
-			AuthSuccessPage { auth }.into_response()
-		} else {
-			(StatusCode::TEMPORARY_REDIRECT, [(header::LOCATION, format!("https://modrinth.com/auth/authorize?client_id={}&redirect_uri={}&scope=USER_READ+USER_READ_EMAIL", OAUTH_ID.as_str(), OAUTH_URL_ENCODED.as_str()))]).into_response()
-		}
-	}
+	} else if auth.0.is_some() {
+ 			AuthSuccessPage { auth }.into_response()
+ 		} else {
+ 			(StatusCode::TEMPORARY_REDIRECT, [(header::LOCATION, format!("https://modrinth.com/auth/authorize?client_id={}&redirect_uri={}&scope=USER_READ+USER_READ_EMAIL", OAUTH_ID.as_str(), OAUTH_URL_ENCODED.as_str()))]).into_response()
+ 		}
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Clone)]
@@ -206,9 +206,8 @@ impl From<db::user::Model> for AuthInfo {
 pub async fn login(token: &str) -> Option<AuthInfo> {
 	if let Some((user, token)) = token.split_once(':')
 		&& let Ok(user) = Uuid::from_str(user)
-		&& let Ok(Some(user)) = db::user::Entity::find_by_id(user)
-			.one(db::get().as_ref())
-			.await && validate_token(&user.salt, token)
+		&& let Ok(Some(user)) = db::user::Entity::find_by_id(user).one(&*db::get()).await
+		&& validate_token(&user.salt, token)
 	{
 		Some(user.into())
 	} else {
@@ -244,6 +243,15 @@ where
 			Ok(result)
 		} else {
 			Ok(AuthResult(None))
+		}
+	}
+}
+
+impl Display for AuthResult {
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		match &self.0 {
+			None => f.write_str("(anon)"),
+			Some(auth) => f.write_str(auth.id.to_string().as_str()),
 		}
 	}
 }

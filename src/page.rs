@@ -48,7 +48,7 @@ impl Page {
 
 	pub async fn get_by_id(id: Uuid) -> Result<Option<Self>> {
 		Ok(db::page::Entity::find_by_id(id)
-			.one(db::get().as_ref())
+			.one(&*db::get())
 			.await?
 			.map(Page))
 	}
@@ -85,7 +85,7 @@ impl Page {
 				title: ActiveValue::Set(title.to_owned()),
 				..Default::default()
 			};
-			Ok(Some(Self(new.insert(db::get().as_ref()).await?)))
+			Ok(Some(Self(new.insert(&*db::get()).await?)))
 		}
 	}
 
@@ -124,12 +124,17 @@ impl Page {
 	pub async fn mark_check(self) -> Result<()> {
 		let mut model = self.0.into_active_model();
 		model.need_check = ActiveValue::Set(Some(Utc::now()));
-		model.update(db::get().as_ref()).await?;
+		model.update(&*db::get()).await?;
 		App::get().linter_notify.notify_waiters();
 		Ok(())
 	}
 
-	pub async fn set_checked(self, start_time: DateTime<Utc>, issues: u32) -> Result<()> {
+	pub async fn set_checked(
+		self,
+		start_time: DateTime<Utc>,
+		issues: u32,
+		suggests: u32,
+	) -> Result<()> {
 		if self.check_requested_time() != Some(start_time) {
 			info!(
 				lang = self.lang(),
@@ -142,15 +147,26 @@ impl Page {
 		model.last_checked = ActiveValue::Set(Utc::now());
 		model.need_check = ActiveValue::Set(None);
 		model.issues = ActiveValue::Set(issues);
-		model.update(db::get().as_ref()).await?;
+		model.suggests = ActiveValue::Set(suggests);
+		model.update(&*db::get()).await?;
 		Ok(())
 	}
 
 	pub async fn delete(self) -> Result<()> {
-		self.0
-			.into_active_model()
-			.delete(db::get().as_ref())
+		self.0.into_active_model().delete(&*db::get()).await?;
+		Ok(())
+	}
+
+	pub async fn mark_all_pages_for_check() -> Result<()> {
+		info!("marking all pages for check");
+		db::page::Entity::update_many()
+			.set(db::page::ActiveModel {
+				need_check: ActiveValue::Set(Some(Utc::now())),
+				..Default::default()
+			})
+			.exec(&*db::get())
 			.await?;
+		App::get().linter_notify.notify_waiters();
 		Ok(())
 	}
 }
@@ -196,7 +212,7 @@ pub async fn sync_all_pages(lang: &str) -> Result<()> {
 		.filter(db::page::Column::Lang.eq(lang))
 		.select_only()
 		.column(db::page::Column::Title)
-		.all(db::get().as_ref())
+		.all(&*db::get())
 		.await?;
 	for dbpage in dbpages {
 		if !pages.contains(&dbpage.title) {

@@ -3,8 +3,9 @@ use axum::{
 	routing::{get, post},
 	Router,
 };
+use tracing::{error, info};
 
-use crate::app::App;
+use crate::{app::App, page::Page};
 
 use super::{
 	auth::{AuthResult, RequireSysop},
@@ -55,6 +56,23 @@ pub fn new_router() -> Router {
 					auth,
 					title: "Linter Triggerred",
 					message: "We notified linter worker to work.",
+					auto_return: true,
+				}
+			}),
+		)
+		.route(
+			"/recheck-all-pages",
+			post(|RequireSysop(auth): RequireSysop| async {
+				info!(%auth, "mark all pages for re-check");
+				tokio::spawn(async {
+					if let Err(err) = Page::mark_all_pages_for_check().await {
+						error!(%err, "failed to mark all pages for re-check");
+					}
+				});
+				MessagePage {
+					auth,
+					title: "Recheck Triggerred",
+					message: "We started to mark pages for re-check.",
 					auto_return: true,
 				}
 			}),
