@@ -115,7 +115,7 @@ pub async fn sync_rc(lang: &str) -> Result<()> {
 			}
 		}
 		checked_pages.insert(title.to_owned());
-		if let Some(dbpage) = Page::get_by_name(lang, title).await? {
+		if let Some(dbpage) = Page::get_or_init(lang, title).await? {
 			info!(rc = rc.rcid, page = title, "mark page for re-lint for RC");
 			dbpage.mark_check().await?;
 		}
