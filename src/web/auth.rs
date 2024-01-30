@@ -9,6 +9,7 @@ use axum::{
 	async_trait,
 	extract::{FromRequestParts, Query},
 	http::{header, request::Parts, StatusCode},
+	response::Redirect,
 	routing::get,
 	Router,
 };
@@ -180,10 +181,10 @@ async fn auth_handler(auth: AuthResult, Query(params): Query<AuthParams>) -> imp
 		)
 			.into_response()
 	} else if auth.0.is_some() {
- 			AuthSuccessPage { auth }.into_response()
- 		} else {
- 			(StatusCode::TEMPORARY_REDIRECT, [(header::LOCATION, format!("https://modrinth.com/auth/authorize?client_id={}&redirect_uri={}&scope=USER_READ+USER_READ_EMAIL", OAUTH_ID.as_str(), OAUTH_URL_ENCODED.as_str()))]).into_response()
- 		}
+		AuthSuccessPage { auth }.into_response()
+	} else {
+		Redirect::temporary(&format!("https://modrinth.com/auth/authorize?client_id={}&redirect_uri={}&scope=USER_READ+USER_READ_EMAIL", OAUTH_ID.as_str(), OAUTH_URL_ENCODED.as_str())).into_response()
+	}
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Clone)]
