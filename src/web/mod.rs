@@ -6,6 +6,7 @@ use crate::app::App;
 
 pub mod auth;
 pub mod meta;
+pub mod sysop;
 
 pub async fn run_server() {
 	let app = App::get();
@@ -13,8 +14,9 @@ pub async fn run_server() {
 
 	let router = Router::new()
 		.with_state(app.to_owned())
-		.merge(meta::new_router())
-		.merge(auth::new_router());
+		.nest("/", meta::new_router())
+		.nest("/auth", auth::new_router())
+		.nest("/sysop", sysop::new_router());
 
 	info!(addr, "Start tcp listener");
 	let listener = TcpListener::bind(addr).await.unwrap();

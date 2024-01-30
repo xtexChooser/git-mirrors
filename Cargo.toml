@@ -16,6 +16,7 @@ chrono = "0.4.33"
 dotenvy = "0.15.7"
 grass = { version = "0.13.1", features = ["macro", "random"], default-features = false }
 hex = "0.4.3"
+lru = "0.12.2"
 mwbot = { version = "0.6.1", features = ["linter"], git = "https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git" }
 parking_lot = { version = "0.12.1", features = ["send_guard"] }
 phf = { version = "0.11.2", features = ["macros"] }

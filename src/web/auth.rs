@@ -19,7 +19,7 @@ use sha2::{Digest, Sha256};
 use tracing::{error, info};
 use uuid::Uuid;
 
-use crate::db;
+use crate::{app::App, db};
 
 pub fn generate_salt() -> String {
 	let mut rng = ChaCha20Rng::from_entropy();
@@ -45,8 +45,8 @@ pub fn validate_token(salt: &str, token: &str) -> bool {
 }
 
 pub fn new_router() -> Router {
-	Router::new().route("/auth", get(auth_handler)).route(
-		"/auth/logout",
+	Router::new().route("/", get(auth_handler)).route(
+		"/logout",
 		get(|| async {
 			(
 				[(
@@ -247,6 +247,7 @@ pub async fn login(token: &str) -> Option<AuthInfo> {
 	}
 }
 
+#[derive(Debug, Clone)]
 pub struct AuthResult(pub Option<AuthInfo>);
 
 #[async_trait]
@@ -263,9 +264,36 @@ where
 			.get("spock_token")
 			.to_owned()
 		{
-			Ok(AuthResult(login(token.value()).await))
+			if let Some(result) = App::get().login_lru.write().get(token.value()) {
+				return Ok(result.to_owned());
+			}
+			let result = AuthResult(login(token.value()).await);
+			App::get()
+				.login_lru
+				.write()
+				.put(token.value().to_owned(), result.clone());
+			Ok(result)
 		} else {
 			Ok(AuthResult(None))
+		}
+	}
+}
+
+pub struct RequireSysop(pub AuthInfo);
+
+#[async_trait]
+impl<S> FromRequestParts<S> for RequireSysop
+where
+	S: Send + Sync,
+{
+	type Rejection = (StatusCode, &'static str);
+
+	async fn from_request_parts(parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
+		let AuthResult(auth) = AuthResult::from_request_parts(parts, state).await.unwrap();
+		if let Some(auth) = auth {
+			Ok(RequireSysop(auth))
+		} else {
+			Err((StatusCode::UNAUTHORIZED, "bot-sysop permission required"))
 		}
 	}
 }
