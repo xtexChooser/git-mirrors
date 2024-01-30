@@ -11,6 +11,7 @@ pub struct Model {
 	pub salt: String,
 	pub modrinth_id: String,
 	pub sysop: bool,
+	pub blocked: Option<DateTimeUtc>,
 }
 
 impl Display for Model {

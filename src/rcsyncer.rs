@@ -139,8 +139,8 @@ pub async fn run_rc_syncer() {
 		}
 		for lang in &site::SYNC_RC {
 			if let Err(err) = sync_rc(lang).instrument(info_span!("sync_rc", lang)).await {
-				let err = err.context(format!("sync RC lang={}", lang));
-				error!(%err, lang, "failed to sync RC");
+				let error = err.context(format!("sync RC lang={}", lang));
+				error!(%error, lang, "failed to sync RC");
 			}
 		}
 	}

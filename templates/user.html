@@ -1,0 +1,48 @@
+{% extends "includes/base.html" %}
+{% block title %}{{ user.name }} - spock{% endblock %}
+{% block body %}
+<h1><span>{{ user.name }}</span>
+{%- if user.sysop -%}<span class="badge badge-cyan">bot-sysop</span>{%- endif -%}
+{%- if is_blocked -%}<span class="badge badge-red">{%- if is_permanent_block -%}permanent-{%- endif -%}blocked</span>{%- endif -%}
+</h1>
+<p class="text-secondary">{{ user.id }}</p>
+
+{%- if let Some(until) = user.blocked -%}
+<p>This user has been blocked until {{ until.to_rfc3339_opts(chrono::SecondsFormat::Secs, true) }}</p>
+{%- endif -%}
+
+<div>
+	<form method="post">
+		{% if is_self -%}
+		<button formaction="/user/{{ user.id }}/reset_salt" class="button-primary">Reset token-salt</button>
+		{%- endif %}
+	</form>
+</div>
+
+{% if let Some(auth) = auth.0 -%}{% if auth.sysop -%}
+<div>
+	<p>User Modrinth ID: <span>{{ user.modrinth_id }}</span></p>
+	<form method="post">
+		{% if !user.sysop -%}
+		<button formmethod="post" formaction="/user/{{ user.id }}/op">Add as bot-sysop</button>
+		{%- endif %}
+		{% if user.sysop && !is_self -%}
+		<button formmethod="post" formaction="/user/{{ user.id }}/deop" class="button-danger">Remove bot-sysop</button>
+		{%- endif %}
+	</form>
+	<div>
+		<form class="inline-form" method="post">
+			<input name="time" type="text" autocomplete="hidden" placeholder="Block duration" required />
+			<button formaction="/user/{{ user.id }}/block">Block</button>
+		</form>
+		<form class="inline-form" method="post">
+			<button formaction="/user/{{ user.id }}/block/permanent">Permanent block</button>
+			{% if user.blocked.is_some() -%}
+			<button formaction="/user/{{ user.id }}/unblock">Unblock</button>
+			{%- endif %}
+		</form>
+	</div>
+</div>
+{%- endif %}{%- endif %}
+
+{% endblock %}

@@ -76,12 +76,12 @@ nav.tab-nav
 	border-bottom: 3px solid #dddddd
 	@media(prefers-color-scheme: dark)
 		border-bottom-color: #131618
-	margin: 0 0 1rem 0
-	display: inline-flex
-	flex-wrap: nowrap
-	padding: 0
-	width: 100%
-	max-width: 100%
+		margin: 0 0 1rem 0
+		display: inline-flex
+		flex-wrap: nowrap
+		padding: 0
+		width: 100%
+		max-width: 100%
 	ul
 		margin: 0
 		a
@@ -107,8 +107,8 @@ button, a.button
 	@media (prefers-color-scheme: dark)
 		color: $color-white
 		background-color: #222528
-	border: #494e53  1px solid
-	padding: 0 1.5rem 0 1.5rem
+	border: #494e53 1px solid
+	padding: 0.25rem 1.5rem
 	@include no-underline()
 	&:hover
 		background-color: $color-gray
@@ -124,3 +124,47 @@ button, a.button
 	&.button-primary
 		background-color: $color-primary
 		border-color: #011831
+	&.button-danger
+		background-color: $color-danger
+		border-color: #3b0a0f
+		&:focus
+			box-shadow: 0 0 0 0.2rem #dc354580
+
+.text-secondary
+	color: $color-secondary
+
+.badge
+	color: $color-white
+	font-size: 80%
+	font-family: monospace
+	margin: 0 0.5em
+	padding: 0 0.3em
+	vertical-align: middle
+	&.badge-cyan
+		background-color: $color-cyan
+	&.badge-red
+		background-color: $color-red
+
+.inline-form
+	display: inline
+
+input
+	border: #ced4da 1px solid
+	@media (prefers-color-scheme: dark)
+		border-color: #495057
+	border-radius: 0
+	min-width: 15em
+	padding: 0.25rem 0.375rem
+	&:focus
+		outline: 0
+		box-shadow: 0 0 0 0.2rem #007bff40
+	&:not(:disabled)
+		color: $color-black
+		background-color: #dee2e6
+		@media (prefers-color-scheme: dark)
+			color: $color-white
+			background-color: #222528
+	&:focus &:disabled
+		background-color: $color-gray
+		@media (prefers-color-scheme: dark)
+			background-color: #0d0e0f

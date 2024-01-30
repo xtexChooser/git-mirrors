@@ -14,12 +14,15 @@ use axum::{
 	Router,
 };
 use axum_extra::extract::{cookie::Cookie, CookieJar};
+use chrono::Utc;
 use rand::{distributions::DistString, SeedableRng};
 use rand_chacha::ChaCha20Rng;
-use sea_orm::{ActiveModelTrait, ActiveValue, ColumnTrait, EntityTrait, QueryFilter};
+use sea_orm::{
+	ActiveModelTrait, ActiveValue, ColumnTrait, EntityTrait, IntoActiveModel, QueryFilter,
+};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
-use tracing::{info, info_span, Instrument};
+use tracing::{error, info, info_span, Instrument};
 use uuid::Uuid;
 
 use crate::{app::App, db};
@@ -28,7 +31,7 @@ use super::{meta::MessagePage, WebResult};
 
 pub fn generate_salt() -> String {
 	let mut rng = ChaCha20Rng::from_entropy();
-	rand::distributions::Alphanumeric.sample_string(&mut rng, 128)
+	rand::distributions::Alphanumeric.sample_string(&mut rng, 64)
 }
 
 pub fn generate_token(salt: &str) -> String {
@@ -142,7 +145,7 @@ async fn auth_handler(auth: AuthResult, Query(params): Query<AuthParams>) -> Web
 				.filter(db::user::Column::ModrinthId.eq(&mrid))
 				.one(&*db::get())
 				.await?;
-			let user = match user {
+			let mut user = match user {
 				Some(u) => u,
 				None => {
 					db::user::ActiveModel {
@@ -151,28 +154,54 @@ async fn auth_handler(auth: AuthResult, Query(params): Query<AuthParams>) -> Web
 						salt: ActiveValue::Set(generate_salt()),
 						modrinth_id: ActiveValue::Set(mrid.clone()),
 						sysop: ActiveValue::Set(mrid == *OAUTH_SYSOP),
+						blocked: ActiveValue::Set(None),
 					}
 					.insert(&*db::get())
 					.await?
 				}
 			};
+			if let Some(blocked) = user.blocked {
+				if blocked <= Utc::now() {
+					user = {
+						let mut model = user.into_active_model();
+						model.blocked = ActiveValue::Set(None);
+						model.update(&*db::get()).await?
+					};
+				} else if !user.sysop {
+					return Ok(Err(blocked));
+				}
+			}
 			let token = generate_token(&user.salt);
 			info!(%user, token, "generated token per login request");
-			Ok(format!("{}:{}", user.id, token))
+			Ok(Ok(format!("{}:{}", user.id, token)))
 		}
 		.instrument(info_span!("handle_oauth", code))
 		.await?;
-
-		Ok((
-			[(
-				header::SET_COOKIE,
-				Cookie::new("spock_token", &token).to_string(),
-			)],
-			AuthSuccessPage {
-				auth: AuthResult(login(&token).await),
-			},
-		)
-			.into_response())
+		match token {
+			Ok(token) => Ok((
+				[(
+					header::SET_COOKIE,
+					Cookie::new("spock_token", &token).to_string(),
+				)],
+				AuthSuccessPage {
+					auth: AuthResult(login(&token).await),
+				},
+			)
+				.into_response()),
+			Err(blocked) => Ok((
+				StatusCode::FORBIDDEN,
+				MessagePage {
+					auth: AuthResult(None),
+					title: "Login Blocked",
+					message: &format!(
+						"You are blocked until {}",
+						blocked.to_rfc3339_opts(chrono::SecondsFormat::Secs, true)
+					),
+					auto_return: false,
+				},
+			)
+				.into_response()),
+		}
 	} else if auth.0.is_some() {
 		Ok(AuthSuccessPage { auth }.into_response())
 	} else {
@@ -203,6 +232,21 @@ pub async fn login(token: &str) -> Option<AuthInfo> {
 		&& let Ok(Some(user)) = db::user::Entity::find_by_id(user).one(&*db::get()).await
 		&& validate_token(&user.salt, token)
 	{
+		if let Some(blocked) = user.blocked {
+			if blocked <= Utc::now() {
+				let mut user = user.into_active_model();
+				user.blocked = ActiveValue::Set(None);
+				match user.update(&*db::get()).await {
+					Ok(user) => return Some(user.into()),
+					Err(error) => {
+						error!(%error, "failed to remove block record for user");
+						return None;
+					}
+				}
+			} else if !user.sysop {
+				return None;
+			}
+		}
 		Some(user.into())
 	} else {
 		None
@@ -250,6 +294,31 @@ impl Display for AuthResult {
 	}
 }
 
+pub struct RequireAuth(pub AuthResult);
+
+impl RequireAuth {
+	pub fn info(&self) -> &AuthInfo {
+		self.0 .0.as_ref().unwrap()
+	}
+}
+
+#[async_trait]
+impl<S> FromRequestParts<S> for RequireAuth
+where
+	S: Send + Sync,
+{
+	type Rejection = (StatusCode, &'static str);
+
+	async fn from_request_parts(parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
+		let AuthResult(auth) = AuthResult::from_request_parts(parts, state).await.unwrap();
+		if let Some(auth) = auth {
+			Ok(RequireAuth(AuthResult(Some(auth))))
+		} else {
+			Err((StatusCode::UNAUTHORIZED, "login required"))
+		}
+	}
+}
+
 pub struct RequireSysop(pub AuthResult);
 
 impl RequireSysop {
@@ -266,11 +335,9 @@ where
 	type Rejection = (StatusCode, &'static str);
 
 	async fn from_request_parts(parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
-		let AuthResult(auth) = AuthResult::from_request_parts(parts, state).await.unwrap();
-		if let Some(auth) = auth
-			&& auth.sysop
-		{
-			Ok(RequireSysop(AuthResult(Some(auth))))
+		let auth = RequireAuth::from_request_parts(parts, state).await.unwrap();
+		if auth.info().sysop {
+			Ok(RequireSysop(AuthResult(auth.0 .0)))
 		} else {
 			Err((StatusCode::UNAUTHORIZED, "bot-sysop permission required"))
 		}

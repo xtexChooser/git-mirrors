@@ -65,8 +65,8 @@ pub fn new_router() -> Router {
 			post(|RequireSysop(auth): RequireSysop| async {
 				info!(%auth, "mark all pages for re-check");
 				tokio::spawn(async {
-					if let Err(err) = Page::mark_all_pages_for_check().await {
-						error!(%err, "failed to mark all pages for re-check");
+					if let Err(error) = Page::mark_all_pages_for_check().await {
+						error!(%error, "failed to mark all pages for re-check");
 					}
 				});
 				MessagePage {

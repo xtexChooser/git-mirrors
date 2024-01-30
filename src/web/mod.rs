@@ -4,9 +4,12 @@ use tracing::{error, info};
 
 use crate::app::App;
 
+use self::{auth::AuthResult, meta::MessagePage};
+
 pub mod auth;
 pub mod meta;
 pub mod sysop;
+pub mod user;
 
 pub async fn run_server() {
 	let app = App::get();
@@ -16,7 +19,8 @@ pub async fn run_server() {
 		.with_state(app.to_owned())
 		.nest("/", meta::new_router())
 		.nest("/auth", auth::new_router())
-		.nest("/sysop", sysop::new_router());
+		.nest("/sysop", sysop::new_router())
+		.nest("/user", user::new_router());
 
 	info!(addr, "Start tcp listener");
 	let listener = TcpListener::bind(addr).await.unwrap();
@@ -25,16 +29,24 @@ pub async fn run_server() {
 
 type WebResult = Result<axum::response::Response, WebError>;
 
-struct WebError(anyhow::Error);
+pub enum WebError {
+	Error(anyhow::Error),
+	Response(axum::response::Response),
+}
 
 impl IntoResponse for WebError {
 	fn into_response(self) -> axum::response::Response {
-		error!(err = %self.0, "error in request");
-		(
-			StatusCode::INTERNAL_SERVER_ERROR,
-			format!("Something went wrong: {}", self.0),
-		)
-			.into_response()
+		match self {
+			WebError::Error(error) => {
+				error!(%error, "error in request");
+				(
+					StatusCode::INTERNAL_SERVER_ERROR,
+					format!("Something went wrong: {}", error),
+				)
+					.into_response()
+			}
+			WebError::Response(response) => response,
+		}
 	}
 }
 
@@ -43,6 +55,33 @@ where
 	E: Into<anyhow::Error>,
 {
 	fn from(err: E) -> Self {
-		Self(err.into())
+		Self::Error(err.into())
+	}
+}
+pub struct NotFoundMessage(pub String);
+
+impl IntoResponse for NotFoundMessage {
+	fn into_response(self) -> axum::response::Response {
+		(StatusCode::NOT_FOUND, self.0).into_response()
+	}
+}
+
+pub struct NotFoundPage<'a> {
+	pub auth: AuthResult,
+	pub message: &'a str,
+}
+
+impl<'a> IntoResponse for NotFoundPage<'a> {
+	fn into_response(self) -> axum::response::Response {
+		(
+			StatusCode::NOT_FOUND,
+			MessagePage {
+				auth: self.auth,
+				title: "Not Found",
+				message: self.message,
+				auto_return: false,
+			},
+		)
+			.into_response()
 	}
 }

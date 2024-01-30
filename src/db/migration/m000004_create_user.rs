@@ -27,6 +27,11 @@ impl MigrationTrait for Migration {
 							.not_null()
 							.default(false),
 					)
+					.col(
+						ColumnDef::new(User::Blocked)
+							.timestamp()
+							.null(),
+					)
 					.to_owned(),
 			)
 			.await?;
@@ -104,4 +109,5 @@ enum User {
 	Salt,
 	ModrinthId,
 	Sysop,
+	Blocked,
 }

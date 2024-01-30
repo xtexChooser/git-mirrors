@@ -337,6 +337,7 @@ dependencies = [
  "mime",
  "pin-project-lite",
  "serde",
+ "serde_html_form",
  "tower",
  "tower-layer",
  "tower-service",
@@ -844,6 +845,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dbaceec3c6e4211c79e7b1800fb9680527106beb2f9c51904a3210c03a448c74"
 dependencies = [
  "dtoa",
+]
+
+[[package]]
+name = "duration-str"
+version = "0.7.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a8bb6a301a95ba86fa0ebaf71d49ae4838c51f8b84cb88ed140dfb66452bb3c4"
+dependencies = [
+ "chrono",
+ "nom",
+ "rust_decimal",
+ "serde",
+ "thiserror",
+ "time",
 ]
 
 [[package]]
@@ -3012,6 +3027,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "serde_html_form"
+version = "0.2.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "20e1066e1cfa6692a722cf40386a2caec36da5ddc4a2c16df592f0f609677e8c"
+dependencies = [
+ "form_urlencoded",
+ "indexmap 2.2.1",
+ "itoa 1.0.10",
+ "ryu",
+ "serde",
+]
+
+[[package]]
 name = "serde_json"
 version = "1.0.113"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3192,6 +3220,7 @@ dependencies = [
  "axum-extra",
  "chrono",
  "dotenvy",
+ "duration-str",
  "grass",
  "hex",
  "lru",

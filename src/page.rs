@@ -237,8 +237,8 @@ pub async fn run_page_list_syncer() {
 				.instrument(info_span!("sync_all_pages", lang))
 				.await
 			{
-				let err = err.context(format!("sync all pages lang={}", lang));
-				error!(%err, lang, "failed to sync all pages");
+				let error = err.context(format!("sync all pages lang={}", lang));
+				error!(%error, lang, "failed to sync all pages");
 			}
 		}
 	}
