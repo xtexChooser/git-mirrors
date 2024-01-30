@@ -52,3 +52,5 @@ pub const SYNC_ALL_PAGES_PEROID: u64 = 60 * 60 * 24;
 
 pub const SYNC_RC: phf::Set<&str> = phf_set!["zh", "en"];
 pub const SYNC_RC_PEROID: u64 = 30;
+
+pub const SQLITE_INTERVAL_OPTIMIZE_PEROID: u64 = 60 * 60 * 24;
