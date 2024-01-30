@@ -1,0 +1,12 @@
+{% extends "includes/base.html" %}
+{% block title %}sysop - spock{% endblock %}
+{% block body %}
+{%- let current_page = "/sysop" -%}
+{% include "includes/sysop.html" %}
+
+<form method="post">
+	<button formaction="/sysop/trigger-syncers">Trigger syncers</a>
+	<button formaction="/sysop/reset-login-lru">Reset login LRU cache</a>
+	<button formaction="/sysop/trigger-linter-worker">Trigger linter worker</a>
+</form>
+{% endblock %}

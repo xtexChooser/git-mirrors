@@ -7,7 +7,7 @@ use mwbot::generators::{
 	Generator,
 };
 use sea_orm::{prelude::*, ActiveValue, IntoActiveModel};
-use tracing::{error, info_span, trace, Instrument};
+use tracing::{error, info, info_span, trace, Instrument};
 use uuid::Uuid;
 
 use crate::{
@@ -116,6 +116,7 @@ pub async fn sync_rc(lang: &str) -> Result<()> {
 		}
 		checked_pages.insert(title.to_owned());
 		if let Some(dbpage) = Page::get_by_name(lang, title).await? {
+			info!(rc = rc.rcid, page = title, "mark page for re-lint for RC");
 			dbpage.mark_check().await?;
 		}
 	}
@@ -137,10 +138,7 @@ pub async fn run_rc_syncer() {
 			_ = tokio::time::sleep(std::time::Duration::from_secs(site::SYNC_RC_PEROID))=>{}
 		}
 		for lang in &site::SYNC_RC {
-			if let Err(err) = sync_rc(lang)
-				.instrument(info_span!("sync_rc_{}", lang))
-				.await
-			{
+			if let Err(err) = sync_rc(lang).instrument(info_span!("sync_rc", lang)).await {
 				let err = err.context(format!("sync RC lang={}", lang));
 				error!(%err, lang, "failed to sync RC");
 			}

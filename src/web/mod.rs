@@ -1,8 +1,11 @@
+use askama::Template;
 use axum::Router;
 use tokio::net::TcpListener;
 use tracing::info;
 
 use crate::app::App;
+
+use self::auth::AuthResult;
 
 pub mod auth;
 pub mod meta;

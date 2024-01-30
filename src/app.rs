@@ -1,5 +1,7 @@
 use std::{
-	collections::BTreeMap, num::NonZeroUsize, sync::{Arc, OnceLock}
+	collections::BTreeMap,
+	num::NonZeroUsize,
+	sync::{Arc, OnceLock},
 };
 
 use anyhow::{bail, Result};

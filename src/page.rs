@@ -218,7 +218,7 @@ pub async fn run_page_list_syncer() {
 		}
 		for lang in site::ALLOWED_NAMESPACES.keys() {
 			if let Err(err) = sync_all_pages(lang)
-				.instrument(info_span!("sync_all_pages_{}", lang))
+				.instrument(info_span!("sync_all_pages", lang))
 				.await
 			{
 				let err = err.context(format!("sync all pages lang={}", lang));

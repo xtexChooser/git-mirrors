@@ -1,0 +1,12 @@
+{% extends "includes/base.html" %}
+{% block title %}{{ title }} - spock{% endblock %}
+{% block body %}
+<main id="message">
+	<h1>{{ title }}</h1>
+	<p>{{ message }}</p>
+	{% if auto_return -%}
+	<p id="auto-redirect-message"></p>
+	<script src="/message-auto-return.js"></script>
+	{%- endif %}
+</main>
+{% endblock %}

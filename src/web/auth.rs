@@ -16,10 +16,12 @@ use rand_chacha::ChaCha20Rng;
 use sea_orm::{ActiveModelTrait, ActiveValue, ColumnTrait, EntityTrait, QueryFilter};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
-use tracing::{error, info};
+use tracing::{error, info, info_span, Instrument};
 use uuid::Uuid;
 
 use crate::{app::App, db};
+
+use super::meta::MessagePage;
 
 pub fn generate_salt() -> String {
 	let mut rng = ChaCha20Rng::from_entropy();
@@ -54,8 +56,11 @@ pub fn new_router() -> Router {
 					"spock_token=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
 						.to_string(),
 				)],
-				AuthLogoutPage {
+				MessagePage {
 					auth: AuthResult(None),
+					title: "Logout Succeeded",
+					message: "You are now logged out.",
+					auto_return: true,
 				},
 			)
 		}),
@@ -65,12 +70,6 @@ pub fn new_router() -> Router {
 #[derive(Template)]
 #[template(path = "auth_success.html")]
 struct AuthSuccessPage {
-	auth: AuthResult,
-}
-
-#[derive(Template)]
-#[template(path = "auth_logout.html")]
-struct AuthLogoutPage {
 	auth: AuthResult,
 }
 
@@ -109,7 +108,7 @@ struct MrUserResponse {
 
 async fn auth_handler(auth: AuthResult, Query(params): Query<AuthParams>) -> impl IntoResponse {
 	if let Some(code) = params.code {
-		let resp = async {
+		let token = async {
 			let resp = OAUTH_CLIENT
 				.post("https://api.modrinth.com/_internal/oauth/token")
 				.form(&HashMap::from([
@@ -127,46 +126,15 @@ async fn auth_handler(auth: AuthResult, Query(params): Query<AuthParams>) -> imp
 			if resp.token_type != "Bearer" {
 				bail!("MR oauth/token responded with non-Bearer token_type");
 			}
-			Ok(resp)
-		}
-		.await;
-		let token = match resp {
-			Err(err) => {
-				error!(%err, code, "could not get MR access token from code");
-				return (
-					StatusCode::INTERNAL_SERVER_ERROR,
-					"Could not get MR access token from code",
-				)
-					.into_response();
-			}
-			Ok(r) => r.access_token,
-		};
-		let resp = async {
 			let resp = OAUTH_CLIENT
 				.get("https://api.modrinth.com/v3/user")
-				.header(reqwest::header::AUTHORIZATION, &token)
+				.header(reqwest::header::AUTHORIZATION, &resp.access_token)
 				.send()
 				.await?
 				.error_for_status()?
 				.json::<MrUserResponse>()
 				.await?;
-			Ok(resp) as Result<MrUserResponse>
-		}
-		.await;
-		let resp = match resp {
-			Err(err) => {
-				error!(%err, code, "could not get MR user info");
-				return (
-					StatusCode::SERVICE_UNAVAILABLE,
-					"Could not get MR user info",
-				)
-					.into_response();
-			}
-			Ok(r) => r,
-		};
-
-		let mrid = resp.id;
-		let token = async {
+			let mrid = resp.id;
 			let user = db::user::Entity::find()
 				.filter(db::user::Column::ModrinthId.eq(&mrid))
 				.one(db::get().as_ref())
@@ -187,8 +155,9 @@ async fn auth_handler(auth: AuthResult, Query(params): Query<AuthParams>) -> imp
 			};
 			let token = generate_token(&user.salt);
 			info!(%user, token, "generated token per login request");
-			Ok(format!("{}:{}", user.id, token)) as Result<String>
+			Ok(format!("{}:{}", user.id, token))
 		}
+		.instrument(info_span!("handle_oauth", code))
 		.await;
 		let token = match token {
 			Err(err) => {
@@ -279,7 +248,13 @@ where
 	}
 }
 
-pub struct RequireSysop(pub AuthInfo);
+pub struct RequireSysop(pub AuthResult);
+
+impl RequireSysop {
+	pub fn info(&self) -> &AuthInfo {
+		self.0 .0.as_ref().unwrap()
+	}
+}
 
 #[async_trait]
 impl<S> FromRequestParts<S> for RequireSysop
@@ -290,8 +265,10 @@ where
 
 	async fn from_request_parts(parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
 		let AuthResult(auth) = AuthResult::from_request_parts(parts, state).await.unwrap();
-		if let Some(auth) = auth {
-			Ok(RequireSysop(auth))
+		if let Some(auth) = auth
+			&& auth.sysop
+		{
+			Ok(RequireSysop(AuthResult(Some(auth))))
 		} else {
 			Err((StatusCode::UNAUTHORIZED, "bot-sysop permission required"))
 		}

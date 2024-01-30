@@ -1,0 +1,11 @@
+{% macro begin() -%}
+<nav class="tab-nav">
+	<ul>
+{%- endmacro -%}
+{% macro tab(href, text) -%}
+	<li><a href="{{ href }}" {%- if href == current_page -%} class="active-tab" {%- endif %}>{{ text }}</a></li>
+{%- endmacro -%}
+{% macro end() -%}
+	</ul>
+</nav>
+{%- endmacro -%}

@@ -1,0 +1,6 @@
+{%- import "includes/tab.html" as tab -%}
+{%- let user = auth.0.as_ref().unwrap() -%}
+
+{% call tab::begin() %}
+{% call tab::tab("/sysop", "info") %}
+{% call tab::end() %}
