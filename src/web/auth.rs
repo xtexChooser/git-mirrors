@@ -107,7 +107,7 @@ struct MrUserResponse {
 	pub name: String,
 }
 
-async fn auth_handler(Query(params): Query<AuthParams>) -> impl IntoResponse {
+async fn auth_handler(auth: AuthResult, Query(params): Query<AuthParams>) -> impl IntoResponse {
 	if let Some(code) = params.code {
 		let resp = async {
 			let resp = OAUTH_CLIENT
@@ -209,7 +209,11 @@ async fn auth_handler(Query(params): Query<AuthParams>) -> impl IntoResponse {
 		)
 			.into_response()
 	} else {
-		(StatusCode::TEMPORARY_REDIRECT, [(header::LOCATION, format!("https://modrinth.com/auth/authorize?client_id={}&redirect_uri={}&scope=USER_READ+USER_READ_EMAIL", OAUTH_ID.as_str(), OAUTH_URL_ENCODED.as_str()))]).into_response()
+		if auth.0.is_some() {
+			AuthSuccessPage { auth }.into_response()
+		} else {
+			(StatusCode::TEMPORARY_REDIRECT, [(header::LOCATION, format!("https://modrinth.com/auth/authorize?client_id={}&redirect_uri={}&scope=USER_READ+USER_READ_EMAIL", OAUTH_ID.as_str(), OAUTH_URL_ENCODED.as_str()))]).into_response()
+		}
 	}
 }
 
