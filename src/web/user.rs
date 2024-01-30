@@ -75,7 +75,7 @@ async fn get_user_handler(auth: AuthResult, Path(id): Path<String>) -> WebResult
 			&auth,
 			db::user::Entity::find_by_id(id).one(&*db::get()).await?,
 		)?;
-		return Ok(Redirect::temporary(&format!("/user/{}", user.name)).into_response());
+		Ok(Redirect::temporary(&format!("/user/{}", user.name)).into_response())
 	} else if let Some(user) = db::user::Entity::find()
 		.filter(db::user::Column::Name.eq(id))
 		.one(&*db::get())
@@ -113,7 +113,7 @@ async fn get_user_handler(auth: AuthResult, Path(id): Path<String>) -> WebResult
 async fn op_handler(RequireSysop(auth): RequireSysop, Path(id): Path<Uuid>) -> WebResult {
 	let user = user_or_else(
 		&auth,
-		db::user::Entity::find_by_id(id.clone())
+		db::user::Entity::find_by_id(id)
 			.one(&*db::get())
 			.await?,
 	)?;
@@ -133,7 +133,7 @@ async fn op_handler(RequireSysop(auth): RequireSysop, Path(id): Path<Uuid>) -> W
 async fn deop_handler(RequireSysop(auth): RequireSysop, Path(id): Path<Uuid>) -> WebResult {
 	let user = user_or_else(
 		&auth,
-		db::user::Entity::find_by_id(id.clone())
+		db::user::Entity::find_by_id(id)
 			.one(&*db::get())
 			.await?,
 	)?;
@@ -158,7 +158,7 @@ async fn reset_salt_handler(RequireAuth(auth): RequireAuth, Path(id): Path<Uuid>
 	}
 	let user = user_or_else(
 		&auth,
-		db::user::Entity::find_by_id(id.clone())
+		db::user::Entity::find_by_id(id)
 			.one(&*db::get())
 			.await?,
 	)?;
@@ -189,7 +189,7 @@ async fn block_handler(
 ) -> WebResult {
 	let user = user_or_else(
 		&auth,
-		db::user::Entity::find_by_id(id.clone())
+		db::user::Entity::find_by_id(id)
 			.one(&*db::get())
 			.await?,
 	)?;
@@ -214,7 +214,7 @@ async fn permanent_block_handler(
 ) -> WebResult {
 	let user = user_or_else(
 		&auth,
-		db::user::Entity::find_by_id(id.clone())
+		db::user::Entity::find_by_id(id)
 			.one(&*db::get())
 			.await?,
 	)?;
@@ -235,7 +235,7 @@ async fn permanent_block_handler(
 async fn unblock_handler(RequireSysop(auth): RequireSysop, Path(id): Path<Uuid>) -> WebResult {
 	let user = user_or_else(
 		&auth,
-		db::user::Entity::find_by_id(id.clone())
+		db::user::Entity::find_by_id(id)
 			.one(&*db::get())
 			.await?,
 	)?;

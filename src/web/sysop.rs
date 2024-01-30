@@ -7,7 +7,7 @@ use axum::{
 	Router,
 };
 use sea_orm::{
-	ColumnTrait, ConnectionTrait, EntityTrait, PaginatorTrait, QueryFilter, QueryOrder, QuerySelect,
+	EntityTrait, PaginatorTrait, QueryOrder,
 };
 use tracing::{error, info};
 
