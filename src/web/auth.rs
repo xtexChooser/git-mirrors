@@ -1,0 +1,267 @@
+use std::{collections::HashMap, convert::Infallible, env, str::FromStr, sync::LazyLock};
+
+use anyhow::{bail, Result};
+use askama::{filters::urlencode, Template};
+use askama_axum::IntoResponse;
+use axum::{
+	async_trait,
+	extract::{FromRequestParts, Query},
+	http::{header, request::Parts, StatusCode},
+	routing::get,
+	Router,
+};
+use axum_extra::extract::{cookie::Cookie, CookieJar};
+use rand::{distributions::DistString, SeedableRng};
+use rand_chacha::ChaCha20Rng;
+use sea_orm::{ActiveModelTrait, ActiveValue, ColumnTrait, EntityTrait, QueryFilter};
+use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
+use tracing::{error, info};
+use uuid::Uuid;
+
+use crate::db;
+
+pub fn generate_salt() -> String {
+	let mut rng = ChaCha20Rng::from_entropy();
+	rand::distributions::Alphanumeric.sample_string(&mut rng, 128)
+}
+
+pub fn generate_token(salt: &str) -> String {
+	let mut rng = ChaCha20Rng::from_entropy();
+	let random = rand::distributions::Alphanumeric.sample_string(&mut rng, 16);
+	format!("{}:{}", random, hash_token(salt, &random))
+}
+
+fn hash_token(salt: &str, random: &str) -> String {
+	hex::encode(Sha256::digest(format!("{}{}", random, salt).as_bytes()))
+}
+
+pub fn validate_token(salt: &str, token: &str) -> bool {
+	if let Some((random, hash)) = token.split_once(':') {
+		hash_token(salt, random) == hash
+	} else {
+		false
+	}
+}
+
+pub fn new_router() -> Router {
+	Router::new().route("/auth", get(auth_handler)).route(
+		"/auth/logout",
+		get(|| async {
+			(
+				[(
+					header::SET_COOKIE,
+					"spock_token=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+						.to_string(),
+				)],
+				AuthLogoutPage {
+					auth: AuthResult(None),
+				},
+			)
+		}),
+	)
+}
+
+#[derive(Template)]
+#[template(path = "auth_success.html")]
+struct AuthSuccessPage {
+	auth: AuthResult,
+}
+
+#[derive(Template)]
+#[template(path = "auth_logout.html")]
+struct AuthLogoutPage {
+	auth: AuthResult,
+}
+
+#[derive(Deserialize)]
+struct AuthParams {
+	code: Option<String>,
+}
+
+static OAUTH_ID: LazyLock<String> =
+	LazyLock::new(|| env::var("SPOCK_OAUTH_ID").expect("SPOCK_OAUTH_ID is missing"));
+static OAUTH_SECRET: LazyLock<String> =
+	LazyLock::new(|| env::var("SPOCK_OAUTH_SECRET").expect("SPOCK_OAUTH_SECRET is missing"));
+static OAUTH_URL: LazyLock<String> = LazyLock::new(|| {
+	env::var("SPOCK_OAUTH_REDIRECT_URI").expect("SPOCK_OAUTH_REDIRECT_URI is missing")
+});
+static OAUTH_URL_ENCODED: LazyLock<String> = LazyLock::new(|| {
+	urlencode(OAUTH_URL.as_str()).expect("SPOCK_OAUTH_REDIRECT_URI can not be URL-encoded")
+});
+static OAUTH_CLIENT: LazyLock<reqwest::Client> = LazyLock::new(Default::default);
+static OAUTH_SYSOP: LazyLock<String> =
+	LazyLock::new(|| env::var("SPOCK_OAUTH_SYSOP").expect("SPOCK_OAUTH_SYSOP is missing"));
+
+#[derive(Debug, Serialize, Deserialize)]
+struct MrTokenResponse {
+	pub access_token: String,
+	pub token_type: String,
+	pub expires_in: u64,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct MrUserResponse {
+	pub id: String,
+	pub username: String,
+	pub name: String,
+}
+
+async fn auth_handler(Query(params): Query<AuthParams>) -> impl IntoResponse {
+	if let Some(code) = params.code {
+		let resp = async {
+			let resp = OAUTH_CLIENT
+				.post("https://api.modrinth.com/_internal/oauth/token")
+				.form(&HashMap::from([
+					("grant_type", "authorization_code"),
+					("code", &code),
+					("redirect_uri", &OAUTH_URL),
+					("client_id", &OAUTH_ID),
+				]))
+				.header(reqwest::header::AUTHORIZATION, OAUTH_SECRET.as_str())
+				.send()
+				.await?
+				.error_for_status()?
+				.json::<MrTokenResponse>()
+				.await?;
+			if resp.token_type != "Bearer" {
+				bail!("MR oauth/token responded with non-Bearer token_type");
+			}
+			Ok(resp)
+		}
+		.await;
+		let token = match resp {
+			Err(err) => {
+				error!(%err, code, "could not get MR access token from code");
+				return (
+					StatusCode::INTERNAL_SERVER_ERROR,
+					"Could not get MR access token from code",
+				)
+					.into_response();
+			}
+			Ok(r) => r.access_token,
+		};
+		let resp = async {
+			let resp = OAUTH_CLIENT
+				.get("https://api.modrinth.com/v3/user")
+				.header(reqwest::header::AUTHORIZATION, &token)
+				.send()
+				.await?
+				.error_for_status()?
+				.json::<MrUserResponse>()
+				.await?;
+			Ok(resp) as Result<MrUserResponse>
+		}
+		.await;
+		let resp = match resp {
+			Err(err) => {
+				error!(%err, code, "could not get MR user info");
+				return (
+					StatusCode::SERVICE_UNAVAILABLE,
+					"Could not get MR user info",
+				)
+					.into_response();
+			}
+			Ok(r) => r,
+		};
+
+		let mrid = resp.id;
+		let token = async {
+			let user = db::user::Entity::find()
+				.filter(db::user::Column::ModrinthId.eq(&mrid))
+				.one(db::get().as_ref())
+				.await?;
+			let user = match user {
+				Some(u) => u,
+				None => {
+					db::user::ActiveModel {
+						id: ActiveValue::Set(Uuid::new_v4()),
+						name: ActiveValue::Set(resp.username.clone()),
+						salt: ActiveValue::Set(generate_salt()),
+						modrinth_id: ActiveValue::Set(mrid.clone()),
+						sysop: ActiveValue::Set(mrid == *OAUTH_SYSOP),
+					}
+					.insert(db::get().as_ref())
+					.await?
+				}
+			};
+			let token = generate_token(&user.salt);
+			info!(%user, token, "generated token per login request");
+			Ok(format!("{}:{}", user.id, token)) as Result<String>
+		}
+		.await;
+		let token = match token {
+			Err(err) => {
+				error!(%err, code, "login error");
+				return (StatusCode::INTERNAL_SERVER_ERROR, "login error").into_response();
+			}
+			Ok(r) => r,
+		};
+
+		(
+			[(
+				header::SET_COOKIE,
+				Cookie::new("spock_token", &token).to_string(),
+			)],
+			AuthSuccessPage {
+				auth: AuthResult(login(&token).await),
+			},
+		)
+			.into_response()
+	} else {
+		(StatusCode::TEMPORARY_REDIRECT, [(header::LOCATION, format!("https://modrinth.com/auth/authorize?client_id={}&redirect_uri={}&scope=USER_READ+USER_READ_EMAIL", OAUTH_ID.as_str(), OAUTH_URL_ENCODED.as_str()))]).into_response()
+	}
+}
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Clone)]
+pub struct AuthInfo {
+	pub id: Uuid,
+	pub name: String,
+	pub sysop: bool,
+}
+
+impl From<db::user::Model> for AuthInfo {
+	fn from(value: db::user::Model) -> Self {
+		Self {
+			id: value.id,
+			name: value.name,
+			sysop: value.sysop,
+		}
+	}
+}
+
+pub async fn login(token: &str) -> Option<AuthInfo> {
+	if let Some((user, token)) = token.split_once(':')
+		&& let Ok(user) = Uuid::from_str(user)
+		&& let Ok(Some(user)) = db::user::Entity::find_by_id(user)
+			.one(db::get().as_ref())
+			.await && validate_token(&user.salt, token)
+	{
+		Some(user.into())
+	} else {
+		None
+	}
+}
+
+pub struct AuthResult(pub Option<AuthInfo>);
+
+#[async_trait]
+impl<S> FromRequestParts<S> for AuthResult
+where
+	S: Send + Sync,
+{
+	type Rejection = Infallible;
+
+	async fn from_request_parts(parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
+		if let Some(token) = CookieJar::from_request_parts(parts, state)
+			.await
+			.unwrap()
+			.get("spock_token")
+			.to_owned()
+		{
+			Ok(AuthResult(login(token.value()).await))
+		} else {
+			Ok(AuthResult(None))
+		}
+	}
+}

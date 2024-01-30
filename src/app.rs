@@ -76,6 +76,7 @@ impl App {
 		Ok(builder.build().await?)
 	}
 
+	#[allow(clippy::await_holding_lock)]
 	pub async fn mwbot(&self, lang: &str) -> Result<MwBot> {
 		if let Some(bot) = self.bots.read().get(lang) {
 			return Ok(bot.clone());

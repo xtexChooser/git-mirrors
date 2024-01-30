@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}login success - spock{% endblock %}
+{% block body %}
+<main id="login-success">
+	<h1>Login Succeeded</h1>
+	<p>You are now <a href="/me">{{ auth.0.as_ref().unwrap().name }}</a>.</p>
+</main>
+{% endblock %}

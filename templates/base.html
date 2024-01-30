@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta content="width=device-width, initial-scale=1" name="viewport" />
+		<title>{% block title %}{% endblock %}</title>
+		<link href="/main.css" rel="stylesheet" />
+		{% block head %}{% endblock %}
+	</head>
+	<body>
+		<nav>
+			<span id="brand">spock</span>
+			<ul>
+				<li><a class="nav-link" href="/">meta</a></li>
+				<li><a class="nav-link" href="/lint">linter</a></li>
+			</ul>
+			<span id="login-nav">
+				{% if auth.0.is_some() -%}
+				Logged in as <a href="/me">{{ auth.0.as_ref().unwrap().name }}</a> | <a href="/auth/logout">Log out</a>
+				{%- else -%}
+				<a href="/auth">Log in</a>
+				{%- endif %}
+			</span>
+		</nav>
+		{% block body %}{% endblock %}
+	</body>
+</html>

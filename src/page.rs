@@ -19,7 +19,7 @@ pub struct Page(db::page::Model);
 
 impl PartialOrd for Page {
 	fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-		self.0.id.partial_cmp(&other.0.id)
+		Some(self.cmp(other))
 	}
 }
 
@@ -50,7 +50,7 @@ impl Page {
 		Ok(db::page::Entity::find_by_id(id)
 			.one(db::get().as_ref())
 			.await?
-			.map(|e| Page(e)))
+			.map(Page))
 	}
 
 	pub async fn get_by_name(lang: &str, title: &str) -> Result<Option<Self>> {
@@ -59,7 +59,7 @@ impl Page {
 
 	pub async fn get_or_init(lang: &str, title: &str) -> Result<Option<Self>> {
 		if let Some(page) = Self::get_by_name(lang, title).await? {
-			return Ok(Some(page));
+			Ok(Some(page))
 		} else {
 			let _ = CREATION_LOCK.lock().await;
 			if let Some(page) = Self::get_by_name(lang, title).await? {

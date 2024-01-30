@@ -11,17 +11,22 @@ anyhow = "1.0.79"
 askama = "0.12.1"
 askama_axum = "0.4.0"
 axum = { version = "0.7.4", features = ["macros"] }
+axum-extra = { version = "0.9.2", features = ["cookie", "typed-header"] }
 chrono = "0.4.33"
 dotenvy = "0.15.7"
 grass = { version = "0.13.1", features = ["macro", "random"], default-features = false }
+hex = "0.4.3"
 mwbot = { version = "0.6.1", features = ["linter"], git = "https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git" }
 parking_lot = { version = "0.12.1", features = ["send_guard"] }
 phf = { version = "0.11.2", features = ["macros"] }
+rand = "0.8.5"
+rand_chacha = "0.3.1"
 reqwest = { version = "0.11.23", features = ["json", "rustls"], default-features = false }
 sea-orm = { version = "0.12.12", features = ["sqlx-sqlite", "runtime-tokio-rustls", "macros", "with-json", "with-uuid", "with-time", "sqlx-postgres"] }
 sea-orm-migration = { version = "0.12.12", features = ["with-json", "with-chrono", "with-uuid", "with-time"] }
 serde = { version = "1.0.196", features = ["derive"] }
 serde_json = "1.0.112"
+sha2 = "0.10.8"
 tokio = { version = "1.35.1", features = ["full"] }
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["json", "env-filter"] }

@@ -22,7 +22,7 @@ pub struct RcSyncerState(db::rcsyncer::Model);
 
 impl PartialOrd for RcSyncerState {
 	fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-		self.0.id.partial_cmp(&other.0.id)
+		Some(self.cmp(other))
 	}
 }
 
@@ -37,7 +37,7 @@ impl RcSyncerState {
 		Ok(db::rcsyncer::Entity::find_by_id(id)
 			.one(db::get().as_ref())
 			.await?
-			.map(|e| RcSyncerState(e)))
+			.map(RcSyncerState))
 	}
 
 	pub async fn get(lang: &str) -> Result<Option<Self>> {
@@ -46,13 +46,12 @@ impl RcSyncerState {
 
 	pub async fn get_or_init(lang: &str) -> Result<Self> {
 		if let Some(page) = Self::get(lang).await? {
-			return Ok(page);
+			Ok(page)
 		} else {
 			let new = db::rcsyncer::ActiveModel {
 				id: ActiveValue::Set(Page::get_lang_id(lang)),
 				last_synced_at: ActiveValue::Set(Utc::now()),
 				last_rc_id: ActiveValue::Set(0),
-				..Default::default()
 			};
 			Ok(Self(new.insert(db::get().as_ref()).await?))
 		}
@@ -92,7 +91,7 @@ pub async fn sync_rc(lang: &str) -> Result<()> {
 	while let Some(rc) = gen.recv().await {
 		let rc = rc?;
 		trace!(lang, rc = rc.rcid, "syncing RC");
-		last_rcid = last_rcid;
+		last_rcid = rc.rcid;
 		let title = if let Some(title) = &rc.title {
 			title
 		} else {
@@ -106,7 +105,7 @@ pub async fn sync_rc(lang: &str) -> Result<()> {
 			if let Some(logtype) = rc.logtype {
 				if logtype == "delete" {
 					// sync delete
-					if let Some(dbpage) = Page::get_by_name(lang, &title).await? {
+					if let Some(dbpage) = Page::get_by_name(lang, title).await? {
 						dbpage.delete().await?;
 					}
 				}
@@ -116,7 +115,7 @@ pub async fn sync_rc(lang: &str) -> Result<()> {
 			}
 		}
 		checked_pages.insert(title.to_owned());
-		if let Some(dbpage) = Page::get_by_name(lang, &title).await? {
+		if let Some(dbpage) = Page::get_by_name(lang, title).await? {
 			dbpage.mark_check().await?;
 		}
 	}

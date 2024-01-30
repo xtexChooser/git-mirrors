@@ -1,4 +1,6 @@
 #![feature(let_chains)]
+#![feature(lazy_cell)]
+#![feature(never_type)]
 
 pub mod app;
 pub mod db;
