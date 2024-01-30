@@ -19,12 +19,12 @@ use rand_chacha::ChaCha20Rng;
 use sea_orm::{ActiveModelTrait, ActiveValue, ColumnTrait, EntityTrait, QueryFilter};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
-use tracing::{error, info, info_span, Instrument};
+use tracing::{info, info_span, Instrument};
 use uuid::Uuid;
 
 use crate::{app::App, db};
 
-use super::meta::MessagePage;
+use super::{meta::MessagePage, WebResult};
 
 pub fn generate_salt() -> String {
 	let mut rng = ChaCha20Rng::from_entropy();
@@ -109,7 +109,7 @@ struct MrUserResponse {
 	pub name: String,
 }
 
-async fn auth_handler(auth: AuthResult, Query(params): Query<AuthParams>) -> impl IntoResponse {
+async fn auth_handler(auth: AuthResult, Query(params): Query<AuthParams>) -> WebResult {
 	if let Some(code) = params.code {
 		let token = async {
 			let resp = OAUTH_CLIENT
@@ -161,16 +161,9 @@ async fn auth_handler(auth: AuthResult, Query(params): Query<AuthParams>) -> imp
 			Ok(format!("{}:{}", user.id, token))
 		}
 		.instrument(info_span!("handle_oauth", code))
-		.await;
-		let token = match token {
-			Err(err) => {
-				error!(%err, code, "login error");
-				return (StatusCode::INTERNAL_SERVER_ERROR, "login error").into_response();
-			}
-			Ok(r) => r,
-		};
+		.await?;
 
-		(
+		Ok((
 			[(
 				header::SET_COOKIE,
 				Cookie::new("spock_token", &token).to_string(),
@@ -179,11 +172,11 @@ async fn auth_handler(auth: AuthResult, Query(params): Query<AuthParams>) -> imp
 				auth: AuthResult(login(&token).await),
 			},
 		)
-			.into_response()
+			.into_response())
 	} else if auth.0.is_some() {
-		AuthSuccessPage { auth }.into_response()
+		Ok(AuthSuccessPage { auth }.into_response())
 	} else {
-		Redirect::temporary(&format!("https://modrinth.com/auth/authorize?client_id={}&redirect_uri={}&scope=USER_READ+USER_READ_EMAIL", OAUTH_ID.as_str(), OAUTH_URL_ENCODED.as_str())).into_response()
+		Ok(Redirect::temporary(&format!("https://modrinth.com/auth/authorize?client_id={}&redirect_uri={}&scope=USER_READ+USER_READ_EMAIL", OAUTH_ID.as_str(), OAUTH_URL_ENCODED.as_str())).into_response())
 	}
 }
 

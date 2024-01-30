@@ -1,6 +1,6 @@
-use axum::Router;
+use axum::{http::StatusCode, response::IntoResponse, Router};
 use tokio::net::TcpListener;
-use tracing::info;
+use tracing::{error, info};
 
 use crate::app::App;
 
@@ -21,4 +21,28 @@ pub async fn run_server() {
 	info!(addr, "Start tcp listener");
 	let listener = TcpListener::bind(addr).await.unwrap();
 	axum::serve(listener, router).await.unwrap();
+}
+
+type WebResult = Result<axum::response::Response, WebError>;
+
+struct WebError(anyhow::Error);
+
+impl IntoResponse for WebError {
+	fn into_response(self) -> axum::response::Response {
+		error!(err = %self.0, "error in request");
+		(
+			StatusCode::INTERNAL_SERVER_ERROR,
+			format!("Something went wrong: {}", self.0),
+		)
+			.into_response()
+	}
+}
+
+impl<E> From<E> for WebError
+where
+	E: Into<anyhow::Error>,
+{
+	fn from(err: E) -> Self {
+		Self(err.into())
+	}
 }
