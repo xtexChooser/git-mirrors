@@ -1,6 +1,8 @@
 use phf::{phf_map, phf_set};
 use uuid::{uuid, Uuid};
 
+pub const SITE_NAME: &str = "Minecraft Wiki";
+
 pub fn get_wiki_url(lang: &str) -> String {
 	if lang == "en" {
 		"https://minecraft.wiki".to_owned()

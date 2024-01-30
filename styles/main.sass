@@ -10,7 +10,8 @@ $color-yellow: #ffc107
 $color-green: #28a745
 $color-teal: #20c997
 $color-cyan: #17a2b8
-$color-white: #fff
+$color-white: #ffffff
+$color-black: #000000
 $color-gray: #6c757d
 $color-gray-dark: #343a40
 $color-primary: #007bff
@@ -42,7 +43,7 @@ body
 		text-decoration: none
 
 nav
-	padding: .5rem 1rem
+	padding: 0.5rem 1rem 1.5rem 1rem
 	#brand
 		padding: 0 1.5em 0 1.5em
 		display: inline
@@ -71,3 +72,30 @@ a
 	-webkit-text-decoration-skip: objects
 	&:hover
 		text-decoration: underline
+
+button, a.button
+	margin: 0.5em
+	color: $color-black
+	background-color: #dee2e6
+	@media (prefers-color-scheme: dark)
+		color: $color-white
+		background-color: #222528
+	text-decoration: none
+	border: #494e53  1px solid
+	padding: 0 1.5rem 0 1.5rem
+	&:hover
+		text-decoration: none
+		background-color: $color-gray
+		@media (prefers-color-scheme: dark)
+			background-color: #0d0e0f
+	&:focus
+		outline: 0
+		box-shadow: 0 0 0 0.2rem #007bff40
+	&:not(:disabled)
+		cursor: pointer
+	& ~ &
+		margin-top: 0.5em
+
+.button-primary
+	background-color: $color-primary
+	border-color: #011831
