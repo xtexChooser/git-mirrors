@@ -83,6 +83,7 @@ impl Page {
 				id: ActiveValue::Set(Self::get_page_id(lang, title)),
 				lang: ActiveValue::Set(lang.to_owned()),
 				title: ActiveValue::Set(title.to_owned()),
+				need_check: ActiveValue::Set(Some(Utc::now())),
 				..Default::default()
 			};
 			Ok(Some(Self(new.insert(&*db::get()).await?)))
