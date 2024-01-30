@@ -4,7 +4,34 @@
 {%- let current_page = "/sysop/stats" -%}
 {% include "sysop/base.html" %}
 
-<p>Page count: <span>{{ page_count }}</span></p>
-<p>Issue count: <span>{{ issue_count }}</span></p>
-<p>User count: <span>{{ user_count }}</span></p>
+<p>Generated in <span>{{ stats_time }}</span></p>
+<p>Pages count: <span>{{ pages_count }}</span> (<span>{{ need_check_count }}</span> pending for check)</p>
+<p>Issues/suggests count: <span>{{ issues_count }}</span></p>
+<p>Users count: <span>{{ users_count }}</span></p>
+
+<div class="scroll-table">
+	<table>
+		<caption>Page Statistics by Language</caption>
+		<thead>
+			<tr>
+				<th scope="col">Language</th>
+				<th scope="col">Page Count</th>
+				<th scope="col">Total Issues</th>
+				<th scope="col">Total Suggests</th>
+				<th scope="col">Pending for Check</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for lang in langs -%}
+			<tr>
+				<th scope="row">{{ lang.lang }}</th>
+				<td>{{ lang.count }}</td>
+				<td>{{ lang.issues }}</td>
+				<td>{{ lang.suggests }}</td>
+				<td>{{ langs_need_check.get(lang.lang).unwrap() }}</td>
+			</tr>
+			{%- endfor %}
+		</tbody>
+	</table>
+</div>
 {% endblock %}

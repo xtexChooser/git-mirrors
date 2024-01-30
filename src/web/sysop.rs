@@ -6,8 +6,9 @@ use axum::{
 	routing::{get, post},
 	Router,
 };
+use chrono::{Duration, Utc};
 use sea_orm::{
-	EntityTrait, PaginatorTrait, QueryOrder,
+	ColumnTrait, EntityTrait, FromQueryResult, PaginatorTrait, QueryFilter, QueryOrder, QuerySelect,
 };
 use tracing::{error, info};
 
@@ -117,17 +118,70 @@ async fn rcsyncer_state_handler(RequireSysop(auth): RequireSysop) -> WebResult {
 #[template(path = "sysop/stats.html")]
 struct StatsPage {
 	auth: AuthResult,
-	page_count: u64,
-	issue_count: u64,
-	user_count: u64,
+	stats_time: Duration,
+	pages_count: u64,
+	issues_count: u64,
+	users_count: u64,
+	langs: Vec<LangStat>,
+	need_check_count: u64,
+	langs_need_check: HashMap<String, u64>,
+}
+
+#[derive(Debug, FromQueryResult)]
+struct LangStat {
+	lang: String,
+	count: u64,
+	issues: u64,
+	suggests: u64,
+}
+
+#[derive(Debug, FromQueryResult)]
+struct LangNeedCheckStat {
+	lang: String,
+	count: u64,
 }
 
 async fn stats_handler(RequireSysop(auth): RequireSysop) -> WebResult {
+	let start = Utc::now();
+	let pages_count = db::page::Entity::find().count(&*db::get()).await?;
+	let issues_count = db::issue::Entity::find().count(&*db::get()).await?;
+	let users_count = db::user::Entity::find().count(&*db::get()).await?;
+	let langs = db::page::Entity::find()
+		.select_only()
+		.column(db::page::Column::Lang)
+		.column_as(db::page::Column::Id.count(), "count")
+		.column_as(db::page::Column::Issues.sum(), "issues")
+		.column_as(db::page::Column::Suggests.sum(), "suggests")
+		.group_by(db::page::Column::Lang)
+		.into_model::<LangStat>()
+		.all(&*db::get())
+		.await?;
+	let need_check_count = db::page::Entity::find()
+		.filter(db::page::Column::NeedCheck.is_not_null())
+		.count(&*db::get())
+		.await?;
+	let langs_need_check = db::page::Entity::find()
+		.select_only()
+		.column(db::page::Column::Lang)
+		.column_as(db::page::Column::Id.count(), "count")
+		.filter(db::page::Column::NeedCheck.is_not_null())
+		.group_by(db::page::Column::Lang)
+		.into_model::<LangNeedCheckStat>()
+		.all(&*db::get())
+		.await?
+		.into_iter()
+		.map(|s| (s.lang, s.count))
+		.collect();
+	let stats_time = Utc::now() - start;
 	Ok(StatsPage {
 		auth,
-		page_count: db::page::Entity::find().count(&*db::get()).await?,
-		issue_count: db::issue::Entity::find().count(&*db::get()).await?,
-		user_count: db::user::Entity::find().count(&*db::get()).await?,
+		stats_time,
+		pages_count,
+		issues_count,
+		users_count,
+		langs,
+		need_check_count,
+		langs_need_check,
 	}
 	.into_response())
 }
