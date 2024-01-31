@@ -25,7 +25,7 @@ impl MigrationTrait for Migration {
 					)
 					.col(
 						ColumnDef::new(RcSyncer::LastRcId)
-							.unsigned()
+							.integer()
 							.default(0)
 							.not_null(),
 					)

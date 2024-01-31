@@ -122,15 +122,15 @@ impl Page {
 	}
 
 	pub fn check_errors(&self) -> u32 {
-		self.0.check_errors
+		self.0.check_errors as u32
 	}
 
 	pub fn issues_count(&self) -> u32 {
-		self.0.issues
+		self.0.issues as u32
 	}
 
 	pub fn suggests_count(&self) -> u32 {
-		self.0.suggests
+		self.0.suggests as u32
 	}
 
 	pub async fn mark_check(self) -> Result<()> {
@@ -173,8 +173,8 @@ impl Page {
 			model.need_check = ActiveValue::Set(None);
 		}
 		model.check_errors = ActiveValue::Set(0);
-		model.issues = ActiveValue::Set(issues);
-		model.suggests = ActiveValue::Set(suggests);
+		model.issues = ActiveValue::Set(issues as i32);
+		model.suggests = ActiveValue::Set(suggests as i32);
 		model.update(&*db::get()).await?;
 		Ok(())
 	}
@@ -188,7 +188,7 @@ impl Page {
 				.ok_or_else(|| anyhow!("trying to defer a page not requested for checking"))?
 				+ Duration::seconds(site::LINTER_RETRY_DELAY),
 		));
-		model.check_errors = ActiveValue::Set(check_errors + 1);
+		model.check_errors = ActiveValue::Set(check_errors as i32 + 1);
 		model.update(&*db::get()).await?;
 		Ok(())
 	}

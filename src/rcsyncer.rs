@@ -66,7 +66,7 @@ impl RcSyncerState {
 	}
 
 	pub fn last_rc_id(&self) -> u32 {
-		self.0.last_rc_id
+		self.0.last_rc_id as u32
 	}
 }
 
@@ -123,7 +123,7 @@ pub async fn sync_rc(lang: &str) -> Result<()> {
 
 	let mut state = state.0.into_active_model();
 	state.last_synced_at = ActiveValue::Set(end_time.naive_utc());
-	state.last_rc_id = ActiveValue::Set(last_rcid);
+	state.last_rc_id = ActiveValue::Set(last_rcid as i32);
 	state.update(&*db::get()).await?;
 
 	Ok(())

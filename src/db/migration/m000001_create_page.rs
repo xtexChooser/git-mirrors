@@ -30,19 +30,19 @@ impl MigrationTrait for Migration {
 					.col(ColumnDef::new(Page::NeedCheck).timestamp().null())
 					.col(
 						ColumnDef::new(Page::CheckErrors)
-							.unsigned()
+							.integer()
 							.not_null()
 							.default(0),
 					)
 					.col(
 						ColumnDef::new(Page::Issues)
-							.unsigned()
+							.integer()
 							.default(0)
 							.not_null(),
 					)
 					.col(
 						ColumnDef::new(Page::Suggests)
-							.unsigned()
+							.integer()
 							.default(0)
 							.not_null(),
 					)

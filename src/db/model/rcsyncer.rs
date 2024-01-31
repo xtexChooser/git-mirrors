@@ -7,8 +7,8 @@ pub struct Model {
 	pub id: Uuid,
 	#[sea_orm(column_type = "Timestamp")]
 	pub last_synced_at: DateTime,
-	#[sea_orm(column_type = "Unsigned", default_value = 0)]
-	pub last_rc_id: u32,
+	#[sea_orm(column_type = "Integer", default_value = "0")]
+	pub last_rc_id: i32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

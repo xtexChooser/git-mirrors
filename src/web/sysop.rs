@@ -124,23 +124,23 @@ struct StatsPage {
 	users_count: u64,
 	langs: Vec<LangStat>,
 	need_check_count: u64,
-	langs_need_check: HashMap<String, u32>,
-	langs_delayed: HashMap<String, u32>,
-	langs_error: HashMap<String, u32>,
+	langs_need_check: HashMap<String, i64>,
+	langs_delayed: HashMap<String, i64>,
+	langs_error: HashMap<String, i64>,
 }
 
 #[derive(Debug, FromQueryResult)]
 struct LangStat {
 	lang: String,
-	count: u32,
-	issues: u32,
-	suggests: u32,
+	count: i64,
+	issues: i64,
+	suggests: i64,
 }
 
 #[derive(Debug, FromQueryResult)]
 struct LangFilteredStat {
 	lang: String,
-	count: u32,
+	count: i64,
 }
 
 async fn stats_handler(RequireSysop(auth): RequireSysop) -> WebResult {

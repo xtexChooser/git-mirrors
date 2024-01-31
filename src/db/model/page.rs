@@ -13,12 +13,12 @@ pub struct Model {
 	pub last_checked: DateTime,
 	#[sea_orm(column_type = "Timestamp", nullable, default_value = "None")]
 	pub need_check: Option<DateTime>,
-	#[sea_orm(column_type = "Unsigned", default_value = "0")]
-	pub check_errors: u32,
-	#[sea_orm(column_type = "Unsigned", default_value = "0")]
-	pub issues: u32,
-	#[sea_orm(column_type = "Unsigned", default_value = "0")]
-	pub suggests: u32,
+	#[sea_orm(column_type = "Integer", default_value = "0")]
+	pub check_errors: i32,
+	#[sea_orm(column_type = "Integer", default_value = "0")]
+	pub issues: i32,
+	#[sea_orm(column_type = "Integer", default_value = "0")]
+	pub suggests: i32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
