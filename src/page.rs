@@ -3,7 +3,7 @@ use std::{collections::BTreeSet, fmt::Display};
 use anyhow::{anyhow, bail, Result};
 use chrono::{DateTime, Duration, Utc};
 use mwbot::generators::{AllPages, Generator};
-use sea_orm::{prelude::*, ActiveValue, Condition, IntoActiveModel, QuerySelect};
+use sea_orm::{prelude::*, ActiveValue, Condition, FromQueryResult, IntoActiveModel, QuerySelect};
 use tokio::sync::Mutex;
 use tracing::{error, info, info_span, trace, Instrument};
 use uuid::Uuid;
@@ -216,7 +216,7 @@ impl Page {
 			.filter(
 				Condition::all()
 					.add(db::page::Column::NeedCheck.is_not_null())
-					.add(db::page::Column::NeedCheck.lte(Utc::now()))
+					.add(db::page::Column::NeedCheck.lte(Utc::now().naive_utc()))
 					.add(db::page::Column::CheckErrors.lt(site::LINTER_MAX_RETRIES)),
 			)
 			.count(&*db::get())
@@ -228,14 +228,14 @@ impl Page {
 			.filter(
 				Condition::all()
 					.add(db::page::Column::NeedCheck.is_not_null())
-					.add(db::page::Column::NeedCheck.lte(Utc::now()))
+					.add(db::page::Column::NeedCheck.lte(Utc::now().naive_utc()))
 					.add(db::page::Column::CheckErrors.lt(site::LINTER_MAX_RETRIES)),
 			)
 			.limit(Some(*LINTER_WORKERS as u64 * 2))
 			.all(&*db::get())
 			.await?
 			.into_iter()
-			.map(|p| Self(p))
+			.map(Self)
 			.collect())
 	}
 }
@@ -277,16 +277,27 @@ pub async fn sync_all_pages(lang: &str) -> Result<()> {
 		}
 	}
 
+	#[derive(Debug, FromQueryResult)]
+	#[sea_orm(entity = "db::page::Entity")]
+	pub struct TitleOnlyModel {
+		pub id: Uuid,
+		pub title: String,
+	}
+
 	let dbpages = db::page::Entity::find()
 		.filter(db::page::Column::Lang.eq(lang))
 		.select_only()
+		.column(db::page::Column::Id)
 		.column(db::page::Column::Title)
+		.into_model::<TitleOnlyModel>()
 		.all(&*db::get())
 		.await?;
 	for dbpage in dbpages {
 		if !pages.contains(&dbpage.title) {
 			info!(page = dbpage.title, "remove deleted page from database");
-			Page(dbpage).delete().await?;
+			if let Some(page) = Page::get_by_id(dbpage.id).await? {
+				page.delete().await?;
+			}
 		}
 	}
 

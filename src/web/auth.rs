@@ -195,7 +195,9 @@ async fn auth_handler(auth: AuthResult, Query(params): Query<AuthParams>) -> Web
 					title: "Login Blocked",
 					message: &format!(
 						"You are blocked until {}",
-						blocked.and_utc().to_rfc3339_opts(chrono::SecondsFormat::Secs, true)
+						blocked
+							.and_utc()
+							.to_rfc3339_opts(chrono::SecondsFormat::Secs, true)
 					),
 					auto_return: false,
 				},

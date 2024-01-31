@@ -34,12 +34,7 @@ impl MigrationTrait for Migration {
 							.not_null()
 							.default(0),
 					)
-					.col(
-						ColumnDef::new(Page::Issues)
-							.integer()
-							.default(0)
-							.not_null(),
-					)
+					.col(ColumnDef::new(Page::Issues).integer().default(0).not_null())
 					.col(
 						ColumnDef::new(Page::Suggests)
 							.integer()

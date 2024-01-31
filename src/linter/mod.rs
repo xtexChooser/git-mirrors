@@ -6,7 +6,6 @@ use std::{
 use anyhow::{bail, Result};
 use parking_lot::RwLock;
 use serde::{Deserialize, Serialize};
-use tokio::task::JoinSet;
 use tracing::{error, info_span, Instrument};
 use uuid::Uuid;
 
@@ -19,14 +18,14 @@ pub static LINTER_WORKERS: LazyLock<u32> = LazyLock::new(|| {
 		.unwrap_or(5)
 });
 
-#[derive(Debug, Serialize, Deserialize, Clone, Hash, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Serialize, Deserialize, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Default)]
 pub struct LinterState {
 	pub page: Option<Uuid>,
 }
 
 impl LinterState {
 	pub fn new() -> Self {
-		Self { page: None }
+		Self::default()
 	}
 }
 
@@ -35,11 +34,10 @@ pub async fn run_linters() {
 	let _ = app.mwbot("zh").await.unwrap();
 	let _ = app.mwbot("en").await.unwrap();
 
-	let mut handles = JoinSet::new();
 	for _ in 0..*LINTER_WORKERS {
 		let state = Arc::new(RwLock::new(LinterState::new()));
 		app.linters.write().push(state.clone());
-		handles.spawn(run_linter(state));
+		tokio::spawn(run_linter(state));
 	}
 
 	loop {
@@ -52,6 +50,7 @@ pub async fn run_linters() {
 	}
 }
 
+// @TODO: cache a part of pages
 async fn select_page(state: &RwLock<LinterState>) -> Result<Option<Page>> {
 	let app = App::get();
 	let _linters_lock = app.linter_selector_mutex.lock();
@@ -64,8 +63,7 @@ async fn select_page(state: &RwLock<LinterState>) -> Result<Option<Page>> {
 	let page = Page::find_for_check()
 		.await?
 		.into_iter()
-		.filter(|s| !other_pages.contains(s.id()))
-		.next();
+		.find(|s| !other_pages.contains(s.id()));
 	if let Some(page) = &page {
 		state.write().page = Some(page.id().to_owned());
 	}
@@ -78,9 +76,9 @@ pub async fn run_linter(state: Arc<RwLock<LinterState>>) {
 		app.linter_notify.notified().await;
 		loop {
 			assert!(state.read().page.is_none());
-			let page = select_page(&*state).await;
+			let page = select_page(&state).await;
 			match page {
-				Err(error) => error!(%error,"error selecting page for linting"),
+				Err(error) => error!(%error, "error selecting page for linting"),
 				Ok(Some(page)) => {
 					let title = page.title().to_owned();
 					async {
@@ -104,9 +102,10 @@ pub async fn run_linter(state: Arc<RwLock<LinterState>>) {
 						}
 					}
 					.instrument(info_span!("lint_page", page = title))
-					.await
+					.await;
+					state.write().page = None;
 				}
-				Ok(None) => {}
+				Ok(None) => break,
 			}
 		}
 	}

@@ -6,8 +6,8 @@ use std::{
 
 use anyhow::{bail, Result};
 use lru::LruCache;
-use parking_lot::{Mutex, RwLock};
-use tokio::sync::Notify;
+use parking_lot::RwLock;
+use tokio::sync::{Mutex, Notify};
 
 pub use mwbot::Bot as MwBot;
 pub use mwbot::Page as MwPage;

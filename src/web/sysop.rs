@@ -8,7 +8,8 @@ use axum::{
 };
 use chrono::{Duration, Utc};
 use sea_orm::{
-	ColumnTrait, Condition, EntityTrait, FromQueryResult, PaginatorTrait, QueryFilter, QueryOrder, QuerySelect
+	ColumnTrait, Condition, EntityTrait, FromQueryResult, PaginatorTrait, QueryFilter, QueryOrder,
+	QuerySelect,
 };
 use tracing::{error, info};
 
@@ -65,7 +66,7 @@ pub fn new_router() -> Router {
 				MessagePage {
 					auth,
 					title: "Linter Triggerred",
-					message: "We notified linter worker to work.",
+					message: "We notified linter workers to work.",
 					auto_return: true,
 				}
 			}),
