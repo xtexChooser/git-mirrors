@@ -29,6 +29,12 @@ impl MigrationTrait for Migration {
 					)
 					.col(ColumnDef::new(Page::NeedCheck).timestamp().null())
 					.col(
+						ColumnDef::new(Page::CheckErrors)
+							.unsigned()
+							.not_null()
+							.default(0),
+					)
+					.col(
 						ColumnDef::new(Page::Issues)
 							.unsigned()
 							.default(0)
@@ -78,10 +84,10 @@ impl MigrationTrait for Migration {
 		manager
 			.create_index(
 				Index::create()
-					.name("pages_need_check")
+					.name("pages_check_errors")
 					.table(Page::Table)
 					.if_not_exists()
-					.col(Page::NeedCheck)
+					.col(Page::CheckErrors)
 					.to_owned(),
 			)
 			.await?;
@@ -125,7 +131,7 @@ impl MigrationTrait for Migration {
 			.drop_index(
 				Index::drop()
 					.table(Page::Table)
-					.name("pages_need_check")
+					.name("pages_check_errors")
 					.to_owned(),
 			)
 			.await?;
@@ -152,6 +158,7 @@ enum Page {
 	Title,
 	LastChecked,
 	NeedCheck,
+	CheckErrors,
 	Issues,
 	Suggests,
 }
