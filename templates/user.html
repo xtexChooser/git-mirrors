@@ -8,7 +8,7 @@
 <p class="text-secondary">{{ user.id }}</p>
 
 {%- if let Some(until) = user.blocked -%}
-<p>This user has been blocked until {{ until.to_rfc3339_opts(chrono::SecondsFormat::Secs, true) }}</p>
+<p>This user has been blocked until {{ until.and_utc().to_rfc3339_opts(chrono::SecondsFormat::Secs, true) }}</p>
 {%- endif -%}
 
 <div>

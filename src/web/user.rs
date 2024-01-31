@@ -91,7 +91,7 @@ async fn get_user_handler(auth: AuthResult, Path(id): Path<String>) -> WebResult
 		let is_blocked = user.blocked.is_some();
 		let is_permanent_block = user
 			.blocked
-			.map(|t| t == DateTime::<Utc>::MAX_UTC)
+			.map(|t| t == DateTime::<Utc>::MAX_UTC.naive_utc())
 			.unwrap_or(false);
 		return Ok(InfoPage {
 			auth,
@@ -196,7 +196,7 @@ async fn block_handler(
 	let time = params.time;
 	info!(target = %user, user = %auth, %time, "block user");
 	let mut user = user.into_active_model();
-	user.blocked = ActiveValue::Set(Some(Utc::now() + time));
+	user.blocked = ActiveValue::Set(Some(Utc::now().naive_utc() + time));
 	let user = user.update(&*db::get()).await?;
 	App::get().login_lru.write().clear();
 	Ok(MessagePage {
@@ -220,7 +220,7 @@ async fn permanent_block_handler(
 	)?;
 	info!(target = %user, user = %auth, "permanently block user");
 	let mut user = user.into_active_model();
-	user.blocked = ActiveValue::Set(Some(DateTime::<Utc>::MAX_UTC));
+	user.blocked = ActiveValue::Set(Some(DateTime::<Utc>::MAX_UTC.naive_utc()));
 	let user = user.update(&*db::get()).await?;
 	App::get().login_lru.write().clear();
 	Ok(MessagePage {

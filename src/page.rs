@@ -90,7 +90,7 @@ impl Page {
 				id: ActiveValue::Set(Self::get_page_id(lang, title)),
 				lang: ActiveValue::Set(lang.to_owned()),
 				title: ActiveValue::Set(title.to_owned()),
-				need_check: ActiveValue::Set(Some(Utc::now())),
+				need_check: ActiveValue::Set(Some(Utc::now().naive_utc())),
 				..Default::default()
 			};
 			Ok(Some(Self(new.insert(&*db::get()).await?)))
@@ -110,15 +110,15 @@ impl Page {
 	}
 
 	pub fn last_checked(&self) -> Option<DateTime<Utc>> {
-		if self.0.last_checked == DateTime::UNIX_EPOCH {
+		if self.0.last_checked.and_utc() == DateTime::UNIX_EPOCH {
 			None
 		} else {
-			Some(self.0.last_checked.to_owned())
+			Some(self.0.last_checked.and_utc())
 		}
 	}
 
 	pub fn check_requested_time(&self) -> Option<DateTime<Utc>> {
-		self.0.need_check.map(|t|t)
+		self.0.need_check.map(|ts| ts.and_utc())
 	}
 
 	pub fn check_errors(&self) -> u32 {
@@ -135,7 +135,7 @@ impl Page {
 
 	pub async fn mark_check(self) -> Result<()> {
 		let mut model = self.0.into_active_model();
-		model.need_check = ActiveValue::Set(Some(Utc::now()));
+		model.need_check = ActiveValue::Set(Some(Utc::now().naive_utc()));
 		model.check_errors = ActiveValue::Set(0);
 		model.update(&*db::get()).await?;
 		App::get().linter_notify.notify_one();
@@ -168,7 +168,7 @@ impl Page {
 			false
 		};
 		let mut model = self.0.into_active_model();
-		model.last_checked = ActiveValue::Set(Utc::now());
+		model.last_checked = ActiveValue::Set(Utc::now().naive_utc());
 		if !drop_result {
 			model.need_check = ActiveValue::Set(None);
 		}
@@ -180,7 +180,7 @@ impl Page {
 	}
 
 	pub async fn defer_check(self) -> Result<()> {
-		let check_time = self.check_requested_time();
+		let check_time = self.check_requested_time().map(|ts| ts.naive_utc());
 		let check_errors = self.check_errors();
 		let mut model = self.0.into_active_model();
 		model.need_check = ActiveValue::Set(Some(
@@ -202,7 +202,7 @@ impl Page {
 		info!("marking all pages for check");
 		db::page::Entity::update_many()
 			.set(db::page::ActiveModel {
-				need_check: ActiveValue::Set(Some(Utc::now())),
+				need_check: ActiveValue::Set(Some(Utc::now().naive_utc())),
 				..Default::default()
 			})
 			.exec(&*db::get())

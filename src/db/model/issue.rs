@@ -8,7 +8,7 @@ pub struct Model {
 	#[sea_orm(column_type = "Uuid", indexed)]
 	pub page: Uuid,
 	#[sea_orm(column_type = "Timestamp")]
-	pub found_at: DateTimeUtc,
+	pub found_at: DateTime,
 	#[sea_orm(column_type = "String(None)", indexed)]
 	pub issue_type: String,
 	#[sea_orm(column_type = "JsonBinary")]

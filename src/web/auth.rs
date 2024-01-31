@@ -161,7 +161,7 @@ async fn auth_handler(auth: AuthResult, Query(params): Query<AuthParams>) -> Web
 				}
 			};
 			if let Some(blocked) = user.blocked {
-				if blocked <= Utc::now() {
+				if blocked.and_utc() <= Utc::now() {
 					user = {
 						let mut model = user.into_active_model();
 						model.blocked = ActiveValue::Set(None);
@@ -195,7 +195,7 @@ async fn auth_handler(auth: AuthResult, Query(params): Query<AuthParams>) -> Web
 					title: "Login Blocked",
 					message: &format!(
 						"You are blocked until {}",
-						blocked.to_rfc3339_opts(chrono::SecondsFormat::Secs, true)
+						blocked.and_utc().to_rfc3339_opts(chrono::SecondsFormat::Secs, true)
 					),
 					auto_return: false,
 				},
@@ -233,7 +233,7 @@ pub async fn login(token: &str) -> Option<AuthInfo> {
 		&& validate_token(&user.salt, token)
 	{
 		if let Some(blocked) = user.blocked {
-			if blocked <= Utc::now() {
+			if blocked.and_utc() <= Utc::now() {
 				let mut user = user.into_active_model();
 				user.blocked = ActiveValue::Set(None);
 				match user.update(&*db::get()).await {

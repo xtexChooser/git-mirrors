@@ -10,9 +10,9 @@ pub struct Model {
 	#[sea_orm(column_type = "String(Some(255))")]
 	pub title: String,
 	#[sea_orm(column_type = "Timestamp")]
-	pub last_checked: DateTimeUtc,
+	pub last_checked: DateTime,
 	#[sea_orm(column_type = "Timestamp", nullable, default_value = "None")]
-	pub need_check: Option<DateTimeUtc>,
+	pub need_check: Option<DateTime>,
 	#[sea_orm(column_type = "Unsigned", default_value = "0")]
 	pub check_errors: u32,
 	#[sea_orm(column_type = "Unsigned", default_value = "0")]

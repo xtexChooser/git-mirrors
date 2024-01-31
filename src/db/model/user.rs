@@ -16,7 +16,7 @@ pub struct Model {
 	#[sea_orm(column_type = "Boolean", default_value = "false")]
 	pub sysop: bool,
 	#[sea_orm(column_type = "Timestamp", nullable, default_value = "None")]
-	pub blocked: Option<DateTimeUtc>,
+	pub blocked: Option<DateTime>,
 }
 
 impl Display for Model {

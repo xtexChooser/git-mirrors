@@ -22,7 +22,7 @@
 			<tr>
 				<th scope="row">{{ lang }}</th>
 				<td>{{ state.id }}</td>
-				<td>{{ state.last_synced_at.to_rfc3339_opts(chrono::SecondsFormat::Secs, true) }}</td>
+				<td>{{ state.last_synced_at.and_utc().to_rfc3339_opts(chrono::SecondsFormat::Secs, true) }}</td>
 				<td>{{ state.last_rc_id }}</td>
 			</tr>
 			{%- endfor %}

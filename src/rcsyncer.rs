@@ -50,7 +50,7 @@ impl RcSyncerState {
 		} else {
 			let new = db::rcsyncer::ActiveModel {
 				id: ActiveValue::Set(Page::get_lang_id(lang)),
-				last_synced_at: ActiveValue::Set(Utc::now()),
+				last_synced_at: ActiveValue::Set(Utc::now().naive_utc()),
 				last_rc_id: ActiveValue::Set(0),
 			};
 			Ok(Self(new.insert(&*db::get()).await?))
@@ -61,8 +61,8 @@ impl RcSyncerState {
 		&self.0.id
 	}
 
-	pub fn last_synced_at(&self) -> &DateTime<Utc> {
-		&self.0.last_synced_at
+	pub fn last_synced_at(&self) -> DateTime<Utc> {
+		self.0.last_synced_at.and_utc()
 	}
 
 	pub fn last_rc_id(&self) -> u32 {
@@ -122,7 +122,7 @@ pub async fn sync_rc(lang: &str) -> Result<()> {
 	}
 
 	let mut state = state.0.into_active_model();
-	state.last_synced_at = ActiveValue::Set(end_time);
+	state.last_synced_at = ActiveValue::Set(end_time.naive_utc());
 	state.last_rc_id = ActiveValue::Set(last_rcid);
 	state.update(&*db::get()).await?;
 
