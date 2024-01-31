@@ -234,12 +234,11 @@ pub async fn run_page_list_syncer() {
 			_ = tokio::time::sleep(std::time::Duration::from_secs(site::SYNC_ALL_PAGES_PEROID))=>{}
 		}
 		for lang in site::ALLOWED_NAMESPACES.keys() {
-			if let Err(err) = sync_all_pages(lang)
+			if let Err(error) = sync_all_pages(lang)
 				.instrument(info_span!("sync_all_pages", lang))
 				.await
 			{
-				let error = err.context(format!("sync all pages lang={}", lang));
-				error!(%error, lang, "failed to sync all pages");
+				error!(?error, lang, "failed to sync all pages");
 			}
 		}
 	}

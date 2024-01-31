@@ -82,11 +82,10 @@ pub async fn run_sqlite_interval_optimizer() {
 			site::SQLITE_INTERVAL_OPTIMIZE_PEROID,
 		))
 		.await;
-		if let Err(err) = run_sqlite_optimize()
+		if let Err(error) = run_sqlite_optimize()
 			.instrument(info_span!("sqlite_interval_optimize"))
 			.await
 		{
-			let error = err.context("sqlite_interval_optimize");
 			error!(%error, "failed to run sqlite optimize");
 		}
 	}

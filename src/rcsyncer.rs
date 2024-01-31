@@ -138,8 +138,7 @@ pub async fn run_rc_syncer() {
 			_ = tokio::time::sleep(std::time::Duration::from_secs(site::SYNC_RC_PEROID))=>{}
 		}
 		for lang in &site::SYNC_RC {
-			if let Err(err) = sync_rc(lang).instrument(info_span!("sync_rc", lang)).await {
-				let error = err.context(format!("sync RC lang={}", lang));
+			if let Err(error) = sync_rc(lang).instrument(info_span!("sync_rc", lang)).await {
 				error!(%error, lang, "failed to sync RC");
 			}
 		}
