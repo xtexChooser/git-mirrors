@@ -91,7 +91,7 @@ async fn get_user_handler(auth: AuthResult, Path(id): Path<String>) -> WebResult
 		let is_blocked = user.blocked.is_some();
 		let is_permanent_block = user
 			.blocked
-			.map(|t| t == DateTime::<Utc>::MAX_UTC.naive_utc())
+			.map(|t| (t - Utc::now().naive_utc()).num_days() >= 3652)
 			.unwrap_or(false);
 		return Ok(InfoPage {
 			auth,
@@ -113,9 +113,7 @@ async fn get_user_handler(auth: AuthResult, Path(id): Path<String>) -> WebResult
 async fn op_handler(RequireSysop(auth): RequireSysop, Path(id): Path<Uuid>) -> WebResult {
 	let user = user_or_else(
 		&auth,
-		db::user::Entity::find_by_id(id)
-			.one(&*db::get())
-			.await?,
+		db::user::Entity::find_by_id(id).one(&*db::get()).await?,
 	)?;
 	info!(target = %user, user = %auth, "add user as bot-sysop");
 	let mut user = user.into_active_model();
@@ -133,9 +131,7 @@ async fn op_handler(RequireSysop(auth): RequireSysop, Path(id): Path<Uuid>) -> W
 async fn deop_handler(RequireSysop(auth): RequireSysop, Path(id): Path<Uuid>) -> WebResult {
 	let user = user_or_else(
 		&auth,
-		db::user::Entity::find_by_id(id)
-			.one(&*db::get())
-			.await?,
+		db::user::Entity::find_by_id(id).one(&*db::get()).await?,
 	)?;
 	info!(target = %user, user = %auth, "remove user from bot-sysop");
 	let mut user = user.into_active_model();
@@ -158,9 +154,7 @@ async fn reset_salt_handler(RequireAuth(auth): RequireAuth, Path(id): Path<Uuid>
 	}
 	let user = user_or_else(
 		&auth,
-		db::user::Entity::find_by_id(id)
-			.one(&*db::get())
-			.await?,
+		db::user::Entity::find_by_id(id).one(&*db::get()).await?,
 	)?;
 	info!(target = %user, user = %auth, "reset user token-salt");
 	let mut user = user.into_active_model();
@@ -189,9 +183,7 @@ async fn block_handler(
 ) -> WebResult {
 	let user = user_or_else(
 		&auth,
-		db::user::Entity::find_by_id(id)
-			.one(&*db::get())
-			.await?,
+		db::user::Entity::find_by_id(id).one(&*db::get()).await?,
 	)?;
 	let time = params.time;
 	info!(target = %user, user = %auth, %time, "block user");
@@ -214,9 +206,7 @@ async fn permanent_block_handler(
 ) -> WebResult {
 	let user = user_or_else(
 		&auth,
-		db::user::Entity::find_by_id(id)
-			.one(&*db::get())
-			.await?,
+		db::user::Entity::find_by_id(id).one(&*db::get()).await?,
 	)?;
 	info!(target = %user, user = %auth, "permanently block user");
 	let mut user = user.into_active_model();
@@ -235,9 +225,7 @@ async fn permanent_block_handler(
 async fn unblock_handler(RequireSysop(auth): RequireSysop, Path(id): Path<Uuid>) -> WebResult {
 	let user = user_or_else(
 		&auth,
-		db::user::Entity::find_by_id(id)
-			.one(&*db::get())
-			.await?,
+		db::user::Entity::find_by_id(id).one(&*db::get()).await?,
 	)?;
 	info!(target = %user, user = %auth, "unblock user");
 	let mut user = user.into_active_model();
