@@ -13,9 +13,9 @@ pub struct Model {
 	pub salt: String,
 	#[sea_orm(column_type = "String(None)")]
 	pub modrinth_id: String,
-	#[sea_orm(column_type = "Boolean", default = false)]
+	#[sea_orm(column_type = "Boolean", default_value = "false")]
 	pub sysop: bool,
-	#[sea_orm(column_type = "Timestamp", nullable, default = None)]
+	#[sea_orm(column_type = "Timestamp", nullable, default_value = "None")]
 	pub blocked: Option<DateTimeUtc>,
 }
 

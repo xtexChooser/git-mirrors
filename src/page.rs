@@ -1,9 +1,9 @@
-use std::collections::BTreeSet;
+use std::{collections::BTreeSet, fmt::Display};
 
 use anyhow::{anyhow, bail, Result};
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, Duration, Utc};
 use mwbot::generators::{AllPages, Generator};
-use sea_orm::{prelude::*, ActiveValue, IntoActiveModel, QuerySelect};
+use sea_orm::{prelude::*, ActiveValue, Condition, IntoActiveModel, QuerySelect};
 use tokio::sync::Mutex;
 use tracing::{error, info, info_span, trace, Instrument};
 use uuid::Uuid;
@@ -11,6 +11,7 @@ use uuid::Uuid;
 use crate::{
 	app::App,
 	db::{self},
+	linter::LINTER_WORKERS,
 	site,
 };
 
@@ -26,6 +27,12 @@ impl PartialOrd for Page {
 impl Ord for Page {
 	fn cmp(&self, other: &Self) -> std::cmp::Ordering {
 		self.0.id.cmp(&other.0.id)
+	}
+}
+
+impl Display for Page {
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		self.0.id.fmt(f)
 	}
 }
 
@@ -111,7 +118,11 @@ impl Page {
 	}
 
 	pub fn check_requested_time(&self) -> Option<DateTime<Utc>> {
-		self.0.need_check
+		self.0.need_check.map(|t|t)
+	}
+
+	pub fn check_errors(&self) -> u32 {
+		self.0.check_errors
 	}
 
 	pub fn issues_count(&self) -> u32 {
@@ -125,8 +136,9 @@ impl Page {
 	pub async fn mark_check(self) -> Result<()> {
 		let mut model = self.0.into_active_model();
 		model.need_check = ActiveValue::Set(Some(Utc::now()));
+		model.check_errors = ActiveValue::Set(0);
 		model.update(&*db::get()).await?;
-		App::get().linter_notify.notify_waiters();
+		App::get().linter_notify.notify_one();
 		Ok(())
 	}
 
@@ -136,19 +148,47 @@ impl Page {
 		issues: u32,
 		suggests: u32,
 	) -> Result<()> {
-		if self.check_requested_time() != Some(start_time) {
+		let requested_time = self.check_requested_time();
+		let drop_result = if requested_time != Some(start_time) {
 			info!(
 				lang = self.lang(),
 				title = self.title(),
 				"drop check result for page to be checked again"
 			);
-			return Ok(());
-		}
+			true
+		} else {
+			info!(
+				lang = self.lang(),
+				title = self.title(),
+				time = %(Utc::now() - start_time),
+				issues,
+				suggests,
+				"succeeded checking page"
+			);
+			false
+		};
 		let mut model = self.0.into_active_model();
 		model.last_checked = ActiveValue::Set(Utc::now());
-		model.need_check = ActiveValue::Set(None);
+		if !drop_result {
+			model.need_check = ActiveValue::Set(None);
+		}
+		model.check_errors = ActiveValue::Set(0);
 		model.issues = ActiveValue::Set(issues);
 		model.suggests = ActiveValue::Set(suggests);
+		model.update(&*db::get()).await?;
+		Ok(())
+	}
+
+	pub async fn defer_check(self) -> Result<()> {
+		let check_time = self.check_requested_time();
+		let check_errors = self.check_errors();
+		let mut model = self.0.into_active_model();
+		model.need_check = ActiveValue::Set(Some(
+			check_time
+				.ok_or_else(|| anyhow!("trying to defer a page not requested for checking"))?
+				+ Duration::seconds(site::LINTER_RETRY_DELAY),
+		));
+		model.check_errors = ActiveValue::Set(check_errors + 1);
 		model.update(&*db::get()).await?;
 		Ok(())
 	}
@@ -169,6 +209,34 @@ impl Page {
 			.await?;
 		App::get().linter_notify.notify_waiters();
 		Ok(())
+	}
+
+	pub async fn count_for_check() -> Result<u64> {
+		Ok(db::page::Entity::find()
+			.filter(
+				Condition::all()
+					.add(db::page::Column::NeedCheck.is_not_null())
+					.add(db::page::Column::NeedCheck.lte(Utc::now()))
+					.add(db::page::Column::CheckErrors.lt(site::LINTER_MAX_RETRIES)),
+			)
+			.count(&*db::get())
+			.await?)
+	}
+
+	pub async fn find_for_check() -> Result<Vec<Self>> {
+		Ok(db::page::Entity::find()
+			.filter(
+				Condition::all()
+					.add(db::page::Column::NeedCheck.is_not_null())
+					.add(db::page::Column::NeedCheck.lte(Utc::now()))
+					.add(db::page::Column::CheckErrors.lt(site::LINTER_MAX_RETRIES)),
+			)
+			.limit(Some(*LINTER_WORKERS as u64 * 2))
+			.all(&*db::get())
+			.await?
+			.into_iter()
+			.map(|p| Self(p))
+			.collect())
 	}
 }
 

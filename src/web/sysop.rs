@@ -8,7 +8,7 @@ use axum::{
 };
 use chrono::{Duration, Utc};
 use sea_orm::{
-	ColumnTrait, EntityTrait, FromQueryResult, PaginatorTrait, QueryFilter, QueryOrder, QuerySelect,
+	ColumnTrait, Condition, EntityTrait, FromQueryResult, PaginatorTrait, QueryFilter, QueryOrder, QuerySelect
 };
 use tracing::{error, info};
 
@@ -125,6 +125,8 @@ struct StatsPage {
 	langs: Vec<LangStat>,
 	need_check_count: u64,
 	langs_need_check: HashMap<String, u32>,
+	langs_delayed: HashMap<String, u32>,
+	langs_error: HashMap<String, u32>,
 }
 
 #[derive(Debug, FromQueryResult)]
@@ -136,7 +138,7 @@ struct LangStat {
 }
 
 #[derive(Debug, FromQueryResult)]
-struct LangNeedCheckStat {
+struct LangFilteredStat {
 	lang: String,
 	count: u32,
 }
@@ -166,7 +168,41 @@ async fn stats_handler(RequireSysop(auth): RequireSysop) -> WebResult {
 		.column_as(db::page::Column::Id.count(), "count")
 		.filter(db::page::Column::NeedCheck.is_not_null())
 		.group_by(db::page::Column::Lang)
-		.into_model::<LangNeedCheckStat>()
+		.into_model::<LangFilteredStat>()
+		.all(&*db::get())
+		.await?
+		.into_iter()
+		.map(|s| (s.lang, s.count))
+		.collect();
+	let langs_delayed = db::page::Entity::find()
+		.select_only()
+		.column(db::page::Column::Lang)
+		.column_as(db::page::Column::Id.count(), "count")
+		.filter(
+			Condition::all()
+				.add(db::page::Column::NeedCheck.is_not_null())
+				.add(db::page::Column::CheckErrors.ne(0))
+				.add(db::page::Column::CheckErrors.lt(site::LINTER_MAX_RETRIES)),
+		)
+		.group_by(db::page::Column::Lang)
+		.into_model::<LangFilteredStat>()
+		.all(&*db::get())
+		.await?
+		.into_iter()
+		.map(|s| (s.lang, s.count))
+		.collect();
+	let langs_error = db::page::Entity::find()
+		.select_only()
+		.column(db::page::Column::Lang)
+		.column_as(db::page::Column::Id.count(), "count")
+		.filter(
+			Condition::all()
+				.add(db::page::Column::NeedCheck.is_not_null())
+				.add(db::page::Column::CheckErrors.ne(0))
+				.add(db::page::Column::CheckErrors.gte(site::LINTER_MAX_RETRIES)),
+		)
+		.group_by(db::page::Column::Lang)
+		.into_model::<LangFilteredStat>()
 		.all(&*db::get())
 		.await?
 		.into_iter()
@@ -182,6 +218,8 @@ async fn stats_handler(RequireSysop(auth): RequireSysop) -> WebResult {
 		langs,
 		need_check_count,
 		langs_need_check,
+		langs_delayed,
+		langs_error,
 	}
 	.into_response())
 }

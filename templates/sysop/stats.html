@@ -18,7 +18,9 @@
 				<th scope="col">Page Count</th>
 				<th scope="col">Total Issues</th>
 				<th scope="col">Total Suggests</th>
-				<th scope="col">Pending for Check</th>
+				<th scope="col">Pending</th>
+				<th scope="col">Delayed</th>
+				<th scope="col">Error</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -28,7 +30,9 @@
 				<td>{{ lang.count }}</td>
 				<td>{{ lang.issues }}</td>
 				<td>{{ lang.suggests }}</td>
-				<td>{{ langs_need_check.get(lang.lang).unwrap() }}</td>
+				<td>{{ langs_need_check.get(lang.lang).cloned().unwrap_or(0) }}</td>
+				<td>{{ langs_delayed.get(lang.lang).cloned().unwrap_or(0) }}</td>
+				<td>{{ langs_error.get(lang.lang).cloned().unwrap_or(0) }}</td>
 			</tr>
 			{%- endfor %}
 		</tbody>

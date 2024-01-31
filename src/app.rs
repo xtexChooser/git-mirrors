@@ -6,7 +6,7 @@ use std::{
 
 use anyhow::{bail, Result};
 use lru::LruCache;
-use parking_lot::RwLock;
+use parking_lot::{Mutex, RwLock};
 use tokio::sync::Notify;
 
 pub use mwbot::Bot as MwBot;
@@ -14,7 +14,7 @@ pub use mwbot::Page as MwPage;
 
 use tracing::info;
 
-use crate::{db::DatabaseManager, site, web};
+use crate::{db::DatabaseManager, linter::LinterState, site, web};
 
 pub const USER_AGENT: &str = concat!(
 	env!("CARGO_PKG_NAME"),
@@ -31,6 +31,8 @@ pub struct App {
 	pub linter_notify: Notify,
 	pub resync_pages_notify: Notify,
 	pub login_lru: RwLock<LruCache<String, web::auth::AuthResult>>,
+	pub linter_selector_mutex: Mutex<()>,
+	pub linters: RwLock<Vec<Arc<RwLock<LinterState>>>>,
 }
 
 static GLOBAL_APP: OnceLock<Arc<App>> = OnceLock::new();
@@ -43,6 +45,8 @@ impl App {
 			linter_notify: Notify::new(),
 			resync_pages_notify: Notify::new(),
 			login_lru: RwLock::new(LruCache::new(NonZeroUsize::new(30).unwrap())),
+			linter_selector_mutex: Mutex::new(()),
+			linters: RwLock::new(Vec::new()),
 		}))
 	}
 

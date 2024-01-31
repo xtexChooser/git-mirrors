@@ -7,7 +7,7 @@ pub struct Model {
 	pub id: Uuid,
 	#[sea_orm(column_type = "Timestamp")]
 	pub last_synced_at: DateTimeUtc,
-	#[sea_orm(column_type = "Unsigned", default = 0)]
+	#[sea_orm(column_type = "Unsigned", default_value = 0)]
 	pub last_rc_id: u32,
 }
 

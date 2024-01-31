@@ -26,7 +26,7 @@ async fn main() -> Result<()> {
 	tokio::spawn(rcsyncer::run_rc_syncer());
 	tokio::spawn(db::run_sqlite_interval_optimizer());
 
-	linter::run_linter().await;
+	linter::run_linters().await;
 
 	Ok(())
 }

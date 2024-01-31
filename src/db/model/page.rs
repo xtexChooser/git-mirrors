@@ -11,13 +11,13 @@ pub struct Model {
 	pub title: String,
 	#[sea_orm(column_type = "Timestamp")]
 	pub last_checked: DateTimeUtc,
-	#[sea_orm(column_type = "Timestamp", nullable)]
+	#[sea_orm(column_type = "Timestamp", nullable, default_value = "None")]
 	pub need_check: Option<DateTimeUtc>,
-	#[sea_orm(column_type = "Unsigned", default = 0)]
+	#[sea_orm(column_type = "Unsigned", default_value = "0")]
 	pub check_errors: u32,
-	#[sea_orm(column_type = "Unsigned", default = 0)]
+	#[sea_orm(column_type = "Unsigned", default_value = "0")]
 	pub issues: u32,
-	#[sea_orm(column_type = "Unsigned", default = 0)]
+	#[sea_orm(column_type = "Unsigned", default_value = "0")]
 	pub suggests: u32,
 }
 
