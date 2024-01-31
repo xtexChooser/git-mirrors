@@ -54,7 +54,7 @@ pub async fn run_linters() {
 
 async fn select_page(state: &RwLock<LinterState>) -> Result<Option<Page>> {
 	let app = App::get();
-	let _ = app.linter_selector_mutex.lock();
+	let _linters_lock = app.linter_selector_mutex.lock();
 	let other_pages = app
 		.linters
 		.read()
