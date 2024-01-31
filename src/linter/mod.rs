@@ -6,6 +6,7 @@ use std::{
 use anyhow::{bail, Result};
 use parking_lot::RwLock;
 use serde::{Deserialize, Serialize};
+use tokio::sync::{Mutex, Notify};
 use tracing::{error, info_span, Instrument};
 use uuid::Uuid;
 
@@ -18,12 +19,25 @@ pub static LINTER_WORKERS: LazyLock<u32> = LazyLock::new(|| {
 		.unwrap_or(5)
 });
 
-#[derive(Debug, Serialize, Deserialize, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Default)]
+#[derive(Debug, Default)]
 pub struct LinterState {
-	pub page: Option<Uuid>,
+	pub worker_notify: Notify,
+	pub selector_mutex: Mutex<()>,
+	pub workers: RwLock<Vec<Arc<RwLock<WorkerState>>>>,
 }
 
 impl LinterState {
+	pub fn new() -> Self {
+		Self::default()
+	}
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Default)]
+pub struct WorkerState {
+	pub page: Option<Uuid>,
+}
+
+impl WorkerState {
 	pub fn new() -> Self {
 		Self::default()
 	}
@@ -35,8 +49,8 @@ pub async fn run_linters() {
 	let _ = app.mwbot("en").await.unwrap();
 
 	for _ in 0..*LINTER_WORKERS {
-		let state = Arc::new(RwLock::new(LinterState::new()));
-		app.linters.write().push(state.clone());
+		let state = Arc::new(RwLock::new(WorkerState::new()));
+		app.linter.workers.write().push(state.clone());
 		tokio::spawn(run_linter(state));
 	}
 
@@ -44,18 +58,19 @@ pub async fn run_linters() {
 		tokio::time::sleep(std::time::Duration::from_secs(120)).await;
 		match Page::count_for_check().await.unwrap_or(0) {
 			0 => {}
-			1 => app.linter_notify.notify_one(),
-			_ => app.linter_notify.notify_waiters(),
+			1 => app.linter.worker_notify.notify_one(),
+			_ => app.linter.worker_notify.notify_waiters(),
 		}
 	}
 }
 
 // @TODO: cache a part of pages
-async fn select_page(state: &RwLock<LinterState>) -> Result<Option<Page>> {
+async fn select_page(state: &RwLock<WorkerState>) -> Result<Option<Page>> {
 	let app = App::get();
-	let _linters_lock = app.linter_selector_mutex.lock();
+	let _linters_lock = app.linter.selector_mutex.lock();
 	let other_pages = app
-		.linters
+		.linter
+		.workers
 		.read()
 		.iter()
 		.filter_map(|l| l.read().page.to_owned())
@@ -70,10 +85,10 @@ async fn select_page(state: &RwLock<LinterState>) -> Result<Option<Page>> {
 	Ok(page)
 }
 
-pub async fn run_linter(state: Arc<RwLock<LinterState>>) {
+pub async fn run_linter(state: Arc<RwLock<WorkerState>>) {
 	let app = App::get();
 	loop {
-		app.linter_notify.notified().await;
+		app.linter.worker_notify.notified().await;
 		loop {
 			assert!(state.read().page.is_none());
 			let page = select_page(&state).await;

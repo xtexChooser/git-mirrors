@@ -62,7 +62,7 @@ pub fn new_router() -> Router {
 		.route(
 			"/trigger-linter-worker",
 			post(|RequireSysop(auth): RequireSysop| async {
-				App::get().linter_notify.notify_waiters();
+				App::get().linter.worker_notify.notify_waiters();
 				MessagePage {
 					auth,
 					title: "Linter Triggerred",

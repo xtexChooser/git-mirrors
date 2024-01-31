@@ -138,7 +138,7 @@ impl Page {
 		model.need_check = ActiveValue::Set(Some(Utc::now().naive_utc()));
 		model.check_errors = ActiveValue::Set(0);
 		model.update(&*db::get()).await?;
-		App::get().linter_notify.notify_one();
+		App::get().linter.worker_notify.notify_one();
 		Ok(())
 	}
 
@@ -208,7 +208,7 @@ impl Page {
 			})
 			.exec(&*db::get())
 			.await?;
-		App::get().linter_notify.notify_waiters();
+		App::get().linter.worker_notify.notify_waiters();
 		Ok(())
 	}
 
@@ -223,7 +223,7 @@ impl Page {
 			.filter(db::page::Column::CheckErrors.gte(site::LINTER_MAX_RETRIES))
 			.exec(&*db::get())
 			.await?;
-		App::get().linter_notify.notify_waiters();
+		App::get().linter.worker_notify.notify_waiters();
 		Ok(())
 	}
 

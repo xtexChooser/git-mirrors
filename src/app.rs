@@ -7,7 +7,7 @@ use std::{
 use anyhow::{bail, Result};
 use lru::LruCache;
 use parking_lot::RwLock;
-use tokio::sync::{Mutex, Notify};
+use tokio::sync::Notify;
 
 pub use mwbot::Bot as MwBot;
 pub use mwbot::Page as MwPage;
@@ -28,11 +28,9 @@ pub const USER_AGENT: &str = concat!(
 pub struct App {
 	pub bots: RwLock<BTreeMap<String, MwBot>>,
 	pub db: Arc<DatabaseManager>,
-	pub linter_notify: Notify,
 	pub resync_pages_notify: Notify,
 	pub login_lru: RwLock<LruCache<String, web::auth::AuthResult>>,
-	pub linter_selector_mutex: Mutex<()>,
-	pub linters: RwLock<Vec<Arc<RwLock<LinterState>>>>,
+	pub linter: Arc<LinterState>,
 }
 
 static GLOBAL_APP: OnceLock<Arc<App>> = OnceLock::new();
@@ -42,11 +40,9 @@ impl App {
 		Ok(Arc::new(Self {
 			bots: RwLock::new(BTreeMap::new()),
 			db: Arc::new(DatabaseManager::new().await?),
-			linter_notify: Notify::new(),
 			resync_pages_notify: Notify::new(),
 			login_lru: RwLock::new(LruCache::new(NonZeroUsize::new(30).unwrap())),
-			linter_selector_mutex: Mutex::new(()),
-			linters: RwLock::new(Vec::new()),
+			linter: Arc::new(LinterState::new()),
 		}))
 	}
 
