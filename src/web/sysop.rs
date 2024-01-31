@@ -88,6 +88,23 @@ pub fn new_router() -> Router {
 				}
 			}),
 		)
+		.route(
+			"/recheck-error-pages",
+			post(|RequireSysop(auth): RequireSysop| async {
+				info!(%auth, "mark error pages for re-check");
+				tokio::spawn(async {
+					if let Err(error) = Page::mark_error_pages_for_check().await {
+						error!(%error, "failed to mark error pages for re-check");
+					}
+				});
+				MessagePage {
+					auth,
+					title: "Recheck Triggerred for Error Pages",
+					message: "We started to mark error pages for re-check.",
+					auto_return: true,
+				}
+			}),
+		)
 }
 
 #[derive(Template)]

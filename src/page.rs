@@ -203,8 +203,24 @@ impl Page {
 		db::page::Entity::update_many()
 			.set(db::page::ActiveModel {
 				need_check: ActiveValue::Set(Some(Utc::now().naive_utc())),
+				check_errors: ActiveValue::Set(0),
 				..Default::default()
 			})
+			.exec(&*db::get())
+			.await?;
+		App::get().linter_notify.notify_waiters();
+		Ok(())
+	}
+
+	pub async fn mark_error_pages_for_check() -> Result<()> {
+		info!("marking error pages for check");
+		db::page::Entity::update_many()
+			.set(db::page::ActiveModel {
+				need_check: ActiveValue::Set(Some(Utc::now().naive_utc())),
+				check_errors: ActiveValue::Set(0),
+				..Default::default()
+			})
+			.filter(db::page::Column::CheckErrors.gte(site::LINTER_MAX_RETRIES))
 			.exec(&*db::get())
 			.await?;
 		App::get().linter_notify.notify_waiters();
