@@ -1,6 +1,7 @@
 #![feature(let_chains)]
 #![feature(lazy_cell)]
 #![feature(never_type)]
+#![feature(option_take_if)]
 
 pub mod app;
 pub mod db;

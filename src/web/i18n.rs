@@ -35,6 +35,7 @@ pub fn init() -> Result<()> {
 pub fn get(lang: &str, key: &'static str) -> &'static str {
 	unsafe {
 		LANG.get(&(lang, key))
+			.take_if(|s| **s != "")
 			.or_else(|| LANG.get(&(site::I18N_FALLBACK_LANGUAGE, key)))
 			.unwrap_or(&key)
 	}
