@@ -39,6 +39,7 @@
 	"web.sysop.stats.users-count": "用户数：$1",
 	"web.user.add-sysop": "设为机器人管理员",
 	"web.user.block": "封禁",
+	"web.user.block-duration": "封禁时长",
 	"web.user.blocked": "已封禁",
 	"web.user.blocked-until": "此用户被封禁至 $1 。",
 	"web.user.bot-sysop": "机器人管理员",
