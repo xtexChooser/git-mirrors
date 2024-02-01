@@ -8,7 +8,7 @@
 <p class="text-secondary">{{ user.id }}</p>
 
 {%- if let Some(until) = user.blocked -%}
-<p>{{ auth.lang("web.user.blocked-until").replace("$1", until.and_utc().to_rfc3339_opts(chrono::SecondsFormat::Secs, true)) }}</p>
+<p>{{ auth.lang("web.user.blocked-until").replace("$1", until.and_utc().to_rfc3339_opts(chrono::SecondsFormat::Secs, true).as_str()) }}</p>
 {%- endif -%}
 
 <div>
@@ -29,7 +29,7 @@
 	</form>
 </div>
 
-{% if let Some(auth) = auth.0 -%}{% if auth.sysop -%}
+{% if let Some(authuser) = auth.0 -%}{% if authuser.sysop -%}
 <div>
 	<p>{{ auth.lang("web.user.modrinth-id").replace("$1", user.modrinth_id) }}</p>
 	<form method="post">
