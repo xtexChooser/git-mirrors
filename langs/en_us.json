@@ -39,6 +39,7 @@
 	"web.sysop.stats.users-count": "Users: $1",
 	"web.user.add-sysop": "Add as bot-sysop",
 	"web.user.block": "Block",
+	"web.user.block-duration": "Block duration",
 	"web.user.blocked": "blocked",
 	"web.user.blocked-until": "This user has been blocked until $1.",
 	"web.user.bot-sysop": "bot-sysop",

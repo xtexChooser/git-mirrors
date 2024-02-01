@@ -42,7 +42,7 @@
 	</form>
 	<div>
 		<form class="inline-form" method="post">
-			<input name="time" type="text" autocomplete="hidden" placeholder="Block duration" required />
+			<input name="time" type="text" autocomplete="hidden" placeholder="{{ auth.lang("web.user.block-duration") }}" required />
 			<button formaction="/user/{{ user.id }}/block">{{ auth.lang("web.user.block") }}</button>
 		</form>
 		<form class="inline-form" method="post">
