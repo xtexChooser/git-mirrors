@@ -36,5 +36,17 @@
 	"web.sysop.stats.table.pages": "Pages",
 	"web.sysop.stats.table.pending": "Pending",
 	"web.sysop.stats.table.suggests": "Suggestions",
-	"web.sysop.stats.users-count": "Users: $1"
+	"web.sysop.stats.users-count": "Users: $1",
+	"web.user.add-sysop": "Add as bot-sysop",
+	"web.user.block": "Block",
+	"web.user.blocked": "blocked",
+	"web.user.blocked-until": "This user has been blocked until $1.",
+	"web.user.bot-sysop": "bot-sysop",
+	"web.user.modrinth-id": "User Modrinth ID: $1",
+	"web.user.permanent-block": "Permanent block",
+	"web.user.permanent-blocked": "permanent-blocked",
+	"web.user.remove-sysop": "Remove bot-sysop",
+	"web.user.reset-token-salt": "Reset token-salt",
+	"web.user.set-language": "Set language",
+	"web.user.unblock": "Unblock"
 }

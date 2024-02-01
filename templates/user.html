@@ -2,19 +2,19 @@
 {% block title %}{{ user.name }} - spock{% endblock %}
 {% block body %}
 <h1><span>{{ user.name }}</span>
-{%- if user.sysop -%}<span class="badge badge-cyan">bot-sysop</span>{%- endif -%}
-{%- if is_blocked -%}<span class="badge badge-red">{%- if is_permanent_block -%}permanent-{%- endif -%}blocked</span>{%- endif -%}
+{%- if user.sysop -%}<span class="badge badge-cyan">{{ auth.lang("web.user.bot-sysop") }}</span>{%- endif -%}
+{%- if is_blocked -%}<span class="badge badge-red">{%- if is_permanent_block -%}{{ auth.lang("web.user.permanent-blocked") }}{%- else -%}{{ auth.lang("web.user.blocked") }}{%- endif -%}</span>{%- endif -%}
 </h1>
 <p class="text-secondary">{{ user.id }}</p>
 
 {%- if let Some(until) = user.blocked -%}
-<p>This user has been blocked until {{ until.and_utc().to_rfc3339_opts(chrono::SecondsFormat::Secs, true) }}</p>
+<p>{{ auth.lang("web.user.blocked-until").replace("$1", until.and_utc().to_rfc3339_opts(chrono::SecondsFormat::Secs, true)) }}</p>
 {%- endif -%}
 
 <div>
 	<form class="inline-form" method="post">
 		{% if is_self -%}
-		<button formaction="/user/{{ user.id }}/reset_salt" class="button-primary">Reset token-salt</button>
+		<button formaction="/user/{{ user.id }}/reset_salt" class="button-primary">{{ auth.lang("web.user.reset-token-salt") }}</button>
 		{%- endif %}
 	</form>
 	<form class="inline-form" method="post">
@@ -24,31 +24,31 @@
 			<option value="{{ lang }}" {%- if user.language.as_str() == format!("{}", lang) %} selected {%- endif -%}>{{ name }}</option>
 			{%- endfor %}
 		</select>
-		<button formaction="/user/{{ user.id }}/lang">Set language</button>
+		<button formaction="/user/{{ user.id }}/lang">{{ auth.lang("web.user.set-language") }}</button>
 		{%- endif %}
 	</form>
 </div>
 
 {% if let Some(auth) = auth.0 -%}{% if auth.sysop -%}
 <div>
-	<p>User Modrinth ID: <span>{{ user.modrinth_id }}</span></p>
+	<p>{{ auth.lang("web.user.modrinth-id").replace("$1", user.modrinth_id) }}</p>
 	<form method="post">
 		{% if !user.sysop -%}
-		<button formmethod="post" formaction="/user/{{ user.id }}/op">Add as bot-sysop</button>
+		<button formmethod="post" formaction="/user/{{ user.id }}/op">{{ auth.lang("web.user.add-sysop") }}</button>
 		{%- endif %}
 		{% if user.sysop && !is_self -%}
-		<button formmethod="post" formaction="/user/{{ user.id }}/deop" class="button-danger">Remove bot-sysop</button>
+		<button formmethod="post" formaction="/user/{{ user.id }}/deop" class="button-danger">{{ auth.lang("web.user.remove-sysop") }}</button>
 		{%- endif %}
 	</form>
 	<div>
 		<form class="inline-form" method="post">
 			<input name="time" type="text" autocomplete="hidden" placeholder="Block duration" required />
-			<button formaction="/user/{{ user.id }}/block">Block</button>
+			<button formaction="/user/{{ user.id }}/block">{{ auth.lang("web.user.block") }}</button>
 		</form>
 		<form class="inline-form" method="post">
-			<button formaction="/user/{{ user.id }}/block/permanent">Permanent block</button>
+			<button formaction="/user/{{ user.id }}/block/permanent">{{ auth.lang("web.user.permanent-block") }}</button>
 			{% if user.blocked.is_some() -%}
-			<button formaction="/user/{{ user.id }}/unblock">Unblock</button>
+			<button formaction="/user/{{ user.id }}/unblock">{{ auth.lang("web.user.unblock") }}</button>
 			{%- endif %}
 		</form>
 	</div>
