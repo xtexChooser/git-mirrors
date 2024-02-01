@@ -12,9 +12,19 @@
 {%- endif -%}
 
 <div>
-	<form method="post">
+	<form class="inline-form" method="post">
 		{% if is_self -%}
 		<button formaction="/user/{{ user.id }}/reset_salt" class="button-primary">Reset token-salt</button>
+		{%- endif %}
+	</form>
+	<form class="inline-form" method="post">
+		{% if is_self -%}
+		<select name="lang">
+			{% for (lang, name) in crate::web::i18n::get_langs() -%}
+			<option value="{{ lang }}" {%- if user.language.as_str() == format!("{}", lang) %} selected {%- endif -%}>{{ name }}</option>
+			{%- endfor %}
+		</select>
+		<button formaction="/user/{{ user.id }}/lang">Set language</button>
 		{%- endif %}
 	</form>
 </div>

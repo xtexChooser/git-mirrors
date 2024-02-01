@@ -1,4 +1,5 @@
 {
+	"lang": "English",
 	"web.index.welcome": "Welcome back! This is spock bot, a tool platform for $1 editors.",
 	"web.index.managebot": "Manage Bot",
 	"web.message.auto-redirect": "You will be redirected to the previous page in 3 secs.",

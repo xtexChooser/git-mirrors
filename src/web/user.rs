@@ -12,7 +12,7 @@ use axum::{
 use axum_extra::extract::Form;
 use chrono::{DateTime, Duration, Utc};
 use sea_orm::{
-	ActiveModelTrait, ActiveValue, ColumnTrait, EntityTrait, IntoActiveModel, QueryFilter,
+	ActiveModelTrait, ActiveValue, ColumnTrait, EntityTrait, IntoActiveModel, QueryFilter
 };
 use serde::Deserialize;
 use tracing::info;
@@ -51,6 +51,7 @@ pub fn new_router() -> Router {
 		.route("/:id/block", post(block_handler))
 		.route("/:id/block/permanent", post(permanent_block_handler))
 		.route("/:id/unblock", post(unblock_handler))
+		.route("/:id/lang", post(set_language_handler))
 }
 
 fn user_or_else(
@@ -237,6 +238,40 @@ async fn unblock_handler(RequireSysop(auth): RequireSysop, Path(id): Path<Uuid>)
 		title: "User unblocked",
 		message: &format!("User {} is unblocked.", user.name),
 		auto_return: true,
+	}
+	.into_response())
+}
+
+#[derive(Deserialize)]
+struct SetLangParams {
+	lang: String,
+}
+
+async fn set_language_handler(
+	RequireAuth(auth): RequireAuth,
+	Path(id): Path<Uuid>,
+	Form(params): Form<SetLangParams>,
+) -> WebResult {
+	if !auth.0.as_ref().unwrap().sysop && auth.0.as_ref().unwrap().id != id {
+		return Err(WebError::Response(
+			(StatusCode::UNAUTHORIZED, "bot-sysop or login required").into_response(),
+		));
+	}
+	let user = user_or_else(
+		&auth,
+		db::user::Entity::find_by_id(id).one(&*db::get()).await?,
+	)?;
+	let lang = params.lang;
+	info!(target = %user, user = %auth, lang, "set user language");
+	let mut user = user.into_active_model();
+	user.language = ActiveValue::Set(lang.clone());
+	user.update(&*db::get()).await?;
+	App::get().login_lru.write().clear();
+	Ok(MessagePage {
+		auth,
+		title: "Language set",
+		message: &format!("Language has been set to {}", lang),
+		auto_return: false,
 	}
 	.into_response())
 }
