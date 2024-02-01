@@ -1,5 +1,7 @@
 use std::{
+	collections::BTreeMap,
 	env,
+	fmt::Debug,
 	sync::{Arc, LazyLock},
 };
 
@@ -10,7 +12,9 @@ use tokio::sync::{Mutex, Notify};
 use tracing::{error, info_span, Instrument};
 use uuid::Uuid;
 
-use crate::{app::App, page::Page};
+use crate::{app::App, linter::checker::CheckContext, page::Page, site};
+
+use self::checker::Checker;
 
 pub static LINTER_WORKERS: LazyLock<u32> = LazyLock::new(|| {
 	env::var("SPOCK_LINTER_WORKERS")
@@ -19,16 +23,34 @@ pub static LINTER_WORKERS: LazyLock<u32> = LazyLock::new(|| {
 		.unwrap_or(5)
 });
 
+pub mod checker;
+pub mod generic;
+
 #[derive(Debug, Default)]
 pub struct LinterState {
 	pub worker_notify: Notify,
 	pub selector_mutex: Mutex<()>,
 	pub workers: RwLock<Vec<Arc<RwLock<WorkerState>>>>,
+	pub checkers: BTreeMap<String, Checker>,
 }
 
 impl LinterState {
 	pub fn new() -> Self {
-		Self::default()
+		Self {
+			worker_notify: Notify::new(),
+			selector_mutex: Mutex::default(),
+			workers: RwLock::new(Vec::new()),
+			checkers: Self::init_checkers(),
+		}
+	}
+
+	fn init_checkers() -> BTreeMap<String, Checker> {
+		let mut checkers = Vec::new();
+		checkers.extend(site::init_checkers());
+		return checkers
+			.into_iter()
+			.map(|c| (c.get_id().to_string(), c))
+			.collect();
 	}
 }
 
@@ -127,5 +149,12 @@ pub async fn run_linter(state: Arc<RwLock<WorkerState>>) {
 }
 
 pub async fn do_lint(id: Uuid) -> Result<(u32, u32)> {
+	let mut ctx = CheckContext::new(id).await?;
+	let app = App::get();
+	for (checker_id, checker) in &app.linter.checkers {
+		checker.check(&mut ctx);
+		// let issues = ctx.found_issues.drain(..);
+		// let suggests = ctx.found_suggests.drain(..);
+	}
 	bail!("not implemented")
 }

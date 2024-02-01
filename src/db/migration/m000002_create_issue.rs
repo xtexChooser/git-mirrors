@@ -19,7 +19,6 @@ impl MigrationTrait for Migration {
 							.unique_key(),
 					)
 					.col(ColumnDef::new(Issue::Page).uuid().not_null())
-					.col(ColumnDef::new(Issue::FoundAt).timestamp().not_null())
 					.col(ColumnDef::new(Issue::IssueType).string().not_null())
 					.col(ColumnDef::new(Issue::Details).json_binary().not_null())
 					.to_owned(),
@@ -99,7 +98,6 @@ enum Issue {
 	Table,
 	Id,
 	Page,
-	FoundAt,
 	IssueType,
 	Details,
 }

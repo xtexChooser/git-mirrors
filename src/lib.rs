@@ -4,6 +4,7 @@
 
 pub mod app;
 pub mod db;
+pub mod issue;
 pub mod linter;
 pub mod page;
 pub mod rcsyncer;

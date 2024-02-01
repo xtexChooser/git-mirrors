@@ -53,15 +53,15 @@ impl Page {
 		Uuid::new_v5(&Self::get_lang_id(lang), title.as_bytes())
 	}
 
-	pub async fn get_by_id(id: Uuid) -> Result<Option<Self>> {
-		Ok(db::page::Entity::find_by_id(id)
+	pub async fn get_by_id(id: &Uuid) -> Result<Option<Self>> {
+		Ok(db::page::Entity::find_by_id(*id)
 			.one(&*db::get())
 			.await?
 			.map(Page))
 	}
 
 	pub async fn get_by_name(lang: &str, title: &str) -> Result<Option<Self>> {
-		Self::get_by_id(Self::get_page_id(lang, title)).await
+		Self::get_by_id(&Self::get_page_id(lang, title)).await
 	}
 
 	pub async fn get_or_init(lang: &str, title: &str) -> Result<Option<Self>> {
@@ -311,7 +311,7 @@ pub async fn sync_all_pages(lang: &str) -> Result<()> {
 	for dbpage in dbpages {
 		if !pages.contains(&dbpage.title) {
 			info!(page = dbpage.title, "remove deleted page from database");
-			if let Some(page) = Page::get_by_id(dbpage.id).await? {
+			if let Some(page) = Page::get_by_id(&dbpage.id).await? {
 				page.delete().await?;
 			}
 		}

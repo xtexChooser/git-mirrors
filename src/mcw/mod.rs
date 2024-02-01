@@ -1,11 +1,20 @@
+use std::sync::Arc;
+
 use phf::{phf_map, phf_set};
 use uuid::{uuid, Uuid};
+
+use crate::{
+	checkers,
+	linter::{checker::Checker, generic::incomplete_interlang::IncompleteInterlangLinkChecker},
+};
 
 pub const SITE_NAME: &str = "Minecraft Wiki";
 
 pub fn get_wiki_url(lang: &str) -> String {
 	if lang == "en" {
-		"https://minecraft.wiki".to_owned()
+		"https://minecraft.wiki".to_string()
+	} else if lang == "lzh" {
+		"https://lzh-staging.minecraft.wiki".to_string()
 	} else {
 		format!("https://{}.minecraft.wiki", lang)
 	}
@@ -57,3 +66,7 @@ pub const SQLITE_INTERVAL_OPTIMIZE_PEROID: u64 = 60 * 60 * 24;
 
 pub const LINTER_MAX_RETRIES: u32 = 5;
 pub const LINTER_RETRY_DELAY: i64 = 10 * 60;
+
+pub fn init_checkers() -> Vec<Checker> {
+	checkers![IncompleteInterlangLinkChecker]
+}

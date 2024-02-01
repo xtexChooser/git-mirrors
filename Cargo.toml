@@ -10,6 +10,7 @@ repository = "https://codeberg.org/xtex/spock.git"
 anyhow = "1.0.79"
 askama = "0.12.1"
 askama_axum = "0.4.0"
+async-trait = "0.1.77"
 axum = { version = "0.7.4", features = ["macros"] }
 axum-extra = { version = "0.9.2", features = ["cookie", "typed-header", "form"] }
 chrono = "0.4.33"
@@ -35,9 +36,6 @@ tracing-subscriber = { version = "0.3.18", features = ["json", "env-filter"] }
 uuid = { version = "1.7.0", features = ["fast-rng", "v4", "v5", "macro-diagnostics"] }
 
 [features]
-default = [ "site-mcw", "checker-wp" ]
-site-mcw = [ "checker-basic", "checker-mcw" ]
-site-wp = [ "checker-basic", "checker-wp" ]
-checker-basic = []
-checker-mcw = []
-checker-wp = []
+default = [ "site-mcw" ]
+site-mcw = []
+site-wp = []
