@@ -96,8 +96,8 @@ mw.loader
 					templatesandboxtext: spriteSrc,
 					templatesandboxcontentmodel: 'Scribunto',
 					formatversion: 2,
-				}).done(function (data) {
-					const parsed = data.parse.categories
+				}).done(function (respdata) {
+					const parsed = respdata.parse.categories
 						.map((c) => c.category)
 						.filter((c) => c.startsWith(catPrefix))
 						.map((c) => c.substring(catPrefix.length + 1));

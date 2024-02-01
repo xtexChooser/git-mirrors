@@ -52,8 +52,8 @@ mw.loader
 				templatesandboxtext: cmdSrc,
 				templatesandboxcontentmodel: 'Scribunto',
 				formatversion: 2,
-			}).done(function (data) {
-				const parsed = data.parse.parsewarnings
+			}).done(function (respdata) {
+				const parsed = respdata.parse.parsewarnings
 					.filter((c) => c.includes(logPrefix))
 					.map((c) =>
 						c.substring(c.indexOf(logPrefix) + logPrefix.length)
