@@ -67,6 +67,9 @@ pub const SQLITE_INTERVAL_OPTIMIZE_PEROID: u64 = 60 * 60 * 24;
 pub const LINTER_MAX_RETRIES: u32 = 5;
 pub const LINTER_RETRY_DELAY: i64 = 10 * 60;
 
+pub const I18N_FALLBACK_LANGUAGE: &str = "en_us";
+pub const I18N_DEFAULT_LANGUAGE: &str = "en_us";
+
 pub fn init_checkers() -> Vec<Checker> {
 	checkers![IncompleteInterlangLinkChecker]
 }

@@ -11,14 +11,14 @@
 		<nav id="main-nav">
 			<span id="brand">spock</span>
 			<ul>
-				<li><a class="nav-link" href="/">meta</a></li>
-				<li><a class="nav-link" href="/lint">linter</a></li>
+				<li><a class="nav-link" href="/">{{ auth.lang("web.nav.meta") }}</a></li>
+				<li><a class="nav-link" href="/lint">{{ auth.lang("web.nav.linter") }}</a></li>
 			</ul>
 			<span id="login-nav">
 				{% if auth.0.is_some() -%}
-				Logged in as <a href="/user">{{ auth.0.as_ref().unwrap().name }}</a> | <a href="/auth/logout">Log out</a>
+				{{ auth.lang("web.auth.loginas") }} <a href="/user">{{ auth.0.as_ref().unwrap().name }}</a> | <a href="/auth/logout">{{ auth.lang("web.auth.logout") }}</a>
 				{%- else -%}
-				<a href="/auth">Log in</a>
+				<a href="/auth">{{ auth.lang("web.auth.login") }}</a>
 				{%- endif %}
 			</span>
 		</nav>

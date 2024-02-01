@@ -25,9 +25,9 @@ use sha2::{Digest, Sha256};
 use tracing::{error, info, info_span, Instrument};
 use uuid::Uuid;
 
-use crate::{app::App, db};
+use crate::{app::App, db, site};
 
-use super::{meta::MessagePage, WebResult};
+use super::{i18n, meta::MessagePage, WebResult};
 
 pub fn generate_salt() -> String {
 	let mut rng = ChaCha20Rng::from_entropy();
@@ -155,6 +155,7 @@ async fn auth_handler(auth: AuthResult, Query(params): Query<AuthParams>) -> Web
 						modrinth_id: ActiveValue::Set(mrid.clone()),
 						sysop: ActiveValue::Set(mrid == *OAUTH_SYSOP),
 						blocked: ActiveValue::Set(None),
+						language: ActiveValue::Set(site::I18N_DEFAULT_LANGUAGE.to_string()),
 					}
 					.insert(&*db::get())
 					.await?
@@ -216,6 +217,7 @@ pub struct AuthInfo {
 	pub id: Uuid,
 	pub name: String,
 	pub sysop: bool,
+	pub language: String,
 }
 
 impl From<db::user::Model> for AuthInfo {
@@ -224,6 +226,7 @@ impl From<db::user::Model> for AuthInfo {
 			id: value.id,
 			name: value.name,
 			sysop: value.sysop,
+			language: value.language,
 		}
 	}
 }
@@ -293,6 +296,16 @@ impl Display for AuthResult {
 			None => f.write_str("(anon)"),
 			Some(auth) => f.write_str(auth.id.to_string().as_str()),
 		}
+	}
+}
+
+impl AuthResult {
+	pub fn lang(&self, key: &'static str) -> &'static str {
+		let lang = self
+			.0
+			.as_ref()
+			.map_or(site::I18N_DEFAULT_LANGUAGE, |u| &u.language);
+		i18n::get(lang, key)
 	}
 }
 

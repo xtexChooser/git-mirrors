@@ -28,6 +28,7 @@ impl MigrationTrait for Migration {
 							.default(false),
 					)
 					.col(ColumnDef::new(User::Blocked).timestamp().null())
+					.col(ColumnDef::new(User::Language).string_len(8).null())
 					.to_owned(),
 			)
 			.await?;
@@ -106,4 +107,5 @@ enum User {
 	ModrinthId,
 	Sysop,
 	Blocked,
+	Language,
 }

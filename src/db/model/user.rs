@@ -17,6 +17,8 @@ pub struct Model {
 	pub sysop: bool,
 	#[sea_orm(column_type = "Timestamp", nullable, default_value = "None")]
 	pub blocked: Option<DateTime>,
+	#[sea_orm(column_type = "String(Some(8))")]
+	pub language: String,
 }
 
 impl Display for Model {

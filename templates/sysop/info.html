@@ -5,10 +5,10 @@
 {% include "sysop/base.html" %}
 
 <form method="post">
-	<button formaction="/sysop/trigger-syncers">Trigger syncers</button>
-	<button formaction="/sysop/reset-login-lru">Reset login LRU cache</button>
-	<button formaction="/sysop/trigger-linter-worker">Trigger linter worker</button>
-	<button formaction="/sysop/recheck-all-pages">Re-check all pages</button>
-	<button formaction="/sysop/recheck-error-pages">Re-check error pages</button>
+	<button formaction="/sysop/trigger-syncers">{{ auth.lang("web.sysop.info.trigger-syncers") }}</button>
+	<button formaction="/sysop/reset-login-lru">{{ auth.lang("web.sysop.info.reset-login-lru") }}</button>
+	<button formaction="/sysop/trigger-linter-worker">{{ auth.lang("web.sysop.info.trigger-linter") }}</button>
+	<button formaction="/sysop/recheck-all-pages">{{ auth.lang("web.sysop.info.check-all") }}</button>
+	<button formaction="/sysop/recheck-error-pages">{{ auth.lang("web.sysop.info.check-error") }}</button>
 </form>
 {% endblock %}

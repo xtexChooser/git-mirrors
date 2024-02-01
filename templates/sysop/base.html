@@ -2,7 +2,7 @@
 {%- let user = auth.0.as_ref().unwrap() -%}
 
 {% call tab::begin() %}
-{% call tab::tab("/sysop", "info") %}
-{% call tab::tab("/sysop/rcsyncer", "rc-syncer") %}
-{% call tab::tab("/sysop/stats", "stats") %}
+{% call tab::tab("/sysop", auth.lang("web.sysop.nav.info")) %}
+{% call tab::tab("/sysop/rcsyncer", auth.lang("web.sysop.nav.rc-syncer")) %}
+{% call tab::tab("/sysop/stats", auth.lang("web.sysop.nav.stats")) %}
 {% call tab::end() %}

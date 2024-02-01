@@ -5,7 +5,7 @@
 	<h1>{{ title }}</h1>
 	<p>{{ message }}</p>
 	{% if auto_return -%}
-	<p id="auto-redirect-message"></p>
+	<p id="auto-redirect-message" data-text='{{ auth.lang("web.message.auto-redirect") }}'></p>
 	<script src="/message-auto-return.js"></script>
 	{%- endif %}
 </main>

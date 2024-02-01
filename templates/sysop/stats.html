@@ -4,23 +4,23 @@
 {%- let current_page = "/sysop/stats" -%}
 {% include "sysop/base.html" %}
 
-<p>Generated in <span>{{ stats_time }}</span></p>
-<p>Pages count: <span>{{ pages_count }}</span> (<span>{{ need_check_count }}</span> pending for check)</p>
-<p>Issues/suggests count: <span>{{ issues_count }}</span></p>
-<p>Users count: <span>{{ users_count }}</span></p>
+<p>{{ auth.lang("web.sysop.stats.generate-time").replace("$1", stats_time.to_string().as_str()) }}</p>
+<p>{{ auth.lang("web.sysop.stats.pages-count").replace("$1", pages_count.to_string().as_str()).replace("$2", need_check_count.to_string().as_str()) }}</p>
+<p>{{ auth.lang("web.sysop.stats.issues-count").replace("$1", issues_count.to_string().as_str()) }}</span></p>
+<p>{{ auth.lang("web.sysop.stats.users-count").replace("$1", users_count.to_string().as_str()) }}</span></p>
 
 <div class="scroll-table">
 	<table>
-		<caption>Page Statistics by Language</caption>
+		<caption>{{ auth.lang("web.sysop.stats.table.caption") }}</caption>
 		<thead>
 			<tr>
-				<th scope="col">Language</th>
-				<th scope="col">Page Count</th>
-				<th scope="col">Total Issues</th>
-				<th scope="col">Total Suggests</th>
-				<th scope="col">Pending</th>
-				<th scope="col">Delayed</th>
-				<th scope="col">Error</th>
+				<th scope="col">{{ auth.lang("web.sysop.stats.table.lang") }}</th>
+				<th scope="col">{{ auth.lang("web.sysop.stats.table.pages") }}</th>
+				<th scope="col">{{ auth.lang("web.sysop.stats.table.issues") }}</th>
+				<th scope="col">{{ auth.lang("web.sysop.stats.table.suggests") }}</th>
+				<th scope="col">{{ auth.lang("web.sysop.stats.table.pending") }}</th>
+				<th scope="col">{{ auth.lang("web.sysop.stats.table.delayed") }}</th>
+				<th scope="col">{{ auth.lang("web.sysop.stats.table.errors") }}</th>
 			</tr>
 		</thead>
 		<tbody>

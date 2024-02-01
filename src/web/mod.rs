@@ -7,6 +7,7 @@ use crate::app::App;
 use self::{auth::AuthResult, meta::MessagePage};
 
 pub mod auth;
+pub mod i18n;
 pub mod meta;
 pub mod sysop;
 pub mod user;
@@ -14,6 +15,8 @@ pub mod user;
 pub async fn run_server() {
 	let app = App::get();
 	let addr = std::env::var("SPOCK_LISTEN").unwrap_or("0.0.0.0:3000".to_owned());
+
+	i18n::init().expect("failed to init i18n");
 
 	let router = Router::new()
 		.with_state(app.to_owned())

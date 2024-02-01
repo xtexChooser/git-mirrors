@@ -4,17 +4,17 @@
 {%- let current_page = "/sysop/rcsyncer" -%}
 {% include "sysop/base.html" %}
 
-<p>Synchronize peroid: <span>{{ crate::site::SYNC_RC_PEROID }}s</span></p>
+<p>{{ auth.lang("web.sysop.rc-syncer.sync-peroid") }} <span>{{ crate::site::SYNC_RC_PEROID }}s</span></p>
 
 <div class="scroll-table">
 	<table>
-		<caption>RecentChanges Synchronizer State of Spock Bot ({{ state.len() }} langs.)</caption>
+		<caption>{{ auth.lang("web.sysop.rc-syncer.table.caption").replace("$1", state.len().to_string().as_str()) }}</caption>
 		<thead>
 			<tr>
-				<th scope="col">Language</th>
-				<th scope="col">UUID</th>
-				<th scope="col">Last Sync At</th>
-				<th scope="col">Last RC ID</th>
+				<th scope="col">{{ auth.lang("web.sysop.rc-syncer.table.lang") }}</th>
+				<th scope="col">{{ auth.lang("web.sysop.rc-syncer.table.id") }}</th>
+				<th scope="col">{{ auth.lang("web.sysop.rc-syncer.table.last_synced_at") }}</th>
+				<th scope="col">{{ auth.lang("web.sysop.rc-syncer.table.last_rc_id") }}</th>
 			</tr>
 		</thead>
 		<tbody>

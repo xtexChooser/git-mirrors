@@ -1,8 +1,8 @@
 {% extends "includes/base.html" %}
-{% block title %}login success - spock{% endblock %}
+{% block title %}{{ auth.lang("web.auth.login-success.page-title") }} - spock{% endblock %}
 {% block body %}
 <main id="login-success">
-	<h1>Login Succeeded</h1>
-	<p>You are now <a href="/user">{{ auth.0.as_ref().unwrap().name }}</a>.</p>
+	<h1>{{ auth.lang("web.auth.login-success.title") }}</h1>
+	<p>{{ auth.lang("web.auth.login-success.message") }} <a href="/user">{{ auth.0.as_ref().unwrap().name }}</a>.</p>
 </main>
 {% endblock %}

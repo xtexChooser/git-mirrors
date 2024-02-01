@@ -1,8 +1,8 @@
 {% extends "includes/base.html" %}
 {% block title %}spock dashboard{% endblock %}
 {% block body %}
-<p>Welcome back! This is spock bot, a tool platform for {{ crate::site::SITE_NAME }} editors.</p>
-{% if let Some(auth) = auth.0 -%}{% if auth.sysop -%}
-<a class="button button-primary" href="/sysop">Manage Bot</a>
+<p>{{ auth.lang("web.index.welcome").replace("$1", crate::site::SITE_NAME) }}</p>
+{% if let Some(user) = auth.0 -%}{% if user.sysop -%}
+<a class="button button-primary" href="/sysop">{{ auth.lang("web.index.managebot") }}</a>
 {%- endif %}{%- endif %}
 {% endblock %}
