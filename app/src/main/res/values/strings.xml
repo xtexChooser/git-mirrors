@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name" translatable="false">MBAccess</string>
+    <string name="xposed_desc">Minecraft: Bedrock Edition SMP Response Override</string>
+</resources>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="xposed_desc">Minecraft: Bedrock Edition服务端策略响应覆盖</string>
+</resources>

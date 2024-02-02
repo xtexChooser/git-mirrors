@@ -1,0 +1,1 @@
+-keep org.eu.xtexx.mcbeaa.MainHooks

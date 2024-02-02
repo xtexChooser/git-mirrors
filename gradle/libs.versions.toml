@@ -1,0 +1,16 @@
+[versions]
+agp = "8.2.2"
+xposed-api = "82"
+xposed-helper = "2.0.8"
+kotlin = "1.9.10"
+core-ktx = "1.12.0"
+
+[libraries]
+xposed-api = { module = "de.robv.android.xposed:api", version.ref = "xposed-api" }
+xposed-helper = { module = "com.github.kyuubiran:EzXHelper", version.ref = "xposed-helper" }
+core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
+
+[plugins]
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+
