@@ -1,36 +1,34 @@
 pub mod prelude {
-	pub use super::{
-		super::{LinterState, WorkerState},
-		CheckContext, CheckResult, CheckerId, CheckerTrait,
+	pub use crate::issue::prelude::*;
+	pub use crate::linter::checker::{
+		CheckContext, CheckResource, CheckResult, Checker, CheckerId, CheckerTrait,
 	};
-	pub use crate::issue::*;
+	pub use crate::linter::{LinterState, WorkerState};
 	pub use crate::{
 		app::{App, MwBot, MwPage},
 		checker, site,
 	};
-	pub use anyhow::{anyhow, bail, Result};
-	pub use async_trait::async_trait;
-	pub use serde::{Deserialize, Serialize};
-	pub use uuid::Uuid;
 }
 
 use std::{
+	any::{type_name, Any, TypeId},
 	collections::HashMap,
 	fmt::{Debug, Display},
 	sync::Arc,
 };
 
+use parking_lot::{Mutex, RwLock};
 use prelude::*;
 
-use crate::{issue::Issue, page::Page};
+use crate::{issue::IssueType, page::Page};
 
 #[async_trait]
 pub trait CheckerTrait
 where
 	Self: Debug + Display + Send + Sync + CheckerId,
 {
-	fn possible_issues(&self) -> Vec<Issue>;
-	async fn check(&self, ctx: &mut CheckContext) -> CheckResult;
+	fn possible_issues(&self) -> Vec<IssueType>;
+	async fn check(&self, ctx: Arc<CheckContext>) -> CheckResult;
 }
 
 pub type Checker = Arc<Box<dyn CheckerTrait>>;
@@ -41,8 +39,8 @@ pub trait CheckerId {
 
 #[macro_export]
 macro_rules! checker {
-	($typ: ident, $id: expr) => {
-		pub struct $typ();
+	($typ: ident, $id: literal) => {
+		pub struct $typ;
 
 		impl std::fmt::Debug for $typ {
 			fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -61,6 +59,12 @@ macro_rules! checker {
 				$id
 			}
 		}
+
+		impl Default for $typ {
+			fn default() -> Self {
+				Self {}
+			}
+		}
 	};
 }
 
@@ -68,7 +72,7 @@ macro_rules! checker {
 macro_rules! checkers {
 	[$($typ: ident),+] => {
 		vec![
-			$( Arc::new(Box::new($typ ())) ),+
+			$( ::paste::paste! { std::sync::Arc::new(Box::new([<$typ Checker>] {})) } ),+
 		]
 	};
 }
@@ -80,9 +84,12 @@ pub struct CheckContext {
 	pub app: Arc<App>,
 	pub bot: MwBot,
 	pub page: MwPage,
-	pub found_issues: HashMap<String, serde_json::Value>,
-	pub found_suggests: HashMap<String, serde_json::Value>,
+	pub found_issues: Mutex<Vec<(IssueType, serde_json::Value)>>,
+	// only insert and update, never remove from resources
+	resources: RwLock<HashMap<TypeId, CheckResource>>,
 }
+
+pub type CheckResource = Box<Arc<dyn Any + Send + Sync>>;
 
 impl CheckContext {
 	pub async fn new(id: Uuid) -> Result<Self> {
@@ -99,28 +106,65 @@ impl CheckContext {
 			app,
 			bot,
 			page,
-			found_issues: HashMap::new(),
-			found_suggests: HashMap::new(),
+			found_issues: Mutex::new(Vec::new()),
+			resources: RwLock::new(HashMap::new()),
 		})
 	}
 
-	pub fn issue<S>(&mut self, checker: &dyn CheckerId, issue: S) -> Result<()>
+	pub fn found<I, S>(&self, issue: S) -> Result<()>
 	where
+		I: IssueTrait + Default + 'static,
 		S: Serialize,
 	{
-		self.found_issues
-			.insert(checker.get_id().to_string(), serde_json::to_value(issue)?);
+		self.found_issues.lock().push((
+			Arc::new(Box::new(I::default())),
+			serde_json::to_value(issue)?,
+		));
 		Ok(())
 	}
 
-	pub fn suggest<S>(&mut self, checker: &dyn CheckerId, issue: S) -> Result<()>
-	where
-		S: Serialize,
-	{
-		self.found_suggests
-			.insert(checker.get_id().to_string(), serde_json::to_value(issue)?);
-		Ok(())
+	pub fn resource<T: 'static + Send + Sync>(&self) -> Result<Arc<T>> {
+		let resources = self.resources.read();
+		let res = resources
+			.get(&TypeId::of::<T>())
+			.ok_or_else(|| anyhow!("resource {} is not initialized yet", type_name::<T>()))?;
+		let res = res.as_ref().to_owned();
+		let res = unsafe { res.downcast_unchecked::<T>() };
+		Ok(res)
+	}
+
+	pub fn insert_resource_arc<T: 'static + Send + Sync>(&self, value: Arc<T>) {
+		self.resources
+			.write()
+			.insert(TypeId::of::<T>(), Box::new(value));
+	}
+
+	pub fn insert_resource<T: 'static + Send + Sync>(&self, value: T) {
+		self.insert_resource_arc::<T>(Arc::new(value));
+	}
+
+	pub fn compute_resource<T: 'static + Send + Sync + ComputedResource>(
+		self: Arc<Self>,
+	) -> Result<Arc<T>> {
+		let key = TypeId::of::<T>();
+		let exist = self.resources.read().contains_key(&key);
+		if !exist {
+			let mut write = self.resources.write();
+			if write.contains_key(&key) {
+				drop(write);
+			} else {
+				write.insert(key, Box::new(Arc::new(T::compute(self.clone())?)));
+			}
+		}
+		self.resource::<T>()
 	}
 }
 
 pub type CheckResult = Result<()>;
+
+pub trait ComputedResource
+where
+	Self: 'static + Send + Sync + Sized,
+{
+	fn compute(ctx: Arc<CheckContext>) -> Result<Self>;
+}

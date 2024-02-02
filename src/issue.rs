@@ -1,4 +1,5 @@
 pub mod prelude {
+	pub use crate::issue::{IssueInfoTrait, IssueLevel, IssueTrait, IssueType};
 	pub use crate::{
 		app::{App, MwBot, MwPage},
 		checker, site,
@@ -6,27 +7,22 @@ pub mod prelude {
 	pub use anyhow::{anyhow, bail, Result};
 	pub use async_trait::async_trait;
 	pub use serde::{Deserialize, Serialize};
+	pub use std::sync::Arc;
 	pub use uuid::Uuid;
 }
 
-use std::{
-	fmt::{Debug, Display},
-	sync::Arc,
-};
+use std::fmt::{Debug, Display};
 
 use prelude::*;
-
-use crate::page::Page;
 
 #[async_trait]
 pub trait IssueTrait
 where
 	Self: Debug + Display + Send + Sync + IssueInfoTrait,
 {
-	fn name(&self) -> &'static str;
 }
 
-pub type Issue = Arc<Box<dyn IssueTrait>>;
+pub type IssueType = Arc<Box<dyn IssueTrait>>;
 
 #[derive(Debug, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Clone, Hash, Copy)]
 pub enum IssueLevel {
@@ -50,27 +46,35 @@ pub trait IssueInfoTrait {
 
 #[macro_export]
 macro_rules! declare_issue {
-	($typ: ident, $id: expr, $level: ident) => {
-		pub struct $typ();
+	($typ: ident, $id: literal, $level: ident) => {
+		::paste::paste! {
+			pub struct [<$typ Issue>];
 
-		impl std::fmt::Debug for $typ {
-			fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-				f.write_str($id)
+			impl std::fmt::Debug for [<$typ Issue>] {
+				fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+					f.write_str($id)
+				}
 			}
-		}
 
-		impl std::fmt::Display for $typ {
-			fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-				f.write_str($id)
+			impl std::fmt::Display for [<$typ Issue>] {
+				fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+					f.write_str($id)
+				}
 			}
-		}
 
-		impl crate::issue::IssueInfoTrait for $typ {
-			fn get_id(&self) -> &'static str {
-				$id
+			impl crate::issue::IssueInfoTrait for [<$typ Issue>] {
+				fn get_id(&self) -> &'static str {
+					$id
+				}
+				fn get_level(&self) -> IssueLevel {
+					IssueLevel::$level
+				}
 			}
-			fn get_level(&self) -> IssueLevel {
-				IssueLevel::$level
+
+			impl Default for [<$typ Issue>] {
+				fn default() -> Self {
+					Self {}
+				}
 			}
 		}
 	};
@@ -78,15 +82,15 @@ macro_rules! declare_issue {
 
 #[macro_export]
 macro_rules! issue {
-	($typ: ident, $id: expr, $level: ident) => {
-		declare_issue!($typ, $id, Issue)
+	($typ: ident, $id: expr) => {
+		crate::declare_issue!($typ, $id, Issue);
 	};
 }
 
 #[macro_export]
 macro_rules! suggestion {
-	($typ: ident, $id: expr, $level: ident) => {
-		declare_issue!($typ, $id, Suggestion)
+	($typ: ident, $id: expr) => {
+		crate::declare_issue!($typ, $id, Suggestion);
 	};
 }
 
@@ -94,7 +98,7 @@ macro_rules! suggestion {
 macro_rules! issues {
 	[$($typ: ident),*] => {
 		vec![
-			$( Arc::new(Box::new($typ ())) ),*
+			$( ::paste::paste! { std::sync::Arc::new(Box::new([<$typ Issue>]{})) } ),*
 		]
 	};
 }

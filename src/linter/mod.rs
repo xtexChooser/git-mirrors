@@ -5,7 +5,7 @@ use std::{
 	sync::{Arc, LazyLock},
 };
 
-use anyhow::{bail, Result};
+use anyhow::{Context, Result};
 use parking_lot::RwLock;
 use serde::{Deserialize, Serialize};
 use tokio::sync::{Mutex, Notify};
@@ -123,9 +123,9 @@ pub async fn run_linter(state: Arc<RwLock<WorkerState>>) {
 							.check_requested_time()
 							.expect("select_page returned a page that is not requested for check");
 						match do_lint(page.id().to_owned()).await {
-							Ok((issues, suggests)) => {
+							Ok((issues, suggestions)) => {
 								if let Err(error) =
-									page.set_checked(start_time, issues, suggests).await
+									page.set_checked(start_time, issues, suggestions).await
 								{
 									error!(%error, "failed to mark page as checked");
 								}
@@ -149,12 +149,21 @@ pub async fn run_linter(state: Arc<RwLock<WorkerState>>) {
 }
 
 pub async fn do_lint(id: Uuid) -> Result<(u32, u32)> {
-	let mut ctx = CheckContext::new(id).await?;
+	let ctx = Arc::new(CheckContext::new(id).await?);
 	let app = App::get();
+	let span = info_span!("check_page", %id);
 	for (checker_id, checker) in &app.linter.checkers {
-		checker.check(&mut ctx);
-		// let issues = ctx.found_issues.drain(..);
-		// let suggests = ctx.found_suggests.drain(..);
+		if let Err(error) = checker.check(ctx.clone()).instrument(span.clone()).await {
+			error!(%id, %error, checker = checker_id, "error checking page");
+			return Err(error).with_context(|| format!("checker: {}", checker_id));
+		}
 	}
-	bail!("not implemented")
+	let all_issues = ctx.found_issues.lock();
+	let total_issues = all_issues
+		.iter()
+		.filter(|(i, _)| i.get_level().is_issue())
+		.count();
+	let total_suggestions = all_issues.len() - total_issues;
+	todo!("upload issues");
+	Ok((total_issues as u32, total_suggestions as u32))
 }

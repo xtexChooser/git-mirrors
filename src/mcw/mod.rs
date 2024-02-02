@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use phf::{phf_map, phf_set};
 use uuid::{uuid, Uuid};
 
@@ -71,5 +69,5 @@ pub const I18N_FALLBACK_LANGUAGE: &str = "en_us";
 pub const I18N_DEFAULT_LANGUAGE: &str = "en_us";
 
 pub fn init_checkers() -> Vec<Checker> {
-	checkers![IncompleteInterlangLinkChecker]
+	checkers![IncompleteInterlangLink]
 }
