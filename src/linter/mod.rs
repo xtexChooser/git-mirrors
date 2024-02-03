@@ -1,18 +1,20 @@
 use std::{
-	collections::BTreeMap,
+	collections::{BTreeMap, HashMap},
 	env,
-	fmt::Debug,
 	sync::{Arc, LazyLock},
 };
 
-use anyhow::{Context, Result};
+use anyhow::{bail, Context, Result};
 use parking_lot::RwLock;
+use sea_orm::{
+	ActiveModelTrait, ActiveValue, ColumnTrait, EntityTrait, QueryFilter, TransactionTrait,
+};
 use serde::{Deserialize, Serialize};
 use tokio::sync::{Mutex, Notify};
-use tracing::{error, info_span, Instrument};
+use tracing::{error, info, info_span, Instrument};
 use uuid::Uuid;
 
-use crate::{app::App, linter::checker::CheckContext, page::Page, site};
+use crate::{app::App, db, issue::IssueType, linter::checker::CheckContext, page::Page, site};
 
 use self::checker::Checker;
 
@@ -32,15 +34,19 @@ pub struct LinterState {
 	pub selector_mutex: Mutex<()>,
 	pub workers: RwLock<Vec<Arc<RwLock<WorkerState>>>>,
 	pub checkers: BTreeMap<String, Checker>,
+	pub issues: BTreeMap<String, IssueType>,
 }
 
 impl LinterState {
 	pub fn new() -> Self {
+		let checkers = Self::init_checkers();
+		let issues = Self::init_issues(&checkers);
 		Self {
 			worker_notify: Notify::new(),
 			selector_mutex: Mutex::default(),
 			workers: RwLock::new(Vec::new()),
-			checkers: Self::init_checkers(),
+			checkers,
+			issues,
 		}
 	}
 
@@ -51,6 +57,16 @@ impl LinterState {
 			.into_iter()
 			.map(|c| (c.get_id().to_string(), c))
 			.collect();
+	}
+
+	fn init_issues(checkers: &BTreeMap<String, Checker>) -> BTreeMap<String, IssueType> {
+		let mut issues = BTreeMap::new();
+		for checker in checkers.values() {
+			for issue in checker.possible_issues() {
+				issues.insert(issue.get_id().to_string(), issue);
+			}
+		}
+		return issues;
 	}
 }
 
@@ -148,22 +164,63 @@ pub async fn run_linter(state: Arc<RwLock<WorkerState>>) {
 	}
 }
 
-pub async fn do_lint(id: Uuid) -> Result<(u32, u32)> {
-	let ctx = Arc::new(CheckContext::new(id).await?);
+pub async fn do_lint(page_id: Uuid) -> Result<(u32, u32)> {
+	let ctx = Arc::new(CheckContext::new(page_id).await?);
 	let app = App::get();
-	let span = info_span!("check_page", %id);
+	let span = info_span!("check_page", page = %page_id);
 	for (checker_id, checker) in &app.linter.checkers {
 		if let Err(error) = checker.check(ctx.clone()).instrument(span.clone()).await {
-			error!(%id, %error, checker = checker_id, "error checking page");
+			error!(page = %page_id, %error, checker = checker_id, "error checking page");
 			return Err(error).with_context(|| format!("checker: {}", checker_id));
 		}
 	}
-	let all_issues = ctx.found_issues.lock();
+	let all_issues = ctx
+		.found_issues
+		.lock()
+		.drain(..)
+		.collect::<Vec<(IssueType, serde_json::Value)>>();
 	let total_issues = all_issues
 		.iter()
 		.filter(|(i, _)| i.get_level().is_issue())
 		.count();
 	let total_suggestions = all_issues.len() - total_issues;
-	todo!("upload issues");
+
+	// upload issues
+	let txn = db::get().begin().await?;
+	let mut exist = db::issue::Entity::find()
+		.filter(db::issue::Column::Page.eq(page_id))
+		.all(&txn)
+		.await?
+		.into_iter()
+		.map(|i| (i.id.to_owned(), i))
+		.collect::<HashMap<_, _>>();
+	for (typ, val) in all_issues {
+		let val_json = serde_json::to_string(&val)?;
+		let id = Uuid::new_v5(
+			&page_id,
+			&[typ.get_id().as_bytes(), val_json.as_bytes()].concat(),
+		);
+		if let Some(model) = exist.remove(&id) {
+			if model.issue_type != typ.get_id() || model.details != val {
+				bail!("hash conflict found: {} {}", page_id, typ);
+			}
+		} else {
+			// new issue
+			info!(page = %page_id, issue = %id, issue_type = %typ, details = val_json, "found issue");
+			let model = db::issue::ActiveModel {
+				id: ActiveValue::Set(id.clone()),
+				page: ActiveValue::Set(page_id.clone()),
+				issue_type: ActiveValue::Set(typ.get_id().to_string()),
+				details: ActiveValue::Set(val),
+			};
+			model.insert(&txn).await?;
+		}
+	}
+	for id in exist.into_keys() {
+		info!(page = %page_id, issue = %id, "remove issue");
+		db::issue::Entity::delete_by_id(id).exec(&txn).await?;
+	}
+	txn.commit().await?;
+
 	Ok((total_issues as u32, total_suggestions as u32))
 }

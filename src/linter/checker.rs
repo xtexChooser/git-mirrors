@@ -143,7 +143,7 @@ impl CheckContext {
 		self.insert_resource_arc::<T>(Arc::new(value));
 	}
 
-	pub fn compute_resource<T: 'static + Send + Sync + ComputedResource>(
+	pub async fn compute_resource<T: 'static + Send + Sync + ComputedResource>(
 		self: Arc<Self>,
 	) -> Result<Arc<T>> {
 		let key = TypeId::of::<T>();
@@ -153,7 +153,7 @@ impl CheckContext {
 			if write.contains_key(&key) {
 				drop(write);
 			} else {
-				write.insert(key, Box::new(Arc::new(T::compute(self.clone())?)));
+				write.insert(key, Box::new(Arc::new(T::compute(self.clone()).await?)));
 			}
 		}
 		self.resource::<T>()
@@ -162,9 +162,10 @@ impl CheckContext {
 
 pub type CheckResult = Result<()>;
 
+#[async_trait]
 pub trait ComputedResource
 where
 	Self: 'static + Send + Sync + Sized,
 {
-	fn compute(ctx: Arc<CheckContext>) -> Result<Self>;
+	async fn compute(ctx: Arc<CheckContext>) -> Result<Self>;
 }
