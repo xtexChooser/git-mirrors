@@ -1,6 +1,4 @@
-use std::{
-	collections::HashMap, convert::Infallible, env, fmt::Display, str::FromStr, sync::LazyLock,
-};
+use std::{collections::HashMap, convert::Infallible, fmt::Display, str::FromStr, sync::LazyLock};
 
 use anyhow::{bail, Result};
 use askama::{filters::urlencode, Template};
@@ -25,7 +23,7 @@ use sha2::{Digest, Sha256};
 use tracing::{error, info, info_span, Instrument};
 use uuid::Uuid;
 
-use crate::{app::App, db, site};
+use crate::{app::App, config, db, site};
 
 use super::{i18n, meta::MessagePage, WebResult};
 
@@ -84,19 +82,15 @@ struct AuthParams {
 	code: Option<String>,
 }
 
-static OAUTH_ID: LazyLock<String> =
-	LazyLock::new(|| env::var("SPOCK_OAUTH_ID").expect("SPOCK_OAUTH_ID is missing"));
-static OAUTH_SECRET: LazyLock<String> =
-	LazyLock::new(|| env::var("SPOCK_OAUTH_SECRET").expect("SPOCK_OAUTH_SECRET is missing"));
-static OAUTH_URL: LazyLock<String> = LazyLock::new(|| {
-	env::var("SPOCK_OAUTH_REDIRECT_URI").expect("SPOCK_OAUTH_REDIRECT_URI is missing")
-});
+config!(OAUTH_ID, str, required);
+config!(OAUTH_SECRET, str, required);
+config!(OAUTH_REDIRECT_URI, str, required);
+config!(OAUTH_SYSOP, str, required);
+
 static OAUTH_URL_ENCODED: LazyLock<String> = LazyLock::new(|| {
-	urlencode(OAUTH_URL.as_str()).expect("SPOCK_OAUTH_REDIRECT_URI can not be URL-encoded")
+	urlencode(*CONFIG_OAUTH_REDIRECT_URI).expect("SPOCK_OAUTH_REDIRECT_URI can not be URL-encoded")
 });
 static OAUTH_CLIENT: LazyLock<reqwest::Client> = LazyLock::new(Default::default);
-static OAUTH_SYSOP: LazyLock<String> =
-	LazyLock::new(|| env::var("SPOCK_OAUTH_SYSOP").expect("SPOCK_OAUTH_SYSOP is missing"));
 
 #[derive(Debug, Serialize, Deserialize)]
 struct MrTokenResponse {
@@ -120,10 +114,10 @@ async fn auth_handler(auth: AuthResult, Query(params): Query<AuthParams>) -> Web
 				.form(&HashMap::from([
 					("grant_type", "authorization_code"),
 					("code", &code),
-					("redirect_uri", &OAUTH_URL),
-					("client_id", &OAUTH_ID),
+					("redirect_uri", *CONFIG_OAUTH_REDIRECT_URI),
+					("client_id", *CONFIG_OAUTH_ID),
 				]))
-				.header(reqwest::header::AUTHORIZATION, OAUTH_SECRET.as_str())
+				.header(reqwest::header::AUTHORIZATION, *CONFIG_OAUTH_SECRET)
 				.send()
 				.await?
 				.error_for_status()?
@@ -153,7 +147,7 @@ async fn auth_handler(auth: AuthResult, Query(params): Query<AuthParams>) -> Web
 						name: ActiveValue::Set(resp.username.clone()),
 						salt: ActiveValue::Set(generate_salt()),
 						modrinth_id: ActiveValue::Set(mrid.clone()),
-						sysop: ActiveValue::Set(mrid == *OAUTH_SYSOP),
+						sysop: ActiveValue::Set(mrid == *CONFIG_OAUTH_SYSOP),
 						blocked: ActiveValue::Set(None),
 						language: ActiveValue::Set(site::I18N_DEFAULT_LANGUAGE.to_string()),
 					}
@@ -208,7 +202,7 @@ async fn auth_handler(auth: AuthResult, Query(params): Query<AuthParams>) -> Web
 	} else if auth.0.is_some() {
 		Ok(AuthSuccessPage { auth }.into_response())
 	} else {
-		Ok(Redirect::temporary(&format!("https://modrinth.com/auth/authorize?client_id={}&redirect_uri={}&scope=USER_READ+USER_READ_EMAIL", OAUTH_ID.as_str(), OAUTH_URL_ENCODED.as_str())).into_response())
+		Ok(Redirect::temporary(&format!("https://modrinth.com/auth/authorize?client_id={}&redirect_uri={}&scope=USER_READ+USER_READ_EMAIL",*CONFIG_OAUTH_ID, *OAUTH_URL_ENCODED)).into_response())
 	}
 }
 

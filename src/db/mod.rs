@@ -5,7 +5,7 @@ use sea_orm::{ConnectOptions, ConnectionTrait, DatabaseConnection, DbBackend, St
 use sea_orm_migration::MigratorTrait;
 use tracing::{error, info_span, Instrument};
 
-use crate::{app::App, site};
+use crate::{app::App, config, site};
 
 pub mod migration;
 pub mod model;
@@ -19,14 +19,17 @@ const SQLITE_PRAGMAS: phf::OrderedSet<&str> = phf::phf_ordered_set![
 	"pragma mmap_size = 4300000000;"
 ];
 
+config!(DATABASE, str, required);
+config!(DATABASE_SQLITE_INIT_PRAGMAS, parse bool, true);
+config!(DATABASE_SQLITE_INTERVAL_OPTIMIZE, parse bool, true);
+
 pub struct DatabaseManager {
 	pub conn: Arc<DatabaseConnection>,
 }
 
 impl DatabaseManager {
 	pub async fn new() -> Result<Self> {
-		let uri = std::env::var("SPOCK_DATABASE")?;
-		let mut opts = ConnectOptions::from(&uri);
+		let mut opts = ConnectOptions::from(*CONFIG_DATABASE);
 		opts.sqlx_logging(true)
 			.sqlx_logging_level(tracing::log::LevelFilter::Trace)
 			.sqlx_slow_statements_logging_settings(
@@ -34,9 +37,7 @@ impl DatabaseManager {
 				Duration::from_millis(500),
 			);
 		let conn = Arc::new(sea_orm::Database::connect(opts).await?);
-		if uri.starts_with("sqlite")
-			&& std::env::var("SPOCK_DATABASE_SQLITE_INIT_PRAGMAS")? == "true"
-		{
+		if CONFIG_DATABASE.starts_with("sqlite") && *CONFIG_DATABASE_SQLITE_INIT_PRAGMAS {
 			for stmt in &SQLITE_PRAGMAS {
 				conn.execute(Statement::from_string(DbBackend::Sqlite, *stmt))
 					.await?;
@@ -68,10 +69,7 @@ pub async fn run_sqlite_optimize() -> Result<()> {
 }
 
 pub async fn run_sqlite_interval_optimizer() {
-	if std::env::var("SPOCK_DATABASE_SQLITE_INTERVAL_OPTIMIZE")
-		.map(|s| s == "true")
-		.unwrap_or_default()
-	{
+	if !*CONFIG_DATABASE_SQLITE_INTERVAL_OPTIMIZE {
 		return;
 	}
 

@@ -16,7 +16,7 @@ static mut LANGS: BTreeMap<&str, &str> = BTreeMap::new();
 pub fn init() -> Result<()> {
 	for (lang, json) in &LANG_DATA {
 		let lang = *lang;
-		let json = serde_json::from_str::<HashMap<String, String>>(*json)?;
+		let json = serde_json::from_str::<HashMap<String, String>>(json)?;
 		for (key, value) in json {
 			unsafe {
 				LANG.insert((lang, key.leak()), value.leak());

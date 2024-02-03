@@ -11,7 +11,10 @@ pub mod prelude {
 	pub use uuid::Uuid;
 }
 
-use std::fmt::{Debug, Display};
+use std::{
+	any::TypeId,
+	fmt::{Debug, Display},
+};
 
 use prelude::*;
 
@@ -42,6 +45,7 @@ impl IssueLevel {
 pub trait IssueInfoTrait {
 	fn get_id(&self) -> &'static str;
 	fn get_level(&self) -> IssueLevel;
+	fn get_type_id(&self) -> TypeId;
 }
 
 #[macro_export]
@@ -62,12 +66,15 @@ macro_rules! declare_issue {
 				}
 			}
 
-			impl crate::issue::IssueInfoTrait for [<$typ Issue>] {
+			impl $crate::issue::IssueInfoTrait for [<$typ Issue>] {
 				fn get_id(&self) -> &'static str {
 					$id
 				}
 				fn get_level(&self) -> IssueLevel {
 					IssueLevel::$level
+				}
+				fn get_type_id(&self) -> std::any::TypeId {
+					std::any::TypeId::of::<[<$typ Issue>]>()
 				}
 			}
 
@@ -83,14 +90,14 @@ macro_rules! declare_issue {
 #[macro_export]
 macro_rules! issue {
 	($typ: ident, $id: expr) => {
-		crate::declare_issue!($typ, $id, Issue);
+		$crate::declare_issue!($typ, $id, Issue);
 	};
 }
 
 #[macro_export]
 macro_rules! suggestion {
 	($typ: ident, $id: expr) => {
-		crate::declare_issue!($typ, $id, Suggestion);
+		$crate::declare_issue!($typ, $id, Suggestion);
 	};
 }
 

@@ -4,6 +4,7 @@
 #![feature(downcast_unchecked)]
 
 pub mod app;
+pub mod config;
 pub mod db;
 pub mod issue;
 pub mod linter;

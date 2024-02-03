@@ -5,13 +5,11 @@ use crate::{
 	linter::checker::{prelude::*, ComputedResource},
 };
 
-checker!(IncompleteInterlangLinkChecker, "incomplete_interlang");
-
-issue!(IncompleteInterlangLink, "incomplete_interlang");
-impl IssueTrait for IncompleteInterlangLinkIssue {}
+issue!(IncompleteInterlang, "incomplete_interlang");
+impl IssueTrait for IncompleteInterlangIssue {}
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
-pub struct IncompleteInterlangLinkDetails {
-	pub language: String,
+pub struct IncompleteInterlangIssueDetails {
+	pub lang: String,
 	pub title: String,
 	pub path: Vec<(String, String)>,
 }
@@ -20,24 +18,24 @@ issue!(ConflictInterlang, "conflict_interlang");
 impl IssueTrait for ConflictInterlangIssue {}
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 pub struct ConflictInterlangIssueDetails {
-	pub language: String,
-	pub first_page: String,
-	pub first_path: Vec<(String, String)>,
-	pub second_page: String,
-	pub second_path: Vec<(String, String)>,
+	pub lang: String,
+	pub page1: String,
+	pub path1: Vec<(String, String)>,
+	pub page2: String,
+	pub path2: Vec<(String, String)>,
 }
 
-issue!(BrokenInterlang, "conflict_interlang");
+issue!(BrokenInterlang, "broken_interlang");
 impl IssueTrait for BrokenInterlangIssue {}
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 pub struct BrokenInterlangIssueDetails {
-	pub language: String,
+	pub lang: String,
 	pub title: String,
-	pub path: Vec<(String, String)>,
 }
 
 #[derive(Debug, Clone, Default)]
 pub struct InterlangLinksGraph {
+	pub selflang: String,
 	/// Type: <language, (page, from_lang, out_edges<lang, page>)>
 	pub links: HashMap<String, (String, String, HashMap<String, String>)>,
 	/// Type: (language, (first_page, from_lang), (second_page, from_lang))
@@ -49,7 +47,10 @@ pub struct InterlangLinksGraph {
 #[async_trait]
 impl ComputedResource for InterlangLinksGraph {
 	async fn compute(ctx: Arc<CheckContext>) -> Result<Self> {
-		let mut graph: InterlangLinksGraph = Self::default();
+		let mut graph: InterlangLinksGraph = Self {
+			selflang: ctx.lang.to_owned(),
+			..Default::default()
+		};
 		let mut unresolved_pages = VecDeque::from([(
 			ctx.lang.to_owned(),
 			ctx.page.to_owned(),
@@ -88,7 +89,7 @@ impl ComputedResource for InterlangLinksGraph {
 				let mut links = HashMap::new();
 				for (linklang, linktitle) in langlinks {
 					let linkpage = ctx.app.mwbot(&linklang).await?.page(&linktitle)?;
-					if graph.links.get(&linklang).is_none() {
+					if graph.links.get(&linklang).is_none() && linklang != ctx.lang {
 						// add to resolve queue
 						unresolved_pages.push_back((
 							linklang.clone(),
@@ -112,15 +113,65 @@ impl ComputedResource for InterlangLinksGraph {
 	}
 }
 
+impl InterlangLinksGraph {
+	pub fn find_path(&self, lang: &str) -> Result<Vec<(String, String)>> {
+		let mut path = Vec::from([self.links[lang].1.to_owned()]);
+		loop {
+			let lang = path.last().unwrap();
+			if lang == &self.selflang {
+				break;
+			}
+			path.push(self.links[lang].1.to_owned());
+		}
+		path.reverse();
+		Ok(path
+			.into_iter()
+			.map(|lang| {
+				let page = self.links[&lang].0.to_owned();
+				(lang, page)
+			})
+			.collect())
+	}
+}
+
+checker!(IncompleteInterlangLink, "incomplete_interlang");
+
 #[async_trait]
 impl CheckerTrait for IncompleteInterlangLinkChecker {
 	fn possible_issues(&self) -> Vec<IssueType> {
-		issues![IncompleteInterlangLink, ConflictInterlang, BrokenInterlang]
+		issues![IncompleteInterlang, ConflictInterlang, BrokenInterlang]
 	}
 
 	async fn check(&self, ctx: Arc<CheckContext>) -> CheckResult {
-		// ctx.found::<ConflictInterlangIssue, _>(json!({}))?;
-		let _graph = ctx.compute_resource::<InterlangLinksGraph>().await?;
+		let graph = ctx.compute_resource::<InterlangLinksGraph>().await?;
+		if let Some((lang, (page1, from1), (page2, from2))) = graph.conflict.to_owned() {
+			ctx.found::<ConflictInterlangIssue, _>(ConflictInterlangIssueDetails {
+				lang,
+				page1,
+				path1: graph.find_path(&from1)?,
+				page2,
+				path2: graph.find_path(&from2)?,
+			})?;
+		} else {
+			let selflinks = &graph.links[&graph.selflang].2;
+			for (lang, (page, from_lang, _)) in &graph.links {
+				if !selflinks.contains_key(lang) {
+					ctx.found::<IncompleteInterlangIssue, _>(IncompleteInterlangIssueDetails {
+						lang: lang.to_owned(),
+						title: page.to_owned(),
+						path: graph.find_path(from_lang)?,
+					})?;
+				}
+			}
+			for (lang, page, from_lang) in &graph.broken {
+				if from_lang == &ctx.lang {
+					ctx.found::<BrokenInterlangIssue, _>(BrokenInterlangIssueDetails {
+						lang: lang.to_owned(),
+						title: page.to_owned(),
+					})?;
+				}
+			}
+		}
 		Ok(())
 	}
 }

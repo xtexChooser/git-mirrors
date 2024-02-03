@@ -35,34 +35,40 @@ pub type Checker = Arc<Box<dyn CheckerTrait>>;
 
 pub trait CheckerId {
 	fn get_id(&self) -> &'static str;
+	fn get_type_id(&self) -> TypeId;
 }
 
 #[macro_export]
 macro_rules! checker {
 	($typ: ident, $id: literal) => {
-		pub struct $typ;
+		::paste::paste! {
+			pub struct [<$typ Checker>];
 
-		impl std::fmt::Debug for $typ {
-			fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-				f.write_str($id)
+			impl std::fmt::Debug for [<$typ Checker>] {
+				fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+					f.write_str($id)
+				}
 			}
-		}
 
-		impl std::fmt::Display for $typ {
-			fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-				f.write_str($id)
+			impl std::fmt::Display for [<$typ Checker>] {
+				fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+					f.write_str($id)
+				}
 			}
-		}
 
-		impl crate::linter::checker::CheckerId for $typ {
-			fn get_id(&self) -> &'static str {
-				$id
+			impl $crate::linter::checker::CheckerId for [<$typ Checker>] {
+				fn get_id(&self) -> &'static str {
+					$id
+				}
+				fn get_type_id(&self) -> std::any::TypeId {
+					std::any::TypeId::of::<[<$typ Checker>]>()
+				}
 			}
-		}
 
-		impl Default for $typ {
-			fn default() -> Self {
-				Self {}
+			impl Default for [<$typ Checker>] {
+				fn default() -> Self {
+					Self {}
+				}
 			}
 		}
 	};
@@ -116,10 +122,9 @@ impl CheckContext {
 		I: IssueTrait + Default + 'static,
 		S: Serialize,
 	{
-		self.found_issues.lock().push((
-			Arc::new(Box::new(I::default())),
-			serde_json::to_value(issue)?,
-		));
+		self.found_issues
+			.lock()
+			.push((Arc::new(Box::<I>::default()), serde_json::to_value(issue)?));
 		Ok(())
 	}
 
@@ -144,16 +149,14 @@ impl CheckContext {
 	}
 
 	pub async fn compute_resource<T: 'static + Send + Sync + ComputedResource>(
-		self: Arc<Self>,
+		self: &Arc<Self>,
 	) -> Result<Arc<T>> {
 		let key = TypeId::of::<T>();
 		let exist = self.resources.read().contains_key(&key);
 		if !exist {
-			let mut write = self.resources.write();
-			if write.contains_key(&key) {
-				drop(write);
-			} else {
-				write.insert(key, Box::new(Arc::new(T::compute(self.clone()).await?)));
+			if let std::collections::hash_map::Entry::Vacant(e) = self.resources.write().entry(key)
+			{
+				e.insert(Box::new(Arc::new(T::compute(self.clone()).await?)));
 			}
 		}
 		self.resource::<T>()

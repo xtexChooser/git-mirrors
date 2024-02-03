@@ -12,7 +12,7 @@ use axum::{
 use axum_extra::extract::Form;
 use chrono::{DateTime, Duration, Utc};
 use sea_orm::{
-	ActiveModelTrait, ActiveValue, ColumnTrait, EntityTrait, IntoActiveModel, QueryFilter
+	ActiveModelTrait, ActiveValue, ColumnTrait, EntityTrait, IntoActiveModel, QueryFilter,
 };
 use serde::Deserialize;
 use tracing::info;

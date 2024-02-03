@@ -14,7 +14,7 @@ pub use mwbot::Page as MwPage;
 
 use tracing::info;
 
-use crate::{db::DatabaseManager, linter::LinterState, site, web};
+use crate::{config, db::DatabaseManager, linter::LinterState, site, web};
 
 pub const USER_AGENT: &str = concat!(
 	env!("CARGO_PKG_NAME"),
@@ -35,6 +35,10 @@ pub struct App {
 
 static GLOBAL_APP: OnceLock<Arc<App>> = OnceLock::new();
 
+config!(WIKI_BOT_USERNAME, str, required);
+config!(WIKI_BOT_TOKEN, str, optional);
+config!(WIKI_BOT_BOTPASSWD, str, optional);
+
 impl App {
 	async fn new() -> Result<Arc<Self>> {
 		Ok(Arc::new(Self {
@@ -42,7 +46,7 @@ impl App {
 			db: Arc::new(DatabaseManager::new().await?),
 			resync_pages_notify: Notify::new(),
 			login_lru: RwLock::new(LruCache::new(NonZeroUsize::new(30).unwrap())),
-			linter: Arc::new(LinterState::new()),
+			linter: Arc::new(LinterState::new()?),
 		}))
 	}
 
@@ -68,11 +72,11 @@ impl App {
 			.set_respect_nobots(true)
 			.set_user_agent(USER_AGENT.into());
 
-		let username = std::env::var("SPOCK_WIKI_BOT_USERNAME")?;
-		if let Ok(oauth_token) = std::env::var("SPOCK_WIKI_BOT_TOKEN") {
-			builder = builder.set_oauth2_token(username, oauth_token);
-		} else if let Ok(password) = std::env::var("SPOCK_WIKI_BOT_BOTPASSWD") {
-			builder = builder.set_botpassword(username, password);
+		let username = *CONFIG_WIKI_BOT_USERNAME;
+		if let Some(oauth_token) = *CONFIG_WIKI_BOT_TOKEN {
+			builder = builder.set_oauth2_token(username.to_string(), oauth_token.to_string());
+		} else if let Some(password) = *CONFIG_WIKI_BOT_BOTPASSWD {
+			builder = builder.set_botpassword(username.to_string(), password.to_string());
 		} else {
 			bail!("bot auth creds not found")
 		}

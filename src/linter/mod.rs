@@ -1,7 +1,6 @@
 use std::{
 	collections::{BTreeMap, HashMap},
-	env,
-	sync::{Arc, LazyLock},
+	sync::Arc,
 };
 
 use anyhow::{bail, Context, Result};
@@ -14,16 +13,13 @@ use tokio::sync::{Mutex, Notify};
 use tracing::{error, info, info_span, Instrument};
 use uuid::Uuid;
 
-use crate::{app::App, db, issue::IssueType, linter::checker::CheckContext, page::Page, site};
+use crate::{
+	app::App, config, db, issue::IssueType, linter::checker::CheckContext, page::Page, site,
+};
 
 use self::checker::Checker;
 
-pub static LINTER_WORKERS: LazyLock<u32> = LazyLock::new(|| {
-	env::var("SPOCK_LINTER_WORKERS")
-		.ok()
-		.and_then(|s| s.parse::<u32>().ok())
-		.unwrap_or(5)
-});
+config!(LINTER_WORKERS, parse u32, 5);
 
 pub mod checker;
 pub mod generic;
@@ -38,35 +34,46 @@ pub struct LinterState {
 }
 
 impl LinterState {
-	pub fn new() -> Self {
-		let checkers = Self::init_checkers();
-		let issues = Self::init_issues(&checkers);
-		Self {
+	pub fn new() -> Result<Self> {
+		let checkers = Self::init_checkers()?;
+		let issues = Self::init_issues(&checkers)?;
+		Ok(Self {
 			worker_notify: Notify::new(),
 			selector_mutex: Mutex::default(),
 			workers: RwLock::new(Vec::new()),
 			checkers,
 			issues,
+		})
+	}
+
+	fn init_checkers() -> Result<BTreeMap<String, Checker>> {
+		let mut checkers = BTreeMap::new();
+		for checker in site::init_checkers() {
+			let id = checker.get_id();
+			let type_id = checker.get_type_id();
+			if let Some(prev) = checkers.insert(id.to_string(), checker) {
+				if prev.get_type_id() != type_id {
+					bail!("found different checker type with same ID: {}", id);
+				}
+			}
 		}
+		Ok(checkers)
 	}
 
-	fn init_checkers() -> BTreeMap<String, Checker> {
-		let mut checkers = Vec::new();
-		checkers.extend(site::init_checkers());
-		return checkers
-			.into_iter()
-			.map(|c| (c.get_id().to_string(), c))
-			.collect();
-	}
-
-	fn init_issues(checkers: &BTreeMap<String, Checker>) -> BTreeMap<String, IssueType> {
+	fn init_issues(checkers: &BTreeMap<String, Checker>) -> Result<BTreeMap<String, IssueType>> {
 		let mut issues = BTreeMap::new();
 		for checker in checkers.values() {
 			for issue in checker.possible_issues() {
-				issues.insert(issue.get_id().to_string(), issue);
+				let id = issue.get_id();
+				let type_id = issue.get_type_id();
+				if let Some(prev) = issues.insert(id.to_string(), issue) {
+					if prev.get_type_id() != type_id {
+						bail!("found different issue type with same ID: {}", id);
+					}
+				}
 			}
 		}
-		return issues;
+		Ok(issues)
 	}
 }
 
@@ -86,7 +93,7 @@ pub async fn run_linters() {
 	let _ = app.mwbot("zh").await.unwrap();
 	let _ = app.mwbot("en").await.unwrap();
 
-	for _ in 0..*LINTER_WORKERS {
+	for _ in 0..*CONFIG_LINTER_WORKERS {
 		let state = Arc::new(RwLock::new(WorkerState::new()));
 		app.linter.workers.write().push(state.clone());
 		tokio::spawn(run_linter(state));
@@ -208,8 +215,8 @@ pub async fn do_lint(page_id: Uuid) -> Result<(u32, u32)> {
 			// new issue
 			info!(page = %page_id, issue = %id, issue_type = %typ, details = val_json, "found issue");
 			let model = db::issue::ActiveModel {
-				id: ActiveValue::Set(id.clone()),
-				page: ActiveValue::Set(page_id.clone()),
+				id: ActiveValue::Set(id),
+				page: ActiveValue::Set(page_id),
 				issue_type: ActiveValue::Set(typ.get_id().to_string()),
 				details: ActiveValue::Set(val),
 			};

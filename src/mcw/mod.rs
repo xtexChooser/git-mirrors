@@ -1,18 +1,22 @@
+use std::{env, sync::LazyLock};
+
 use phf::{phf_map, phf_set};
 use uuid::{uuid, Uuid};
 
 use crate::{
-	checkers,
+	checkers, config,
 	linter::{checker::Checker, generic::incomplete_interlang::IncompleteInterlangLinkChecker},
 };
 
 pub const SITE_NAME: &str = "Minecraft Wiki";
 
+config!(MCW_STAGING, list);
+
 pub fn get_wiki_url(lang: &str) -> String {
 	if lang == "en" {
 		"https://minecraft.wiki".to_string()
-	} else if lang == "lzh" {
-		"https://lzh-staging.minecraft.wiki".to_string()
+	} else if CONFIG_MCW_STAGING.contains(&lang) {
+		format!("https://{}-staging.minecraft.wiki", lang)
 	} else {
 		format!("https://{}.minecraft.wiki", lang)
 	}

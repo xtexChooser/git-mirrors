@@ -2,7 +2,7 @@ use axum::{http::StatusCode, response::IntoResponse, Router};
 use tokio::net::TcpListener;
 use tracing::{error, info};
 
-use crate::app::App;
+use crate::{app::App, config};
 
 use self::{auth::AuthResult, meta::MessagePage};
 
@@ -12,9 +12,11 @@ pub mod meta;
 pub mod sysop;
 pub mod user;
 
+config!(LISTEN, str, "0.0.0.0:3000");
+
 pub async fn run_server() {
 	let app = App::get();
-	let addr = std::env::var("SPOCK_LISTEN").unwrap_or("0.0.0.0:3000".to_owned());
+	let addr = *CONFIG_LISTEN;
 
 	i18n::init().expect("failed to init i18n");
 

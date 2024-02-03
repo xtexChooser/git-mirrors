@@ -11,7 +11,7 @@ use uuid::Uuid;
 use crate::{
 	app::App,
 	db::{self},
-	linter::LINTER_WORKERS,
+	linter::CONFIG_LINTER_WORKERS,
 	site,
 };
 
@@ -247,7 +247,7 @@ impl Page {
 					.add(db::page::Column::NeedCheck.lte(Utc::now().naive_utc()))
 					.add(db::page::Column::CheckErrors.lt(site::LINTER_MAX_RETRIES)),
 			)
-			.limit(Some(*LINTER_WORKERS as u64 * 2))
+			.limit(Some(*CONFIG_LINTER_WORKERS as u64 * 2))
 			.all(&*db::get())
 			.await?
 			.into_iter()
