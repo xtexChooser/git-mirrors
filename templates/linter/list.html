@@ -1,0 +1,24 @@
+{% extends "includes/base.html" %}
+{% block title %}linter - spock{% endblock %}
+{% block body %}
+
+<ul class="page-list">
+{% for page in pages -%}
+	<li>
+		<a href="/page/{{ page.id }}">{{ page.lang }}: {{ page.title }}</a>
+		<span class="page-list-issues-count">{{ page.issues }}</span>
+		{% if page.suggests != 0 -%}
+		<span class="page-list-suggestions-count">{{ page.suggests }}</span>
+		{%- endif %}
+	</li>
+{%- endfor %}
+</ul>
+
+<p class="page-list-pager">
+	{%- if page != 0 -%}
+		<a href="/page?page={{ page - 1 }}">&lAarr;</a>
+	{%- endif -%}
+	<span>{{ page }}</span>
+	<a href="/page?page={{ page + 1 }}">&rAarr;</a>
+</p>
+{% endblock %}

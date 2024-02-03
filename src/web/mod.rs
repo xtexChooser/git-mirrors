@@ -8,6 +8,7 @@ use self::{auth::AuthResult, meta::MessagePage};
 
 pub mod auth;
 pub mod i18n;
+pub mod page;
 pub mod meta;
 pub mod sysop;
 pub mod user;
@@ -25,7 +26,8 @@ pub async fn run_server() {
 		.nest("/", meta::new_router())
 		.nest("/auth", auth::new_router())
 		.nest("/sysop", sysop::new_router())
-		.nest("/user", user::new_router());
+		.nest("/user", user::new_router())
+		.nest("/page", page::new_router());
 
 	info!(addr, "Start tcp listener");
 	let listener = TcpListener::bind(addr).await.unwrap();
