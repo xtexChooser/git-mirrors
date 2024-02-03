@@ -169,7 +169,7 @@ impl CheckerTrait for IncompleteInterlangLinkChecker {
 		} else {
 			let selflinks = &graph.links[&graph.selflang].2;
 			for (lang, (page, from_lang, _)) in &graph.links {
-				if !selflinks.contains_key(lang) {
+				if !selflinks.contains_key(lang) && lang != &graph.selflang {
 					ctx.found::<IncompleteInterlangIssue, _>(
 						IncompleteInterlangIssueDetails {
 							lang: lang.to_owned(),
