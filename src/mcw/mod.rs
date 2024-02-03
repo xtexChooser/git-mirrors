@@ -3,10 +3,7 @@ use uuid::{uuid, Uuid};
 
 use crate::{
 	checkers, config,
-	linter::{
-		checker::Checker,
-		generic::incomplete_interlang::IncompleteInterlangLinkChecker,
-	},
+	linter::{checker::Checker, generic::*},
 };
 
 pub const SITE_NAME: &str = "Minecraft Wiki";
@@ -74,5 +71,5 @@ pub const I18N_FALLBACK_LANGUAGE: &str = "en_us";
 pub const I18N_DEFAULT_LANGUAGE: &str = "en_us";
 
 pub fn init_checkers() -> Vec<Checker> {
-	checkers![IncompleteInterlangLink]
+	checkers![IncompleteInterlangLink, DoubleRedirect]
 }
