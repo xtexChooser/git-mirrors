@@ -169,7 +169,7 @@ pub async fn run_linter(state: Arc<RwLock<WorkerState>>) {
 							.expect("select_page returned a page that is not requested for check");
 						info!(%page, "start checking page");
 						match do_lint(page.id().to_owned()).await {
-							Ok((issues, suggestions)) => {
+							Ok(Some((issues, suggestions))) => {
 								if let Err(error) = page
 									.set_checked(
 										start_time,
@@ -179,6 +179,12 @@ pub async fn run_linter(state: Arc<RwLock<WorkerState>>) {
 									.await
 								{
 									error!(%error, "failed to mark page as checked");
+								}
+							}
+							Ok(None) => {
+								info!(%page, "removing deleted page");
+								if let Err(error) = page.delete().await {
+									error!(%error, "failed to remove page");
 								}
 							}
 							Err(error) => {
@@ -199,8 +205,11 @@ pub async fn run_linter(state: Arc<RwLock<WorkerState>>) {
 	}
 }
 
-pub async fn do_lint(page_id: Uuid) -> Result<(u32, u32)> {
+pub async fn do_lint(page_id: Uuid) -> Result<Option<(u32, u32)>> {
 	let ctx = Arc::new(CheckContext::new(page_id).await?);
+	if !ctx.page.exists().await? {
+		return Ok(None);
+	}
 	let app = App::get();
 	let span = info_span!("check_page", page = %page_id);
 	for (checker_id, checker) in &app.linter.checkers {
@@ -261,5 +270,5 @@ pub async fn do_lint(page_id: Uuid) -> Result<(u32, u32)> {
 	}
 	txn.commit().await?;
 
-	Ok((total_issues as u32, total_suggestions as u32))
+	Ok(Some((total_issues as u32, total_suggestions as u32)))
 }
