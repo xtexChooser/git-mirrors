@@ -92,7 +92,7 @@ impl ComputedResource for InterlangLinksGraph {
 				let mut links = HashMap::new();
 				for (linklang, linktitle) in langlinks {
 					// skip filtered languages
-					if CONFIG_LINTER_INTERLANG_FILTER
+					if !CONFIG_LINTER_INTERLANG_FILTER
 						.contains(&linklang.as_str())
 					{
 						continue;

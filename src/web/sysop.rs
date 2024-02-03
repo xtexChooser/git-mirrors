@@ -50,7 +50,7 @@ pub fn new_router() -> Router {
 		.route(
 			"/reset-login-lru",
 			post(|RequireSysop(auth): RequireSysop| async {
-				App::get().login_lru.write().clear();
+				App::get().login_lru.lock().clear();
 				MessagePage {
 					auth,
 					title: "Login LRU Reseted",

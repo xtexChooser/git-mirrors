@@ -287,14 +287,14 @@ where
 			.to_owned()
 		{
 			if let Some(result) =
-				App::get().login_lru.write().get(token.value())
+				App::get().login_lru.lock().get(token.value())
 			{
 				return Ok(result.to_owned());
 			}
 			let result = AuthResult(login(token.value()).await);
 			App::get()
 				.login_lru
-				.write()
+				.lock()
 				.put(token.value().to_owned(), result.clone());
 			Ok(result)
 		} else {

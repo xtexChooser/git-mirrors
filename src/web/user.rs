@@ -178,7 +178,7 @@ async fn reset_salt_handler(
 	let mut user = user.into_active_model();
 	user.salt = ActiveValue::Set(auth::generate_salt());
 	let user = user.update(&*db::get()).await?;
-	App::get().login_lru.write().clear();
+	App::get().login_lru.lock().clear();
 	Ok(MessagePage {
 		auth,
 		title: "Token-salt reseted",
@@ -211,7 +211,7 @@ async fn block_handler(
 	let mut user = user.into_active_model();
 	user.blocked = ActiveValue::Set(Some(Utc::now().naive_utc() + time));
 	let user = user.update(&*db::get()).await?;
-	App::get().login_lru.write().clear();
+	App::get().login_lru.lock().clear();
 	Ok(MessagePage {
 		auth,
 		title: "User blocked",
@@ -233,7 +233,7 @@ async fn permanent_block_handler(
 	let mut user = user.into_active_model();
 	user.blocked = ActiveValue::Set(Some(DateTime::<Utc>::MAX_UTC.naive_utc()));
 	let user = user.update(&*db::get()).await?;
-	App::get().login_lru.write().clear();
+	App::get().login_lru.lock().clear();
 	Ok(MessagePage {
 		auth,
 		title: "User permanently blocked",
@@ -255,7 +255,7 @@ async fn unblock_handler(
 	let mut user = user.into_active_model();
 	user.blocked = ActiveValue::Set(None);
 	let user = user.update(&*db::get()).await?;
-	App::get().login_lru.write().clear();
+	App::get().login_lru.lock().clear();
 	Ok(MessagePage {
 		auth,
 		title: "User unblocked",
@@ -290,7 +290,7 @@ async fn set_language_handler(
 	let mut user = user.into_active_model();
 	user.language = ActiveValue::Set(lang.clone());
 	user.update(&*db::get()).await?;
-	App::get().login_lru.write().clear();
+	App::get().login_lru.lock().clear();
 	Ok(MessagePage {
 		auth,
 		title: "Language set",

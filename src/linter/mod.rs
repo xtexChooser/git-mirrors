@@ -11,7 +11,7 @@ use sea_orm::{
 };
 use serde::{Deserialize, Serialize};
 use tokio::sync::{Mutex, Notify};
-use tracing::{error, info, info_span, Instrument};
+use tracing::{error, info, info_span, trace, Instrument};
 use uuid::Uuid;
 
 use crate::{
@@ -167,6 +167,7 @@ pub async fn run_linter(state: Arc<RwLock<WorkerState>>) {
 						let start_time = page
 							.check_requested_time()
 							.expect("select_page returned a page that is not requested for check");
+						info!(%page, "start checking page");
 						match do_lint(page.id().to_owned()).await {
 							Ok((issues, suggestions)) => {
 								if let Err(error) = page
@@ -203,6 +204,7 @@ pub async fn do_lint(page_id: Uuid) -> Result<(u32, u32)> {
 	let app = App::get();
 	let span = info_span!("check_page", page = %page_id);
 	for (checker_id, checker) in &app.linter.checkers {
+		trace!(page = %page_id, checker = checker_id, "running checker");
 		if let Err(error) =
 			checker.check(ctx.clone()).instrument(span.clone()).await
 		{

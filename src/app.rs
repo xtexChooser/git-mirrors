@@ -6,8 +6,8 @@ use std::{
 
 use anyhow::{bail, Result};
 use lru::LruCache;
-use parking_lot::RwLock;
-use tokio::sync::Notify;
+use parking_lot::Mutex;
+use tokio::sync::{Notify, RwLock};
 
 pub use mwbot::Bot as MwBot;
 pub use mwbot::Page as MwPage;
@@ -29,7 +29,7 @@ pub struct App {
 	pub bots: RwLock<BTreeMap<String, MwBot>>,
 	pub db: Arc<DatabaseManager>,
 	pub resync_pages_notify: Notify,
-	pub login_lru: RwLock<LruCache<String, web::auth::AuthResult>>,
+	pub login_lru: Mutex<LruCache<String, web::auth::AuthResult>>,
 	pub linter: Arc<LinterState>,
 }
 
@@ -45,7 +45,7 @@ impl App {
 			bots: RwLock::new(BTreeMap::new()),
 			db: Arc::new(DatabaseManager::new().await?),
 			resync_pages_notify: Notify::new(),
-			login_lru: RwLock::new(LruCache::new(
+			login_lru: Mutex::new(LruCache::new(
 				NonZeroUsize::new(30).unwrap(),
 			)),
 			linter: Arc::new(LinterState::new()?),
@@ -90,13 +90,12 @@ impl App {
 		Ok(builder.build().await?)
 	}
 
-	#[allow(clippy::await_holding_lock)]
 	pub async fn mwbot(&self, lang: &str) -> Result<MwBot> {
-		if let Some(bot) = self.bots.read().get(lang) {
+		if let Some(bot) = self.bots.read().await.get(lang) {
 			return Ok(bot.clone());
 		}
 
-		let mut bots = self.bots.write();
+		let mut bots = self.bots.write().await;
 		if let Some(bot) = bots.get(lang) {
 			Ok(bot.clone())
 		} else {
