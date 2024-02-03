@@ -39,6 +39,7 @@ pub struct InterlangLinksGraph {
 	/// Type: <language, (page, from_lang, out_edges<lang, page>)>
 	pub links: HashMap<String, (String, String, HashMap<String, String>)>,
 	/// Type: (language, (first_page, from_lang), (second_page, from_lang))
+	#[allow(clippy::type_complexity)]
 	pub conflict: Option<(String, (String, String), (String, String))>,
 	/// Type: (language, title, from_lang)
 	pub broken: Vec<(String, String, String)>,
@@ -74,10 +75,9 @@ impl ComputedResource for InterlangLinksGraph {
 			if graph
 				.broken
 				.iter()
-				.find(|(brokenlang, brokentitle, _)| {
+				.any(|(brokenlang, brokentitle, _)| {
 					brokenlang == &lang && brokentitle == page.title()
 				})
-				.is_some()
 			{
 				// skip known broken links
 				continue;

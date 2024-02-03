@@ -17,8 +17,9 @@ use std::{
 	sync::Arc,
 };
 
-use parking_lot::{Mutex, RwLock};
+use parking_lot::Mutex;
 use prelude::*;
+use tokio::sync::RwLock;
 
 use crate::{issue::IssueType, page::Page};
 
@@ -128,8 +129,8 @@ impl CheckContext {
 		Ok(())
 	}
 
-	pub fn resource<T: 'static + Send + Sync>(&self) -> Result<Arc<T>> {
-		let resources = self.resources.read();
+	pub async fn resource<T: 'static + Send + Sync>(&self) -> Result<Arc<T>> {
+		let resources = self.resources.read().await;
 		let res = resources
 			.get(&TypeId::of::<T>())
 			.ok_or_else(|| anyhow!("resource {} is not initialized yet", type_name::<T>()))?;
@@ -138,28 +139,30 @@ impl CheckContext {
 		Ok(res)
 	}
 
-	pub fn insert_resource_arc<T: 'static + Send + Sync>(&self, value: Arc<T>) {
+	pub async fn insert_resource_arc<T: 'static + Send + Sync>(&self, value: Arc<T>) {
 		self.resources
 			.write()
+			.await
 			.insert(TypeId::of::<T>(), Box::new(value));
 	}
 
-	pub fn insert_resource<T: 'static + Send + Sync>(&self, value: T) {
-		self.insert_resource_arc::<T>(Arc::new(value));
+	pub async fn insert_resource<T: 'static + Send + Sync>(&self, value: T) {
+		self.insert_resource_arc::<T>(Arc::new(value)).await;
 	}
 
 	pub async fn compute_resource<T: 'static + Send + Sync + ComputedResource>(
 		self: &Arc<Self>,
 	) -> Result<Arc<T>> {
 		let key = TypeId::of::<T>();
-		let exist = self.resources.read().contains_key(&key);
+		let exist = self.resources.read().await.contains_key(&key);
 		if !exist {
-			if let std::collections::hash_map::Entry::Vacant(e) = self.resources.write().entry(key)
+			if let std::collections::hash_map::Entry::Vacant(e) =
+				self.resources.write().await.entry(key)
 			{
 				e.insert(Box::new(Arc::new(T::compute(self.clone()).await?)));
 			}
 		}
-		self.resource::<T>()
+		self.resource::<T>().await
 	}
 }
 
