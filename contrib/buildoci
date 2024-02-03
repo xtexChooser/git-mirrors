@@ -23,3 +23,4 @@ buildah copy --from "$build_container" "$container" /usr/bin/spock /usr/bin/spoc
 buildah config --entrypoint "/usr/bin/spock" --cmd "" --workingdir "/data" "$container"
 
 buildah commit --squash "$container" spock
+buildah rm "$build_container" "$container"
