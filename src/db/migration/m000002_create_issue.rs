@@ -20,7 +20,9 @@ impl MigrationTrait for Migration {
 					)
 					.col(ColumnDef::new(Issue::Page).uuid().not_null())
 					.col(ColumnDef::new(Issue::IssueType).string().not_null())
-					.col(ColumnDef::new(Issue::Details).json_binary().not_null())
+					.col(
+						ColumnDef::new(Issue::Details).json_binary().not_null(),
+					)
 					.to_owned(),
 			)
 			.await?;

@@ -6,7 +6,8 @@ use std::{
 use anyhow::{bail, Context, Result};
 use parking_lot::RwLock;
 use sea_orm::{
-	ActiveModelTrait, ActiveValue, ColumnTrait, EntityTrait, QueryFilter, TransactionTrait,
+	ActiveModelTrait, ActiveValue, ColumnTrait, EntityTrait, QueryFilter,
+	TransactionTrait,
 };
 use serde::{Deserialize, Serialize};
 use tokio::sync::{Mutex, Notify};
@@ -14,7 +15,8 @@ use tracing::{error, info, info_span, Instrument};
 use uuid::Uuid;
 
 use crate::{
-	app::App, config, db, issue::IssueType, linter::checker::CheckContext, page::Page, site,
+	app::App, config, db, issue::IssueType, linter::checker::CheckContext,
+	page::Page, site,
 };
 
 use self::checker::Checker;
@@ -60,7 +62,9 @@ impl LinterState {
 		Ok(checkers)
 	}
 
-	fn init_issues(checkers: &BTreeMap<String, Checker>) -> Result<BTreeMap<String, IssueType>> {
+	fn init_issues(
+		checkers: &BTreeMap<String, Checker>,
+	) -> Result<BTreeMap<String, IssueType>> {
 		let mut issues = BTreeMap::new();
 		for checker in checkers.values() {
 			for issue in checker.possible_issues() {
@@ -68,7 +72,10 @@ impl LinterState {
 				let type_id = issue.get_type_id();
 				if let Some(prev) = issues.insert(id.to_string(), issue) {
 					if prev.get_type_id() != type_id {
-						bail!("found different issue type with same ID: {}", id);
+						bail!(
+							"found different issue type with same ID: {}",
+							id
+						);
 					}
 				}
 			}
@@ -77,7 +84,18 @@ impl LinterState {
 	}
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Default)]
+#[derive(
+	Debug,
+	Serialize,
+	Deserialize,
+	Clone,
+	Hash,
+	PartialEq,
+	Eq,
+	PartialOrd,
+	Ord,
+	Default,
+)]
 pub struct WorkerState {
 	pub page: Option<Uuid>,
 }
@@ -138,7 +156,9 @@ pub async fn run_linter(state: Arc<RwLock<WorkerState>>) {
 			assert!(state.read().page.is_none());
 			let page = select_page(&state).await;
 			match page {
-				Err(error) => error!(%error, "error selecting page for linting"),
+				Err(error) => {
+					error!(%error, "error selecting page for linting")
+				}
 				Ok(Some(page)) => {
 					let title = page.title().to_owned();
 					async {
@@ -147,8 +167,13 @@ pub async fn run_linter(state: Arc<RwLock<WorkerState>>) {
 							.expect("select_page returned a page that is not requested for check");
 						match do_lint(page.id().to_owned()).await {
 							Ok((issues, suggestions)) => {
-								if let Err(error) =
-									page.set_checked(start_time, issues, suggestions).await
+								if let Err(error) = page
+									.set_checked(
+										start_time,
+										issues,
+										suggestions,
+									)
+									.await
 								{
 									error!(%error, "failed to mark page as checked");
 								}
@@ -176,9 +201,12 @@ pub async fn do_lint(page_id: Uuid) -> Result<(u32, u32)> {
 	let app = App::get();
 	let span = info_span!("check_page", page = %page_id);
 	for (checker_id, checker) in &app.linter.checkers {
-		if let Err(error) = checker.check(ctx.clone()).instrument(span.clone()).await {
+		if let Err(error) =
+			checker.check(ctx.clone()).instrument(span.clone()).await
+		{
 			error!(page = %page_id, %error, checker = checker_id, "error checking page");
-			return Err(error).with_context(|| format!("checker: {}", checker_id));
+			return Err(error)
+				.with_context(|| format!("checker: {}", checker_id));
 		}
 	}
 	let all_issues = ctx

@@ -27,7 +27,18 @@ where
 
 pub type IssueType = Arc<Box<dyn IssueTrait>>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Clone, Hash, Copy)]
+#[derive(
+	Debug,
+	Serialize,
+	Deserialize,
+	PartialEq,
+	Eq,
+	PartialOrd,
+	Ord,
+	Clone,
+	Hash,
+	Copy,
+)]
 pub enum IssueLevel {
 	Issue,
 	Suggestion,

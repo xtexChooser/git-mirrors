@@ -105,7 +105,8 @@ pub async fn sync_rc(lang: &str) -> Result<()> {
 			if let Some(logtype) = rc.logtype {
 				if logtype == "delete" {
 					// sync delete
-					if let Some(dbpage) = Page::get_by_name(lang, title).await? {
+					if let Some(dbpage) = Page::get_by_name(lang, title).await?
+					{
 						dbpage.delete().await?;
 					}
 				}
@@ -138,7 +139,9 @@ pub async fn run_rc_syncer() {
 			_ = tokio::time::sleep(std::time::Duration::from_secs(site::SYNC_RC_PEROID))=>{}
 		}
 		for lang in &site::SYNC_RC {
-			if let Err(error) = sync_rc(lang).instrument(info_span!("sync_rc", lang)).await {
+			if let Err(error) =
+				sync_rc(lang).instrument(info_span!("sync_rc", lang)).await
+			{
 				error!(%error, lang, "failed to sync RC");
 			}
 		}

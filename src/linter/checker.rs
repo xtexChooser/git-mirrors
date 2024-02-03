@@ -1,7 +1,8 @@
 pub mod prelude {
 	pub use crate::issue::prelude::*;
 	pub use crate::linter::checker::{
-		CheckContext, CheckResource, CheckResult, Checker, CheckerId, CheckerTrait,
+		CheckContext, CheckResource, CheckResult, Checker, CheckerId,
+		CheckerTrait,
 	};
 	pub use crate::linter::{LinterState, WorkerState};
 	pub use crate::{
@@ -100,9 +101,9 @@ pub type CheckResource = Box<Arc<dyn Any + Send + Sync>>;
 
 impl CheckContext {
 	pub async fn new(id: Uuid) -> Result<Self> {
-		let dbpage = Page::get_by_id(&id)
-			.await?
-			.ok_or_else(|| anyhow!("page id for CheckContext does not exist"))?;
+		let dbpage = Page::get_by_id(&id).await?.ok_or_else(|| {
+			anyhow!("page id for CheckContext does not exist")
+		})?;
 		let app = App::get();
 		let bot = app.mwbot(dbpage.lang()).await?;
 		let page = bot.page(dbpage.title())?;
@@ -123,23 +124,27 @@ impl CheckContext {
 		I: IssueTrait + Default + 'static,
 		S: Serialize,
 	{
-		self.found_issues
-			.lock()
-			.push((Arc::new(Box::<I>::default()), serde_json::to_value(issue)?));
+		self.found_issues.lock().push((
+			Arc::new(Box::<I>::default()),
+			serde_json::to_value(issue)?,
+		));
 		Ok(())
 	}
 
 	pub async fn resource<T: 'static + Send + Sync>(&self) -> Result<Arc<T>> {
 		let resources = self.resources.read().await;
-		let res = resources
-			.get(&TypeId::of::<T>())
-			.ok_or_else(|| anyhow!("resource {} is not initialized yet", type_name::<T>()))?;
+		let res = resources.get(&TypeId::of::<T>()).ok_or_else(|| {
+			anyhow!("resource {} is not initialized yet", type_name::<T>())
+		})?;
 		let res = res.as_ref().to_owned();
 		let res = unsafe { res.downcast_unchecked::<T>() };
 		Ok(res)
 	}
 
-	pub async fn insert_resource_arc<T: 'static + Send + Sync>(&self, value: Arc<T>) {
+	pub async fn insert_resource_arc<T: 'static + Send + Sync>(
+		&self,
+		value: Arc<T>,
+	) {
 		self.resources
 			.write()
 			.await
@@ -150,7 +155,9 @@ impl CheckContext {
 		self.insert_resource_arc::<T>(Arc::new(value)).await;
 	}
 
-	pub async fn compute_resource<T: 'static + Send + Sync + ComputedResource>(
+	pub async fn compute_resource<
+		T: 'static + Send + Sync + ComputedResource,
+	>(
 		self: &Arc<Self>,
 	) -> Result<Arc<T>> {
 		let key = TypeId::of::<T>();

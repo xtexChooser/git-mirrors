@@ -1,7 +1,9 @@
 use std::{sync::Arc, time::Duration};
 
 use anyhow::Result;
-use sea_orm::{ConnectOptions, ConnectionTrait, DatabaseConnection, DbBackend, Statement};
+use sea_orm::{
+	ConnectOptions, ConnectionTrait, DatabaseConnection, DbBackend, Statement,
+};
 use sea_orm_migration::MigratorTrait;
 use tracing::{error, info_span, Instrument};
 
@@ -37,7 +39,9 @@ impl DatabaseManager {
 				Duration::from_millis(500),
 			);
 		let conn = Arc::new(sea_orm::Database::connect(opts).await?);
-		if CONFIG_DATABASE.starts_with("sqlite") && *CONFIG_DATABASE_SQLITE_INIT_PRAGMAS {
+		if CONFIG_DATABASE.starts_with("sqlite")
+			&& *CONFIG_DATABASE_SQLITE_INIT_PRAGMAS
+		{
 			for stmt in &SQLITE_PRAGMAS {
 				conn.execute(Statement::from_string(DbBackend::Sqlite, *stmt))
 					.await?;

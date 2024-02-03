@@ -34,7 +34,12 @@ impl MigrationTrait for Migration {
 							.not_null()
 							.default(0),
 					)
-					.col(ColumnDef::new(Page::Issues).integer().default(0).not_null())
+					.col(
+						ColumnDef::new(Page::Issues)
+							.integer()
+							.default(0)
+							.not_null(),
+					)
 					.col(
 						ColumnDef::new(Page::Suggests)
 							.integer()
@@ -104,7 +109,9 @@ impl MigrationTrait for Migration {
 
 	async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
 		manager
-			.drop_index(Index::drop().table(Page::Table).name("pages_id").to_owned())
+			.drop_index(
+				Index::drop().table(Page::Table).name("pages_id").to_owned(),
+			)
 			.await?;
 		manager
 			.drop_index(

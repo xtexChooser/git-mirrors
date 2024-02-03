@@ -5,7 +5,10 @@ use uuid::{uuid, Uuid};
 
 use crate::{
 	checkers, config,
-	linter::{checker::Checker, generic::incomplete_interlang::IncompleteInterlangLinkChecker},
+	linter::{
+		checker::Checker,
+		generic::incomplete_interlang::IncompleteInterlangLinkChecker,
+	},
 };
 
 pub const SITE_NAME: &str = "Minecraft Wiki";

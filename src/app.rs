@@ -45,7 +45,9 @@ impl App {
 			bots: RwLock::new(BTreeMap::new()),
 			db: Arc::new(DatabaseManager::new().await?),
 			resync_pages_notify: Notify::new(),
-			login_lru: RwLock::new(LruCache::new(NonZeroUsize::new(30).unwrap())),
+			login_lru: RwLock::new(LruCache::new(
+				NonZeroUsize::new(30).unwrap(),
+			)),
 			linter: Arc::new(LinterState::new()?),
 		}))
 	}
@@ -74,9 +76,13 @@ impl App {
 
 		let username = *CONFIG_WIKI_BOT_USERNAME;
 		if let Some(oauth_token) = *CONFIG_WIKI_BOT_TOKEN {
-			builder = builder.set_oauth2_token(username.to_string(), oauth_token.to_string());
+			builder = builder.set_oauth2_token(
+				username.to_string(),
+				oauth_token.to_string(),
+			);
 		} else if let Some(password) = *CONFIG_WIKI_BOT_BOTPASSWD {
-			builder = builder.set_botpassword(username.to_string(), password.to_string());
+			builder = builder
+				.set_botpassword(username.to_string(), password.to_string());
 		} else {
 			bail!("bot auth creds not found")
 		}

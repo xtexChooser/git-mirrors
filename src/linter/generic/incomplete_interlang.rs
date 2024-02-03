@@ -7,7 +7,9 @@ use crate::{
 
 issue!(IncompleteInterlang, "incomplete_interlang");
 impl IssueTrait for IncompleteInterlangIssue {}
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(
+	Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord,
+)]
 pub struct IncompleteInterlangIssueDetails {
 	pub lang: String,
 	pub title: String,
@@ -16,7 +18,9 @@ pub struct IncompleteInterlangIssueDetails {
 
 issue!(ConflictInterlang, "conflict_interlang");
 impl IssueTrait for ConflictInterlangIssue {}
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(
+	Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord,
+)]
 pub struct ConflictInterlangIssueDetails {
 	pub lang: String,
 	pub page1: String,
@@ -27,7 +31,9 @@ pub struct ConflictInterlangIssueDetails {
 
 issue!(BrokenInterlang, "broken_interlang");
 impl IssueTrait for BrokenInterlangIssue {}
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(
+	Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord,
+)]
 pub struct BrokenInterlangIssueDetails {
 	pub lang: String,
 	pub title: String,
@@ -59,7 +65,8 @@ impl ComputedResource for InterlangLinksGraph {
 		)]);
 		while let Some((lang, page, from_lang)) = unresolved_pages.pop_front() {
 			// check conflict
-			if let Some((prev_page, prev_page_from, _)) = graph.links.get(&lang) {
+			if let Some((prev_page, prev_page_from, _)) = graph.links.get(&lang)
+			{
 				if prev_page != page.title() {
 					graph.conflict = Some((
 						lang,
@@ -72,13 +79,9 @@ impl ComputedResource for InterlangLinksGraph {
 					continue;
 				}
 			}
-			if graph
-				.broken
-				.iter()
-				.any(|(brokenlang, brokentitle, _)| {
-					brokenlang == &lang && brokentitle == page.title()
-				})
-			{
+			if graph.broken.iter().any(|(brokenlang, brokentitle, _)| {
+				brokenlang == &lang && brokentitle == page.title()
+			}) {
 				// skip known broken links
 				continue;
 			}
@@ -88,8 +91,11 @@ impl ComputedResource for InterlangLinksGraph {
 			if let Some(langlinks) = langlinks {
 				let mut links = HashMap::new();
 				for (linklang, linktitle) in langlinks {
-					let linkpage = ctx.app.mwbot(&linklang).await?.page(&linktitle)?;
-					if graph.links.get(&linklang).is_none() && linklang != ctx.lang {
+					let linkpage =
+						ctx.app.mwbot(&linklang).await?.page(&linktitle)?;
+					if graph.links.get(&linklang).is_none()
+						&& linklang != ctx.lang
+					{
 						// add to resolve queue
 						unresolved_pages.push_back((
 							linklang.clone(),
@@ -144,31 +150,39 @@ impl CheckerTrait for IncompleteInterlangLinkChecker {
 
 	async fn check(&self, ctx: Arc<CheckContext>) -> CheckResult {
 		let graph = ctx.compute_resource::<InterlangLinksGraph>().await?;
-		if let Some((lang, (page1, from1), (page2, from2))) = graph.conflict.to_owned() {
-			ctx.found::<ConflictInterlangIssue, _>(ConflictInterlangIssueDetails {
-				lang,
-				page1,
-				path1: graph.find_path(&from1)?,
-				page2,
-				path2: graph.find_path(&from2)?,
-			})?;
+		if let Some((lang, (page1, from1), (page2, from2))) =
+			graph.conflict.to_owned()
+		{
+			ctx.found::<ConflictInterlangIssue, _>(
+				ConflictInterlangIssueDetails {
+					lang,
+					page1,
+					path1: graph.find_path(&from1)?,
+					page2,
+					path2: graph.find_path(&from2)?,
+				},
+			)?;
 		} else {
 			let selflinks = &graph.links[&graph.selflang].2;
 			for (lang, (page, from_lang, _)) in &graph.links {
 				if !selflinks.contains_key(lang) {
-					ctx.found::<IncompleteInterlangIssue, _>(IncompleteInterlangIssueDetails {
-						lang: lang.to_owned(),
-						title: page.to_owned(),
-						path: graph.find_path(from_lang)?,
-					})?;
+					ctx.found::<IncompleteInterlangIssue, _>(
+						IncompleteInterlangIssueDetails {
+							lang: lang.to_owned(),
+							title: page.to_owned(),
+							path: graph.find_path(from_lang)?,
+						},
+					)?;
 				}
 			}
 			for (lang, page, from_lang) in &graph.broken {
 				if from_lang == &ctx.lang {
-					ctx.found::<BrokenInterlangIssue, _>(BrokenInterlangIssueDetails {
-						lang: lang.to_owned(),
-						title: page.to_owned(),
-					})?;
+					ctx.found::<BrokenInterlangIssue, _>(
+						BrokenInterlangIssueDetails {
+							lang: lang.to_owned(),
+							title: page.to_owned(),
+						},
+					)?;
 				}
 			}
 		}

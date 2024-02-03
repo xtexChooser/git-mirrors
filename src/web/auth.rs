@@ -1,4 +1,7 @@
-use std::{collections::HashMap, convert::Infallible, fmt::Display, str::FromStr, sync::LazyLock};
+use std::{
+	collections::HashMap, convert::Infallible, fmt::Display, str::FromStr,
+	sync::LazyLock,
+};
 
 use anyhow::{bail, Result};
 use askama::{filters::urlencode, Template};
@@ -16,7 +19,8 @@ use chrono::Utc;
 use rand::{distributions::DistString, SeedableRng};
 use rand_chacha::ChaCha20Rng;
 use sea_orm::{
-	ActiveModelTrait, ActiveValue, ColumnTrait, EntityTrait, IntoActiveModel, QueryFilter,
+	ActiveModelTrait, ActiveValue, ColumnTrait, EntityTrait, IntoActiveModel,
+	QueryFilter,
 };
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -88,9 +92,11 @@ config!(OAUTH_REDIRECT_URI, str, required);
 config!(OAUTH_SYSOP, str, required);
 
 static OAUTH_URL_ENCODED: LazyLock<String> = LazyLock::new(|| {
-	urlencode(*CONFIG_OAUTH_REDIRECT_URI).expect("SPOCK_OAUTH_REDIRECT_URI can not be URL-encoded")
+	urlencode(*CONFIG_OAUTH_REDIRECT_URI)
+		.expect("SPOCK_OAUTH_REDIRECT_URI can not be URL-encoded")
 });
-static OAUTH_CLIENT: LazyLock<reqwest::Client> = LazyLock::new(Default::default);
+static OAUTH_CLIENT: LazyLock<reqwest::Client> =
+	LazyLock::new(Default::default);
 
 #[derive(Debug, Serialize, Deserialize)]
 struct MrTokenResponse {
@@ -106,7 +112,10 @@ struct MrUserResponse {
 	pub name: String,
 }
 
-async fn auth_handler(auth: AuthResult, Query(params): Query<AuthParams>) -> WebResult {
+async fn auth_handler(
+	auth: AuthResult,
+	Query(params): Query<AuthParams>,
+) -> WebResult {
 	if let Some(code) = params.code {
 		let token = async {
 			let resp = OAUTH_CLIENT
@@ -149,7 +158,9 @@ async fn auth_handler(auth: AuthResult, Query(params): Query<AuthParams>) -> Web
 						modrinth_id: ActiveValue::Set(mrid.clone()),
 						sysop: ActiveValue::Set(mrid == *CONFIG_OAUTH_SYSOP),
 						blocked: ActiveValue::Set(None),
-						language: ActiveValue::Set(site::I18N_DEFAULT_LANGUAGE.to_string()),
+						language: ActiveValue::Set(
+							site::I18N_DEFAULT_LANGUAGE.to_string(),
+						),
 					}
 					.insert(&*db::get())
 					.await?
@@ -206,7 +217,9 @@ async fn auth_handler(auth: AuthResult, Query(params): Query<AuthParams>) -> Web
 	}
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Clone)]
+#[derive(
+	Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Clone,
+)]
 pub struct AuthInfo {
 	pub id: Uuid,
 	pub name: String,
@@ -228,7 +241,8 @@ impl From<db::user::Model> for AuthInfo {
 pub async fn login(token: &str) -> Option<AuthInfo> {
 	if let Some((user, token)) = token.split_once(':')
 		&& let Ok(user) = Uuid::from_str(user)
-		&& let Ok(Some(user)) = db::user::Entity::find_by_id(user).one(&*db::get()).await
+		&& let Ok(Some(user)) =
+			db::user::Entity::find_by_id(user).one(&*db::get()).await
 		&& validate_token(&user.salt, token)
 	{
 		if let Some(blocked) = user.blocked {
@@ -262,14 +276,19 @@ where
 {
 	type Rejection = Infallible;
 
-	async fn from_request_parts(parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
+	async fn from_request_parts(
+		parts: &mut Parts,
+		state: &S,
+	) -> Result<Self, Self::Rejection> {
 		if let Some(token) = CookieJar::from_request_parts(parts, state)
 			.await
 			.unwrap()
 			.get("spock_token")
 			.to_owned()
 		{
-			if let Some(result) = App::get().login_lru.write().get(token.value()) {
+			if let Some(result) =
+				App::get().login_lru.write().get(token.value())
+			{
 				return Ok(result.to_owned());
 			}
 			let result = AuthResult(login(token.value()).await);
@@ -318,8 +337,12 @@ where
 {
 	type Rejection = (StatusCode, &'static str);
 
-	async fn from_request_parts(parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
-		let AuthResult(auth) = AuthResult::from_request_parts(parts, state).await.unwrap();
+	async fn from_request_parts(
+		parts: &mut Parts,
+		state: &S,
+	) -> Result<Self, Self::Rejection> {
+		let AuthResult(auth) =
+			AuthResult::from_request_parts(parts, state).await.unwrap();
 		if let Some(auth) = auth {
 			Ok(RequireAuth(AuthResult(Some(auth))))
 		} else {
@@ -343,7 +366,10 @@ where
 {
 	type Rejection = (StatusCode, &'static str);
 
-	async fn from_request_parts(parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
+	async fn from_request_parts(
+		parts: &mut Parts,
+		state: &S,
+	) -> Result<Self, Self::Rejection> {
 		let auth = RequireAuth::from_request_parts(parts, state).await?;
 		if auth.info().sysop {
 			Ok(RequireSysop(AuthResult(auth.0 .0)))

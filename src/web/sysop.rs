@@ -8,8 +8,8 @@ use axum::{
 };
 use chrono::{Duration, Utc};
 use sea_orm::{
-	ColumnTrait, Condition, EntityTrait, FromQueryResult, PaginatorTrait, QueryFilter, QueryOrder,
-	QuerySelect,
+	ColumnTrait, Condition, EntityTrait, FromQueryResult, PaginatorTrait,
+	QueryFilter, QueryOrder, QuerySelect,
 };
 use tracing::{error, info};
 
@@ -93,7 +93,8 @@ pub fn new_router() -> Router {
 			post(|RequireSysop(auth): RequireSysop| async {
 				info!(%auth, "mark error pages for re-check");
 				tokio::spawn(async {
-					if let Err(error) = Page::mark_error_pages_for_check().await {
+					if let Err(error) = Page::mark_error_pages_for_check().await
+					{
 						error!(%error, "failed to mark error pages for re-check");
 					}
 				});
@@ -200,7 +201,9 @@ async fn stats_handler(RequireSysop(auth): RequireSysop) -> WebResult {
 			Condition::all()
 				.add(db::page::Column::NeedCheck.is_not_null())
 				.add(db::page::Column::CheckErrors.ne(0))
-				.add(db::page::Column::CheckErrors.lt(site::LINTER_MAX_RETRIES)),
+				.add(
+					db::page::Column::CheckErrors.lt(site::LINTER_MAX_RETRIES),
+				),
 		)
 		.group_by(db::page::Column::Lang)
 		.into_model::<LangFilteredStat>()
@@ -217,7 +220,9 @@ async fn stats_handler(RequireSysop(auth): RequireSysop) -> WebResult {
 			Condition::all()
 				.add(db::page::Column::NeedCheck.is_not_null())
 				.add(db::page::Column::CheckErrors.ne(0))
-				.add(db::page::Column::CheckErrors.gte(site::LINTER_MAX_RETRIES)),
+				.add(
+					db::page::Column::CheckErrors.gte(site::LINTER_MAX_RETRIES),
+				),
 		)
 		.group_by(db::page::Column::Lang)
 		.into_model::<LangFilteredStat>()

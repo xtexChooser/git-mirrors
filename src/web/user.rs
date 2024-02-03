@@ -12,7 +12,8 @@ use axum::{
 use axum_extra::extract::Form;
 use chrono::{DateTime, Duration, Utc};
 use sea_orm::{
-	ActiveModelTrait, ActiveValue, ColumnTrait, EntityTrait, IntoActiveModel, QueryFilter,
+	ActiveModelTrait, ActiveValue, ColumnTrait, EntityTrait, IntoActiveModel,
+	QueryFilter,
 };
 use serde::Deserialize;
 use tracing::info;
@@ -70,13 +71,19 @@ fn user_or_else(
 	}
 }
 
-async fn get_user_handler(auth: AuthResult, Path(id): Path<String>) -> WebResult {
+async fn get_user_handler(
+	auth: AuthResult,
+	Path(id): Path<String>,
+) -> WebResult {
 	if let Ok(id) = Uuid::from_str(&id) {
 		let user = user_or_else(
 			&auth,
 			db::user::Entity::find_by_id(id).one(&*db::get()).await?,
 		)?;
-		Ok(Redirect::temporary(&format!("/user/{}", user.name)).into_response())
+		Ok(
+			Redirect::temporary(&format!("/user/{}", user.name))
+				.into_response(),
+		)
 	} else if let Some(user) = db::user::Entity::find()
 		.filter(db::user::Column::Name.eq(id))
 		.one(&*db::get())
@@ -111,7 +118,10 @@ async fn get_user_handler(auth: AuthResult, Path(id): Path<String>) -> WebResult
 	}
 }
 
-async fn op_handler(RequireSysop(auth): RequireSysop, Path(id): Path<Uuid>) -> WebResult {
+async fn op_handler(
+	RequireSysop(auth): RequireSysop,
+	Path(id): Path<Uuid>,
+) -> WebResult {
 	let user = user_or_else(
 		&auth,
 		db::user::Entity::find_by_id(id).one(&*db::get()).await?,
@@ -129,7 +139,10 @@ async fn op_handler(RequireSysop(auth): RequireSysop, Path(id): Path<Uuid>) -> W
 	.into_response())
 }
 
-async fn deop_handler(RequireSysop(auth): RequireSysop, Path(id): Path<Uuid>) -> WebResult {
+async fn deop_handler(
+	RequireSysop(auth): RequireSysop,
+	Path(id): Path<Uuid>,
+) -> WebResult {
 	let user = user_or_else(
 		&auth,
 		db::user::Entity::find_by_id(id).one(&*db::get()).await?,
@@ -147,10 +160,14 @@ async fn deop_handler(RequireSysop(auth): RequireSysop, Path(id): Path<Uuid>) ->
 	.into_response())
 }
 
-async fn reset_salt_handler(RequireAuth(auth): RequireAuth, Path(id): Path<Uuid>) -> WebResult {
+async fn reset_salt_handler(
+	RequireAuth(auth): RequireAuth,
+	Path(id): Path<Uuid>,
+) -> WebResult {
 	if !auth.0.as_ref().unwrap().sysop && auth.0.as_ref().unwrap().id != id {
 		return Err(WebError::Response(
-			(StatusCode::UNAUTHORIZED, "bot-sysop or login required").into_response(),
+			(StatusCode::UNAUTHORIZED, "bot-sysop or login required")
+				.into_response(),
 		));
 	}
 	let user = user_or_else(
@@ -165,7 +182,10 @@ async fn reset_salt_handler(RequireAuth(auth): RequireAuth, Path(id): Path<Uuid>
 	Ok(MessagePage {
 		auth,
 		title: "Token-salt reseted",
-		message: &format!("All tokens for {} should be invalid now.", user.name),
+		message: &format!(
+			"All tokens for {} should be invalid now.",
+			user.name
+		),
 		auto_return: false,
 	}
 	.into_response())
@@ -223,7 +243,10 @@ async fn permanent_block_handler(
 	.into_response())
 }
 
-async fn unblock_handler(RequireSysop(auth): RequireSysop, Path(id): Path<Uuid>) -> WebResult {
+async fn unblock_handler(
+	RequireSysop(auth): RequireSysop,
+	Path(id): Path<Uuid>,
+) -> WebResult {
 	let user = user_or_else(
 		&auth,
 		db::user::Entity::find_by_id(id).one(&*db::get()).await?,
@@ -254,7 +277,8 @@ async fn set_language_handler(
 ) -> WebResult {
 	if !auth.0.as_ref().unwrap().sysop && auth.0.as_ref().unwrap().id != id {
 		return Err(WebError::Response(
-			(StatusCode::UNAUTHORIZED, "bot-sysop or login required").into_response(),
+			(StatusCode::UNAUTHORIZED, "bot-sysop or login required")
+				.into_response(),
 		));
 	}
 	let user = user_or_else(

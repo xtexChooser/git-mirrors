@@ -20,14 +20,17 @@ pub struct MessagePage<'a> {
 	pub auto_return: bool,
 }
 
-const MESSAGE_AUTO_RETURN_JS: &str = include_str!("../../assets/message-auto-return.js");
+const MESSAGE_AUTO_RETURN_JS: &str =
+	include_str!("../../assets/message-auto-return.js");
 
 pub fn new_router() -> Router {
 	Router::new()
 		.route("/", get(|auth: AuthResult| async { IndexPage { auth } }))
 		.route(
 			"/main.css",
-			get(|| async { ([(CONTENT_TYPE, "text/css; charset=utf-8")], MAIN_CSS) }),
+			get(|| async {
+				([(CONTENT_TYPE, "text/css; charset=utf-8")], MAIN_CSS)
+			}),
 		)
 		.route(
 			"/message-auto-return.js",

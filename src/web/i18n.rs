@@ -40,6 +40,6 @@ pub fn get(lang: &str, key: &'static str) -> &'static str {
 	}
 }
 
-pub fn get_langs() -> impl Iterator<Item = (&'static &'static str, &'static &'static str)> {
-	unsafe { LANGS.iter() }
+pub fn get_langs() -> impl Iterator<Item = (&'static str, &'static str)> {
+	unsafe { LANGS.iter() }.map(|(code, name)| (*code, *name))
 }
