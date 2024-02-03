@@ -118,12 +118,13 @@ pub async fn run_linters() {
 	}
 
 	loop {
-		tokio::time::sleep(std::time::Duration::from_secs(120)).await;
+		// try to start linters as soon as startup
 		match Page::count_for_check().await.unwrap_or(0) {
 			0 => {}
 			1 => app.linter.worker_notify.notify_one(),
 			_ => app.linter.worker_notify.notify_waiters(),
 		}
+		tokio::time::sleep(std::time::Duration::from_secs(120)).await;
 	}
 }
 
