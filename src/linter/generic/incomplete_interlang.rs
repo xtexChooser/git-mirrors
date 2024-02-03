@@ -139,6 +139,7 @@ impl InterlangLinksGraph {
 			path.push(self.links[lang].1.to_owned());
 		}
 		path.reverse();
+		path.push(lang.to_string());
 		Ok(path
 			.into_iter()
 			.map(|lang| {
