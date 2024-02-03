@@ -1,11 +1,13 @@
 use std::collections::{HashMap, VecDeque};
 
-use crate::{
-	issue, issues,
-	linter::checker::{prelude::*, ComputedResource},
-};
+use crate::{issue, linter::checker::prelude::*};
 
 issue!(IncompleteInterlang, "incomplete_interlang");
+issue!(ConflictInterlang, "conflict_interlang");
+issue!(BrokenInterlang, "broken_interlang");
+checker!(IncompleteInterlangLink, "incomplete_interlang");
+config!(LINTER_INTERLANG_FILTER, list str);
+
 impl IssueTrait for IncompleteInterlangIssue {}
 #[derive(
 	Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord,
@@ -16,7 +18,6 @@ pub struct IncompleteInterlangIssueDetails {
 	pub path: Vec<(String, String)>,
 }
 
-issue!(ConflictInterlang, "conflict_interlang");
 impl IssueTrait for ConflictInterlangIssue {}
 #[derive(
 	Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord,
@@ -29,7 +30,6 @@ pub struct ConflictInterlangIssueDetails {
 	pub path2: Vec<(String, String)>,
 }
 
-issue!(BrokenInterlang, "broken_interlang");
 impl IssueTrait for BrokenInterlangIssue {}
 #[derive(
 	Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord,
@@ -91,12 +91,18 @@ impl ComputedResource for InterlangLinksGraph {
 			if let Some(langlinks) = langlinks {
 				let mut links = HashMap::new();
 				for (linklang, linktitle) in langlinks {
-					let linkpage =
-						ctx.app.mwbot(&linklang).await?.page(&linktitle)?;
+					// skip filtered languages
+					if CONFIG_LINTER_INTERLANG_FILTER
+						.contains(&linklang.as_str())
+					{
+						continue;
+					}
 					if graph.links.get(&linklang).is_none()
 						&& linklang != ctx.lang
 					{
 						// add to resolve queue
+						let linkpage =
+							ctx.app.mwbot(&linklang).await?.page(&linktitle)?;
 						unresolved_pages.push_back((
 							linklang.clone(),
 							linkpage.clone(),
@@ -139,8 +145,6 @@ impl InterlangLinksGraph {
 			.collect())
 	}
 }
-
-checker!(IncompleteInterlangLink, "incomplete_interlang");
 
 #[async_trait]
 impl CheckerTrait for IncompleteInterlangLinkChecker {

@@ -2,7 +2,7 @@ pub mod prelude {
 	pub use crate::issue::{IssueInfoTrait, IssueLevel, IssueTrait, IssueType};
 	pub use crate::{
 		app::{App, MwBot, MwPage},
-		checker, site,
+		checker, checkers, config, issue, issues, site,
 	};
 	pub use anyhow::{anyhow, bail, Result};
 	pub use async_trait::async_trait;

@@ -2,13 +2,9 @@ pub mod prelude {
 	pub use crate::issue::prelude::*;
 	pub use crate::linter::checker::{
 		CheckContext, CheckResource, CheckResult, Checker, CheckerId,
-		CheckerTrait,
+		CheckerTrait, ComputedResource,
 	};
 	pub use crate::linter::{LinterState, WorkerState};
-	pub use crate::{
-		app::{App, MwBot, MwPage},
-		checker, site,
-	};
 }
 
 use std::{

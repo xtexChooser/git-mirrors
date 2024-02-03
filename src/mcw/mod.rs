@@ -1,5 +1,3 @@
-use std::{env, sync::LazyLock};
-
 use phf::{phf_map, phf_set};
 use uuid::{uuid, Uuid};
 
@@ -13,7 +11,7 @@ use crate::{
 
 pub const SITE_NAME: &str = "Minecraft Wiki";
 
-config!(MCW_STAGING, list);
+config!(MCW_STAGING, list str);
 
 pub fn get_wiki_url(lang: &str) -> String {
 	if lang == "en" {

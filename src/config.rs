@@ -28,13 +28,13 @@ macro_rules! config {
 			});
 		}
 	};
-	($key: ident, list) => {
-		$crate::config!($key, list, ',');
+	($key: ident, list str) => {
+		$crate::config!($key, list str, ',');
 	};
-	($key: ident, list, $split: expr) => {
+	($key: ident, list str, $split: expr) => {
 		::paste::paste! {
-			pub static [<CONFIG_ $key>]: LazyLock<Vec<&'static str>> = LazyLock::new(|| {
-				env::var(concat!("SPOCK_", stringify!($key)))
+			pub static [<CONFIG_ $key>]: std::sync::LazyLock<Vec<&'static str>> = std::sync::LazyLock::new(|| {
+				std::env::var(concat!("SPOCK_", stringify!($key)))
 					.unwrap_or_default()
 					.split($split)
 					.map(|s| &*s.to_string().leak())
@@ -68,6 +68,34 @@ macro_rules! config {
 					.ok()
 					.map(|s| s.parse::<$typ>().expect(concat!("could not parse SPOCK_", stringify!($key))))
 					.unwrap_or($default)
+			});
+		}
+	};
+	($key: ident, list parse $typ: ty) => {
+		$crate::config!($key, list parse $typ: ty, ',');
+	};
+	($key: ident, list parse $typ: ty, $split: expr) => {
+		::paste::paste! {
+			pub static [<CONFIG_ $key>]: std::sync::LazyLock<Vec<$typ>> = std::sync::LazyLock::new(|| {
+				std::env::var(concat!("SPOCK_", stringify!($key)))
+					.unwrap_or_default()
+					.split($split)
+					.map(|s| s.parse::<$typ>().expect(concat!("could not parse SPOCK_", stringify!($key))))
+					.collect()
+			});
+		}
+	};
+	($key: ident, list parse $typ: ty, default $default: expr) => {
+		$crate::config!($key, list parse $typ: ty, ',', default $default);
+	};
+	($key: ident, list parse $typ: ty, $split: expr, default $default: expr) => {
+		::paste::paste! {
+			pub static [<CONFIG_ $key>]: std::sync::LazyLock<Vec<$typ>> = std::sync::LazyLock::new(|| {
+				std::env::var(concat!("SPOCK_", stringify!($key)))
+					.unwrap_or_else(|| $default.to_string())
+					.split($split)
+					.map(|s| s.parse::<$typ>().expect(concat!("could not parse SPOCK_", stringify!($key))))
+					.collect()
 			});
 		}
 	};
