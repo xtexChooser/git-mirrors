@@ -131,7 +131,7 @@ pub async fn run_linters() {
 // @TODO: cache a part of pages
 async fn select_page(state: &RwLock<WorkerState>) -> Result<Option<Page>> {
 	let app = App::get();
-	let _linters_lock = app.linter.selector_mutex.lock();
+	let linters_lock = app.linter.selector_mutex.lock().await;
 	let other_pages = app
 		.linter
 		.workers
@@ -146,6 +146,7 @@ async fn select_page(state: &RwLock<WorkerState>) -> Result<Option<Page>> {
 	if let Some(page) = &page {
 		state.write().page = Some(page.id().to_owned());
 	}
+	drop(linters_lock);
 	Ok(page)
 }
 
