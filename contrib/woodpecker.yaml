@@ -3,7 +3,7 @@ steps:
       image: alpine
       secrets: [cb_token]
       commands:
-          - apk add podman buildah
+          - apk add podman buildah bash
           - contrib/buildoci
           - podman login -u xtex -p $CB_TOKEN codeberg.org
           - podman push spock codeberg.org/xtex/spock
