@@ -153,6 +153,9 @@ impl CheckerTrait for IncompleteInterlangLinkChecker {
 	}
 
 	async fn check(&self, ctx: Arc<CheckContext>) -> CheckResult {
+		if ctx.page.is_redirect().await? {
+			return Ok(());
+		}
 		let graph = ctx.compute_resource::<InterlangLinksGraph>().await?;
 		if let Some((lang, (page1, from1), (page2, from2))) =
 			graph.conflict.to_owned()
