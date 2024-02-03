@@ -101,8 +101,11 @@ impl ComputedResource for InterlangLinksGraph {
 						&& linklang != ctx.lang
 					{
 						// add to resolve queue
-						let linkpage =
+						let mut linkpage =
 							ctx.app.mwbot(&linklang).await?.page(&linktitle)?;
+						if let Some(page) = linkpage.redirect_target().await? {
+							linkpage = page;
+						}
 						unresolved_pages.push_back((
 							linklang.clone(),
 							linkpage.clone(),
