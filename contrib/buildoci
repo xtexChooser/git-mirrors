@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -E
+
+command -v "buildah" &> /dev/null || echo "buildah is required"
+
+err_handle() {
+	[[ "$build_container" != "" ]] && buildah rm "$build_container"
+	[[ "$container" != "" ]] && buildah rm "$container"
+	exit
+}
+trap "err_handle" ERR
+
+build_container=$(buildah from alpine)
+buildah run "$build_container" apk add --no-cache rustup gcc musl-dev
+buildah run "$build_container" rustup-init -y -q --profile minimal --default-toolchain nightly
+
+buildah copy --contextdir "$(pwd)" --ignorefile contrib/.containerignore "$build_container" / /src
+buildah run --workingdir /src "$build_container" sh -c "source \"\$HOME/.cargo/env\"; cargo install --root /usr --path ."
+
+container=$(buildah from alpine)
+buildah copy --from "$build_container" "$container" /usr/bin/spock /usr/bin/spock
+buildah config --entrypoint "/usr/bin/spock" --cmd "" --workingdir "/data" "$container"
+
+buildah commit --squash "$container" spock

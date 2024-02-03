@@ -1,0 +1,9 @@
+steps:
+    - name: build
+      image: alpine
+      secrets: [cb_token]
+      commands:
+          - apk add podman buildah
+          - contrib/buildoci
+          - podman login -u xtex -p $CB_TOKEN codeberg.org
+          - podman push spock codeberg.org/xtex/spock
