@@ -8,7 +8,7 @@ Members of the moderation team are expected to recuse themselves from decision-m
 
 ## Moderation contact
 
-The moderation team can be contacted at any time by sending a mail to moderation@forgejo.org or message to [@forgejo-moderation:matrix.org](https://matrix.to/#/@forgejo-moderation:matrix.org). These discussions are private and will only be disclosed in accordance with the moderation process.
+The moderation team can be contacted at any time by sending a mail to moderation@forgejo.org or a message to [@forgejo-moderation:matrix.org](https://matrix.to/#/@forgejo-moderation:matrix.org). These discussions are private and will only be disclosed in accordance with the moderation process.
 
 ## Moderation process (mandatory)
 
