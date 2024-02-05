@@ -1,0 +1,42 @@
+name: 👥 Team application
+description: To apply for a team (or renew an application)
+title: "[AGREEMENT] <your-pseudo> application to <name-of-team>"
+labels: Election
+body:
+- type: textarea
+  id: application
+  attributes:
+    label: Application
+    description: Please indicate the [team](https://codeberg.org/forgejo/governance/src/branch/main/TEAMS.md) you want to be part of in the title and here.
+    value: |
+      I propose to become part of the <name-of-team> team.
+
+      1. If you agree, please simply add a 👍 to this issue.
+      2. If you disagree or have reservations, please write them in a comment below and I will do my best to address them.
+
+      This application follows the Forgejo [decision making process](https://codeberg.org/forgejo-contrib/governance/src/branch/main/DECISION-MAKING.md) (accepted after 2 weeks, unless concerns are raised).
+  validations:
+    required: true
+- type: textarea
+  id: pledge
+  attributes:
+    label: Pledge
+    description: Make sure you have read the [code of conduct](https://codeberg.org/forgejo/code-of-conduct/) and the [decision making process](https://codeberg.org/forgejo-contrib/governance/src/branch/main/DECISION-MAKING.md).
+    value: |
+        I pledge to act in accordance with the [code of conduct](https://codeberg.org/forgejo/code-of-conduct/), and all other rules and processes agreed via the Forgejo [decision making process](https://codeberg.org/forgejo-contrib/governance/src/branch/main/DECISION-MAKING.md).
+
+        If there is an agreement for me to be a member of the team, I will consider applying again a year later.
+  validations:
+    required: true
+- type: textarea
+  id: background
+  attributes:
+    label: Background
+    description: |
+      Why do you apply for this team? What specific motivation/knowledge/capacity do you have for this team?
+    placeholder: |
+      My interest in Forgejo comes from...
+      So far I have done ... in Forgejo spaces.
+      I am engaged in other projects for a similar role...
+  validations:
+    required: true
