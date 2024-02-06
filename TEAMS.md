@@ -191,3 +191,10 @@ This organisation is only use to prevent squatting. Its information must be kept
 - [gapodo](https://github.com/gapodo)
 - [gusted](https://github.com/Gusted)
 - [oliverpool](https://github.com/oliverpool)
+
+## [GitLab.com organisation](https://gitlab.com/forgejo) owners as of 2024-02-04
+
+This organisation is only used to prevent squatting.
+
+- [crystal](https://gitlab.com/crystalcommunication)
+- [oliverpool](https://gitlab.com/oliverpool)
