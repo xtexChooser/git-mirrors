@@ -85,7 +85,15 @@ Accountability:
 
 Team members:
 
-* ???
+* Arabic https://codeberg.org/oatbiscuits [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/72)
+* Brazilian Portuguese https://codeberg.org/rmorettibr [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/73)
+* Dutch https://codeberg.org/gusted [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/69)
+* Esperanto https://codeberg.org/jadedctrl [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/77)
+* French https://codeberg.org/earl-warren [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/71)
+* Japanese https://codeberg.org/ledyba  [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/74)
+* Russian https://codeberg.org/0ko [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/70)
+* Russian https://codeberg.org/Werenter [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/76)
+* Ukranian https://codeberg.org/nykula  [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/75)
 
 ## User Research
 
