@@ -63,6 +63,7 @@ Team members:
 * https://codeberg.org/rome-user
 * https://codeberg.org/viceice
 * https://codeberg.org/wetneb
+* https://codeberg.org/Xinayder
 * https://codeberg.org/zareck
 
 ## Mergers
