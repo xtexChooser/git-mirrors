@@ -84,17 +84,26 @@ Accountability:
 * Document the localization process.
 * Actively look for new translators to improve the quality and completeness of the project.
 
+Admins accountability:
+
+* Avoid destructive actions (such as reseting the weblate repository)
+* Ensure the the weblate repository is in sync with the Forgejo repository
+* Manage team assignments of members
+* Block users performing destructive actions (such as vandalism or harassment in comments) and report these actions
+
 Team members:
 
-* Arabic https://codeberg.org/oatbiscuits [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/72)
-* Brazilian Portuguese https://codeberg.org/rmorettibr [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/73)
-* Dutch https://codeberg.org/gusted [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/69)
-* Esperanto https://codeberg.org/jadedctrl [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/77)
-* French https://codeberg.org/earl-warren [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/71)
-* Japanese https://codeberg.org/ledyba  [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/74)
-* Russian https://codeberg.org/0ko [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/70)
-* Russian https://codeberg.org/Werenter [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/76)
-* Ukranian https://codeberg.org/nykula  [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/75)
+* Arabic https://codeberg.org/oatbiscuits - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/72) (admin)
+* Brazilian Portuguese https://codeberg.org/rmorettibr - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/73)
+* Dutch https://codeberg.org/gusted - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/69) (admin)
+* Esperanto https://codeberg.org/jadedctrl - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/77)
+* French https://codeberg.org/earl-warren - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/71) (admin)
+* German https://codeberg.org/fnetX - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/85) (admin)
+* Greek https://codeberg.org/n0toose - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/84)
+* Japanese https://codeberg.org/ledyba  - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/74)
+* Russian https://codeberg.org/0ko - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/70) (admin)
+* Russian https://codeberg.org/Werenter - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/76)
+* Ukranian https://codeberg.org/nykula  - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/75)
 
 ## User Research
 
