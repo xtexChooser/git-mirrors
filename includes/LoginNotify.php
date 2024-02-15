@@ -30,9 +30,11 @@ use UnexpectedValueException;
 use Wikimedia\Assert\Assert;
 use Wikimedia\IPUtils;
 use Wikimedia\Rdbms\IDatabase;
+use Wikimedia\Rdbms\IExpression;
 use Wikimedia\Rdbms\IMaintainableDatabase;
 use Wikimedia\Rdbms\IReadableDatabase;
 use Wikimedia\Rdbms\LBFactory;
+use Wikimedia\Rdbms\LikeValue;
 
 /**
  * Handle sending notifications on login from unknown source.
@@ -315,7 +317,7 @@ class LoginNotify implements LoggerAwareInterface {
 			->where( [
 				'lsn_user' => $centralUserId,
 				'lsn_subnet' => $hash,
-				'lsn_time_bucket >= ' . $dbr->addQuotes( $this->getMinBucket() )
+				$dbr->expr( 'lsn_time_bucket', '>=', $this->getMinBucket() )
 			] )
 			->caller( __METHOD__ )
 			->fetchField();
@@ -595,10 +597,10 @@ class LoginNotify implements LoggerAwareInterface {
 			->join( 'actor', null, 'actor_id = cuc_actor' )
 			->where( [
 				'actor_user' => $userId,
-				'cuc_ip ' . $dbr->buildLike(
+				$dbr->expr( 'cuc_ip', IExpression::LIKE, new LikeValue(
 					$ipFragment,
 					$dbr->anyString()
-				)
+				) )
 			] )
 			->caller( __METHOD__ )
 			->fetchField();
@@ -830,9 +832,9 @@ class LoginNotify implements LoggerAwareInterface {
 		$dbw->newDeleteQueryBuilder()
 			->delete( 'loginnotify_seen_net' )
 			->where( [
-				'lsn_id >= ' . $dbw->addQuotes( $minId ),
-				'lsn_id < ' . $dbw->addQuotes( $maxId ),
-				'lsn_time_bucket < ' . $dbw->addQuotes( $this->getMinBucket() )
+				$dbw->expr( 'lsn_id', '>=', $minId ),
+				$dbw->expr( 'lsn_id', '<', $maxId ),
+				$dbw->expr( 'lsn_time_bucket', '<', $this->getMinBucket() )
 			] )
 			->caller( __METHOD__ )
 			->execute();
