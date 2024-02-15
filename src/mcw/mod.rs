@@ -38,6 +38,8 @@ pub const ALLOWED_NAMESPACES: phf::Map<&str, phf::Set<&str>> = phf_map! {
 			"Minecraft Earth",
 			"Minecraft Story Mode",
 			"Minecraft Legends",
+			"Tutorial",
+			"Minecraft Dungeons Tutorial",
 		],
 	"en" => phf_set![
 			"",
@@ -54,6 +56,8 @@ pub const ALLOWED_NAMESPACES: phf::Map<&str, phf::Set<&str>> = phf_map! {
 			"Minecraft Earth",
 			"Minecraft Story Mode",
 			"Minecraft Legends",
+			"Tutorial",
+			"Minecraft Dungeons Tutorial",
 		],
 };
 

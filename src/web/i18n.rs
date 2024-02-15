@@ -32,7 +32,7 @@ pub fn init() -> Result<()> {
 	Ok(())
 }
 
-pub fn get(lang: &str, key: &'static str) -> &'static str {
+pub fn get(lang: &str, key: &str) -> &'static str {
 	unsafe {
 		LANG.get(&(lang, key))
 			.or_else(|| LANG.get(&(site::I18N_FALLBACK_LANGUAGE, key)))
