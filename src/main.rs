@@ -131,7 +131,7 @@ async fn main() -> Result<()> {
                         Err(err) => {
                             println!(
                                 "{}",
-                                format!("- Error in {}\n{}", path.display(), err.to_string())
+                                format!("- Error in {}\n{}", path.display(), err)
                                     .fg::<Red>()
                                     .bold()
                             );
@@ -144,7 +144,7 @@ async fn main() -> Result<()> {
         }
 
         while let Some(val) = handles.join_next().await {
-            let _ = val??;
+            val??;
         }
 
         let time = t0.elapsed();
@@ -166,12 +166,10 @@ async fn main() -> Result<()> {
                         env!("CARGO_PKG_NAME"),
                         concat!("- ", env!("CARGO_PKG_VERSION")).fg::<Red>().bold(),
                         format!("+ {}", version).fg::<Green>().bold(),
-                        format!(
-                            r#"│ please update with your package manager or cargo.
+                        r#"│ please update with your package manager or cargo.
 │ if you do not want to get update notifications anymore,
 │       set BUILD_CLEAN_NO_UPDATES environment variables.
-│"#
-                        )
+│"#.to_string()
                         .fg::<Blue>()
                     )
                     .fg::<Blue>()

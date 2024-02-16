@@ -14,9 +14,9 @@ impl From<PathBuf> for LuaPath {
         LuaPath(value)
     }
 }
-impl Into<PathBuf> for LuaPath {
-    fn into(self) -> PathBuf {
-        self.0
+impl From<LuaPath> for PathBuf {
+    fn from(val: LuaPath) -> Self {
+        val.0
     }
 }
 impl<'lua> FromLua<'lua> for LuaPath {
@@ -26,13 +26,13 @@ impl<'lua> FromLua<'lua> for LuaPath {
 }
 impl<'lua> IntoLua<'lua> for LuaPath {
     fn into_lua(self, lua: &'lua mlua::Lua) -> mlua::Result<mlua::Value<'lua>> {
-        Ok(self
+        self
             .0
             .to_str()
             .ok_or(mlua::Error::SafetyError(
                 "non-unicode chars in path".to_string(),
             ))?
-            .into_lua(lua)?)
+            .into_lua(lua)
     }
 }
 
