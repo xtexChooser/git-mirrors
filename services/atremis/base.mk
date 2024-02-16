@@ -54,24 +54,26 @@ V_INSTALLED	= y
 V_INST_FILE	= /usr/lib/systemd/system/dinit.service
 $(call end)
 
+DINITD_DIR := $(HOME)/.config/dinit.d
+
 $(call systemd-unit)
 V_UNIT		= dinit.service
 V_USER		= y
 V_ENABLED	= y
-V_DEPS		= pkg-dinit-systemd /etc/dinit.d/boot
+V_DEPS		= pkg-dinit-systemd $(DINITD_DIR)/boot
 $(call end)
 
 $(call fs-directory)
-V_PATH		= /etc/dinit.d
+V_PATH		= $(DINITD_DIR)
 V_EXIST		= y
 $(call end)
 
 $(call fs-file)
-V_PATH		= /etc/dinit.d/boot
+V_PATH		= $(DINITD_DIR)/boot
 V_TEMPLATE	= bash-tpl $(STATES_DIR)/services/atremis/dinit.d/boot
 $(call end)
 
 $(call fs-directory)
-V_PATH		= /etc/dinit.d/boot.d
+V_PATH		= $(DINITD_DIR)/boot.d
 V_EXIST		= y
 $(call end)
