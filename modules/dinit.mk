@@ -14,8 +14,8 @@ $(V_TARGET_NAME): $(v-deps) $(call imp-dep,pkg,dinit) \
 		$(if $(V_SYSTEM),$(call file-imp-dep,/etc/dinit.d/$(V_SERVICE)) \
 		$(call file-imp-dep,/lib/dinit.d/$(V_SERVICE)) \
 		$(call file-imp-dep,/run/dinit.d/$(V_SERVICE)) \
-		$(call file-imp-dep,/usr/local/lib/dinit.d/$(V_SERVICE)), \
-		$(call file-imp-dep,$(HOME).config/dinit.d/$(V_SERVICE)))
+		$(call file-imp-dep,/usr/local/lib/dinit.d/$(V_SERVICE))), \
+		$(call file-imp-dep,$(HOME)/.config/dinit.d/$(V_SERVICE))
 	export E_MAJOR=dinit E_SERVICE=$(V_SERVICE)
 $(if $(call is-true,$(V_RUNNING)),
 	if ! $(V_DINITCTL) is-started $(V_SERVICE) $(DROP_STDOUT); then
