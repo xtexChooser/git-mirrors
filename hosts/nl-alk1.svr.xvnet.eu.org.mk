@@ -1,1 +1,1 @@
-$(call load-state, caddy)
+$(call load-state, services/caddy)

@@ -68,7 +68,7 @@ $(call end)
 
 $(call fs-file)
 V_PATH		= /etc/dinit.d/boot
-V_TEMPLATE	= bash-tpl $(STATES_DIR)/atremis/dinit.d/boot
+V_TEMPLATE	= bash-tpl $(STATES_DIR)/services/atremis/dinit.d/boot
 $(call end)
 
 $(call fs-directory)
