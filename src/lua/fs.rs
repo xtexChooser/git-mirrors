@@ -3,7 +3,7 @@ use std::{
     path::{self, PathBuf},
 };
 
-use mlua::{prelude::LuaError, FromLua, ToLua, UserData, UserDataFields, UserDataMethods};
+use mlua::{prelude::LuaError, FromLua, IntoLua, UserData, UserDataFields, UserDataMethods};
 use owo_colors::{colors::css::DarkGrey, OwoColorize};
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Hash)]
@@ -24,15 +24,15 @@ impl<'lua> FromLua<'lua> for LuaPath {
         Ok(LuaPath(String::from_lua(lua_value, lua)?.into()))
     }
 }
-impl<'lua> ToLua<'lua> for LuaPath {
-    fn to_lua(self, lua: &'lua mlua::Lua) -> mlua::Result<mlua::Value<'lua>> {
+impl<'lua> IntoLua<'lua> for LuaPath {
+    fn into_lua(self, lua: &'lua mlua::Lua) -> mlua::Result<mlua::Value<'lua>> {
         Ok(self
             .0
             .to_str()
             .ok_or(mlua::Error::SafetyError(
                 "non-unicode chars in path".to_string(),
             ))?
-            .to_lua(lua)?)
+            .into_lua(lua)?)
     }
 }
 

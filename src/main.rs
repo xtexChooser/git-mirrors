@@ -89,10 +89,10 @@ async fn main() -> Result<()> {
         for _ in 0..opts.workers {
             let target = target.clone();
             let error_count = error_count.clone();
-            handles.spawn(async move || -> Result<()> {
+            handles.spawn(async move {
                 let lua = Lua::new();
                 lua::init_lua(&lua)?;
-                while let Some((path, type_ref)) = { target.lock().next() } {
+                while let Some((path, type_ref)) = target.lock().next() {
                     let resolved = type_ref.resolve(&lua)?;
                     let t0 = Instant::now();
                     println!(
@@ -140,8 +140,8 @@ async fn main() -> Result<()> {
                         }
                     }
                 }
-                Ok(())
-            }());
+                Ok(()) as Result<()>
+            });
         }
 
         while let Some(val) = handles.join_next().await {
@@ -445,7 +445,7 @@ fn show_result(
                 .collect::<BTreeMap<_, _>>(),
         );
     }
-    let result = result0.group_by(|(_, r1), (_, r2)| r1 == r2);
+    let result = result0.chunk_by(|(_, r1), (_, r2)| r1 == r2);
 
     for result in result {
         let type_ref = &result[0].1;

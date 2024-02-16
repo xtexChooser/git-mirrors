@@ -20,7 +20,7 @@ pub async fn check_update(tx: Sender<Option<String>>) -> Result<()> {
         .header(
             "User-Agent",
             format!(
-                "{}/{} (build-clean@xtexx.ml)",
+                "{}/{}",
                 env!("CARGO_PKG_NAME"),
                 env!("CARGO_PKG_VERSION")
             ),

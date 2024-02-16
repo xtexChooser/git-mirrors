@@ -18,10 +18,10 @@ pub fn init_lua(lua: &Lua) -> Result<()> {
 
     // load scripts
     lua.load(builtin::MAIN_LUA)
-        .set_name("builtin main.lua")?
+        .set_name("builtin main.lua")
         .exec()?;
     lua.load(builtin::GENERATED_LUA)
-        .set_name("builtin generated.lua")?
+        .set_name("builtin generated.lua")
         .exec()?;
     let script_dirs = vec![
         PathBuf::from_str("/usr/share/build-clean.d")?,
@@ -47,7 +47,7 @@ pub fn init_lua(lua: &Lua) -> Result<()> {
         }
     }
     for file in script_files {
-        lua.load(&file).exec()?;
+        lua.load(file).exec()?;
     }
 
     Ok(())
