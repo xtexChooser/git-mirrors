@@ -1,4 +1,3 @@
-#![feature(slice_group_by)]
 #![feature(exact_size_is_empty)]
 #![feature(async_closure)]
 
