@@ -76,6 +76,10 @@ function safeclean(cmd)
     current.safeclean = cmd
 end
 
+function ignore_dir_name(name)
+    output:write(string.format("registry:add_ignore_dir_name(\"%s\")\n", name))
+end
+
 require("database")
 
 flush()

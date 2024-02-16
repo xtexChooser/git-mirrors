@@ -14,6 +14,7 @@ pub mod info;
 
 pub static LUA: Mutex<LazyCell<Lua>> = Mutex::new(LazyCell::new(Lua::new));
 pub static REGISTRY: Mutex<BTreeMap<String, CacheTypeRef>> = Mutex::new(BTreeMap::new());
+pub static IGNORE_DIR_NAMES: Mutex<Vec<String>> = Mutex::new(Vec::new());
 
 pub async fn check_path(path: &Path) -> Result<Option<(CacheTypeRef, PathBuf)>> {
     let cleaners = REGISTRY.lock();

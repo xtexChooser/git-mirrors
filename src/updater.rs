@@ -19,11 +19,7 @@ pub async fn check_update(tx: Sender<Option<String>>) -> Result<()> {
         ))
         .header(
             "User-Agent",
-            format!(
-                "{}/{}",
-                env!("CARGO_PKG_NAME"),
-                env!("CARGO_PKG_VERSION")
-            ),
+            format!("{}/{}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION")),
         )
         .send()
         .await?

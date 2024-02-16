@@ -1,5 +1,8 @@
 -- Build-Clean Builtin Database
 -- GENERATED FILE, DO NOT MODIFY
+registry:add_ignore_dir_name(".Trash-1000")
+registry:add_ignore_dir_name(".pnpm-store")
+registry:add_ignore_dir_name("node_modules")
 registry:create({
     id = "cargo",
     name = "Cargo",
@@ -55,4 +58,50 @@ registry:create({
             fs:rmrf(fs:side(path, "node_modules"))
         end
     end,
+})
+registry:create({
+    id = "zig",
+    name = "Zig",
+    file_name = "build.zig",
+    filter = function(path)
+        if not fs:exists(fs:side(path, "zig-out")) then
+            return false
+        end
+        if not fs:exists(fs:side(path, "zig-cache")) then
+            return false
+        end
+        return true
+    end,
+    do_fast_clean = function(path)
+        if fs:exists(fs:side(path, "zig-out")) then
+            fs:rmrf(fs:side(path, "zig-out"))
+        end
+        if fs:exists(fs:side(path, "zig-cache")) then
+            fs:rmrf(fs:side(path, "zig-cache"))
+        end
+    end,
+})
+registry:create({
+    id = "linux-kernel",
+    name = "Linux Kernel",
+    file_name = "vmlinux",
+    filter = function(path)
+        if not fs:exists(fs:side(path, "vmlinux")) then
+            return false
+        end
+        if not fs:exists(fs:side(path, "Makefile")) then
+            return false
+        end
+        if not fs:exists(fs:side(path, "modules.builtin")) then
+            return false
+        end
+        return true
+    end,
+    do_fast_clean = function(path)
+    end,
+    do_clean = function(path)
+        if not os.execute(string.format("cd %s; make clean", fs:parent(path))) then
+            error("failed to execute fast clean command at " .. path)
+        end
+    end
 })

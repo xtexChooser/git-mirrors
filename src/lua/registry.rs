@@ -36,5 +36,14 @@ impl UserData for RegistryAccess {
                 .insert(cache_type.get_file_name().unwrap(), CacheTypeRef(id));
             Ok(())
         });
+        methods.add_method_mut("add_ignore_dir_name", |_, _, name: String| {
+            db::IGNORE_DIR_NAMES.lock().push(name);
+            Ok(())
+        });
+    }
+    fn add_fields<'lua, F: mlua::prelude::LuaUserDataFields<'lua, Self>>(fields: &mut F) {
+        fields.add_field_method_get("ignore_dir_names", |_, _| {
+            Ok(db::IGNORE_DIR_NAMES.lock().clone())
+        });
     }
 }

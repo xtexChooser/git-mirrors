@@ -6,6 +6,7 @@ use std::{
 
 use anyhow::Result;
 use async_recursion::async_recursion;
+use globset::{Glob, GlobMatcher};
 use parking_lot::Mutex;
 use tokio::{sync::oneshot, task::JoinSet};
 
@@ -24,14 +25,20 @@ pub async fn search(
         balancer: Mutex::default(),
         result: tokio::sync::Mutex::default(),
     });
+    let ignore_dir_names = db::IGNORE_DIR_NAMES
+        .lock()
+        .iter()
+        .map(|g| Glob::new(g).unwrap().compile_matcher())
+        .collect::<Vec<_>>();
 
     let mut handles = JoinSet::new();
 
     for i in 0..worker_count {
         let ctx = ctx.clone();
         let base = base.clone();
+        let ignore_dir_names = ignore_dir_names.clone();
         handles.spawn(async move {
-            let mut worker = WorkerContext::new(queue_depth).unwrap();
+            let mut worker = WorkerContext::new(queue_depth, ignore_dir_names).unwrap();
             if i == 0 {
                 worker.queue[0].push(base);
             }
@@ -72,18 +79,22 @@ impl Context {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Hash)]
+#[derive(Debug, Clone)]
 struct WorkerContext {
     queue: Box<[Vec<PathBuf>]>,
+    ignore_dir_names: Vec<GlobMatcher>,
 }
 
 impl WorkerContext {
-    fn new(queue_depth: usize) -> Result<WorkerContext> {
+    fn new(queue_depth: usize, ignore_dir_names: Vec<GlobMatcher>) -> Result<WorkerContext> {
         let queue = Box::try_new_zeroed_slice(queue_depth)?;
         let mut queue = unsafe { queue.assume_init() };
         queue.fill_with(Vec::new);
 
-        Ok(WorkerContext { queue })
+        Ok(WorkerContext {
+            queue,
+            ignore_dir_names,
+        })
     }
 
     async fn pull_job(&mut self, ctx: &Arc<Context>) -> Result<bool> {
@@ -175,7 +186,10 @@ impl WorkerContext {
             }
             ctx.check_entry(&entry).await?;
             if entry.metadata()?.is_dir() {
-                queue.push(entry.path());
+                let name = entry.file_name().to_string_lossy().to_string();
+                if !self.ignore_dir_names.iter().any(|g| g.is_match(&name)) {
+                    queue.push(entry.path());
+                }
             }
         }
 
