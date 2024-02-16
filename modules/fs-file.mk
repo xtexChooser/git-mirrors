@@ -86,7 +86,7 @@ $(call define-func, fs-file)
 
 $(call vt-target, mkfile-empty mkfile-download mkfile-copy mkfile-symlink)
 mkfile-empty:
-	$(file >$(E_PATH))
+	touch $(E_PATH)
 
 mkfile-download:
 	if which curl $(DROP_STDOUT_ERR); then
@@ -100,7 +100,7 @@ mkfile-download:
 	fi
 
 mkfile-copy:
-	$(file >$(E_PATH),$(file <$(SRC)))
+	cat $(SRC) > $(E_PATH)
 
 mkfile-symlink:
 	ln -s $(SRC) $(E_PATH)
