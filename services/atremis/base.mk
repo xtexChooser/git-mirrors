@@ -60,6 +60,7 @@ $(call systemd-unit)
 V_UNIT		= dinit.service
 V_USER		= y
 V_ENABLED	= y
+V_RUNNING	= y
 V_DEPS		= pkg-dinit-systemd $(DINITD_DIR)/boot
 $(call end)
 
