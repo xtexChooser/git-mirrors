@@ -30,6 +30,7 @@ COMMAND:
     help                        Print usage
     pull                        Pull changes from repository
     apply                       Apply configuration
+    assvc <COMMAND>             Run command as service user
 XXX
 }
 
@@ -56,13 +57,13 @@ function atre::pull {
 }
 
 function atre::apply {
+	atre::log "Apply configuration"
 	atre::runAsSvc make apply
 }
 
 function atre::runAsSvc {
 	cd $atreDir
 	if [[ "$isSvcUser" == "true" ]]; then
-		atre::log "Apply configuration"
 		DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus
 		XDG_RUNTIME_DIR=/run/user/$(id -u)
 		export DBUS_SESSION_BUS_ADDRESS XDG_RUNTIME_DIR
