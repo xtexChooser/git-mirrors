@@ -30,7 +30,7 @@ COMMAND:
     help                        Print usage
     pull                        Pull changes from repository
     apply                       Apply configuration
-    assvc <COMMAND>             Run command as service user
+    assvc [COMMAND]             Run command as service user
 XXX
 }
 
@@ -92,6 +92,7 @@ function atre::main {
 		atre::apply "$@"
 		;;
 	assvc | runAsSvc)
+		[ $# -eq 0 ] && atre::runAsSvc "$SHELL" && exit
 		atre::runAsSvc "$@"
 		;;
 	*)
