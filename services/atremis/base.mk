@@ -66,7 +66,7 @@ V_PATH		= /etc/dinit.d
 V_EXIST		= y
 $(call end)
 
-$(call file)
+$(call fs-file)
 V_PATH		= /etc/dinit.d/boot
 V_TEMPLATE	= bash-tpl $(STATES_DIR)/atremis/dinit.d/boot
 $(call end)
