@@ -56,23 +56,30 @@ function atre::pull {
 }
 
 function atre::apply {
+	atre::runAsSvc make apply
+}
+
+function atre::runAsSvc {
 	cd $atreDir
 	if [[ "$isSvcUser" == "true" ]]; then
 		atre::log "Apply configuration"
 		DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus
-		export DBUS_SESSION_BUS_ADDRESS
-		make apply
+		XDG_RUNTIME_DIR=/run/user/$(id -u)
+		export DBUS_SESSION_BUS_ADDRESS XDG_RUNTIME_DIR
+		exec "$@"
 	else
-		atre::log "Restart Atremis as service user"
-		$svc atre apply
+		atre::log "Switch to service user"
+		$svc atre runAsSvc "$@"
 	fi
 }
 
 function atre::main {
 	[ $# -eq 0 ] && atre::usage && exit
 	[ ! -d "$atreDir" ] && atre::error "$atreDir does not exist"
+	local cmd=$1
+	shift
 
-	case $1 in
+	case $cmd in
 	help | --help)
 		atre::usage "$@"
 		exit
@@ -82,6 +89,9 @@ function atre::main {
 		;;
 	apply)
 		atre::apply "$@"
+		;;
+	assvc | runAsSvc)
+		atre::runAsSvc "$@"
 		;;
 	*)
 		atre::error "unknown option: $1"
