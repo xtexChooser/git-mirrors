@@ -45,7 +45,7 @@ function atre::pull {
 		$svc git submodule update --init --recursive --recommend-shallow
 		$svc git -c gc.reflogExpire=1 -c gc.reflogExpireUnreachable=0 \
 			-c gc.rerereResolved=0 -c gc.rerereUnresolved=0 \
-			-c gc.pruneExpire=now gc
+			-c gc.pruneExpire=now gc --quiet
 	}
 
 	atre::log "Current HEADs:"
