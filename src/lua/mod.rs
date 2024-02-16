@@ -27,6 +27,7 @@ pub fn init_lua(lua: &Lua) -> Result<()> {
         PathBuf::from_str("/usr/share/build-clean.d")?,
         PathBuf::from_str("/usr/lib/build-clean.d")?,
         PathBuf::from_str("/usr/local/build-clean.d")?,
+        PathBuf::from_str("/etc/build-clean.d")?,
         PathBuf::from_str("build-clean.d")?,
         PathBuf::from_str(".build-clean.d")?,
         PathBuf::from_str(&std::env::var("BUILD_CLEAN_RC").unwrap_or_else(|_| {
