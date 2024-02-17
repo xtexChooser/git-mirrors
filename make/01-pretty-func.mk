@@ -16,7 +16,8 @@ $(eval fn-stack = $1 $(fn-stack))
 endef
 
 define end
-$(if $(LEONIS_TRACE_RULES),$(info $(strip $(call $(firstword $(fn-stack)))),$(eval $(call $(firstword $(fn-stack))))))
+$(if $(LEONIS_TRACE_RULES),$(info $(strip $(call $(firstword $(fn-stack))))))
+$(eval $(call $(firstword $(fn-stack))))
 $(eval fn-stack=$(wordlist 2,$(words $(fn-stack)),$(fn-stack)))
 endef
 
