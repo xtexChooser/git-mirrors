@@ -16,7 +16,7 @@ $(DINITD_DIR)/$(V_SERVICE): $(v-deps) $(VENDOR_MODULES_DIR)/containers.mk
 	pid-file = $(V_PIDFILE)
 	restart = true
 	EOF
-	$(DINITCTL) stop $(V_SERVICE)
+	$(DINITCTL) stop --force --ignore-unstarted $(V_SERVICE)
 	$(DINITCTL) reload $(V_SERVICE)
 
 $(call vt-target,x-service-$(V_SERVICE)-start x-service-$(V_SERVICE)-stop)
@@ -26,6 +26,7 @@ x-service-$(V_SERVICE)-start:
 
 x-service-$(V_SERVICE)-stop:
 	$(PODMAN) container rm -f -i $(V_SERVICE)
+	rm -rf $(V_PIDFILE)
 
 $$(call dinit-service)
 V_SERVICE	= $(V_SERVICE)
