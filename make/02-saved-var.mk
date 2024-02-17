@@ -12,13 +12,13 @@ $(saved-var-$1):
 
 $(empty)define saved-var-$1-restore
 $$$$(eval -include $(saved-var-$1))
-$(empty)$$$$(if $$$$(call strneq,$$$$(saved_var_$1_value),$$$$($2)),
+$(empty)ifneq ($$$$(saved_var_$1_value),$$$$($2))
 $$$$(file > $$$$(saved-var-$1),saved_var_$1_value=$$$$($2))
-$$$$(call mktrace, Invalidated variable cache $1. Old: $$$$(saved_var_$1_value) New: $$($2))
+$$$$(call mktrace, Invalidated variable cache $1. Old: $$$$(saved_var_$1_value) New: $$$$($2))
 $$$$(eval saved_var_$1_changed=1)
 $$$$(eval saved_var_$1_value:=$$$$($2))
 $$$$(call mksucc, Updated variable cache for $1)
-)
+$(empty)endif
 $(empty)endef
 $(call defer,saved-var-$1-restore)
 endef
