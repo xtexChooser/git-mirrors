@@ -89,20 +89,20 @@ function atre::main {
 		exit
 		;;
 	pull)
-		exec atre::pull "$@"
+		atre::pull "$@"
 		;;
 	fetch)
-		exec atre::fetch "$@"
+		atre::fetch "$@"
 		;;
 	apply)
-		exec atre::apply "$@"
+		atre::apply "$@"
 		;;
 	root)
-		[ $# -eq 0 ] && exec atre::root "$SHELL" && exit
-		exec atre::root "$@"
+		[ $# -eq 0 ] && atre::root "$SHELL" && exit
+		atre::root "$@"
 		;;
 	internal)
-		exec "$@"
+		"$@"
 		;;
 	*)
 		atre::error "unknown option: $1"
