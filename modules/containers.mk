@@ -32,6 +32,11 @@ V_RUNNING	= $(call not,$(V_STOPPED))
 V_DEPS		+= $(DINITD_DIR)/$(V_SERVICE)
 $$(call end)
 
+$$(call fs-file)
+V_PATH		= $$(DINITD_DIR)/boot.d/$(V_SERVICE)
+$(if $(call not,$(call is-true,$(V_STOPPED))),V_SYMLINK = ../$(V_SERVICE),V_EXIST = n)
+$$(call end)
+
 $(call unset-vars)
 endef
 $(call define-func, x-container-service)
