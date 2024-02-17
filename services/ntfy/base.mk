@@ -1,3 +1,5 @@
+$(call load-state, services/caddy)
+
 # $(call x-container-service)
 # V_SERVICE	= ntfy
 # V_DEPS		+= /etc/ntfy/server.yml

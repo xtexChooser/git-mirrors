@@ -12,7 +12,7 @@ V_ARGS		+= --publish=443:443
 V_ARGS 		+= codeberg.org/xvnet/x-caddy
 $(call end)
 
-override CADDY_INCLUDES ?=
+CADDY_INCLUDES :=
 $(call fs-file)
 V_PATH		= /etc/caddy/Caddyfile
 V_TEMPLATE	= bash-tpl $(STATES_DIR)/services/caddy/Caddyfile
