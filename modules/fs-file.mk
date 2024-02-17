@@ -3,7 +3,7 @@ define fs-file0
 $(if $(call not,$(call is-false,$(V_EXIST))),
 $(eval V_TARGET_NAME?=$(V_PATH))
 
-$(if $(V_TEMPLATE),$(eval V_CREATE=template BACKEND=$(word 1,$(V_TEMPLATE)) SRC=$(word 2,$(V_TEMPLATE)))
+$(if $(V_TEMPLATE),$(eval V_CREATE=template BACKEND=$(word 1,$(V_TEMPLATE)) SRC=$(word 2,$(V_TEMPLATE)) $(wordlist 3,$(words $(V_TEMPLATE)),$(V_TEMPLATE)))
 $(eval V_TPL_DEPS += $(word 2,$(V_TEMPLATE))))
 $(if $(V_COPY),$(eval V_CREATE=copy SRC=$(V_COPY))$(eval V_TPL_DEPS += $(V_COPY)))
 

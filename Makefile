@@ -1,5 +1,4 @@
 # ========================= Variables =========================
-LEONIS_BUILD_DEPS = $(empty)
 LEONIS_APPLY_DEPS = $(empty)
 APPLY_TARGETS ?= $(empty)
 
@@ -29,6 +28,21 @@ include $(wildcard $(LEONIS_ONLY_LOAD) \
 
 else
 
+ifeq ($(LEONIS_LOAD_ALL),)
+# ========================= Core task wrappers =========================
+$(call vt-target, default apply fmt)
+CUSTOM_APPLY ?= $(empty)
+
+ifeq ($(CUSTOM_APPLY),)
+apply:
+	@$(MAKE) LEONIS_LOAD_ALL=y $(MAKE_JOBSERVER_FLAGS) $(MAKE_FLAGS) apply
+endif
+
+fmt:
+	@$(LEONIS_CONTRIB_DIR)/fmt
+
+else
+
 include $(LEONIS_MODULES_DIR)/*.mk
 -include $(VENDOR_MODULES_DIR)/*.mk
 $(call vendor-targets)
@@ -39,19 +53,14 @@ $(export-all)
 $(call-deferred-fns)
 
 # ========================= Core tasks =========================
-$(call vt-target, default build apply fmt)
-
-build: $(LEONIS_BUILD_DEPS)
-
+$(call vt-target, default apply)
 CUSTOM_APPLY ?= $(empty)
-define default-apply
+
+ifeq ($(CUSTOM_APPLY),)
 $(if $(APPLY_TARGETS),,$(call mkerr, APPLY_TARGETS is empty))
-apply: build $(LEONIS_APPLY_DEPS)
-	@$(MAKE) $(MAKE_JOBSERVER_FLAGS) $(MAKE_FLAGS) $(if $T,$T,$(APPLY_TARGETS))
-endef
-$(if $(CUSTOM_APPLY),,$(eval $(call default-apply)))
+apply: $(LEONIS_APPLY_DEPS)
+	@$(MAKE) $(if $T,$T,$(APPLY_TARGETS))
+endif
 
-fmt:
-	@$(LEONIS_CONTRIB_DIR)/fmt
-
+endif
 endif
