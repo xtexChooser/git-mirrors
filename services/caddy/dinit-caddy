@@ -1,5 +1,0 @@
-type = bgprocess
-command = podman run --name test --rm -d --pidfile=/var/run/caddy/.pid docker.io/library/hello-world
-stop-command = podman container rm -f test
-pid-file = /var/run/caddy/.pid
-restart = true
