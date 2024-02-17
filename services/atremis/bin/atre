@@ -66,7 +66,7 @@ function atre::apply {
 
 function atre::root {
 	cd $atreDir
-	if [[ -z "$isRootUser" ]]; then
+	if [[ -n "$isRootUser" ]]; then
 		# DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus
 		# XDG_RUNTIME_DIR=/run/user/$(id -u)
 		# export DBUS_SESSION_BUS_ADDRESS XDG_RUNTIME_DIR
