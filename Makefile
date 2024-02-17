@@ -20,6 +20,15 @@ STATES_DIR ?= $(VENDOR_CODE_DIR)/states
 # ========================= Modules =========================
 include $(LEONIS_MAKE_DIR)/*.mk
 -include $(VENDOR_MAKE_DIR)/*.mk
+
+ifneq ($(LEONIS_ONLY_LOAD),)
+
+include $(wildcard $(LEONIS_ONLY_LOAD) \
+	$(LEONIS_MODULES_DIR)/$(LEONIS_ONLY_LOAD) \
+	$(VENDOR_MODULES_DIR)/$(LEONIS_ONLY_LOAD))
+
+else
+
 include $(LEONIS_MODULES_DIR)/*.mk
 -include $(VENDOR_MODULES_DIR)/*.mk
 $(call vendor-targets)
@@ -44,3 +53,5 @@ $(if $(CUSTOM_APPLY),,$(eval $(call default-apply)))
 
 fmt:
 	@$(LEONIS_CONTRIB_DIR)/fmt
+
+endif
