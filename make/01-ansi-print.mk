@@ -19,11 +19,11 @@ $(call mkprint-ansi,$(call ansi-color,$1)$2)
 endef
 
 define mktrace
-$(if $(findstring true,$(LEONIS_TRACE)),$(call mkprintc,30,- $(strip $1)))
+$(if $(findstring true,$(LEONIS_TRACE)),$(call mkprintc,0,- $(strip $1)))
 endef
 
 define mktrace-vars
-$(if $(findstring true,$(LEONIS_TRACE)),$(if $(findstring false,$(LEONIS_TRACE_VARS)),,$(foreach var,$1,$(call mkprintc,30,   - $(var)=$(value $(var))))))
+$(if $(findstring true,$(LEONIS_TRACE)),$(if $(findstring false,$(LEONIS_TRACE_VARS)),,$(foreach var,$1,$(call mkprintc,0,   - $(var)=$(value $(var))))))
 endef
 
 define mklog
