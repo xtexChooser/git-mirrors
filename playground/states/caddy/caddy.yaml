@@ -18,6 +18,6 @@ spec:
                 name: caddy-config
     volumes:
         - hostPath:
-              path: <% $CADDY_DIR %>
+              path: <% $caddy-dir %>
               type: Directory
           name: caddy-config

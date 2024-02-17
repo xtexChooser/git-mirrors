@@ -99,11 +99,11 @@ V_PATH		= $(BUILD_DIR)/test-caddy/Caddyfile
 V_COPY		= $(STATES_DIR)/caddy/Caddyfile
 $(call end)
 
-CADDY_DIR = $(shell readlink -e $(BUILD_DIR)/test-caddy)
+caddy-dir = $(shell readlink -e $(BUILD_DIR)/test-caddy)
 $(call fs-file)
 V_PATH		= $(BUILD_DIR)/test-caddy/caddy.yaml
 V_TEMPLATE	= bash-tpl $(STATES_DIR)/caddy/caddy.yaml
-V_DEP_VARS	+= CADDY_DIR
+V_DEP_VARS	+= caddy-dir
 $(call end)
 
 $(call stamp)
