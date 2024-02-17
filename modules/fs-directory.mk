@@ -63,3 +63,10 @@ $(call unset-vars)
 endef
 
 $(call define-func, fs-directory)
+
+define add-fs-directory
+$(call fs-directory)
+$(eval V_PATH		= $1)
+$(eval V_EXIST		= y)
+$(call end)
+endef
