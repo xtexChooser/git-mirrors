@@ -1,5 +1,7 @@
 DINITCTL = dinitctl
 DINITCTL_SYSTEM = dinitctl --system
+DINITD_DIR ?= /etc/dinit.d
+DINITD_USER_DIR ?= $(HOME)/.config/dinit.d
 
 DINIT_SERVICE_VARS = V_TARGET_NAME V_SERVICE V_RUNNING V_SYSTEM V_DINITCTL V_POST $(v-deps-var)
 define dinit-service0
@@ -11,11 +13,11 @@ $(call mktrace-vars,$(DINIT_SERVICE_VARS))
 $(call apply-target,$(V_TARGET_NAME))
 $(call vt-target,$(V_TARGET_NAME))
 $(V_TARGET_NAME): $(v-deps) $(call imp-dep,pkg,dinit) \
-		$(if $(V_SYSTEM),$(call file-imp-dep,/etc/dinit.d/$(V_SERVICE)) \
+		$(if $(V_SYSTEM),$(call file-imp-dep,$(DINITD_DIR)/$(V_SERVICE)) \
 		$(call file-imp-dep,/lib/dinit.d/$(V_SERVICE)) \
 		$(call file-imp-dep,/run/dinit.d/$(V_SERVICE)) \
 		$(call file-imp-dep,/usr/local/lib/dinit.d/$(V_SERVICE)), \
-		$(call file-imp-dep,$(HOME)/.config/dinit.d/$(V_SERVICE)))
+		$(call file-imp-dep,$(DINITD_USER_DIR)/$(V_SERVICE)))
 	export E_MAJOR=dinit E_SERVICE=$(V_SERVICE)
 $(if $(call is-true,$(V_RUNNING)),
 	if ! $(V_DINITCTL) is-started $(V_SERVICE) $(DROP_STDOUT); then
