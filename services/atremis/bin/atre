@@ -61,7 +61,7 @@ function atre::do_fetch {
 
 function atre::apply {
 	atre::log "Apply configuration"
-	atre::root make apply
+	atre::root make "${@:-apply}"
 }
 
 function atre::root {
