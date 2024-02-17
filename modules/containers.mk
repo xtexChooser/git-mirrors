@@ -2,8 +2,13 @@ X_CONTAINER_SERVICE_VARS = V_TARGET_NAME V_SERVICE V_STOPPED V_ARGS V_POST $(v-d
 
 define x-container-service0
 $(eval V_PIDFILE?=/var/run/containers/$(V_SERVICE).pid)
-$(eval V_DEP_VARS+=x-container-$(V_SERVICE)-args)
+$(eval V_DEP_VARS+=$(addprefix x-container-$(V_SERVICE)-,args start-cmd stop-cmd))
 $(eval x-container-$(V_SERVICE)-args:=$(V_ARGS))
+$(eval x-container-$(V_SERVICE)-start-cmd:=$(PODMAN) container run \
+	--name $(V_SERVICE) --rm -d --pidfile=$(V_PIDFILE) --replace \
+	$(V_ARGS))
+$(eval x-container-$(V_SERVICE)-stop-cmd:=$(PODMAN) container rm -f -i $(V_SERVICE); \
+	rm -rf $(V_PIDFILE))
 
 $(call mktrace, Define x-container-service target: $(V_SERVICE))
 $(call mktrace-vars,$(X_CONTAINER_SERVICE_VARS))
@@ -11,10 +16,8 @@ $(call mktrace-vars,$(X_CONTAINER_SERVICE_VARS))
 $(DINITD_DIR)/$(V_SERVICE): $(v-deps) $(VENDOR_MODULES_DIR)/containers.mk
 	@cat >$$@ <<EOF
 	type = bgprocess
-	command = $(PODMAN) container run --name $(V_SERVICE) --rm -d --pidfile=$(V_PIDFILE) --replace \
-		$(V_ARGS)
-	stop-command = $(PODMAN) container rm -f -i $(V_SERVICE); \
-		rm -rf $(V_PIDFILE)
+	command = $(x-container-$(V_SERVICE)-start-cmd)
+	stop-command = $(x-container-$(V_SERVICE)-stop-cmd)
 	pid-file = $(V_PIDFILE)
 	restart = true
 	EOF
