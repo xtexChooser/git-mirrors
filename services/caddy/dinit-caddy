@@ -1,5 +1,4 @@
 type = process
-command = podman run --name test --rm -i \
-	docker.io/library/hello-world
+command = podman run --name test --rm -i docker.io/library/hello-world
 stop-command = podman container rm -f test
 restart = true
