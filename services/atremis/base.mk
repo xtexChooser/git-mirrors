@@ -12,33 +12,22 @@ $(call end)
 
 # ========== Atremis Systemd Services ==========
 
-ATRE_SYSTEMD_USER_DIR=/home/service/.config/systemd/user
-
 $(call fs-file)
-V_PATH		= $(ATRE_SYSTEMD_USER_DIR)/atre-pull.service
+V_PATH		= $(SYSTEMD_UNITS_DIR)/atre-pull.service
 V_COPY		= $(ATRE_DIR)/services/atremis/systemd/atre-pull.service
-V_POST		= systemd-user-daemon-reload
+V_POST		= systemd-daemon-reload
 $(call end)
 
 $(call fs-file)
-V_PATH		= $(ATRE_SYSTEMD_USER_DIR)/atre-pull.timer
+V_PATH		= $(SYSTEMD_UNITS_DIR)/atre-pull.timer
 V_COPY		= $(ATRE_DIR)/services/atremis/systemd/atre-pull.timer
-V_DEPS		+= $(ATRE_SYSTEMD_USER_DIR)/atre-pull.service
-V_POST		= systemd-user-daemon-reload
+V_DEPS		+= $(SYSTEMD_UNITS_DIR)/atre-pull.service
+V_POST		= systemd-daemon-reload
 $(call end)
 
 $(call systemd-unit)
 V_UNIT		= atre-pull.timer
-V_USER		= y
 V_ENABLED	= y
-V_DEPS		= $(ATRE_SYSTEMD_USER_DIR)/atre-pull.timer
-$(call end)
-
-# ========== 'service' User ==========
-
-$(call loginctl)
-V_USER		= service
-V_LINGER	= y
 $(call end)
 
 # ========== dinit ==========
@@ -54,11 +43,8 @@ V_INSTALLED	= y
 V_INST_FILE	= /usr/lib/systemd/system/dinit.service
 $(call end)
 
-DINITD_DIR := $(HOME)/.config/dinit.d
-
 $(call systemd-unit)
 V_UNIT		= dinit.service
-V_USER		= y
 V_ENABLED	= y
 V_RUNNING	= y
 V_DEPS		= pkg-dinit-systemd $(DINITD_DIR)/boot

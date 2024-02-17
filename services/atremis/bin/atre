@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 
 atreDir=/srv/atremis
-svc="sudo -u service"
-if [[ "$(id -un)" == "service" ]]; then
-	svc=""
-	isSvcUser="true"
-fi
+isRootUser=""
+[[ "$(id -un)" == "root" ]] && isRootUser="true"
 
 set -e
 
@@ -28,49 +25,55 @@ usage: $0 <COMMAND>
 
 COMMAND:
     help                        Print usage
-    pull                        Pull changes from repository
+    pull                        Fetch and apply changes from repository
+	fetch                       Fetch changes from repository
     apply                       Apply configuration
-    assvc [COMMAND]             Run command as service user
+    root [COMMAND]              Run command as root
 XXX
 }
 
 function atre::pull {
 	cd $atreDir
 
-	atre::log "Pull updates"
-	{
-		set +e
-		$svc git fetch --depth 1 origin
-		$svc git reset --hard origin/main
-		$svc git submodule sync --recursive
-		$svc git submodule update --init --recursive --recommend-shallow
-		$svc git -c gc.reflogExpire=1 -c gc.reflogExpireUnreachable=0 \
-			-c gc.rerereResolved=0 -c gc.rerereUnresolved=0 \
-			-c gc.pruneExpire=now gc --quiet
-	}
-
-	atre::log "Current HEADs:"
-	git show --oneline --no-patch --no-abbrev-commit HEAD
-	git submodule -q foreach git show --oneline --no-patch --no-abbrev-commit HEAD
+	atre::fetch || true
 
 	atre::apply
 }
 
-function atre::apply {
-	atre::log "Apply configuration"
-	atre::runAsSvc make apply
+function atre::fetch {
+	atre::log "Fetch updates"
+	atre::root atre internal atre::do_fetch
+
+	atre::log "Current HEADs:"
+	git show --oneline --no-patch --no-abbrev-commit HEAD
+	git submodule -q foreach git show --oneline --no-patch --no-abbrev-commit HEAD
 }
 
-function atre::runAsSvc {
+function atre::do_fetch {
+	git fetch --depth 1 origin
+	git reset --hard origin/main
+	git submodule sync --recursive
+	git submodule update --init --recursive --recommend-shallow
+	git -c gc.reflogExpire=1 -c gc.reflogExpireUnreachable=0 \
+		-c gc.rerereResolved=0 -c gc.rerereUnresolved=0 \
+		-c gc.pruneExpire=now gc --quiet
+}
+
+function atre::apply {
+	atre::log "Apply configuration"
+	atre::root make apply
+}
+
+function atre::root {
 	cd $atreDir
-	if [[ "$isSvcUser" == "true" ]]; then
-		DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus
-		XDG_RUNTIME_DIR=/run/user/$(id -u)
-		export DBUS_SESSION_BUS_ADDRESS XDG_RUNTIME_DIR
-		exec "$@"
+	if [[ -z "$isRootUser" ]]; then
+		# DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus
+		# XDG_RUNTIME_DIR=/run/user/$(id -u)
+		# export DBUS_SESSION_BUS_ADDRESS XDG_RUNTIME_DIR
+		"$@"
 	else
-		atre::log "Switch to service user"
-		$svc atre runAsSvc "$@"
+		atre::log "Switch to root"
+		sudo atre root "$@"
 	fi
 }
 
@@ -86,14 +89,20 @@ function atre::main {
 		exit
 		;;
 	pull)
-		atre::pull "$@"
+		exec atre::pull "$@"
+		;;
+	fetch)
+		exec atre::fetch "$@"
 		;;
 	apply)
-		atre::apply "$@"
+		exec atre::apply "$@"
 		;;
-	assvc | runAsSvc)
-		[ $# -eq 0 ] && atre::runAsSvc "$SHELL" && exit
-		atre::runAsSvc "$@"
+	root)
+		[ $# -eq 0 ] && exec atre::root "$SHELL" && exit
+		exec atre::root "$@"
+		;;
+	internal)
+		exec "$@"
 		;;
 	*)
 		atre::error "unknown option: $1"

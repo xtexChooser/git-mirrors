@@ -8,20 +8,13 @@ su -c "pacman -Sy archlinux-keyring; pacman -Syuu; pacman -S bash fish make core
 # Configure system basics
 sudo usermod -a -G root "$(whoami)"
 [[ -e "/srv" ]] || sudo mkdir /srv
-sudo chmod g+w -R /srv /usr/local/bin /etc/systemd/system
-
-# Create service user
-sudo useradd -G root -m -r -U -s /usr/bin/fish service
-sudo chmod g+w -R /home/service
-sudo usermod -a -G service "$(whoami)"
-sudo systemctl start user@service.service
 
 # Fetch atremis
 cd /srv
-sudo -u service git clone --depth 1 https://codeberg.org/xvnet/atremis.git
-sudo chmod a-w+r+x,u+rw atremis
+sudo git clone --depth 1 https://codeberg.org/xvnet/atremis.git
+sudo chmod 755 atremis
 
 cd atremis
 ./atre pull
 
-which atre
+command -v atre
