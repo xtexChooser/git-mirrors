@@ -18,8 +18,31 @@ $(V_TARGET_NAME): $(v-deps)
 
 $(call unset-vars)
 endef
-
 $(call define-func, cmd)
+
+CMD_STAMP_VARS = V_TARGET_NAME V_NAME V_POST $(v-deps-var) V_CMD_STAMP V_APPLY V_PATH
+define cmd-stamp0
+$(eval V_TARGET_NAME?=cmd-stamp-$(V_NAME))
+$(eval V_PATH?=$(STAMPS_DIR)/cmd-stamp-$(V_NAME))
+$(if $(V_NAME),,$(call mkerr, V_NAME is not defined))
+
+$(call mktrace, Define command-stamped target: $(V_NAME))
+$(call mktrace-vars,$(CMD_STAMP_VARS))
+$(if $(V_APPLY),$(call apply-target,$(V_TARGET_NAME)))
+$(call vt-target,$(V_TARGET_NAME))
+
+$(V_TARGET_NAME): $(V_PATH)
+
+$(call apply-target,$(V_PATH))
+$(V_PATH): $(v-deps)
+	export E_MAJOR=cmd-stamp E_NAME=$(V_NAME)
+	$(V_CMD_STAMP)
+	$(call succ, Executed command $(V_CMD_STAMP))
+	$(call vpost, E_MINOR=run)
+
+$(call unset-vars)
+endef
+$(call define-func, cmd-stamp)
 
 $(call vt-target, cmd-run)
 cmd-run:
