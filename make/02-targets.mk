@@ -6,6 +6,12 @@ define vt-target
 $(eval .PHONY: $1)
 endef
 
+define cmd-target
+$(eval .PHONY: $1
+$1:
+	@$2)
+endef
+
 define delete-on-err
 $(eval .DELETE_ON_ERROR: $1)
 endef
