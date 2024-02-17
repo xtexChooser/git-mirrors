@@ -1,4 +1,4 @@
-X_CONTAINER_SERVICE_VARS = V_TARGET_NAME V_SERVICE V_STOPPED V_ARGS V_POST $(v-deps-var)
+X_CONTAINER_SERVICE_VARS = V_TARGET_NAME V_SERVICE V_STOPPED V_ARGS V_POST V_SVCDEPS $(v-deps-var)
 
 define x-container-service0
 $(eval V_PIDFILE?=/var/run/containers/$(V_SERVICE).pid)
@@ -28,7 +28,7 @@ $(DINITD_DIR)/$(V_SERVICE): $(v-deps) $(VENDOR_MODULES_DIR)/containers.mk
 $$(call dinit-service)
 V_SERVICE	= $(V_SERVICE)
 V_RUNNING	= $(call not,$(V_STOPPED))
-V_DEPS		+= $(DINITD_DIR)/$(V_SERVICE)
+V_DEPS		= $(V_SVCDEPS) $(DINITD_DIR)/$(V_SERVICE)
 $$(call end)
 
 $$(call fs-file)
