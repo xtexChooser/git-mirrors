@@ -1,13 +1,13 @@
 define template-backend-bash-tpl
 if ! source <($(SHELL) $(LEONIS_EXTERNAL_DIR)/bash-tpl $(BASH_TPL_FLAGS) $1) > $2; then
-	$(SHELL) $(LEONIS_EXTERNAL_DIR)/bash-tpl $(BASH_TPL_FLAGS) $1 2>/dev/stdout
+	$(SHELL) $(LEONIS_EXTERNAL_DIR)/bash-tpl $(BASH_TPL_FLAGS) $1
 	$(RM) -f $2
 	fi
 endef
 
 MO_FLAGS += --fail-on-function --allow-function-arguments --fail-on-file
 define template-backend-mo
-$(SHELL) $(LEONIS_EXTERNAL_DIR)/mo $(MO_FLAGS) $1 > $2 2>/dev/stdout
+$(SHELL) $(LEONIS_EXTERNAL_DIR)/mo $(MO_FLAGS) $1 > $2
 endef
 
 define template-backend-nop
@@ -15,7 +15,7 @@ cat < $1 > $2
 endef
 
 define template-backend-envsubst
-envsubst < $1 > $2 2>/dev/stdout
+envsubst < $1 > $2
 endef
 
 define template0
