@@ -6,6 +6,7 @@ $(eval V_DEP_VARS+=$(addprefix x-container-$(V_SERVICE)-,args start-cmd stop-cmd
 $(eval x-container-$(V_SERVICE)-args:=$(V_ARGS))
 $(eval x-container-$(V_SERVICE)-start-cmd:=$(PODMAN) container run \
 	--name $(V_SERVICE) --rm -d --pidfile=$(V_PIDFILE) --replace \
+	--hostname=$(V_SERVICE) \
 	$(V_ARGS))
 $(eval x-container-$(V_SERVICE)-stop-cmd:=$(PODMAN) container rm -f -i $(V_SERVICE); \
 	rm -rf $(V_PIDFILE))
@@ -23,15 +24,6 @@ $(DINITD_DIR)/$(V_SERVICE): $(v-deps) $(VENDOR_MODULES_DIR)/containers.mk
 	EOF
 	$(DINITCTL) stop --force --ignore-unstarted $(V_SERVICE)
 	$(DINITCTL) reload $(V_SERVICE)
-
-$(call vt-target,x-service-$(V_SERVICE)-start x-service-$(V_SERVICE)-stop)
-x-service-$(V_SERVICE)-start:
-	$(PODMAN) container run --name $(V_SERVICE) --rm -d --pidfile=$(V_PIDFILE) --replace \
-		$(V_ARGS)
-
-x-service-$(V_SERVICE)-stop:
-	$(PODMAN) container rm -f -i $(V_SERVICE)
-	rm -rf $(V_PIDFILE)
 
 $$(call dinit-service)
 V_SERVICE	= $(V_SERVICE)

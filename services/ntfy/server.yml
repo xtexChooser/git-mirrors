@@ -16,6 +16,6 @@ enable-reservations: true
 upstream-base-url: "https://ntfy.sh"
 # TODO: web push
 
-# log-level: info
-# log-format: json
-# log-file: /var/log/ntfy.log
+log-level: info
+log-format: json
+log-file: /var/log/ntfy/log.log
