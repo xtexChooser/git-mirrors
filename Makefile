@@ -20,7 +20,7 @@ STATES_DIR ?= $(VENDOR_CODE_DIR)/states
 # ========================= Modules =========================
 include $(LEONIS_MAKE_DIR)/*.mk
 include $(LEONIS_MODULES_DIR)/*.mk
-include $(VENDOR_MAKE_DIR)/*.mk
+-include $(VENDOR_MAKE_DIR)/*.mk
 -include $(VENDOR_MODULES_DIR)/*.mk
 $(call end-all)
 
