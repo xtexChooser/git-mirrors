@@ -20,9 +20,9 @@ endef
 
 define template0
 template:
-	$(call template-backend-$(TPL_BACKEND),$(TPL_IN),$(TPL_OUT))
+	@$(call template-backend-$(TPL_BACKEND),$(TPL_IN),$(TPL_OUT))
 	$(call succ, Template ($(TPL_BACKEND)) from $(TPL_IN) to $(TPL_OUT))
 do-tpl:
-	$(call template-backend-$(TPL_BACKEND),$(TPL_IN),$(TPL_OUT))
+	@$(call template-backend-$(TPL_BACKEND),$(TPL_IN),$(TPL_OUT))
 endef
 $(if $(TPL_BACKEND),$(eval $(template0)$(call vt-target, template do-tpl)))
