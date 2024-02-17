@@ -2,7 +2,8 @@ X_CONTAINER_SERVICE_VARS = V_TARGET_NAME V_SERVICE V_STOPPED V_ARGS V_POST $(v-d
 
 define x-container-service0
 $(eval V_PIDFILE?=/var/run/containers/$(V_SERVICE).pid)
-$(eval V_DEP_VARS+=V_ARGS)
+$(eval V_DEP_VARS+=x-container-$(V_SERVICE)-args)
+$(eval x-container-$(V_SERVICE)-args:=$(V_ARGS))
 
 $(call mktrace, Define x-container-service target: $(V_SERVICE))
 $(call mktrace-vars,$(X_CONTAINER_SERVICE_VARS))
