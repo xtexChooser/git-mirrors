@@ -11,8 +11,10 @@ $(call mktrace-vars,$(X_CONTAINER_SERVICE_VARS))
 $(DINITD_DIR)/$(V_SERVICE): $(v-deps) $(VENDOR_MODULES_DIR)/containers.mk
 	@cat >$$@ <<EOF
 	type = bgprocess
-	command = atre apply x-service-$(V_SERVICE)-start
-	stop-command = atre apply x-service-$(V_SERVICE)-stop
+	command = $(PODMAN) container run --name $(V_SERVICE) --rm -d --pidfile=$(V_PIDFILE) --replace \
+		$(V_ARGS)
+	stop-command = $(PODMAN) container rm -f -i $(V_SERVICE); \
+		rm -rf $(V_PIDFILE)
 	pid-file = $(V_PIDFILE)
 	restart = true
 	EOF
