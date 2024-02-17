@@ -3,10 +3,5 @@
 }
 
 % for tpl in "${CADDY_INCLUDES[@]}"; do
-% make do-tpl TPL_BACKEND=bash-tpl TPL_IN="$tpl"
+% "$LEONIS_MODULES_DIR/template.sh" bash-tpl "$tpl"
 % done
-
-ntfy.xvnet.eu.org {
-	redir /docs/* https://ntfy.sh{path} permanent
-	reverse_proxy unix//var/run/ntfy/ntfy.sock
-}
