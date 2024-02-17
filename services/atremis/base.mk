@@ -75,7 +75,7 @@ $(call run-on-apply, pkg-podman)
 
 # ========== maintainer packages ==========
 $(call package)
-V_PKG		= rg
+V_PKG		= ripgrep
 V_INSTALLED	= y
 V_INST_FILE	= /usr/bin/rg
 $(call end)
