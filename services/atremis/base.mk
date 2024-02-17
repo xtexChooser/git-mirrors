@@ -64,3 +64,28 @@ $(call fs-directory)
 V_PATH		= $(DINITD_DIR)/boot.d
 V_EXIST		= y
 $(call end)
+
+# ========== packages ==========
+$(call package)
+V_PKG		= podman
+V_INSTALLED	= y
+V_INST_FILE	= /usr/bin/podman
+$(call end)
+$(call run-on-apply, pkg-podman)
+
+# ========== maintainer packages ==========
+$(call package)
+V_PKG		= rg
+V_INSTALLED	= y
+V_INST_FILE	= /usr/bin/rg
+$(call end)
+$(call package)
+V_PKG		= neovim
+V_INSTALLED	= y
+V_INST_FILE	= /usr/bin/nvim
+$(call end)
+$(call package)
+V_PKG		= fish
+V_INSTALLED	= y
+V_INST_FILE	= /usr/bin/fish
+$(call end)
