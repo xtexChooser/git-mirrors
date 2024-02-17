@@ -1,5 +1,7 @@
 SYSTEMCTL = systemctl
 SYSTEMCTL_USER = $(SYSTEMCTL) --user
+SYSTEMD_UNITS_DIR ?= /etc/systemd/system
+SYSTEMD_USER_UNITS_DIR ?= $(HOME)/.config/systemd/user
 
 SYSTEMD_UNIT_VARS = V_TARGET_NAME V_UNIT V_ENABLED V_RUNNING V_USER V_SYSTEMCTL V_POST $(v-deps-var)
 define systemd-unit0
