@@ -28,6 +28,7 @@ $(call end)
 $(call systemd-unit)
 V_UNIT		= atre-pull.timer
 V_ENABLED	= y
+V_RUNNING	= y
 $(call end)
 
 # ========== dinit ==========
