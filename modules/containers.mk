@@ -21,8 +21,8 @@ $(call mktrace-vars,$(X_CONTAINER_SERVICE_VARS))
 $(DINITD_DIR)/$(V_SERVICE): $(v-deps) $(VENDOR_MODULES_DIR)/containers.mk
 	@cat >$$@ <<EOF
 	type = bgprocess
-	command = $(x-container-$(V_SERVICE)-start-cmd)
-	stop-command = $(x-container-$(V_SERVICE)-stop-cmd)
+	command = bash -c "$(subst ",\",$(subst $$$$,\$$$$,$(x-container-$(V_SERVICE)-start-cmd)))"
+	stop-command = bash -c "$(subst ",\",$(subst $$$$,\$$$$,$(x-container-$(V_SERVICE)-stop-cmd)))"
 	pid-file = $(V_PIDFILE)
 	restart = true
 	EOF
