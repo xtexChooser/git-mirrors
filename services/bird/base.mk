@@ -24,4 +24,5 @@ V_PATH		= /etc/bird/bird.conf
 V_TEMPLATE	= bash-tpl $(STATES_DIR)/services/bird/conf/bird.conf
 V_DEP_VARS	+= BIRD_INCLUDES
 V_DEP_VARS	+= BIRD_ROUTER_ID DN42_LOCAL_IP XVNET_ASN XVNET_LOCAL_IP
+V_DEPS		+= $(wildcard $(STATES_DIR)/services/bird/conf/*.conf)
 $(call end)
