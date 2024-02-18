@@ -11,9 +11,9 @@ $(eval x-container-$(V_SERVICE)-args:=$(V_ARGS))
 $(eval x-container-$(V_SERVICE)-start-cmd:=$(V_PRE_START); $(PODMAN) container run \
 	--name $(V_SERVICE) --rm -d --pidfile=$(V_PIDFILE) --replace \
 	--hostname=$(V_SERVICE) \
-	$(V_ARGS)); $(V_POST_START)
+	$(V_ARGS); $(V_POST_START))
 $(eval x-container-$(V_SERVICE)-stop-cmd:=$(V_PRE_STOP); $(PODMAN) container rm -f -i $(V_SERVICE); \
-	rm -rf $(V_PIDFILE)); $(V_POST_STOP)
+	rm -rf $(V_PIDFILE); $(V_POST_STOP))
 
 $(call mktrace, Define x-container-service target: $(V_SERVICE))
 $(call mktrace-vars,$(X_CONTAINER_SERVICE_VARS))
