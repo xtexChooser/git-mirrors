@@ -11,6 +11,9 @@ steps:
               from_secret: codeberg_token
           dockerfile: caddy/Containerfile
       when:
-          - event: [push, cron]
+          - event: push
+            path: 'caddy/*'
+          - event: cron
+            cron: build
           - event: manual
             evaluate: 'BUILD == "caddy"'
