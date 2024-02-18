@@ -1,5 +1,5 @@
 steps:
-    - name: build-caddy
+    - name: build
       image: woodpeckerci/plugin-docker-buildx
       settings:
           platforms: linux/amd64,linux/arm64/v8

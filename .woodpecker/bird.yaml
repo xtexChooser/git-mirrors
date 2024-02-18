@@ -5,7 +5,7 @@ matrix:
         - 2.13
 
 steps:
-    - name: build-bird
+    - name: build
       image: woodpeckerci/plugin-docker-buildx
       settings:
           platforms: linux/amd64,linux/arm64/v8
@@ -18,7 +18,7 @@ steps:
           password:
               from_secret: codeberg_token
           dockerfile: bird/Containerfile
-    - name: post-build-bird
+    - name: mark-latest
       image: alpine
       secrets: [codeberg_token]
       commands:
