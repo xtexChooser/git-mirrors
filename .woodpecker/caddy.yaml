@@ -9,7 +9,7 @@ steps:
           username: ${CI_REPO_OWNER}
           password:
               from_secret: codeberg_token
-		  dockerfile: caddy/Containerfile
+          dockerfile: caddy/Containerfile
       when:
           - event: [push, cron]
           - event: manual
