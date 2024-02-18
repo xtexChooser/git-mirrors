@@ -13,16 +13,16 @@ steps:
           registry: codeberg.org
           tags: ${PKG_VERSION}
           build_args:
-            VERSION: "${PKG_VERSION}"
+              - "VERSION=${PKG_VERSION}"
           username: ${CI_REPO_OWNER}
           password:
               from_secret: codeberg_token
           dockerfile: bird/Containerfile
     - name: post-build-bird
       image: alpine
-      secrets: [ codeberg_token ]
+      secrets: [codeberg_token]
       commands:
-        - ./misc/tag-latest.sh "codeberg.org/${CI_REPO_OWNER}/bird" .woodpecker/bird.yaml "${PKG_VERSION}"
+          - ./misc/tag-latest.sh "codeberg.org/${CI_REPO_OWNER}/bird" .woodpecker/bird.yaml "${PKG_VERSION}"
 when:
     - event: push
       path:
