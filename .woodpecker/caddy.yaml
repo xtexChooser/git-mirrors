@@ -12,8 +12,9 @@ steps:
           dockerfile: caddy/Containerfile
       when:
           - event: push
-            path: 'caddy/*'
+            path:
+              include: ['.woodpecker/caddy.yaml', 'caddy/*']
           - event: cron
             cron: build
           - event: manual
-            evaluate: 'BUILD == "caddy"'
+            evaluate: 'TARGET == "caddy"'
