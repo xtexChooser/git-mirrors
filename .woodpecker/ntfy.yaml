@@ -1,0 +1,31 @@
+matrix:
+    VERSION:
+        - 2.8.0 # TAG:LATEST
+
+steps:
+    - name: build
+      image: woodpeckerci/plugin-docker-buildx
+      settings:
+          platforms: linux/amd64,linux/arm64/v8
+          repo: codeberg.org/${CI_REPO_OWNER}/ntfy
+          registry: codeberg.org
+          tags: ${VERSION}
+          build_args:
+              - "VERSION=${VERSION}"
+          username: ${CI_REPO_OWNER}
+          password:
+              from_secret: codeberg_token
+          dockerfile: ntfy/Containerfile
+    - name: mark-latest
+      image: alpine
+      secrets: [codeberg_token]
+      commands:
+          - ./misc/tag-latest.sh "codeberg.org/${CI_REPO_OWNER}/ntfy" .woodpecker/ntfy.yaml "${VERSION}"
+when:
+    - event: push
+      path:
+          include: [".woodpecker/ntfy.yaml", "ntfy/*"]
+    - event: cron
+      cron: build
+    - event: manual
+      evaluate: 'TARGET == "ntfy"'
