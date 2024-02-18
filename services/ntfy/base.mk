@@ -9,8 +9,7 @@ V_ARGS		+= --mount=type=bind,src=/var/run/ntfy,dst=/var/run/ntfy
 V_ARGS		+= --mount=type=bind,src=/var/lib/ntfy,dst=/var/lib/ntfy
 V_ARGS		+= --mount=type=bind,src=/var/cache/ntfy,dst=/var/cache/ntfy
 V_ARGS		+= --mount=type=bind,src=/var/log/ntfy,dst=/var/log/ntfy
-V_ARGS 		+= docker.io/binwiederhier/ntfy:latest
-V_ARGS 		+= serve
+V_ARGS 		+= codeberg.org/xvnet/ntfy:latest
 $(call end)
 
 $(call fs-file)
