@@ -13,7 +13,7 @@ steps:
           registry: codeberg.org
           tags: ${PKG_VERSION}
           build_args:
-            VERSION: ${PKG_VERSION}
+            VERSION: "${PKG_VERSION}"
           username: ${CI_REPO_OWNER}
           password:
               from_secret: codeberg_token
