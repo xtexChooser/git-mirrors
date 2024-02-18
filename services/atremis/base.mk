@@ -65,6 +65,20 @@ V_PATH		= $(DINITD_DIR)/boot.d
 V_EXIST		= y
 $(call end)
 
+# ========== cronie ==========
+$(call package)
+V_PKG		= cronie
+V_INSTALLED	= y
+V_INST_FILE	= /usr/bin/crond
+$(call end)
+
+$(call systemd-unit)
+V_UNIT		= cronie.service
+V_ENABLED	= y
+V_RUNNING	= y
+V_DEPS		= pkg-cronie
+$(call end)
+
 # ========== packages ==========
 $(call package)
 V_PKG		= podman
