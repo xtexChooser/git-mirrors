@@ -1,0 +1,13 @@
+when:
+    event: [push, tag, cron]
+    path: "x-caddy/*"
+
+steps:
+    build:
+        group: buildpkg
+        image: alpine
+        secrets: [ codeberg_token ]
+        commands:
+            - apk add bash
+            - ./contrib/woodpecker_build.sh x-caddy
+
