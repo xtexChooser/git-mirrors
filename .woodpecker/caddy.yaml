@@ -5,7 +5,6 @@ steps:
           platforms: linux/amd64,linux/arm64/v8
           repo: codeberg.org/${CI_REPO_OWNER}/x-caddy
           registry: codeberg.org
-          tags: latest
           username: ${CI_REPO_OWNER}
           password:
               from_secret: codeberg_token
