@@ -12,7 +12,7 @@ sudo usermod -a -G root "$(whoami)"
 # Fetch atremis
 cd /srv
 sudo git clone --depth 1 --recurse-submodules --shallow-submodules --single-branch https://codeberg.org/xvnet/atremis.git
-sudo chmod -R a+rw atremis
+sudo chmod -R a+r atremis
 
 cd atremis
 ./atre pull
