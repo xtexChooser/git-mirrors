@@ -1,0 +1,183 @@
+#!/usr/bin/env bash
+
+# xvbuild - build packages
+# Copyright (c) 2023 xtex
+#
+# Distributed under Unlicense
+#
+
+# shellcheck disable=SC2317,SC2154
+
+set -E
+umask 022
+
+: "${BUILDAH:=buildah}"
+: "${PODMAN:=podman}"
+
+NORMAL='\033[0;0m'
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+
+msg() {
+	local prompt="$GREEN>>>: $NORMAL"
+	[[ "${pkgname:-}" != "" ]] && local name="$BLUE$pkgname$NORMAL: "
+	printf "$prompt${name:-}%s\n" "$1" >&2
+}
+warning() {
+	local prompt="${YELLOW}>>> WARN: $NORMAL"
+	[[ "${pkgname:-}" != "" ]] && local name="$BLUE$pkgname$NORMAL: "
+	printf "$prompt${name:-}%s\n" "$1" >&2
+}
+error() {
+	local prompt="${RED}>>> ERROR: $NORMAL"
+	[[ "${pkgname:-}" != "" ]] && local name="$BLUE$pkgname$NORMAL: "
+	printf "$prompt${name:-}%s\n" "$1" >&2
+}
+
+die() {
+	trap - EXIT
+	error "$@"
+	cleanup
+	exit 1
+}
+
+cleanups=()
+cleanup() {
+	for cleanupfunc in "${cleanups[@]}"; do
+		"$cleanupfunc"
+	done
+}
+
+build() {
+	die "build function is not defined"
+}
+
+publish() {
+	die "publish function is not defined"
+}
+
+update() {
+	xupdsrcinfo
+}
+
+buildoci() {
+	die "Neither Containerfile file nor buildoci function exist"
+}
+
+[[ -e "SRCINFO.sh" ]] || die "SRCINFO.sh not found"
+# shellcheck source=/dev/null
+. "SRCINFO.sh"
+[[ -e "BUILD.sh" ]] || die "BUILD.sh not found"
+# shellcheck source=/dev/null
+. "BUILD.sh"
+
+repobase="$(git rev-parse --show-toplevel)"
+srcdir="$(pwd)"
+dstdir="$repobase/dst/$pkgname"
+mkdir -p "$dstdir"
+
+[[ "${pkgname:-}" == "" ]] && die "Missing pkgname"
+[[ "${pkgver:-}" == "" ]] && die "Missing pkgver"
+[[ "${url:-}" == "" ]] && die "Missing url"
+[[ "${license:-}" == "" ]] && die "Missing license"
+
+: "${ociimage:=codeberg.org/xvnet/$pkgname}"
+: "${ocibuildoptions:=}"
+: "${ocibaseimage:=}"
+: "${ocibuilderimage:=}"
+
+xbuildoci() {
+	if [[ -e "$srcdir/Containerfile" ]]; then
+		# shellcheck disable=SC2086
+		$BUILDAH build \
+			$ocibuildoptions \
+			-t "${1:-$ociimage}" \
+			"$srcdir"
+	else
+		# shellcheck disable=SC1091
+		# shellcheck source=./scripts/ocitools.sh
+		source "$repobase/scripts/ocitools.sh"
+		buildoci
+	fi
+}
+
+xpuboci() {
+	$BUILDAH push "${1:-$ociimage}"
+}
+
+xupdsrcinfo() {
+	local srcinfo="SRCINFO.sh"
+	mv "$srcinfo" "$srcinfo.old"
+	while IFS= read -r line; do
+		if [[ "${replacenext:-}" != '' ]]; then
+			local variable
+			variable="$(cut -d'=' -f1 <<<"$line")"
+			local version
+			version="$(cut -d'=' -f2 <<<"$line")"
+			version=${version##"'"}
+			version=${version%%"'"}
+			[[ "$version" != "$replacenext" ]] && msg "Found new version: $version => $replacenext"
+			printf "%s='%s'\n" "$variable" "$replacenext" >>"$srcinfo"
+			unset replacenext
+			continue
+		fi
+
+		printf '%s\n' "$line" >>"$srcinfo"
+		local instruction=${line## }
+		if [[ "$instruction" =~ '# 'src.* ]]; then
+			instruction=${instruction#'# src '}
+			instruction=${instruction## }
+			msg "Checking $instruction"
+			local version
+			version="$(
+				eval "local ${instruction[*]}"
+				xchkver"${type:-}"
+			)"
+			if [[ "$version" != '' ]]; then
+				local replacenext
+				replacenext="$version"
+			else
+				warning "Failed to check version"
+			fi
+		fi
+	done <"$srcinfo.old"
+	bash -c ". '$srcinfo'" || die "Failed to validate new SRCINFO"
+	rm "$srcinfo.old"
+}
+
+xchkvergit() {
+	[[ "$ref" == "" ]] && ref="refs/heads/$branch"
+	git ls-remote "$repo" "$ref" | cut -f1
+}
+
+xchkveralpinelinux() {
+	git ls-remote --tags https://gitlab.alpinelinux.org/alpine/aports.git |
+		grep -E 'refs/tags/v[0-9]+\.[0-9]+(\.[0-9]+|)' |
+		grep -v -F '^{}' |
+		grep -v -F 'rc' |
+		awk '{ print $2, $1 }' |
+		sort -rV | head -n1 |
+		grep -o -E 'v[0-9]+\.[^ ]+' |
+		tail -c+2
+}
+
+trap 'die "Aborted by user"' INT
+trap 'die "Failed to build"' ERR
+
+[ $# -eq 0 ] && die "No options were given"
+
+while [ $# -ne 0 ]; do
+	case $1 in
+	build | publish | update)
+		$1
+		shift
+		;;
+	*)
+		die "Unknown option: $1"
+		;;
+	esac
+done
+
+cleanup
