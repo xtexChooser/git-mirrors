@@ -98,7 +98,7 @@ function atre::main {
 	apply)
 		atre::apply "$@"
 		;;
-	root)
+	root | su | sudo)
 		[ $# -eq 0 ] && atre::root "$SHELL" && exit
 		atre::root "$@"
 		;;
