@@ -2,7 +2,7 @@
 Description=Pull Atremis configurations automatically
 
 [Timer]
-OnStartupSec=5
+OnStartupSec=30s
 OnUnitActiveSec=15min
 
 [Install]
