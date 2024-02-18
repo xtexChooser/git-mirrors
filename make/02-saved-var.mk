@@ -6,7 +6,7 @@ endef
 
 define save-var1
 $(eval saved-var-$1:=$(VARS_DIR)/$1.txt)
-$(saved-var-$1):
+$(saved-var-$1): $(VARS_DIR)/.dir
 	@$(MKDIR) -p $(VARS_DIR)
 	$$(file >$$@,saved_var_$1_value:=$$($2))
 	# echo saved_var_$1_value=$$(subst ',\',$$(subst ",\",$$(subst $(space),\$(space),$$($2)))) > $$@

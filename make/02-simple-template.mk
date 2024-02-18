@@ -1,5 +1,5 @@
 define define-mkdir-target0
-$1: $2
+$1/.dir: $2
 	@$$(MKDIR) -p $$@
 	$$(TOUCH) $$@
 	$$(call succ, Created $$@)
