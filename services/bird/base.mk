@@ -26,3 +26,10 @@ V_DEP_VARS	+= BIRD_INCLUDES
 V_DEP_VARS	+= BIRD_ROUTER_ID XVNET_NUM DN42_LOCAL_IP XVNET_ASN XVNET_LOCAL_IP
 V_DEPS		+= $(wildcard $(STATES_DIR)/services/bird/conf/*.conf)
 $(call end)
+
+$(call fs-file)
+V_PATH		= /etc/cron.d/dn42-roa
+V_TEMPLATE	= bash-tpl $(STATES_DIR)/services/bird/cron-dn42-roa
+V_DEP_VARS	+= LEONIS_MODULES_DIR
+V_POST		+= systemd-restart E_UNIT=cronie.service
+$(call end)
