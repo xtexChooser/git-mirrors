@@ -1,0 +1,33 @@
+matrix:
+    PKG_VERSION:
+        - 2.14 # TAG:LATEST
+        - 2.13.1
+        - 2.13
+
+steps:
+    - name: build-bird
+      image: woodpeckerci/plugin-docker-buildx
+      settings:
+          platforms: linux/386,linux/amd64,linux/arm64/v8
+          repo: codeberg.org/${CI_REPO_OWNER}/bird
+          registry: codeberg.org
+          tags: ${PKG_VERSION}
+          build_args:
+            - VERSION: ${PKG_VERSION}
+          username: ${CI_REPO_OWNER}
+          password:
+              from_secret: codeberg_token
+          dockerfile: bird/Containerfile
+    - name: post-build-bird
+      image: alpine
+      secrets: [ codeberg_token ]
+      commands:
+        - ./misc/tag-latest.sh "codeberg.org/${CI_REPO_OWNER}/bird" .woodpecker/bird.yaml "${PKG_VERSION}"
+when:
+    - event: push
+      path:
+          include: [".woodpecker/bird.yaml", "bird/*"]
+    - event: cron
+      cron: build
+    - event: manual
+      evaluate: 'TARGET == "bird"'

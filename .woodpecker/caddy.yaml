@@ -10,11 +10,11 @@ steps:
           password:
               from_secret: codeberg_token
           dockerfile: caddy/Containerfile
-      when:
-          - event: push
-            path:
-              include: ['.woodpecker/caddy.yaml', 'caddy/*']
-          - event: cron
-            cron: build
-          - event: manual
-            evaluate: 'TARGET == "caddy"'
+when:
+    - event: push
+      path:
+          include: [".woodpecker/caddy.yaml", "caddy/*"]
+    - event: cron
+      cron: build
+    - event: manual
+      evaluate: 'TARGET == "caddy"'

@@ -1,0 +1,25 @@
+FROM docker.io/library/alpine AS builder
+ARG VERSION
+
+RUN apk add build-base clang libcap git autoconf
+RUN apk add flex-dev bison m4 libssh-dev linux-headers ncurses-dev readline-dev
+
+ADD https://gitlab.nic.cz/labs/bird/-/archive/v$VERSION/bird-v$VERSION.tar.gz /source.tar.gz
+RUN tar -xf source.tar.gz
+RUN mv bird-v$VERSION src
+
+WORKDIR /src
+RUN autoreconf; ./configure CC=clang CFLAGS='-O3' LDFLAGS='-flto' \
+	--prefix=/ --sysconfdir=/etc/bird --runstatedir=/var/run/bird \
+	--enable-pthreads --enable-libssh --enable-mpls-kernel
+RUN make -j$(nproc) && make install
+RUN setcap CAP_NET_ADMIN=+eip /sbin/bird
+
+FROM docker.io/library/alpine
+RUN apk add libssh ncurses readline
+COPY --from=builder /etc/bird /etc/bird
+COPY --from=builder /sbin/bird /sbin/bird /sbin/birdcl /sbin/
+RUN mkdir -p /var/run/bird
+
+WORKDIR /
+ENTRYPOINT [ "/sbin/bird", "-f" ]
