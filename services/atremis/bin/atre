@@ -50,6 +50,7 @@ function atre::fetch {
 }
 
 function atre::do_fetch {
+	cd $atreDir
 	git fetch --depth 1 origin
 	git reset --hard origin/main
 	git submodule sync --recursive
@@ -61,11 +62,11 @@ function atre::do_fetch {
 
 function atre::apply {
 	atre::log "Apply configuration"
+	cd $atreDir
 	atre::root make "${@:-apply}"
 }
 
 function atre::root {
-	cd $atreDir
 	if [[ -n "$isRootUser" ]]; then
 		# DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus
 		# XDG_RUNTIME_DIR=/run/user/$(id -u)
