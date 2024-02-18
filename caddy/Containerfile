@@ -14,11 +14,10 @@ RUN /build/xcaddy build \
 FROM docker.io/library/alpine
 COPY --from=builder /build/caddy /usr/bin/caddy
 WORKDIR /
+ENTRYPOINT [ "/usr/bin/caddy", "run", "--environ", "--config", "/etc/caddy/Caddyfile" ]
 
-LABEL org.opencontainers.image.title="X-Caddy"
-LABEL org.opencontainers.image.vendor="XV-NET"
 LABEL org.opencontainers.image.licenses="Apache-2.0"
 LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/pkgs"
+LABEL org.opencontainers.image.title="X-Caddy"
 LABEL org.opencontainers.image.url="https://caddyserver.com/"
-
-ENTRYPOINT [ "/usr/bin/caddy", "run", "--environ", "--config", "/etc/caddy/Caddyfile" ]
+LABEL org.opencontainers.image.vendor="XV-NET"
