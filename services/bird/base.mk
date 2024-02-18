@@ -1,6 +1,7 @@
 $(call x-container-service)
 V_SERVICE	= bird
 V_SVCDEPS	+= /etc/bird/bird.conf /var/run/bird
+V_PRE_STOP	= $(abspath $(STATES_DIR)/services/bird/stop.sh)
 V_ARGS		+= --mount=type=bind,src=/etc/bird,dst=/etc/bird,ro=true
 V_ARGS		+= --mount=type=bind,src=/var/run/bird,dst=/var/run/bird
 V_ARGS		+= --publish-all

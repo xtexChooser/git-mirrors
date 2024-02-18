@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
-
 set -e
-
 podman container exists bird || exit
 
 podman exec -it bird bird -p || {
@@ -9,4 +7,6 @@ podman exec -it bird bird -p || {
 	exit 1
 }
 
+echo 'Reconfiguring BIRD...'
 podman exec -it bird birdc configure
+echo 'Reconfigured BIRD'
