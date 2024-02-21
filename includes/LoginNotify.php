@@ -9,11 +9,11 @@
 namespace LoginNotify;
 
 use BagOStuff;
-use Exception;
 use ExtensionRegistry;
 use IBufferingStatsdDataFactory;
 use JobQueueGroup;
 use JobSpecification;
+use LogicException;
 use MediaWiki\Auth\AuthManager;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Extension\CentralAuth\User\CentralAuthUser;
@@ -156,8 +156,6 @@ class LoginNotify implements LoggerAwareInterface {
 	 *
 	 * @param string $ip Either IPv4 or IPv6 address
 	 * @return string Just the network part (e.g. 127.0.0.)
-	 * @throws UnexpectedValueException If given something not an IP
-	 * @throws Exception If regex totally fails (Should never happen)
 	 */
 	private function getIPNetwork( $ip ) {
 		$ip = IPUtils::sanitizeIP( $ip );
@@ -172,7 +170,7 @@ class LoginNotify implements LoggerAwareInterface {
 		}
 		$prefix = preg_replace( $subnetRegex, '', $ip );
 		if ( !is_string( $prefix ) ) {
-			throw new Exception( __METHOD__ . " Regex failed on '$ip'!?" );
+			throw new LogicException( __METHOD__ . " Regex failed on '$ip'!?" );
 		}
 		return $prefix;
 	}
@@ -367,7 +365,6 @@ class LoginNotify implements LoggerAwareInterface {
 	 * @param WebRequest $request
 	 * @param int $centralUserId
 	 * @return int|string
-	 * @throws Exception
 	 */
 	private function getSeenHash( WebRequest $request, int $centralUserId ) {
 		$ipPrefix = $this->getIPNetwork( $request->getIP() );
