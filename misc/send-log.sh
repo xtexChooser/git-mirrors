@@ -17,8 +17,8 @@ else
 	pkgWithVersion="$pkg"
 fi
 
-desc="**Pipeline**: $CI_PIPELINE_NUMBER
-**Triggerred by**: $CI_PIPELINE_EVENT"
+desc="Pipeline: $CI_PIPELINE_NUMBER
+Triggerred by: $CI_PIPELINE_EVENT"
 priority=min
 
 if [[ "$CI_PIPELINE_STATUS" == "success" ]]; then
@@ -36,7 +36,6 @@ curl \
 	-H "Title: $title" \
 	-H "Actions: view, View on CI, $CI_STEP_URL" \
 	-H "Tags: pkgbld,service-$pkg,pkgbld-$CI_PIPELINE_STATUS" \
-	-H "Markdown: yes" \
 	-H "Priority: $priority" \
 	-d "$desc" \
 	-SL \
