@@ -1,15 +1,13 @@
-FROM docker.io/library/golang:alpine AS bld
+FROM docker.io/library/caddy:builder-alpine AS bld
 
-WORKDIR /bld
-RUN go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
 RUN xcaddy build \
 	--with github.com/caddyserver/replace-response \
 	--with github.com/hairyhenderson/caddy-teapot-module \
 	--with github.com/aksdb/caddy-cgi/v2
 
-FROM docker.io/library/alpine:latest
+FROM docker.io/library/caddy:alpine
 
-COPY --from=bld /bld/caddy /usr/bin/caddy
+COPY --from=bld /usr/bin/caddy /usr/bin/caddy
 RUN apk add --no-cache bash
 
 LABEL org.opencontainers.image.title="xtex's Home"
