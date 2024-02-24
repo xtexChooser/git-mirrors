@@ -22,9 +22,9 @@ desc="**Pipeline**: $CI_PIPELINE_NUMBER
 priority=min
 
 if [[ "$CI_PIPELINE_STATUS" == "success" ]]; then
-	title="pkgs: Successfully built $pkgWithVersion"
+	title="pkgs: $pkgWithVersion build succeeded"
 elif [[ "$CI_PIPELINE_STATUS" == "failure" ]]; then
-	title="pkgs: Failed to build $pkgWithVersion"
+	title="pkgs: $pkgWithVersion build failed"
 	priority=high
 else
 	title="pkgs: Pipeline status unknown ($CI_PIPELINE_STATUS): $pkgWithVersion"
@@ -35,7 +35,7 @@ curl \
 	-H "Authorization: Bearer $NTFY_TOKEN" \
 	-H "Title: $title" \
 	-H "Actions: view, View on CI, $CI_STEP_URL" \
-	-H "Tags: pkgbld,$pkg,$CI_PIPELINE_STATUS" \
+	-H "Tags: pkgbld,$pkg,pkgbld-$CI_PIPELINE_STATUS" \
 	-H "Markdown: yes" \
 	-H "Priority: $priority" \
 	-d "$desc" \
