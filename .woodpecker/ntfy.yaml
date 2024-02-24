@@ -21,6 +21,15 @@ steps:
       secrets: [codeberg_token]
       commands:
           - ./misc/tag-latest.sh "codeberg.org/${CI_REPO_OWNER}/ntfy" .woodpecker/ntfy.yaml "${VERSION}"
+    - name: send-ntfy
+      image: alpine
+      secrets: [ntfy_token]
+      environment:
+          - "VERSION=${VERSION}"
+      when:
+          - status: [success, failure]
+      commands:
+          - ./misc/send-log.sh
 when:
     - event: push
       path:

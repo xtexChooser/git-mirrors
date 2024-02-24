@@ -9,6 +9,13 @@ steps:
           password:
               from_secret: codeberg_token
           dockerfile: caddy/Containerfile
+    - name: send-ntfy
+      image: alpine
+      secrets: [ntfy_token]
+      when:
+          - status: [success, failure]
+      commands:
+          - ./misc/send-log.sh
 when:
     - event: push
       path:
