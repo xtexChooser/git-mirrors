@@ -3,13 +3,10 @@ steps:
         image: bash
         commands:
             - git describe --long --always | tr -d '\n' > src/version.txt
-            - podman build --force-rm --squash --tag localhost/home-new .
+            - podman build --force-rm --squash --tag localhost/home .
             - export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus
-            - systemctl --user stop xtex-home.service
-            - podman image rm -f localhost/home
-            - podman image tag localhost/home-new localhost/home
-            - podman image untag localhost/home-new localhost/home-new
-            - systemctl --user start xtex-home.service
+            - systemctl --user restart xtex-home.service
+            - podman image prune -f
 #            - podman run --name home
 #              --replace --detach
 #              --memory 16m
