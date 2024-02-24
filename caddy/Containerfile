@@ -1,20 +1,14 @@
-FROM docker.io/library/alpine AS builder
+FROM docker.io/library/caddy:builder-alpine AS builder
 
-RUN apk add go
-ENV GOBIN=/build
-WORKDIR /build
-RUN go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
-RUN /build/xcaddy build \
+RUN xcaddy build \
 	--with github.com/mholt/caddy-ratelimit \
 	--with github.com/ueffel/caddy-brotli \
 	--with github.com/caddyserver/replace-response \
 	--with github.com/mholt/caddy-l4 \
 	--with github.com/mholt/caddy-events-exec
 
-FROM docker.io/library/alpine
-COPY --from=builder /build/caddy /usr/bin/caddy
-WORKDIR /
-ENTRYPOINT [ "/usr/bin/caddy", "run", "--environ", "--config", "/etc/caddy/Caddyfile" ]
+FROM docker.io/library/caddy:alpine
+COPY --from=builder /usr/bin/caddy /usr/bin/caddy
 
 LABEL org.opencontainers.image.licenses="Apache-2.0"
 LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/pkgs"
