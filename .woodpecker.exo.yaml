@@ -8,7 +8,7 @@ steps:
             - systemctl --user stop xtex-home.service
             - podman image rm -f exozy.me/xtex/home
             - podman image tag exozy.me/xtex/home-new exozy.me/xtex/home
-            - podman image untag exozy.me/xtex/home-new
+            - podman image untag exozy.me/xtex/home-new exozy.me/xtex/home-new
             - systemctl --user start xtex-home.service
 #            - podman run --name home
 #              --replace --detach
