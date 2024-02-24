@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US">
 	<head>
-		{{ import "/includes/head.html" }} {{ template "head" "xtex's Home :: Keys" }}
+		{{ import "/includes/head.html" }} {{ template "head" "xtex's Home ::
+		Keys" }}
 		<link rel="stylesheet" href="/index.css" />
 	</head>
 	<body>
@@ -111,12 +112,6 @@
 			</section>
 			<section id="gpg">
 				<h2>GPG<a href="#gpg"></a></h2>
-				<a
-					href="/keys/gpg-main.asc"
-					title="Main Public Key"
-					target="_blank"
-					>View the Main Key</a
-				>
 				<ul>
 					<li>
 						<strong>Main EdDSA key</strong><br />
@@ -132,6 +127,12 @@
 							target="_blank"
 							>View Full Public Key</a
 						>
+						(<a
+							href="/keys/gpg-0xD8045B91-bin.asc"
+							title="Binary representation of the public key"
+							target="_blank"
+							>Binary</a
+						>)
 					</li>
 					<li>
 						<details>
@@ -176,7 +177,9 @@
 					<li>
 						<strong><code>acct:xtex@social.exozy.me</code></strong
 						><br />
-						<a href="/keys/activitypub-social.exozy.me">View Public Key</a>
+						<a href="/keys/activitypub-social.exozy.me"
+							>View Public Key</a
+						>
 					</li>
 				</ul>
 			</section>
