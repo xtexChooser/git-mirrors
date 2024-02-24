@@ -35,7 +35,7 @@ curl \
 	-H "Authorization: Bearer $NTFY_TOKEN" \
 	-H "Title: $title" \
 	-H "Actions: view, View on CI, $CI_STEP_URL" \
-	-H "Tags: pkgbld,$pkg,pkgbld-$CI_PIPELINE_STATUS" \
+	-H "Tags: pkgbld,service-$pkg,pkgbld-$CI_PIPELINE_STATUS" \
 	-H "Markdown: yes" \
 	-H "Priority: $priority" \
 	-d "$desc" \
