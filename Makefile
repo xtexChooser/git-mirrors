@@ -39,7 +39,7 @@ apply:
 endif
 
 fmt:
-	@$(LEONIS_CONTRIB_DIR)/fmt
+	@$(LEONIS_CONTRIB_DIR)/fmt "$(LEONIS_CONTRIB_DIR)"
 
 else
 
