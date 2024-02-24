@@ -23,4 +23,4 @@ when:
     - event: cron
       cron: build
     - event: manual
-      evaluate: 'TARGET == "caddy"'
+      evaluate: 'TARGET == "all" || TARGET == "caddy"'

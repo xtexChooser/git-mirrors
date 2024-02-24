@@ -37,4 +37,4 @@ when:
     - event: cron
       cron: build
     - event: manual
-      evaluate: 'TARGET == "ntfy"'
+      evaluate: 'TARGET == "all" || TARGET == "ntfy"'

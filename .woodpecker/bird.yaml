@@ -39,4 +39,4 @@ when:
     - event: cron
       cron: build
     - event: manual
-      evaluate: 'TARGET == "bird"'
+      evaluate: 'TARGET == "all" || TARGET == "bird"'
