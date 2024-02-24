@@ -86,7 +86,6 @@ object-src 'none';
 		mime "application/xhtml+xml" "application/json"
 	}
 
-	header /keys/* Access-Control-Allow-Origin *
 	header /keys/gpg-0xD8045B91-bin.asc Content-Type application/octet-stream
 
 	# Well-known URLs
@@ -103,7 +102,14 @@ object-src 'none';
 
 	# Web Key Directory
 	# draft-koch-openpgp-webkey-service-17
-	rewrite /.well-known/openpgpkey/hu/* /keys/gpg-0xD8045B91-bin.asc
+	handle /.well-known/openpgpkey/* {
+		header Access-Control-Allow-Origin *
+
+		@wkdprefixed `{query.l}.startsWith("xtex+")`
+		rewrite @wkdprefixed /.well-known/openpgpkey/hu/q1fcwzmim1dtwtbc5k396hwt78cwzujb
+
+		header /.well-known/openpgpkey/hu/* Content-Type application/octet-stream
+	}
 
 	# WebFinger
 	@webfinger {
