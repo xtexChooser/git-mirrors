@@ -105,7 +105,8 @@ object-src 'none';
 	handle /.well-known/openpgpkey/* {
 		header Access-Control-Allow-Origin *
 
-		@wkdprefixed `{query.l}.startsWith("xtex+")`
+		# Some clients are not encoding plus correctly
+		@wkdprefixed `{query.l}.startsWith("xtex+") || {query.l}.startsWith("xtex ")`
 		rewrite @wkdprefixed /.well-known/openpgpkey/hu/q1fcwzmim1dtwtbc5k396hwt78cwzujb
 
 		header /.well-known/openpgpkey/hu/* Content-Type application/octet-stream
