@@ -94,6 +94,10 @@ object-src 'none';
 	header /nodeinfo/2.1.json Content-Type `application/json; profile="http://nodeinfo.diaspora.software/ns/schema/2.1#"`
 	rewrite /.well-known/oauth-authorization-server /.well-known/oauth-authorization-server.json
 
+	# Keys
+	redir /keys/gpg-main.asc /keys/gpg-0xD8045B91.asc temporary
+	redir /keys/gpg-main-bin.asc /keys/gpg-0xD8045B91-bin.asc temporary
+
 	# WebFinger
 	@webfinger {
 		path /.well-known/webfinger
