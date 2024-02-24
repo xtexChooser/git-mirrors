@@ -3,12 +3,12 @@ steps:
         image: bash
         commands:
             - git describe --long --always | tr -d '\n' > src/version.txt
-            - podman build --force-rm --squash --tag exozy.me/xtex/home-new .
+            - podman build --force-rm --squash --tag localhost/home-new .
             - export DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus
             - systemctl --user stop xtex-home.service
-            - podman image rm -f exozy.me/xtex/home
-            - podman image tag exozy.me/xtex/home-new exozy.me/xtex/home
-            - podman image untag exozy.me/xtex/home-new exozy.me/xtex/home-new
+            - podman image rm -f localhost/home
+            - podman image tag localhost/home-new localhost/home
+            - podman image untag localhost/home-new localhost/home-new
             - systemctl --user start xtex-home.service
 #            - podman run --name home
 #              --replace --detach
@@ -17,4 +17,4 @@ steps:
 #              --mount type=bind,source=/srv/http/xtex,destination=/srv/blog
 #              --mount type=bind,source=/srv/http,destination=/srv/exopages
 #              --env "UDS_DIR=exopages" --env "UDS_SUFFIX="
-#              exozy.me/xtex/home
+#              localhost/home
