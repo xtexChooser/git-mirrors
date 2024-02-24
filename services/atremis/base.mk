@@ -1,4 +1,4 @@
-# ========== Atremis Executables ==========
+# ========================= Atremis Executables =========================
 
 $(call fs-file)
 V_PATH		= /usr/local/bin/atre
@@ -10,7 +10,7 @@ V_PATH		= /usr/local/bin/tiang
 V_SYMLINK	= $(ATRE_DIR)/services/atremis/bin/tiang
 $(call end)
 
-# ========== Atremis Systemd Services ==========
+# ========================= Atremis Systemd Services =========================
 
 $(call fs-file)
 V_PATH		= $(SYSTEMD_UNITS_DIR)/atre-pull.service
@@ -31,7 +31,7 @@ V_ENABLED	= y
 V_RUNNING	= y
 $(call end)
 
-# ========== dinit ==========
+# ========================= dinit =========================
 $(call package)
 V_PKG		= dinit
 V_INSTALLED	= y
@@ -66,7 +66,7 @@ V_PATH		= $(DINITD_DIR)/boot.d
 V_EXIST		= y
 $(call end)
 
-# ========== cronie ==========
+# ========================= cronie =========================
 $(call package)
 V_PKG		= cronie
 V_INSTALLED	= y
@@ -80,7 +80,7 @@ V_RUNNING	= y
 V_DEPS		= pkg-cronie
 $(call end)
 
-# ========== packages ==========
+# ========================= packages =========================
 $(call package)
 V_PKG		= podman
 V_INSTALLED	= y
@@ -88,7 +88,7 @@ V_INST_FILE	= /usr/bin/podman
 $(call end)
 $(call run-on-apply, pkg-podman)
 
-# ========== maintainer packages ==========
+# ========================= maintainer packages =========================
 $(call package)
 V_PKG		= ripgrep
 V_INSTALLED	= y
