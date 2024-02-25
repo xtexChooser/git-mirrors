@@ -5,8 +5,7 @@ RUN apk add build-base clang libcap autoconf automake git wget tar xz
 RUN apk add libtool readline-dev libidn2-dev libuv-dev \
 	nghttp2-dev libcap-dev jemalloc-dev json-c-dev openssl-dev>3 userspace-rcu-dev \
 	krb5-dev
-RUN wget https://ftp.isc.org/isc/bind9/cur/$(echo "$VERSION" | sed -E -e 's/^([0-9]+\.[0-9]+).*/\1/')/bind-$VERSION.tar.xz \
-	-O /source.tar.xz
+ADD https://ftp.isc.org/isc/bind9/$VERSION/bind-$VERSION.tar.xz /source.tar.xz
 RUN tar -xf source.tar.xz
 RUN mv bind-$VERSION src
 
