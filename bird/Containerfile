@@ -10,19 +10,19 @@ RUN mv bird-v$VERSION src
 
 WORKDIR /src
 RUN autoreconf; ./configure CC=clang CFLAGS='-O3' LDFLAGS='-flto' \
-	--prefix=/ --sysconfdir=/etc/bird --runstatedir=/var/run/bird \
+	--prefix=/usr/local --sysconfdir=/etc/bird --runstatedir=/var/run/bird \
 	--enable-pthreads --enable-libssh --enable-mpls-kernel
 RUN make -j$(nproc) && make install
-RUN setcap CAP_NET_ADMIN=+eip /sbin/bird
+RUN setcap CAP_NET_ADMIN=+eip /usr/local/sbin/bird
 
 FROM docker.io/library/alpine
 RUN apk add libssh ncurses readline
 COPY --from=builder /etc/bird /etc/bird
-COPY --from=builder /sbin/bird /sbin/bird /sbin/birdcl /sbin/
+COPY --from=builder /usr/local /usr/local
 RUN mkdir -p /var/run/bird
 
 WORKDIR /
-ENTRYPOINT [ "/sbin/bird", "-f" ]
+ENTRYPOINT [ "/usr/local/sbin/bird", "-f" ]
 
 LABEL org.opencontainers.image.licenses="GPL-2.0-or-later"
 LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/pkgs"
