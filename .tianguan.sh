@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 
-tiang::target nl-alk1 ssh://nl-alk1.svr.xvnet.eu.org
+while read -r line; do
+	# shellcheck disable=SC2046
+	eval $(tail -c+5 <<<"$line")
+done <<<"$(grep -E '^### ' hosts/*.mk)"
 
+tiang::defineCommand atremis::syncsec
 tiangCommandsUsage+="""
     -ss --syncsec  [FILE]       Copy a secret file to targets
 """
-tiang::defineCommand atremis::syncsec
-
 atremis::syncsec() {
 	if [[ "$1" == "-ss" || "$1" == "--syncsec" ]]; then
 		[ $# -lt 2 ] && tiang::error "1 parameter is required for --syncsec"
