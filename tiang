@@ -263,10 +263,11 @@ function tiang::cmd::script {
 	tiang::runParallelOnTargets tiang::runScript "$2"
 }
 
+declare tiangHandledParams
 function tiang::main {
 	tiang::loadProfiles
 	[ $# -eq 0 ] && tiang::usage && exit
-	
+
 	tiangTargets=("${tiangAllTargets[@]}")
 
 	while [ $# -ne 0 ]; do
@@ -342,7 +343,14 @@ function tiang::main {
 		*)
 			local tiangCommandHandler tiangPrevParames=$#
 			for tiangCommandHandler in "${tiangCommandHandlers[@]}"; do
-				"$tiangCommandHandler"
+				if "$tiangCommandHandler" "$@"; then
+					[ "${tiangHandledParams:-}" -eq "" ] &&
+						tiang::error "custom command handler returned successfully but without tiangHandledParams"
+					shift $((tiangHandledParams))
+					tiangHandledParams=
+				else
+					exit $?
+				fi
 				[ $# -ne $tiangPrevParames ] && break
 			done
 			[ $# -eq $tiangPrevParames ] && tiang::error "unknown option: $1"
