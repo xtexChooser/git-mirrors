@@ -264,9 +264,9 @@ function tiang::cmd::script {
 }
 
 function tiang::main {
-	[ $# -eq 0 ] && tiang::usage && exit
-
 	tiang::loadProfiles
+	[ $# -eq 0 ] && tiang::usage && exit
+	
 	tiangTargets=("${tiangAllTargets[@]}")
 
 	while [ $# -ne 0 ]; do
