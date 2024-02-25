@@ -9,5 +9,5 @@ $(call load-state, services/bird)
 ### tiang::tag nl-alk1 caddy
 $(call load-state, services/caddy)
 
-### tiang::tag nl-alk1 bird
+### tiang::tag nl-alk1 ntfy
 $(call load-state, services/ntfy)
