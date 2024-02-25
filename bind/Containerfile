@@ -35,7 +35,7 @@ RUN apk add libtool readline libidn2 libuv \
 COPY --from=builder /usr/local /usr/local
 RUN mkdir -p /etc/bind /var/run/bind
 
-LABEL org.opencontainers.image.licenses="GPL-2.0-or-later"
+LABEL org.opencontainers.image.licenses="MPL-2.0"
 LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/pkgs"
 LABEL org.opencontainers.image.title="bind"
 LABEL org.opencontainers.image.url="https://bind.isc.org/"
