@@ -14,6 +14,9 @@ cd /srv
 sudo git clone --depth 1 --recurse-submodules --shallow-submodules --single-branch https://codeberg.org/xvnet/atremis.git
 sudo chmod -R a+r atremis
 
+sudo mkdir secrets
+sudo chmod -R 0772 secrets
+
 cd atremis
 ./atre pull
 
