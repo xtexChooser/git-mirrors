@@ -30,6 +30,7 @@ tiangCommandsUsage="""
 
     -f --filter   [FILTER]      Filter targets with jq filters
     -w --with     [TAG]         Filter targets with tag
+    -w! --with!   [TAG]         Filter targets with inverted tag
     -g --grep     [NAME]        Filter targets with name literal
     -g! --grep!   [NAME]        Filter targets with no name literal
     -r --regex    [REGEX]       Filter targets with name regex
@@ -210,11 +211,13 @@ function tiang::cmd::filter {
 function tiang::cmd::with {
 	[ $# -lt 2 ] && tiang::error "1 parameter is required for --with"
 	local tiangTgt tiangTgtTags
-	local -a tiangTgts
+	local -a tiangTgts tiangGrepFlags=(-Fxqz)
+	{ [ "$1" == '-w' ] || [ "$1" == '--with' ]; } && tiangGrepFlags+=()
+	{ [ "$1" == '-w!' ] || [ "$1" == '--with!' ]; } && tiangGrepFlags+=(-v)
 	for tiangTgt in "${tiangTargets[@]}"; do
 		tiangTgtTags=${tiangTargetTags[$tiangTgt]}
 		[ "$tiangTgtTags" == "" ] && continue
-		if grep -Fxqz -- "$2" <<<"$tiangTgtTags"; then
+		if grep "${tiangGrepFlags[@]}" -- "$2" <<<"$tiangTgtTags"; then
 			tiangTgts+=("$tiangTgt")
 		fi
 	done
@@ -333,7 +336,7 @@ function tiang::main {
 			tiang::cmd::filter "$@"
 			shift 2
 			;;
-		-w | --with)
+		-w | --with | -w! | --with!)
 			tiang::cmd::with "$@"
 			shift 2
 			;;
