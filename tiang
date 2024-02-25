@@ -29,6 +29,7 @@ tiangCommandsUsage="""
     --none                      Clear target list
 
     -f --filter   [FILTER]      Filter targets with jq filters
+    -w --with     [TAG]         Filter targets with tag
     -g --grep     [NAME]        Filter targets with name literal
     -g! --grep!   [NAME]        Filter targets with no name literal
     -r --regex    [REGEX]       Filter targets with name regex
@@ -57,12 +58,18 @@ XXX
 }
 
 declare -a tiangTargets tiangAllTargets
-declare -A tiangTargetSSH tiangTargetData
+declare -A tiangTargetSSH tiangTargetData tiangTargetTags
 function tiang::target {
 	[ $# -lt 2 ] || [ $# -gt 3 ] && tiang::error "tiang::target <NAME> <SSH URI> [DATA]"
 	tiangAllTargets+=("$1")
 	tiangTargetSSH[$1]="$2"
 	[ $# -gt 2 ] && tiangTargetData[$1]="$3"
+	tiangTargetTags[$1]=""
+}
+
+function tiang::tag {
+	[ $# -ne 2 ] && tiang::error "tiang::tag <NAME> <TAG>"
+	tiangTargetTags[$1]="$(printf '%s\0%s' "${tiangTargetTags[$1]}" "$2")"
 }
 
 declare -a tiangCommandHandlers
@@ -200,6 +207,20 @@ function tiang::cmd::filter {
 	tiangTargets=("${tiangTgts[@]}")
 }
 
+function tiang::cmd::with {
+	[ $# -lt 2 ] && tiang::error "1 parameter is required for --with"
+	local tiangTgt tiangTgtTags
+	local -a tiangTgts
+	for tiangTgt in "${tiangTargets[@]}"; do
+		tiangTgtTags=${tiangTargetTags[$tiangTgt]}
+		[ "$tiangTgtTags" == "" ] && continue
+		if grep -Fxqz -- "$2" <<<"$tiangTgtTags"; then
+			tiangTgts+=("$tiangTgt")
+		fi
+	done
+	tiangTargets=("${tiangTgts[@]}")
+}
+
 function tiang::cmd::grep {
 	[ $# -lt 2 ] && tiang::error "1 parameter is required for --grep"
 	local tiangTgts
@@ -310,6 +331,10 @@ function tiang::main {
 			;;
 		-f | --filter)
 			tiang::cmd::filter "$@"
+			shift 2
+			;;
+		-w | --with)
+			tiang::cmd::with "$@"
 			shift 2
 			;;
 		-g | --grep | -g! | --grep! | -r | --regex | -r! | --regex!)
