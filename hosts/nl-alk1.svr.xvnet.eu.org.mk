@@ -11,3 +11,6 @@ $(call load-state, services/caddy)
 
 ### tiang::tag nl-alk1 ntfy
 $(call load-state, services/ntfy)
+
+### tiang::tag nl-alk1 bind
+$(call load-state, services/bind)
