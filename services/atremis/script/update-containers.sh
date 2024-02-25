@@ -3,9 +3,9 @@ set -e
 
 updated=""
 for img in $(podman image ls --format "{{if .RepoTags}}{{index .RepoTags 0}}{{end}}"); do
-	oldDigest="$(podman ls "$img" --format "{{.Digest}}")"
+	oldDigest="$(podman image ls "$img" --format "{{.Digest}}")"
 	podman pull "$img"
-	newDigest="$(podman ls "$img" --format "{{.Digest}}")"
+	newDigest="$(podman image ls "$img" --format "{{.Digest}}")"
 
 	if [[ "$oldDigest" != "$newDigest" ]]; then
 		echo Updated container image "$img"
