@@ -210,15 +210,19 @@ function tiang::cmd::filter {
 
 function tiang::cmd::with {
 	[ $# -lt 2 ] && tiang::error "1 parameter is required for --with"
-	local tiangTgt tiangTgtTags
+	local tiangTgt tiangTgtTags tiangGrepInverted=""
 	local -a tiangTgts tiangGrepFlags=(-Fxqz)
-	{ [ "$1" == '-w' ] || [ "$1" == '--with' ]; } && tiangGrepFlags+=()
-	{ [ "$1" == '-w!' ] || [ "$1" == '--with!' ]; } && tiangGrepFlags+=(-v)
+	{ [ "$1" == '-w!' ] || [ "$1" == '--with!' ]; } && tiangGrepInverted="true"
 	for tiangTgt in "${tiangTargets[@]}"; do
 		tiangTgtTags=${tiangTargetTags[$tiangTgt]}
-		[ "$tiangTgtTags" == "" ] && continue
-		if tr ';' '\0' <<<"$tiangTgtTags" | grep "${tiangGrepFlags[@]}" -- "$2"; then
+		[ "$tiangTgtTags" == "" ] && [ -n "$tiangGrepInverted" ] && {
 			tiangTgts+=("$tiangTgt")
+			continue
+		}
+		if tr ';' '\0' <<<"$tiangTgtTags" | grep "${tiangGrepFlags[@]}" -- "$2"; then
+			[ -z "$tiangGrepInverted" ] && tiangTgts+=("$tiangTgt")
+		else
+			[ -n "$tiangGrepInverted" ] && tiangTgts+=("$tiangTgt")
 		fi
 	done
 	tiangTargets=("${tiangTgts[@]}")
