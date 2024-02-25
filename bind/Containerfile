@@ -1,0 +1,46 @@
+FROM docker.io/library/alpine AS builder
+ARG VERSION
+
+RUN apk add build-base clang libcap autoconf automake git wget tar xz
+RUN apk add libtool readline-dev libidn2-dev libuv-dev \
+	nghttp2-dev libcap-dev jemalloc-dev json-c-dev openssl-dev>3 userspace-rcu-dev \
+	krb5-dev
+RUN wget https://ftp.isc.org/isc/bind9/cur/$(echo "$VERSION" | sed -E -e 's/^([0-9]+\.[0-9]+).*/\1/')/bind-$VERSION.tar.xz \
+	-O /source.tar.xz
+RUN tar -xf source.tar.xz
+RUN mv bind-$VERSION src
+
+WORKDIR /src
+RUN autoreconf -si; ./configure CC=clang CFLAGS='-O3' LDFLAGS='-flto' \
+	--prefix=/usr/local --sysconfdir=/etc/bind --runstatedir=/var/run/bind \
+	--with-libsystemd=no \
+	--enable-largefile \
+	--enable-geoip \
+	--enable-doh \
+	--enable-tcp-fastopen \
+	--enable-auto-validation  \
+	--enable-dnsrps \
+	--with-jemalloc=yes \
+	--with-json-c \
+	--with-libidn2 \
+	--with-openssl=yes \
+	--with-gssapi=yes
+RUN make -j$(nproc) && make install
+RUN rm -rf /usr/local/{include,share/man}
+
+FROM docker.io/library/alpine
+RUN apk add libtool readline libidn2 libuv \
+	nghttp2 json-c openssl>3 jemalloc \
+	userspace-rcu krb5 libcap
+COPY --from=builder /usr/local /usr/local
+RUN mkdir -p /etc/bind /var/run/bind
+
+LABEL org.opencontainers.image.licenses="GPL-2.0-or-later"
+LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/pkgs"
+LABEL org.opencontainers.image.title="bind"
+LABEL org.opencontainers.image.url="https://bind.isc.org/"
+LABEL org.opencontainers.image.vendor="XV-NET"
+
+WORKDIR /
+EXPOSE 53/udp 53/tcp 953/tcp
+CMD ["/usr/local/sbin/named", "-g", "-c", "/etc/bind/named.conf"]
