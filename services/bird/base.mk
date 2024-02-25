@@ -37,6 +37,6 @@ $(call end)
 $(call fs-file)
 V_PATH		= /etc/cron.d/dn42-roa
 V_TEMPLATE	= bash-tpl $(STATES_DIR)/services/bird/cron-dn42-roa
-V_DEP_VARS	+= LEONIS_MODULES_DIR
+V_DEP_VARS	+= STATES_DIR
 V_POST		+= systemd-restart E_UNIT=cronie.service
 $(call end)
