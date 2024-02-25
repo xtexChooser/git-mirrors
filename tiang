@@ -70,7 +70,7 @@ function tiang::target {
 
 function tiang::tag {
 	[ $# -ne 2 ] && tiang::error "tiang::tag <NAME> <TAG>"
-	tiangTargetTags[$1]="$(printf '%s\0%s' "${tiangTargetTags[$1]}" "$2")"
+	tiangTargetTags[$1]="$(printf '%s;%s' "${tiangTargetTags[$1]}" "$2")"
 }
 
 declare -a tiangCommandHandlers
@@ -217,7 +217,7 @@ function tiang::cmd::with {
 	for tiangTgt in "${tiangTargets[@]}"; do
 		tiangTgtTags=${tiangTargetTags[$tiangTgt]}
 		[ "$tiangTgtTags" == "" ] && continue
-		if grep "${tiangGrepFlags[@]}" -- "$2" <<<"$tiangTgtTags"; then
+		if tr ';' '\0' <<<"$tiangTgtTags" | grep "${tiangGrepFlags[@]}" -- "$2"; then
 			tiangTgts+=("$tiangTgt")
 		fi
 	done
