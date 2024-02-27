@@ -160,7 +160,7 @@ Team members:
 
 ## Moderation
 
-Purpose: [See the documentation](https://forgejo.org/docs/v1.20/developer/COC/).
+Purpose: [See the documentation](https://forgejo.org/docs/next/developer/COC/).
 
 Accountability:
 
@@ -171,6 +171,10 @@ Team members:
 
 * https://codeberg.org/earl-warren [May 2023 Agreement](https://codeberg.org/forgejo/governance/issues/10)
 * https://codeberg.org/caesar ([Oct 2023 Agreement](https://codeberg.org/forgejo/governance/issues/35))
+
+Enforcer (only for the purpose of enforcing moderation decisions):
+
+* https://codeberg.org/crystal ([Feb 2024 Agreement](https://codeberg.org/forgejo/governance/issues/78))
 
 Observer (access to team discussions and history of actions, without any moderation rights):
 
