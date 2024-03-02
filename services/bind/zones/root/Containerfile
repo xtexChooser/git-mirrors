@@ -1,0 +1,12 @@
+FROM docker.io/library/alpine AS builder
+
+RUN apk add curl ldns-tools jq
+RUN curl -O https://www.internic.net/domain/root.zone
+
+FROM scratch
+COPY --from=builder /root.zone /root.zone
+
+LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
+LABEL org.opencontainers.image.title="XVN Root Zone Files"
+LABEL org.opencontainers.image.url="https://www.iana.org/domains/root"
+LABEL org.opencontainers.image.vendor="XV-NET"
