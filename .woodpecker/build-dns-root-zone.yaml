@@ -8,7 +8,7 @@ steps:
     - name: build
       image: woodpeckerci/plugin-docker-buildx
       settings:
-          platforms: linux/amd64,linux/arm64/v8
+          platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
           repo: codeberg.org/${CI_REPO_OWNER}/dns-root-zone
           registry: codeberg.org
           username: ${CI_REPO_OWNER}
