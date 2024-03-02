@@ -88,6 +88,14 @@ V_INST_FILE	= /usr/bin/podman
 $(call end)
 $(call run-on-apply, pkg-podman)
 
+$(call package)
+V_PKG		= jq
+V_INSTALLED	= y
+V_INST_FILE	= /usr/bin/jq
+$(call end)
+
+# ========================= cron jobs =========================
+
 $(call fs-file)
 V_PATH		= /etc/cron.d/update-containers
 V_TEMPLATE	= bash-tpl $(STATES_DIR)/services/atremis/cron-update-containers
