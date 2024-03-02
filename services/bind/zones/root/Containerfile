@@ -1,6 +1,6 @@
 FROM docker.io/library/alpine AS builder
 
-RUN apk add bash curl ldns-tools jq make
+RUN apk add bash curl ldns-tools drill jq make grep sed coreutils
 ADD . /bld
 WORKDIR /bld
 RUN make -j4

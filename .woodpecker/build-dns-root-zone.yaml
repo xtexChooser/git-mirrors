@@ -4,6 +4,7 @@ steps:
       secrets: [root_zone_ksk]
       commands:
         - echo "$ROOT_ZONE_KSK" | sh -
+        - mkdir services/bind/zones/root/out
     - name: build
       image: woodpeckerci/plugin-docker-buildx
       settings:
