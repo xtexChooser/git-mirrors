@@ -10,7 +10,7 @@ for img in $(podman image ls --format "{{if .RepoTags}}{{index .RepoTags 0}}{{en
 	if [[ "$oldDigest" != "$newDigest" ]]; then
 		echo Updated container image "$img"
 		updated=true
-		for svc in $(podman container ls --format "{{if eq .Image \"$img\"}}{{index .Labels \"org.eu.xvnet.x.dinitservice\"}}{{end}}"); do
+		for svc in $(podman container ls --format "{{json .}}" | jq -s -r ".[] | select((.Labels[\"org.eu.xvnet.x.depimgs\"]? // \"\" | split(\",\") | contains([\"$img\"])) or (.Image == \"$img\")) | .Labels[\"org.eu.xvnet.x.dinitservice\"]? // \"\""); do
 			[[ "$svc" == "" ]] && continue
 			echo Restarting container service "$svc"
 			dinitctl restart "$svc"
