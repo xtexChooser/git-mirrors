@@ -1,0 +1,17 @@
+FROM docker.io/library/caddy:builder-alpine AS builder
+
+RUN xcaddy build \
+	--with github.com/mholt/caddy-ratelimit \
+	--with github.com/ueffel/caddy-brotli \
+	--with github.com/caddyserver/replace-response \
+	--with github.com/mholt/caddy-l4 \
+	--with github.com/mholt/caddy-events-exec
+
+FROM docker.io/library/caddy:alpine
+COPY --from=builder /usr/bin/caddy /usr/bin/caddy
+
+LABEL org.opencontainers.image.licenses="Apache-2.0"
+LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/pkgs"
+LABEL org.opencontainers.image.title="X-Caddy"
+LABEL org.opencontainers.image.url="https://caddyserver.com/"
+LABEL org.opencontainers.image.vendor="XV-NET"

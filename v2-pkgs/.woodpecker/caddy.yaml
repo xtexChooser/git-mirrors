@@ -1,0 +1,26 @@
+steps:
+    - name: build
+      image: woodpeckerci/plugin-docker-buildx
+      settings:
+          platforms: linux/amd64,linux/arm64/v8
+          repo: codeberg.org/${CI_REPO_OWNER}/x-caddy
+          registry: codeberg.org
+          username: ${CI_REPO_OWNER}
+          password:
+              from_secret: codeberg_token
+          dockerfile: caddy/Containerfile
+    - name: send-ntfy
+      image: alpine
+      secrets: [ntfy_token]
+      when:
+          - status: [success, failure]
+      commands:
+          - ./misc/send-log.sh
+when:
+    - event: push
+      path:
+          include: [".woodpecker/caddy.yaml", "caddy/*"]
+    - event: cron
+      cron: build
+    - event: manual
+      evaluate: 'TARGET == "all" || TARGET == "caddy"'
