@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 set -e
 
-command -q -v curl || apk add curl
+command -v curl >/dev/null 2>&1 || apk add curl
 
 [[ "${CI_WORKFLOW_NAME:-}" == "" ]] && echo "CI_WORKFLOW_NAME is not available" && exit 1
 [[ "${CI_PIPELINE_STATUS:-}" == "" ]] && echo "CI_PIPELINE_STATUS is not available" && exit 1
