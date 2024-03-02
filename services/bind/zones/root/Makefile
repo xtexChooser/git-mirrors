@@ -10,7 +10,7 @@ out/root.zone: root.zone \
 	out/iana-strip.zone \
 	out/dn42-delegation.zone \
 	out/opennic-glue-strip.zone out/opennic-delegation.zone
-	cat $^ | ldns-read-zone -p -s -S "$$(date -u +%Y%m%d)" > $@
+	cat $^ | ldns-read-zone -p -s -S unixtime > $@
 
 out/iana-orig.zone:
 	$(curl) https://www.internic.net/domain/root.zone
