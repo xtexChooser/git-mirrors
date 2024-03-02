@@ -1,0 +1,10 @@
+ARG VERSION
+FROM docker.io/binwiederhier/ntfy:v$VERSION
+
+CMD [ "serve" ]
+
+LABEL org.opencontainers.image.licenses="Apache-2.0 OR GPL-2.0-or-later"
+LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/pkgs"
+LABEL org.opencontainers.image.title="ntfy"
+LABEL org.opencontainers.image.url="https://ntfy.sh/"
+LABEL org.opencontainers.image.vendor="XV-NET"

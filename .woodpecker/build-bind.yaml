@@ -1,0 +1,41 @@
+matrix:
+    VERSION:
+        - 9.19.21 # TAG:LATEST
+        - 9.19.19
+
+steps:
+    - name: build
+      image: woodpeckerci/plugin-docker-buildx
+      settings:
+          platforms: linux/amd64
+          repo: codeberg.org/${CI_REPO_OWNER}/bind
+          registry: codeberg.org
+          tags: ${VERSION}
+          build_args:
+              - "VERSION=${VERSION}"
+          username: ${CI_REPO_OWNER}
+          password:
+              from_secret: codeberg_token
+          dockerfile: services/bind/Containerfile
+    - name: mark-latest
+      image: alpine
+      secrets: [codeberg_token]
+      commands:
+          - ./scripts/pkgs/tag-latest.sh "codeberg.org/${CI_REPO_OWNER}/bind" .woodpecker/bind.yaml "${VERSION}"
+    - name: send-ntfy
+      image: alpine
+      secrets: [ntfy_token]
+      environment:
+          - "VERSION=${VERSION}"
+      when:
+          - status: [success, failure]
+      commands:
+          - ./scripts/pkgs/send-log.sh
+when:
+    - event: push
+      path:
+          include: [".woodpecker/build-bind.yaml", "services/bind/Containerfile"]
+    - event: cron
+      cron: build-pkgs
+    - event: manual
+      evaluate: 'TARGET == "all" || TARGET == "bind"'
