@@ -10,7 +10,7 @@ command -q -v curl || apk add curl
 [[ "${CI_STEP_URL:-}" == "" ]] && echo "CI_STEP_URL is not available" && exit 1
 [[ "${NTFY_TOKEN:-}" == "" ]] && echo "NTFY_TOKEN is not available" && exit 1
 
-pkg=$CI_WORKFLOW_NAME
+pkg=${CI_WORKFLOW_NAME#build-}
 if [[ "$VERSION" != "" ]]; then
 	pkgWithVersion="$pkg $VERSION"
 else
