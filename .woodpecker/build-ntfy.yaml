@@ -15,6 +15,7 @@ steps:
           username: ${CI_REPO_OWNER}
           password:
               from_secret: codeberg_token
+          context: services/ntfy
           dockerfile: services/ntfy/Containerfile
     - name: mark-latest
       image: alpine

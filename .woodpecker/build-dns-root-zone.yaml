@@ -13,6 +13,7 @@ steps:
           username: ${CI_REPO_OWNER}
           password:
               from_secret: codeberg_token
+          context: services/bind/zones/root
           dockerfile: services/bind/zones/root/Containerfile
     - name: send-ntfy
       image: alpine

@@ -17,6 +17,7 @@ steps:
           username: ${CI_REPO_OWNER}
           password:
               from_secret: codeberg_token
+          context: services/bird
           dockerfile: services/bird/Containerfile
     - name: mark-latest
       image: alpine

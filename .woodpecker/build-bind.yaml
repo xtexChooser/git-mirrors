@@ -15,6 +15,7 @@ steps:
           username: ${CI_REPO_OWNER}
           password:
               from_secret: codeberg_token
+          context: services/bind
           dockerfile: services/bind/Containerfile
     - name: mark-latest
       image: alpine

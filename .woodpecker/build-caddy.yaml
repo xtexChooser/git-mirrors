@@ -8,6 +8,7 @@ steps:
           username: ${CI_REPO_OWNER}
           password:
               from_secret: codeberg_token
+          context: services/caddy
           dockerfile: services/caddy/Containerfile
     - name: send-ntfy
       image: alpine
