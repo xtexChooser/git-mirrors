@@ -1,10 +1,13 @@
 FROM docker.io/library/alpine AS builder
 
-RUN apk add curl ldns-tools jq
-RUN curl -O https://www.internic.net/domain/root.zone
+RUN apk add bash curl ldns-tools jq make
+ADD . /bld
+WORKDIR /bld
+RUN make -j4
 
 FROM scratch
-COPY --from=builder /root.zone /root.zone
+COPY --from=builder /bld/out/root.zone.signed /root.zone
+COPY --from=builder /bld/out/dnssec-zsk.key /root.zsk.key
 
 LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
 LABEL org.opencontainers.image.title="XVN Root Zone Files"

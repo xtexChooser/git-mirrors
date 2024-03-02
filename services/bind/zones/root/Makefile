@@ -4,6 +4,8 @@ SHELL:=bash -c -e
 curl = curl -q -o $@
 cleanzone = ldns-read-zone -e RRSIG -e ZONEMD -e NSEC -e SOA
 
+all: out/root.zone.signed
+
 out/root.zone: root.zone \
 	out/iana-strip.zone \
 	out/dn42-delegation.zone \
@@ -31,3 +33,10 @@ out/opennic-glue-strip.zone: out/opennic-glue-orig.zone
 
 out/opennic-delegation.zone: gen-opennic-records.sh out/opennic-glue-strip.zone
 	./$< | $(cleanzone) > $@
+
+out/dnssec-zsk.key out/dnssec-zsk.private:
+	psk="$$(ldns-keygen -a ed25519 .)"; mv $$psk.private out/dnssec-zsk.private; mv $$psk.key out/dnssec-zsk.key
+
+dnssec-ksk := $(wildcard .dnssec-ksk.private ../../../../../secrets/dns/root-ksk.private)
+out/root.zone.signed: out/root.zone out/dnssec-zsk.private $(dnssec-ksk)
+	ldns-signzone -e "$$(date -u +%Y%m%d --date='+1month')" -f $@ -o . -z sha512 $< out/dnssec-zsk $(subst .private,,$(dnssec-ksk))
