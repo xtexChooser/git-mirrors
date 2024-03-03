@@ -9,14 +9,15 @@ all: out/root.zone.signed
 out/root.zone: root.zone \
 	out/iana-strip.zone \
 	out/dn42-delegation.zone \
-	out/opennic-glue-strip.zone out/opennic-delegation.zone
+	out/opennic-glue-strip.zone out/opennic-delegation.zone \
+	out/furnic.zone
 	cat $^ | ldns-read-zone -p -s -S unixtime > $@
 
 out/iana-orig.zone:
 	$(curl) https://www.internic.net/domain/root.zone
 
 out/iana-strip.zone: out/iana-orig.zone iana-strip.txt 
-	sed -E -f iana-strip.txt $< \
+	cat $< | perl -0p iana-strip.txt \
 		| $(cleanzone) > $@
 
 out/dn42-delegation-orig.zone:
@@ -33,6 +34,9 @@ out/opennic-glue-strip.zone: out/opennic-glue-orig.zone
 
 out/opennic-delegation.zone: gen-opennic-records.sh out/opennic-glue-strip.zone
 	./$< | $(cleanzone) > $@
+
+out/furnic.zone:
+	drill -t @151.236.24.112 NS fur. > $@
 
 out/dnssec-zsk.key out/dnssec-zsk.private:
 	psk="$$(ldns-keygen -a ed25519 .)"; mv $$psk.private out/dnssec-zsk.private; mv $$psk.key out/dnssec-zsk.key
