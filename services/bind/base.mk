@@ -23,3 +23,11 @@ $(call podman-image)
 V_NAME		= dns-root-zone
 V_IMAGE		= codeberg.org/xvnet/dns-root-zone:latest
 $(call end)
+
+$(call fs-line)
+V_NAME		= localhost
+V_PATH		= /etc/resolv.conf
+V_PREPEND	= true
+V_LINE		= nameserver 127.0.0.1
+V_MATCH		= ^nameserver\s+127\.0\.0\.1$$
+$(call end)
