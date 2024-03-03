@@ -3,7 +3,7 @@
 while read -r line; do
 	# shellcheck disable=SC2046
 	eval $(tail -c+5 <<<"$line")
-done <<<"$(grep -E '^### ' hosts/*.mk)"
+done <<<"$(grep -E '^### tiang::' hosts/*.mk)"
 
 tiang::defineCommand atremis::syncsec
 tiangCommandsUsage+="""
