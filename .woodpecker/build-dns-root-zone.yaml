@@ -4,7 +4,7 @@ steps:
       secrets: [root_zone_ksk]
       commands:
         - echo "$ROOT_ZONE_KSK" | sh -
-        - mkdir services/bind/zones/root/out
+        - mkdir services/dns/root/out
     - name: build
       image: woodpeckerci/plugin-docker-buildx
       settings:
@@ -14,8 +14,8 @@ steps:
           username: ${CI_REPO_OWNER}
           password:
               from_secret: codeberg_token
-          context: services/bind/zones/root
-          dockerfile: services/bind/zones/root/Containerfile
+          context: services/dns/root
+          dockerfile: services/dns/root/Containerfile
     - name: send-ntfy
       image: alpine
       secrets: [ntfy_token]
@@ -29,7 +29,7 @@ when:
           include:
               [
                   ".woodpecker/build-dns-root-zone.yaml",
-                  "services/bind/zones/root/*",
+                  "services/dns/root/*",
               ]
     - event: cron
       cron: build-pkgs
