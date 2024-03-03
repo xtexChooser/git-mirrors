@@ -1,4 +1,4 @@
-FS_LINE_VARS = V_TARGET_NAME V_NAME V_POST $(v-deps-var) V_PATH V_FLAGS V_MATCH V_LINE
+FS_LINE_VARS = V_TARGET_NAME V_NAME V_POST $(v-deps-var) V_PATH V_FLAGS V_MATCH V_LINE V_PREPEND
 define fs-line0
 $(eval V_TARGET_NAME?=fs-line-$(V_PATH)-$(V_NAME))
 
@@ -21,7 +21,7 @@ $(V_TARGET_NAME): $(if $(call not,$(findstring no-dep,$(V_FLAGS))$(findstring ap
 				$(call vpost, E_MINOR=replaced)
 			else
 				$(CP) $(V_PATH) $(V_PATH).bak
-				echo '$(subst ','"'"',$(V_LINE))' >> $(V_PATH)
+				$(if $(call is-true,$(V_PREPEND)),{ echo '$(subst ','"'"',$(V_LINE))'; cat $(V_PATH); } > $(V_PATH).newtmp; mv $(V_PATH).newtmp $(V_PATH),echo '$(subst ','"'"',$(V_LINE))' >> $(V_PATH))
 				$(call succ, Appended line '$(V_LINE)' to $(V_PATH))
 				$(call vpost, E_MINOR=appended)
 			fi
