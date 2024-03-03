@@ -25,9 +25,9 @@ V_IMAGE		= codeberg.org/xvnet/dns-root-zone:latest
 $(call end)
 
 $(call fs-line)
-V_NAME		= localhost
+V_NAME		= recursive-ns
 V_PATH		= /etc/resolv.conf
 V_PREPEND	= true
-V_LINE		= nameserver 127.0.0.1
-V_MATCH		= ^nameserver\s+127\.0\.0\.1$$
+V_LINE		= nameserver fd00:443a:ef14:2::2
+V_MATCH		= ^nameserver\s+fd00:443a:ef14:2::2$$
 $(call end)
