@@ -14,7 +14,7 @@ $(V_TARGET_NAME): $(if $(call not,$(findstring no-dep,$(V_FLAGS))$(findstring ap
 	export E_MAJOR=fs-line E_NAME=$(V_NAME) E_PATH=$(V_PATH)
 	if [[ -e $(V_PATH) ]]; then
 		if ! grep -F '$(subst ','"'"',$(V_LINE))' $(V_PATH) $(DROP_STDOUT); then
-			if grep -E '$(subst ','"'"',$(V_MATCH))' $(V_PATH) $(DROP_STDOUT); then
+			if $(if $(V_MATCH),grep -E '$(subst ','"'"',$(V_MATCH))' $(V_PATH) $(DROP_STDOUT), false); then
 				$(MV) $(V_PATH) $(V_PATH).bak
 				$(SED) -E -e 's/$(subst ','"'"',$(V_MATCH))/$(subst ','"'"',$(V_LINE))/g' $(V_PATH).bak > $(V_PATH)
 				$(call succ, Replaced line with '$(V_LINE)' in $(V_PATH))
