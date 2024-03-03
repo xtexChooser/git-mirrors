@@ -7,6 +7,7 @@ RUN make -j4
 
 FROM scratch
 COPY --from=builder /bld/out/root.zone.signed /root.zone
+COPY --from=builder /bld/out/root.hint /root.hint
 COPY --from=builder /bld/out/dnssec-zsk.key /root.zsk.key
 
 LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"

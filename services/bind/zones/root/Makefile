@@ -4,7 +4,7 @@ SHELL:=bash -c -e
 curl = curl -q -o $@
 cleanzone = ldns-read-zone -e RRSIG -e ZONEMD -e NSEC -e SOA
 
-all: out/root.zone.signed
+all: out/root.zone.signed out/root.hint
 
 out/root.zone: root.zone \
 	out/iana-strip.zone \
@@ -12,6 +12,9 @@ out/root.zone: root.zone \
 	out/opennic-glue-strip.zone out/opennic-delegation.zone \
 	out/furnic.zone
 	cat $^ | ldns-read-zone -p -s -S unixtime > $@
+
+out/root.hint: out/root.zone.signed
+	grep -P '^(.*root\.ns\.xvnet0\.eu\.org\.|\.)\t+.*$$' $< > $@
 
 out/iana-orig.zone:
 	$(curl) https://www.internic.net/domain/root.zone
