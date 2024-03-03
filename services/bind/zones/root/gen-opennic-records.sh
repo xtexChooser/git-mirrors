@@ -14,5 +14,5 @@ for tld in "${TLD[@]}"; do
 	[[ "$tld" != "" ]] || continue
 	[[ "$tld" != "." ]] || continue
 	[[ "$tld" != "opennic.glue" ]] || continue
-	echo "$tld.	$TTL	IN	NS		$tld.opennic.glue."
+	echo "$tld.	$TTL	IN	NS		$(grep -P "^$tld.opennic.glue.\t" out/opennic-glue-strip.zone | cut -f5)"
 done
