@@ -118,6 +118,10 @@ V_FILE		= $(BUILD_DIR)/test-caddy/caddy.yaml
 V_DEPS		+= $(BUILD_DIR)/test-caddy/Caddyfile
 $(call end)
 
+$(call podman-image)
+V_IMAGE		= docker.io/library/caddy:latest
+$(call end)
+
 # $(call user)
 # V_NAME		= caddy
 # V_EXIST		= true
