@@ -1,11 +1,12 @@
 PODMAN = podman
 
-PODMAN_IMAGE_VARS = V_TARGET_NAME V_IMAGE V_POST $(v-deps-var) V_EXIST V_LATEST
+PODMAN_IMAGE_VARS = V_TARGET_NAME V_NAME V_IMAGE V_POST $(v-deps-var) V_EXIST V_LATEST
 define podman-image0
-$(eval V_TARGET_NAME?=podman-image-$(subst :,-,$(V_IMAGE)))
+$(eval V_NAME?=$(subst :,-,$(V_IMAGE)))
+$(eval V_TARGET_NAME?=podman-image-$(V_NAME))
 $(if $(findstring :,$(V_IMAGE)),,$(call mkerr, V_IMAGE $(V_IMAGE) should include the tag, e.g. :latest))
 
-$(call mktrace, Define podman-image target: $(V_IMAGE))
+$(call mktrace, Define podman-image target: $(V_NAME))
 $(call mktrace-vars,$(PODMAN_IMAGE_VARS))
 
 $(call apply-target,$(V_TARGET_NAME))
