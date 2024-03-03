@@ -20,5 +20,5 @@ b.ns.xvnet0.eu.org.		43200	IN	A		5.255.109.94
 b.ns.xvnet0.eu.org.		43200	IN	AAAA	2a04:52c0:114:e34a::1
 
 ; XVN core domains
-xvnet.eu.org.			604800	IN	NS		b.ns.xvnet.eu.org.
+xvnet.eu.org.			604800	IN	NS		b.ns.xvnet0.eu.org.
 ns.xvnet.eu.org.		604800	IN	DNAME	ns.xvnet0.eu.org.
