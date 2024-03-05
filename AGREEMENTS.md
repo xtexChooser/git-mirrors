@@ -57,7 +57,7 @@ Furthermore, contribution authors must comply with the [Developer Certificate of
 
 ## Branding: Forgejo name, tagline, logo and mascot
 
-The name of the project is Forgejo, the tagline is `Beyond coding. We forge.`. See [here for details](BRANDING.md).
+The name of the project is Forgejo, the tagline is `Beyond coding. We forge.`. See [here for details](./branding/README.md).
 
 ### Forgejo Logo
 
