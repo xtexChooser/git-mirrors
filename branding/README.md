@@ -30,7 +30,7 @@ The logo was created by [Caesar Schinas](https://caesarschinas.com/) and is lice
 
 An [exemption to the Attribution requirement](./logo/forgejo-logo-license-exemption.txt) is granted to the Forgejo project.
 
-All logo files are in the [`logo`](./mascot) directory of this repo. [#23](https://codeberg.org/forgejo/meta/issues/23#issuecomment-693408)
+All logo files are in the [`logo`](./logo) directory of this repo. [#23](https://codeberg.org/forgejo/meta/issues/23#issuecomment-693408)
 
 ### Mascot
 
