@@ -659,7 +659,7 @@ class LoginNotify implements LoggerAwareInterface {
 	 */
 	private function setLoginCookie( User $user ) {
 		$cookie = $this->getPrevLoginCookie( $user->getRequest() );
-		list( , $newCookie ) = $this->checkAndGenerateCookie( $user, $cookie );
+		[ , $newCookie ] = $this->checkAndGenerateCookie( $user, $cookie );
 		$expire = $this->getCurrentTime() + $this->config->get( 'LoginNotifyCookieExpire' );
 		$resp = $user->getRequest()->response();
 		$resp->setCookie(
@@ -874,7 +874,7 @@ class LoginNotify implements LoggerAwareInterface {
 		if ( $cookie === '' ) {
 			$result = self::USER_NO_INFO;
 		} else {
-			list( $userKnown, ) = $this->checkAndGenerateCookie( $user, $cookie );
+			[ $userKnown, ] = $this->checkAndGenerateCookie( $user, $cookie );
 			$result = $userKnown ? self::USER_KNOWN : self::USER_NOT_KNOWN;
 		}
 

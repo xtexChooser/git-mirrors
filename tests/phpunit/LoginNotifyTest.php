@@ -243,7 +243,7 @@ class LoginNotifyTest extends MediaWikiIntegrationTestCase {
 	) {
 		$this->setUpLoginNotify();
 		$user = $this->userFactory->newFromName( 'Foo' );
-		list( $actualSeenBefore, $actualNewCookie ) =
+		[ $actualSeenBefore, $actualNewCookie ] =
 			$this->inst->checkAndGenerateCookie( $user, $cookie );
 
 		$this->assertEquals( $expectedSeenBefore, $actualSeenBefore,
