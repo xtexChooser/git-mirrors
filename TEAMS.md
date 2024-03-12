@@ -50,17 +50,20 @@ The permissions of the team are:
 
 Team members:
 
-* https://codeberg.org/alex19srv
+* https://codeberg.org/0ko
 * https://codeberg.org/algernon
+* https://codeberg.org/dachary
 * https://codeberg.org/DanielGibson
 * https://codeberg.org/fluzz
 * https://codeberg.org/gmem
 * https://codeberg.org/JakobDev
 * https://codeberg.org/jerger
 * https://codeberg.org/KaKi87
+* https://codeberg.org/maltejur
 * https://codeberg.org/n0toose
 * https://codeberg.org/realaravinth
 * https://codeberg.org/rome-user
+* https://codeberg.org/snematoda
 * https://codeberg.org/viceice
 * https://codeberg.org/wetneb
 * https://codeberg.org/Xinayder
