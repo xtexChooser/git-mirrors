@@ -25,9 +25,28 @@ registry:create({
     end
 })
 registry:create({
-    id = "gradle",
-    name = "Gradle",
+    id = "gradle-groovy",
+    name = "Gradle (Groovy)",
     file_name = "build.gradle",
+    filter = function(path)
+        if not fs:exists(fs:side(path, "build")) then
+            return false
+        end
+        return true
+    end,
+    do_fast_clean = function(path)
+        if fs:exists(fs:side(path, ".gradle")) then
+            fs:rmrf(fs:side(path, ".gradle"))
+        end
+        if fs:exists(fs:side(path, "build")) then
+            fs:rmrf(fs:side(path, "build"))
+        end
+    end,
+})
+registry:create({
+    id = "gradle-kts",
+    name = "Gradle (KTS)",
+    file_name = "build.gradle.kts",
     filter = function(path)
         if not fs:exists(fs:side(path, "build")) then
             return false
@@ -73,11 +92,11 @@ registry:create({
         return true
     end,
     do_fast_clean = function(path)
-        if fs:exists(fs:side(path, "zig-out")) then
-            fs:rmrf(fs:side(path, "zig-out"))
-        end
         if fs:exists(fs:side(path, "zig-cache")) then
             fs:rmrf(fs:side(path, "zig-cache"))
+        end
+        if fs:exists(fs:side(path, "zig-out")) then
+            fs:rmrf(fs:side(path, "zig-out"))
         end
     end,
 })

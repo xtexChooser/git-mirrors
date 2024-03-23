@@ -7,7 +7,12 @@ buildfile("target")
 rmrf("target")
 safeclean("string.format(\"cd %s; cargo clean\", fs:parent(path))")
 
-type("gradle", "Gradle", "build.gradle")
+type("gradle-groovy", "Gradle (Groovy)", "build.gradle")
+buildfile("build")
+rmrf("build")
+rmrf(".gradle")
+
+type("gradle-kts", "Gradle (KTS)", "build.gradle.kts")
 buildfile("build")
 rmrf("build")
 rmrf(".gradle")
