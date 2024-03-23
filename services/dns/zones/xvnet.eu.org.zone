@@ -1,0 +1,16 @@
+$ORIGIN xvnet.eu.org.
+$TTL 3600
+@				43200	IN	SOA		a.ns.xvnet0.eu.org. op.xvnet.eu.org. 0 1800 900 1209600 3600
+				300		IN	NS		ns1.desec.io.
+				300		IN	NS		ns1.gcorelabs.net.
+				300		IN	NS		ns2.desec.org.
+				300		IN	NS		ns2.gcdn.services.
+						IN	MX		10 mx1.forwardemail.net.
+						IN	MX		10 mx2.forwardemail.net.
+						IN	TXT		forward-email=xtexChooser@duck.com
+_dmarc					IN	TXT		"v=DMARC1; p=quarantine; ruf=mailto:abuse@xvnet0.eu.org,mailto:xtexChooser@duck.com"
+
+svr						IN	DNAME	svr.xvnet0.eu.org.
+
+ntfy					IN	CNAME	ntfy.svr.xvnet0.eu.org.
+w						IN	CNAME	w.xvnet0.eu.org.

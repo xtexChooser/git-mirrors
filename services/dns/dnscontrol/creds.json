@@ -1,0 +1,13 @@
+{
+	"bind": {
+		"TYPE": "BIND"
+	},
+	"desec": {
+		"TYPE": "DESEC",
+		"auth-token": "$XVN_DESEC_TOKEN"
+	},
+	"gcore": {
+		"TYPE": "GCORE",
+		"api-key": "$XVN_GCORE_APIKEY"
+	}
+}
