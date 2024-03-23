@@ -21,7 +21,7 @@ steps:
       image: alpine
       secrets: [codeberg_token]
       commands:
-          - ./scripts/pkgs/tag-latest.sh "codeberg.org/${CI_REPO_OWNER}/bind" .woodpecker/bind.yaml "${VERSION}"
+          - ./scripts/pkgs/tag-latest.sh "codeberg.org/${CI_REPO_OWNER}/bind" .woodpecker/build-bind.yaml "${VERSION}"
     - name: send-ntfy
       image: alpine
       secrets: [ntfy_token]
