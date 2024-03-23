@@ -3,7 +3,7 @@ XVNET_ASN := $(shell echo "$$((4244310000 + $(XVNET_NUM)))")
 XVNET_LOCAL_IP := fd00:443a:ef14:1::$(shell printf '%x:%x' \
 	$$(($(XVNET_NUM) / 0x10000)) $$(($(XVNET_NUM) % 0x10000)))
 
-BIRD_VERSION ?= 2.14
+BIRD_VERSION ?= 2.15.1
 
 $(call x-container-service)
 V_SERVICE	= bird
