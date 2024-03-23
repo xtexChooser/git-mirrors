@@ -8,9 +8,6 @@ use ResourceLoaderContext;
 use ResourceLoaderSiteStylesModule;
 
 class FixedWidthStyleModule extends ResourceLoaderSiteStylesModule {
-	// Fixed width only makes sense for desktop.
-	protected $targets = [ 'desktop' ];
-
 	/**
 	 * @param string $titleText
 	 * @param ResourceLoaderContext $context
