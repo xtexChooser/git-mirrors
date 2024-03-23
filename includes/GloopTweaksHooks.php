@@ -95,8 +95,25 @@ class GloopTweaksHooks {
 		global $wgGloopTweaksAddFooterLinks;
 
 		if ( $wgGloopTweaksAddFooterLinks && $key === 'places' ) {
-			$footerLinks['tou'] = $skin->footerLink( 'weirdgloop-tou', 'weirdgloop-tou-url' );
-			$footerLinks['contact'] = $skin->footerLink( 'weirdgloop-contact', 'weirdgloop-contact-url' );
+			$footerLinks['tou'] = Html::element(
+				'a',
+				[
+					'href' => Skin::makeInternalOrExternalUrl(
+						$skin->msg( 'weirdgloop-tou-url' )->inContentLanguage()->text()
+					),
+				],
+				$skin->msg( 'weirdgloop-tou' )->text()
+			);
+
+			$footerLinks['contact'] = Html::element(
+				'a',
+				[
+					'href' => Skin::makeInternalOrExternalUrl(
+						$skin->msg( 'weirdgloop-contact-url' )->inContentLanguage()->text()
+					),
+				],
+				$skin->msg( 'weirdgloop-contact' )->text()
+			);
 		}
 	}
 
