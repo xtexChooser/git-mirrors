@@ -1,6 +1,7 @@
 matrix:
     VERSION:
-        - 9.19.21 # TAG:LATEST
+        - 9.19.22 # TAG:LATEST
+        - 9.19.21
 
 steps:
     - name: build
