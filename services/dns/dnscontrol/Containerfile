@@ -1,0 +1,12 @@
+FROM docker.io/library/alpine AS builder
+
+RUN apk add bash ldns-tools make coreutils
+ADD .. /bld
+WORKDIR /bld
+RUN make -C dnscontrol -j4
+ADD .env.sh /bld/dnscontrol/out/.env.sh
+
+FROM ghcr.io/stackexchange/dnscontrol
+COPY --from=builder /bld/dnscontrol/out /bld
+WORKDIR /bld
+RUN . .env.sh; dnscontrol preview

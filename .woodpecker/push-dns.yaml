@@ -1,0 +1,34 @@
+steps:
+    - name: prepare-keys
+      image: alpine
+      secrets: [dnscontrol_secrets]
+      commands:
+          - echo "$DNSCONTROL_SECRETS" > services/dns/dnscontrol/.env.sh
+    - name: push
+      image: woodpeckerci/plugin-docker-buildx
+      settings:
+          dry-run: true
+          platforms: linux/amd64
+          repo: codeberg.org/${CI_REPO_OWNER}/push-dns
+          context: services/dns/dnscontrol
+          dockerfile: services/dns/dnscontrol/Containerfile
+    - name: send-ntfy
+      image: alpine
+      secrets: [ntfy_token]
+      when:
+          - status: [success, failure]
+      commands:
+          - ./scripts/pkgs/send-log.sh
+when:
+    - event: push
+      path:
+          include:
+              [
+                  ".woodpecker/push-dns.yaml",
+                  "services/dns/zones/*",
+                  "services/dns/dnscontrol/*",
+              ]
+    - event: cron
+      cron: push-dns
+    - event: manual
+      evaluate: 'TARGET == "all" || TARGET == "push-dns"'
