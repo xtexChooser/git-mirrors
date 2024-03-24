@@ -10,8 +10,18 @@ $TTL 3600
 						IN	TXT		forward-email=1ludnqej@duck.com
 _dmarc					IN	TXT		"v=DMARC1; p=quarantine; ruf=mailto:abuse@xvnet0.eu.org,mailto:1ludnqej@duck.com"
 
+; Servers
 opilio.s				IN	A		5.255.109.94
 						IN	AAAA	2a04:52c0:114:e34a::1
 
+; Authoritative Nameservers
+a.ns					IN	AAAA	2a0e:b107:16c0:2::1
+b.ns					IN	A		5.255.109.94
+b.ns					IN	AAAA	2a04:52c0:114:e34a::1
+
+; Root Nameservers
+a.root.ns				IN	AAAA	2a0e:b107:16c0:2::3
+
+; Services
 ntfy					IN	CNAME	opilio.s.xvnet0.eu.org.
 w						IN	CNAME	opilio.s.xvnet0.eu.org.
