@@ -1,20 +1,20 @@
 steps:
     - name: prepare-keys
       image: alpine
-      secrets: [root_zone_ksk]
+      secrets: [dns_zones_ksk]
       commands:
-        - echo "$ROOT_ZONE_KSK" | sh -
+          - echo "$DNS_ZONES_KSK" | sh -
     - name: build
       image: woodpeckerci/plugin-docker-buildx
       settings:
           platforms: linux/amd64
-          repo: codeberg.org/${CI_REPO_OWNER}/dns-root-zone
+          repo: codeberg.org/${CI_REPO_OWNER}/dns-zones
           registry: codeberg.org
           username: ${CI_REPO_OWNER}
           password:
               from_secret: codeberg_token
-          context: services/dns/root
-          dockerfile: services/dns/root/Containerfile
+          context: services/dns
+          dockerfile: services/dns/Containerfile
     - name: send-ntfy
       image: alpine
       secrets: [ntfy_token]
@@ -27,10 +27,12 @@ when:
       path:
           include:
               [
-                  ".woodpecker/build-dns-root-zone.yaml",
-                  "services/dns/root/*",
+                  ".woodpecker/build-dns-zones.yaml",
+                  "services/dns/zones/*",
+                  "services/dns/Containerfile",
+                  "services/dns/Makefile",
               ]
     - event: cron
       cron: build-pkgs
     - event: manual
-      evaluate: 'TARGET == "all" || TARGET == "dns-root-zone"'
+      evaluate: 'TARGET == "all" || TARGET == "dns-zones"'

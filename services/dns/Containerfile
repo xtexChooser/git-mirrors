@@ -1,0 +1,15 @@
+FROM docker.io/library/alpine AS builder
+
+RUN apk add bash ldns-tools make coreutils
+ADD Makefile /bld/Makefile
+ADD zones /bld/zones
+WORKDIR /bld
+RUN make -j4
+
+FROM scratch
+COPY --from=builder /bld/out/zones /
+COPY --from=builder /bld/out/zsk/*.key /
+
+LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
+LABEL org.opencontainers.image.title="XVN Authoritative Zone Files"
+LABEL org.opencontainers.image.vendor="XV-NET"
