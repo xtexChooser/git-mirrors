@@ -1,6 +1,6 @@
 .DELETE_ON_ERROR:
 
-$(shell mkdir -p out out/zones)
+$(shell mkdir -p out)
 
 out/dnsconfig.js: dnsconfig.js out/creds.json \
 	out/converted/xvnet0.eu.org.js \

@@ -2,7 +2,7 @@ FROM ghcr.io/stackexchange/dnscontrol AS dnscontrol
 
 FROM docker.io/library/alpine AS builder
 
-RUN apk add bash ldns-tools make coreutils sed
+RUN apk add bash ldns-tools make coreutils sed curl
 COPY --from=dnscontrol /usr/local/bin/dnscontrol /usr/local/bin/
 
 ADD zones /bld/zones
@@ -12,3 +12,5 @@ RUN make -j4
 
 WORKDIR /bld/dnscontrol/out
 RUN . ../.env.sh; dnscontrol preview
+RUN . ../.env.sh; dnscontrol push | tee dnspush.log
+RUN ../scripts/ci-send-log.sh

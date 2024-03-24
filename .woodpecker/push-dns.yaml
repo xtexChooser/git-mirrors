@@ -1,9 +1,10 @@
 steps:
     - name: prepare-keys
       image: alpine
-      secrets: [dnscontrol_secrets]
+      secrets: [dnscontrol_secrets, ntfy_token]
       commands:
           - echo "$DNSCONTROL_SECRETS" > services/dns/dnscontrol/.env.sh
+          - echo "$NTFY_TOKEN" > services/dns/dnscontrol/ntfytoken.txt
           - cp -R services/dns/zones services/dns/dnscontrol/zones
     - name: push
       image: woodpeckerci/plugin-docker-buildx
