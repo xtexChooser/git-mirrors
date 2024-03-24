@@ -10,7 +10,7 @@ $TTL 3600
 						IN	TXT		forward-email=xtexChooser@duck.com
 _dmarc					IN	TXT		"v=DMARC1; p=quarantine; ruf=mailto:abuse@xvnet0.eu.org,mailto:xtexChooser@duck.com"
 
-svr						IN	DNAME	svr.xvnet0.eu.org.
+nl-alk1.svr				IN	CNAME	nl-alk1.svr.xvnet0.eu.org.
 
 ntfy					IN	CNAME	ntfy.svr.xvnet0.eu.org.
 w						IN	CNAME	w.xvnet0.eu.org.
