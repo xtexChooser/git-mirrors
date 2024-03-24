@@ -1,7 +1,8 @@
 FROM docker.io/library/alpine AS builder
 
 RUN apk add bash ldns-tools make coreutils
-ADD .. /bld
+ADD zones /bld/zones
+ADD . /bld/dnscontrol
 WORKDIR /bld
 RUN make -C dnscontrol -j4
 ADD .env.sh /bld/dnscontrol/out/.env.sh

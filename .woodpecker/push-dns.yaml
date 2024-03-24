@@ -4,6 +4,7 @@ steps:
       secrets: [dnscontrol_secrets]
       commands:
           - echo "$DNSCONTROL_SECRETS" > services/dns/dnscontrol/.env.sh
+          - cp -R services/dns/zones services/dns/dnscontrol/zones
     - name: push
       image: woodpeckerci/plugin-docker-buildx
       settings:
