@@ -1,6 +1,6 @@
 $ORIGIN xvnet.eu.org.
 $TTL 3600
-@				43200	IN	SOA		a.ns.xvnet0.eu.org. op.xvnet.eu.org. 0 1800 900 1209600 3600
+@				43200	IN	SOA		a.ns.xvnet0.eu.org. op.xvnet0.eu.org. 0 1800 900 1209600 3600
 				300		IN	NS		ns1.gcorelabs.net.
 				300		IN	NS		ns2.gcdn.services.
 						IN	MX		10 mx1.forwardemail.net.
