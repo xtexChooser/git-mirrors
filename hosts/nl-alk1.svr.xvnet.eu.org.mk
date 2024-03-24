@@ -1,4 +1,4 @@
-### tiang::target nl-alk1 ssh://nl-alk1.svr.xvnet.eu.org
+### tiang::target nl-alk1 ssh://opilio.s.xvnet0.eu.org
 
 BIRD_ROUTER_ID := 5.255.109.94
 XVNET_NUM := 1

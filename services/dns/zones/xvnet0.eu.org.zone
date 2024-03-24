@@ -10,8 +10,8 @@ $TTL 3600
 						IN	TXT		forward-email=1ludnqej@duck.com
 _dmarc					IN	TXT		"v=DMARC1; p=quarantine; ruf=mailto:abuse@xvnet0.eu.org,mailto:1ludnqej@duck.com"
 
-nl-alk1.svr				IN	A		5.255.109.94
+opilio.s				IN	A		5.255.109.94
 						IN	AAAA	2a04:52c0:114:e34a::1
 
-ntfy					IN	CNAME	nl-alk1.svr.xvnet0.eu.org.
-w						IN	CNAME	nl-alk1.svr.xvnet0.eu.org.
+ntfy					IN	CNAME	opilio.s.xvnet0.eu.org.
+w						IN	CNAME	opilio.s.xvnet0.eu.org.
