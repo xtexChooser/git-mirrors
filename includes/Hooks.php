@@ -137,8 +137,8 @@ class Hooks {
 				'resetTemplates' => false,
 				'resetCategories' => false,
 				'resetImages' => false,
-				'resetdone' => false,
-				'elimdone' => false
+				'resetneeded' => false,
+				'elimneeded' => false
 			];
 		}
 	}
@@ -547,14 +547,13 @@ class Hooks {
 	}
 
 	/**
-	 * Reset everything; some categories may have been fixed, however via fixcategory=
-	 *
 	 * @param Parser $parser
-	 * @param string $text
+	 * @param string &$text
 	 */
-	public static function endReset( $parser, $text ) {
-		if ( !self::$createdLinks['resetdone'] ) {
-			self::$createdLinks['resetdone'] = true;
+	public static function onParserAfterTidy( $parser, &$text ) {
+		// Reset everything; some categories may have been fixed, however via fixcategory=
+		if ( self::$createdLinks['resetneeded'] ) {
+			self::$createdLinks['resetneeded'] = false;
 
 			foreach ( $parser->getOutput()->getCategories() as $key => $val ) {
 				if ( array_key_exists( $key, self::$fixedCategories ) ) {
@@ -580,22 +579,18 @@ class Hooks {
 
 			self::$fixedCategories = [];
 		}
-	}
 
-	/**
-	 * @param Parser $parser
-	 * @param string &$text
-	 */
-	public static function endEliminate( $parser, &$text ) {
 		// called during the final output phase; removes links created by DPL
-		if ( isset( self::$createdLinks ) ) {
-			if ( array_key_exists( 0, self::$createdLinks ) ) {
+		if ( self::$createdLinks['elimneeded'] ) {
+			self::$createdLinks['elimneeded'] = false;
+
+			if ( isset( self::$createdLinks['elimLinks'] ) ) {
 				foreach ( $parser->getOutput()->getLinks() as $nsp => $link ) {
-					if ( !array_key_exists( $nsp, self::$createdLinks[0] ) ) {
+					if ( !array_key_exists( $nsp, self::$createdLinks['elimLinks'] ) ) {
 						continue;
 					}
 
-					$parser->getOutput()->mLinks[$nsp] = array_diff_assoc( $parser->getOutput()->getLinks()[$nsp], self::$createdLinks[0][$nsp] );
+					$parser->getOutput()->mLinks[$nsp] = array_diff_assoc( $parser->getOutput()->getLinks()[$nsp], self::$createdLinks['elimLinks'][$nsp] );
 
 					if ( count( $parser->getOutput()->getLinks()[$nsp] ) == 0 ) {
 						unset( $parser->getOutput()->mLinks[$nsp] );
@@ -603,13 +598,13 @@ class Hooks {
 				}
 			}
 
-			if ( isset( self::$createdLinks ) && array_key_exists( 1, self::$createdLinks ) ) {
+			if ( isset( self::$createdLinks['elimTemplates'] ) ) {
 				foreach ( $parser->getOutput()->getTemplates() as $nsp => $tpl ) {
-					if ( !array_key_exists( $nsp, self::$createdLinks[1] ) ) {
+					if ( !array_key_exists( $nsp, self::$createdLinks['elimTemplates'] ) ) {
 						continue;
 					}
 
-					$parser->getOutput()->mTemplates[$nsp] = array_diff_assoc( $parser->getOutput()->getTemplates()[$nsp], self::$createdLinks[1][$nsp] );
+					$parser->getOutput()->mTemplates[$nsp] = array_diff_assoc( $parser->getOutput()->getTemplates()[$nsp], self::$createdLinks['elimTemplates'][$nsp] );
 
 					if ( count( $parser->getOutput()->getTemplates()[$nsp] ) == 0 ) {
 						unset( $parser->getOutput()->mTemplates[$nsp] );
@@ -617,12 +612,12 @@ class Hooks {
 				}
 			}
 
-			if ( isset( self::$createdLinks ) && array_key_exists( 2, self::$createdLinks ) ) {
-				$parser->getOutput()->setCategories( array_diff_assoc( $parser->getOutput()->getCategories(), self::$createdLinks[2] ) );
+			if ( isset( self::$createdLinks['elimCategories'] ) ) {
+				$parser->getOutput()->setCategories( array_diff_assoc( $parser->getOutput()->getCategories(), self::$createdLinks['elimCategories'] ) );
 			}
 
-			if ( isset( self::$createdLinks ) && array_key_exists( 3, self::$createdLinks ) ) {
-				$parser->getOutput()->mImages = array_diff_assoc( $parser->getOutput()->getImages(), self::$createdLinks[3] );
+			if ( isset( self::$createdLinks['elimImages'] ) ) {
+				$parser->getOutput()->mImages = array_diff_assoc( $parser->getOutput()->getImages(), self::$createdLinks['elimImages'] );
 			}
 		}
 	}

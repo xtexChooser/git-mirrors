@@ -904,8 +904,6 @@ class Parse {
 	 * @param Parser $parser
 	 */
 	private function triggerEndResets( $output, &$reset, &$eliminate, $isParserTag, Parser $parser ) {
-		global $wgHooks;
-
 		$localParser = MediaWikiServices::getInstance()->getParserFactory()->create();
 
 		$page = $parser->getPage();
@@ -958,41 +956,37 @@ class Parse {
 				Hooks::$createdLinks['resetLinks'] = true;
 			}
 
-			// Register a hook to reset links which were produced during parsing DPL output.
-			if ( !isset( $wgHooks['ParserAfterTidy'] ) || !is_array( $wgHooks['ParserAfterTidy'] ) || !in_array( 'MediaWiki\\Extension\\DynamicPageList3\\Hooks::endReset', $wgHooks['ParserAfterTidy'] ) ) {
-				$wgHooks['ParserAfterTidy'][] = 'MediaWiki\\Extension\\DynamicPageList3\\Hooks::endReset';
-			}
+			// Configure hook to reset links which were produced during parsing DPL output.
+			Hooks::$createdLinks['resetneeded'] = true;
 		}
 
 		if ( array_sum( $eliminate ) ) {
-			// Register a hook to reset links which were produced during parsing DPL output
-			if ( !isset( $wgHooks['ParserAfterTidy'] ) || !is_array( $wgHooks['ParserAfterTidy'] ) || !in_array( 'MediaWiki\\Extension\\DynamicPageList3\\Hooks::endEliminate', $wgHooks['ParserAfterTidy'] ) ) {
-				$wgHooks['ParserAfterTidy'][] = 'MediaWiki\\Extension\\DynamicPageList3\\Hooks::endEliminate';
-			}
+			// Configure hook to remove links which were produced during parsing DPL output
+			Hooks::$createdLinks['elimneeded'] = true;
 
 			if ( $parserOutput && isset( $eliminate['links'] ) && $eliminate['links'] ) {
 				// Trigger the mediawiki parser to find links, images, categories etc. which are contained in the DPL output. This allows us to remove these links from the link list later. If the article containing the DPL statement itself uses one of these links they will be thrown away!
-				Hooks::$createdLinks[0] = [];
+				Hooks::$createdLinks['elimLinks'] = [];
 
 				foreach ( $parserOutput->getLinks() as $nsp => $link ) {
-					Hooks::$createdLinks[0][$nsp] = $link;
+					Hooks::$createdLinks['elimLinks'][$nsp] = $link;
 				}
 			}
 
 			if ( $parserOutput && isset( $eliminate['templates'] ) && $eliminate['templates'] ) {
-				Hooks::$createdLinks[1] = [];
+				Hooks::$createdLinks['elimTemplates'] = [];
 
 				foreach ( $parserOutput->getTemplates() as $nsp => $tpl ) {
-					Hooks::$createdLinks[1][$nsp] = $tpl;
+					Hooks::$createdLinks['elimTemplates'][$nsp] = $tpl;
 				}
 			}
 
 			if ( $parserOutput && isset( $eliminate['categories'] ) && $eliminate['categories'] ) {
-				Hooks::$createdLinks[2] = $parserOutput->mCategories;
+				Hooks::$createdLinks['elimCategories'] = $parserOutput->mCategories;
 			}
 
 			if ( $parserOutput && isset( $eliminate['images'] ) && $eliminate['images'] ) {
-				Hooks::$createdLinks[3] = $parserOutput->mImages;
+				Hooks::$createdLinks['elimImages'] = $parserOutput->mImages;
 			}
 		}
 	}
