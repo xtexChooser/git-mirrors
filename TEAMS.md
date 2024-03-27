@@ -75,7 +75,8 @@ Purpose: Review and merge pull requests in Forgejo repositories in accordance to
 
 Team members:
 
-* https://codeberg.org/wetneb
+* https://codeberg.org/wetneb [January 2024 Agreement](https://codeberg.org/forgejo/governance/issues/54)
+* Members of the Security, Devops & Releases teams
 
 ## Localization
 
