@@ -6,11 +6,11 @@ a.root.ns.xvnet0.eu.org.	43200	IN	AAAA	2a0e:b107:16c0:2::3
 
 ; XVN TLD
 xvn.					604800	IN	NS		ns.xvn.
-ns.xvn.					43200	IN	AAAA	fd00:443a:ef14:2::2
+ns.xvn.					43200	IN	AAAA	fd00:443a:ef14:2::1
 
 ; XVN DN42 domains
 xvnet.dn42.				604800	IN	NS		ns.xvnet.dn42.
-ns.xvnet.dn42.			43200	IN	AAAA	fd00:443a:ef14:2::2
+ns.xvnet.dn42.			43200	IN	AAAA	fd00:443a:ef14:2::1
 ns.xvnet.dn42.			43200	IN	A		172.20.206.65
 ns.xvnet.dn42.			43200	IN	A		172.20.206.66
 
