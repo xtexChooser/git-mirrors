@@ -21,9 +21,11 @@ succ=true
 if grep -F 'exiting (due to fatal error)' .bind-valid.log; then
 	succ=''
 fi
-rm -f .bind-valid.conf .bind-valid.log
-[[ -z "$succ" ]] && {
+rm -f .bind-valid.log
+if [[ -z "$succ" ]]; then
 	echo 'Validation failed' >/dev/stderr
 	exit 1
-}
+else
+	rm -f .bind-valid.conf
+fi
 exit 0
