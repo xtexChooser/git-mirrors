@@ -1,0 +1,10 @@
+$ORIGIN xvnet.dn42.
+$TTL 600
+@				43200	IN	SOA		a.ns.xvnet.dn42. op.xvnet0.eu.org. 0 1800 900 1209600 3600
+				604800	IN	NS		a.ns
+				604800	IN	NS		b.ns
+
+; Authoritative Nameservers
+a.ns						AAAA	fd00:443a:ef14:2::0001
+b.ns						A		172.20.206.65
+b.ns						AAAA	fd00:443a:ef14:1::0001
