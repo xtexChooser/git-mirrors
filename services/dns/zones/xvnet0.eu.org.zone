@@ -23,5 +23,5 @@ b.ns					IN	AAAA	2a04:52c0:114:e34a::1
 a.root.ns				IN	AAAA	2a0e:b107:16c0:2::3
 
 ; Services
-ntfy					IN	CNAME	opilio.s.xvnet0.eu.org.
-w						IN	CNAME	opilio.s.xvnet0.eu.org.
+ntfy					IN	CNAME	opilio.s
+w						IN	CNAME	opilio.s
