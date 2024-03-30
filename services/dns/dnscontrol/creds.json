@@ -9,5 +9,10 @@
 	"gcore": {
 		"TYPE": "GCORE",
 		"api-key": "$XVN_GCORE_APIKEY"
+	},
+	"cf": {
+		"TYPE": "CLOUDFLAREAPI",
+		"accountid": "$XVN_CF_ACCT",
+		"apitoken": "$XVN_CF_TOKEN"
 	}
 }
