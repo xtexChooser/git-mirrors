@@ -1,0 +1,7 @@
+$ORIGIN 206.20.172.in-addr.arpa
+$TTL 600
+@				43200	IN	SOA		ns.xvn. op.xvnet0.eu.org. 0 1800 900 1209600 3600
+				604800	IN	NS		ns.xvn.
+
+; Servers
+65						PTR	opilio.s.xvn.
