@@ -1,6 +1,12 @@
 ARG VERSION
-FROM --platform=$TARGETPLATFORM docker.io/binwiederhier/ntfy:v$VERSION
+FROM docker.io/binwiederhier/ntfy:v$VERSION as bld
 
+FROM docker.io/library/alpine
+
+RUN apk add --no-cache tzdata
+COPY --from=bld /usr/bin/ntfy /usr/bin
+
+ENTRYPOINT ["ntfy"]
 CMD [ "serve" ]
 
 LABEL org.opencontainers.image.licenses="Apache-2.0 OR GPL-2.0-or-later"
@@ -8,3 +14,4 @@ LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
 LABEL org.opencontainers.image.title="ntfy"
 LABEL org.opencontainers.image.url="https://ntfy.sh/"
 LABEL org.opencontainers.image.vendor="XV-NET"
+LABEL org.opencontainers.image.documentation="https://docs.ntfy.sh/"
