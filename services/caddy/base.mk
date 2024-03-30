@@ -12,6 +12,7 @@ V_ARGS		+= --memory=64M
 V_ARGS 		+= codeberg.org/xvnet/x-caddy
 $(call end)
 
+CADDY_INCLUDES :=
 $(call fs-file)
 V_PATH		= /etc/caddy/Caddyfile
 V_TEMPLATE	= bash-tpl $(STATES_DIR)/services/caddy/Caddyfile
