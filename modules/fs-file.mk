@@ -121,4 +121,3 @@ TPL_IN := $(SRC)
 TPL_OUT := $(E_PATH)
 endef
 $(if $(call streq,$(E_MAJOR),fs-file-create),$(eval $(mkfile-template0))$(call vt-target, mkfile-template))
-$(call vt-target, mkfile-template)
