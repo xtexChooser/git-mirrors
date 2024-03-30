@@ -4,6 +4,10 @@ $TTL 600
 				604800	IN	NS		a.ns.xvnet0.eu.org.
 				604800	IN	NS		b.ns.xvnet0.eu.org.
 							PTR		xvnet.eu.org.
+							MX		10 mx1.improvmx.com.
+							MX		20 mx2.improvmx.com.
+							TXT		"v=spf1 include:_spf.mx.cloudflare.net include:spf.improvmx.com ~all"
+_dmarc						TXT		"v=DMARC1; p=quarantine; ruf=mailto:abuse@xvnet0.eu.org"
 
 ; Servers
 1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.0.0.0	PTR	opilio.s.xvn.
