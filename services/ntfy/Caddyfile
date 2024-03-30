@@ -1,4 +1,4 @@
-ntfy.xvnet.eu.org {
+ntfy.xvnet.eu.org ntfy.xvnet0.eu.org http://ntfy.xvn {
 	redir /docs/* https://ntfy.sh{path} permanent
 	reverse_proxy unix//var/run/ntfy/ntfy.sock
 }
