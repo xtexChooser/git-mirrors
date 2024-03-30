@@ -1,11 +1,12 @@
 $(call x-container-service)
 V_SERVICE	= bind
 V_DEPS		+= /etc/bind/named.conf
-V_SVCDEPS	+= /var/run/bind podman-image-dns-root-zone
+V_SVCDEPS	+= /var/run/bind podman-image-dns-root-zone podman-image-dns-zones
 V_ARGS		+= --mount=type=bind,src=/etc/bind,dst=/etc/bind,ro=true
 V_ARGS		+= --mount=type=bind,src=/var/run/bind,dst=/var/run/bind
 V_ARGS		+= --mount=type=image,source=codeberg.org/xvnet/dns-root-zone:latest,destination=/opt/root-zone
-V_ARGS		+= --label=org.eu.xvnet.x.depimgs=codeberg.org/xvnet/dns-root-zone:latest
+V_ARGS		+= --mount=type=image,source=codeberg.org/xvnet/dns-zones:latest,destination=/opt/zones
+V_ARGS		+= --label=org.eu.xvnet.x.depimgs=codeberg.org/xvnet/dns-root-zone:latest,codeberg.org/xvnet/dns-zones:latest
 V_ARGS		+= --publish-all
 V_ARGS		+= --network=host --cap-add=CAP_NET_BIND_SERVICE
 V_ARGS 		+= codeberg.org/xvnet/bind:latest
@@ -22,6 +23,11 @@ $(call end)
 $(call podman-image)
 V_NAME		= dns-root-zone
 V_IMAGE		= codeberg.org/xvnet/dns-root-zone:latest
+$(call end)
+
+$(call podman-image)
+V_NAME		= dns-zones
+V_IMAGE		= codeberg.org/xvnet/dns-zones:latest
 $(call end)
 
 $(call fs-line)
