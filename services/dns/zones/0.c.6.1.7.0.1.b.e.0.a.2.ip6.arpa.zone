@@ -3,6 +3,7 @@ $TTL 600
 @				43200	IN	SOA		a.ns.xvnet0.eu.org. op.xvnet0.eu.org. 0 1800 900 1209600 3600
 				604800	IN	NS		a.ns.xvnet0.eu.org.
 				604800	IN	NS		b.ns.xvnet0.eu.org.
+							PTR		xvnet.eu.org.
 
 ; Servers
 1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.1.0.0.0	PTR	opilio.s.xvn.
