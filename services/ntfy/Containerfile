@@ -1,5 +1,5 @@
 ARG VERSION
-FROM docker.io/binwiederhier/ntfy:v$VERSION
+FROM --platform=$TARGETPLATFORM docker.io/binwiederhier/ntfy:v$VERSION
 
 CMD [ "serve" ]
 
