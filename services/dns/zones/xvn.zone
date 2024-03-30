@@ -1,0 +1,17 @@
+$ORIGIN xvn.
+$TTL 600
+@				43200	IN	SOA		ns.xvn. op.xvnet0.eu.org. 0 1800 900 1209600 3600
+				604800	IN	NS		ns
+
+; Authoritative Nameservers
+ns				43200	IN	AAAA	fd00:443a:ef14:2::2
+
+; Servers
+opilio.s				IN	AAAA	fd00:443a:ef14:1::1
+
+; Services
+ntfy					IN	CNAME	opilio.s
+w						IN	CNAME	opilio.s
+
+; Root Nameservers
+a.root.ns				IN	AAAA	fd00:443a:ef14:2::3
