@@ -10,5 +10,6 @@ podman run -it --rm --user "root:root" \
 	-v /var/lib/postgresql/balaro/data:/var/lib/postgresql/data \
 	-e PGDATA=/var/lib/postgresql/data \
 	-e POSTGRES_PASSWORD="$password" \
-	codeberg.org/xvnet/postgres
+	codeberg.org/xvnet/postgres || true
 rm -rf /var/lib/postgresql/balaro/data/{postgres.conf,postgresql.conf,pg_ident.conf,pg_hba.conf}
+cp /var/lib/postgresql/balaro/data/PG_VERSION /var/lib/postgresql/balaro/data/
