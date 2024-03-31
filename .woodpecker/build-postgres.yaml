@@ -1,0 +1,41 @@
+matrix:
+    VERSION:
+        - 16.2 # TAG:LATEST
+
+steps:
+    - name: build
+      image: woodpeckerci/plugin-docker-buildx
+      settings:
+          platforms: linux/amd64,linux/arm64
+          repo: codeberg.org/${CI_REPO_OWNER}/postgres
+          registry: codeberg.org
+          tags: ${VERSION}
+          build_args:
+              - "VERSION=${VERSION}"
+          username: ${CI_REPO_OWNER}
+          password:
+              from_secret: codeberg_token
+          context: services/postgres
+          dockerfile: services/postgres/Containerfile
+    - name: mark-latest
+      image: alpine
+      secrets: [codeberg_token]
+      commands:
+          - ./scripts/pkgs/tag-latest.sh "codeberg.org/${CI_REPO_OWNER}/postgres" .woodpecker/build-postgres.yaml "${VERSION}"
+    - name: send-ntfy
+      image: alpine
+      secrets: [ntfy_token]
+      environment:
+          - "VERSION=${VERSION}"
+      when:
+          - status: [success, failure]
+      commands:
+          - ./scripts/pkgs/send-log.sh
+when:
+    - event: push
+      path:
+          include: [".woodpecker/build-postgres.yaml", "services/postgres/Containerfile"]
+    - event: cron
+      cron: build-pkgs
+    - event: manual
+      evaluate: 'TARGET == "all" || TARGET == "postgres"'

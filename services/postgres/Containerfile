@@ -1,0 +1,8 @@
+ARG VERSION
+FROM docker.io/library/postgres:$VERSION-alpine
+
+LABEL org.opencontainers.image.licenses="Apache-2.0 OR GPL-2.0-or-later"
+LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
+LABEL org.opencontainers.image.title="postgres"
+LABEL org.opencontainers.image.url="https://www.postgresql.org/"
+LABEL org.opencontainers.image.vendor="XV-NET"
