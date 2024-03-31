@@ -12,7 +12,7 @@ $(call end)
 
 $(call fs-file)
 V_PATH		= /var/lib/postgresql/balaro/postgres.conf
-V_TEMPLATE	= bash-tpl $(STATES_DIR)/services/postgres/balaro/postgres.conf
+V_TEMPLATE	= bash-tpl $(STATES_DIR)/services/postgres/balaro/postgresql.conf
 $(call end)
 
 $(call add-fs-directory,/var/lib/postgresql/balaro)
