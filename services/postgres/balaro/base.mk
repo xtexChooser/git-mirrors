@@ -10,6 +10,7 @@ V_ARGS		+= --mount=type=bind,src=/var/lib/postgresql/balaro/data,dst=/var/lib/po
 V_ARGS		+= --mount=type=bind,src=/var/run/postgresql,dst=/var/run/postgresql
 V_ARGS		+= --memory=256M
 V_ARGS		+= --user=root:root
+V_ARGS		+= --publish=5433:5432/tcp
 V_ARGS 		+= codeberg.org/xvnet/postgres:latest
 $(call end)
 
