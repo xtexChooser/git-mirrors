@@ -14,3 +14,7 @@ $(call load-state, services/ntfy)
 
 ### tiang::tag opilio bind
 $(call load-state, services/bind)
+
+### tiang::tag opilio postgres
+### tiang::tag opilio balaro
+$(call load-state, services/postgres/balaro)
