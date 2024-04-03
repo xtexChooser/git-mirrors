@@ -1,0 +1,29 @@
+ARG VERSION
+FROM docker.io/library/php:$VERSION-fpm-alpine
+
+RUN apk add --no-cache \
+	git \
+	imagemagick \
+	# Required for SyntaxHighlighting
+	python3
+
+ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+RUN install-php-extensions calendar intl mbstring opcache apcu pgsql
+RUN rm /usr/local/bin/install-php-extensions
+
+RUN { \
+	echo 'opcache.memory_consumption=128'; \
+	echo 'opcache.interned_strings_buffer=8'; \
+	echo 'opcache.max_accelerated_files=4000'; \
+	echo 'opcache.revalidate_freq=60'; \
+	echo 'opcache.fast_shutdown=1'; \
+	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
+
+RUN mkdir -p /var/www/data
+RUN chown -R www-data:www-data /var/www/data
+
+LABEL org.opencontainers.image.licenses="PHP-3.01"
+LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
+LABEL org.opencontainers.image.title="MediaWiki-PHP"
+LABEL org.opencontainers.image.url="https://www.php.net/"
+LABEL org.opencontainers.image.vendor="XV-NET"

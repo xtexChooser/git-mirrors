@@ -1,0 +1,41 @@
+matrix:
+    VERSION:
+        - 8.3 # TAG:LATEST
+
+steps:
+    - name: build
+      image: woodpeckerci/plugin-docker-buildx
+      settings:
+          platforms: linux/amd64,linux/arm64
+          repo: codeberg.org/${CI_REPO_OWNER}/x-mediawiki-php
+          registry: codeberg.org
+          tags: ${VERSION}
+          build_args:
+              - "VERSION=${VERSION}"
+          username: ${CI_REPO_OWNER}
+          password:
+              from_secret: codeberg_token
+          context: services/mediawiki/php
+          dockerfile: services/mediawiki/php/Containerfile
+    - name: mark-latest
+      image: alpine
+      secrets: [codeberg_token]
+      commands:
+          - ./scripts/pkgs/tag-latest.sh "codeberg.org/${CI_REPO_OWNER}/x-mediawiki-php" .woodpecker/build-mediawiki-php.yaml "${VERSION}"
+    - name: send-ntfy
+      image: alpine
+      secrets: [ntfy_token]
+      environment:
+          - "VERSION=${VERSION}"
+      when:
+          - status: [success, failure]
+      commands:
+          - ./scripts/pkgs/send-log.sh
+when:
+    - event: push
+      path:
+          include: [".woodpecker/build-mediawiki-php.yaml", "services/mediawiki/php/*"]
+    - event: cron
+      cron: build-pkgs
+    - event: manual
+      evaluate: 'TARGET == "all" || TARGET == "x-mediawiki-php"'
