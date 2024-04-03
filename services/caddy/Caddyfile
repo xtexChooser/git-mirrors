@@ -2,6 +2,6 @@
 	email acme@xvnet.eu.org
 }
 
-% for tpl in "${CADDY_INCLUDES[@]}"; do
+% for tpl in $CADDY_INCLUDES; do
 % "$LEONIS_MODULES_DIR/template.sh" bash-tpl "$tpl"
 % done
