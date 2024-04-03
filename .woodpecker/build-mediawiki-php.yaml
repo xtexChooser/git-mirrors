@@ -6,7 +6,7 @@ steps:
     - name: build
       image: woodpeckerci/plugin-docker-buildx
       settings:
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           repo: codeberg.org/${CI_REPO_OWNER}/x-mediawiki-php
           registry: codeberg.org
           tags: ${VERSION}
