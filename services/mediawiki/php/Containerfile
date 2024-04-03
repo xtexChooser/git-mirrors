@@ -17,10 +17,12 @@ RUN { \
 	echo 'opcache.max_accelerated_files=4000'; \
 	echo 'opcache.revalidate_freq=60'; \
 	echo 'opcache.fast_shutdown=1'; \
-	} > /usr/local/etc/php/conf.d/opcache-recommended.ini
+	} > $PHP_INI_DIR/conf.d/opcache-recommended.ini
 
+ADD php-fpm.conf /usr/local/etc/php-fpm.d/zzzz-mw-docker.conf
+
+# SQLite data directory
 RUN mkdir -p /var/www/data
-RUN chown -R www-data:www-data /var/www/data
 
 LABEL org.opencontainers.image.licenses="PHP-3.01"
 LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
