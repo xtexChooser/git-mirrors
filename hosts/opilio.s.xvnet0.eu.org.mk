@@ -18,3 +18,6 @@ $(call load-state, services/bind)
 ### tiang::tag opilio postgres
 ### tiang::tag opilio balaro
 $(call load-state, services/postgres/balaro)
+
+### tiang::tag opilio mediawiki
+$(call load-state, services/mediawiki)
