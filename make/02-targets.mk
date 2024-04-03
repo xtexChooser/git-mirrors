@@ -50,5 +50,5 @@ endef
 
 define invoke-hooks
 $(call mktrace, Calling state hook $1)
-$(foreach state,$(leonis-requested-states),-include $(STATES_DIR)/$(state)/hooks/$1.mk)
+$(foreach state,$(leonis-requested-states),$(eval -include $(STATES_DIR)/$(state)/hooks/$1.mk))
 endef
