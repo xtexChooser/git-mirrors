@@ -11,7 +11,7 @@ opilio.s				IN	AAAA	fd00:443a:ef14:1::1
 
 ; Services
 ntfy					IN	CNAME	opilio.s
-w						IN	CNAME	opilio.s
+wiki					IN	CNAME	opilio.s
 dns						IN	AAAA	fd00:443a:ef14:2::2
 
 ; Root Nameservers

@@ -1,0 +1,3 @@
+w.xvnet.eu.org w.xvnet0.eu.org http://wiki.xvn {
+	reverse_proxy unix//var/run/mediawiki/php-fpm.sock
+}
