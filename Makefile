@@ -46,6 +46,7 @@ else
 include $(LEONIS_MODULES_DIR)/*.mk
 -include $(VENDOR_MODULES_DIR)/*.mk
 $(call vendor-targets)
+$(call load-requested-states)
 $(call end-all)
 
 # ========================= Finalization =========================
