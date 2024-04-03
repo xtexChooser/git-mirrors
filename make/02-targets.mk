@@ -20,6 +20,7 @@ define load-state0
 $(if $(call is-state-requested,$1),,
 $(call mktrace, Requesting vendor state $1)
 leonis-requested-states += $1
+$(if $(leonis-requested-states-loaded),$$(call load-state-now,$1))
 )
 endef
 $(call define-inline-func,load-state)
@@ -29,6 +30,7 @@ $(filter $1,$(leonis-requested-states))
 endef
 
 define load-requested-states
+$(eval leonis-requested-states-loaded:=y)
 $(foreach state,$(leonis-requested-states),$(eval -include $(STATES_DIR)/$(state)/pre.mk))
 $(foreach state,$(leonis-requested-states),$(call load-state-now,$(state)))
 $(foreach state,$(leonis-requested-states),$(eval -include $(STATES_DIR)/$(state)/post.mk))
