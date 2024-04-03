@@ -4,7 +4,7 @@ APPLY_TARGETS ?= $(empty)
 
 # ========================= Paths =========================
 ifndef LEONIS_BASE_DIR
-$(call mkerr, LEONIS_BASE_DIR is not specified)
+$(error LEONIS_BASE_DIR is not specified)
 endif
 LEONIS_MAKE_DIR ?= $(LEONIS_BASE_DIR)/make
 LEONIS_MODULES_DIR ?= $(LEONIS_BASE_DIR)/modules
