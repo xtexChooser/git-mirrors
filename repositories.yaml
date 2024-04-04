@@ -46,6 +46,11 @@
   kind: extensions
   prefix: mw/extensions/Interwiki
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Interwiki
+- name: Lakeus
+  kind: skins
+  prefix: mw/skins/Lakeus
+  git: https://github.com/lakejason0/mediawiki-skins-Lakeus
+  branch: master
 - name: Linter
   kind: extensions
   prefix: mw/extensions/Linter
