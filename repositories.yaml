@@ -58,6 +58,10 @@
   kind: extensions
   prefix: mw/extensions/Math
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Math
+- name: MultimediaViewer
+  kind: extensions
+  prefix: mw/extensions/MultimediaViewer
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/MultimediaViewer
 - name: core
   prefix: mw
   branch: 1.41.1
