@@ -86,6 +86,10 @@
   kind: extensions
   prefix: mw/extensions/Poem
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Poem
+- name: ReplaceText
+  kind: extensions
+  prefix: mw/extensions/ReplaceText
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/ReplaceText
 - name: core
   prefix: mw
   branch: 1.41.1
