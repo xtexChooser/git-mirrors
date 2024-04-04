@@ -1,0 +1,13 @@
+{
+	"@metadata": {
+		"authors": [
+			"Amire80"
+		]
+	},
+	"action-checkuser": "duba adireshin IP na edita da wasu sauran bayanan na'ura",
+	"action-checkuser-log": "duba rajistan check user",
+	"checkuser-reason": "Dalili:",
+	"checkuser-all": "duka",
+	"checkuser-search": "Nema",
+	"checkuser-search-submit": "Nema"
+}

@@ -1,0 +1,19 @@
+{
+	"@metadata": {
+		"authors": [
+			"Kimberli Mäkäräinen (WMNO)",
+			"Yupik"
+		]
+	},
+	"checkuser-target": "IP-čujuhus dahje geavaheaddjinamma:",
+	"checkuser-all": "buot",
+	"checkuser-nomatch": "Eai bohtosat.",
+	"checkuser-nomatch-edits": "Eai bohtosat.\nMaŋemus rievdadus lei $1 diibmu $2.",
+	"checkuser-search-submit": "Oza",
+	"checkuser-helper-user": "Geavaheaddji",
+	"checkuser-investigate-subtitle-cancel-button-label": "Gaskkalduhte",
+	"checkuser-investigate-subtitle-continue-button-label": "Joatkke",
+	"checkuser-investigate-tab-timeline": "Áigelinnjá",
+	"checkuser-investigate-compare-copy-button-label": "Čájet wikiteavstta",
+	"checkuser-investigate-compare-copy-button-label-hide": "Čiega wikiteavstta"
+}
