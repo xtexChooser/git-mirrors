@@ -71,6 +71,10 @@
   kind: extensions
   prefix: mw/extensions/Loops
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Loops
+- name: MassMessage
+  kind: extensions
+  prefix: mw/extensions/MassMessage
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/MassMessage
 - name: Math
   kind: extensions
   prefix: mw/extensions/Math
