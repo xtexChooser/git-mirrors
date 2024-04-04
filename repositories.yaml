@@ -26,6 +26,10 @@
   kind: extensions
   prefix: mw/extensions/DiscussionTools
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/DiscussionTools
+- name: Echo
+  kind: extensions
+  prefix: mw/extensions/Echo
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Echo
 - name: core
   prefix: mw
   branch: 1.41.1
