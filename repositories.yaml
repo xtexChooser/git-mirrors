@@ -50,6 +50,10 @@
   kind: extensions
   prefix: mw/extensions/Linter
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Linter
+- name: LoginNotify
+  kind: extensions
+  prefix: mw/extensions/LoginNotify
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/LoginNotify
 - name: core
   prefix: mw
   branch: 1.41.1
