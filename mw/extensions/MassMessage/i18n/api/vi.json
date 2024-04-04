@@ -1,0 +1,11 @@
+{
+	"@metadata": {
+		"authors": [
+			"Max20091",
+			"Minh Nguyen",
+			"NguoiDungKhongDinhDanh"
+		]
+	},
+	"apihelp-editmassmessagelist-param-add": "Tiêu đề để thêm vào danh sách.",
+	"apihelp-editmassmessagelist-param-remove": "Tên trang cần xóa khỏi danh sách."
+}

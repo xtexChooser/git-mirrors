@@ -1,0 +1,28 @@
+{
+	"@metadata": {
+		"authors": [
+			"DannyS712",
+			"Zoranzoki21"
+		]
+	},
+	"apihelp-editmassmessagelist-summary": "Edit a mass message delivery list.",
+	"apihelp-editmassmessagelist-param-spamlist": "Title of the delivery list to update.",
+	"apihelp-editmassmessagelist-param-add": "Titles to add to the list.",
+	"apihelp-editmassmessagelist-param-remove": "Titles to remove from the list.",
+	"apihelp-editmassmessagelist-param-description": "New description for the delivery list.",
+	"apihelp-editmassmessagelist-param-minor": "Whether the edit should be marked as minor in the history of the list.",
+	"apihelp-editmassmessagelist-param-watchlist": "Unconditionally add or remove the page from the current user's watchlist, use preferences (ignored for bot users) or do not change watch.",
+	"apihelp-editmassmessagelist-example-1": "Add [[User talk:Foo]] and [[Talk:Bar]] to the delivery list [[Example]] and remove [[Talk:Baz]] from it",
+	"apihelp-editmassmessagelist-example-2": "Set the description of the delivery list [[Example]] to be \"FooBar delivery services\"",
+	"apihelp-massmessage-summary": "Send a message to a list of pages.",
+	"apihelp-massmessage-param-spamlist": "Page containing list of pages to leave a message on.",
+	"apihelp-massmessage-param-subject": "Subject line of the message.",
+	"apihelp-massmessage-param-message": "Message body text.",
+	"apihelp-massmessage-param-page-message": "Page to be sent along with the message body.",
+	"apihelp-massmessage-example-1": "Send a message to the list at [[Signpost Spamlist]] with the subject \"New Signpost\", and message body of \"Please read it\".",
+	"apihelp-massmessage-example-2": "Send a message to the list at [[Signpost Spamlist]] with the subject \"New Signpost\", and the message as the content of the page \"Help Page\".",
+	"apihelp-massmessage-example-3": "Send a message to the list at [[Signpost Spamlist]] with the subject \"New Signpost\", and message body of \"Please read it\" appended with the content from page \"Help Page\".",
+	"apihelp-query+mmcontent-summary": "Get the description and targets of a spamlist",
+	"apihelp-query+mmcontent-example-1": "Get page and spamlist information of [[Spam list]]",
+	"apierror-massmessage-invalidspamlist": "The specified spamlist is invalid."
+}
