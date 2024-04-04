@@ -131,6 +131,10 @@
   kind: extensions
   prefix: mw/extensions/Poem
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Poem
+- name: Popups
+  kind: extensions
+  prefix: mw/extensions/Popups
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Popups
 - name: ProtectSite
   kind: extensions
   prefix: mw/extensions/ProtectSite
