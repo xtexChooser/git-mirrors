@@ -42,6 +42,10 @@
   kind: extensions
   prefix: mw/extensions/InputBox
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/InputBox
+- name: Interwiki
+  kind: extensions
+  prefix: mw/extensions/Interwiki
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Interwiki
 - name: core
   prefix: mw
   branch: 1.41.1
