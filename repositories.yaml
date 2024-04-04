@@ -102,6 +102,10 @@
   kind: extensions
   prefix: mw/extensions/SpamBlacklist
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/SpamBlacklist
+- name: SyntaxHighlight_GeSHi
+  kind: extensions
+  prefix: mw/extensions/SyntaxHighlight_GeSHi
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/SyntaxHighlight_GeSHi
 - name: core
   prefix: mw
   branch: 1.41.1
