@@ -13,7 +13,21 @@ while read -r repo; do
 
 	if [[ -e "$subtreePrefix" ]]; then
 		echo "Merging repository: $name"
-		git subtree -P "$subtreePrefix" pull "$giturl" "$branch"
+		if ! git subtree -P "$subtreePrefix" pull "$giturl" "$branch"; then
+			if [[ "$name" == "core" ]]; then
+				echo "Trying to resolve core merge conflicts"
+				grep 'path = ' mw/.gitmodules | cut -d'=' -f2 | awk '{print "mw/" $1}' | while read -r dir; do
+					{
+						rm -d "$dir"
+						git add "$dir"
+						git rm --cached "$dir~*"
+					} &>/dev/null || true
+				done
+				git merge --continue
+			else
+				exit $!
+			fi
+		fi
 	else
 		echo "Initializing repository: $name"
 		git subtree -P "$subtreePrefix" add "$giturl" "$branch"
