@@ -21,6 +21,7 @@ while read -r repo; do
 						rm -d "$dir"
 						git add "$dir"
 						git rm --cached "$dir~*"
+						rm -d "$dir~*"
 					} &>/dev/null || true
 				done
 				git merge --continue
