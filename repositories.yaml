@@ -62,6 +62,10 @@
   kind: skins
   prefix: mw/skins/MinervaNeue
   git: https://gerrit.wikimedia.org/r/mediawiki/skins/MinervaNeue
+- name: MonoBook
+  kind: skins
+  prefix: mw/skins/MonoBook
+  git: https://gerrit.wikimedia.org/r/mediawiki/skins/MonoBook
 - name: MultimediaViewer
   kind: extensions
   prefix: mw/extensions/MultimediaViewer
