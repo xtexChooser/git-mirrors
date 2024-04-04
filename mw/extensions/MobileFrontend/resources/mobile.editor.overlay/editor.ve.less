@@ -1,0 +1,32 @@
+@import 'mediawiki.skin.variables.less';
+@import 'mediawiki.mixins.less';
+
+.editor-overlay-ve {
+	// OOUI overrides these defaults
+	.header-action,
+	.header-cancel {
+		display: none;
+	}
+
+	&-initializing {
+		height: 0;
+		overflow: hidden;
+		display: block;
+		z-index: -1;
+	}
+
+	.overlay-content {
+		padding-top: 0;
+
+		.surface {
+			overflow: hidden;
+		}
+	}
+
+	.overlay-header {
+		.toolbar {
+			width: 100%;
+			display: block;
+		}
+	}
+}
