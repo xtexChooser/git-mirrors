@@ -98,6 +98,10 @@
   kind: extensions
   prefix: mw/extensions/SecureLinkFixer
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/SecureLinkFixer
+- name: SpamBlacklist
+  kind: extensions
+  prefix: mw/extensions/SpamBlacklist
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/SpamBlacklist
 - name: core
   prefix: mw
   branch: 1.41.1
