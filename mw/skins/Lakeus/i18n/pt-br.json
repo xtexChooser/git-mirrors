@@ -1,0 +1,9 @@
+{
+	"@metadata": {
+		"authors": [
+			"Eduardoaddad"
+		]
+	},
+	"lakeus-openmainmenu": "Abrir menu principal",
+	"lakeus-articlecount": "{{PLURAL:$1|Artigo|Artigos}}"
+}
