@@ -70,6 +70,10 @@
   kind: extensions
   prefix: mw/extensions/OATHAuth
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/OATHAuth
+- name: PageImages
+  kind: extensions
+  prefix: mw/extensions/PageImages
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/PageImages
 - name: core
   prefix: mw
   branch: 1.41.1
