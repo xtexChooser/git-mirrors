@@ -1,0 +1,11 @@
+{
+	"root": true,
+	"extends": [
+		"../../modules/.eslintrc.json",
+		"wikimedia/qunit"
+	],
+	"rules": {
+		"no-implicit-globals": "off",
+		"max-len": "off"
+	}
+}
