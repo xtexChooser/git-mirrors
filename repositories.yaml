@@ -2,6 +2,10 @@
   kind: extensions
   prefix: mw/extensions/AbuseFilter
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/AbuseFilter
+- name: CategoryTree
+  kind: extensions
+  prefix: mw/extensions/CategoryTree
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/CategoryTree
 - name: core
   prefix: mw
   branch: 1.41.1
