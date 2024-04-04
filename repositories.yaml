@@ -58,6 +58,10 @@
   kind: extensions
   prefix: mw/extensions/Math
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Math
+- name: MinervaNeue
+  kind: skins
+  prefix: mw/skins/MinervaNeue
+  git: https://gerrit.wikimedia.org/r/mediawiki/skins/MinervaNeue
 - name: MultimediaViewer
   kind: extensions
   prefix: mw/extensions/MultimediaViewer
