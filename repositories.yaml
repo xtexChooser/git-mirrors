@@ -78,6 +78,10 @@
   kind: extensions
   prefix: mw/extensions/ParserFunctions
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/ParserFunctions
+- name: PdfHandler
+  kind: extensions
+  prefix: mw/extensions/PdfHandler
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/PdfHandler
 - name: core
   prefix: mw
   branch: 1.41.1
