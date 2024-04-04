@@ -1,0 +1,11 @@
+{
+	"@metadata": {
+		"authors": [
+			"З. ӘЙЛЕ",
+			"Янмурза Баки"
+		]
+	},
+	"apihelp-antispoof-param-username": "Ҡатнашыусының AntiSpoof ярҙамында тикшерелгән исеме.",
+	"apihelp-antispoof-example-1": "Ҡатнашыусы «Foo» исемен AntiSpoof ярҙамында тикшерергә",
+	"apihelp-createaccount-param-ignoreantispoof": "Оҡшаш исемдәргә тикшереүҙе иғтибарға алмаҫҡа (хоҡуҡ һорай <code>override-antispoof</code>) ."
+}

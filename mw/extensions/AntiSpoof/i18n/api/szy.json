@@ -1,0 +1,10 @@
+{
+	"@metadata": {
+		"authors": [
+			"Bunukwiki"
+		]
+	},
+	"apihelp-antispoof-param-username": "kinsa misaungayay a kalungangan hakay patedu AntiSpoof haw?",
+	"apihelp-antispoof-example-1": "kinsa misaungayay a kalungangan \"Foo\" patedu AntiSpoof haw?",
+	"apihelp-createaccount-param-ignoreantispoof": "sekipo pahengaday midebung kinsa (maydih <code>override-antispoof</code> tungus)."
+}
