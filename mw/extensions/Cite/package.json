@@ -1,0 +1,24 @@
+{
+	"name": "Cite",
+	"private": true,
+	"scripts": {
+		"selenium-daily": "npm run selenium-test",
+		"selenium-test": "CYPRESS_CACHE_FOLDER=./tests/cypress/.cache cypress run --config-file tests/cypress/cypress.config.js",
+		"cypress:open": "CYPRESS_CACHE_FOLDER=./tests/cypress/.cache cypress open --config-file tests/cypress/cypress.config.js",
+		"doc": "jsdoc -c jsdoc.json",
+		"test": "grunt test",
+		"lint:fix": "grunt test --fix"
+	},
+	"devDependencies": {
+		"cypress": "^13.6.1",
+		"eslint-config-wikimedia": "0.26.0",
+		"eslint-plugin-cypress": "^2.15.1",
+		"grunt": "1.6.1",
+		"grunt-banana-checker": "0.11.1",
+		"grunt-eslint": "24.3.0",
+		"grunt-stylelint": "0.19.0",
+		"jsdoc": "^4.0.2",
+		"jsdoc-wmf-theme": "^0.0.12",
+		"stylelint-config-wikimedia": "0.16.1"
+	}
+}
