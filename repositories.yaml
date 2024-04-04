@@ -22,6 +22,10 @@
   kind: extensions
   prefix: mw/extensions/ConfirmEdit
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/ConfirmEdit
+- name: DiscussionTools
+  kind: extensions
+  prefix: mw/extensions/DiscussionTools
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/DiscussionTools
 - name: core
   prefix: mw
   branch: 1.41.1
