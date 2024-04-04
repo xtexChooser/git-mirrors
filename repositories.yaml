@@ -18,6 +18,10 @@
   kind: extensions
   prefix: mw/extensions/CodeEditor
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/CodeEditor
+- name: ConfirmEdit
+  kind: extensions
+  prefix: mw/extensions/ConfirmEdit
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/ConfirmEdit
 - name: core
   prefix: mw
   branch: 1.41.1
