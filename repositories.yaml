@@ -54,6 +54,10 @@
   kind: extensions
   prefix: mw/extensions/LoginNotify
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/LoginNotify
+- name: Math
+  kind: extensions
+  prefix: mw/extensions/Math
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Math
 - name: core
   prefix: mw
   branch: 1.41.1
