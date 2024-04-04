@@ -103,6 +103,10 @@
   kind: extensions
   prefix: mw/extensions/OATHAuth
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/OATHAuth
+- name: OAuth
+  kind: extensions
+  prefix: mw/extensions/OAuth
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/OAuth
 - name: PageImages
   kind: extensions
   prefix: mw/extensions/PageImages
