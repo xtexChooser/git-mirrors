@@ -115,6 +115,10 @@
   kind: extensions
   prefix: mw/extensions/ParserFunctions
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/ParserFunctions
+- name: Parsoid
+  kind: extensions
+  prefix: mw/extensions/Parsoid
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Parsoid
 - name: PdfHandler
   kind: extensions
   prefix: mw/extensions/PdfHandler
