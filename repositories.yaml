@@ -74,6 +74,10 @@
   kind: extensions
   prefix: mw/extensions/PageImages
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/PageImages
+- name: ParserFunctions
+  kind: extensions
+  prefix: mw/extensions/ParserFunctions
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/ParserFunctions
 - name: core
   prefix: mw
   branch: 1.41.1
