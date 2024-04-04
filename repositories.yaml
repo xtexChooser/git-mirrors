@@ -87,6 +87,10 @@
   kind: skins
   prefix: mw/skins/MinervaNeue
   git: https://gerrit.wikimedia.org/r/mediawiki/skins/MinervaNeue
+- name: MobileFrontend
+  kind: extensions
+  prefix: mw/extensions/MobileFrontend
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/MobileFrontend
 - name: MonoBook
   kind: skins
   prefix: mw/skins/MonoBook
