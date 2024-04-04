@@ -126,6 +126,10 @@
   kind: extensions
   prefix: mw/extensions/VisualEditor
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/VisualEditor
+- name: WikiEditor
+  kind: extensions
+  prefix: mw/extensions/WikiEditor
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/WikiEditor
 - name: core
   prefix: mw
   branch: 1.41.1
