@@ -22,6 +22,10 @@
   kind: extensions
   prefix: mw/extensions/CodeEditor
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/CodeEditor
+- name: CodeMirror
+  kind: extensions
+  prefix: mw/extensions/CodeMirror
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/CodeMirror
 - name: ConfirmEdit
   kind: extensions
   prefix: mw/extensions/ConfirmEdit
