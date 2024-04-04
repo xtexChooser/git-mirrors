@@ -7,13 +7,6 @@ grep -F '[submodule ' mw/.gitmodules | grep -Eo '(extensions|skins)/[^"]*' | whi
 	n="${n/\// }"
 	kind="$(cut -d' ' -f1 <<<"$n")"
 	name="$(cut -d' ' -f2 <<<"$n")"
-	./addext.sh "$kind" "$name" 2>>.addbundled.log || continue
+	./addext.sh "$kind" "$name"
 	git push
 done
-
-echo "Added, errors:"
-
-if [[ -e ".addbundled.log" ]]; then
-	cat .addbundled.log >&2
-	rm .addbundled.log
-fi
