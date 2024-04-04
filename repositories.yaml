@@ -94,6 +94,10 @@
   kind: extensions
   prefix: mw/extensions/Scribunto
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Scribunto
+- name: SecureLinkFixer
+  kind: extensions
+  prefix: mw/extensions/SecureLinkFixer
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/SecureLinkFixer
 - name: core
   prefix: mw
   branch: 1.41.1
