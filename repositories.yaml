@@ -82,6 +82,10 @@
   kind: extensions
   prefix: mw/extensions/PdfHandler
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/PdfHandler
+- name: Poem
+  kind: extensions
+  prefix: mw/extensions/Poem
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Poem
 - name: core
   prefix: mw
   branch: 1.41.1
