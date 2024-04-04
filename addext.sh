@@ -3,7 +3,7 @@
 set -e
 
 if (($# < 2 || $# > 4)); then
-	cat <<<"""Usage: $0 <ext/skin> <name> [git url] [branch]"""
+	cat <<<"""Usage: $0 <ext/skin> <name> [git url] [branch]""" >&2
 	exit 1
 fi
 
@@ -20,14 +20,14 @@ skin | skins)
 	kind=skins
 	;;
 *)
-	echo "Error: Unknown kind: $kind"
+	echo "Error: Unknown kind: $kind" >&2
 	exit 1
 	;;
 esac
 subtreePrefix=mw/$kind/"$name"
 
 if [[ -e "$subtreePrefix" ]]; then
-	echo "Error: Subtree $subtreePrefix already exists"
+	echo "Error: Subtree $subtreePrefix already exists" >&2
 	exit 1
 fi
 
@@ -44,7 +44,7 @@ if [[ "$giturl" == "" ]]; then
 		tryGitUrl https://github.com/weirdgloop/mediawiki-"$kind"-"$name" ||
 		tryGitUrl https://github.com/miraheze/"$name" ||
 		{
-			echo "Error: Could not find extension Git repository automatically"
+			echo "Error: Could not find extension Git repository automatically" >&2
 			exit 1
 		}
 	echo "Found Git repository: $giturl"
