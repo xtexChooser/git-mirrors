@@ -30,6 +30,10 @@
   kind: extensions
   prefix: mw/extensions/Echo
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Echo
+- name: Gadgets
+  kind: extensions
+  prefix: mw/extensions/Gadgets
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Gadgets
 - name: core
   prefix: mw
   branch: 1.41.1
