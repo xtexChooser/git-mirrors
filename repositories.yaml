@@ -62,6 +62,10 @@
   kind: extensions
   prefix: mw/extensions/MultimediaViewer
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/MultimediaViewer
+- name: Nuke
+  kind: extensions
+  prefix: mw/extensions/Nuke
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Nuke
 - name: core
   prefix: mw
   branch: 1.41.1
