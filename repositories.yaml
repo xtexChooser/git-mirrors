@@ -90,6 +90,10 @@
   kind: extensions
   prefix: mw/extensions/ReplaceText
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/ReplaceText
+- name: Scribunto
+  kind: extensions
+  prefix: mw/extensions/Scribunto
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Scribunto
 - name: core
   prefix: mw
   branch: 1.41.1
