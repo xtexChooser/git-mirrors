@@ -8,5 +8,7 @@ grep -F '[submodule ' mw/.gitmodules | grep -Eo '(extensions|skins)/[^"]*' | whi
 	kind="$(cut -d' ' -f1 <<<"$n")"
 	name="$(cut -d' ' -f2 <<<"$n")"
 	./addext.sh "$kind" "$name"
-	git push
 done
+
+./update.sh
+git push

@@ -52,11 +52,9 @@ fi
 
 if [[ -z "$branch" ]]; then
 	echo "Adding $giturl to $subtreePrefix as $kind $name"
-	git subtree add -P "$subtreePrefix" "$giturl" HEAD
 	yq -i ". += [{ \"name\": \"$name\", \"kind\": \"$kind\", \"prefix\": \"$subtreePrefix\", \"git\": \"$giturl\" }]" repositories.yaml
 else
 	echo "Adding $giturl $branch to $subtreePrefix as $kind $name"
-	git subtree add -P "$subtreePrefix" "$giturl" "$branch"
 	yq -i ". += [{ \"name\": \"$name\", \"kind\": \"$kind\", \"prefix\": \"$subtreePrefix\", \"git\": \"$giturl\", \
 		\"branch\": \"$branch\" }]" repositories.yaml
 fi
