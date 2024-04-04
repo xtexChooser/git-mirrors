@@ -67,6 +67,10 @@
   kind: extensions
   prefix: mw/extensions/LoginNotify
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/LoginNotify
+- name: Loops
+  kind: extensions
+  prefix: mw/extensions/Loops
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Loops
 - name: Math
   kind: extensions
   prefix: mw/extensions/Math
