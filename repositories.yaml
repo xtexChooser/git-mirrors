@@ -126,6 +126,10 @@
   kind: extensions
   prefix: mw/extensions/Thanks
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Thanks
+- name: Timeless
+  kind: skins
+  prefix: mw/skins/Timeless
+  git: https://gerrit.wikimedia.org/r/mediawiki/skins/Timeless
 - name: TitleBlacklist
   kind: extensions
   prefix: mw/extensions/TitleBlacklist
