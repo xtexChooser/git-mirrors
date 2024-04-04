@@ -134,6 +134,10 @@
   kind: extensions
   prefix: mw/extensions/TitleBlacklist
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/TitleBlacklist
+- name: Vector
+  kind: skins
+  prefix: mw/skins/Vector
+  git: https://gerrit.wikimedia.org/r/mediawiki/skins/Vector
 - name: VisualEditor
   kind: extensions
   prefix: mw/extensions/VisualEditor
