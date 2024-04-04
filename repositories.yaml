@@ -107,6 +107,10 @@
   kind: extensions
   prefix: mw/extensions/Poem
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Poem
+- name: ProtectSite
+  kind: extensions
+  prefix: mw/extensions/ProtectSite
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/ProtectSite
 - name: ReplaceText
   kind: extensions
   prefix: mw/extensions/ReplaceText
