@@ -10,6 +10,10 @@
   kind: extensions
   prefix: mw/extensions/Cite
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Cite
+- name: CiteThisPage
+  kind: extensions
+  prefix: mw/extensions/CiteThisPage
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/CiteThisPage
 - name: core
   prefix: mw
   branch: 1.41.1
