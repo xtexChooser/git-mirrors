@@ -35,6 +35,9 @@ use Wikimedia\Rdbms\IDatabase;
  */
 define( 'MW_VERSION', '1.41.1' );
 
+// Add -xvnet suffix to MW_VERSION
+define( 'MW_VERSION', MW_VERSION . '-xvnet' );
+
 /** @{
  * Obsolete IDatabase::makeList() constants
  * These are also available as Database class constants
