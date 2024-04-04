@@ -114,6 +114,10 @@
   kind: extensions
   prefix: mw/extensions/TextExtracts
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/TextExtracts
+- name: Thanks
+  kind: extensions
+  prefix: mw/extensions/Thanks
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Thanks
 - name: core
   prefix: mw
   branch: 1.41.1
