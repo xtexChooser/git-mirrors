@@ -14,6 +14,10 @@
   kind: extensions
   prefix: mw/extensions/CiteThisPage
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/CiteThisPage
+- name: CodeEditor
+  kind: extensions
+  prefix: mw/extensions/CodeEditor
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/CodeEditor
 - name: core
   prefix: mw
   branch: 1.41.1
