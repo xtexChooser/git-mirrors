@@ -38,6 +38,10 @@
   kind: extensions
   prefix: mw/extensions/ImageMap
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/ImageMap
+- name: InputBox
+  kind: extensions
+  prefix: mw/extensions/InputBox
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/InputBox
 - name: core
   prefix: mw
   branch: 1.41.1
