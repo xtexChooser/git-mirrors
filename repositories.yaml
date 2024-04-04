@@ -143,6 +143,10 @@
   kind: extensions
   prefix: mw/extensions/ReplaceText
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/ReplaceText
+- name: RevisionSlider
+  kind: extensions
+  prefix: mw/extensions/RevisionSlider
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/RevisionSlider
 - name: Scribunto
   kind: extensions
   prefix: mw/extensions/Scribunto
