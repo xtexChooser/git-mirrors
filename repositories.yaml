@@ -6,6 +6,10 @@
   kind: extensions
   prefix: mw/extensions/CategoryTree
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/CategoryTree
+- name: Cite
+  kind: extensions
+  prefix: mw/extensions/Cite
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Cite
 - name: core
   prefix: mw
   branch: 1.41.1
