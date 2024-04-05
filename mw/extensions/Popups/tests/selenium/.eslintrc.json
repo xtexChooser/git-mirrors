@@ -1,0 +1,13 @@
+{
+	"root": true,
+	"extends": [
+		"wikimedia/selenium"
+	],
+	"globals": {
+		"mw": "readonly"
+	},
+	"rules": {
+		"no-jquery/no-jquery-constructor": "off",
+		"wdio/no-pause": "warn"
+	}
+}
