@@ -16,10 +16,7 @@ if (defined('MW_DB')) {
 	die('Unknown wiki.');
 }
 
-$wgLocalDatabases = $wgConf->wikis = array_map(function ($n) {
-	'wiki' . $n;
-}, $wikis);
-$wgDBname = 'wiki' . $wikiID;
 
+require_once ('/srv/secrets/mw/Secrets.php');
 require_once (dirname(__FILE__) . '/GlobalSettings.php');
 require_once (dirname(__FILE__) . '/LocalSettings.' . $wikiID . '.php');
