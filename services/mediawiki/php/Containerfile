@@ -25,6 +25,7 @@ ADD php-fpm.conf /usr/local/etc/php-fpm.d/zzzz-mw-docker.conf
 RUN mkdir -p /var/www/data
 
 ENV MW_CONFIG_FILE=/etc/mediawiki/LocalSettings.php
+WORKDIR /opt/mediawiki
 
 ENTRYPOINT [ "php-fpm" ]
 
