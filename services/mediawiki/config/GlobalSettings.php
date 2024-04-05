@@ -1,6 +1,8 @@
 <?php
+$wgScript = '/';
 $wgScriptPath = '';
-$wgArticlePath = '/w';
+$wgUsePathInfo = true;
+$wgArticlePath = '/w/$1';
 
 $wgLanguageCode = 'en';
 
