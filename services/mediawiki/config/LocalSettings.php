@@ -18,6 +18,12 @@ if (defined('MW_DB')) {
 	die('Unknown wiki.');
 }
 
+$xvLoadExtensions = [];
+$xvLoadSkins = [];
+
 require_once ('/srv/secrets/mw/Secrets.php');
 require_once (dirname(__FILE__) . '/GlobalSettings.php');
 require_once (dirname(__FILE__) . '/LocalSettings.' . $wikiID . '.php');
+
+wfLoadExtensions($xvLoadExtensions);
+wfLoadSkins($xvLoadSkins);
