@@ -1,8 +1,11 @@
 $(call load-state, services/caddy)
 
+mediawiki-configs-dir := $(STATES_DIR)/services/mediawiki/config
+mediawiki-configs := $(patsubst $(mediawiki-configs-dir)/%,%,$(wildcard $(mediawiki-configs-dir)/*))
+
 $(call x-container-service)
 V_SERVICE	= mediawiki
-V_SVCDEPS	+= /etc/mediawiki/LocalSettings.php
+V_SVCDEPS	+= $(addprefix $(mediawiki-configs-dir)/,$(mediawiki-configs))
 V_SVCDEPS	+= /var/run/mediawiki /var/lib/mediawiki
 V_ARGS		+= --mount=type=bind,src=/etc/mediawiki,dst=/etc/mediawiki,ro=true
 V_ARGS		+= --mount=type=bind,src=/var/run/mediawiki,dst=/var/run/mediawiki
@@ -11,10 +14,13 @@ V_ARGS		+= --memory=64M
 V_ARGS 		+= codeberg.org/xvnet/x-mediawiki-php:latest
 $(call end)
 
-$(call fs-file)
-V_PATH		= /etc/mediawiki/LocalSettings.php
-V_TEMPLATE	= bash-tpl $(STATES_DIR)/services/mediawiki/LocalSettings.php
-$(call end)
+define mediawiki-config-template
+$$(call fs-file)
+V_PATH		= /etc/mediawiki/$1
+V_TEMPLATE	= bash-tpl $(mediawiki-configs-dir)/$1
+$$(call end)
+endef
+$(foreach mw-config,$(mediawiki-configs),$(eval $(call mediawiki-config-template,$(mw-config))))
 
 CADDY_INCLUDES += $(STATES_DIR)/services/mediawiki/Caddyfile
 
