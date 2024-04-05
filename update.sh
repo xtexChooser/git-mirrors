@@ -15,14 +15,16 @@ while read -r repo; do
 		echo "Merging repository: $name"
 		if ! git subtree -P "$subtreePrefix" pull "$giturl" "$branch"; then
 			echo "Trying to resolve core merge conflicts"
-			grep 'path = ' "$subtreePrefix"/.gitmodules | cut -d'=' -f2 | awk '{print "'"$subtreePrefix"'/" $1}' | while read -r dir; do
-				{
-					rm -d "$dir"
-					git add "$dir"
-					git rm --cached "$dir~*"
-					rm -d "$dir~*"
-				} &>/dev/null || true
-			done
+			if [[ -e "$subtreePrefix"/.gitmodules ]]; then
+				grep 'path = ' "$subtreePrefix"/.gitmodules | cut -d'=' -f2 | awk '{print "'"$subtreePrefix"'/" $1}' | while read -r dir; do
+					{
+						rm -d "$dir"
+						git add "$dir"
+						git rm --cached "$dir~*"
+						rm -d "$dir~*"
+					} &>/dev/null || true
+				done
+			fi
 			git merge --continue
 		fi
 	else
@@ -30,12 +32,14 @@ while read -r repo; do
 		git subtree -P "$subtreePrefix" add "$giturl" "$branch"
 	fi
 
-	grep 'path = ' "$subtreePrefix"/.gitmodules | cut -d'=' -f2 | awk '{print "'"$subtreePrefix"'/" $1}' | while read -r dir; do
-		rm -d "$dir" &>/dev/null || true
-	done
-	if ! git diff-index --quiet HEAD --; then
-		git add "$subtreePrefix"
-		git commit -m "Remove submodule in $subtreePrefix"
+	if [[ -e "$subtreePrefix"/.gitmodules ]]; then
+		grep 'path = ' "$subtreePrefix"/.gitmodules | cut -d'=' -f2 | awk '{print "'"$subtreePrefix"'/" $1}' | while read -r dir; do
+			rm -d "$dir" &>/dev/null || true
+		done
+		if ! git diff-index --quiet HEAD --; then
+			git add "$subtreePrefix"
+			git commit -m "Remove submodule in $subtreePrefix"
+		fi
 	fi
 done <<<"$(yq -o=json -I=0 '. | sort_by(.pri // 100) | .[]' repositories.yaml)"
 
