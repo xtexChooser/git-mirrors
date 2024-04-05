@@ -1,7 +1,7 @@
 <?php
 
 $wgLocalDatabases = $wgConf->wikis = array_map(function ($n) {
-	'wiki' . $n;
+	return 'wiki' . $n;
 }, $wikis);
 
 $wgDBtype = 'postgres';
