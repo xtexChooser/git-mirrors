@@ -14,36 +14,28 @@ while read -r repo; do
 	if [[ -e "$subtreePrefix" ]]; then
 		echo "Merging repository: $name"
 		if ! git subtree -P "$subtreePrefix" pull "$giturl" "$branch"; then
-			if [[ "$name" == "core" ]]; then
-				echo "Trying to resolve core merge conflicts"
-				grep 'path = ' mw/.gitmodules | cut -d'=' -f2 | awk '{print "mw/" $1}' | while read -r dir; do
-					{
-						rm -d "$dir"
-						git add "$dir"
-						git rm --cached "$dir~*"
-						rm -d "$dir~*"
-					} &>/dev/null || true
-				done
-				git rm mw/.gitmodules
-				git merge --continue
-			else
-				exit $!
-			fi
+			echo "Trying to resolve core merge conflicts"
+			grep 'path = ' "$subtreePrefix"/.gitmodules | cut -d'=' -f2 | awk '{print "'"$subtreePrefix"'/" $1}' | while read -r dir; do
+				{
+					rm -d "$dir"
+					git add "$dir"
+					git rm --cached "$dir~*"
+					rm -d "$dir~*"
+				} &>/dev/null || true
+			done
+			git merge --continue
 		fi
 	else
 		echo "Initializing repository: $name"
 		git subtree -P "$subtreePrefix" add "$giturl" "$branch"
 	fi
 
-	if [[ "$name" == "core" ]]; then
-		grep 'path = ' mw/.gitmodules | cut -d'=' -f2 | awk '{print "mw/" $1}' | while read -r dir; do
-			rm -d "$dir" &>/dev/null || true
-		done
-		rm -f mw/.gitmodules
-		if ! git diff-index --quiet HEAD --; then
-			git add mw
-			git commit -m 'Remove submodule directories'
-		fi
+	grep 'path = ' "$subtreePrefix"/.gitmodules | cut -d'=' -f2 | awk '{print "'"$subtreePrefix"'/" $1}' | while read -r dir; do
+		rm -d "$dir" &>/dev/null || true
+	done
+	if ! git diff-index --quiet HEAD --; then
+		git add "$subtreePrefix"
+		git commit -m "Remove submodule in $subtreePrefix"
 	fi
 done <<<"$(yq -o=json -I=0 '. | sort_by(.pri // 100) | .[]' repositories.yaml)"
 
