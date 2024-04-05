@@ -24,6 +24,7 @@ while read -r repo; do
 						rm -d "$dir~*"
 					} &>/dev/null || true
 				done
+				git rm mw/.gitmodules
 				git merge --continue
 			else
 				exit $!
@@ -38,6 +39,7 @@ while read -r repo; do
 		grep 'path = ' mw/.gitmodules | cut -d'=' -f2 | awk '{print "mw/" $1}' | while read -r dir; do
 			rm -d "$dir" &>/dev/null || true
 		done
+		rm -f mw/.gitmodules
 		if ! git diff-index --quiet HEAD --; then
 			git add mw
 			git commit -m 'Remove submodule directories'
