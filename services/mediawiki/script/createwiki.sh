@@ -18,8 +18,8 @@ runSQL() {
 echo "Creating wiki $1"
 
 runSQL CREATE DATABASE wiki"$1"
-runMW php maintenance/sql.php --wiki "$1" --query "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO mediawiki"
-runMW php maintenance/sql.php --wiki "$1" --query "GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO mediawiki"
+runMW php maintenance/sql.php --wiki "$1" --query "ALTER DEFAULT PRIVILEGES GRANT ALL ON TABLES TO mediawiki"
+runMW php maintenance/sql.php --wiki "$1" --query "ALTER DEFAULT PRIVILEGES GRANT ALL ON SEQUENCES TO mediawiki"
 runMW php maintenance/sql.php --wiki "$1" maintenance/postgres/tables-generated.sql
 runMW php maintenance/sql.php --wiki "$1" maintenance/postgres/tables.sql
 runMW php maintenance/run.php --wiki "$1" update --quick
