@@ -1,0 +1,3 @@
+<?php
+$wgScriptPath = '';
+$wgArticlePath = '/w';
