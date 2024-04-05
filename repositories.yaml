@@ -50,6 +50,10 @@
   kind: extensions
   prefix: mw/extensions/GlobalCssJs
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/GlobalCssJs
+- name: GlobalUserPage
+  kind: extensions
+  prefix: mw/extensions/GlobalUserPage
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/GlobalUserPage
 - name: HeaderTabs
   kind: extensions
   prefix: mw/extensions/HeaderTabs
