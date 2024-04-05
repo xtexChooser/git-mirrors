@@ -19,3 +19,4 @@ V_PATH		= /etc/caddy/Caddyfile
 V_TEMPLATE	= bash-tpl $(STATES_DIR)/services/caddy/Caddyfile
 V_DEP_VARS	+= CADDY_INCLUDES
 $(call end)
+$(call defer-deps,/etc/caddy/Caddyfile,CADDY_INCLUDES)
