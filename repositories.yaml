@@ -187,6 +187,10 @@
   kind: extensions
   prefix: mw/extensions/TitleBlacklist
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/TitleBlacklist
+- name: UserMerge
+  kind: extensions
+  prefix: mw/extensions/UserMerge
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/UserMerge
 - name: Vector
   kind: skins
   prefix: mw/skins/Vector
