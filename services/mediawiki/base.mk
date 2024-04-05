@@ -10,8 +10,15 @@ V_SVCDEPS	+= /var/run/mediawiki /var/lib/mediawiki
 V_ARGS		+= --mount=type=bind,src=/etc/mediawiki,dst=/etc/mediawiki,ro=true
 V_ARGS		+= --mount=type=bind,src=/var/run/mediawiki,dst=/var/run/mediawiki
 V_ARGS		+= --mount=type=bind,src=/var/lib/mediawiki,dst=/var/lib/mediawiki
+V_ARGS		+= --mount=type=image,source=codeberg.org/xvnet/x-mediawiki:latest,destination=/opt/mediawiki
+V_ARGS		+= --label=org.eu.xvnet.x.depimgs=codeberg.org/xvnet/x-mediawiki:latest
 V_ARGS		+= --memory=64M
 V_ARGS 		+= codeberg.org/xvnet/x-mediawiki-php:latest
+$(call end)
+
+$(call podman-image)
+V_NAME		= x-mediawiki
+V_IMAGE		= codeberg.org/xvnet/x-mediawiki:latest
 $(call end)
 
 define mediawiki-config-template
