@@ -6,7 +6,7 @@ define call-deferred-fns
 $(foreach fn,$(deffered-fn-stack),$(if $(LEONIS_TRACE_DEFFERED_FN),$(info Calling deffered func $(fn)))$(eval $(call $(fn))))
 endef
 
-define defer-deps1
+define defer-deps0
 $(empty)define defer-deps-$1-impl
 $$$$(eval $1: $$$$($2))
 $(empty)endif
