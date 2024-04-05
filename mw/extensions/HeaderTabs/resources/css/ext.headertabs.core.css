@@ -1,0 +1,20 @@
+.unselected {
+	display: none;
+}
+
+span.ht-editsection {
+	float: right;
+}
+
+.toc ul {
+	counter-reset: item;
+}
+
+.toc ul li {
+	display: block;
+}
+
+.toc ul li::before {
+	content: counters( item, '.' ) '.';
+	counter-increment: item;
+}
