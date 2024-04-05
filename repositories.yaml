@@ -195,6 +195,10 @@
   kind: extensions
   prefix: mw/extensions/WikiEditor
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/WikiEditor
+- name: cldr
+  kind: extensions
+  prefix: mw/extensions/cldr
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/cldr
 - name: core
   prefix: mw
   branch: 1.41.1
