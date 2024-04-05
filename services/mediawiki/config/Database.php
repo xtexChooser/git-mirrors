@@ -11,4 +11,5 @@ $wgDBport = 5433;
 $wgDBuser = 'mediawiki';
 $wgDBadminuser = 'mediawikiadmin';
 
-$wgCompressRevisions = true;
+// https://phabricator.wikimedia.org/T361953
+// $wgCompressRevisions = true;
