@@ -46,6 +46,10 @@
   kind: extensions
   prefix: mw/extensions/Gadgets
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Gadgets
+- name: HeaderTabs
+  kind: extensions
+  prefix: mw/extensions/HeaderTabs
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/HeaderTabs
 - name: ImageMap
   kind: extensions
   prefix: mw/extensions/ImageMap
