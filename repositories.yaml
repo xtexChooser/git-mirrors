@@ -46,6 +46,10 @@
   kind: extensions
   prefix: mw/extensions/Gadgets
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Gadgets
+- name: GlobalBlocking
+  kind: extensions
+  prefix: mw/extensions/GlobalBlocking
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/GlobalBlocking
 - name: GlobalCssJs
   kind: extensions
   prefix: mw/extensions/GlobalCssJs
