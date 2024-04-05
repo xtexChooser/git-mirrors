@@ -9,7 +9,6 @@ endef
 define defer-deps0
 $(empty)define defer-deps-$1-impl
 $$$$(eval $1: $$$$($2))
-$(empty)endif
 $(empty)endef
 $(call defer,defer-deps-$1-impl)
 endef
