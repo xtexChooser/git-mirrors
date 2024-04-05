@@ -1,7 +1,9 @@
 <?php
 
-$wgSharedDB = 'wikimeta';
-$wgSharedPrefix = '';
+if ($wikiID != 'meta') {
+	$wgSharedDB = 'wikimeta';
+	$wgSharedPrefix = '';
+}
 
 $wgSharedTables[] = 'actor';
 $wgSharedTables[] = 'spoofuser';
