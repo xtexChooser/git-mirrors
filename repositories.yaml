@@ -46,6 +46,10 @@
   kind: extensions
   prefix: mw/extensions/Gadgets
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Gadgets
+- name: GlobalCssJs
+  kind: extensions
+  prefix: mw/extensions/GlobalCssJs
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/GlobalCssJs
 - name: HeaderTabs
   kind: extensions
   prefix: mw/extensions/HeaderTabs
