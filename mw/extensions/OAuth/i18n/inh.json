@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": [
+			"Adam-Yourist"
+		]
+	},
+	"mwoauth-prefs-managegrants": "Хьатесса приложенеш:",
+	"mwoauth-prefs-managegrantslink": "Урхалду {{PLURAL:$1|$1 хьалсегача приложененна|0=хьалсегача приложенешта}}",
+	"mwoauth-consumer-reason": "Бахьан:",
+	"mwoauthconsumerregistration-lastchange": "ТӀеххьара хувцам",
+	"mwoauthmanageconsumers-lastchange": "ТӀеххьара хувцам",
+	"mwoauthmanageconsumers-reason": "Бахьан:",
+	"oauthmanagemygrants": "Хьатессача приложенешта урхалдар",
+	"notification-oauth-app-body": "Бахьан: $1"
+}
