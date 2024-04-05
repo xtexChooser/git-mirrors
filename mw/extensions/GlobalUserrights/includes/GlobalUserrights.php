@@ -74,7 +74,7 @@ class GlobalUserrights extends UserrightsPage {
 		$newUGMs = GlobalUserrightsHooks::getGroupMemberships( $uid );
 
 		// Ensure that caches are cleared
-		$user->invalidateCache();
+		MediaWikiServices::getInstance()->getUserFactory()->invalidateCache( $user );
 
 		wfDebug( 'oldGlobalGroups: ' . print_r( $oldGroups, true ) . "\n" );
 		wfDebug( 'newGlobalGroups: ' . print_r( $newGroups, true ) . "\n" );
