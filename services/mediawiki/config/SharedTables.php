@@ -15,7 +15,8 @@ if (str_ends_with($wgServer, 'w.xvnet.eu.org')) {
 
 // Global Blocking
 $xvLoadExtensions[] = 'GlobalBlocking';
-$wgDatabaseVirtualDomains['virtual-globalblocking'] = $wgSharedDB;
+$wgDatabaseVirtualDomains['virtual-globalblocking'] = 'wikimeta';
+$wgGlobalBlockingDatabase = 'wikimeta'; // TODO: Remove after 1.42 releasing
 $wgGlobalBlockingBlockXFF = true;
 
 // Global User Groups
