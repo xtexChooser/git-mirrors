@@ -1,0 +1,48 @@
+{
+	"name": "Protect Site",
+	"version": "0.5.3",
+	"author": [
+		"[http://en.uncyclopedia.co/wiki/User:Dawg Eric Johnston]",
+		"Chris Stafford",
+		"Jack Phoenix",
+		"Martyna Nowicka"
+	],
+	"license-name": "GPL-2.0-or-later",
+	"url": "https://www.mediawiki.org/wiki/Extension:ProtectSite",
+	"descriptionmsg": "protectsite-desc",
+	"type": "specialpage",
+	"requires": {
+		"MediaWiki": ">= 1.31.0"
+	},
+	"config": {
+		"ProtectSiteExempt": [],
+		"ProtectSiteDefaultTimeout": "1 hour",
+		"ProtectSiteLimit": "1 week"
+	},
+	"SpecialPages": {
+		"ProtectSite": "ProtectSite"
+	},
+	"MessagesDirs": {
+		"ProtectSite": [
+			"i18n"
+		]
+	},
+	"ExtensionMessagesFiles": {
+		"ProtectSiteAliases": "ProtectSite.alias.php"
+	},
+	"AutoloadClasses": {
+		"ProtectSite": "includes/ProtectSite.php"
+	},
+	"AvailableRights": [
+		"protectsite"
+	],
+	"GroupPermissions": {
+		"bureaucrat": {
+			"protectsite": true
+		}
+	},
+	"ExtensionFunctions": [
+		"ProtectSite::setup"
+	],
+	"manifest_version": 1
+}
