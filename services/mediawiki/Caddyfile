@@ -1,13 +1,13 @@
 w.xvnet.eu.org w.xvnet0.eu.org http://wiki.xvn {
+	root * /opt/mediawiki
 	php_fastcgi unix//var/run/mediawiki/php-fpm.sock {
-		root /opt/mediawiki
 		env MW_DB wikixvnet
 	}
 }
 
 meta.w.xvnet.eu.org meta.w.xvnet0.eu.org http://meta.wiki.xvn {
+	root * /opt/mediawiki
 	php_fastcgi unix//var/run/mediawiki/php-fpm.sock {
-		root /opt/mediawiki
 		env MW_DB wikimeta
 	}
 }
