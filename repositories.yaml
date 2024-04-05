@@ -159,10 +159,6 @@
   kind: extensions
   prefix: mw/extensions/SyntaxHighlight_GeSHi
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/SyntaxHighlight_GeSHi
-- name: Tabber
-  kind: extensions
-  prefix: mw/extensions/Tabber
-  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Tabber
 - name: TemplateData
   kind: extensions
   prefix: mw/extensions/TemplateData
