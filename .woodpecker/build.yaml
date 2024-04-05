@@ -11,8 +11,6 @@ steps:
       dockerfile: Containerfile
 when:
   - event: push
-    path:
-      include: ["mw/*"]
   - event: cron
     cron: build
   - event: manual
