@@ -54,6 +54,10 @@
   kind: extensions
   prefix: mw/extensions/GlobalUserPage
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/GlobalUserPage
+- name: GlobalUserrights
+  kind: extensions
+  prefix: mw/extensions/GlobalUserrights
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/GlobalUserrights
 - name: HeaderTabs
   kind: extensions
   prefix: mw/extensions/HeaderTabs
