@@ -1,6 +1,6 @@
 FROM docker.io/library/alpine AS bld
 
-RUN apk add --no-cache bash php composer
+RUN apk add --no-cache bash php composer git
 
 ADD mw /mw
 ADD strip.sh /
