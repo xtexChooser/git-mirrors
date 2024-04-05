@@ -5,7 +5,7 @@ V_ARGS		+= --cap-add=CAP_NET_BIND_SERVICE
 V_ARGS		+= --env HOME=/root
 V_ARGS		+= --mount=type=bind,src=/etc/caddy,dst=/etc/caddy,ro=true
 V_ARGS		+= --mount=type=bind,src=/var/run,dst=/var/run
-V_ARGS		+= --mount=type=bind,src=/var/lib/caddy,dst=/root/.local/share/caddy
+V_ARGS		+= --mount=type=bind,src=/var/lib/caddy,dst=/data/caddy
 V_ARGS		+= --publish=80:80/tcp --publish=80:80/udp
 V_ARGS		+= --publish=443:443/tcp --publish=443:443/udp
 V_ARGS		+= --memory=64M
