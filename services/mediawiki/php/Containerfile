@@ -26,6 +26,8 @@ RUN mkdir -p /var/www/data
 
 ENV MW_CONFIG_FILE=/etc/mediawiki/LocalSettings.php
 
+ENTRYPOINT [ "php-fpm", "-R" ]
+
 LABEL org.opencontainers.image.licenses="PHP-3.01"
 LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
 LABEL org.opencontainers.image.title="MediaWiki-PHP"
