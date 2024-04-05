@@ -3,7 +3,7 @@
 $(shell mkdir -p out out/zones out/zsk)
 
 strip-zone=$(patsubst zones/%,%,$(patsubst %.zone,%,$1))
-zones:=$(foreach file,$(wildcard zones/*.zone),$(call strip-zone,$(file)))
+zones := $(foreach file,$(wildcard zones/*.zone),$(call strip-zone,$(file)))
 
 all: $(addprefix out/zones/,$(addsuffix .zone,$(zones)))
 

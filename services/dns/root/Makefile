@@ -1,5 +1,5 @@
 .DELETE_ON_ERROR:
-SHELL:=bash -c -e
+SHELL := bash -c
 
 curl = curl -q -o $@
 cleanzone = ldns-read-zone -e RRSIG -e ZONEMD -e NSEC -e SOA
