@@ -10,7 +10,7 @@ ADD mw /mw
 ADD strip.sh /
 
 WORKDIR /mw
-RUN composer install --no-dev
+RUN php /opt/mediawiki/composer.phar install --no-dev
 RUN /strip.sh
 
 FROM scratch
