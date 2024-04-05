@@ -15,3 +15,4 @@ nl-alk1.svr				IN	CNAME	opilio.s.xvnet0.eu.org.
 
 ntfy					IN	CNAME	ntfy.xvnet0.eu.org.
 w						IN	CNAME	w.xvnet0.eu.org.
+*.w						IN	CNAME	w.xvnet0.eu.org.
