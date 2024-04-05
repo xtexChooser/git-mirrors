@@ -1,5 +1,6 @@
 (mediawiki) {
 	root * /opt/mediawiki
+	file_server
 }
 
 w.xvnet.eu.org w.xvnet0.eu.org http://wiki.xvn {
