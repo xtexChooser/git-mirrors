@@ -10,3 +10,5 @@ $wgDBserver = 'opilio.s.xvnet0.eu.org';
 $wgDBport = 5433;
 $wgDBuser = 'mediawiki';
 $wgDBadminuser = 'mediawikiadmin';
+
+$wgCompressRevisions = true;
