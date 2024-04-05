@@ -8,9 +8,13 @@ runMW() {
 
 : "${RUN_AS_WIKI:=meta}"
 runSQL() {
-	runMW php maintenance/sql.php --wiki "$RUN_AS_WIKI" --query "$*;"
+	runMW php maintenance/sql.php --wiki "$RUN_AS_WIKI" --query "$*"
 }
 
+(($# != 1)) && {
+	echo "Usage: atre s mediawiki createwiki <WIKI ID>" >&2
+	exit 1
+}
 echo "Creating wiki $1"
 
 runSQL CREATE DATABASE wiki"$1"
