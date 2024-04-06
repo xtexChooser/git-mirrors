@@ -32,6 +32,8 @@ RUN set -eux; \
 	cmake -E time cmake --build . -j $(nproc); \
 	cmake -E time cmake --install . --prefix /usr/local;
 
+RUN rm -rf /usr/local/man /usr/local/sql-bench /usr/local/mariadb-test
+
 ENTRYPOINT [ "mariadbd" ]
 
 LABEL org.opencontainers.image.licenses="GPL-2.0-or-later"

@@ -10,7 +10,7 @@ $(eval V_PRE_STOP?=true)
 $(eval V_POST_STOP?=true)
 $(eval x-container-$(V_SERVICE)-args:=$(V_ARGS))
 $(eval x-container-$(V_SERVICE)-start-cmd:=$(V_PRE_START); $(PODMAN) container run \
-	--name $(V_SERVICE) --rm -d --pidfile=$(V_PIDFILE) --replace \
+	--name $(V_SERVICE) --rm --pidfile=$(V_PIDFILE) --replace \
 	--label=org.eu.xvnet.x.dinitservice=$(V_SERVICE) \
 	--hostname=$(V_SERVICE) \
 	$(V_ARGS); $(V_POST_START))
@@ -22,7 +22,7 @@ $(call mktrace-vars,$(X_CONTAINER_SERVICE_VARS))
 
 $(DINITD_DIR)/$(V_SERVICE): $(v-deps) $(VENDOR_MODULES_DIR)/containers.mk
 	@cat >$$@ <<EOF
-	type = bgprocess
+	type = process
 	command = bash -c "$(subst ",\",$(subst $$$$,\$$$$,$(x-container-$(V_SERVICE)-start-cmd)))"
 	stop-command = bash -c "$(subst ",\",$(subst $$$$,\$$$$,$(x-container-$(V_SERVICE)-stop-cmd)))"
 	pid-file = $(V_PIDFILE)
