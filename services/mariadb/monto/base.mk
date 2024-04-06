@@ -7,6 +7,7 @@ V_ARGS		+= --mount=type=bind,src=/var/run/mariadb,dst=/var/run/mariadb
 V_ARGS		+= --memory=128M
 V_ARGS		+= --publish=5433:5432/tcp
 V_ARGS 		+= codeberg.org/xvnet/mariadb:latest
+V_ARGS 		+= --user=root
 $(call end)
 
 $(call fs-file)
