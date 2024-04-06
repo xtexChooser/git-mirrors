@@ -9,6 +9,7 @@ V_ARGS		+= --mount=type=image,source=codeberg.org/xvnet/dns-zones:latest,destina
 V_ARGS		+= --label=org.eu.xvnet.x.depimgs=codeberg.org/xvnet/dns-root-zone:latest,codeberg.org/xvnet/dns-zones:latest
 V_ARGS		+= --publish-all
 V_ARGS		+= --network=host --cap-add=CAP_NET_BIND_SERVICE
+V_ARGS		+= --memory=128M
 V_ARGS 		+= codeberg.org/xvnet/bind:latest
 $(call end)
 
