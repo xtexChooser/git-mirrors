@@ -1,0 +1,41 @@
+FROM docker.io/library/alpine AS bld
+ARG VERSION
+
+RUN set -eux; \
+	apk add \
+	build-base ninja cmake git \
+	clang lld \
+	zlib-dev ncurses-dev libaio-dev jemalloc-dev \
+	snappy-dev gnutls-dev libevent-dev bison gzip \
+	libxml2-dev boost-dev lz4-dev bzip2-dev lzo-dev curl-dev \
+	; \
+	git clone --depth 1 --recurse-submodules --shallow-submodules -b $VERSION https://github.com/MariaDB/server.git bld; \
+	cd bld; \
+	mkdir build; cd build; \
+	CXX=clang++ CC=clang LD=ld.lld \
+	cmake -E time cmake .. \
+	-G Ninja \
+	-DBUILD_CONFIG=mysql_release \
+	-DPLUGIN_FEEDBACK=NO \
+	-DPLUGIN_AUTH_PAM=NO \
+	-DPLUGIN_AUTH_GSSAPI=NO \
+	-DPLUGIN_AUTH_SOCKET=YES \
+	-DPLUGIN_S2=NO \
+	-DPLUGIN_ROCKSDB=NO \
+	-DPLUGIN_CONNECT=NO \
+	-DWITH_SSL=yes \
+	-DWITH_JEMALLOC=ON \
+	-DWITH_ZLIB=ON \
+	-DWITH_LIBWRAP=ON \
+	-DSKIP_TESTS=ON \
+	; \
+	cmake -E time cmake --build . -j $(nproc); \
+	cmake -E time cmake --install . --prefix /usr/local;
+
+ENTRYPOINT [ "mariadbd" ]
+
+LABEL org.opencontainers.image.licenses="GPL-2.0-or-later"
+LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
+LABEL org.opencontainers.image.title="MariaDB"
+LABEL org.opencontainers.image.url="https://mariadb.com/"
+LABEL org.opencontainers.image.vendor="XV-NET"
