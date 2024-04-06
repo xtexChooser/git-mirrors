@@ -9,12 +9,12 @@ $(eval V_POST_START?=true)
 $(eval V_PRE_STOP?=true)
 $(eval V_POST_STOP?=true)
 $(eval x-container-$(V_SERVICE)-args:=$(V_ARGS))
-$(eval x-container-$(V_SERVICE)-start-cmd:=$(V_PRE_START); $(PODMAN) container run \
+$(eval x-container-$(V_SERVICE)-start-cmd:=set -eux; $(V_PRE_START); $(PODMAN) container run \
 	--name $(V_SERVICE) --rm --pidfile=$(V_PIDFILE) --replace \
 	--label=org.eu.xvnet.x.dinitservice=$(V_SERVICE) \
 	--hostname=$(V_SERVICE) \
 	$(V_ARGS); $(V_POST_START))
-$(eval x-container-$(V_SERVICE)-stop-cmd:=$(V_PRE_STOP); $(PODMAN) container rm -f -i $(V_SERVICE); \
+$(eval x-container-$(V_SERVICE)-stop-cmd:=set -eux; $(V_PRE_STOP); $(PODMAN) container rm -f -i $(V_SERVICE); \
 	rm -rf $(V_PIDFILE); $(V_POST_STOP))
 
 $(call mktrace, Define x-container-service target: $(V_SERVICE))
