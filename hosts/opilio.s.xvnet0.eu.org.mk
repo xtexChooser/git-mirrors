@@ -19,5 +19,9 @@ $(call load-state, services/bind)
 ### tiang::tag opilio balaro
 $(call load-state, services/postgres/balaro)
 
+### tiang::tag opilio mariadb
+### tiang::tag opilio monto
+$(call load-state, services/mariadb/monto)
+
 ### tiang::tag opilio mediawiki
 $(call load-state, services/mediawiki)
