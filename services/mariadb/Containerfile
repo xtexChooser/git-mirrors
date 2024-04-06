@@ -45,7 +45,7 @@ RUN set -eux; \
 
 ENV MARIADB_HOME=/var/lib/mariadb
 WORKDIR /var/lib/mariadb
-ENTRYPOINT [ "mariadbd" ]
+ENTRYPOINT [ "/usr/local/mysql/bin/mariadbd" ]
 
 LABEL org.opencontainers.image.licenses="GPL-2.0-or-later"
 LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
