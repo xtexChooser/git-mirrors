@@ -66,6 +66,8 @@ V_PATH		= $(DINITD_DIR)/boot.d
 V_EXIST		= y
 $(call end)
 
+$(call add-fs-directory,/var/log/atremis)
+
 # ========================= cronie =========================
 $(call package)
 V_PKG		= cronie

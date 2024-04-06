@@ -27,6 +27,7 @@ $(DINITD_DIR)/$(V_SERVICE): $(v-deps) $(VENDOR_MODULES_DIR)/containers.mk
 	stop-command = bash -c "$(subst ",\",$(subst $$$$,\$$$$,$(x-container-$(V_SERVICE)-stop-cmd)))"
 	pid-file = $(V_PIDFILE)
 	restart = true
+	logfile = /var/log/atremis/$(V_SERVICE).log
 	EOF
 	$(DINITCTL) stop --force --ignore-unstarted $(V_SERVICE)
 	$(DINITCTL) reload $(V_SERVICE)
