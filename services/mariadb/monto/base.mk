@@ -5,7 +5,7 @@ V_SVCDEPS	+= /var/lib/mariadb/monto /var/run/mariadb
 V_ARGS		+= --mount=type=bind,src=/var/lib/mariadb/monto,dst=/var/lib/mariadb
 V_ARGS		+= --mount=type=bind,src=/var/run/mariadb,dst=/var/run/mariadb
 V_ARGS		+= --memory=128M
-V_ARGS		+= --publish=5433:5432/tcp
+V_ARGS		+= --publish=3307:3306/tcp
 V_ARGS 		+= codeberg.org/xvnet/mariadb:latest
 V_ARGS 		+= --user=root
 $(call end)
