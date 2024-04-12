@@ -25,6 +25,7 @@ dnscontrol get-zones --format=js bind - "$1" | sed -E \
 	-e 's/REG_CHANGEME/REG_NONE/' \
 	-e 's/DnsProvider\(DSP_BIND\),//' \
 	-e 's/\/\/NAMESERVER/NAMESERVER/g' \
+	-e 's/DS\("@", /\/\/DS("@", /g' \
 	| dnscontrol fmt -i /dev/stdin -o /dev/stdout \
 	>"$out"/converted/"$1".js
 popd
