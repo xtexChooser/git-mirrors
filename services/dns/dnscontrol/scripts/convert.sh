@@ -16,7 +16,6 @@ cat >"$temp"/creds.json <<EOF
 EOF
 mkdir "$temp"/zones
 ldns-read-zone \
-	-e DS \
 	-e DNSKEY \
 	< ../zones/"$1".zone > "$temp"/zones/"$1".zone
 pushd "$temp"
