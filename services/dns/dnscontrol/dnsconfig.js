@@ -8,7 +8,7 @@ var DSP_CF = NewDnsProvider("cf");
 DEFAULTS(CF_PROXY_DEFAULT_OFF);
 
 require("converted/xvnet0.eu.org.js");
-D_EXTEND("xvnet0.eu.org", DnsProvider(DSP_DESEC, 0), DnsProvider(DSP_GCORE, 0));
+D_EXTEND("xvnet0.eu.org", DnsProvider(DSP_DESEC, 0));
 
 require("converted/xvnet.eu.org.js");
 D_EXTEND("xvnet.eu.org", DnsProvider(DSP_GCORE, 0));
