@@ -1,0 +1,11 @@
+[workspace]
+resolver = "2"
+members = ["yjqyapi"]
+
+[workspace.package]
+authors = ["xtex"]
+license = "AGPL-3.0-or-later AND CC-BY-NC-SA-4.0"
+repository = "https://codeberg.org/xtex/yjqy-rs"
+homepage = "https://codeberg.org/xtex/yjqy-rs"
+documentation = "https://codeberg.org/xtex/yjqy-rs"
+readme = "README.md"
