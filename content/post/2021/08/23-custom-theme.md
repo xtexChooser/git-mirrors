@@ -1,5 +1,5 @@
 ---
-title: 我的自制Hexo主题
+title: 从零开始的Hexo主题
 #excerpt: 一个由忘写Front-Matter导致的主题
 description: 一个由忘写Front-Matter导致的主题
 date: 2021-08-23

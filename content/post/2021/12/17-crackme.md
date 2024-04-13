@@ -1,5 +1,5 @@
 ---
-title: 玩CrackMe
+title: Some simply crackmes Writeup
 #excerpt: 2021-10-15
 date: 2021-10-15
 ---
@@ -35,7 +35,3 @@ Ghidra 直接自动识别出了`_main`函数，点进去就是了，然后反编
 [<img src="https://s4.ax1x.com/2021/12/17/TAVhGt.png" alt="TAVhGt.png" style="zoom:67%;" />](https://imgtu.com/i/TAVhGt)
 
 测试后发现，`crck_me`就是 UserName，同理，`$2833-15431-51KEY`就是 LicKey
-
-## 本文历史
-
-- 2021.12.17：编写本文

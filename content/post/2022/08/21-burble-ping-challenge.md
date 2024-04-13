@@ -1,5 +1,5 @@
 ---
-title: Burble DN42 Ping Challenge
+title: Burble DN42 Ping Challenge Writeup
 #excerpt: Burble Ping Challenge的解题思路（
 date: 2022-08-21
 ---

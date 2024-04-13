@@ -2,6 +2,7 @@
 title: 我的新电脑
 #excerpt: 好耶！我有新的电脑了！
 date: 2021-06-27
+hidden: true
 ---
 
 好耶！我有新的电脑了！
