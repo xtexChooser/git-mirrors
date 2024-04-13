@@ -27,16 +27,17 @@ impl PartnerSchoolsAccess for QyClient {
                 .borrow()
                 .get("href")
                 .ok_or_else(|| {
-                    Error::UnknownHTML(
-                        "href attr not exist on a elements on link_qy.php"
-                            .to_string(),
+                    Error::MalformedHTML(
+                        "href attr not exist on a elements on link_qy.php",
+                        None,
                     )
                 })?
                 .to_owned();
             if !id.starts_with("http://qy.yjzqy.net:9090/sc/") {
-                return Err(Error::UnknownHTML(format!(
-                    "Invalid prefix for school index link on link_qy.php"
-                )));
+                return Err(Error::MalformedHTML(
+                    "Invalid prefix for school index link on link_qy.php",
+                    None,
+                ));
             }
             let id = id[28..].trim_end_matches('/').to_string();
             partners.insert(SchoolIdentifier(id), name);

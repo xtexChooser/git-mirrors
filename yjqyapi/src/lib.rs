@@ -4,6 +4,7 @@ use kuchikiki::{traits::TendrilSink, NodeRef};
 use tracing::debug;
 pub use url::Url;
 
+pub mod changelog;
 pub mod error;
 pub mod partners;
 
@@ -16,6 +17,12 @@ pub struct SchoolIdentifier(String);
 impl<S: Into<String>> From<S> for SchoolIdentifier {
     fn from(value: S) -> Self {
         SchoolIdentifier(value.into())
+    }
+}
+
+impl ToString for SchoolIdentifier {
+    fn to_string(&self) -> String {
+        self.0.to_owned()
     }
 }
 
@@ -59,12 +66,12 @@ impl QyClient {
     }
 
     #[must_use]
-    pub fn make_url<S: ToString>(&self, path: S) -> Result<Url> {
-        Ok(self.base_url.join(&path.to_string().as_str())?)
+    pub fn make_url<S: Into<String>>(&self, path: S) -> Result<Url> {
+        Ok(self.base_url.join(&path.into().as_str())?)
     }
 
     #[must_use]
-    pub async fn get_page_html<S: ToString>(&self, path: S) -> Result<NodeRef> {
+    pub async fn get_page_html<S: Into<String>>(&self, path: S) -> Result<NodeRef> {
         let req = self.http_client.get(self.make_url(path)?);
         let req = req.build()?;
         debug!(?req);

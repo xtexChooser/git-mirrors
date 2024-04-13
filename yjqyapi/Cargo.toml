@@ -15,6 +15,7 @@ async-trait = "0.1.80"
 kuchikiki = "0.8.2"
 reqwest = { version = "0.12.3", features = ["charset", "cookies"], default-features = false }
 thiserror = "1.0.58"
+time = "0.3.36"
 tokio = { version = "1.37.0", features = ["macros", "sync"] }
 tracing = "0.1.40"
 url = "2.5.0"
