@@ -138,7 +138,7 @@ Accountability:
 
 Team members:
 
-* https://codeberg.org/crystal [March 2023 Agreement](https://codeberg.org/forgejo/governance/issues/5)
+* https://codeberg.org/crystal [March 2024 Agreement](https://codeberg.org/forgejo/governance/issues/80)
 * https://codeberg.org/earl-warren [March 2023 Agreement](https://codeberg.org/forgejo/governance/issues/3)
 
 ## Security
