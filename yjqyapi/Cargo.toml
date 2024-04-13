@@ -14,8 +14,9 @@ readme.workspace = true
 async-trait = "0.1.80"
 kuchikiki = "0.8.2"
 reqwest = { version = "0.12.3", features = ["charset", "cookies"], default-features = false }
+serde = { version = "1.0.197", features = ["derive"] }
 thiserror = "1.0.58"
-time = "0.3.36"
+time = { version = "0.3.36", features = ["serde"] }
 tokio = { version = "1.37.0", features = ["macros", "sync"] }
 tracing = "0.1.40"
 url = "2.5.0"

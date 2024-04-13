@@ -1,10 +1,11 @@
 use async_trait::async_trait;
+use serde::{Deserialize, Serialize};
 use time::Date;
 
 use crate::*;
 
 /// 软件版本更新说明
-#[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct ChangeLog {
     /// 日期
     pub date: Date,
@@ -52,7 +53,7 @@ pub trait ChangeLogAccess {
     /// 参考http://qy.yjzqy.net:9090/sc/yjyz/banben.php
     async fn changelog(
         &self,
-        school: &SchoolIdentifier,
+        school: &School,
     ) -> Result<Vec<ChangeLog>>;
 }
 
@@ -60,7 +61,7 @@ pub trait ChangeLogAccess {
 impl ChangeLogAccess for QyClient {
     async fn changelog(
         &self,
-        school: &SchoolIdentifier,
+        school: &School,
     ) -> Result<Vec<ChangeLog>> {
         let page = self
             .get_page_html(format!("/sc/{}/banben.php", school.0))
