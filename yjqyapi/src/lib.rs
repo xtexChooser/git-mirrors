@@ -1,7 +1,10 @@
-use std::fmt;
+use std::{
+    borrow::{Borrow, Cow},
+    fmt,
+};
 
 use kuchikiki::{traits::TendrilSink, NodeRef};
-use serde::Serialize;
+use reqwest::header::HeaderValue;
 use tracing::debug;
 pub use url::Url;
 
@@ -22,13 +25,13 @@ impl<S: Into<String>> From<S> for School {
     }
 }
 
-impl ToString for School {
-    fn to_string(&self) -> String {
-        self.0.to_owned()
+impl fmt::Debug for School {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(&self.0)
     }
 }
 
-impl fmt::Debug for School {
+impl fmt::Display for School {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.write_str(&self.0)
     }
@@ -85,16 +88,29 @@ impl QyClient {
     }
 
     #[must_use]
-    pub async fn post_page_html<S: Into<String>, T: Serialize + ?Sized>(
+    pub async fn post_page_html<S, I, K, V>(
         &self,
         path: S,
-        data: &T,
-    ) -> Result<NodeRef> {
+        data: I,
+    ) -> Result<NodeRef>
+    where
+        S: Into<String>,
+        I: IntoIterator,
+        I::Item: Borrow<(K, V)>,
+        K: AsRef<str>,
+        V: AsRef<str>,
+    {
         Ok(self
             .request_page_html(
                 self.http_client
                     .post(self.make_url(path)?)
-                    .form::<T>(data)
+                    .header(
+                        reqwest::header::CONTENT_TYPE,
+                        HeaderValue::from_static(
+                            "application/x-www-form-urlencoded",
+                        ),
+                    )
+                    .body(Self::encode_post_form(data)?)
                     .build()?,
             )
             .await?)
@@ -114,6 +130,26 @@ impl QyClient {
     #[must_use]
     pub fn parse_html(&self, html: &str) -> Result<NodeRef> {
         Ok(kuchikiki::parse_html().one(html))
+    }
+
+    #[must_use]
+    pub fn encode_gb2312<'a>(str: &'a str) -> Cow<'a, [u8]> {
+        let (text, _, _) = encoding_rs::GB18030.encode(str);
+        return text;
+    }
+
+    #[must_use]
+    fn encode_post_form<I, K, V>(data: I) -> Result<String>
+    where
+        I: IntoIterator,
+        I::Item: Borrow<(K, V)>,
+        K: AsRef<str>,
+        V: AsRef<str>,
+    {
+        Ok(form_urlencoded::Serializer::new("".to_owned())
+            .encoding_override(Some(&Self::encode_gb2312))
+            .extend_pairs(data)
+            .finish())
     }
 }
 
@@ -158,6 +194,19 @@ mod tests {
     async fn get_page_html() -> Result<()> {
         let c = QyClient::new(Default::default()).await?;
         let _ = c.get_page_html("/list/link_qy.php").await?;
+        Ok(())
+    }
+
+    #[test]
+    fn encode_gb2312() -> Result<()> {
+        assert_eq!(
+            QyClient::encode_gb2312("测试").into_owned(),
+            [0xB2, 0xE2, 0xCA, 0xD4]
+        );
+        assert_eq!(
+            QyClient::encode_gb2312("姓名").into_owned(),
+            [0xD0, 0xD5, 0xC3, 0xFB]
+        );
         Ok(())
     }
 }

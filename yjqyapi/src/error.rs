@@ -9,6 +9,9 @@ pub enum Error {
 
     #[error("Unrecognizable HTML: {0} {1:?}")]
     MalformedHTML(&'static str, Option<String>),
+
+    #[error("Remote error: {0}")]
+    RemoteError(String),
 }
 
 impl From<std::num::ParseIntError> for Error {
