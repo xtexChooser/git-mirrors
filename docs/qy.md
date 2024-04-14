@@ -42,3 +42,7 @@ qy.yjzqy.net.           297     IN      A       175.178.41.95
 ```
 
 未观察到任何AAAA rrSET和DNSSEC相关rrSET。
+
+### 信息查询过滤绕过
+
+参见：<https://blog.xtexx.eu.org/2024/04/13-yjzqy-net-leak-disclosure/>
