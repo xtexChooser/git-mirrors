@@ -5,7 +5,9 @@ use time::Date;
 use crate::*;
 
 /// 软件版本更新说明
-#[derive(Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(
+    Debug, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize,
+)]
 pub struct ChangeLog {
     /// 日期
     pub date: Date,
@@ -19,10 +21,10 @@ impl TryFrom<&str> for ChangeLog {
     type Error = Error;
 
     fn try_from(value: &str) -> Result<Self> {
-        let (date, value) = value.split_once("【").ok_or_else(|| {
+        let (date, value) = value.split_once('【').ok_or_else(|| {
             Error::MalformedHTML("changelog text has no '【'", None)
         })?;
-        let (version, value) = value.split_once("】").ok_or_else(|| {
+        let (version, value) = value.split_once('】').ok_or_else(|| {
             Error::MalformedHTML("changelog text has no '】'", None)
         })?;
         let text = value.trim();
@@ -51,18 +53,12 @@ pub trait ChangeLogAccess {
     /// 获取软件版本更新说明
     ///
     /// 参考http://qy.yjzqy.net:9090/sc/yjyz/banben.php
-    async fn changelog(
-        &self,
-        school: &School,
-    ) -> Result<Vec<ChangeLog>>;
+    async fn changelog(&self, school: &School) -> Result<Vec<ChangeLog>>;
 }
 
 #[async_trait]
 impl ChangeLogAccess for QyClient {
-    async fn changelog(
-        &self,
-        school: &School,
-    ) -> Result<Vec<ChangeLog>> {
+    async fn changelog(&self, school: &School) -> Result<Vec<ChangeLog>> {
         let page = self
             .get_page_html(format!("/sc/{}/banben.php", school.0))
             .await?;

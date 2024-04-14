@@ -70,24 +70,20 @@ impl QyClient {
         })
     }
 
-    #[must_use]
     pub fn make_url<S: Into<String>>(&self, path: S) -> Result<Url> {
-        Ok(self.base_url.join(&path.into().as_str())?)
+        Ok(self.base_url.join(path.into().as_str())?)
     }
 
-    #[must_use]
     pub async fn get_page_html<S: Into<String>>(
         &self,
         path: S,
     ) -> Result<NodeRef> {
-        Ok(self
-            .request_page_html(
-                self.http_client.get(self.make_url(path)?).build()?,
-            )
-            .await?)
+        self.request_page_html(
+            self.http_client.get(self.make_url(path)?).build()?,
+        )
+        .await
     }
 
-    #[must_use]
     pub async fn post_page_html<S, I, K, V>(
         &self,
         path: S,
@@ -100,23 +96,21 @@ impl QyClient {
         K: AsRef<str>,
         V: AsRef<str>,
     {
-        Ok(self
-            .request_page_html(
-                self.http_client
-                    .post(self.make_url(path)?)
-                    .header(
-                        reqwest::header::CONTENT_TYPE,
-                        HeaderValue::from_static(
-                            "application/x-www-form-urlencoded",
-                        ),
-                    )
-                    .body(Self::encode_post_form(data)?)
-                    .build()?,
-            )
-            .await?)
+        self.request_page_html(
+            self.http_client
+                .post(self.make_url(path)?)
+                .header(
+                    reqwest::header::CONTENT_TYPE,
+                    HeaderValue::from_static(
+                        "application/x-www-form-urlencoded",
+                    ),
+                )
+                .body(Self::encode_post_form(data)?)
+                .build()?,
+        )
+        .await
     }
 
-    #[must_use]
     pub async fn request_page_html(
         &self,
         req: reqwest::Request,
@@ -124,21 +118,18 @@ impl QyClient {
         debug!(?req);
         let resp = self.http_client.execute(req).await?;
         let body = resp.error_for_status()?.text_with_charset("gb2312").await?;
-        Ok(self.parse_html(&body)?)
+        self.parse_html(&body)
     }
 
-    #[must_use]
     pub fn parse_html(&self, html: &str) -> Result<NodeRef> {
         Ok(kuchikiki::parse_html().one(html))
     }
 
-    #[must_use]
-    pub fn encode_gb2312<'a>(str: &'a str) -> Cow<'a, [u8]> {
+    pub fn encode_gb2312(str: &str) -> Cow<'_, [u8]> {
         let (text, _, _) = encoding_rs::GB18030.encode(str);
-        return text;
+        text
     }
 
-    #[must_use]
     fn encode_post_form<I, K, V>(data: I) -> Result<String>
     where
         I: IntoIterator,

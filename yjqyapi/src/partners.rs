@@ -7,16 +7,12 @@ use crate::*;
 #[async_trait]
 pub trait PartnerSchoolsAccess {
     /// 获取合作伙伴学校（所有使用启业网的学校）
-    async fn partner_schools(
-        &self,
-    ) -> Result<HashMap<School, String>>;
+    async fn partner_schools(&self) -> Result<HashMap<School, String>>;
 }
 
 #[async_trait]
 impl PartnerSchoolsAccess for QyClient {
-    async fn partner_schools(
-        &self,
-    ) -> Result<HashMap<School, String>> {
+    async fn partner_schools(&self) -> Result<HashMap<School, String>> {
         let page = self.get_page_html("/list/link_qy.php").await?;
         let mut partners = HashMap::new();
 

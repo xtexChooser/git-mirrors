@@ -28,7 +28,7 @@ async fn main() -> Result<()> {
             )?;
 
             // 构造利用载荷
-            cols[0].text = "".to_owned();
+            "".clone_into(&mut cols[0].text);
             let results = c
                 .do_info_query(&school, &query.id, [(&cols[0], "啊对对对")])
                 .await?;
