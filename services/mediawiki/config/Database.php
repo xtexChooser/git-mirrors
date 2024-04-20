@@ -6,8 +6,8 @@ $wgLocalDatabases = $wgConf->wikis = array_map(function ($n) {
 
 $wgDBtype = 'mysql';
 $wgDBname = 'wiki' . $wikiID;
-$wgDBserver = 'opilio.s.xvnet0.eu.org';
-$wgDBport = 3307;
+$wgDBserver = 'opilio.s.xvnet0.eu.org:3307';
+// $wgDBport = 3307;
 $wgDBuser = 'mediawiki';
 $wgDBadminuser = 'mediawikiadmin';
 
