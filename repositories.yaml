@@ -217,6 +217,10 @@
   kind: extensions
   prefix: mw/extensions/VisualEditor
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/VisualEditor
+  submodules:
+    - name: VisualEditor Core
+      prefix: lib/ve
+      git: https://gerrit.wikimedia.org/r/VisualEditor/VisualEditor
 - name: WikiEditor
   kind: extensions
   prefix: mw/extensions/WikiEditor
@@ -225,8 +229,3 @@
   kind: extensions
   prefix: mw/extensions/cldr
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/cldr
-- name: VisualEditor-lib-ve
-  prefix: mw/extensions/VisualEditor/lib/ve
-  branch: master
-  pri: 101
-  git: https://gerrit.wikimedia.org/r/VisualEditor/VisualEditor

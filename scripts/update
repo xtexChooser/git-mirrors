@@ -5,18 +5,17 @@ set -e
 defaultBranch="$(yq ". | filter(.name == \"core\") | .[0].defaultBranch // .[0].branch" repositories.yaml)"
 echo "Default branch: $defaultBranch"
 
-while read -r repo; do
-	name="$(yq '.name' <<<"$repo")"
-	subtreePrefix="$(yq '.prefix' <<<"$repo")"
-	giturl="$(yq '.git' <<<"$repo")"
-	branch="$(yq ".branch // \"$defaultBranch\"" <<<"$repo")"
+mergeSubtree() {
+	name="$1"
+	prefix="$2"
+	commit="$3"
 
-	if [[ -e "$subtreePrefix" ]]; then
-		echo "Merging repository: $name"
-		if ! git subtree -P "$subtreePrefix" pull "$giturl" "$branch"; then
-			echo "Trying to resolve core merge conflicts"
-			if [[ -e "$subtreePrefix"/.gitmodules ]]; then
-				grep 'path = ' "$subtreePrefix"/.gitmodules | cut -d'=' -f2 | awk '{print "'"$subtreePrefix"'/" $1}' | while read -r dir; do
+	if [[ -e "$prefix" ]]; then
+		echo "Merging: $name"
+		if ! git subtree -P "$prefix" merge "$commit"; then
+			echo "Trying to resolve merge conflicts"
+			if [[ -e "$prefix"/.gitmodules ]]; then
+				grep 'path = ' "$prefix"/.gitmodules | cut -d'=' -f2 | awk '{print "'"$prefix"'/" $1}' | while read -r dir; do
 					{
 						rm -d "$dir"
 						git add "$dir"
@@ -28,19 +27,40 @@ while read -r repo; do
 			git merge --continue
 		fi
 	else
-		echo "Initializing repository: $name"
-		git subtree -P "$subtreePrefix" add "$giturl" "$branch"
+		echo "Adding: $name"
+		git subtree -P "$prefix" add "$commit"
 	fi
 
-	if [[ -e "$subtreePrefix"/.gitmodules ]]; then
-		grep 'path = ' "$subtreePrefix"/.gitmodules | cut -d'=' -f2 | awk '{print "'"$subtreePrefix"'/" $1}' | while read -r dir; do
+	if [[ -e "$prefix"/.gitmodules ]]; then
+		grep 'path = ' "$prefix"/.gitmodules | cut -d'=' -f2 | awk '{print "'"$prefix"'/" $1}' | while read -r dir; do
 			rm -d "$dir" &>/dev/null || true
 		done
 		if ! git diff-index --quiet HEAD --; then
-			git add "$subtreePrefix"
-			git commit -m "Remove submodule in $subtreePrefix"
+			git add "$prefix"
+			git commit -m "Remove gitsubmodules in $prefix"
 		fi
 	fi
+}
+
+while read -r repo; do
+	name="$(yq '.name' <<<"$repo")"
+	subtreePrefix="$(yq '.prefix' <<<"$repo")"
+	giturl="$(yq '.git' <<<"$repo")"
+	branch="$(yq ".branch // \"$defaultBranch\"" <<<"$repo")"
+
+	git fetch "$giturl" "$branch"
+	subtreeCommit="$(git rev-parse FETCH_HEAD)"
+	mergeSubtree "$name" "$subtreePrefix" "$subtreeCommit"
+
+	while read -r submodule; do
+		submoduleName="$(yq '.name' <<<"$submodule")"
+		submodulePrefix="$(yq '.prefix' <<<"$submodule")"
+		giturl="$(yq '.git' <<<"$submodule")"
+		submoduleCommit="$(git ls-tree --object-only "$subtreeCommit" "$submodulePrefix")"
+		git fetch "$giturl" "$submoduleCommit"
+
+		mergeSubtree "$submoduleName" "$subtreePrefix/$submodulePrefix" "$submoduleCommit"
+	done <<<"$(yq -o=json -I=0 "(.submodules // [])[]" <<<"$repo")"
 done <<<"$(yq -o=json -I=0 '. | sort_by(.pri // 100) | .[]' repositories.yaml)"
 
 echo "Done"
