@@ -52,6 +52,8 @@ class MwSql extends Maintenance {
 			'The database wiki ID to use if not the current one', false, true );
 		$this->addOption( 'replicadb',
 			'Replica DB server to use instead of the primary DB (can be "any")', false, true );
+		$this->addOption( 'noshared',
+			'Skip queries related to the shared DB', false, false );
 		$this->setBatchSize( 100 );
 	}
 
@@ -104,7 +106,13 @@ class MwSql extends Maintenance {
 				$this->fatalError( "Unable to open input file" );
 			}
 
-			$error = $db->sourceStream( $file, null, [ $this, 'sqlPrintResult' ], __METHOD__ );
+			$error = $db->sourceStream(
+				$file,
+				null,
+				[ $this, 'sqlPrintResult' ],
+				__METHOD__,
+				[ $this, 'noExecuteCommands' ]
+			);
 			if ( $error !== true ) {
 				$this->fatalError( $error );
 			}
@@ -228,6 +236,15 @@ class MwSql extends Maintenance {
 			}
 			return $affected;
 		}
+	}
+
+	public function noExecuteCommands( $cmd ) {
+		if ( !$this->hasOption( 'noshared' ) ) {
+			return true;
+		}
+		global $wgSharedDB;
+		return strpos( $cmd, '`' . $wgSharedDB . '`' ) === false
+			&& strpos( $cmd, '"' . $wgSharedDB . '"' ) === false;
 	}
 
 	/**
