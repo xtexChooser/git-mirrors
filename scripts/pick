@@ -6,7 +6,7 @@ urlqueries=("no-limit" "o=CURRENT_REVISION")
 mergekind="cherry-pick"
 
 if [[ $# -eq 0 ]]; then
-	echo "Usage: $0 [--cp] [--merge] [--dry-run] <patch filters>..." >&2
+	echo "Usage: $0 [--cp] [--merge] [--dry-run] <patch filters or change URL>..." >&2
 	exit 1
 fi
 
@@ -25,6 +25,9 @@ while [ $# -ne 0 ]; do
 		echo "Unknown option: $1" >&2
 		exit 1
 		;;
+	https://gerrit.wikimedia.org/r/c/* | http://gerrit.wikimedia.org/r/c/*)
+		urlqueries=("${urlqueries[@]}" "q=$(sed -E -e 's/.*\/\+\///g' -e 's/\?.*//g' <<<"$1")")
+	 ;;
 	*)
 		urlqueries=("${urlqueries[@]}" "q=$1")
 		;;
