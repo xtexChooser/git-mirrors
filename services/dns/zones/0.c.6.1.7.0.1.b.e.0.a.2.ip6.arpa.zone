@@ -7,9 +7,6 @@ $TTL 600
 				3600	IN	NS		ns1.desec.io.
 				3600	IN	NS		ns2.desec.org.
 							DNSKEY	257 3 13 rNR701yiOPHfqDP53GnsHZdlsRqI7O1ksk60rnFILZVk7Z4eTBd1U49oSkTNVNox9tb7N15N2hboXoMEyFFzcw==
-							CDS		31334 13 4 41a283f1d671142cbec5c95565dc3252e84e11ef528716a2ac201a195723b15f5797bef194bcf029e8425a651d2f03c8
-							CDS		31334 13 2 94cc505ebc36b1f4e051268b820efb230f1572d445e833bb5bf7380d6c2cbc0a
-							CDNSKEY	257 3 13 rNR701yiOPHfqDP53GnsHZdlsRqI7O1ksk60rnFILZVk7Z4eTBd1U49oSkTNVNox9tb7N15N2hboXoMEyFFzcw==
 
 							PTR		xvnet.eu.org.
 							MX		10 mx1.improvmx.com.
