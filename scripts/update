@@ -54,13 +54,14 @@ while read -r repo; do
 
 	while read -r submodule; do
 		submoduleName="$(yq '.name' <<<"$submodule")"
+		[[ "$submoduleName" != "null" ]] || continue
 		submodulePrefix="$(yq '.prefix' <<<"$submodule")"
 		giturl="$(yq '.git' <<<"$submodule")"
 		submoduleCommit="$(git ls-tree --object-only "$subtreeCommit" "$submodulePrefix")"
 		git fetch "$giturl" "$submoduleCommit"
 
 		mergeSubtree "$submoduleName" "$subtreePrefix/$submodulePrefix" "$submoduleCommit"
-	done <<<"$(yq -o=json -I=0 "(.submodules // [])[]" <<<"$repo")"
+	done <<<"$(yq -o=json -I=0 '(.submodules // [])[]' <<<"$repo")"
 done <<<"$(yq -o=json -I=0 '. | sort_by(.pri // 100) | .[]' repositories.yaml)"
 
 echo "Done"
