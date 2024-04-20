@@ -23,7 +23,6 @@ else
 	runMW php maintenance/sql.php --wiki "$1" maintenance/tables-generated.sql
 	runMW php maintenance/sql.php --wiki "$1" maintenance/tables.sql
 	runMW php maintenance/run.php --wiki "$1" update --quick
-	runMW php maintenance/sql.php --wiki "$1" extensions/GlobalBlocking/sql/mysql/tables-generated-globalblocks.sql
 fi
 
 echo "Wiki $1 initialized"
