@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -e
+
+if [[ $# -eq 0 ]]; then
+	echo "Usage: $0 <commits>..." >&2
+	exit 1
+fi
+
+while [ $# -ne 0 ]; do
+	case $1 in
+	*)
+		git revert --no-edit "$1"
+		./scripts/pick --one "$(git log -1 "$1" --format='%(trailers:key=Change-Id,valueonly,separator=)')"
+		newcommit="$(git rev-parse HEAD)"
+		git reset --soft HEAD^^
+		if ! git diff-index --quiet HEAD --; then
+			git commit -m "Reapply: $(git log -1 --format=%B "$newcommit")$(echo)Reapply: $1"
+		fi
+		;;
+	esac
+	shift
+done
