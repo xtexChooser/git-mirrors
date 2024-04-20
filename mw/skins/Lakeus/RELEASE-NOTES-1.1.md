@@ -35,12 +35,6 @@ risk!
 
 ### Bug fixes
 
-* Removed unnecessary modules.
-* Fixed CodeMirror glitch.
-* (issue #26) Removed unneeded `wp` prefix from `hide-if`.
-* (issue #32) Fixed "access to private variable `$templateParser` of parent
-  class" in `SkinLakeus.php` by dropping unneeded
-  `BagOStuff $localServerObjectCache` dependency.
 * …
 
 ### Action API changes
@@ -53,15 +47,10 @@ risk!
 
 ### Languages updated
 
-Lakeus skin now supports # languages. Many localisations are updated regularly.
+Lakeus skin now supports 27 languages. Many localisations are updated regularly.
 
 Below only new and removed languages are listed.
 
-* (issue #30) Added missing localisations for British English (tw).
-* (issue #30) Added missing localisations for Cantonese (Traditional Han script)
-  (yue-hant), which was moved from yue.
-* (issue #35) Unified indentation for en.json by changing 2-whitespace
-  indentation to tab-character indentation.
 * …
 
 ### Breaking changes
@@ -70,9 +59,55 @@ Below only new and removed languages are listed.
 
 ### Deprecations
 
+* (issue #38) Support for obsoleted MediaWiki version 1.37.x, 1.38.x were
+  dropped.
+* (issue #38) Replaced deprecated PHP class alias `ResourceLoaderSkinModule`
+  with namespaced `MediaWiki\ResourceLoader\SkinModule`.\
+  The class was namespaced in MediaWiki 1.39
+  (commit 3e2653f83bc096889d8b69d1e01a52d7de42b247,
+  Change-Id Id08a220e1d6085e2b33f3f6c9d0e3935a4204659),\
+  and the deprecated class alias was removed in MediaWiki 1.42
+  (commit 21d8d9863b393e0bea608ac2f926b40bfecff9ad,
+  Change-Id I5929a2f760c8d21c1cb2542a19220a91ac7240e4).
+* …
+
+### Other changes
+
+* …
+
+## mediawiki-skins-Lakeus 1.1.18
+
+This is a maintenance release of the mediawiki-skins-Lakeus 1.1 version.
+
+This will be the last release support obsoleted MediaWiki version 1.37.x,
+1.38.x.
+
+### Bug fixes
+
+* Removed unnecessary modules.
+* Fixed CodeMirror glitch.
+* (issue #26) Removed unneeded `wp` prefix from `hide-if`.
+* (issue #32) Fixed "access to private variable `$templateParser` of parent
+  class" in `SkinLakeus.php` by dropping unneeded
+  `BagOStuff $localServerObjectCache` dependency.
+* Fixed hexcolor.replace is not a function
+
+### Languages updated
+
+Lakeus skin now supports 27 languages. Many localisations are updated regularly.
+
+Below only new and removed languages are listed.
+
+* (issue #30) Added missing localisations for Twi (tw).
+* (issue #30) Added missing localisations for Cantonese (Traditional Han script)
+  (yue-hant), which was moved from yue.
+* (issue #35) Unified indentation for en.json by changing 2-whitespace
+  indentation to tab-character indentation.
+
+### Deprecations
+
 * (issue #24) Converted to the new hook system.
 * (T262067, issue #33) Migrated `templateDirectory` option to `skin.json`.
-* …
 
 ### Other changes
 
@@ -84,7 +119,6 @@ Below only new and removed languages are listed.
   * HISTORY
   * RELEASE-NOTES-1.1
   * SECURITY
-* …
 
 ## mediawiki-skins-Lakeus 1.1.17
 
