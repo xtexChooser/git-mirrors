@@ -66,6 +66,6 @@ while read -r change; do
 		git subtree -P "$subtree" pull "$url" "$ref"
 		;;
 	esac
-done <<<"$(curl -sSL --retry 3 "https://gerrit.wikimedia.org/r/changes/?$urlquery" | tail -n-1 | yq -o=json -I0 '.[]')"
+done <<<"$(curl -sSL --retry 3 "https://gerrit.wikimedia.org/r/changes/?$urlquery" | tail -n-1 | yq -o=json -I0 '.[] | with(select(kind == "map"); .|=[.]) | .[]')"
 
 echo "Done"
