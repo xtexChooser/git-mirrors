@@ -59,7 +59,7 @@ else
 		\"branch\": \"$branch\" }]" repositories.yaml
 fi
 
-yq -i '. |= sort_by(.name)' repositories.yaml
+yq -i '. |= sort_by(.pri // 100, .name)' repositories.yaml
 
 git add repositories.yaml
 git commit -m "Add $kind/$name"
