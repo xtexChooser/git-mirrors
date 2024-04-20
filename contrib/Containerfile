@@ -9,7 +9,7 @@ RUN set -eux; \
 	php -r "unlink('composer-setup.php');";
 
 ADD mw /mw
-ADD strip-for-build.sh /
+ADD scripts/strip-for-build.sh /
 
 WORKDIR /mw
 RUN set -eux; \
