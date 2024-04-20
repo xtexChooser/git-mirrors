@@ -48,4 +48,4 @@ out/dnssec-zsk.key out/dnssec-zsk.private:
 
 dnssec-ksk := $(wildcard .dnssec-ksk.private ../../../../../secrets/dns/root-ksk1.private)
 out/root.zone.signed: out/root.zone out/dnssec-zsk.private $(dnssec-ksk)
-	ldns-signzone -e "$$(date -u +%Y%m%d --date='+1month')" -f $@ -o . -z sha512 $< out/dnssec-zsk $(subst .private,,$(dnssec-ksk))
+	ldns-signzone -n -e "$$(date -u +%Y%m%d --date='+1month')" -f $@ -o . -z sha512 $< out/dnssec-zsk $(subst .private,,$(dnssec-ksk))
