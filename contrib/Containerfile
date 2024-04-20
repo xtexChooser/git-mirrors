@@ -9,12 +9,12 @@ RUN set -eux; \
 	php -r "unlink('composer-setup.php');";
 
 ADD mw /mw
-ADD strip.sh /
+ADD strip-for-build.sh /
 
 WORKDIR /mw
 RUN set -eux; \
 	php /opt/mediawiki/composer.phar install --no-dev --ignore-platform-reqs; \
-	/strip.sh;
+	/strip-for-build.sh;
 
 FROM scratch
 COPY --from=bld /mw /

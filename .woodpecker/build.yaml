@@ -8,7 +8,7 @@ steps:
       username: ${CI_REPO_OWNER}
       password:
         from_secret: codeberg_token
-      dockerfile: Containerfile
+      dockerfile: contrib/Containerfile
 when:
   - event: push
   - event: cron
