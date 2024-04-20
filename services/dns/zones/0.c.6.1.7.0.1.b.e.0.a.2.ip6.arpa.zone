@@ -3,11 +3,8 @@ $TTL 600
 @				43200	IN	SOA		a.ns.xvnet0.eu.org. op.xvnet0.eu.org. 0 1800 900 1209600 3600
 				604800	IN	NS		a.ns.xvnet0.eu.org.
 				604800	IN	NS		b.ns.xvnet0.eu.org.
-							; deSEC
-				3600	IN	NS		ns1.desec.io.
-				3600	IN	NS		ns2.desec.org.
-							DNSKEY	257 3 13 rNR701yiOPHfqDP53GnsHZdlsRqI7O1ksk60rnFILZVk7Z4eTBd1U49oSkTNVNox9tb7N15N2hboXoMEyFFzcw==
-
+				3600	IN	NS		ns1.gcorelabs.net.
+				3600	IN	NS		ns2.gcdn.services.
 							PTR		xvnet.eu.org.
 							MX		10 mx1.improvmx.com.
 							MX		20 mx2.improvmx.com.
