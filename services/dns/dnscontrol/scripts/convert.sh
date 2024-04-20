@@ -15,6 +15,7 @@ cat >"$temp"/creds.json <<EOF
 }
 EOF
 mkdir "$temp"/zones
+# UPSTREAM: (NEXT RELEASE) https://github.com/StackExchange/dnscontrol v4.9.0
 ldns-read-zone \
 	-e DNSKEY \
 	< ../zones/"$1".zone > "$temp"/zones/"$1".zone
