@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+
+set -e
+
+urlqueries=("no-limit" "o=CURRENT_REVISION")
+mergekind="cherry-pick"
+
+if [[ $# -eq 0 ]]; then
+	echo "Usage: $0 [--cp] [--merge] [--dry-run] <patch filters>..." >&2
+	exit 1
+fi
+
+while [ $# -ne 0 ]; do
+	case $1 in
+	--cherry-pick | --cp)
+		mergekind="cherry-pick"
+		;;
+	--merge)
+		mergekind="merge"
+		;;
+	--dry-run | --dry)
+		mergekind="dry"
+		;;
+	--*)
+		echo "Unknown option: $1" >&2
+		exit 1
+		;;
+	*)
+		urlqueries=("${urlqueries[@]}" "q=$1")
+		;;
+	esac
+	shift
+done
+
+IFS='&' urlquery="${urlqueries[*]}"
+
+while read -r change; do
+	project="$(yq '.project' <<<"$change")"
+	if [[ "$project" == "null" ]]; then
+		echo "No changes found" >&2
+		exit 1
+	fi
+	changeID="$(yq '.change_id' <<<"$change")"
+	subject="$(yq '.subject' <<<"$change")"
+	url="$(yq '.revisions[.current_revision].fetch["anonymous http"].url' <<<"$change")"
+	ref="$(yq '.revisions[.current_revision].fetch["anonymous http"].ref' <<<"$change")"
+
+	echo "Applying: $project $changeID ($subject)"
+
+	subtree="${project/mediawiki\//mw\/}"
+	if [[ ! -e "$subtree" ]]; then
+		echo "Tree $subtree not found" >&2
+		exit 1
+	fi
+
+	case "$mergekind" in
+	dry) ;;
+	cherry-pick)
+		git fetch -q "$url" "$ref"
+		git cherry-pick -Xsubtree="$subtree" FETCH_HEAD
+		;;
+	merge)
+		git subtree -P "$subtree" pull "$url" "$ref"
+		;;
+	esac
+done <<<"$(curl -sSL --retry 3 "https://gerrit.wikimedia.org/r/changes/?$urlquery" | tail -n-1 | yq -o=json -I0 '.[]')"
+
+echo "Done"
