@@ -14,5 +14,5 @@ out/zsk/%.key out/zsk/%.private:
 
 out/zones/%.zone: zones/%.zone out/zsk/%.private
 	ldns-read-zone -p -S unixtime $< \
-		| ldns-signzone -e "$$(date -u +%Y%m%d --date='+14days')" -f /dev/stdout -o $*. -z sha512 /dev/stdin out/zsk/$* $(subst .private,,$(dnssec-ksk)) \
+		| ldns-signzone -n -e "$$(date -u +%Y%m%d --date='+14days')" -f /dev/stdout -o $*. -z sha512 /dev/stdin out/zsk/$* $(subst .private,,$(dnssec-ksk)) \
 		> $@
