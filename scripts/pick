@@ -55,6 +55,9 @@ while read -r change; do
 	echo "Applying: $project $changeID ($subject)"
 
 	subtree="${project/mediawiki\//mw\/}"
+	if [[ "$subtree" == "mw/core" ]]; then
+		subtree="mw"
+	fi
 	if [[ ! -e "$subtree" ]]; then
 		echo "Tree $subtree not found" >&2
 		exit 1
@@ -63,7 +66,7 @@ while read -r change; do
 	case "$mergekind" in
 	dry) ;;
 	cherry-pick)
-		git fetch -q "$url" "$ref"
+		git fetch "$url" "$ref"
 		git cherry-pick -Xsubtree="$subtree" FETCH_HEAD
 		;;
 	merge)
