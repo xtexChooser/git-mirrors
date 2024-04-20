@@ -7,9 +7,6 @@ runMW() {
 }
 
 : "${RUN_AS_WIKI:=meta}"
-runSQL() {
-	runMW php maintenance/sql.php --wiki "$RUN_AS_WIKI" --query "$*"
-}
 
 (($# != 1)) && {
 	echo "Usage: atre s mediawiki createwiki <WIKI ID>" >&2
@@ -17,11 +14,14 @@ runSQL() {
 }
 echo "Creating wiki $1"
 
-runSQL CREATE DATABASE wiki"$1"
-runMW php maintenance/sql.php --wiki "$1" --query "ALTER DEFAULT PRIVILEGES GRANT ALL ON TABLES TO mediawiki"
-runMW php maintenance/sql.php --wiki "$1" --query "ALTER DEFAULT PRIVILEGES GRANT ALL ON SEQUENCES TO mediawiki"
-runMW php maintenance/sql.php --wiki "$1" maintenance/postgres/tables-generated.sql
-runMW php maintenance/sql.php --wiki "$1" maintenance/postgres/tables.sql
+if [[ "$1" != "meta" ]]; then
+	runMW php maintenance/sql.php --wiki "$RUN_AS_WIKI" --query "CREATE DATABASE wiki$1"
+else
+	# Bootstraping the meta wiki
+	/srv/atremis/services/mariadb/monto/script/sql.sh -u mediawikiadmin --password -e 'CREATE DATABASE wikimeta;'
+fi
+runMW php maintenance/sql.php --wiki "$1" maintenance/tables-generated.sql
+runMW php maintenance/sql.php --wiki "$1" maintenance/tables.sql
 runMW php maintenance/run.php --wiki "$1" update --quick
 
 echo "Wiki $1 initialized"
