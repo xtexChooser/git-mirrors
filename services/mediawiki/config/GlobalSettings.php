@@ -46,6 +46,7 @@ $xvLoadExtensions = array_merge($xvLoadExtensions, [
 	'Math',
 	'MobileFrontend',
 	'MultimediaViewer',
+	'NoTitle',
 	'Nuke',
 	'OATHAuth',
 	'OAuth',
