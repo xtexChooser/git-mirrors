@@ -99,3 +99,4 @@ $xvLoadExtensions[] = 'BetaFeatures';
 $wgNamespacesWithSubpages[NS_MAIN] = true;
 $wgEnableMetaDescriptionFunctions = true;
 $wgScribuntoEngineConf['luastandalone']['luaPath'] = '/usr/bin/lua';
+$wgGroupPermissions['bureaucrat']['interwiki'] = true;
