@@ -101,6 +101,10 @@
   kind: extensions
   prefix: mw/extensions/Interwiki
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Interwiki
+- name: JsonConfig
+  kind: extensions
+  prefix: mw/extensions/JsonConfig
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/JsonConfig
 - name: Lakeus
   kind: skins
   prefix: mw/skins/Lakeus
