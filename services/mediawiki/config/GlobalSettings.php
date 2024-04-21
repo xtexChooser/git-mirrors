@@ -96,3 +96,4 @@ $xvLoadExtensions[] = 'BetaFeatures';
 
 // Misc
 $wgNamespacesWithSubpages[NS_MAIN] = true;
+$wgEnableMetaDescriptionFunctions = true;
