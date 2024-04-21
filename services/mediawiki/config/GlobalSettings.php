@@ -39,6 +39,7 @@ $xvLoadExtensions = array_merge($xvLoadExtensions, [
 	'ImageMap',
 	'InputBox',
 	'Interwiki',
+	'JsonConfig',
 	'Linter',
 	'LoginNotify',
 	'Loops',
