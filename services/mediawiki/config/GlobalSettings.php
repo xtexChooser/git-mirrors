@@ -31,6 +31,7 @@ $xvLoadExtensions = array_merge($xvLoadExtensions, [
 	'CodeEditor',
 	'CodeMirror',
 	'DiscussionTools',
+	'DynamicPageList3',
 	'Echo',
 	'Gadgets',
 	'HeaderTabs',
