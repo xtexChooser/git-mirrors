@@ -84,6 +84,7 @@ $wgCaptchaTriggers['create'] = true;
 $wgCaptchaTriggers['sendemail'] = true;
 
 $xvLoadExtensions[] = 'ConfirmEdit/Turnstile';
+$wgTurnstileSendRemoteIP = false;
 
 // BetaFeatures
 $xvLoadExtensions[] = 'BetaFeatures';
