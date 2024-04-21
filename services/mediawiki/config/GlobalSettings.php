@@ -83,6 +83,8 @@ $wgGroupPermissions['emailconfirmed']['skipcaptcha'] = true;
 $wgCaptchaTriggers['create'] = true;
 $wgCaptchaTriggers['sendemail'] = true;
 
+$xvLoadExtensions[] = 'ConfirmEdit/Turnstile';
+
 // BetaFeatures
 $xvLoadExtensions[] = 'BetaFeatures';
 // TODO: enable betafeatures by default for sysops
