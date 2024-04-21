@@ -60,6 +60,10 @@
   kind: extensions
   prefix: mw/extensions/GlobalCssJs
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/GlobalCssJs
+- name: GlobalPreferences
+  kind: extensions
+  prefix: mw/extensions/GlobalPreferences
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/GlobalPreferences
 - name: GlobalUserPage
   kind: extensions
   prefix: mw/extensions/GlobalUserPage
