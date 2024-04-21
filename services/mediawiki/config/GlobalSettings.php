@@ -100,6 +100,7 @@ $wgNamespacesWithSubpages[NS_MAIN] = true;
 $wgEnableMetaDescriptionFunctions = true;
 $wgScribuntoEngineConf['luastandalone']['luaPath'] = '/usr/bin/lua';
 $wgGroupPermissions['staff']['interwiki'] = true;
+$wgUseSharedUploads = true;
 
 // JsonConfig
 $wgJsonConfigEnableLuaSupport = true;
