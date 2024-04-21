@@ -100,7 +100,19 @@ $wgNamespacesWithSubpages[NS_MAIN] = true;
 $wgEnableMetaDescriptionFunctions = true;
 $wgScribuntoEngineConf['luastandalone']['luaPath'] = '/usr/bin/lua';
 $wgGroupPermissions['staff']['interwiki'] = true;
+
+// Shared Uploads
 $wgUseSharedUploads = true;
+$wgForeignFileRepos[] = [
+	'class' => ForeignAPIRepo::class,
+	'name' => 'commonswiki',
+	'apibase' => 'https://commons.wikimedia.org/w/api.php',
+	'hashLevels' => 2,
+	'fetchDescription' => true,
+	'descriptionCacheExpiry' => 43200,
+	'apiMetadataExpiry' => 28800,
+	'apiThumbCacheExpiry' => 86400,
+];
 
 // JsonConfig
 $wgJsonConfigEnableLuaSupport = true;
