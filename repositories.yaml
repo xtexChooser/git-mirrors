@@ -12,6 +12,10 @@
   kind: extensions
   prefix: mw/extensions/AntiSpoof
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/AntiSpoof
+- name: BetaFeatures
+  kind: extensions
+  prefix: mw/extensions/BetaFeatures
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/BetaFeatures
 - name: CategoryTree
   kind: extensions
   prefix: mw/extensions/CategoryTree
