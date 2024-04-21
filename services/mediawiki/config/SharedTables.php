@@ -3,8 +3,7 @@
 $wgSharedDB = 'wikimeta';
 $wgSharedPrefix = '';
 
-$wgSharedTables[] = 'actor';
-$wgSharedTables[] = 'spoofuser';
+$wgSharedTables = ['user', 'user_autocreate_serial', 'actor', 'spoofuser'];
 if (str_ends_with($wgServer, 'w.xvnet.eu.org')) {
 	$wgCookieDomain = '.w.xvnet.eu.org';
 } else if (str_ends_with($wgServer, 'w.xvnet0.eu.org')) {
@@ -45,3 +44,6 @@ if ($wikiID != 'meta') {
 	$wgGlobalUserPageAPIUrl = $wgResourceLoaderSources['metawiki']['apiScript'];
 	$wgGlobalUserPageDBname = $wgSharedDB;
 }
+
+// Global Preferences
+$xvLoadExtensions[] = 'GlobalPreferences';
