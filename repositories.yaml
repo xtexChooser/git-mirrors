@@ -51,6 +51,7 @@
 - name: DynamicPageList3
   kind: extensions
   prefix: mw/extensions/DynamicPageList3
+  branch: weirdgloop/REL1_41
   git: https://github.com/weirdgloop/mediawiki-extensions-DynamicPageList3
 - name: Echo
   kind: extensions
