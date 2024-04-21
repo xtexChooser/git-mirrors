@@ -18,9 +18,7 @@ $wgLocaltimezone = 'UTC';
 
 require_once (dirname(__FILE__) . '/Database.php');
 
-$xvLoadSkins[] = 'Vector';
-$wgDefaultSkin = 'vector-2022';
-
+// Global extensions
 $xvLoadExtensions = array_merge($xvLoadExtensions, [
 	'AbuseFilter',
 	'AntiSpoof',
@@ -67,3 +65,13 @@ $xvLoadExtensions = array_merge($xvLoadExtensions, [
 	'VisualEditor',
 	'WikiEditor',
 ]);
+
+// Default skin
+$xvLoadSkins[] = 'Vector';
+$wgDefaultSkin = 'vector-2022';
+
+// Rate limiting
+$wgRateLimits['purge']['user'] = [30, 30];
+$wgRateLimits['linkpurge']['user'] = [30, 30];
+$wgRateLimits['renderfile-nonstandard']['user'] = [100, 30];
+$wgRateLimits['badcaptcha']['newbie'] = [50, 86400];
