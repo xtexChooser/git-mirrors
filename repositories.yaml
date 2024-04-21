@@ -138,6 +138,10 @@
   kind: extensions
   prefix: mw/extensions/MultimediaViewer
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/MultimediaViewer
+- name: NoTitle
+  kind: extensions
+  prefix: mw/extensions/NoTitle
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/NoTitle
 - name: Nuke
   kind: extensions
   prefix: mw/extensions/Nuke
