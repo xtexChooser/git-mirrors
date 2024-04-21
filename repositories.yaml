@@ -44,6 +44,10 @@
   kind: extensions
   prefix: mw/extensions/ConfirmEdit
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/ConfirmEdit
+- name: Description2
+  kind: extensions
+  prefix: mw/extensions/Description2
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Description2
 - name: DiscussionTools
   kind: extensions
   prefix: mw/extensions/DiscussionTools
