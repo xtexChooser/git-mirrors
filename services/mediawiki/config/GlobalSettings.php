@@ -13,12 +13,13 @@ $wgScriptPath = '';
 $wgUsePathInfo = true;
 $wgArticlePath = '/w/$1';
 
+// Default Localisation
 $wgLanguageCode = 'en';
 $wgLocaltimezone = 'UTC';
 
 require_once (dirname(__FILE__) . '/Database.php');
 
-// Global extensions
+// Global Extensions
 $xvLoadExtensions = array_merge($xvLoadExtensions, [
 	'AbuseFilter',
 	'AntiSpoof',
@@ -66,12 +67,18 @@ $xvLoadExtensions = array_merge($xvLoadExtensions, [
 	'WikiEditor',
 ]);
 
-// Default skin
+// Default Skin
 $xvLoadSkins[] = 'Vector';
 $wgDefaultSkin = 'vector-2022';
 
-// Rate limiting
+// Rate Limits
 $wgRateLimits['purge']['user'] = [30, 30];
 $wgRateLimits['linkpurge']['user'] = [30, 30];
 $wgRateLimits['renderfile-nonstandard']['user'] = [100, 30];
 $wgRateLimits['badcaptcha']['newbie'] = [50, 86400];
+
+// Confirm Edit
+$wgGroupPermissions['autoconfirmed']['skipcaptcha'] = true;
+$wgGroupPermissions['emailconfirmed']['skipcaptcha'] = true;
+$wgCaptchaTriggers['create'] = true;
+$wgCaptchaTriggers['sendemail'] = true;
