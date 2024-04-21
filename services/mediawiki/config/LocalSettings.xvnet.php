@@ -1,8 +1,6 @@
 <?php
-$wgServer = 'https://w.xvnet.eu.org';
-
 $wgSitename = "Xensor V Wiki";
-$wgMetaNamespace = "XensWiki";
+$wgMetaNamespace = "XvWiki";
 
 require_once (dirname(__FILE__) . '/SharedTables.php');
 

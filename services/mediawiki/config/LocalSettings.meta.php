@@ -1,6 +1,4 @@
 <?php
-$wgServer = 'https://meta.w.xvnet.eu.org';
-
 $wgSitename = "Xens Meta";
 $wgMetaNamespace = "Meta";
 

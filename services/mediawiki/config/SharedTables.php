@@ -3,7 +3,12 @@
 $wgSharedDB = 'wikimeta';
 $wgSharedPrefix = '';
 
-$wgSharedTables = ['user', 'user_autocreate_serial', 'actor', 'spoofuser'];
+$wgSharedTables = [
+	'user',
+	'user_autocreate_serial',
+	'actor',
+	'spoofuser',
+];
 if (str_ends_with($wgServer, 'w.xvnet.eu.org')) {
 	$wgCookieDomain = '.w.xvnet.eu.org';
 } else if (str_ends_with($wgServer, 'w.xvnet0.eu.org')) {
@@ -22,7 +27,7 @@ $wgSharedTables[] = 'global_user_groups';
 
 // Global CSS/JS
 $xvLoadExtensions[] = 'GlobalCssJs';
-if ($wikiID != 'meta') {
+if ($xvWikiID != 'meta') {
 	$wgGlobalCssJsConfig = [
 		'wiki' => 'wikimeta',
 		'source' => 'metawiki',
@@ -39,7 +44,7 @@ $wgResourceLoaderSources['metawiki'] = array(
 );
 
 // Global User Page
-if ($wikiID != 'meta') {
+if ($xvWikiID != 'meta') {
 	$xvLoadExtensions[] = 'GlobalUserPage';
 	$wgGlobalUserPageAPIUrl = $wgResourceLoaderSources['metawiki']['apiScript'];
 	$wgGlobalUserPageDBname = $wgSharedDB;

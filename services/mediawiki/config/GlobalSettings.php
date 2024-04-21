@@ -1,5 +1,13 @@
 <?php
 
+$wgServerName = $xvWikis[$xvWikiID];
+$wgServer = 'https://' . $wgServerName;
+
+if ($xvMaintScript) {
+	// Disable [[MW:*]] messages in maintenance script
+	$wgUseDatabaseMessages = false;
+}
+
 $wgScript = '/';
 $wgScriptPath = '';
 $wgUsePathInfo = true;

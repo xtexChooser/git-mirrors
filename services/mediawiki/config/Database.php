@@ -2,10 +2,10 @@
 
 $wgLocalDatabases = $wgConf->wikis = array_map(function ($n) {
 	return 'wiki' . $n;
-}, $wikis);
+}, array_values($xvWikis));
 
 $wgDBtype = 'mysql';
-$wgDBname = 'wiki' . $wikiID;
+$wgDBname = 'wiki' . $xvWikiID;
 $wgDBserver = 'opilio.s.xvnet0.eu.org:3307';
 // $wgDBport = 3307;
 $wgDBuser = 'mediawiki';

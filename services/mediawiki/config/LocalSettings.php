@@ -3,17 +3,17 @@ if (!defined('MEDIAWIKI')) {
 	exit;
 }
 
-$wikis = [
-	'meta',
-	'xvnet',
+$xvWikis = [
+	'meta' => 'meta.w.xvnet.eu.org',
+	'xvnet' => 'w.xvnet.eu.org',
 ];
 
 if (defined('MW_DB')) {
-	$wikiID = MW_DB;
-	// Disable MW:* messages in maintenance script
-	$wgUseDatabaseMessages = false;
+	$xvWikiID = MW_DB;
+	$xvMaintScript = true;
 } else if ($_SERVER['MW_WIKI']) {
-	$wikiID = $_SERVER['MW_WIKI'];
+	$xvWikiID = $_SERVER['MW_WIKI'];
+	$xvMaintScript = false;
 } else {
 	die('Unknown wiki.');
 }
@@ -23,7 +23,7 @@ $xvLoadSkins = [];
 
 require_once ('/srv/secrets/mw/Secrets.php');
 require_once (dirname(__FILE__) . '/GlobalSettings.php');
-require_once (dirname(__FILE__) . '/LocalSettings.' . $wikiID . '.php');
+require_once (dirname(__FILE__) . '/LocalSettings.' . $xvWikiID . '.php');
 
 wfLoadExtensions($xvLoadExtensions);
 wfLoadSkins($xvLoadSkins);
