@@ -198,6 +198,11 @@
   kind: extensions
   prefix: mw/extensions/SecureLinkFixer
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/SecureLinkFixer
+- name: SemanticMediaWiki
+  kind: extensions
+  prefix: mw/extensions/SemanticMediaWiki
+  branch: master
+  git: https://github.com/SemanticMediaWiki/SemanticMediaWiki.git
 - name: SpamBlacklist
   kind: extensions
   prefix: mw/extensions/SpamBlacklist
