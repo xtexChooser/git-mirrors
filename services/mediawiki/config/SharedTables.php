@@ -27,6 +27,7 @@ $wgSharedTables[] = 'global_user_groups';
 
 // Global CSS/JS
 $xvLoadExtensions[] = 'GlobalCssJs';
+$wgUseGlobalSiteCssJs = true;
 if ($xvWikiID != 'meta') {
 	$wgGlobalCssJsConfig = [
 		'wiki' => 'wikimeta',
