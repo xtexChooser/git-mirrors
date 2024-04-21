@@ -30,7 +30,6 @@ $xvLoadExtensions = array_merge($xvLoadExtensions, [
 	'cldr',
 	'CodeEditor',
 	'CodeMirror',
-	'ConfirmEdit',
 	'DiscussionTools',
 	'Echo',
 	'Gadgets',
@@ -78,7 +77,13 @@ $wgRateLimits['renderfile-nonstandard']['user'] = [100, 30];
 $wgRateLimits['badcaptcha']['newbie'] = [50, 86400];
 
 // Confirm Edit
+$xvLoadExtensions[] = 'ConfirmEdit';
 $wgGroupPermissions['autoconfirmed']['skipcaptcha'] = true;
 $wgGroupPermissions['emailconfirmed']['skipcaptcha'] = true;
 $wgCaptchaTriggers['create'] = true;
 $wgCaptchaTriggers['sendemail'] = true;
+
+// BetaFeatures
+$xvLoadExtensions[] = 'BetaFeatures';
+// TODO: enable betafeatures by default for sysops
+// https://gerrit.wikimedia.org/r/c/mediawiki/core/+/1022496
