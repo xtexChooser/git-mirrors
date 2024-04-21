@@ -100,6 +100,8 @@ $wgNamespacesWithSubpages[NS_MAIN] = true;
 $wgEnableMetaDescriptionFunctions = true;
 $wgScribuntoEngineConf['luastandalone']['luaPath'] = '/usr/bin/lua';
 $wgGroupPermissions['staff']['interwiki'] = true;
+$wgDefaultUserOptions['usecodemirror'] = true;
+$wgJsonConfigEnableLuaSupport = true;
 
 // Shared Uploads
 $wgUseSharedUploads = true;
@@ -113,6 +115,3 @@ $wgForeignFileRepos[] = [
 	'apiMetadataExpiry' => 28800,
 	'apiThumbCacheExpiry' => 86400,
 ];
-
-// JsonConfig
-$wgJsonConfigEnableLuaSupport = true;
