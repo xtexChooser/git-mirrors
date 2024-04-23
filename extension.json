@@ -45,9 +45,6 @@
 		"ParserFirstCallInit": [
 			"MediaWiki\\Extension\\DynamicPageList3\\Hooks::onParserFirstCallInit"
 		],
-		"ParserAfterTidy": [
-			"MediaWiki\\Extension\\DynamicPageList3\\Hooks::onParserAfterTidy"
-		],
 		"LoadExtensionSchemaUpdates": [
 			"MediaWiki\\Extension\\DynamicPageList3\\Hooks::onLoadExtensionSchemaUpdates"
 		]
