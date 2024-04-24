@@ -890,6 +890,20 @@ class LST {
 	}
 
 	/**
+	 * Preprocess given text according to the globally-configured method
+	 *
+	 * The default method uses Parser::preprocess() which does the job, but clears the internal cache every time.
+	 * The improved method uses Parser::recursivePreprocess() that saves a decent amount of processing time
+	 * by preserving the internal cache leveraging the repetitive call pattern.
+	 *
+	 * Parser::preprocess() was mainly called from LST::includeTemplate() for the same template(s) with different
+	 * set of arguments for each article found. In the original implementation using Parser::preprocess(),
+	 * the internal cache is cleared at each call and parsing the same template text into template DOM is repeated
+	 * multiple times.
+	 *
+	 * Using Parser::recursivePreprocess() prevents the cache clear, and thus repetitive calls reuse the
+	 * previously generated template DOM which brings a decent performance improvement when called multiple times.
+	 *
 	 * @param Parser $parser
 	 * @param string $text
 	 * @param ?\MediaWiki\Page\PageReference $page
@@ -899,10 +913,9 @@ class LST {
 	protected static function callParserPreprocess( Parser $parser, $text, $page, $options ): string {
 		global $wgDplUseRecursivePreprocess;
 		if ( $wgDplUseRecursivePreprocess ) {
-			$outputType = $parser->getOutputType();
 			$parser->setOutputType( OT_PREPROCESS );
 			$text = $parser->recursivePreprocess( $text );
-			$parser->setOutputType( $outputType );
+
 			return $text;
 		} else {
 			return $parser->preprocess( $text, $page, $options );
