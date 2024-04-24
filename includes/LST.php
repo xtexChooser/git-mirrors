@@ -889,8 +889,6 @@ class LST {
 		return str_replace( ' ', '[ _]', $pattern );
 	}
 
-	public static $useRecursivePreprocess = true;
-
 	/**
 	 * @param Parser $parser
 	 * @param string $text
@@ -899,7 +897,8 @@ class LST {
 	 * @return string
 	 */
 	protected static function callParserPreprocess( Parser $parser, $text, $page, $options ): string {
-		if ( self::$useRecursivePreprocess ) {
+		global $wgDplUseRecursivePreprocess;
+		if ( $wgDplUseRecursivePreprocess ) {
 			$outputType = $parser->getOutputType();
 			$parser->setOutputType( OT_PREPROCESS );
 			$text = $parser->recursivePreprocess( $text );
