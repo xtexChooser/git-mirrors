@@ -130,7 +130,7 @@ $wgSMTP = [
 	'password' => $xvSMTPPassword
 ];
 $wgEmergencyContact = $xvOpContactEmail;
-$wgPasswordSender = $xvOpContactEmail;
+$wgPasswordSender = $xvSMTPUsername;
 
 // Lua
 $wgScribuntoDefaultEngine = 'luasandbox';
