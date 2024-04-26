@@ -3,7 +3,6 @@ FROM docker.io/library/php:$VERSION-fpm-alpine
 
 RUN apk add --no-cache \
 	git \
-	imagemagick \
 	# Required for SyntaxHighlighting
 	python3 \
 	lua
