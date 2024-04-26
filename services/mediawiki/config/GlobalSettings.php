@@ -98,6 +98,7 @@ $xvLoadExtensions[] = 'BetaFeatures';
 $wgNamespacesWithSubpages[NS_MAIN] = true;
 $wgEnableMetaDescriptionFunctions = true;
 $wgScribuntoEngineConf['luastandalone']['luaPath'] = '/usr/bin/lua';
+$wgScribuntoDefaultEngine = 'luasandbox';
 $wgGroupPermissions['staff']['interwiki'] = true;
 $wgDefaultUserOptions['usecodemirror'] = true;
 $wgJsonConfigEnableLuaSupport = true;
