@@ -97,8 +97,6 @@ $xvLoadExtensions[] = 'BetaFeatures';
 // Misc
 $wgNamespacesWithSubpages[NS_MAIN] = true;
 $wgEnableMetaDescriptionFunctions = true;
-$wgScribuntoEngineConf['luastandalone']['luaPath'] = '/usr/bin/lua';
-$wgScribuntoDefaultEngine = 'luasandbox';
 $wgGroupPermissions['staff']['interwiki'] = true;
 $wgDefaultUserOptions['usecodemirror'] = true;
 $wgJsonConfigEnableLuaSupport = true;
@@ -133,3 +131,9 @@ $wgSMTP = [
 ];
 $wgEmergencyContact = $xvOpContactEmail;
 $wgPasswordSender = $xvOpContactEmail;
+
+// Lua
+$wgScribuntoDefaultEngine = 'luasandbox';
+$wgScribuntoEngineConf['luastandalone']['luaPath'] = '/usr/bin/lua';
+$wgScribuntoEngineConf['luasandbox']['memoryLimit'] = 50 * 1024 * 1024;
+$wgScribuntoEngineConf['luasandbox']['cpuLimit'] = 10;
