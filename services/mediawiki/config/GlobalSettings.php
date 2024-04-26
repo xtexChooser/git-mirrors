@@ -104,6 +104,7 @@ $wgAllowCrossOrigin = true;
 $wgAllowUserCss = true;
 $wgAllowUserJs = true;
 ini_set('user_agent', 'Xens Wikis (op@xvnet0.eu.org');
+$wgMainCacheType = CACHE_ACCEL;
 
 // Shared Uploads
 $wgUseSharedUploads = true;
@@ -137,3 +138,9 @@ $wgScribuntoDefaultEngine = 'luasandbox';
 $wgScribuntoEngineConf['luastandalone']['luaPath'] = '/usr/bin/lua';
 $wgScribuntoEngineConf['luasandbox']['memoryLimit'] = 50 * 1024 * 1024;
 $wgScribuntoEngineConf['luasandbox']['cpuLimit'] = 10;
+
+// Uploads
+$wgEnableUploads = true;
+$wgAllowCopyUploads = true;
+$wgCopyUploadsFromSpecialUpload = true;
+$wgGroupPermissions['autoconfirmed']['upload_by_url'] = true;
