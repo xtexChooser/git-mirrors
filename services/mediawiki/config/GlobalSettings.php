@@ -144,3 +144,5 @@ $wgEnableUploads = true;
 $wgAllowCopyUploads = true;
 $wgCopyUploadsFromSpecialUpload = true;
 $wgGroupPermissions['autoconfirmed']['upload_by_url'] = true;
+$wgUploadDirectory = '/var/lib/mediawiki/images';
+$wgHashedUploadDirectory = true;
