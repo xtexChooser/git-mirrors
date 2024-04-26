@@ -105,6 +105,7 @@ $wgJsonConfigEnableLuaSupport = true;
 $wgAllowCrossOrigin = true;
 $wgAllowUserCss = true;
 $wgAllowUserJs = true;
+ini_set('user_agent', 'Xens Wikis (op@xvnet0.eu.org');
 
 // Shared Uploads
 $wgUseSharedUploads = true;
