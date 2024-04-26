@@ -121,7 +121,7 @@ $wgForeignFileRepos[] = [
 // Email
 $wgEnableEmail = true;
 $wgSMTP = [
-	'host' => 'tls://smtp-mail.outlook.com',
+	'host' => 'smtp-mail.outlook.com',
 	'IDHost' => $wgServerName,
 	'localhost' => $wgServerName,
 	'port' => 587,
