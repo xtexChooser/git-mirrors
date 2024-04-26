@@ -1,18 +1,15 @@
 (mediawiki) {
 	root * /opt/mediawiki
+	php_fastcgi unix//var/run/mediawiki/php-fpm.sock {
+		env MW_WIKI {args[0]}
+	}
 	file_server
 }
 
 w.xvnet.eu.org w.xvnet0.eu.org http://wiki.xvn {
-	import mediawiki
-	php_fastcgi unix//var/run/mediawiki/php-fpm.sock {
-		env MW_WIKI xvnet
-	}
+	import mediawiki "xvnet"
 }
 
 meta.w.xvnet.eu.org meta.w.xvnet0.eu.org http://meta.wiki.xvn {
-	import mediawiki
-	php_fastcgi unix//var/run/mediawiki/php-fpm.sock {
-		env MW_WIKI meta
-	}
+	import mediawiki "meta"
 }
