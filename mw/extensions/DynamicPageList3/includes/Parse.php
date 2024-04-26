@@ -951,42 +951,44 @@ class Parse {
 			}
 		}
 
+		$hookContainer = MediaWikiServices::getInstance()->getHookContainer();
+
 		if ( ( $isParserTag === true && isset( $reset['links'] ) ) || $isParserTag === false ) {
 			if ( isset( $reset['links'] ) ) {
 				Hooks::$createdLinks['resetLinks'] = true;
 			}
 
-			// Configure hook to reset links which were produced during parsing DPL output.
-			Hooks::$createdLinks['resetneeded'] = true;
+			// Register a hook to reset links which were produced during parsing DPL output.
+			$hookContainer->register( 'ParserAfterTidy', Hooks::class . '::endReset' );
 		}
 
 		if ( array_sum( $eliminate ) ) {
-			// Configure hook to remove links which were produced during parsing DPL output
-			Hooks::$createdLinks['elimneeded'] = true;
+			// Register a hook to reset links which were produced during parsing DPL output
+			$hookContainer->register( 'ParserAfterTidy', Hooks::class . '::endEliminate' );
 
 			if ( $parserOutput && isset( $eliminate['links'] ) && $eliminate['links'] ) {
 				// Trigger the mediawiki parser to find links, images, categories etc. which are contained in the DPL output. This allows us to remove these links from the link list later. If the article containing the DPL statement itself uses one of these links they will be thrown away!
-				Hooks::$createdLinks['elimLinks'] = [];
+				Hooks::$createdLinks[0] = [];
 
 				foreach ( $parserOutput->getLinks() as $nsp => $link ) {
-					Hooks::$createdLinks['elimLinks'][$nsp] = $link;
+					Hooks::$createdLinks[0][$nsp] = $link;
 				}
 			}
 
 			if ( $parserOutput && isset( $eliminate['templates'] ) && $eliminate['templates'] ) {
-				Hooks::$createdLinks['elimTemplates'] = [];
+				Hooks::$createdLinks[1] = [];
 
 				foreach ( $parserOutput->getTemplates() as $nsp => $tpl ) {
-					Hooks::$createdLinks['elimTemplates'][$nsp] = $tpl;
+					Hooks::$createdLinks[1][$nsp] = $tpl;
 				}
 			}
 
 			if ( $parserOutput && isset( $eliminate['categories'] ) && $eliminate['categories'] ) {
-				Hooks::$createdLinks['elimCategories'] = $parserOutput->mCategories;
+				Hooks::$createdLinks[2] = $parserOutput->mCategories;
 			}
 
 			if ( $parserOutput && isset( $eliminate['images'] ) && $eliminate['images'] ) {
-				Hooks::$createdLinks['elimImages'] = $parserOutput->mImages;
+				Hooks::$createdLinks[3] = $parserOutput->mImages;
 			}
 		}
 	}
