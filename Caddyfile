@@ -150,6 +150,15 @@ http://blog.xtexx.eu.org http://xtexblog.exozy.me {
 
 	header Server xtex-blog
 	import httpsec
+	header Content-Security-Policy "
+			default-src 'self';
+			base-uri 'self';
+			frame-ancestors 'none';
+			form-action 'self';
+			script-src 'self';
+			style-src 'self' https://unpkg.com;
+			object-src 'none';
+			"
 
 	handle_errors {
 		@404 expression `{err.status_code} == 404`
