@@ -101,6 +101,7 @@ $wgScribuntoEngineConf['luastandalone']['luaPath'] = '/usr/bin/lua';
 $wgGroupPermissions['staff']['interwiki'] = true;
 $wgDefaultUserOptions['usecodemirror'] = true;
 $wgJsonConfigEnableLuaSupport = true;
+$wgAllowCrossOrigin = true;
 
 // Shared Uploads
 $wgUseSharedUploads = true;
