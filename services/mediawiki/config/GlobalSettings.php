@@ -56,7 +56,6 @@ $xvLoadExtensions = array_merge($xvLoadExtensions, [
 	'PdfHandler',
 	'Popups',
 	'ProtectSite',
-	'ReplaceText',
 	'RevisionSlider',
 	'Scribunto',
 	'SecureLinkFixer',
