@@ -117,3 +117,14 @@ $wgForeignFileRepos[] = [
 	'apiMetadataExpiry' => 28800,
 	'apiThumbCacheExpiry' => 86400,
 ];
+
+// Email sending
+$wgSMTP = [
+	'host' => 'tls://smtp-mail.outlook.com',
+	'IDHost' => $wgServerName,
+	'localhost' => $wgServerName,
+	'port' => 587,
+	'auth' => true,
+	'username' => $xvSMTPUsername,
+	'password' => $xvSMTPPassword
+];
