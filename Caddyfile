@@ -37,7 +37,6 @@
 
 (httpsec) {
 	header {
-		Access-Control-Allow-Origin *
 		Permissions-Policy "fullscreen=(), geolocation=(), accelerometer=(), ambient-light-sensor=(), bluetooth=(), camera=(), clipboard-read=(), gyroscope=(), microphone=(), magnetometer=()"
 		Referrer-Policy no-referrer
 		Strict-Transport-Security "max-age=31536000; includeSubDomains"
