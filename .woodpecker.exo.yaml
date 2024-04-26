@@ -15,3 +15,6 @@ steps:
 #              --mount type=bind,source=/srv/http,destination=/srv/exopages
 #              --env "UDS_DIR=exopages" --env "UDS_SUFFIX="
 #              localhost/home
+
+when:
+    - branch: main
