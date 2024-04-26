@@ -20,6 +20,7 @@ RUN { \
 	} > $PHP_INI_DIR/conf.d/opcache-recommended.ini
 
 ADD php-fpm.conf /usr/local/etc/php-fpm.d/zzzz-mw-docker.conf
+ADD php.ini $PHP_INI_DIR/conf.d/mw.ini
 
 # SQLite data directory
 RUN mkdir -p /var/www/data
