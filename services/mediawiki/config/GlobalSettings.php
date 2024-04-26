@@ -102,6 +102,8 @@ $wgGroupPermissions['staff']['interwiki'] = true;
 $wgDefaultUserOptions['usecodemirror'] = true;
 $wgJsonConfigEnableLuaSupport = true;
 $wgAllowCrossOrigin = true;
+$wgAllowUserCss = true;
+$wgAllowUserJs = true;
 
 // Shared Uploads
 $wgUseSharedUploads = true;
