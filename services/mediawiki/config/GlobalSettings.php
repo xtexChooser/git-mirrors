@@ -119,7 +119,8 @@ $wgForeignFileRepos[] = [
 	'apiThumbCacheExpiry' => 86400,
 ];
 
-// Email sending
+// Email
+$wgEnableEmail = true;
 $wgSMTP = [
 	'host' => 'tls://smtp-mail.outlook.com',
 	'IDHost' => $wgServerName,
@@ -129,3 +130,5 @@ $wgSMTP = [
 	'username' => $xvSMTPUsername,
 	'password' => $xvSMTPPassword
 ];
+$wgEmergencyContact = $xvOpContactEmail;
+$wgPasswordSender = $xvOpContactEmail;
