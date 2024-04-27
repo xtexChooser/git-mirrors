@@ -7,14 +7,14 @@ use MediaWiki\Revision\SlotRecord;
 define( 'MW_NO_SESSION', 1 );
 define( 'MW_ENTRY_POINT', 'robots' );
 
-require dirname($_SERVER['SCRIPT_FILENAME']) . '/includes/WebStart.php';
+require dirname( $_SERVER['SCRIPT_FILENAME'] ) . '/includes/WebStart.php';
 
 wfRobotsMain();
 
 function wfRobotsMain() {
-	global $wgGloopTweaksCentralDB, $wgCanonicalServer, $wgDBname, $wgGloopTweaksNoRobots, $wgNamespaceRobotPolicies;
+	global $wgXensTweaksCentralDB, $wgCanonicalServer, $wgXensTweaksNoRobots, $wgNamespaceRobotPolicies;
 
-	if ( $wgGloopTweaksNoRobots ) {
+	if ( $wgXensTweaksNoRobots ) {
 		header( 'Cache-Control: max-age=300, must-revalidate, s-maxage=300, revalidate-while-stale=300' );
 		header( 'Content-Type: text/plain; charset=utf-8' );
 		echo "User-agent: *\nDisallow: /";
@@ -24,7 +24,7 @@ function wfRobotsMain() {
 	$services = MediaWikiServices::getInstance();
 
 	$title = $services->getTitleParser()->parseTitle( 'MediaWiki:Robots.txt' );
-	$store = $services->getRevisionStoreFactory()->getRevisionStore( $wgGloopTweaksCentralDB );
+	$store = $services->getRevisionStoreFactory()->getRevisionStore( $wgXensTweaksCentralDB );
 	$rev = $store->getRevisionByTitle( $title );
 	$content = $rev ? $rev->getContent( SlotRecord::MAIN ) : null;
 	$lastModified = $rev ? $rev->getTimestamp() : null;
@@ -50,7 +50,7 @@ function wfRobotsMain() {
 
 	$disallowText = 'User-Agent: *';
 	foreach ( $namespaces as $ns ) {
-		$lcns = strtolower($ns);
+		$lcns = strtolower( $ns );
 		$disallowText .= <<<DISALLOW
 
 		Disallow: /w/$ns:

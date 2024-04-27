@@ -1,118 +1,44 @@
 {
-	"name": "GloopTweaks",
+	"name": "XensTweaks",
 	"version": "1.1.0",
 	"author": [
 		"[https://twitter.com/jaydenkieran Jayden Bailey]",
 		"TehKittyCat",
+		"xtex",
+		"Xensor V Network",
 		"..."
 	],
-	"url": "https://weirdgloop.org",
-	"descriptionmsg": "glooptweaks-desc",
+	"url": "https://w.xvnet.eu.org",
+	"descriptionmsg": "XensTweaks-desc",
 	"license-name": "GPL-2.0-or-later",
 	"type": "other",
 	"MessagesDirs": {
-		"Analytics": [
-			"i18n/analytics"
-		],
-		"WeirdGloopContactMessages": [
-			"i18n/contact"
-		],
-		"WeirdGloopMessages": [
-			"i18n/weirdgloop"
-		],
-		"WeirdGloopOverrides": [
-			"i18n/weirdgloopoverrides"
-		],
-		"WeirdGloopProjectNames": [
-			"i18n/projectnames"
-		],
-		"WeirdGloopTemporaryMessages": [
-			"i18n/temporary"
+		"XensMessages": [
+			"i18n/xens"
 		]
 	},
 	"requires": {
 		"MediaWiki": ">= 1.41.0"
 	},
 	"AutoloadNamespaces": {
-		"MediaWiki\\Extension\\GloopTweaks\\": "includes/"
-	},
-	"ContentHandlers": {
-		"GeoJSON": "MediaWiki\\Extension\\GloopTweaks\\ContentHandler\\GeoJSON",
-		"interactivemap": "MediaWiki\\Extension\\GloopTweaks\\ContentHandler\\InteractiveMap"
-	},
-	"ResourceModules": {
-		"wg.fixedwidth": {
-			"class": "MediaWiki\\Extension\\GloopTweaks\\ResourceLoader\\FixedWidthStyleModule"
-		}
-	},
-	"AuthManagerAutoConfig": {
-		"preauth": {
-			"MediaWiki\\Extension\\GloopTweaks\\StopForumSpam\\GloopPreAuthenticationProvider": {
-				"class": "MediaWiki\\Extension\\GloopTweaks\\StopForumSpam\\GloopPreAuthenticationProvider",
-				"sort": 5
-			}
-		}
+		"MediaWiki\\Extension\\XensTweaks\\": "includes/"
 	},
 	"Hooks": {
-		"BeforePageDisplay": "MediaWiki\\Extension\\GloopTweaks\\GloopTweaksHooks::onBeforePageDisplay",
-		"ContactForm": "MediaWiki\\Extension\\GloopTweaks\\GloopTweaksHooks::onContactPage",
-		"GetLocalURL::Internal": "MediaWiki\\Extension\\GloopTweaks\\GloopTweaksHooks::onGetLocalURLInternal",
-		"GlobalBlockingBlockedIpMsg": "MediaWiki\\Extension\\GloopTweaks\\GloopTweaksHooks::onGlobalBlockingBlockedIpMsg",
-		"GlobalBlockingBlockedIpXffMsg": "MediaWiki\\Extension\\GloopTweaks\\GloopTweaksHooks::onGlobalBlockingBlockedIpXffMsg",
-		"LocalFilePurgeThumbnails": "MediaWiki\\Extension\\GloopTweaks\\GloopTweaksHooks::onLocalFilePurgeThumbnails",
-		"MessageCacheFetchOverrides": "MediaWiki\\Extension\\GloopTweaks\\GloopTweaksHooks::onMessageCacheFetchOverrides",
-		"OpenSearchUrls": "MediaWiki\\Extension\\GloopTweaks\\GloopTweaksHooks::onOpenSearchUrls",
-		"PageSaveComplete": "MediaWiki\\Extension\\GloopTweaks\\GloopTweaksHooks::onPageSaveComplete",
-		"ResourceLoaderRegisterModules": "MediaWiki\\Extension\\GloopTweaks\\GloopTweaksHooks::onResourceLoaderRegisterModules",
-		"ScribuntoExternalLibraries": "MediaWiki\\Extension\\GloopTweaks\\GloopTweaksHooks::onScribuntoExternalLibraries",
-		"SkinAddFooterLinks": "MediaWiki\\Extension\\GloopTweaks\\GloopTweaksHooks::onSkinAddFooterLinks",
-		"SkinCopyrightFooter": "MediaWiki\\Extension\\GloopTweaks\\GloopTweaksHooks::onSkinCopyrightFooter",
-		"TestCanonicalRedirect": "MediaWiki\\Extension\\GloopTweaks\\GloopTweaksHooks::onTestCanonicalRedirect",
-		"TitleSquidURLs": "MediaWiki\\Extension\\GloopTweaks\\GloopTweaksHooks::onTitleSquidURLs",
-		"UploadForm:initial": "MediaWiki\\Extension\\GloopTweaks\\GloopTweaksHooks::onUploadFormInitial",
-		"UserGetRightsRemove": "MediaWiki\\Extension\\GloopTweaks\\GloopTweaksHooks::onUserGetRightsRemove",
-		"getUserPermissionsErrors": "MediaWiki\\Extension\\GloopTweaks\\GloopTweaksHooks::ongetUserPermissionsErrors"
+		"BeforePageDisplay": "MediaWiki\\Extension\\XensTweaks\\XensTweaksHooks::onBeforePageDisplay",
+		"GetLocalURL::Internal": "MediaWiki\\Extension\\XensTweaks\\XensTweaksHooks::onGetLocalURLInternal",
+		"OpenSearchUrls": "MediaWiki\\Extension\\XensTweaks\\XensTweaksHooks::onOpenSearchUrls",
+		"SkinAddFooterLinks": "MediaWiki\\Extension\\XensTweaks\\XensTweaksHooks::onSkinAddFooterLinks",
+		"TestCanonicalRedirect": "MediaWiki\\Extension\\XensTweaks\\XensTweaksHooks::onTestCanonicalRedirect",
+		"TitleSquidURLs": "MediaWiki\\Extension\\XensTweaks\\XensTweaksHooks::onTitleSquidURLs",
+		"getUserPermissionsErrors": "MediaWiki\\Extension\\XensTweaks\\XensTweaksHooks::ongetUserPermissionsErrors"
 	},
-	"JobClasses": {
-		"refreshLinksBatch": "MediaWiki\\Extension\\GloopTweaks\\RefreshLinksBatchJob"
-	},
-	"config_prefix": "wgGloopTweaks",
+	"config_prefix": "wgXensTweaks",
 	"config": {
 		"AddFooterLinks": {
 			"value": true
 		},
-		"AnalyticsID": {
-			"value": ""
-		},
 		"CentralDB": {
-			"value": "metawiki"
-		},
-		"CFToken": {
-			"value": ""
-		},
-		"CFZone": {
-			"value": ""
-		},
-		"CSP": {
-			"value": ""
-		},
-		"CSPAnons": {
-			"value": ""
-		},
-		"EnableContactFilter": {
-			"value": true
-		},
-		"EnableTheming": {
-			"value": true
-		},
-		"EnableLoadingFixedWidth": {
-			"value": true
-		},
-		"EnableMessageOverrides": {
-			"value": true
-		},
-		"EnableMobileVariant": {
-			"value": true
+			"value": "wikimeta"
 		},
 		"EnableSearchboxMetadata": {
 			"value": true
@@ -122,35 +48,10 @@
 		},
 		"ProtectSiteInterface": {
 			"value": true
-		},
-		"RequireLicensesToUpload": {
-			"value": true
-		},
-		"SendDetailsWithContactPage": {
-			"value": true
-		},
-		"SensitiveRights": {
-			"value": []
-		},
-		"SitemapsCompressed": {
-			"value": true
-		},
-		"SitemapsFileBackend": {
-			"value": null
-		},
-		"Themes": {
-			"value": [
-				"dark",
-				"light"
-			]
-		},
-		"UseSFS": {
-			"value": true
 		}
 	},
 	"AvailableRights": [
-		"editinterfacesite",
-		"bypassgloopspam"
+		"editinterfacesite"
 	],
 	"manifest_version": 2
 }

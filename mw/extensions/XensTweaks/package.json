@@ -1,5 +1,5 @@
 {
-	"name": "GloopTweaks",
+	"name": "XensTweaks",
 	"private": true,
 	"scripts": {
 		"test": "grunt test"
