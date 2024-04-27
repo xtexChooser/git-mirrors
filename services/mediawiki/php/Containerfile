@@ -4,6 +4,7 @@ FROM docker.io/library/php:$VERSION-fpm-alpine
 RUN apk add --no-cache \
 	git \
 	imagemagick \
+	rsvg-convert \
 	# Required for SyntaxHighlighting
 	python3 \
 	lua \
