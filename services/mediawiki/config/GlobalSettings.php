@@ -67,6 +67,7 @@ $xvLoadExtensions = array_merge($xvLoadExtensions, [
 	'TitleBlacklist',
 	'VisualEditor',
 	'WikiEditor',
+	'XensTweaks',
 ]);
 
 // Default Skin
