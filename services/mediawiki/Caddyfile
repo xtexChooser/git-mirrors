@@ -13,3 +13,9 @@ w.xvnet.eu.org w.xvnet0.eu.org http://wiki.xvn {
 meta.w.xvnet.eu.org meta.w.xvnet0.eu.org http://meta.wiki.xvn {
 	import mediawiki "meta"
 }
+
+uploads.w.xvnet.eu.org uploads.w.xvnet0.eu.org http://uploads.wiki.xvn {
+	root * /var/lib/mediawiki
+	file_server /images/*
+	redir / https://w.xvnet.eu.org/w/uploads.w.xvnet.eu.org permanent
+}
