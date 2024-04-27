@@ -12,3 +12,10 @@ $xvLoadSkins[] = 'Lakeus';
 $wgDefaultSkin = 'vector-2022';
 
 $wgLocalInterwikis[] = 'xvn';
+
+$wgAutopromote['emailconfirmed'] = APCOND_EMAILCONFIRMED;
+$wgImplicitGroups[] = 'emailconfirmed';
+
+$wgGroupPermissions['*']['edit'] = false;
+$wgGroupPermissions['user']['edit'] = false;
+$wgGroupPermissions['emailconfirmed']['edit'] = true;
