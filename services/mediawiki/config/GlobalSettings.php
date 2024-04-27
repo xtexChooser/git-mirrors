@@ -12,6 +12,7 @@ $wgScript = '/';
 $wgScriptPath = '';
 $wgUsePathInfo = true;
 $wgArticlePath = '/w/$1';
+$wgMainPageIsDomainRoot = true;
 
 // Default Localisation
 $wgLanguageCode = 'en';
