@@ -10,3 +10,5 @@ $wgRightsIcon = "$wgResourceBasePath/resources/assets/licenses/cc-by-sa.png";
 
 $xvLoadSkins[] = 'Lakeus';
 $wgDefaultSkin = 'lakeus';
+
+$wgLocalInterwikis[] = 'meta';
