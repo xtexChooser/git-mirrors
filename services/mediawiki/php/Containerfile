@@ -5,7 +5,8 @@ RUN apk add --no-cache \
 	git \
 	# Required for SyntaxHighlighting
 	python3 \
-	lua
+	lua \
+	diffutils
 
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 RUN install-php-extensions calendar intl mbstring opcache apcu pgsql mysqli luasandbox gd
