@@ -157,3 +157,8 @@ $wgFileExtensions[] = 'svg';
 $wgSVGConverter = 'ImageMagick';
 $wgFileExtensions[] = 'ogg';
 $wgFileExtensions[] = 'ico';
+
+// Patrolling
+$wgUseRCPatrol = true;
+$wgUseNPPatrol = true;
+$wgUseFilePatrol = true;
