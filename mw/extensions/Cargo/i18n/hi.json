@@ -1,0 +1,23 @@
+{
+	"@metadata": {
+		"authors": [
+			"Abijeet Patro",
+			"Nitin1485",
+			"Sagsag",
+			"Saurmandal",
+			"गोपाल"
+		]
+	},
+	"cargo-viewdata-joinonrequired": "यदि कई टेबल हैं, तो एक \"जॉइन ऑन\" कंडीशन सेट होनी चाहिए।",
+	"cargo-cargotables-header-rowcount": "पंक्तियाँ",
+	"cargo-cargotables-action-deletereplacement": "हटाएँ",
+	"cargo-cargotables-action-delete": "हटाएँ",
+	"cargo-cargotables-action-recreate": "फिरसे बनायें",
+	"cargo-cargotables-notdeclared": "किसी भी रूपरेखा द्वारा परिभाषित नहीं",
+	"cargo-drilldown-mapformat": "নক্সা",
+	"cargo-gantt-hours": "घंटे",
+	"cargo-gantt-days": "दिन",
+	"cargo-gantt-months": "महीने",
+	"cargo-gantt-years": "वर्ष",
+	"cargo-declare-validate-has-whitespace": "त्रुटि: $1 नाम \"$2\" में वाइटस्पेस है। किसी भी तरह के वाइटस्पेस की अनुमति नहीं है; अंडरस्कोर (\"_\") का इस्तेमाल करें।"
+}

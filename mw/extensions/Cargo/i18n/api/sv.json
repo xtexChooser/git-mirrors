@@ -1,0 +1,12 @@
+{
+	"@metadata": {
+		"authors": [
+			"Mjälten",
+			"Sabelöga",
+			"WikiPhoenix"
+		]
+	},
+	"apihelp-cargoquery-summary": "Kör en sökfråga i Cargo-datan.",
+	"apihelp-cargoquery-param-offset": "Förfrågans offset",
+	"apihelp-cargoautocomplete-param-substr": "Söksträng"
+}
