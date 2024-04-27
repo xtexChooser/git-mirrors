@@ -30,7 +30,7 @@ $xvLoadExtensions[] = 'GlobalCssJs';
 $wgUseGlobalSiteCssJs = true;
 if ($xvWikiID != 'meta') {
 	$wgGlobalCssJsConfig = [
-		'wiki' => 'wikimeta',
+		'wiki' => $wgSharedDB,
 		'source' => 'metawiki',
 	];
 } else {
@@ -40,8 +40,8 @@ if ($xvWikiID != 'meta') {
 	];
 }
 $wgResourceLoaderSources['metawiki'] = array(
-	'apiScript' => 'https://meta.w.xvnet.eu.org/api.php',
-	'loadScript' => 'https://meta.w.xvnet.eu.org/load.php',
+	'apiScript' => '//meta.w.xvnet.eu.org/api.php',
+	'loadScript' => '//meta.w.xvnet.eu.org/load.php',
 );
 
 // Global User Page
