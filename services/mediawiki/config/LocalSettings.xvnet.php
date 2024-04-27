@@ -9,5 +9,4 @@ $wgRightsText = "Creative Commons Attribution-ShareAlike 4.0 International (CC B
 $wgRightsIcon = "$wgResourceBasePath/resources/assets/licenses/cc-by-sa.png";
 
 $xvLoadSkins[] = 'Lakeus';
-$xvLoadSkins[] = 'Timeless';
-$wgDefaultSkin = 'timeless';
+$wgDefaultSkin = 'vector-2022';
