@@ -126,9 +126,9 @@ class XensTweaksHooks {
 	 * because $wgMainPageIsDomainRoot doesn't apply to the internal URL, which is used for purging.
 	 */
 	public static function onGetLocalURLInternal( $title, &$url, $query ) {
-		global $wgArticlePath, $wgScript;
+		global $wgArticlePath, $wgScript, $wgMainPageIsDomainRoot;
 		$dbkey = wfUrlencode( $title->getPrefixedDBkey() );
-		if ( $title->isMainPage() ) {
+		if ( $title->isMainPage() && $wgMainPageIsDomainRoot ) {
 			$url = wfAppendQuery( '/', $query );
 		} elseif ( $url == "{$wgScript}?title={$dbkey}&{$query}" ) {
 			$url = wfAppendQuery( str_replace( '$1', $dbkey, $wgArticlePath ), $query );
