@@ -11,6 +11,7 @@ Purpose: Work on improving Forgejo accessibility.
 Team members:
 
 * https://codeberg.org/Ryuno-Ki [March 2023 Agreement](https://codeberg.org/forgejo/meta/issues/181)
+* https://codeberg.org/fnetX [April 2024 Agreement](https://codeberg.org/forgejo/governance/issues/101)
 
 ## Devops
 
