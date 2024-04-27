@@ -106,6 +106,7 @@ $wgAllowUserJs = true;
 ini_set('user_agent', 'Xens Wikis (op@xvnet0.eu.org');
 $wgMainCacheType = CACHE_ACCEL;
 $wgUseImageMagick = false;
+$wgDiff3 = '/usr/bin/diff3';
 
 // Shared Uploads
 $wgUseSharedUploads = true;
