@@ -16,6 +16,10 @@
   kind: extensions
   prefix: mw/extensions/BetaFeatures
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/BetaFeatures
+- name: Cargo
+  kind: extensions
+  prefix: mw/extensions/Cargo
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Cargo
 - name: CategoryTree
   kind: extensions
   prefix: mw/extensions/CategoryTree
