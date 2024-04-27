@@ -9,9 +9,9 @@ $wgSharedTables = [
 	'actor',
 	'spoofuser',
 ];
-if (str_ends_with($wgServerName, 'w.xvnet.eu.org')) {
+if (str_ends_with($xvHttpHost, 'w.xvnet.eu.org')) {
 	$wgCookieDomain = '.w.xvnet.eu.org';
-} else if (str_ends_with($wgServerName, 'w.xvnet0.eu.org')) {
+} else if (str_ends_with($xvHttpHost, 'w.xvnet0.eu.org')) {
 	$wgCookieDomain = '.w.xvnet0.eu.org';
 }
 

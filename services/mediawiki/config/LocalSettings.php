@@ -18,6 +18,8 @@ if (defined('MW_DB')) {
 	die('Unknown wiki.');
 }
 
+$xvHttpHost = $_SERVER['HTTP_HOST'];
+
 $xvLoadExtensions = [];
 $xvLoadSkins = [];
 
