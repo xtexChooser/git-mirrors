@@ -146,6 +146,9 @@ $wgAllowCopyUploads = true;
 $wgCopyUploadsFromSpecialUpload = true;
 $wgGroupPermissions['autoconfirmed']['upload_by_url'] = true;
 $wgUploadDirectory = '/var/lib/mediawiki/images/' . $xvWikiID;
+$wgUploadPath = 'https://' .
+	(str_ends_with($xvHttpHost, 'w.xvnet0.eu.org') ? 'uploads.xvnet0.eu.org' : 'uploads.xvnet.eu.org')
+	. '/images/' . $xvWikiID;
 $wgHashedUploadDirectory = true;
 $wgFileExtensions[] = 'svg';
 $wgFileExtensions[] = 'ogg';
