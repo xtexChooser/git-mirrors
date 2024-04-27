@@ -1,0 +1,20 @@
+{
+	"@metadata": {
+		"authors": [
+			"Dianliang233"
+		]
+	},
+	"weirdgloop-contactpage-disclaimer": "此处发送的任何信息均不会被发送至本wiki的管理员，而是会被发送至维护本网站的[https://weirdgloop.org Weird Gloop]公司。对于大多数问题，您应联系本地wiki管理员。",
+	"weirdgloop-contactpage-dmca-affiliation": "我是……",
+	"weirdgloop-contactpage-dmca-affiliation-me": "我是版权持有者",
+	"weirdgloop-contactpage-dmca-affiliation-rep": "我是版权持有者的代表",
+	"weirdgloop-contactpage-dmca-address": "您的通信地址",
+	"weirdgloop-contactpage-dmca-phone": "您的电话号码",
+	"weirdgloop-contactpage-dmca-src": "到您声称'''被侵犯'''版权的原始资料的链接（一行一个）",
+	"weirdgloop-contactpage-dmca-material": "到您声称'''侵犯了'''您的版权的资料的链接（一行一个）",
+	"weirdgloop-emailmessage-dmca": "附加说明",
+	"weirdgloop-contactpage-dmca-faith": "我有足够理由相信版权持有者、其代表或法律不允许此内容的使用。",
+	"weirdgloop-contactpage-dmca-accuracy": "我声明：本通知内的信息准确。我是版权持有者或版权持有者的授权代表。",
+	"weirdgloop-contactpage-dmca-release": "我同意Weird Gloop在适当地删减下向公众和相关wiki社区分享本下架通知的部分或全部内容。",
+	"weirdgloop-contactpage-dmca-signature": "电子签名"
+}

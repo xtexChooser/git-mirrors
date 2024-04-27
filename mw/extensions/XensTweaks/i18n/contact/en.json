@@ -1,0 +1,20 @@
+{
+	"@metadata": {
+		"authors": [
+			"Jayden Bailey"
+		]
+	},
+	"weirdgloop-contactpage-disclaimer": "Any information you send here will not be sent to the administrators of this wiki, and will instead be sent to [https://weirdgloop.org Weird Gloop], the company that maintains this website. For most issues, you should instead contact the local wiki admins.",
+	"weirdgloop-contactpage-dmca-affiliation": "I am...",
+	"weirdgloop-contactpage-dmca-affiliation-me": "I am the copyright holder",
+	"weirdgloop-contactpage-dmca-affiliation-rep": "I am a representative of the copyright holder",
+	"weirdgloop-contactpage-dmca-address": "Your full mailing address",
+	"weirdgloop-contactpage-dmca-phone": "Your telephone number",
+	"weirdgloop-contactpage-dmca-src": "Links to the source material you allege has been '''infringed''' (one per line)",
+	"weirdgloop-contactpage-dmca-material": "Links to the material you allege is '''infringing''' (one per line)",
+	"weirdgloop-emailmessage-dmca": "Additional comments",
+	"weirdgloop-contactpage-dmca-faith": "I have a good faith belief that the copyright holder, its agent, or the law do not authorise this content's use.",
+	"weirdgloop-contactpage-dmca-accuracy": "I declare that the information in this notification is accurate and that I am the copyright holder or authorised representative of the copyright holder.",
+	"weirdgloop-contactpage-dmca-release": "I agree that Weird Gloop may share part of, or all, of this takedown notice with appropriate redactions to the public and administrators of relevant wiki communities.",
+	"weirdgloop-contactpage-dmca-signature": "Electronic signature"
+}
