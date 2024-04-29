@@ -78,6 +78,7 @@ Team members:
 
 * https://codeberg.org/wetneb [January 2024 Agreement](https://codeberg.org/forgejo/governance/issues/54)
 * https://codeberg.org/0ko [April 2024 Agreement](https://codeberg.org/forgejo/governance/issues/106)
+* https://codeberg.org/thefox [April 2024 Agreement](https://codeberg.org/forgejo/governance/issues/110) (Limited to runner and act repositories)
 * Members of the Security, Devops & Releases teams
 
 ## Localization
