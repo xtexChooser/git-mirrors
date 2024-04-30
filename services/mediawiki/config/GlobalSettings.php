@@ -14,11 +14,12 @@ $wgUsePathInfo = true;
 $wgArticlePath = '/w/$1';
 $wgMainPageIsDomainRoot = true;
 
-// Default Localisation
+require_once (dirname(__FILE__) . '/Database.php');
+$wgPHPSessionHandling = 'disable';
+
+// Localisation
 $wgLanguageCode = 'en';
 $wgLocaltimezone = 'UTC';
-
-require_once (dirname(__FILE__) . '/Database.php');
 
 // Global Extensions
 $xvLoadExtensions = array_merge($xvLoadExtensions, [
