@@ -99,11 +99,14 @@ function atre::catlog {
 }
 
 function atre::update {
-	atre::root atre internal atre::do_update
+	atre::root atre internal atre::prepare_do_update
+}
+
+function atre::prepare_do_update {
+	atre::do_update | tee --append /var/log/atremis/update.log
 }
 
 function atre::do_update {
-	exec &>>/var/log/atremis/update.log
 	atre::pull
 	atre::svc atremis update-containers
 	atre::apply
