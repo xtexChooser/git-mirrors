@@ -113,7 +113,7 @@ ini_set('user_agent', 'Xens Wikis (op@xvnet0.eu.org');
 $wgMainCacheType = CACHE_ACCEL;
 $wgUseImageMagick = false;
 $wgDiff3 = '/usr/bin/diff3';
-$wgTemplateSandboxEditNamespaces = [NS_TEMPLATE, NS_MODULE];
+$wgTemplateSandboxEditNamespaces = [NS_TEMPLATE, 828 /* NS_MODULE */];
 
 // Shared Uploads
 $wgUseSharedUploads = true;
