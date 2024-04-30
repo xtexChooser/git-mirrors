@@ -103,7 +103,7 @@ function atre::update {
 }
 
 function atre::do_update {
-	exec >>/var/log/atremis/update.log
+	exec &>>/var/log/atremis/update.log
 	atre::pull
 	atre::svc atremis update-containers
 	atre::apply
