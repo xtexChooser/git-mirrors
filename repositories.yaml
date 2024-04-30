@@ -227,6 +227,10 @@
   kind: extensions
   prefix: mw/extensions/TemplateStyles
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/TemplateStyles
+- name: TemplateWizard
+  kind: extensions
+  prefix: mw/extensions/TemplateWizard
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/TemplateWizard
 - name: TextExtracts
   kind: extensions
   prefix: mw/extensions/TextExtracts
