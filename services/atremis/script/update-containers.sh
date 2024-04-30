@@ -6,7 +6,7 @@ declare -a servicesToRestart
 updated=""
 for img in $(podman image ls --format "{{if .RepoTags}}{{index .RepoTags 0}}{{end}}"); do
 	oldDigest="$(podman image ls "$img" --format "{{.Digest}}")"
-	podman pull "$img" || continue
+	podman pull --quiet "$img" || continue
 	newDigest="$(podman image ls "$img" --format "{{.Digest}}")"
 
 	if [[ "$oldDigest" != "$newDigest" ]]; then
