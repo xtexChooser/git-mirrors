@@ -66,6 +66,7 @@ $xvLoadExtensions = array_merge($xvLoadExtensions, [
 	'SyntaxHighlight_GeSHi',
 	'TemplateData',
 	'TemplateStyles',
+	'TemplateWizard',
 	'TextExtracts',
 	'TitleBlacklist',
 	'VisualEditor',
