@@ -65,6 +65,7 @@ $xvLoadExtensions = array_merge($xvLoadExtensions, [
 	'SpamBlacklist',
 	'SyntaxHighlight_GeSHi',
 	'TemplateData',
+	'TemplateSandbox',
 	'TemplateStyles',
 	'TemplateWizard',
 	'TextExtracts',
@@ -112,6 +113,7 @@ ini_set('user_agent', 'Xens Wikis (op@xvnet0.eu.org');
 $wgMainCacheType = CACHE_ACCEL;
 $wgUseImageMagick = false;
 $wgDiff3 = '/usr/bin/diff3';
+$wgTemplateSandboxEditNamespaces = [NS_TEMPLATE, NS_MODULE];
 
 // Shared Uploads
 $wgUseSharedUploads = true;
