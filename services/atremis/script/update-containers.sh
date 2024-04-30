@@ -25,7 +25,6 @@ if [[ -n "$updated" ]]; then
 		dinitctl restart "$svc"
 	done < <(printf "%s\0" "${servicesToRestart[@]}" | sort -uz)
 
-	atre pull
-	podman image prune -f
 	atre apply
+	podman image prune -f
 fi

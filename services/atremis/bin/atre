@@ -29,6 +29,7 @@ COMMAND:
 	fetch                       Fetch changes from repository
     apply                       Apply configuration
     root [COMMAND]              Run command as root
+	update                      Update
 XXX
 }
 
@@ -43,10 +44,6 @@ function atre::pull {
 function atre::fetch {
 	atre::log "Fetch updates"
 	atre::root atre internal atre::do_fetch
-
-	atre::log "Current HEADs:"
-	git show --oneline --no-patch --no-abbrev-commit HEAD
-	git submodule -q foreach git show --oneline --no-patch --no-abbrev-commit HEAD
 }
 
 function atre::do_fetch {
@@ -58,6 +55,10 @@ function atre::do_fetch {
 	git -c gc.reflogExpire=1 -c gc.reflogExpireUnreachable=0 \
 		-c gc.rerereResolved=0 -c gc.rerereUnresolved=0 \
 		-c gc.pruneExpire=now gc --quiet
+
+	atre::log "Current HEADs:"
+	git show --oneline --no-patch --no-abbrev-commit HEAD
+	git submodule -q foreach git show --oneline --no-patch --no-abbrev-commit HEAD
 }
 
 function atre::apply {
@@ -97,6 +98,17 @@ function atre::catlog {
 	fi
 }
 
+function atre::update {
+	atre::root atre internal atre::do_update
+}
+
+function atre::do_update {
+	exec >>/var/log/atremis/update.log
+	atre::pull
+	atre::svc atremis update-containers
+	atre::apply
+}
+
 function atre::main {
 	[ $# -eq 0 ] && atre::usage && exit
 	[ ! -d "$atreDir" ] && atre::error "$atreDir does not exist"
@@ -129,6 +141,9 @@ function atre::main {
 		;;
 	internal)
 		"$@"
+		;;
+	update | upd)
+		atre::update "$@"
 		;;
 	*)
 		atre::error "unknown option: $1"

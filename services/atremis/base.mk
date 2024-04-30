@@ -56,10 +56,16 @@ V_PATH		= $(DINITD_DIR)
 V_EXIST		= y
 $(call end)
 
-$(call fs-file)
-V_PATH		= $(DINITD_DIR)/boot
-V_TEMPLATE	= bash-tpl $(STATES_DIR)/services/atremis/dinit.d/boot
-$(call end)
+dinit-configs-dir := $(STATES_DIR)/services/atremis/dinit.d
+dinit-configs := $(patsubst $(dinit-configs-dir)/%,%,$(wildcard $(dinit-configs-dir)/*))
+
+define dinit-config-template
+$$(call fs-file)
+V_PATH		= $(DINITD_DIR)/$1
+V_TEMPLATE	= bash-tpl $(dinit-configs-dir)/$1
+$$(call end)
+endef
+$(foreach dinit-config,$(dinit-configs),$(eval $(call dinit-config-template,$(dinit-config))))
 
 $(call fs-directory)
 V_PATH		= $(DINITD_DIR)/boot.d

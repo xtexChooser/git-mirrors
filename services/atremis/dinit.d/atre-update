@@ -1,0 +1,3 @@
+type = process
+command = /srv/atremis/atre update
+restart = false
