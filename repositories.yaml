@@ -223,6 +223,10 @@
   kind: extensions
   prefix: mw/extensions/TemplateData
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/TemplateData
+- name: TemplateSandbox
+  kind: extensions
+  prefix: mw/extensions/TemplateSandbox
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/TemplateSandbox
 - name: TemplateStyles
   kind: extensions
   prefix: mw/extensions/TemplateStyles
