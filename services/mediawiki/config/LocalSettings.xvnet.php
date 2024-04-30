@@ -8,8 +8,8 @@ $wgRightsUrl = "https://creativecommons.org/licenses/by-sa/4.0/";
 $wgRightsText = "Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)";
 $wgRightsIcon = "$wgResourceBasePath/resources/assets/licenses/cc-by-sa.png";
 
-$xvLoadSkins[] = 'Lakeus';
-$wgDefaultSkin = 'vector-2022';
+$xvLoadSkins = ['Lakeus'];
+$wgDefaultSkin = 'lakeus';
 
 $wgLocalInterwikis[] = 'xvn';
 
