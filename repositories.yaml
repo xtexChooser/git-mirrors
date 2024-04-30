@@ -190,6 +190,10 @@
   kind: extensions
   prefix: mw/extensions/ProtectSite
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/ProtectSite
+- name: RealMe
+  kind: extensions
+  prefix: mw/extensions/RealMe
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/RealMe
 - name: ReplaceText
   kind: extensions
   prefix: mw/extensions/ReplaceText
