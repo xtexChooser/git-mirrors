@@ -19,3 +19,5 @@ $wgImplicitGroups[] = 'emailconfirmed';
 $wgGroupPermissions['*']['edit'] = false;
 $wgGroupPermissions['user']['edit'] = false;
 $wgGroupPermissions['emailconfirmed']['edit'] = true;
+
+$xvLoadExtensions[] = 'Cargo';
