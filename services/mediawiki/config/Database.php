@@ -12,3 +12,9 @@ $wgDBuser = 'mediawiki';
 $wgDBadminuser = 'mediawikiadmin';
 
 $wgCompressRevisions = true;
+
+$wgCargoDBname = 'wikicargo' . $xvWikiID;
+$wgCargoDBtype = $wgDBtype;
+$wgCargoDBserver = $wgDBserver;
+// $wgCargoDBport = $wgDBport;
+$wgCargoDBuser = 'mediawikicargo';
