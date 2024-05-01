@@ -11,7 +11,7 @@ RUN apk add --no-cache \
 	diffutils
 
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
-RUN install-php-extensions calendar intl mbstring opcache apcu pgsql mysqli luasandbox gd
+RUN install-php-extensions calendar intl mbstring opcache apcu pgsql mysqli luasandbox gd wikidiff2
 RUN rm /usr/local/bin/install-php-extensions
 
 RUN { \
