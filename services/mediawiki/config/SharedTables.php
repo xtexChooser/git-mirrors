@@ -45,11 +45,9 @@ $wgResourceLoaderSources['metawiki'] = array(
 );
 
 // Global User Page
-if ($xvWikiID != 'meta') {
-	$xvLoadExtensions[] = 'GlobalUserPage';
-	$wgGlobalUserPageAPIUrl = $wgResourceLoaderSources['metawiki']['apiScript'];
-	$wgGlobalUserPageDBname = $wgSharedDB;
-}
+$xvLoadExtensions[] = 'GlobalUserPage';
+$wgGlobalUserPageAPIUrl = $wgResourceLoaderSources['metawiki']['apiScript'];
+$wgGlobalUserPageDBname = $wgSharedDB;
 
 // Global Preferences
 $xvLoadExtensions[] = 'GlobalPreferences';
