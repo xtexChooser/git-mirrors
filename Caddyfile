@@ -155,7 +155,7 @@ http://blog.xtexx.eu.org http://xtexblog.exozy.me {
 			base-uri 'self';
 			frame-ancestors 'none';
 			form-action 'self';
-			script-src 'self';
+			script-src 'self' https://unpkg.com;
 			style-src 'self' https://unpkg.com;
 			object-src 'none';
 			"
