@@ -12,6 +12,6 @@ runMW() {
 }
 echo "Creating cargo database for wiki $1"
 
-runMW php maintenance/run.php --wiki "$1" sql --query "CREATE DATABASE wikicargo$1"
+runMW php maintenance/sql.php --wiki "$1" --query "CREATE DATABASE wikicargo$1"
 
 echo "Cargo database for wiki $1 initialized"
