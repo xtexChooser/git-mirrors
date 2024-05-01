@@ -19,6 +19,7 @@ if (defined('MW_DB')) {
 }
 
 $xvHttpHost = $_SERVER['HTTP_HOST'];
+$xvServerName = $xvWikis[$xvWikiID];
 
 $xvLoadExtensions = [];
 $xvLoadSkins = [];

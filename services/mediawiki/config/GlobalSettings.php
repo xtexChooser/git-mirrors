@@ -1,7 +1,6 @@
 <?php
 
-$wgServerName = $xvWikis[$xvWikiID];
-$wgServer = 'https://' . $wgServerName;
+$wgServer = $wgCanonicalServer = 'https://' . $xvServerName;
 
 if ($xvMaintScript) {
 	// Disable [[MW:*]] messages in maintenance script
@@ -132,8 +131,8 @@ $wgForeignFileRepos[] = [
 $wgEnableEmail = true;
 $wgSMTP = [
 	'host' => 'smtp-mail.outlook.com',
-	'IDHost' => $wgServerName,
-	'localhost' => $wgServerName,
+	'IDHost' => 'w.xvnet.eu.org',
+	'localhost' => $xvServerName,
 	'port' => 587,
 	'auth' => true,
 	'username' => $xvSMTPUsername,
