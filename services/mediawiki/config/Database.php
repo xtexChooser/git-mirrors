@@ -2,7 +2,7 @@
 
 $wgLocalDatabases = $wgConf->wikis = array_map(function ($n) {
 	return 'wiki' . $n;
-}, array_values($xvWikis));
+}, array_keys($xvWikis));
 
 $wgDBtype = 'mysql';
 $wgDBname = 'wiki' . $xvWikiID;
