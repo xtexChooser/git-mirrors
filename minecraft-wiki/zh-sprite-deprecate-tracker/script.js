@@ -43,7 +43,7 @@ mw.loader
 			if (data in cachedData) {
 				findAlternativeIn(cachedData[data], name, callback);
 			} else {
-				api.get({
+				api.postWithToken('csrf', {
 					action: 'scribunto-console',
 					title: 'Module:Sprite',
 					question: `print( mw.text.jsonEncode( mw.loadData( 'Module:${data}' ) ) )`,
@@ -132,23 +132,23 @@ mw.loader
 					mw.hook('wikipage.content').fire(
 						$(pt).appendTo('#bodyContent')
 					);
-					$('.mcwzh-sprite-deprecate-alter').each(
-						function (_i, alter) {
-							const text =
-								alter.parentNode.childNodes[1].innerText;
-							const data = text.substring(0, text.indexOf('/'));
-							const name = text.substring(text.indexOf('/') + 1);
+					$('.mcwzh-sprite-deprecate-alter').each(function (
+						_i,
+						alter
+					) {
+						const text = alter.parentNode.childNodes[1].innerText;
+						const data = text.substring(0, text.indexOf('/'));
+						const name = text.substring(text.indexOf('/') + 1);
 
-							const button = new OO.ui.ButtonWidget({
-								framed: false,
-								label: '替代',
-							});
-							button.on('click', function () {
-								findAlternative(data, name, showAlternative);
-							});
-							$(button.$element).appendTo(alter);
-						}
-					);
+						const button = new OO.ui.ButtonWidget({
+							framed: false,
+							label: '替代',
+						});
+						button.on('click', function () {
+							findAlternative(data, name, showAlternative);
+						});
+						$(button.$element).appendTo(alter);
+					});
 				});
 			});
 		});
