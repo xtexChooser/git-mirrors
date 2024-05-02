@@ -1,1 +1,0 @@
-*/15 * * * * root <% $(realpath "$STATES_DIR") %>/services/atremis/script/update-containers.sh

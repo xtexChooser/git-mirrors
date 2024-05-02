@@ -3,7 +3,6 @@ Description=Pull Atremis configurations automatically
 
 [Timer]
 OnStartupSec=30s
-OnUnitActiveSec=15min
 
 [Install]
 WantedBy=timers.target

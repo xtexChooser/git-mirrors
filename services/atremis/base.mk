@@ -105,8 +105,8 @@ $(call end)
 # ========================= cron jobs =========================
 
 $(call fs-file)
-V_PATH		= /etc/cron.d/update-containers
-V_TEMPLATE	= bash-tpl $(STATES_DIR)/services/atremis/cron-update-containers
+V_PATH		= /etc/cron.d/atre-update
+V_TEMPLATE	= bash-tpl $(STATES_DIR)/services/atremis/cron-update
 V_DEP_VARS	+= STATES_DIR
 V_POST		+= systemd-restart E_UNIT=cronie.service
 $(call end)
