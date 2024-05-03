@@ -65,7 +65,7 @@ default-src 'self';
 base-uri 'self';
 frame-ancestors 'none';
 form-action 'self';
-script-src 'self';
+script-src 'self' https://plausible.exozy.me;
 style-src 'self' https://unpkg.com;
 object-src 'none';
 		"
