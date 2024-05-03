@@ -5,9 +5,10 @@ set -e
 urlqueries=("no-limit" "o=CURRENT_REVISION")
 mergekind="cherry-pick"
 applyone=""
+applytry=""
 
 if [[ $# -eq 0 ]]; then
-	echo "Usage: $0 [--cp] [--merge] [--dry-run] [--one] <patch filters or change URL>..." >&2
+	echo "Usage: $0 [--cp] [--merge] [--dry-run] [--one|--try] <patch filters or change URL>..." >&2
 	exit 1
 fi
 
@@ -24,6 +25,9 @@ while [ $# -ne 0 ]; do
 		;;
 	--one)
 		applyone="y"
+		;;
+	--try)
+		applytry="y"
 		;;
 	--*)
 		echo "Unknown option: $1" >&2
@@ -63,6 +67,7 @@ while read -r change; do
 		exit 1
 	fi
 
+	oldHead="$(git rev-parse HEAD)"
 	case "$mergekind" in
 	dry) ;;
 	cherry-pick)
@@ -72,9 +77,19 @@ while read -r change; do
 	merge)
 		git subtree -P "$subtree" pull "$url" "$ref"
 		;;
-	esac
+	esac || {
+		result=$?
+		if [[ -n "$applytry" ]]; then
+			git cherry-pick --abort || true
+			git merge --abort || true
+			git reset --hard "$oldHead"
+			continue
+		else
+			return $result
+		fi
+	}
 
-	if [[ -n "$applyone" ]]; then
+	if [[ -n "$applyone$applytry" ]]; then
 		exit
 	fi
 done <<<"$(curl -sSL --retry 3 "https://gerrit.wikimedia.org/r/changes/?$urlquery" | tail -n-1 | yq -o=json -I0 '.[] | with(select(kind == "map"); .|=[.]) | .[]')"

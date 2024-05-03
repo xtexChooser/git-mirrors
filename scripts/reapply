@@ -22,9 +22,9 @@ while [ $# -ne 0 ]; do
 	*)
 		errResetTo="$(git rev-parse HEAD)"
 		git revert --no-edit "$1"
-		./scripts/pick --one "$(git log -1 "$1" --format='%(trailers:key=Change-Id,valueonly,separator=)')"
+		./scripts/pick --try "$(git log -1 "$1" --format='%(trailers:key=Change-Id,valueonly,separator=)')"
 		newcommit="$(git rev-parse HEAD)"
-		git reset --soft HEAD^^
+		git reset --soft "$errResetTo"
 		if ! git diff-index --quiet HEAD --; then
 			git commit -m "$(printf 'Reapply: %s\nReapply: %s' "$(git log -1 --format=%B "$newcommit")" "$1")"
 		fi
