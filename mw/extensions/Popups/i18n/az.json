@@ -1,0 +1,42 @@
+{
+	"@metadata": {
+		"authors": [
+			"NMW03",
+			"Neriman2003",
+			"Toghrul Rahimli",
+			"Wertuose"
+		]
+	},
+	"popups-message": "Sınaq görüntüləri",
+	"popups-desc": "İstifadəçi kursoru hansısa səhifənin daxili keçidinin üstünə gətirdikdə həmin səhifənin tərkibini əks etdirən kiçik pəncərə peyda olur.",
+	"popups-settings-title": "Sınaq görüntüləri",
+	"popups-settings-option-page": "Yandır",
+	"popups-settings-option-page-description": "Bir məqalə oxuyarkən daxili keçidlərə cəld baxış.",
+	"popups-settings-option-reference": "İstinadların sınaq göstərişi",
+	"popups-settings-option-reference-description": "Bir məqalə oxuyarkən daxili keçidlərə cəld baxış.",
+	"popups-settings-save": "Qeyd et",
+	"popups-settings-help-ok": "Oldu",
+	"popups-settings-cancel": "İmtina",
+	"popups-settings-help": "Siz səhifənin aşağısındakı keçiddən istifadə edərək önizləmələri yenidən aktivləşdirə bilərsiniz.",
+	"popups-settings-enable": "Önizləmə parametrlərini redaktə edt",
+	"popups-settings-icon-gear-title": "Səhifənin önizləmə parametrlərini dəyişdirin",
+	"popups-preview-no-preview": "Səhifəyə ilkin baxış göstərilə bilmədi",
+	"popups-preview-footer-read": "Bu səhifəyə keç",
+	"popups-preview-disambiguation": "Bu başlıq birdən çox səhifəyə aiddir",
+	"popups-preview-disambiguation-link": "Oxşar səhifələrə baxın",
+	"prefs-reading": "Oxu seçimləri",
+	"popups-prefs-optin": "Sınaq görüntülərini aktivləşdirin (səhifə oxuyarkən məqaləyə cəld ilkin baxış)",
+	"popups-prefs-disable-nav-gadgets-info": "Səhifənin önizləməsini aktiv etmək üçün Qadcetlərdə [[$1|Naviqasiya pop-uplarını]] (İstinad aləti) söndürməlisiniz.",
+	"popups-prefs-conflicting-gadgets-info": "Bəzi qadcetlər və digər uyğunlaşdırmalar bu funksiyanın fəaliyyətinə təsir edə bilər. Əgər problemlərlə qarşılarşırsınızsa, qloballar da daxil olmaqla qadcetlərinizi, istifadəçi skriptlərini nəzərdən keçirin.",
+	"popups-prefs-navpopups-gadget-conflict-info": "Sizdə [[$1|Naviqasiya pop-upları]] qadceti aktivdir, ona görə də bu funksiyanın təqdim etdiyi önizləmələri görməyəcəksiniz. Vikidən asılı olaraq, qadcetin fərqli adı ola bilər. Problemlərlə üzləşməyə davam etsəniz, qlobal olanlar da daxil olmaqla qadcetlərinizi və istifadəçi skriptlərinizi nəzərdən keçirin.",
+	"popups-prefs-reftooltips-gadget-conflict-info": "Sizdə [[$1|İstinad aləti]] qadceti aktivdir, ona görə də siz istinad önizləmələrini görməyəcəksiniz, lakin səhifənin önizləmələrini hələ də görəcəksiniz. Vikidən asılı olaraq, qadcetin fərqli adı ola bilər. Problemlərlə üzləşməyə davam etsəniz, qlobal olanlar da daxil olmaqla qadcetlərinizi və istifadəçi skriptlərinizi nəzərdən keçirin.",
+	"popups-prefs-reftooltips-and-navpopups-gadget-conflict-info": "Sizdə [[$1|Naviqasiya pop-upları]] [[$1|İstinad aləti]] qadcetləri aktivdir, ona görə də siz istinad önizləmələrini görməyəcəksiniz, lakin səhifənin önizləmələrini hələ də görəcəksiniz. Vikidən asılı olaraq, qadcetin fərqli adı ola bilər. Problemlərlə üzləşməyə davam etsəniz, qlobal olanlar da daxil olmaqla qadcetlərinizi və istifadəçi skriptlərinizi nəzərdən keçirin.",
+	"popups-refpreview-reference": "İstinad",
+	"popups-refpreview-book": "Kitab istinadı",
+	"popups-refpreview-journal": "Jurnal istinadı",
+	"popups-refpreview-news": "Xəbər istinadı",
+	"popups-refpreview-note": "Qeyd",
+	"popups-refpreview-web": "Veb istinadı",
+	"popups-refpreview-collapsible-placeholder": "Bu istinad önizləməyə uyğun gəlməyən rəqəmi ehtiva edir.",
+	"popups-refpreview-user-preference-label": "İstinad önizləmələrini aktivləşdirin (səhifəni oxuyarkən istinadın sürətli önizləmələrini əldə edin)"
+}
