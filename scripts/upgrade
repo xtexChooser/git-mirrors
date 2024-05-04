@@ -40,6 +40,11 @@ git commit --allow-empty \
 	--trailer "MW-Upgrade-From: $headBeforeAdds" \
 	--trailer "MW-Upgrade-To: $headAfterAdds"
 
+# Update version constant
+sed -E -i -e "s/^(define[^']+'MW_VERSION', '[^']+)(.*)\$/\\1-xvnet\\2/g" mw/includes/Defines.php
+git commit --no-edit -m "$(printf 'upgrade(%s/%s): Update version constant' "$branch" "$count")"
+git add mw/includes/Defines.php
+
 # Add extensions back
 git checkout -f "$oldHead" \
 	mw/extensions/XensTweaks
