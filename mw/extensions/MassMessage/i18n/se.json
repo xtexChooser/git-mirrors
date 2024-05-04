@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": [
+			"Yupik"
+		]
+	},
+	"massmessage-content-remove": "sihko",
+	"massmessage-content-removeyes": "Sihko",
+	"massmessage-content-removeno": "Gaskkalduhte",
+	"massmessage-content-addheading": "Lasit siidduid",
+	"massmessage-content-addsubmit": "Lasit siiddu",
+	"massmessage-create-description": "Govvádus:",
+	"massmessage-edit-description": "Govvádus:",
+	"massmessage-summary-remove": "[[:$1]] sihkkojuvvon"
+}

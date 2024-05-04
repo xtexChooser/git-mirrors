@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": [
+			"Muhammad Shuaib"
+		]
+	},
+	"apihelp-editmassmessagelist-summary": "اجتماعی پیغام رسانی کی فہرست میں ترمیم کرتا ہے۔",
+	"apihelp-editmassmessagelist-param-spamlist": "تجدید کے لیے وصولی فہرست کا عنوان۔",
+	"apihelp-editmassmessagelist-param-add": "فہرست میں درج کرنے کے لیے عناوین۔",
+	"apihelp-editmassmessagelist-param-remove": "فہرست سے حذف کرنے کے لیے عناوین۔",
+	"apihelp-massmessage-summary": "صفحات کی مکمل فہرست کو پیغام روانہ کرتا ہے۔",
+	"apihelp-massmessage-param-spamlist": "پیغام روانہ کرنے کے لیے فہرست صفحات پر مشتمل صفحہ۔",
+	"apihelp-massmessage-param-subject": "پیغام کے عنوان کی سطر۔",
+	"apihelp-massmessage-param-message": "پیغام کا متن۔"
+}

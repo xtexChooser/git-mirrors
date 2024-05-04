@@ -1,0 +1,30 @@
+{
+	"@metadata": {
+		"authors": [
+			"DannyS712",
+			"Nemo bis",
+			"Umherirrender",
+			"Zoranzoki21"
+		]
+	},
+	"apihelp-editmassmessagelist-summary": "{{doc-apihelp-summary|editmassmessagelist}}",
+	"apihelp-editmassmessagelist-param-spamlist": "{{doc-apihelp-param|editmassmessagelist|spamlist}}",
+	"apihelp-editmassmessagelist-param-add": "{{doc-apihelp-param|editmassmessagelist|add}}",
+	"apihelp-editmassmessagelist-param-remove": "{{doc-apihelp-param|editmassmessagelist|remove}}",
+	"apihelp-editmassmessagelist-param-description": "{{doc-apihelp-param|editmassmessagelist|description}}",
+	"apihelp-editmassmessagelist-param-minor": "{{doc-apihelp-param|editmassmessagelist|minor}}",
+	"apihelp-editmassmessagelist-param-watchlist": "{{doc-apihelp-param|editmassmessagelist|watchlist}}\n\nSee also:\n* Same as {{msg-mw|apihelp-delete-param-watchlist}}.",
+	"apihelp-editmassmessagelist-example-1": "{{doc-apihelp-example|editmassmessagelist}}",
+	"apihelp-editmassmessagelist-example-2": "{{doc-apihelp-example|editmassmessagelist}}",
+	"apihelp-massmessage-summary": "{{doc-apihelp-summary|massmessage}}",
+	"apihelp-massmessage-param-spamlist": "{{doc-apihelp-param|massmessage|spamlist}}",
+	"apihelp-massmessage-param-subject": "{{doc-apihelp-param|massmessage|subject}}",
+	"apihelp-massmessage-param-message": "{{doc-apihelp-param|massmessage|message}}",
+	"apihelp-massmessage-param-page-message": "{{doc-apihelp-param|massmessage|page-message}}",
+	"apihelp-massmessage-example-1": "{{doc-apihelp-example|massmessage}}",
+	"apihelp-massmessage-example-2": "{{doc-apihelp-example|massmessage}}",
+	"apihelp-massmessage-example-3": "{{doc-apihelp-example|massmessage}}",
+	"apihelp-query+mmcontent-summary": "{{doc-apihelp-summary|query+mmcontent}}",
+	"apihelp-query+mmcontent-example-1": "{{doc-apihelp-example|query+mmcontent}}",
+	"apierror-massmessage-invalidspamlist": "{{doc-apierror}}"
+}
