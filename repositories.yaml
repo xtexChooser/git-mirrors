@@ -1,6 +1,5 @@
 - name: core
   prefix: mw
-  branch: 1.41.1
   defaultBranch: REL1_41
   pri: 0
   git: https://gerrit.wikimedia.org/r/mediawiki/core
