@@ -1,0 +1,10 @@
+{
+	"@metadata": {
+		"authors": [
+			"Codex Sinaiticus"
+		]
+	},
+	"globalblocking-block-expiry-selector-other": "ሌላ ጊዜ፦",
+	"globalblocking-expiringblock": "በ$1 $2 እ.ኤ.አ. ያልቃል",
+	"globalblocking-unblock-reason": "ምክንያት:"
+}
