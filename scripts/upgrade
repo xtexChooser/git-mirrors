@@ -2,17 +2,58 @@
 
 set -e
 
-oldHead="$(git rev-parse HEAD)"
+echo "Upgrading to MW $1"
 
+oldHead="$(git rev-parse HEAD)"
+branch="$1"
+count=1
+
+if ! git diff-index --quiet HEAD --; then
+	echo "Please cleanup the worktree"
+	exit 1
+fi
+
+# Begin commit
+git commit --allow-empty \
+	-m "$(printf 'upgrade(%s, %s): Begin upgrading MediaWiki to %s' "$branch" "$count" "$branch")" \
+	--trailer "MW-Upgrade-Begin: $branch"
+((count++)) || true
+
+# Update default branch
+yq -i ". | filter(.name == \"core\") | .[0].defaultBranch |= \"$1\"" repositories.yaml
+git add repositories.yaml
+git commit --no-edit -m "$(printf 'upgrade(%s, %s): Upgrade MW branch' "$branch" "$count")"
+((count++)) || true
+
+# Re-initialize mw tree
 git rm -rf mw
+git commit --no-edit -m "$(printf 'upgrade(%s, %s): Remove MediaWiki tree' "$branch" "$count")"
+((count++)) || true
+headBeforeAdds="$(git rev-parse HEAD)"
 scripts/update
+headAfterAdds="$(git rev-parse HEAD)"
+
+# Add prefixes to re-init commits
+while read -r addedCommit; do
+	git commit --no-edit --allow-empty --fixup=reword:"$addedCommit" \
+		-m "$(printf 'upgrade(%s, %s): %s' "$branch" "$count" "$(git log -1 --format=%B "$addedCommit")")"
+	((count++)) || true
+done < <(git log --format='%H' "$headBeforeAdds".."$headAfterAdds")
+git rebase --autosquash "$headBeforeAdds^"
 
 # Add extensions back
 git checkout -f "$oldHead" \
 	mw/extensions/XensTweaks
 git add mw
-git commit --amend --no-edit
+git commit --no-edit -m "$(printf 'upgrade(%s, %s): Introduce downstream trees' "$branch" "$count")"
+((count++)) || true
 
 # Apply patches
+
+# End commit
+git commit --allow-empty \
+	-m "$(printf 'upgrade(%s, %s): Finish upgrading MediaWiki to %s' "$branch" "$count" "$branch")" \
+	--trailer "MW-Upgrade-End: $branch" \
+	--trailer "MW-Upgrade-Steps: $count"
 
 echo "Done, remember to check patches manually"
