@@ -1,0 +1,35 @@
+{
+	"@metadata": {
+		"authors": [
+			"Умар"
+		]
+	},
+	"templatewizard-add-all": "ТӀетоха йерриге параметраш",
+	"templatewizard-cancel": "Йухайаккхар",
+	"templatewizard-close-dialog": "ДӀачӀагӀа кепийн говзанча",
+	"templatewizard-close-dialog-retry": "Йухабаха хийцамаш",
+	"templatewizard-default": "Ӏадйитаран кеп: $1",
+	"templatewizard-desc": "WikiEditor гӀирс, оцуьнца йу кепаш дӀахӀотто говзанча",
+	"templatewizard-dialog-title": "Чуйилла кеп",
+	"templatewizard-help": "TemplateWizard лаьцна кхин сов хьажа",
+	"templatewizard-insert": "Чуйилла",
+	"templatewizard-invalid-title": "Ца магайо цӀе",
+	"templatewizard-invalid-values-edit": "Тайе кеп",
+	"templatewizard-invalid-values-insert": "Чуйилла кеп",
+	"templatewizard-no-description": "ХӀокху кепах лаьцна хӀума дац.",
+	"templatewizard-parameters-optional": "Ца хилча а мега параметраш",
+	"templatewizard-parameters-required": "Хила йеза параметраш",
+	"templatewizard-parameters-suggested": "Кховдийна параметраш",
+	"templatewizard-placeholder-default": "Ӏадйитаран кеп: $1",
+	"templatewizard-placeholder-example": "Масала: $1",
+	"templatewizard-remove-all": "ДӀайаха йерриге параметраш",
+	"templatewizard-remove-template": "ДӀайаккха кеп?",
+	"templatewizard-remove-template-retry": "ДӀайаккха кеп",
+	"templatewizard-search-placeholder": "Лаха кеп",
+	"templatewizard-parambutton-add-title": "ТӀетоха параметр '$1'",
+	"templatewizard-parambutton-remove-title": "ДӀайаккха параметр '$1'",
+	"templatewizard-parambutton-required-title": "Оьшу параметр '$1'",
+	"templatewizard-remove-template-title": "ДӀайаккха кеп",
+	"templatewizard-link-to-template-title": "Кепе хьажар",
+	"templatewizard-use": "Лелайе"
+}
