@@ -17,11 +17,16 @@ mergeSubtree() {
 			if [[ -e "$prefix"/.gitmodules ]]; then
 				grep 'path = ' "$prefix"/.gitmodules | cut -d'=' -f2 | awk '{print "'"$prefix"'/" $1}' | while read -r dir; do
 					{
-						rm -d "$dir"
-						git add "$dir"
-						git rm --cached "$dir~*"
-						rm -d "$dir~*"
-					} &>/dev/null || true
+						if [[ "$(git status "$dir" --short --no-ahead-behind | cut -d' ' -f1)" == "DU" ]]; then
+							# Deleted by us
+							git rm --cached "$dir"
+						else
+							rm -d "$dir"
+							git add "$dir"
+							git rm --cached "$dir~*"
+							rm -d "$dir~*"
+						fi
+					} || true
 				done
 			fi
 			git merge --continue
