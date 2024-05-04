@@ -1,6 +1,0 @@
-/composer.lock
-/vendor
-/node_modules
-.DS_STORE
-.eslintcache
-.idea/

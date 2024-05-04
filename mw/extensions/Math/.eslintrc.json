@@ -1,9 +1,0 @@
-{
-	"root": true,
-	"extends": [
-		"wikimedia/server"
-	],
-	"env": {
-		"mocha": true
-	}
-}

@@ -1,9 +1,0 @@
-{
-	"@metadata": {
-		"authors": [
-			"Uostofchuodnego"
-		]
-	},
-	"globalblocking-expiringblock": "wygaso $1",
-	"globalblocklist": "Spis globalnie zablokowanych adres IP"
-}

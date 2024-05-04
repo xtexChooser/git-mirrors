@@ -1,9 +1,0 @@
-{
-	"@metadata": {
-		"authors": [
-			"Cedric31",
-			"Lhanars"
-		]
-	},
-	"description2-desc": "Apond una meta-etiqueta de descripcion a las paginas de MediaWiki e a ParserOutput per las autras extensions d'utilizar"
-}

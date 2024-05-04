@@ -1,9 +1,0 @@
-{
-	"@metadata": {
-		"authors": [
-			"Mafcadio"
-		]
-	},
-	"globalblocking-expiringblock": "desvalidi a $1 a $2",
-	"globalblocklist": "Lista de adirijes blocida global de IP"
-}
