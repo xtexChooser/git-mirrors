@@ -31,8 +31,9 @@ git rm -rf mw
 git commit --no-edit -m "$(printf 'upgrade(%s/%s): Remove MediaWiki tree' "$branch" "$count")"
 ((count++)) || true
 headBeforeAdds="$(git rev-parse HEAD)"
-scripts/update
-scripts/update
+for ((i = 0; i < 5; i++)); do
+	scripts/update || true
+done
 headAfterAdds="$(git rev-parse HEAD)"
 
 git commit --allow-empty \
