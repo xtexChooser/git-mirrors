@@ -1,0 +1,39 @@
+{
+	"@metadata": {
+		"authors": [
+			"DavidL",
+			"Gomoko",
+			"Grondin",
+			"IAlex",
+			"Louperivois",
+			"MacOS Weed",
+			"Mattho69",
+			"PieRRoMaN",
+			"Pols12",
+			"Sherbrooke",
+			"Thibaut120094",
+			"Urhixidur",
+			"Verdy p",
+			"Wladek92",
+			"Yasten"
+		]
+	},
+	"antispoof-desc": "Bloque la création de comptes ayant des noms d’utilisateur similaires, utilisant diverses écritures, ou pouvant prêter à confusion",
+	"antispoof-conflict-top": "Le nom « $1 » ressemble trop {{PLURAL:$2|à l’utilisateur suivant|aux utilisateurs suivants}} :",
+	"antispoof-conflict-bottom": "Veuillez choisir un autre nom d’utilisateur.",
+	"antispoof-name-illegal": "Afin d’éviter les confusions, le nom d’utilisateur « $1 » n’est pas autorisé : $2.\nVeuillez choisir un autre nom d’utilisateur.",
+	"antispoof-bad-char": "‹$1› ($2)",
+	"antispoof-badtype": "Le nom d’utilisateur fourni est d’un type non valide",
+	"antispoof-empty": "Aucun nom d’utilisateur n’a été fourni",
+	"antispoof-prohibited": "Les noms d’utilisateurs ne peuvent pas contenir le caractère « $1 » car il est interdit",
+	"antispoof-combining": "Les noms d’utilisateurs ne peuvent pas contenir la marque combinatoire « $1 »",
+	"antispoof-unassigned": "Les noms d’utilisateurs ne peuvent pas contenir le caractère « $1 » car c’est un caractère non défini",
+	"antispoof-deprecated": "Les noms d’utilisateurs ne peuvent pas contenir le caractère « $1 » car il est désuet",
+	"antispoof-noletters": "Les noms d’utilisateurs doivent contenir au moins un caractère",
+	"antispoof-mixedscripts": "Les noms d’utilisateurs ne peuvent pas contenir des caractères venant de systèmes d’écriture différents",
+	"antispoof-tooshort": "Votre nom d’utilisateur fourni est trop court",
+	"antispoof-ignore": "Ignorer la vérification de similitude avec les utilisateurs existants",
+	"antispoof-ignore-help": "Permet aux utilisateurs ayant des privilèges suffisants de créer un compte, même si son nom est similaire à celui d’un compte existant.",
+	"action-override-antispoof": "court-circuiter les vérifications d’usurpation",
+	"right-override-antispoof": "Court-circuiter les vérifications de tromperie"
+}

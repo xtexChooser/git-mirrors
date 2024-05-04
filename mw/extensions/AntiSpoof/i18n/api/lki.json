@@ -1,0 +1,9 @@
+{
+	"@metadata": {
+		"authors": [
+			"Hosseinblue"
+		]
+	},
+	"apihelp-antispoof-param-username": "نام کاربری‌ای که با ضدجعل بررسی می‌شود.",
+	"apihelp-antispoof-example-1": "بررسی نام کاربر «Foo» با ضدجعل"
+}

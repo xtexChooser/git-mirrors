@@ -1,0 +1,9 @@
+{
+	"@metadata": {
+		"authors": [
+			"Borichèt"
+		]
+	},
+	"apihelp-antispoof-param-username": "Lë stranòm da verifiché contra AntiSpoof.",
+	"apihelp-antispoof-example-1": "Verifiché lë stranòm «Foo» contra AntiSpoof"
+}
