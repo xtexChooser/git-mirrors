@@ -1,0 +1,28 @@
+{
+	"@metadata": {
+		"authors": [
+			"Yupik"
+		]
+	},
+	"cargo-unknowntable": "Vââʹǩǩ: taullõk \"$1\" ij käunnʼjam.",
+	"cargo-viewdata-tables": "Taullõk/Taullõõǥǥ:",
+	"cargo-viewdata-orderby": "Šlajjâd:",
+	"cargo-viewdata-heightparam": "Õllâdvuõtt:",
+	"cargo-viewdata-widthparam": "Kobddâdvuõtt:",
+	"cargo-viewdata-hidelegendparam": "Čiõǥǥ čiʹlǧǧtõõzz:",
+	"cargo-cargotables-header-table": "Taullõk",
+	"cargo-cargotables-header-templates": "Maall",
+	"cargo-cargotables-action-deletereplacement": "Jaukkâd",
+	"cargo-cargotables-action-delete": "Jaukkâd",
+	"cargo-cargotables-viewtable": "Čuäʹjet taullõõǥǥ: $1",
+	"cargo-cargotables-viewtablelink": "Čuäʹjet taullõõǥǥ",
+	"cargo-drilldown-allpages": "Puk seeid",
+	"cargo-drilldown-allfiles": "Puk teâttõõzz",
+	"cargo-drilldown-search": "Ooʒʒ",
+	"cargo-drilldown-filename": "Teâttõsnõmm",
+	"cargo-viewcsv": "Čuäʹjet CSV-teâttõõzz",
+	"cargo-downloadzip": "Laadd ZIP-teâttõõzz",
+	"cargo-viewjson": "Čuäʹjet JSON",
+	"cargo-pageschemas-tablename": "Taullõõǥǥ nõmm:",
+	"cargo-gantt-months": "Mp"
+}
