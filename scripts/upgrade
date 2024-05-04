@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+set -e
+
+oldHead="$(git rev-parse HEAD)"
+
+git rm -rf mw
+scripts/update
+
+# Add extensions back
+git checkout -f "$oldHead" \
+	mw/extensions/XensTweaks
+git add mw
+git commit --amend --no-edit
+
+# Apply patches
+
+echo "Done, remember to check patches manually"
