@@ -26,6 +26,7 @@ git commit --no-edit -m "$(printf 'upgrade(%s, %s): Upgrade MW branch' "$branch"
 ((count++)) || true
 
 # Re-initialize mw tree
+rm -rf mw
 git rm -rf mw
 git commit --no-edit -m "$(printf 'upgrade(%s, %s): Remove MediaWiki tree' "$branch" "$count")"
 ((count++)) || true
