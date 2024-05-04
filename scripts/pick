@@ -85,7 +85,7 @@ while read -r change; do
 			git reset --hard "$oldHead"
 			continue
 		else
-			return $result
+			exit $result
 		fi
 	}
 
