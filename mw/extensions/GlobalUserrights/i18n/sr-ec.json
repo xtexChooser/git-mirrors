@@ -1,0 +1,18 @@
+{
+	"@metadata": {
+		"authors": [
+			"BadDog",
+			"FriedrickMILBarbarossa",
+			"Milicevic01",
+			"Rancher",
+			"Михајло Анђелковић"
+		]
+	},
+	"globaluserrights": "Управљање глобалним правима корисника",
+	"gur-desc": "Једноставно управљање [[Special:GlobalUserRights|глобалним правима]]",
+	"gur-rightslog-name": "Дневник глобалних права",
+	"gur-rightslog-header": "Ово је историја промена глобалних права.",
+	"gur-rightslog-entry": "је променио глобална права за $1 из $2 у $3",
+	"logentry-gblrights-rights": "$1 је {{GENDER:$2|променио|променила}} чланство глобалне групе за {{GENDER:$6|$3}} из $4 у $5",
+	"right-userrights-global": "Управљање глобалним правима корисника"
+}
