@@ -5,3 +5,8 @@
 % for tpl in $CADDY_INCLUDES; do
 % "$LEONIS_MODULES_DIR/template.sh" bash-tpl "$tpl"
 % done
+
+https://<% $HOSTNAME %> {
+	redir / https://w.xvnet.eu.org/w/<% $HOSTNAME %>
+	redir https://w.xvnet.eu.org/w/<% $HOSTNAME %>{path}
+}
