@@ -6,7 +6,7 @@
 % "$LEONIS_MODULES_DIR/template.sh" bash-tpl "$tpl"
 % done
 
-https://<% $HOSTNAME %> https://<% ${HOSTNAME/xvnet0/xvnet} %> {
+https://<% $HOSTNAME %> {
 	redir / https://w.xvnet.eu.org/w/<% $HOSTNAME %>
 	redir https://w.xvnet.eu.org/w/<% $HOSTNAME %>{path}
 }
