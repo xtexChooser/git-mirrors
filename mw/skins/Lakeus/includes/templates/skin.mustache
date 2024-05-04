@@ -1,0 +1,19 @@
+{{>JumpToContentLink}}
+<header class="mw-header">
+	{{>Logo}}
+	{{>UserTools}}
+	{{>Search}}
+	{{>Sidebar}}
+</header>
+{{>Notices}}
+<main id="content" class="mw-body">
+	<header class="content__header">
+		{{>ContentIndicators}}
+		{{>ContentHeading}}
+		{{>ContentTagline}}
+		{{>ContentTabs}}
+	</header>
+	{{>ContentBody}}
+	{{#is-sticky-toc-shown}}{{#data-toc}}{{>TableOfContents}}{{/data-toc}}{{/is-sticky-toc-shown}}
+</main>
+{{>Footer}}
