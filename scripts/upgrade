@@ -43,8 +43,8 @@ git commit --allow-empty \
 
 # Update version constant
 sed -E -i -e "s/^(define[^']+'MW_VERSION', '[^']+)(.*)\$/\\1-xvnet\\2/g" mw/includes/Defines.php
-git commit --no-edit -m "$(printf 'upgrade(%s/%s): Update version constant' "$branch" "$count")"
 git add mw/includes/Defines.php
+git commit --no-edit -m "$(printf 'upgrade(%s/%s): Update version constant' "$branch" "$count")"
 
 # Add extensions back
 git checkout -f "$oldHead" \
