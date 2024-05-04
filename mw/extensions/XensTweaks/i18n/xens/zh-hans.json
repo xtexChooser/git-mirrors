@@ -1,0 +1,16 @@
+{
+	"@metadata": {
+		"authors": [
+			"xtex"
+		]
+	},
+	"XensTweaks-desc": "为所有Xens Wikis提供额外的功能",
+	"xens-tos": "服务条款",
+	"xens-tos-url": "https://w.xvnet.eu.org/w/ToS",
+	"group-staff": "Operators",
+	"group-staff-member": "Operator",
+	"grouppage-staff": "meta:xvn:Operators",
+	"group-steward": "Stewards",
+	"group-steward-member": "Steward",
+	"grouppage-steward": "meta:Stewards"
+}
