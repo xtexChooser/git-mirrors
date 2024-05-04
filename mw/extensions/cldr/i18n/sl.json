@@ -1,0 +1,9 @@
+{
+	"@metadata": {
+		"authors": [
+			"Dbc334",
+			"Eleassar"
+		]
+	},
+	"cldr-desc": "Razširitev za lokalizirana imena jezikov na podlagi [http://cldr.unicode.org/index/downloads podatkov CLDR]"
+}
