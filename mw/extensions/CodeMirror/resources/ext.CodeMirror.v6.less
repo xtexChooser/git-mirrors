@@ -1,0 +1,34 @@
+.cm-matchingBracket,
+.cm-focused .cm-matchingBracket {
+	background-color: #eee;
+	box-shadow: inset 0 0 1px 1px #999;
+	font-weight: bold;
+}
+
+.cm-special-char-nbsp {
+	color: #888;
+}
+
+.cm-tooltip-fold {
+	cursor: pointer;
+	line-height: 1.2;
+	padding: 0 1px;
+}
+
+.cm-bidi-isolate {
+	/* @noflip */
+	direction: ltr;
+	unicode-bidi: isolate;
+}
+
+// Hide all buttons except CodeMirror on read only pages (T301615)
+// This is the same hack that CodeEditor uses to customize the toolbar.
+// WikiEditor should be updated to better handle read only pages (T188817).
+.ext-codemirror-readonly {
+	.wikiEditor-section-secondary,
+	.group:not( .group-codemirror ),
+	.tabs,
+	.sections {
+		display: none;
+	}
+}

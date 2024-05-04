@@ -1,0 +1,9 @@
+{
+	"extends": "stylelint-config-wikimedia",
+	"rules": {
+		"rule-empty-line-before": null
+	},
+	"ignoreFiles": [
+		"coverage/**/*.css"
+	]
+}

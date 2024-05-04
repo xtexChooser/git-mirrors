@@ -1,0 +1,320 @@
+{
+	"name": "CodeMirror",
+	"version": "5.0.0",
+	"author": [
+		"[https://www.mediawiki.org/wiki/User:Pastakhov Pavel Astakhov]",
+		"[https://www.mediawiki.org/wiki/User:Florianschmidtwelzow Florian Schmidt]",
+		"Marijn Haverbeke",
+		"MusikAnimal",
+		"[https://raw.githubusercontent.com/codemirror/CodeMirror/master/AUTHORS CodeMirror contributors]"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:CodeMirror",
+	"descriptionmsg": "codemirror-desc",
+	"type": "editor",
+	"license-name": "GPL-2.0-or-later",
+	"requires": {
+		"MediaWiki": ">= 1.42.0"
+	},
+	"config": {
+		"CodeMirrorV6": {
+			"value": false,
+			"description": "Temporary feature flag for the CodeMirror 6 upgrade."
+		},
+		"CodeMirrorConflictingGadgets": {
+			"value": [
+				"wikEd"
+			],
+			"description": "An array of gadget names that, if enabled, will prevent CodeMirror from loading on action=edit and action=submit.",
+			"public": true
+		},
+		"CodeMirrorTemplateFoldingNamespaces": {
+			"value": null,
+			"description": "List of namespace IDs where template folding should be enabled, or `null` to enable for all namespaces. Set to [] to disable everywhere.",
+			"public": true
+		},
+		"CodeMirrorLineNumberingNamespaces": {
+			"value": null,
+			"description": "List of namespace IDs where line numbering should be enabled, or `null` to enable for all namespaces. Set to [] to disable everywhere.",
+			"public": true
+		}
+	},
+	"MessagesDirs": {
+		"CodeMirror": [
+			"i18n"
+		]
+	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\CodeMirror\\": "includes/"
+	},
+	"ResourceModules": {
+		"ext.CodeMirror": {
+			"dependencies": [
+				"mediawiki.api",
+				"mediawiki.user",
+				"user.options"
+			],
+			"packageFiles": [
+				"ext.CodeMirror.js",
+				{
+					"name": "ext.CodeMirror.data.js",
+					"callback": "MediaWiki\\Extension\\CodeMirror\\DataScript::makeScript"
+				}
+			]
+		},
+		"ext.CodeMirror.WikiEditor": {
+			"dependencies": [
+				"ext.CodeMirror",
+				"jquery.textSelection",
+				"mediawiki.user",
+				"user.options",
+				"oojs-ui.styles.icons-editing-styling"
+			],
+			"packageFiles": [
+				"ext.CodeMirror.WikiEditor.js"
+			],
+			"styles": [
+				"ext.CodeMirror.less"
+			],
+			"messages": [
+				"codemirror-toggle-label"
+			]
+		},
+		"ext.CodeMirror.lib": {
+			"scripts": [
+				"lib/codemirror/lib/codemirror.js"
+			],
+			"styles": [
+				"lib/codemirror/lib/codemirror.css",
+				"lib/codemirror-fixes.less"
+			]
+		},
+		"ext.CodeMirror.addons": {
+			"scripts": [
+				"addon/edit/matchbrackets-wmde.js"
+			],
+			"dependencies": [
+				"ext.CodeMirror.lib"
+			]
+		},
+		"ext.CodeMirror.mode.mediawiki": {
+			"packageFiles": "mode/mediawiki/mediawiki.js",
+			"styles": [
+				"mode/mediawiki/mediawiki.less",
+				"mode/mediawiki/colorblind-colors.less"
+			],
+			"dependencies": [
+				"ext.CodeMirror.lib"
+			]
+		},
+		"ext.CodeMirror.lib.mode.css": {
+			"scripts": "lib/codemirror/mode/css/css.js",
+			"dependencies": [
+				"ext.CodeMirror.lib"
+			]
+		},
+		"ext.CodeMirror.lib.mode.javascript": {
+			"scripts": "lib/codemirror/mode/javascript/javascript.js",
+			"dependencies": [
+				"ext.CodeMirror.lib"
+			]
+		},
+		"ext.CodeMirror.lib.mode.xml": {
+			"scripts": "lib/codemirror/mode/xml/xml.js",
+			"dependencies": [
+				"ext.CodeMirror.lib"
+			]
+		},
+		"ext.CodeMirror.lib.mode.htmlmixed": {
+			"scripts": "lib/codemirror/mode/htmlmixed/htmlmixed.js",
+			"dependencies": [
+				"ext.CodeMirror.lib.mode.xml",
+				"ext.CodeMirror.lib.mode.javascript",
+				"ext.CodeMirror.lib.mode.css",
+				"ext.CodeMirror.lib"
+			]
+		},
+		"ext.CodeMirror.lib.mode.clike": {
+			"scripts": "lib/codemirror/mode/clike/clike.js",
+			"dependencies": [
+				"ext.CodeMirror.lib"
+			]
+		},
+		"ext.CodeMirror.lib.mode.php": {
+			"scripts": "lib/codemirror/mode/php/php.js",
+			"dependencies": [
+				"ext.CodeMirror.lib.mode.htmlmixed",
+				"ext.CodeMirror.lib.mode.clike",
+				"ext.CodeMirror.lib"
+			]
+		},
+		"ext.CodeMirror.visualEditor": {
+			"dependencies": [
+				"ext.visualEditor.mwcore",
+				"ext.visualEditor.mwmeta",
+				"mediawiki.api",
+				"user.options",
+				"ext.CodeMirror"
+			],
+			"scripts": [
+				"modules/ve-cm/ve.ui.CodeMirrorAction.js",
+				"modules/ve-cm/ve.ui.CodeMirrorTool.js"
+			],
+			"styles": [
+				"modules/ve-cm/ve.ui.CodeMirror.less"
+			],
+			"messages": [
+				"codemirror-toggle-label"
+			]
+		},
+		"ext.CodeMirror.v6": {
+			"dependencies": [
+				"web2017-polyfills",
+				"mediawiki.api",
+				"mediawiki.user",
+				"user.options",
+				"ext.CodeMirror.v6.lib"
+			],
+			"packageFiles": [
+				"dist/codemirror.js",
+				{
+					"name": "ext.CodeMirror.data.js",
+					"callback": "MediaWiki\\Extension\\CodeMirror\\DataScript::makeScript"
+				}
+			],
+			"styles": [
+				"ext.CodeMirror.v6.less"
+			],
+			"messages": [
+				"codemirror-find",
+				"codemirror-next",
+				"codemirror-previous",
+				"codemirror-all",
+				"codemirror-match-case",
+				"codemirror-regexp",
+				"codemirror-by-word",
+				"codemirror-replace",
+				"codemirror-replace-placeholder",
+				"codemirror-replace-all",
+				"codemirror-control-character",
+				"codemirror-special-char-null",
+				"codemirror-special-char-bell",
+				"codemirror-special-char-backspace",
+				"codemirror-special-char-newline",
+				"codemirror-special-char-vertical-tab",
+				"codemirror-special-char-carriage-return",
+				"codemirror-special-char-escape",
+				"codemirror-special-char-nbsp",
+				"codemirror-special-char-zero-width-space",
+				"codemirror-special-char-zero-width-non-joiner",
+				"codemirror-special-char-zero-width-joiner",
+				"codemirror-special-char-left-to-right-mark",
+				"codemirror-special-char-right-to-left-mark",
+				"codemirror-special-char-line-separator",
+				"codemirror-special-char-left-to-right-override",
+				"codemirror-special-char-right-to-left-override",
+				"codemirror-special-char-narrow-nbsp",
+				"codemirror-special-char-left-to-right-isolate",
+				"codemirror-special-char-right-to-left-isolate",
+				"codemirror-special-char-pop-directional-isolate",
+				"codemirror-special-char-paragraph-separator",
+				"codemirror-special-char-zero-width-no-break-space",
+				"codemirror-special-char-object-replacement",
+				"codemirror-fold-template",
+				"codemirror-unfold",
+				"codemirror-folded-code"
+			]
+		},
+		"ext.CodeMirror.v6.lib": {
+			"packageFiles": [
+				"dist/vendor.js"
+			],
+			"dependencies": [
+				"web2017-polyfills"
+			]
+		},
+		"ext.CodeMirror.v6.mode.mediawiki": {
+			"packageFiles": "dist/codemirror.mode.mediawiki.js",
+			"styles": [
+				"mode/mediawiki/mediawiki.less",
+				"mode/mediawiki/colorblind-colors.less"
+			],
+			"dependencies": [
+				"ext.CodeMirror.v6",
+				"ext.CodeMirror.v6.lib"
+			]
+		},
+		"ext.CodeMirror.v6.WikiEditor": {
+			"dependencies": [
+				"ext.wikiEditor",
+				"ext.CodeMirror.v6.lib",
+				"ext.CodeMirror.v6.mode.mediawiki"
+			],
+			"packageFiles": [
+				"dist/codemirror.wikieditor.mediawiki.js"
+			],
+			"messages": [
+				"codemirror-toggle-label"
+			]
+		}
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "resources",
+		"remoteExtPath": "CodeMirror/resources"
+	},
+	"ForeignResourcesDir": "resources/lib",
+	"DefaultUserOptions": {
+		"usecodemirror": 0
+	},
+	"QUnitTestModule": {
+		"localBasePath": "resources/mode/mediawiki/tests",
+		"remoteExtPath": "CodeMirror/resources/mode/mediawiki/tests",
+		"packageFiles": [
+			"qunit/CodeMirror.mediawiki.test.js"
+		],
+		"dependencies": [
+			"ext.CodeMirror",
+			"ext.CodeMirror.lib",
+			"ext.CodeMirror.mode.mediawiki"
+		]
+	},
+	"Hooks": {
+		"EditPage::showEditForm:initial": "main",
+		"EditPage::showReadOnlyForm:initial": "main",
+		"GetPreferences": "main",
+		"ResourceLoaderGetConfigVars": "main"
+	},
+	"HookHandlers": {
+		"main": {
+			"class": "MediaWiki\\Extension\\CodeMirror\\Hooks",
+			"services": [
+				"UserOptionsLookup",
+				"MainConfig"
+			]
+		}
+	},
+	"attributes": {
+		"CodeMirror": {
+			"ContentModels": [
+				"wikitext"
+			],
+			"PluginModules": [
+				"ext.CodeMirror.addons"
+			],
+			"TagModes": {
+				"pre": "mw-tag-pre",
+				"nowiki": "mw-tag-nowiki"
+			}
+		},
+		"VisualEditor": {
+			"PluginModules": [
+				"ext.CodeMirror.visualEditor"
+			]
+		},
+		"EventLogging": {
+			"Schemas": {
+				"CodeMirrorUsage": "/analytics/legacy/codemirrorusage/1.0.0"
+			}
+		}
+	},
+	"manifest_version": 2
+}

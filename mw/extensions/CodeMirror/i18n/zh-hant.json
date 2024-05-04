@@ -1,0 +1,26 @@
+{
+	"@metadata": {
+		"authors": [
+			"A2093064",
+			"Arielyurusova",
+			"Cwlin0416",
+			"Kly",
+			"LNDDYL",
+			"Sean0115",
+			"Waihorace",
+			"Winston Sung",
+			"Xiplus"
+		]
+	},
+	"codemirror-desc": "提供 wikitext 編輯器語法醒目標示",
+	"codemirror-toggle-label": "語法醒目標示",
+	"codemirror-prefs-colorblind": "編輯wikitext時，啟用對色盲用戶友好的語法高亮配色方案",
+	"codemirror-prefs-colorblind-help": "如果您的語法高亮功能由小工具提供，本設置將不起作用。",
+	"codemirror-regexp": "正規表示式",
+	"codemirror-control-character": "控制字元$1",
+	"codemirror-special-char-escape": "跳脫字元",
+	"codemirror-special-char-nbsp": "不換行空格",
+	"codemirror-special-char-zero-width-space": "零寬空格",
+	"codemirror-fold-template": "摺疊模板參數",
+	"prefs-accessibility": "無障礙"
+}
