@@ -1,0 +1,25 @@
+{
+	"root": true,
+	"extends": [
+		"wikimedia/client-es6",
+		"wikimedia/jsdoc"
+	],
+	"parserOptions": {
+		"ecmaVersion": 3
+	},
+	"rules": {
+		"max-len": "off",
+		"no-var": "off"
+	},
+	"overrides": [
+		{
+			"files": [
+				"startup.js"
+			],
+			"extends": "wikimedia/client-es5",
+			"parserOptions": {
+				"ecmaVersion": 3
+			}
+		}
+	]
+}
