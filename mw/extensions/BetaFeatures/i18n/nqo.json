@@ -1,0 +1,19 @@
+{
+	"@metadata": {
+		"authors": [
+			"Lancine.kounfantoh.fofana"
+		]
+	},
+	"betafeatures-auto-enroll": "ߓߋߕߊ ߟߊ߬ߓߊ߰ߙߊ߬ߟߌ ߝߊ߲߬ߓߊ ߟߎ߬ ߓߍ߯ ߓߌ߬ߟߵߊ߬ ߟߊ߫ ߞߍߒߖߘߍߦߋߓߟߏߡߊ߬",
+	"betafeatures-auto-enroll-help": " ߓߙߊ߬ߒ߬ߘߐ߬ ߡߝߊ߬ߟߋ߲߬ߠߌ߲ ߘߌ߫ ߞߍ߫ ߓߋߕߊ߫ ߟߊ߬ߓߊ߰ߙߊ߬ߟߌ ߘߏ߫ ߟߎ߫ ߘߐ߫߸ ߏ߬ ߛߐ߫ {{GENDER:|ߌ}} ߞߊ߫ ߞߊ߲߫ ߦߋ߫ ߞߊ߬ ߓߊ߯ߙߊ ߞߍ߫ ߓߟߏߟߕߊ ߘߐ߫.",
+	"betafeatures-extension-type": "ߓߋߕߊ ߟߊ߬ߓߊ߰ߙߊ߬ߟߌ ߟߎ߬",
+	"betafeatures-toplink": "ߓߋߕߊ",
+	"betafeatures-feature-autoenrolled": "ߞߍ߲ߖߘߍߦߋ߫ ߕߐ߯ߛߓߍߟߌ ߟߊ߬ߓߊ߰ߙߊ߬ߟߌ",
+	"mw-ui-feature-discuss": "ߘߊߘߐߖߊߥߏ",
+	"mw-ui-feature-info": "ߞߌ߬ߓߊ߬ߙߏ߬ߦߊ",
+	"mw-ui-feature-requirements-betafeatures": "ߟߊ߬ߓߊ߰ߙߊ߬ߟߌ{{PLURAL:$1|ߟߎ߫}} ߦߋ߫ ߟߊ߬ߓߊ߰ߙߊ߬ߟߌ ߣߌ߲߬ ߘߐ߫ ߞߘߎ߬ߜߍߟߍ߲ ߠߋ߬ ߘߌ߫ ߕߐ߯ ߛߓߍ ߘߐ߫:",
+	"mw-ui-feature-requirements-javascript": "ߟߊ߬ߓߊ߰ߙߊ߬ߟߌ ߣߌ߲߬ ߡߊ߬ߞߏ ߦߋ߫ ߖߝ߭ߊߛߞߑߙߌߔߕ ߟߊ߫.",
+	"prefs-betafeatures": "ߓߋߕߊ ߟߊ߬ߓߊ߰ߙߊ߬ߟߌ ߟߎ߬",
+	"prefs-description-betafeatures": "ߟߊ߬ߓߊ߰ߙߊ߬ߟߌ߫ ߞߐ߯ߟߊ߫ ߟߎ߫ ߡߊߝߍߖߍ߲߫߸ ߊ߬ ߣߌ߫ ߞߵߌ ߤߊߞߟߌߣߊ߲ ߘߌ߫ ߞߊ߬ ߓߍ߲߬ ߟߊ߬ߓߊ߰ߙߊ߬ߟߌ ߞߊ߲߬.",
+	"tooltip-pt-betafeatures": "ߓߋߕߊ ߟߊ߬ߡߍ߬ߙߍ߲߬ߠߌ߲"
+}
