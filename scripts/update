@@ -9,6 +9,7 @@ mergeSubtree() {
 	name="$1"
 	prefix="$2"
 	commit="$3"
+	local added=""
 
 	if [[ -e "$prefix" ]]; then
 		echo "Merging: $name"
@@ -34,11 +35,14 @@ mergeSubtree() {
 	else
 		echo "Adding: $name"
 		git subtree -P "$prefix" add "$commit"
+		added=y
 	fi
 
 	if [[ -e "$prefix"/.gitmodules ]]; then
 		grep 'path = ' "$prefix"/.gitmodules | cut -d'=' -f2 | awk '{print "'"$prefix"'/" $1}' | while read -r dir; do
-			rm -d "$dir" &>/dev/null || true
+			rm -d "$dir" || true
+			git rm "$dir" || true
+			[[ -z "$added" ]] || git rm -rf "$dir" || true
 		done
 		if ! git diff-index --quiet HEAD --; then
 			git add "$prefix"
