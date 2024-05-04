@@ -1,0 +1,58 @@
+[
+	{
+		"resourceModule": "mobile.startup",
+		"maxSize": "23.4KB"
+	},
+	{
+		"resourceModule": "mobile.editor.overlay",
+		"maxSize": "14.4KB"
+	},
+	{
+		"resourceModule": "mobile.init",
+		"maxSize": "5.6KB"
+	},
+	{
+		"resourceModule": "mobile.languages.structured",
+		"maxSize": "2.7KB"
+	},
+	{
+		"resourceModule": "mobile.mediaViewer",
+		"maxSize": "3.1KB"
+	},
+	{
+		"resourceModule": "mobile.special.mobileoptions.scripts",
+		"maxSize": "2.7KB"
+	},
+	{
+		"resourceModule": "mobile.special.userlogin.scripts",
+		"maxSize": "0.3KB"
+	},
+	{
+		"resourceModule": "mobile.special.watchlist.scripts",
+		"maxSize": "1.6KB"
+	},
+	{
+		"resourceModule": "mobile.pagelist.styles",
+		"maxSize": "0.9KB"
+	},
+	{
+		"resourceModule": "mobile.pagesummary.styles",
+		"maxSize": "0.5KB"
+	},
+	{
+		"resourceModule": "mobile.userpage.styles",
+		"maxSize": "0.5KB"
+	},
+	{
+		"resourceModule": "mobile.special.styles",
+		"maxSize": "0.8KB"
+	},
+	{
+		"resourceModule": "mobile.special.mobileoptions.styles",
+		"maxSize": "2.2KB"
+	},
+	{
+		"resourceModule": "mobile.special.pagefeed.styles",
+		"maxSize": "2.0KB"
+	}
+]

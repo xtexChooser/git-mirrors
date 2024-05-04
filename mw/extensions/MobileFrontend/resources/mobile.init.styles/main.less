@@ -1,0 +1,77 @@
+@import 'mediawiki.skin.variables.less';
+@import 'mobile.less';
+@import 'icons.less';
+
+.client-js {
+	.collapsible-block:not( .collapsible-block-js ) {
+		display: none;
+	}
+
+	.section-heading {
+		align-items: center;
+	}
+}
+
+.mf-icon {
+	.cdx-mixin-css-icon-background( );
+	.cdx-mixin-css-icon-size( );
+	.cdx-mixin-css-icon-alignment( );
+	font-size: 14px;
+
+	// Temporary fix for https://phabricator.wikimedia.org/T356540
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: ~'calc( max( @{size-icon-medium}, @{min-size-icon-medium} ) )';
+}
+
+.section-heading .indicator {
+	margin-right: 6px;
+}
+
+.mf-icon--small {
+	.cdx-mixin-css-icon-background( @size-icon-small );
+	.cdx-mixin-css-icon-size( @size-icon-small );
+
+	// Temporary fix for https://phabricator.wikimedia.org/T356540
+	background-size: ~'calc( max( @{size-icon-small}, @{min-size-icon-small} ) )';
+}
+
+.client-nojs {
+	// Toggling indicators are unusable without JavaScript
+	.section-heading .indicator {
+		display: none;
+	}
+}
+
+// START FOOTER RULES
+// Historically, MobileFrontend has modified the mobile footer
+// to limit the amount of items in it.
+// This was previously done in the now deprecated SkinTemplateOutputPageBeforeExec
+// We can remove these rules as soon as we've talked this through with a
+// designer and product manager.
+
+// Rule is overly specific to counter .hlist style
+ul.footer-info li,
+ul.footer-places li {
+	display: none;
+}
+
+/* stylelint-disable-next-line selector-max-id */
+#footer-places-terms-use {
+	float: left;
+}
+// Historically we've limited places on mobile
+// to terms-use, desktop toggle and privacy links
+
+/* stylelint-disable-next-line selector-max-id */
+#footer-places-terms-use,
+#footer-places-desktop-toggle,
+#footer-places-privacy {
+	display: inline-block;
+}
+
+/* stylelint-disable-next-line selector-max-id */
+#footer-places-desktop-toggle::after {
+	content: '' !important;
+}
+// END FOOTER RULES
