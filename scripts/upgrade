@@ -46,9 +46,15 @@ sed -E -i -e "s/^(define[^']+'MW_VERSION', '[^']+)(.*)\$/\\1-xvnet\\2/g" mw/incl
 git add mw/includes/Defines.php
 git commit --no-edit -m "$(printf 'upgrade(%s/%s): Update version constant' "$branch" "$count")"
 
-# Add extensions back
+# Include downstream composer file
+sed -E -i -e "s/composer\.local\.json/composer.xvmw.json/g" mw/composer.json
+git add mw/composer.json
+git commit --no-edit -m "$(printf 'upgrade(%s/%s): Include downstream composer file' "$branch" "$count")"
+
+# Add downstream files back
 git checkout -f "$oldHead" \
-	mw/extensions/XensTweaks
+	mw/extensions/XensTweaks \
+	composer.xvmw.json
 git add mw
 git commit --no-edit -m "$(printf 'upgrade(%s/%s): Introduce downstream trees' "$branch" "$count")"
 ((count++)) || true
