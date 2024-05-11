@@ -40,7 +40,7 @@ V_POST		+= systemd-restart E_UNIT=cronie.service
 $(call end)
 
 $(call fs-file)
-V_PATH		= /etc/sysctl.d/10-ip-fwd.conf
+V_PATH		= /etc/sysctl.d/95-ip-fwd.conf
 V_TEMPLATE	= bash-tpl $(STATES_DIR)/services/bird/sysctl
 V_DEP_VARS	+= STATES_DIR
 V_POST		+= sysctl-reload
