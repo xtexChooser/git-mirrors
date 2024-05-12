@@ -17,5 +17,4 @@ atremis::syncsec() {
 	else
 		tiangHandledParams=0
 	fi
-	exit 0
 }
