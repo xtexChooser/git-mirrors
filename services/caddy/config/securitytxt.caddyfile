@@ -1,0 +1,15 @@
+(securitytxt) {
+	handle /.well-known/security.txt {
+		header Content-Type text/plain
+		respond <<EOF
+		Contact: https://w.xvnet.eu.org/w/Security
+		Contact: mailto:security@xvnet0.eu.org
+		Contact: mailto:op@xvnet0.eu.org
+		Contact: mailto:xtexchooser@duck.com
+		Expires: 2029-05-14T16:00:00.000Z
+		Acknowledgments: https://w.xvnet.eu.org/w/Security#Acknowledgments
+		Preferred-Languages: en, zh
+		Policy: https://w.xvnet.eu.org/w/Security
+		EOF 200
+	}
+}

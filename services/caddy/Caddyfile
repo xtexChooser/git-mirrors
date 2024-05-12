@@ -2,11 +2,14 @@
 	email acme@xvnet.eu.org
 }
 
-% for tpl in $CADDY_INCLUDES; do
-% "$LEONIS_MODULES_DIR/template.sh" bash-tpl "$tpl"
-% done
+.INCLUDE services/caddy/config/securitytxt.caddyfile
 
 https://<% $HOSTNAME %> {
+	import securitytxt
 	redir / https://w.xvnet.eu.org/w/<% $HOSTNAME %>
 	redir https://w.xvnet.eu.org/w/<% $HOSTNAME %>{path}
 }
+
+% for tpl in $CADDY_INCLUDES; do
+% "$LEONIS_MODULES_DIR/template.sh" bash-tpl "$tpl"
+% done
