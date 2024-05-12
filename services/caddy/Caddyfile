@@ -6,8 +6,10 @@
 
 https://<% $HOSTNAME %> {
 	import securitytxt
-	redir / https://w.xvnet.eu.org/w/<% $HOSTNAME %>
-	redir https://w.xvnet.eu.org/w/<% $HOSTNAME %>{path}
+	handle {
+		redir / https://w.xvnet.eu.org/w/<% $HOSTNAME %>
+		redir https://w.xvnet.eu.org/w/<% $HOSTNAME %>{path}
+	}
 }
 
 % for tpl in $CADDY_INCLUDES; do
