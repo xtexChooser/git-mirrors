@@ -377,9 +377,10 @@ function tiang::main {
 			local tiangCommandHandler tiangPrevParames=$#
 			for tiangCommandHandler in "${tiangCommandHandlers[@]}"; do
 				if "$tiangCommandHandler" "$@"; then
-					[ "${tiangHandledParams:-}" -eq "" ] &&
+					if [[ "${tiangHandledParams:-}" -eq "" ]]; then
 						tiang::error "custom command handler returned successfully but without tiangHandledParams"
-					shift $((tiangHandledParams))
+					fi
+					shift "$tiangHandledParams"
 					tiangHandledParams=
 				else
 					exit $?
