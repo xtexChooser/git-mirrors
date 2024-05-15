@@ -913,12 +913,45 @@ class LST {
 	protected static function callParserPreprocess( Parser $parser, $text, $page, $options ): string {
 		global $wgDplUseRecursivePreprocess;
 		if ( $wgDplUseRecursivePreprocess ) {
+			self::softResetParser( $parser );
 			$parser->setOutputType( OT_PREPROCESS );
 			$text = $parser->recursivePreprocess( $text );
 
 			return $text;
 		} else {
 			return $parser->preprocess( $text, $page, $options );
+		}
+	}
+
+	/**
+	 * Reset Parser's internal counters to avoid kicking in the limits when rendering long lists of results.
+	 */
+	private static function softResetParser( Parser $parser ): void {
+		self::setParserProperties( $parser, [
+			'mStripState' => new \StripState( $parser ),
+			'mIncludeSizes' => [
+				'post-expand' => 0,
+				'arg' => 0,
+			],
+			'mPPNodeCount' => 0,
+			'mHighestExpansionDepth' => 0,
+			'mExpensiveFunctionCount' => 0,
+		] );
+	}
+
+	private static function setParserProperties( Parser $parser, array $properties ): void {
+		static $reflectionCache = [];
+		foreach ( $properties as $property => $value ) {
+			if ( !array_key_exists( $property, $reflectionCache ) ) {
+				try {
+					$reflectionCache[$property] = ( new \ReflectionClass( Parser::class ) )->getProperty( $property );
+				} catch ( \ReflectionException ) {
+					$reflectionCache[$property] = null;
+				}
+			}
+			if ( $reflectionCache[$property] ) {
+				$reflectionCache[$property]->setValue( $parser, $value );
+			}
 		}
 	}
 }
