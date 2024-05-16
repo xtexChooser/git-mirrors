@@ -103,6 +103,7 @@ Team members:
 * Arabic https://codeberg.org/oatbiscuits - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/72) (admin)
 * Brazilian Portuguese https://codeberg.org/rmorettibr - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/73)
 * Brazilian Portuguese https://codeberg.org/Xinayder - [March 2024 Agreement](https://codeberg.org/forgejo/governance/issues/90)
+* Chinese (Traditional) https://codeberg.org/leana8959 - [May 2024 Agreement](https://codeberg.org/forgejo/governance/issues/117)
 * Czech https://codeberg.org/Fjuro - [March 2024 Agreement](https://codeberg.org/forgejo/governance/issues/97)
 * Dutch https://codeberg.org/gusted - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/69) (admin)
 * Esperanto https://codeberg.org/jadedctrl - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/77)
@@ -114,10 +115,11 @@ Team members:
 * Greek https://codeberg.org/n0toose - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/84)
 * Italian https://codeberg.org/Zughy - [March 2024 Agreement](https://codeberg.org/forgejo/governance/issues/103)
 * Japanese https://codeberg.org/ledyba - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/74)
+* Korean https://codeberg.org/kdh8219 - [May 2024 Agreement](https://codeberg.org/forgejo/governance/issues/121)
 * Russian https://codeberg.org/0ko - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/70) (admin)
 * Russian https://codeberg.org/Werenter - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/76)
 * Spanish https://codeberg.org/maletil - [March 2024 Agreement](https://codeberg.org/forgejo/governance/issues/88)
-* Ukranian https://codeberg.org/nykula  - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/75)
+* Ukranian https://codeberg.org/nykula - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/75)
 
 ## User Research
 
