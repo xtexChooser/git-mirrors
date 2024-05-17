@@ -18,6 +18,8 @@ if (defined('MW_DB')) {
 	die('Unknown wiki.');
 }
 
+setlocale(LC_ALL, 'en_US.UTF-8');
+
 $xvHttpHost = $_SERVER['HTTP_HOST'];
 $xvServerName = $xvWikis[$xvWikiID];
 
