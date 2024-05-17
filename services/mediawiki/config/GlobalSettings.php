@@ -25,6 +25,7 @@ $xvLoadExtensions = array_merge($xvLoadExtensions, [
 	'AbuseFilter',
 	'AntiSpoof',
 	'CategoryTree',
+	'CategoryWatch',
 	'CheckUser',
 	'Cite',
 	'CiteThisPage',
