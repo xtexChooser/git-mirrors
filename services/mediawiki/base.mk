@@ -7,7 +7,7 @@ $(call x-container-service)
 V_SERVICE	= mediawiki
 V_SVCDEPS	+= $(addprefix $(mediawiki-configs-dir)/,$(mediawiki-configs))
 V_SVCDEPS	+= /var/run/mediawiki /var/lib/mediawiki
-V_ARGS		+= --mount=type=bind,src=/etc/mediawiki,dst=/etc/mediawiki,ro=true
+V_ARGS		+= --mount=type=bind,src=/srv/atremis/services/mediawiki/config,dst=/etc/mediawiki,ro=true
 V_ARGS		+= --mount=type=bind,src=/srv/secrets/mw,dst=/srv/secrets/mw,ro=true
 V_ARGS		+= --mount=type=bind,src=/var/run/mediawiki,dst=/var/run/mediawiki
 V_ARGS		+= --mount=type=bind,src=/var/lib/mediawiki,dst=/var/lib/mediawiki
@@ -21,14 +21,6 @@ $(call podman-image)
 V_NAME		= x-mediawiki
 V_IMAGE		= codeberg.org/xvnet/x-mediawiki:latest
 $(call end)
-
-define mediawiki-config-template
-$$(call fs-file)
-V_PATH		= /etc/mediawiki/$1
-V_TEMPLATE	= bash-tpl $(mediawiki-configs-dir)/$1
-$$(call end)
-endef
-$(foreach mw-config,$(mediawiki-configs),$(eval $(call mediawiki-config-template,$(mw-config))))
 
 CADDY_INCLUDES += $(STATES_DIR)/services/mediawiki/Caddyfile
 
