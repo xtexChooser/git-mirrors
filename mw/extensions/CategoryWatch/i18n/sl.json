@@ -1,0 +1,28 @@
+{
+	"@metadata": {
+		"authors": [
+			"Eleassar",
+			"Upwinxp"
+		]
+	},
+	"categorywatch-desc": "Razširi funkcionalnost soiska nadzorov, da vključuje obvestilo o spremembah članov opazovanih kategorij",
+	"categorywatch-emailsubject": "Dejavnost, ki vključuje opazovano kategorijo »$1«",
+	"categorywatch-catmovein": "je vključil_a stran $1 v kategorijo $2 in jo odstranil_a iz kategorije $3",
+	"categorywatch-catmoveout": "je prestavil_a stran $1 iz kategorije $2 v kategorijo $3",
+	"categorywatch-catadd": "je dodal_a stran $1 v kategorijo $2",
+	"categorywatch-catsub": "je odstranil_a stran $1 iz kategorije $2",
+	"categorywatch-autocat": "Samodejno opazuje $1",
+	"categorywatch-notification-link": "Kategorija: [[:$1]]",
+	"categorywatch-notification-categorywatch-add-header": "stran [[:$1|$2]] dodana v [[:$3|$4]]",
+	"categorywatch-notification-categorywatch-add-summary": "stran [[:$3|$4]] dodana v [[:$5|$6]]",
+	"categorywatch-notification-categorywatch-add-body": "[[User:$1|$1]] je dodal_a [[:$3|$3]] v [[:$4|$4]]",
+	"categorywatch-notification-categorywatch-remove-header": "stran [[:$1|$2]] odstranjena iz [[:$3|$4]]",
+	"categorywatch-notification-categorywatch-remove-summary": "strwn [[:$3|$4]] odstranjena iz [[:$5|$6]]",
+	"categorywatch-notification-categorywatch-remove-body": "[[User:$1|$1]] je odstranil stran [[:$3|$3]] iz [[:$4|$4]]",
+	"categorywatch-notification-bundle": "$1 sprememb kategorizacije v projektu {{SITENAME}}",
+	"categorywatch-add-title": "Naslov dodan v opazovano kategorijo",
+	"categorywatch-remove-title": "Naslov odstranjen iz opazovane kategorije",
+	"categorywatch-page-watch-pref": "Ko dodate kategorijo, doda vse strani v kategoriji na vaš spisek nadzorov",
+	"echo-category-title-categorywatch": "Opazovana kategorija",
+	"echo-pref-tooltip-categorywatch": "Obvesti me, ko nekdo uvrsti stran v kategorijo, ki jo opazujem, ali odstrani iz nje."
+}
