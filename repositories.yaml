@@ -23,6 +23,10 @@
   kind: extensions
   prefix: mw/extensions/CategoryTree
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/CategoryTree
+- name: CategoryWatch
+  kind: extensions
+  prefix: mw/extensions/CategoryWatch
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/CategoryWatch
 - name: CheckUser
   kind: extensions
   prefix: mw/extensions/CheckUser
