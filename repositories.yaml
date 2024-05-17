@@ -258,6 +258,10 @@
   kind: extensions
   prefix: mw/extensions/TitleBlacklist
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/TitleBlacklist
+- name: TorBlock
+  kind: extensions
+  prefix: mw/extensions/TorBlock
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/TorBlock
 - name: Vector
   kind: skins
   prefix: mw/skins/Vector
