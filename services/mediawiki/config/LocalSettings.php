@@ -1,6 +1,6 @@
 <?php
 if (!defined('MEDIAWIKI')) {
-	exit;
+	die('Not an entry point.');
 }
 
 $xvWikis = [
