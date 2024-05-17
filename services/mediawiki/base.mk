@@ -26,3 +26,9 @@ CADDY_INCLUDES += $(STATES_DIR)/services/mediawiki/Caddyfile
 
 $(call add-fs-directory,/var/run/mediawiki)
 $(call add-fs-directory,/var/lib/mediawiki)
+
+$(call stamp)
+V_NAME		= mediawiki-restart
+V_DEPS		+= $(wildcard /srv/atremis/services/mediawiki/config/*)
+V_POST		= dinit-restart E_SERVICE=mediawiki
+$(call end)
