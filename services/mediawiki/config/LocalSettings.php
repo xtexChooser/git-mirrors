@@ -20,6 +20,16 @@ if (defined('MW_DB')) {
 
 setlocale(LC_ALL, 'en_US.UTF-8');
 
+if (PHP_SAPI === 'cli') {
+	$wgRequestTimeLimit = 0;
+} elseif ($xvMaintScript) {
+	$wgRequestTimeLimit = 86400;
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+	$wgRequestTimeLimit = 200;
+} else {
+	$wgRequestTimeLimit = 60;
+}
+
 $xvHttpHost = $_SERVER['HTTP_HOST'];
 $xvServerName = $xvWikis[$xvWikiID];
 
