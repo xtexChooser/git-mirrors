@@ -155,6 +155,7 @@ Accountability:
 
 Team members:
 
+* https://codeberg.org/algernon [April 2024 Agreement](https://codeberg.org/forgejo/governance/issues/116) (limited to case by case assistance)
 * https://codeberg.org/Gusted [March 2024 Agreement](https://codeberg.org/forgejo/governance/issues/96)
 * https://codeberg.org/fnetX [March 2024 Agreement](https://codeberg.org/forgejo/governance/issues/95)
 * https://codeberg.org/earl-warren [November 2023 Agreement](https://codeberg.org/forgejo/governance/issues/41)
