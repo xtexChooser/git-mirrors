@@ -93,7 +93,7 @@ Accountability:
 
 Admins accountability:
 
-* Avoid destructive actions (such as reseting the weblate repository)
+* Avoid destructive actions (such as resetting the weblate repository)
 * Ensure the the weblate repository is in sync with the Forgejo repository
 * Manage team assignments of members
 * Block users performing destructive actions (such as vandalism or harassment in comments) and report these actions
