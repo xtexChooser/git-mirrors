@@ -13,6 +13,12 @@ Team members:
 * https://codeberg.org/Ryuno-Ki [March 2023 Agreement](https://codeberg.org/forgejo/meta/issues/181)
 * https://codeberg.org/fnetX [April 2024 Agreement](https://codeberg.org/forgejo/governance/issues/101)
 
+## User Interface
+
+Purpose: Improve Forgejo's UI. Responsible for decision-making of frontend technology. Includes reviewing proposed changes to the UI and tending to (critical) UI bugs. Works closely together with the Accessibility, Contributors and Localization teams. The team is also responsible for Forgejo's design in collaboration with the Accessibility and User Research teams.
+
+Team members:
+
 ## Devops
 
 Purpose: The team cares of all the technical resources that Forgejo depends on (hardware, CI, static web site hosting, social media etc.). It helps all other teams to use those resources by installing, upgrading or migrating them when needed. If a resource becomes unavailable, it will help restore it in a functional state.
