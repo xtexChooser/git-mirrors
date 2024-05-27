@@ -23,6 +23,16 @@ Team members:
 * https://codeberg.org/0ko - [June 2024 Agreement](https://codeberg.org/forgejo/governance/issues/132)
 * https://codeberg.org/caesar - [June 2024 Agreement](https://codeberg.org/forgejo/governance/issues/134)
 
+## Helm
+
+Purpose: Improve Forgejo Helm chart. Members have full write access to the Helm chart repo. They are responsible for improving the chart and reviewing / merging community PRs.
+
+The team has access to the following Forgejo repositories:
+
+* On code.forgejo.org: all repositories in the <https://code.forgejo.org/forgejo-helm> organization.
+
+Team members:
+
 ## Devops
 
 Purpose: The team cares of all the technical resources that Forgejo depends on (hardware, CI, static web site hosting, social media etc.). It helps all other teams to use those resources by installing, upgrading or migrating them when needed. If a resource becomes unavailable, it will help restore it in a functional state.
