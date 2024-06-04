@@ -53,7 +53,7 @@ Each item has 4 pieces of info:
 
 Forgejo accepts contributions compatible with the [GPLv3-or-later](https://spdx.org/licenses/GPL-3.0-or-later.html) license. The license under which Forgejo is distributed will be changed upon the acceptance of such contributions. See the [LICENSE file](https://codeberg.org/forgejo/forgejo/src/branch/forgejo/LICENSE) for the current license.
 
-Furthermore, contribution authors must comply with the [Developer Certificate of Origin (DCO)](https://codeberg.org/forgejo/forgejo/src/branch/forgejo/CONTRIBUTING/DCO.md).
+Furthermore, contribution authors must comply with the [Developer Certificate of Origin (DCO)](https://forgejo.org/docs/next/developer/dco/).
 
 ## Branding: Forgejo name, tagline, logo and mascot
 

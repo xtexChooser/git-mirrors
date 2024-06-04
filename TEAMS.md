@@ -26,7 +26,7 @@ Purpose: The team cares of all the technical resources that Forgejo depends on (
 Accountability:
 
 * Fix problems that prevent the resources that Forgejo depends on from running.
-* Keep the [credentials to access the resources](https://codeberg.org/forgejo/forgejo/src/branch/forgejo/CONTRIBUTING/SECRETS.md) in a safe place and share them with the teams that need them.
+* Keep the [credentials to access the resources](https://forgejo.org/docs/next/developer/secrets/) in a safe place and share them with the teams that need them.
 
 Team members:
 
@@ -141,7 +141,7 @@ Team members:
 
 ## Releases
 
-Purpose: [See the documentation](https://codeberg.org/forgejo/forgejo/src/branch/forgejo/CONTRIBUTING/RELEASE.md). The team is trusted with the primary GPG key used to sign Forgejo releases.
+Purpose: [See the documentation](https://forgejo.org/docs/next/developer/release/). The team is trusted with the primary GPG key used to sign Forgejo releases.
 
 Accountability:
 
@@ -154,7 +154,7 @@ Team members:
 
 ## Security
 
-Purpose: [See the documentation](https://codeberg.org/forgejo/forgejo/src/branch/forgejo/CONTRIBUTING/SECURITY.md).
+Purpose: [See the documentation](https://forgejo.org/docs/next/developer/discussions/#security).
 
 Accountability:
 

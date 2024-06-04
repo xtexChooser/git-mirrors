@@ -441,7 +441,7 @@ that are needed to implement the decision.
 - This doesn't mean that you need to do everything on your own. If you want
   support, please ask via Matrix.
 
-### (4) Summary of decision description
+## (4) Summary of decision description
 
 Summary of information to include in your issue:
 

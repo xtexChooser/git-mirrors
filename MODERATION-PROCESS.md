@@ -18,7 +18,7 @@ The moderation team acts when they think it is necessary and must always:
   * forgejo-moderation for codeberg.org
   * [@forgejo-moderation:matrix.org](https://matrix.to/#/@forgejo-moderation:matrix.org) for Matrix spaces
 * Document the action in the [governance tracker](https://codeberg.org/forgejo/governance/issues) without including any element that would allow to directly identify the target of the moderation or the people involved.
-* Document the action in the [moderation](https://codeberg.org/forgejo/moderation) repository including all the details necessary for other Forgejo members to review its relevance, that is including all the facts and the reasoning that concludes the behavior goes against the Code of Conduct or the law.
+* Document the action in the [moderation](https://codeberg.org/forgejo/moderation) private repository including all the details necessary for other Forgejo members to review its relevance, that is including all the facts and the reasoning that concludes the behavior goes against the Code of Conduct or the law.
 * Answer questions from Forgejo members to clarify the situation.
 * Remove the explanation of the action one year after its publication to respect the right to be forgotten of the people targeted by the moderation action.
 * If someone who participates in the Forgejo community on a regular basis asks the action is amended, this request must be acted up by a moderation team member without undue delay.
@@ -34,4 +34,4 @@ It is suggested that moderation actions follow the following principles. Their a
 * When a person is removed from Forgejo spaces, their account is anonymized and the detailed explanation refers to their anonymized account, not their account before anonymization.
 * A member of the moderation team acts in consultation with other team members and not unilaterally.
 * The duration of a person's exclusion is at least three months and must be as short as possible. It is assessed by evaluating the amount of work required for an exclusion and the likelihood that it will be repeated when the person is reintegrated into the Forgejo spaces.
-* If the excluded person asks the moderation team (by writing to moderation@forgejo.org or [@forgejo-moderation:matrix.org](https://matrix.to/#/@forgejo-moderation:matrix.org)) to be reinstated early, this request is added to the issue about the exclusion decision in the [moderation](https://codeberg.org/forgejo/moderation) repository. The moderation team responds to the request and provides reasons for its response.
+* If the excluded person asks the moderation team (by writing to moderation@forgejo.org or [@forgejo-moderation:matrix.org](https://matrix.to/#/@forgejo-moderation:matrix.org)) to be reinstated early, this request is added to the issue about the exclusion decision in the [moderation](https://codeberg.org/forgejo/moderation) private repository. The moderation team responds to the request and provides reasons for its response.
