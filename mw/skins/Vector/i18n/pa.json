@@ -8,7 +8,8 @@
 			"Kuldeepburjbhalaike",
 			"Raj Singh",
 			"TariButtar",
-			"Tow"
+			"Tow",
+			"Cabal"
 		]
 	},
 	"skinname-vector": "ਵੈਕਟਰ ਲੈਗੇਸੀ (2010)",
@@ -36,7 +37,7 @@
 	"vector-action-unprotect": "ਸੁਰੱਖਿਆ ਬਦਲੋ",
 	"vector-view-create": "ਬਣਾਓ",
 	"vector-view-edit": "ਸੋਧੋ",
-	"vector-view-history": "ਅਤੀਤ ਵੇਖੋ",
+	"vector-view-history": "ਇਤਿਹਾਸ ਵੇਖੋ",
 	"vector-view-view": "ਪੜ੍ਹੋ",
 	"vector-view-viewsource": "ਸਰੋਤ ਵੇਖੋ",
 	"vector-jumptonavigation": "ਨੈਵੀਗੇਸ਼ਨ 'ਤੇ ਜਾਓ",
@@ -63,7 +64,7 @@
 	"skin-theme-os-label": "ਸਵੈਚਲਿਤ",
 	"vector-search-loader": "ਖੋਜ ਸੁਝਾਅ ਲੋਡ ਕੀਤੇ ਜਾ ਰਹੇ ਹਨ",
 	"vector-searchsuggest-containing": "<strong class=\"cdx-typeahead-search__search-footer__query\">$1</strong> ਵਾਲੇ ਪੰਨਿਆਂ ਦੀ ਖੋਜ ਕਰੋ",
-	"vector-intro-page": "ਮਦਦ:ਜਾਣ-ਪਛਾਣ",
+	"vector-intro-page": "Help:ਜਾਣ-ਪਛਾਣ",
 	"vector-toc-label": "ਸਮੱਗਰੀ",
 	"vector-toc-beginning": "ਸ਼ੁਰੂਆਤ",
 	"vector-toc-toggle-button-label": "$1 ਉਪਭਾਗ ਨੂੰ ਟੌਗਲ ਕਰੋ",
