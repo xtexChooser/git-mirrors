@@ -17,7 +17,7 @@ EOF
 
 cat <<EOF
 menuentry "Cane $CANE_VERSION" --id "cane" {
-    multiboot \$root/boot/vinia/vinia-multiboot CANE_VERSION=$CANE_VERSION
+    multiboot \$root/boot/vinia/multiboot CANE_VERSION=$CANE_VERSION
     boot
 }
 

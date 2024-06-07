@@ -44,7 +44,7 @@ EOF
 # Vinia
 cat <<EOF
 -add \
-    /boot/vinia/vinia-multiboot="$VINIA_MULTIBOOT" \
+    /boot/vinia/multiboot="$VINIA_MULTIBOOT" \
     --
 EOF
 

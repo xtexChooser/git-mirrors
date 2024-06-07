@@ -34,8 +34,20 @@ pub fn build(b: *std.Build) void {
             const mb_exe = b.addExecutable(.{
                 .name = "vinia-multiboot",
                 .root_source_file = b.path("src/arch/x86_64/multiboot/main.zig"),
-                .target = target,
+                .target = b.resolveTargetQuery(.{
+                    .cpu_arch = std.Target.Cpu.Arch.x86,
+                    .os_tag = std.Target.Os.Tag.freestanding,
+                    .abi = std.Target.Abi.none,
+                    .cpu_model = .{ .explicit = &std.Target.x86.cpu.bonnell },
+                    .ofmt = .elf,
+                    // .cpu_features_sub = mb_cpu_sub,
+                    // .cpu_features_add = mb_cpu_add,
+                }),
                 .optimize = optimize,
+                .single_threaded = true,
+                .pic = false,
+                .strip = true,
+                .linkage = .static,
             });
             b.installArtifact(mb_exe);
         },
