@@ -61,8 +61,6 @@ pub fn build(b: *std.Build) !void {
                 "-accel",   "tcg",
                 // Memory
                 "-m",       "512M",
-                // Serial
-                "-serial",  "stdio",
                 // Debugging
                 "-chardev", "socket,path=qemugdb,server=on,wait=off,id=gdb0",
                 "-gdb",     "chardev:gdb0",

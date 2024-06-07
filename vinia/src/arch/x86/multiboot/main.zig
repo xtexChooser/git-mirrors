@@ -41,7 +41,7 @@ pub const panic = @import("vinia-x86").early_panic.panic;
 
 pub const std_options = std.Options{
     .logFn = early_log.logFn(.{
-        early_log.vga_writer,
+        early_log.vga_writer, early_log.serial_writer,
     }),
 };
 
@@ -49,9 +49,9 @@ pub fn main() void {
     if (multiboot_magic != mb.MULTIBOOT_BOOTLOADER_MAGIC)
         @panic("Invalid multiboot bootloader magic");
     early_log.clear_vga_screen();
+    early_log.init_serial_port();
 
     const bootinfo = @as(*mb.Info, @ptrFromInt(multiboot_bootinfo_addr));
-    // bootinfo.
     _ = bootinfo;
     inline for (0..10) |i| {
         std.log.warn("test log {d}", .{i});
