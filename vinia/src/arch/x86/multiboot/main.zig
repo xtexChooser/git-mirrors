@@ -2,6 +2,7 @@ const std = @import("std");
 const log = std.log.scoped(.multiboot);
 const mb = @import("./multiboot.zig");
 const early_log = @import("vinia-x86").early_log;
+const ForwardPointerAllocator = @import("vinia").mem.ForwardPointerAllocator;
 
 const MULTIBOOT_FLAGS = mb.MULTIBOOT_PAGE_ALIGN | mb.MULTIBOOT_MEMORY_INFO;
 
@@ -38,6 +39,10 @@ export fn _start_zig() callconv(.C) noreturn {
         asm volatile ("hlt");
 }
 
+// defined in linker.ld
+extern var _ELF_BEGIN_: opaque {};
+extern var _ELF_END_: opaque {};
+
 pub const panic = @import("vinia-x86").early_panic.panic;
 
 pub const std_options = std.Options{
@@ -46,7 +51,83 @@ pub const std_options = std.Options{
     }),
 };
 
-var bootinfo: mb.Info = undefined;
+var multiboot_bootinfo: mb.BootInfo = undefined;
+
+pub const MultibootAllocator = ForwardPointerAllocator(*mb.BootInfo, struct {
+    inline fn isOverlapped(from1: *void, size1: usize, from2: usize, size2: usize) ?*void {
+        if (size1 == 0 or size2 == 0) return null;
+        const end1 = @intFromPtr(from1) + size1;
+        const end2 = from2 + size2;
+        if (@intFromPtr(from1) <= end2 and from2 <= (end1))
+            // two range overlapped
+            return @ptrFromInt(@max(end1, end2));
+        return null;
+    }
+
+    pub fn checker(bootinfo: *mb.BootInfo, ptr: *void, size: usize) ?*void {
+        // overlap with the loaded multiboot ELF
+        if (isOverlapped(
+            ptr,
+            size,
+            @intFromPtr(&_ELF_BEGIN_),
+            @intFromPtr(&_ELF_END_) - @intFromPtr(&_ELF_BEGIN_),
+        )) |p| return p;
+        // overlap with any boot info
+        if (isOverlapped(
+            ptr,
+            size,
+            @intFromPtr(bootinfo),
+            @sizeOf(mb.BootInfo),
+        )) |p| return p;
+        if (bootinfo.flags & mb.MULTIBOOT_INFO_CMDLINE != 0)
+            if (isOverlapped(
+                ptr,
+                size,
+                @intCast(bootinfo.cmdline),
+                std.mem.len(@as([*:0]const u8, @ptrFromInt(bootinfo.cmdline))),
+            )) |p| return p;
+        if (bootinfo.flags & mb.MULTIBOOT_INFO_MODS != 0) {
+            for (0..bootinfo.mods_count, @as([*]mb.Module, @ptrFromInt(bootinfo.mods_addr))) |_, mod| {
+                if (isOverlapped(
+                    ptr,
+                    size,
+                    mod.mod_start,
+                    mod.mod_end - mod.mod_start,
+                )) |p| return p;
+                if (mod.cmdline != 0)
+                    if (isOverlapped(
+                        ptr,
+                        size,
+                        mod.cmdline,
+                        std.mem.len(@as([*:0]const u8, @ptrFromInt(mod.cmdline))),
+                    )) |p| return p;
+            }
+        }
+        if (bootinfo.flags & mb.MULTIBOOT_INFO_MEM_MAP != 0) {
+            var mmap = @as(*mb.MmapEntry, @ptrFromInt(bootinfo.mmap_addr));
+            var remaining = bootinfo.mmap_length;
+            while (remaining > 0) {
+                check: {
+                    if (mmap.type == mb.MULTIBOOT_MEMORY_AVAILABLE) break :check;
+                    const addr_max = @as(c_ulonglong, @intCast(std.math.maxInt(usize)));
+                    if (mmap.addr > addr_max) break :check;
+                    if (isOverlapped(
+                        ptr,
+                        size,
+                        @intCast(mmap.addr),
+                        @intCast(@min(addr_max, mmap.addr + mmap.len) - mmap.addr),
+                    )) |p| return p;
+                }
+
+                const entry_size = mmap.size + @sizeOf(@TypeOf(@field(mmap, "size")));
+                remaining -= entry_size;
+                mmap = @ptrFromInt(@intFromPtr(mmap) + entry_size);
+            }
+        }
+        return null;
+    }
+}.checker);
+pub var multiboot_allocator: ?MultibootAllocator = null;
 
 pub fn main() void {
     if (multiboot_magic != mb.MULTIBOOT_BOOTLOADER_MAGIC)
@@ -55,5 +136,17 @@ pub fn main() void {
     early_log.vga.clear();
     early_log.serial.init();
 
-    bootinfo = @as(*mb.Info, @ptrFromInt(multiboot_bootinfo_addr)).*;
+    multiboot_bootinfo = @as(*mb.BootInfo, @ptrFromInt(multiboot_bootinfo_addr)).*;
+
+    const alloc_base = @as(*void, @ptrFromInt(@max(multiboot_bootinfo_addr + @sizeOf(mb.BootInfo), @intFromPtr(&_ELF_END_))));
+    const alloc_end = result: {
+        if (multiboot_bootinfo.flags & mb.MULTIBOOT_INFO_MEMORY != 0) {
+            break :result @as(*void, @ptrFromInt((1024 + multiboot_bootinfo.mem_upper) * 1024));
+        } else {
+            break :result @as(*void, @ptrFromInt(multiboot_bootinfo_addr + (1024 * 1024 * 256)));
+        }
+    };
+    multiboot_allocator = MultibootAllocator.init(&multiboot_bootinfo, alloc_base, alloc_end);
+    const alloc = multiboot_allocator.?.allocator();
+    _ = alloc;
 }

@@ -111,7 +111,7 @@ pub const ColorInfo = extern union {
     },
 };
 
-pub const Info = extern struct {
+pub const BootInfo = extern struct {
     flags: c_uint = mem.zeroes(c_uint),
     mem_lower: c_uint = mem.zeroes(c_uint),
     mem_upper: c_uint = mem.zeroes(c_uint),
@@ -121,7 +121,7 @@ pub const Info = extern struct {
     mods_addr: c_uint = mem.zeroes(c_uint),
     syms: SymbolTable = mem.zeroes(SymbolTable),
     mmap_length: c_uint = mem.zeroes(c_uint),
-    mmap_addr: [*]MmapEntry = mem.zeroes([*]MmapEntry),
+    mmap_addr: c_uint = mem.zeroes(c_uint),
     drives_length: c_uint = mem.zeroes(c_uint),
     drives_addr: c_uint = mem.zeroes(c_uint),
     config_table: c_uint = mem.zeroes(c_uint),
@@ -142,11 +142,6 @@ pub const Info = extern struct {
     color_info: ColorInfo = mem.zeroes(ColorInfo),
 };
 
-comptime {
-    // multiboot_info.mmap_addr
-    assert(@bitSizeOf([*]MmapEntry) == 32);
-}
-
 pub const Color = extern struct {
     red: u8 = mem.zeroes(u8),
     green: u8 = mem.zeroes(u8),
@@ -160,7 +155,7 @@ pub const MmapEntry = extern struct {
     type: c_uint align(1) = mem.zeroes(c_uint),
 };
 
-pub const ModuleList = extern struct {
+pub const Module = extern struct {
     mod_start: c_uint = mem.zeroes(c_uint),
     mod_end: c_uint = mem.zeroes(c_uint),
     cmdline: c_uint = mem.zeroes(c_uint),

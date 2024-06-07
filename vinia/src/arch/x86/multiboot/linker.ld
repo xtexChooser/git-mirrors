@@ -2,6 +2,7 @@ ENTRY(_start)
 
 SECTIONS {
 	. = 1M;
+	_ELF_BEGIN_ = .;
 
 	.multiboot : {
 		KEEP(*(.multiboot))
@@ -23,4 +24,6 @@ SECTIONS {
 		*(COMMON)
 		*(.bss)
 	}
+
+	_ELF_END_ = .;
 }
