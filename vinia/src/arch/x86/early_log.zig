@@ -23,10 +23,8 @@ pub fn logFn(comptime writers: anytype) LogFn {
         ) void {
             const level_txt = comptime message_level.asText();
             const prefix2 = if (scope == .default) ": " else "(" ++ @tagName(scope) ++ "): ";
-            nosuspend {
-                inline for (writers) |writer|
-                    writer.print(level_txt ++ prefix2 ++ format ++ "\n", args) catch return;
-            }
+            nosuspend inline for (writers) |writer|
+                writer.print(level_txt ++ prefix2 ++ format ++ "\n", args) catch return;
         }
     }.log;
 }
