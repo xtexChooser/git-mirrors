@@ -29,27 +29,36 @@ pub fn build(b: *std.Build) !void {
 
     // Bootloaders
     switch (target.result.cpu.arch) {
-        .x86_64 => {
+        .x86_64, .x86 => {
+            const vinia_x86 = b.addModule("vinia-x86", .{
+                .root_source_file = b.path("src/arch/x86/root.zig"),
+            });
+
             // Multiboot
             const mb_exe = b.addExecutable(.{
                 .name = "vinia-multiboot",
-                .root_source_file = b.path("src/arch/x86_64/multiboot/main.zig"),
+                .root_source_file = b.path("src/arch/x86/multiboot/main.zig"),
                 .target = b.resolveTargetQuery(.{
                     .cpu_arch = std.Target.Cpu.Arch.x86,
                     .os_tag = std.Target.Os.Tag.freestanding,
                     .abi = std.Target.Abi.none,
                     .cpu_model = .{ .explicit = &std.Target.x86.cpu.bonnell },
                     .ofmt = .elf,
-                    // .cpu_features_sub = mb_cpu_sub,
+                    .cpu_features_sub = std.Target.x86.featureSet(&[_]std.Target.x86.Feature{
+                        .mmx,  .sse,   .sse2,
+                        .sse3, .mmx,   .avx,
+                        .avx2, .ssse3,
+                    }),
                     // .cpu_features_add = mb_cpu_add,
                 }),
                 .optimize = optimize,
                 .single_threaded = true,
-                .pic = true,
+                .pic = pic,
                 .link_libc = false,
                 .linkage = .static,
             });
-            mb_exe.setLinkerScript(b.path("src/arch/x86_64/multiboot/linker.ld"));
+            mb_exe.setLinkerScript(b.path("src/arch/x86/multiboot/linker.ld"));
+            mb_exe.root_module.addImport("vinia-x86", vinia_x86);
             b.installArtifact(mb_exe);
         },
         else => unreachable,
