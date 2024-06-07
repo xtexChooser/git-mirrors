@@ -6,7 +6,7 @@ pub fn build(b: *std.Build) !void {
     const pic = b.option(bool, "pic", "Produce Position Independent Code");
 
     // The vinia module
-    const mod = b.addModule("vinia", .{
+    const vinia = b.addModule("vinia", .{
         .root_source_file = b.path("src/root.zig"),
         .target = target,
         .optimize = optimize,
@@ -24,7 +24,7 @@ pub fn build(b: *std.Build) !void {
         .target = target,
         .optimize = optimize,
     });
-    lib.root_module = mod.*;
+    lib.root_module = vinia.*;
     b.installArtifact(lib);
 
     // Bootloaders
@@ -58,6 +58,7 @@ pub fn build(b: *std.Build) !void {
                 .linkage = .static,
             });
             mb_exe.setLinkerScript(b.path("src/arch/x86/multiboot/linker.ld"));
+            mb_exe.root_module.addImport("vinia", vinia);
             mb_exe.root_module.addImport("vinia-x86", vinia_x86);
             b.installArtifact(mb_exe);
         },
@@ -70,7 +71,7 @@ pub fn build(b: *std.Build) !void {
         .target = target,
         .optimize = optimize,
     });
-    unit_tests.root_module = mod.*;
+    unit_tests.root_module = vinia.*;
     const run_unit_tests = b.addRunArtifact(unit_tests);
     const test_step = b.step("test", "Run unit tests");
     test_step.dependOn(&run_unit_tests.step);
