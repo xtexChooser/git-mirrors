@@ -1,6 +1,6 @@
 const std = @import("std");
 
-pub fn build(b: *std.Build) void {
+pub fn build(b: *std.Build) !void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
     // @TODO: load version from build.zig.zon
@@ -16,6 +16,8 @@ pub fn build(b: *std.Build) void {
     // Bootloaders
     switch (target.result.cpu.arch) {
         .x86_64 => {
+            const vinia_mb = vinia.artifact("vinia-multiboot");
+
             // GRUB ISO
             const gen_grub_cfg = b.addSystemCommand(&.{"scripts/x86_64/gen-iso/grub-cfg.sh"});
             gen_grub_cfg.addFileInput(b.path("scripts/x86_64/gen-iso/grub-cfg.sh"));
@@ -31,16 +33,19 @@ pub fn build(b: *std.Build) void {
             const gen_iso_script = b.addSystemCommand(&.{"scripts/x86_64/gen-iso/script.sh"});
             gen_iso_script.addFileInput(b.path("scripts/x86_64/gen-iso/script.sh"));
             gen_iso_script.setEnvironmentVariable("CANE_VERSION", version);
-            gen_iso_script.addPrefixedFileArg("GRUB_CFG=", grub_cfg);
-            gen_iso_script.addPrefixedFileArg("GRUB_ELTORITO=", grub_eltorito);
-            // @TODO: https://github.com/ziglang/zig/pull/20211
-            gen_iso_script.addPrefixedArtifactArg("VINIA_MULTIBOOT=", vinia.artifact("vinia-multiboot"));
             const iso_script = gen_iso_script.captureStdOut();
 
             const gen_iso = b.addSystemCommand(&.{"scripts/x86_64/gen-iso/iso.sh"});
             gen_iso.addFileInput(b.path("scripts/x86_64/gen-iso/iso.sh"));
             const iso = gen_iso.addOutputFileArg("cane.iso");
             gen_iso.addFileArg(iso_script);
+
+            gen_iso_script.addPrefixedFileArg("GRUB_CFG=", grub_cfg);
+            gen_iso.addFileInput(grub_cfg);
+            gen_iso_script.addPrefixedFileArg("GRUB_ELTORITO=", grub_eltorito);
+            gen_iso.addFileInput(grub_eltorito);
+            // @TODO: https://github.com/ziglang/zig/pull/20211
+            gen_iso_script.addPrefixedArtifactArg("VINIA_MULTIBOOT=", vinia_mb);
 
             const install_iso = b.addInstallFileWithDir(iso, dist_install_dir, "x86_64/cane.iso");
             b.getInstallStep().dependOn(&install_iso.step);
