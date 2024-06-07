@@ -1,9 +1,9 @@
 ENTRY(_start)
 
 SECTIONS {
-	. = 2M;
+	. = 1M;
 
-	.multiboot {
+	.multiboot : {
 		KEEP(*(.multiboot))
 	}
 

@@ -1,6 +1,6 @@
 const std = @import("std");
 
-pub fn build(b: *std.Build) void {
+pub fn build(b: *std.Build) !void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
     const pic = b.option(bool, "pic", "Produce Position Independent Code");
@@ -45,10 +45,12 @@ pub fn build(b: *std.Build) void {
                 }),
                 .optimize = optimize,
                 .single_threaded = true,
-                .pic = false,
+                .pic = true,
+                .link_libc = false,
                 .strip = true,
                 .linkage = .static,
             });
+            mb_exe.setLinkerScript(b.path("src/arch/x86_64/multiboot/linker.ld"));
             b.installArtifact(mb_exe);
         },
         else => unreachable,
