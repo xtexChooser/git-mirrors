@@ -11,12 +11,15 @@ pub fn build(b: *std.Build) void {
 
     const dist_install_dir = std.Build.InstallDir{ .custom = "dist" };
 
+    const test_step = b.step("testall", "Run unit tests");
+    test_step.dependOn(&(vinia.builder.top_level_steps.get("test") orelse unreachable).*.step);
+
     // Bootloaders
     switch (target.result.cpu.arch) {
         .x86_64 => {
-            // Multiboot
             const vinia_mb = vinia.artifact("vinia-multiboot");
 
+            // GRUB ISO
             const gen_grub_cfg = b.addSystemCommand(&.{"scripts/x86_64/gen-iso/grub-cfg.sh"});
             gen_grub_cfg.addFileInput(b.path("scripts/x86_64/gen-iso/grub-cfg.sh"));
             gen_grub_cfg.setEnvironmentVariable("CANE_VERSION", version);
@@ -44,20 +47,34 @@ pub fn build(b: *std.Build) void {
 
             const install_iso = b.addInstallFileWithDir(iso, dist_install_dir, "x86_64/cane.iso");
             b.getInstallStep().dependOn(&install_iso.step);
+
+            // Run QEMU
+            const run_qemu = b.addSystemCommand(&.{"qemu-system-x86_64"});
+            run_qemu.addArgs(&.{
+                "-name",    "Cane",
+                "-uuid",    "aea208ce-c780-44bb-b825-0b31d84c86f1",
+                // Accel
+                "-accel",   "kvm",
+                "-accel",   "tcg",
+                // Memory
+                "-m",       "512M",
+                // Serial
+                "-serial",  "stdio",
+                // Debugging
+                "-chardev", "socket,path=qemugdb,server=on,wait=off,id=gdb0",
+                "-gdb",     "chardev:gdb0",
+                // CPU
+                "-cpu",     "host,vmx=on,avx=on,sse=on,sse2=on",
+            });
+            run_qemu.disable_zig_progress = false;
+            run_qemu.addArg("-cdrom");
+            run_qemu.addFileArg(iso);
+            if (b.args) |args| {
+                run_qemu.addArgs(args);
+            }
+            const run_qemu_step = b.step("qemu", "Run QEMU");
+            run_qemu_step.dependOn(&run_qemu.step);
         },
         else => unreachable,
     }
-
-    // b.addSystemCommand([].{""});
-
-    // b.installArtifact(exe);
-
-    // const run_cmd = b.addRunArtifact(exe);
-    // run_cmd.step.dependOn(b.getInstallStep());
-    // if (b.args) |args| {
-    //     run_cmd.addArgs(args);
-    // }
-
-    const test_step = b.step("testall", "Run unit tests");
-    test_step.dependOn(&(vinia.builder.top_level_steps.get("test") orelse unreachable).*.step);
 }
