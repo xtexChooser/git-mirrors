@@ -2,8 +2,8 @@
 set -e
 
 while [[ "$#" -gt 0 ]]; do
-    eval "$1"
-    shift
+	eval "$1"
+	shift
 done
 
 # Setup xorriso
