@@ -1,4 +1,5 @@
 const std = @import("std");
+const log = std.log.scoped(.multiboot);
 const mb = @import("./multiboot.zig");
 const early_log = @import("vinia-x86").early_log;
 
@@ -45,6 +46,8 @@ pub const std_options = std.Options{
     }),
 };
 
+var bootinfo: mb.Info = undefined;
+
 pub fn main() void {
     if (multiboot_magic != mb.MULTIBOOT_BOOTLOADER_MAGIC)
         @panic("Invalid multiboot bootloader magic");
@@ -52,9 +55,5 @@ pub fn main() void {
     early_log.vga.clear();
     early_log.serial.init();
 
-    const bootinfo = @as(*mb.Info, @ptrFromInt(multiboot_bootinfo_addr));
-    _ = bootinfo;
-    inline for (0..10) |i| {
-        std.log.warn("test log {d}", .{i});
-    }
+    bootinfo = @as(*mb.Info, @ptrFromInt(multiboot_bootinfo_addr)).*;
 }
