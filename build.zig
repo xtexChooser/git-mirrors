@@ -17,6 +17,7 @@ pub fn build(b: *std.Build) !void {
     switch (target.result.cpu.arch) {
         .x86_64 => {
             const vinia_mb = vinia.artifact("vinia-multiboot");
+            b.installArtifact(vinia_mb);
 
             // GRUB ISO
             const gen_grub_cfg = b.addSystemCommand(&.{"scripts/x86_64/gen-iso/grub-cfg.sh"});
