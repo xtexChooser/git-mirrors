@@ -52,7 +52,7 @@ pub fn build(b: *std.Build) !void {
             b.getInstallStep().dependOn(&install_iso.step);
 
             // Run QEMU
-            const run_qemu = b.addSystemCommand(&.{"qemu-system-x86_64"});
+            const run_qemu = b.addSystemCommand(&.{"qemu-system-i386"});
             run_qemu.addArgs(&.{
                 "-name",    "Cane",
                 "-uuid",    "aea208ce-c780-44bb-b825-0b31d84c86f1",
