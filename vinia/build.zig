@@ -47,7 +47,6 @@ pub fn build(b: *std.Build) !void {
                 .single_threaded = true,
                 .pic = true,
                 .link_libc = false,
-                .strip = true,
                 .linkage = .static,
             });
             mb_exe.setLinkerScript(b.path("src/arch/x86_64/multiboot/linker.ld"));
