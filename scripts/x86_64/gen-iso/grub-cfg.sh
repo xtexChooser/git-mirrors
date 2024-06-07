@@ -5,8 +5,10 @@ modlist="$1"
 echo "" >"$modlist"
 
 cat <<EOF
-set root=(cd)/
-set prefix=\$root/boot/grub
+insmod iso9660
+insmod biosdisk
+set root=(cd)
+set prefix=(\$root)/boot/grub
 EOF
 
 cat >>"$modlist" <<EOF
@@ -17,7 +19,8 @@ EOF
 
 cat <<EOF
 menuentry "Cane $CANE_VERSION" --id "cane" {
-    multiboot \$root/boot/vinia/multiboot CANE_VERSION=$CANE_VERSION
+    insmod multiboot
+    multiboot (\$root)/boot/vinia/multiboot CANE_VERSION=$CANE_VERSION
     boot
 }
 
