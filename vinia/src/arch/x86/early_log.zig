@@ -49,7 +49,7 @@ pub const vga_writer = std.io.GenericWriter(*VgaWriterContext, error{}, struct {
                 },
                 0 => {},
                 else => {
-                    vga_buffer[ctx.x + (ctx.y * 80)] = 0x70 << 8 | @as(u16, byte);
+                    vga_buffer[ctx.x + (ctx.y * 80)] = 0x07 << 8 | @as(u16, byte);
                     ctx.x += 1;
                     if (ctx.x >= 80) {
                         ctx.x = 0;
