@@ -32,4 +32,6 @@ fn print(comptime fmt: []const u8, args: anytype) !void {
     const vga_buffer = @as([*]volatile u16, @ptrFromInt(0xB8000));
     for (str, 0..) |byte, i|
         vga_buffer[i] = 0xF0 << 8 | @as(u16, byte);
+
+    std.log.err("{s}", .{str});
 }
