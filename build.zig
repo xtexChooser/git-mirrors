@@ -15,29 +15,29 @@ pub fn build(b: *std.Build) !void {
 
     // Bootloaders
     switch (target.result.cpu.arch) {
-        .x86_64 => {
+        .x86_64, .x86 => {
             const vinia_mb = vinia.artifact("vinia-multiboot");
             b.installArtifact(vinia_mb);
 
             // GRUB ISO
-            const gen_grub_cfg = b.addSystemCommand(&.{"scripts/x86_64/gen-iso/grub-cfg.sh"});
-            gen_grub_cfg.addFileInput(b.path("scripts/x86_64/gen-iso/grub-cfg.sh"));
+            const gen_grub_cfg = b.addSystemCommand(&.{"scripts/x86/gen-iso/grub-cfg.sh"});
+            gen_grub_cfg.addFileInput(b.path("scripts/x86/gen-iso/grub-cfg.sh"));
             gen_grub_cfg.setEnvironmentVariable("CANE_VERSION", version);
             const grub_cfg_modules = gen_grub_cfg.addOutputFileArg("modules.txt");
             const grub_cfg = gen_grub_cfg.captureStdOut();
 
-            const gen_grub_eltorito = b.addSystemCommand(&.{"scripts/x86_64/gen-iso/eltorito.sh"});
-            gen_grub_eltorito.addFileInput(b.path("scripts/x86_64/gen-iso/eltorito.sh"));
+            const gen_grub_eltorito = b.addSystemCommand(&.{"scripts/x86/gen-iso/eltorito.sh"});
+            gen_grub_eltorito.addFileInput(b.path("scripts/x86/gen-iso/eltorito.sh"));
             const grub_eltorito = gen_grub_eltorito.addOutputFileArg("grub.img");
             gen_grub_eltorito.addFileArg(grub_cfg_modules);
 
-            const gen_iso_script = b.addSystemCommand(&.{"scripts/x86_64/gen-iso/script.sh"});
-            gen_iso_script.addFileInput(b.path("scripts/x86_64/gen-iso/script.sh"));
+            const gen_iso_script = b.addSystemCommand(&.{"scripts/x86/gen-iso/script.sh"});
+            gen_iso_script.addFileInput(b.path("scripts/x86/gen-iso/script.sh"));
             gen_iso_script.setEnvironmentVariable("CANE_VERSION", version);
             const iso_script = gen_iso_script.captureStdOut();
 
-            const gen_iso = b.addSystemCommand(&.{"scripts/x86_64/gen-iso/iso.sh"});
-            gen_iso.addFileInput(b.path("scripts/x86_64/gen-iso/iso.sh"));
+            const gen_iso = b.addSystemCommand(&.{"scripts/x86/gen-iso/iso.sh"});
+            gen_iso.addFileInput(b.path("scripts/x86/gen-iso/iso.sh"));
             const iso = gen_iso.addOutputFileArg("cane.iso");
             gen_iso.addFileArg(iso_script);
 
@@ -48,11 +48,11 @@ pub fn build(b: *std.Build) !void {
             // @TODO: https://github.com/ziglang/zig/pull/20211
             gen_iso_script.addPrefixedArtifactArg("VINIA_MULTIBOOT=", vinia_mb);
 
-            const install_iso = b.addInstallFileWithDir(iso, dist_install_dir, "x86_64/cane.iso");
+            const install_iso = b.addInstallFileWithDir(iso, dist_install_dir, "x86/cane.iso");
             b.getInstallStep().dependOn(&install_iso.step);
 
             // Run QEMU
-            const run_qemu = b.addSystemCommand(&.{"qemu-system-i386"});
+            const run_qemu = b.addSystemCommand(&.{b.fmt("qemu-system-{s}", .{if (target.result.cpu.arch == .x86) "i386" else "x86_64"})});
             run_qemu.addArgs(&.{
                 "-name",    "Cane",
                 "-uuid",    "aea208ce-c780-44bb-b825-0b31d84c86f1",
