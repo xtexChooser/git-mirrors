@@ -3,7 +3,7 @@ const std = @import("std");
 pub fn build(b: *std.Build) !void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
-    const pic = b.option(bool, "pic", "Produce Position Independent Code");
+    const pic = b.option(bool, "pic", "Produce Position Independent Code") orelse true;
 
     // The vinia module
     const vinia = b.addModule("vinia", .{
@@ -23,8 +23,9 @@ pub fn build(b: *std.Build) !void {
         .name = "vinia",
         .target = target,
         .optimize = optimize,
-        .pie = true,
+        .pic = pic,
     });
+    exe.pie = pic;
     exe.root_module = vinia.*;
     b.installArtifact(exe);
 
@@ -54,11 +55,11 @@ pub fn build(b: *std.Build) !void {
                 }),
                 .optimize = optimize,
                 .single_threaded = true,
-                .pic = pic,
+                .pic = false,
                 .link_libc = false,
                 .linkage = .static,
-                .pie = false,
             });
+            mb_exe.pie = false;
             mb_exe.setLinkerScript(b.path("src/arch/x86/multiboot/linker.ld"));
             mb_exe.root_module.addImport("vinia", vinia);
             mb_exe.root_module.addImport("vinia-x86", vinia_x86);
