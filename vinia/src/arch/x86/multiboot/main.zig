@@ -1,4 +1,5 @@
 const std = @import("std");
+const elf = std.elf;
 const log = std.log.scoped(.multiboot);
 const mb = @import("./multiboot.zig");
 const early_log = @import("vinia-x86").early_log;
@@ -87,7 +88,7 @@ pub const MultibootAllocator = ForwardPointerAllocator(*mb.BootInfo, struct {
                 std.mem.len(@as([*:0]const u8, @ptrFromInt(bootinfo.cmdline))),
             )) |p| return p;
         if (bootinfo.flags & mb.MULTIBOOT_INFO_MODS != 0) {
-            for (0..bootinfo.mods_count, @as([*]mb.Module, @ptrFromInt(bootinfo.mods_addr))) |_, mod| {
+            for (0..bootinfo.mods_count, @as([*]mb.Module, @ptrFromInt(bootinfo.mods_addr))) |_, *mod| {
                 if (isOverlapped(
                     ptr,
                     size,
@@ -136,8 +137,11 @@ pub fn main() void {
     early_log.vga.clear();
     early_log.serial.init();
 
+    // copy boot info
     multiboot_bootinfo = @as(*mb.BootInfo, @ptrFromInt(multiboot_bootinfo_addr)).*;
+    const bootinfo = &multiboot_bootinfo;
 
+    // init allocator
     const alloc_base = @as(*void, @ptrFromInt(@max(multiboot_bootinfo_addr + @sizeOf(mb.BootInfo), @intFromPtr(&_ELF_END_))));
     const alloc_end = result: {
         if (multiboot_bootinfo.flags & mb.MULTIBOOT_INFO_MEMORY != 0) {
@@ -149,4 +153,31 @@ pub fn main() void {
     multiboot_allocator = MultibootAllocator.init(&multiboot_bootinfo, alloc_base, alloc_end);
     const alloc = multiboot_allocator.?.allocator();
     _ = alloc;
+
+    // find core module
+    if (bootinfo.flags & mb.MULTIBOOT_INFO_MODS == 0)
+        @panic("Modules is required for multiboot booting");
+    if (bootinfo.mods_count == 0)
+        @panic("Vinia core is not found in multiboot modules");
+    const mb_mods = @as([*]mb.Module, @ptrFromInt(bootinfo.mods_addr));
+    const mod = if (bootinfo.mods_count == 1)
+        mb_mods[0]
+    else core_mod: {
+        for (0..bootinfo.mods_count, mb_mods) |index, *mod| {
+            const mod_cmdline = @as([*:0]const u8, @ptrFromInt(mod.cmdline));
+            var iter = std.mem.splitScalar(u8, mod_cmdline[0..std.mem.len(mod_cmdline)], ' ');
+            while (iter.next()) |arg| {
+                if (std.mem.eql(u8, arg, "vinia.bootloader.core")) {
+                    log.info("Using the {d}-th module as vinia core", .{index + 1});
+                    break :core_mod mod.*;
+                }
+            }
+        }
+        log.err("None of the multiboot modules is marked with 'vinia.bootloader.core', please add this to one of the multiboot modules", .{});
+        @panic("Cannot determine the module which is the vinia core");
+    };
+    const core = @as([*]const u8, @ptrFromInt(mod.mod_start))[0..(mod.mod_end - mod.mod_start)];
+    var core_buf = std.io.fixedBufferStream(core);
+    const ehdr = std.elf.Header.read(&core_buf) catch @panic("Invalid ELF in vinia core");
+    log.info("{any}", .{ehdr});
 }

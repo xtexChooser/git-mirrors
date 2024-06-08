@@ -57,6 +57,7 @@ pub fn build(b: *std.Build) !void {
                 .pic = pic,
                 .link_libc = false,
                 .linkage = .static,
+                .pie = false,
             });
             mb_exe.setLinkerScript(b.path("src/arch/x86/multiboot/linker.ld"));
             mb_exe.root_module.addImport("vinia", vinia);

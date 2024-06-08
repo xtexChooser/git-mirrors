@@ -9,7 +9,10 @@ pub inline fn signExtend(
     value: anytype,
 ) @Type(.{ .Int = .{ .signedness = .unsigned, .bits = to_bits } }) {
     const from_bits = @typeInfo(@TypeOf(value)).Int.bits;
-    return @bitCast(@as(@Type(.{ .Int = .{ .signedness = .signed, .bits = to_bits } }), @as(@Type(.{ .Int = .{ .signedness = .signed, .bits = from_bits } }), @bitCast(value))));
+    return @bitCast(@as(
+        @Type(.{ .Int = .{ .signedness = .signed, .bits = to_bits } }),
+        @as(@Type(.{ .Int = .{ .signedness = .signed, .bits = from_bits } }), @bitCast(value)),
+    ));
 }
 
 test signExtend {

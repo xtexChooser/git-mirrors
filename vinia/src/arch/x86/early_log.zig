@@ -2,9 +2,9 @@ const std = @import("std");
 const log = std.log;
 const Level = std.log.Level;
 
-const assembly = @import("./assembly.zig");
-const outb = assembly.outb;
-const inb = assembly.inb;
+const asm_ = @import("./assembly.zig");
+const outb = asm_.outb;
+const inb = asm_.inb;
 
 const LogFn = fn (
     comptime message_level: Level,

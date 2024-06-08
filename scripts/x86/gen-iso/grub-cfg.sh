@@ -21,7 +21,7 @@ cat <<EOF
 menuentry "Cane $CANE_VERSION" --id "cane" {
     insmod multiboot
     multiboot (\$root)/boot/vinia/multiboot cane.version=$CANE_VERSION
-	module (\$root)/boot/vinia/vinia vinia.multiboot.core cane.version=$CANE_VERSION
+	module (\$root)/boot/vinia/vinia vinia.bootloader.core cane.version=$CANE_VERSION
     boot
 }
 
