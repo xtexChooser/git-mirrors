@@ -1,9 +1,13 @@
 const std = @import("std");
 const elf = std.elf;
 const log = std.log.scoped(.multiboot);
+
+const vinia = @import("vinia");
+const arch = vinia.arch;
+const early_log = arch.early_log;
+const ForwardPointerAllocator = vinia.mem.ForwardPointerAllocator;
+
 const mb = @import("./multiboot.zig");
-const early_log = @import("vinia-x86").early_log;
-const ForwardPointerAllocator = @import("vinia").mem.ForwardPointerAllocator;
 
 const MULTIBOOT_FLAGS = mb.MULTIBOOT_PAGE_ALIGN | mb.MULTIBOOT_MEMORY_INFO;
 
@@ -44,7 +48,7 @@ export fn _start_zig() callconv(.C) noreturn {
 extern var _ELF_BEGIN_: opaque {};
 extern var _ELF_END_: opaque {};
 
-pub const panic = @import("vinia-x86").early_panic.panic;
+pub const panic = arch.early_panic.panic;
 
 pub const std_options = std.Options{
     .logFn = early_log.logFn(.{
@@ -178,7 +182,7 @@ pub fn main() void {
     };
     const core = @as([*]const u8, @ptrFromInt(mod.mod_start))[0..(mod.mod_end - mod.mod_start)];
     var core_buf = std.io.fixedBufferStream(core);
-    
+
     const ehdr = std.elf.Header.read(&core_buf) catch @panic("Invalid ELF in vinia core");
     log.info("{any}", .{ehdr});
 }

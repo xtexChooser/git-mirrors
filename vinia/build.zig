@@ -33,10 +33,6 @@ pub fn build(b: *std.Build) !void {
     // Bootloaders
     switch (target.result.cpu.arch) {
         .x86_64, .x86 => {
-            const vinia_x86 = b.addModule("vinia-x86", .{
-                .root_source_file = b.path("src/arch/x86/root.zig"),
-            });
-
             // Multiboot
             const mb_exe = b.addExecutable(.{
                 .name = "vinia-multiboot",
@@ -63,7 +59,6 @@ pub fn build(b: *std.Build) !void {
             mb_exe.pie = false;
             mb_exe.setLinkerScript(b.path("src/arch/x86/boot/multiboot/linker.ld"));
             mb_exe.root_module.addImport("vinia", vinia);
-            mb_exe.root_module.addImport("vinia-x86", vinia_x86);
             b.installArtifact(mb_exe);
         },
         else => unreachable,
