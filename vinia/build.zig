@@ -18,14 +18,15 @@ pub fn build(b: *std.Build) !void {
         .pic = pic,
     });
 
-    // The vinia library
-    const lib = b.addStaticLibrary(.{
+    // The vinia executable
+    const exe = b.addExecutable(.{
         .name = "vinia",
         .target = target,
         .optimize = optimize,
+        .pie = true,
     });
-    lib.root_module = vinia.*;
-    b.installArtifact(lib);
+    exe.root_module = vinia.*;
+    b.installArtifact(exe);
 
     // Bootloaders
     switch (target.result.cpu.arch) {

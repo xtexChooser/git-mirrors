@@ -7,6 +7,7 @@ pub fn build(b: *std.Build) !void {
     const version = b.option([]const u8, "version", "Version of Cane") orelse "0.0.1";
 
     const vinia = b.dependency("vinia", .{ .target = target, .optimize = optimize });
+    const vinia_core = vinia.artifact("vinia");
 
     const dist_install_dir = std.Build.InstallDir{ .custom = "dist" };
 
@@ -47,8 +48,9 @@ pub fn build(b: *std.Build) !void {
             gen_iso.addFileInput(grub_eltorito);
             // @TODO: https://github.com/ziglang/zig/pull/20211
             gen_iso_script.addPrefixedArtifactArg("VINIA_MULTIBOOT=", vinia_mb);
+            gen_iso_script.addPrefixedArtifactArg("VINIA=", vinia_core);
 
-            const install_iso = b.addInstallFileWithDir(iso, dist_install_dir, "x86/cane.iso");
+            const install_iso = b.addInstallFileWithDir(iso, dist_install_dir, "cane.iso");
             b.getInstallStep().dependOn(&install_iso.step);
 
             // Run QEMU
