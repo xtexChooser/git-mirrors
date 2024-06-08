@@ -156,7 +156,6 @@ pub fn main() void {
     };
     multiboot_allocator = MultibootAllocator.init(&multiboot_bootinfo, alloc_base, alloc_end);
     const alloc = multiboot_allocator.?.allocator();
-    _ = alloc;
 
     // find core module
     if (bootinfo.flags & mb.MULTIBOOT_INFO_MODS == 0)
@@ -164,31 +163,34 @@ pub fn main() void {
     if (bootinfo.mods_count == 0)
         @panic("Vinia core is not found in multiboot modules");
     const mb_mods = @as([*]mb.Module, @ptrFromInt(bootinfo.mods_addr));
-    const mod = if (bootinfo.mods_count == 1)
-        mb_mods[0]
-    else core_mod: {
+    const core_mod_index = if (bootinfo.mods_count == 1) 0 else core_mod: {
         for (0..bootinfo.mods_count, mb_mods) |index, *mod| {
             const mod_cmdline = @as([*:0]const u8, @ptrFromInt(mod.cmdline));
             var iter = std.mem.splitScalar(u8, mod_cmdline[0..std.mem.len(mod_cmdline)], ' ');
             while (iter.next()) |arg| {
                 if (std.mem.eql(u8, arg, "vinia.bootloader.core")) {
                     log.info("Using the {d}-th module as vinia core", .{index + 1});
-                    break :core_mod mod.*;
+                    break :core_mod index;
                 }
             }
         }
         log.err("None of the multiboot modules is marked with 'vinia.bootloader.core', please add this to one of the multiboot modules", .{});
         @panic("Cannot determine the module which is the vinia core");
     };
-    const core = @as([*]const u8, @ptrFromInt(mod.mod_start))[0..(mod.mod_end - mod.mod_start)];
+    const core_mod = mb_mods[core_mod_index];
+    const core = @as([*]const u8, @ptrFromInt(core_mod.mod_start))[0..(core_mod.mod_end - core_mod.mod_start)];
 
-    arch.boot.boot() catch |err| {
+    const info = arch.boot.BootInfo{
+        .alloc = alloc,
+        .core_elf = core,
+        .bootloader_str = std.fmt.allocPrint(alloc, "vinia-multiboot/{s}", .{
+            if (bootinfo.flags & mb.MULTIBOOT_INFO_BOOT_LOADER_NAME == 0) "?" else @as(
+                [*:0]const u8,
+                @ptrFromInt(bootinfo.boot_loader_name),
+            ),
+        }) catch "(error)",
+    };
+    arch.boot.boot(info) catch |err| {
         std.builtin.panic(@errorName(err), @errorReturnTrace(), null);
     };
-    _ = core;
-
-    // var core_buf = std.io.fixedBufferStream(core);
-
-    // const ehdr = std.elf.Header.read(&core_buf) catch @panic("Invalid ELF in vinia core");
-    // log.info("{any}", .{ehdr});
 }
