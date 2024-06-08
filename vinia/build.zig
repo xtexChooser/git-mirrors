@@ -27,6 +27,7 @@ pub fn build(b: *std.Build) !void {
     });
     exe.pie = pic;
     exe.root_module = vinia.*;
+    exe.root_module.root_source_file = b.path("src/main.zig");
     b.installArtifact(exe);
 
     // Bootloaders
@@ -39,7 +40,7 @@ pub fn build(b: *std.Build) !void {
             // Multiboot
             const mb_exe = b.addExecutable(.{
                 .name = "vinia-multiboot",
-                .root_source_file = b.path("src/arch/x86/multiboot/main.zig"),
+                .root_source_file = b.path("src/arch/x86/boot/multiboot/main.zig"),
                 .target = b.resolveTargetQuery(.{
                     .cpu_arch = std.Target.Cpu.Arch.x86,
                     .os_tag = std.Target.Os.Tag.freestanding,
@@ -60,7 +61,7 @@ pub fn build(b: *std.Build) !void {
                 .linkage = .static,
             });
             mb_exe.pie = false;
-            mb_exe.setLinkerScript(b.path("src/arch/x86/multiboot/linker.ld"));
+            mb_exe.setLinkerScript(b.path("src/arch/x86/boot/multiboot/linker.ld"));
             mb_exe.root_module.addImport("vinia", vinia);
             mb_exe.root_module.addImport("vinia-x86", vinia_x86);
             b.installArtifact(mb_exe);
