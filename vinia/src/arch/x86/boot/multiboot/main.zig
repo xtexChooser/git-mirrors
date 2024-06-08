@@ -181,8 +181,14 @@ pub fn main() void {
         @panic("Cannot determine the module which is the vinia core");
     };
     const core = @as([*]const u8, @ptrFromInt(mod.mod_start))[0..(mod.mod_end - mod.mod_start)];
-    var core_buf = std.io.fixedBufferStream(core);
 
-    const ehdr = std.elf.Header.read(&core_buf) catch @panic("Invalid ELF in vinia core");
-    log.info("{any}", .{ehdr});
+    arch.boot.boot() catch |err| {
+        std.builtin.panic(@errorName(err), @errorReturnTrace(), null);
+    };
+    _ = core;
+
+    // var core_buf = std.io.fixedBufferStream(core);
+
+    // const ehdr = std.elf.Header.read(&core_buf) catch @panic("Invalid ELF in vinia core");
+    // log.info("{any}", .{ehdr});
 }
