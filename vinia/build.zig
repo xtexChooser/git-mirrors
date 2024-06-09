@@ -8,7 +8,8 @@ pub fn build(b: *std.Build) !void {
     // The vinia module
     const vinia = b.addModule("vinia", .{
         .root_source_file = b.path("src/root.zig"),
-        .target = target,
+        // should be initialized when used
+        .target = null,
         .optimize = optimize,
         .link_libc = false,
         .link_libcpp = false,
@@ -28,6 +29,7 @@ pub fn build(b: *std.Build) !void {
     exe.pie = pic;
     exe.root_module = vinia.*;
     exe.root_module.root_source_file = b.path("src/main.zig");
+    exe.root_module.resolved_target = target;
     b.installArtifact(exe);
 
     // Bootloaders
@@ -41,14 +43,13 @@ pub fn build(b: *std.Build) !void {
                     .cpu_arch = std.Target.Cpu.Arch.x86,
                     .os_tag = std.Target.Os.Tag.freestanding,
                     .abi = std.Target.Abi.none,
-                    .cpu_model = .{ .explicit = &std.Target.x86.cpu.bonnell },
+                    .cpu_model = .baseline,
                     .ofmt = .elf,
                     .cpu_features_sub = std.Target.x86.featureSet(&[_]std.Target.x86.Feature{
                         .mmx,  .sse,   .sse2,
                         .sse3, .mmx,   .avx,
                         .avx2, .ssse3,
                     }),
-                    // .cpu_features_add = mb_cpu_add,
                 }),
                 .optimize = optimize,
                 .single_threaded = true,
@@ -58,7 +59,12 @@ pub fn build(b: *std.Build) !void {
             });
             mb_exe.pie = false;
             mb_exe.setLinkerScript(b.path("src/arch/x86/boot/multiboot/linker.ld"));
-            mb_exe.root_module.addImport("vinia", vinia);
+            const mb_vinia = try b.allocator.create(std.Build.Module);
+            mb_vinia.* = vinia.*;
+            mb_vinia.pic = false;
+            mb_vinia.single_threaded = true;
+            mb_vinia.resolved_target = mb_exe.root_module.resolved_target;
+            mb_exe.root_module.addImport("vinia", mb_vinia);
             b.installArtifact(mb_exe);
         },
         else => unreachable,
