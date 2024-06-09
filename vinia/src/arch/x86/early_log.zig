@@ -31,11 +31,11 @@ pub fn logFn(comptime writers: anytype) LogFn {
 
 pub const vga = struct {
     const Context = struct {
-        x: u16,
-        y: u16,
+        x: u16 = 0,
+        y: u16 = 0,
     };
 
-    pub const context = @as(*Context, @ptrFromInt(0x7b00));
+    pub var context = Context{};
 
     pub const writer = std.io.GenericWriter(*Context, error{}, struct {
         fn write(ctx: *Context, bytes: []const u8) error{}!usize {
@@ -63,7 +63,7 @@ pub const vga = struct {
             }
             return bytes.len;
         }
-    }.write){ .context = context };
+    }.write){ .context = &context };
 
     pub fn clear() void {
         @memset(@as([*]volatile u16, @ptrFromInt(0xB8000))[0..(80 * 24)], 0);
@@ -74,10 +74,10 @@ pub const vga = struct {
 
 pub const serial = struct {
     const Context = struct {
-        port: u16,
+        port: u16 = 0,
     };
 
-    pub const context = @as(*Context, @ptrFromInt(0x7b00 + @sizeOf(vga.Context)));
+    pub var context = Context{};
 
     pub const writer = std.io.GenericWriter(*Context, error{}, struct {
         fn write(ctx: *Context, bytes: []const u8) error{}!usize {
@@ -91,7 +91,7 @@ pub const serial = struct {
             }
             return bytes.len;
         }
-    }.write){ .context = context };
+    }.write){ .context = &context };
 
     pub fn test_port(port: u16) bool {
         const old = inb(port + 4);

@@ -137,7 +137,6 @@ pub var multiboot_allocator: ?MultibootAllocator = null;
 pub fn main() void {
     if (multiboot_magic != mb.MULTIBOOT_BOOTLOADER_MAGIC)
         @panic("Invalid multiboot bootloader magic");
-    @memset(@as([*]volatile u8, @ptrFromInt(0x7b00))[0..0x100], 0);
     early_log.vga.clear();
     early_log.serial.init();
 
