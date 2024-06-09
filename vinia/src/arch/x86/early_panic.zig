@@ -34,4 +34,8 @@ fn print(comptime fmt: []const u8, args: anytype) !void {
         vga_buffer[i] = 0xF0 << 8 | @as(u16, byte);
 
     std.log.err("{s}", .{str});
+
+    // write again to avoid being overrided by log
+    for (str, 0..) |byte, i|
+        vga_buffer[i] = 0xF0 << 8 | @as(u16, byte);
 }
