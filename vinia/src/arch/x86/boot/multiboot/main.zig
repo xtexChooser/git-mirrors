@@ -180,7 +180,7 @@ pub fn main() void {
     const core_mod = mb_mods[core_mod_index];
     const core = @as([*]const u8, @ptrFromInt(core_mod.mod_start))[0..(core_mod.mod_end - core_mod.mod_start)];
 
-    const info = arch.boot.BootInfo{
+    var info = arch.boot.BootInfo{
         .alloc = alloc,
         .core_elf = core,
         .bootloader_str = std.fmt.allocPrint(alloc, "vinia-multiboot/{s}", .{
@@ -190,7 +190,7 @@ pub fn main() void {
             ),
         }) catch "(error)",
     };
-    arch.boot.boot(info) catch |err| {
+    arch.boot.boot(&info) catch |err| {
         std.builtin.panic(@errorName(err), @errorReturnTrace(), null);
     };
 }
