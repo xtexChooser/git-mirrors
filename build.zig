@@ -58,16 +58,11 @@ pub fn build(b: *std.Build) !void {
             run_qemu.addArgs(&.{
                 "-name",    "Cane",
                 "-uuid",    "aea208ce-c780-44bb-b825-0b31d84c86f1",
-                // Accel
-                "-accel",   "kvm",
-                "-accel",   "tcg",
                 // Memory
                 "-m",       "512M",
                 // Debugging
                 "-chardev", "socket,path=qemugdb,server=on,wait=off,id=gdb0",
                 "-gdb",     "chardev:gdb0",
-                // CPU
-                "-cpu",     "host,vmx=on,avx=on,sse=on,sse2=on",
             });
             run_qemu.disable_zig_progress = false;
             run_qemu.addArg("-cdrom");
