@@ -119,8 +119,8 @@ pub const serial = struct {
                 bda_ports[0], bda_ports[1], bda_ports[2], bda_ports[3],
             }) |port| {
                 if (test_port(port)) {
-                    context.port = port;
                     log.info("found UART serial port at 0x{X}", .{port});
+                    context.port = port;
                     break;
                 }
             }
