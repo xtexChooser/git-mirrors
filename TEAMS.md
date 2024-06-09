@@ -19,6 +19,10 @@ Purpose: Improve Forgejo's UI. Responsible for decision-making of frontend techn
 
 Team members:
 
+* https://codeberg.org/Mai-Lapyst - [June 2024 Agreement](https://codeberg.org/forgejo/governance/issues/131)
+* https://codeberg.org/0ko - [June 2024 Agreement](https://codeberg.org/forgejo/governance/issues/132)
+* https://codeberg.org/caesar - [June 2024 Agreement](https://codeberg.org/forgejo/governance/issues/134)
+
 ## Devops
 
 Purpose: The team cares of all the technical resources that Forgejo depends on (hardware, CI, static web site hosting, social media etc.). It helps all other teams to use those resources by installing, upgrading or migrating them when needed. If a resource becomes unavailable, it will help restore it in a functional state.
@@ -126,7 +130,7 @@ Team members:
 * Russian https://codeberg.org/0ko - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/70) (admin)
 * Russian https://codeberg.org/Werenter - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/76)
 * Spanish https://codeberg.org/maletil - [March 2024 Agreement](https://codeberg.org/forgejo/governance/issues/88)
-* Ukranian https://codeberg.org/nykula - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/75)
+* Ukrainian https://codeberg.org/nykula - [February 2024 Agreement](https://codeberg.org/forgejo/governance/issues/75)
 
 ## User Research
 
