@@ -164,6 +164,7 @@ pub fn main() void {
     const mb_mods = @as([*]mb.Module, @ptrFromInt(bootinfo.mods_addr));
     const core_mod_index = if (bootinfo.mods_count == 1) 0 else core_mod: {
         for (0..bootinfo.mods_count, mb_mods) |index, *mod| {
+            if (mod.cmdline == 0) continue;
             const mod_cmdline = @as([*:0]const u8, @ptrFromInt(mod.cmdline));
             var iter = std.mem.splitScalar(u8, mod_cmdline[0..std.mem.len(mod_cmdline)], ' ');
             while (iter.next()) |arg| {
