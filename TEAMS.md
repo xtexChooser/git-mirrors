@@ -140,7 +140,6 @@ Team members:
 
 * https://codeberg.org/ei8fdb
 * https://codeberg.org/caesar
-* https://codeberg.org/earl-warren
 * https://codeberg.org/fnetX
 
 ## Releases
