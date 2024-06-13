@@ -207,30 +207,6 @@ Observer (access to team discussions and history of actions, without any moderat
 
 * https://codeberg.org/oliverpool ([Jan 2024 Agreement](https://codeberg.org/forgejo/governance/issues/55))
 
-## Decision-making
-
-Purpose: The Forgejo team effectively and successfully makes collaborative
-decisions that tend to and integrates the variety of needs and concerns that
-arise
-
-Accountabilities:
-
-- Be a point of contact for challenges that arise during attempts to make
-  decisions
-- Look for further external support when needed
-
-Resources maintained:
-
-- <DECISION-MAKING.md> and the other agreement files it links to
-
-Team members:
-
-- [fr33domlover](https://codeberg.org/fr33domlover)
-  ([Matrix](https://matrix.to/#/@pere:towards.vision);
-  [Fediverse](https://micro.towards.vision/@pere);
-  [Email](mailto:pere@towards.vision);
-  `fr33domlover` on Libera Chat)
-
 ## [GitHub organisation](https://github.com/forgejo) owners as of 2024-01-09
 
 This organisation is only use to prevent squatting. Its information must be kept up-to-date (website, forge and social links).
