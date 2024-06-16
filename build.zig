@@ -8,6 +8,7 @@ pub fn build(b: *std.Build) !void {
 
     const vinia = b.dependency("vinia", .{ .target = target, .optimize = optimize });
     const vinia_core = vinia.artifact("vinia");
+    b.installArtifact(vinia_core);
 
     const dist_install_dir = std.Build.InstallDir{ .custom = "dist" };
 
