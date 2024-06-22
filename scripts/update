@@ -49,6 +49,7 @@ mergeSubtree() {
 			git commit -m "Remove gitsubmodules in $prefix"
 		fi
 	fi
+	rm -d mw/extensions/*~* || true
 }
 
 while read -r repo; do
