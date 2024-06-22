@@ -1,18 +1,26 @@
 use anyhow::Result;
 use clap::Parser;
-use mwbot::Bot;
+use uncatredir::mark_uncategorized_redirects;
 
-#[derive(Parser, Debug)]
+pub mod consts;
+pub mod uncatredir;
+
+#[derive(Parser)]
 #[command(version, about, long_about = None)]
-struct Args {
-    #[arg(short, long)]
-    from: Vec<String>,
+enum Args {
+	#[command(about = "Mark uncategorized redirects")]
+	MarkUncatRedirs,
 }
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let args = Args::parse();
-    let bot = Bot::from_default_config().await?;
+	dotenvy::dotenv()?;
+	let args = Args::parse();
+	tracing_subscriber::fmt::init();
+
+	match args {
+		Args::MarkUncatRedirs => mark_uncategorized_redirects().await?,
+	}
 
 	Ok(())
 }
