@@ -60,6 +60,9 @@ git commit --no-edit -m "$(printf 'upgrade(%s/%s): Introduce downstream trees' "
 ((count++)) || true
 
 # Apply patches
+# Apply https://github.com/weirdgloop/mediawiki-extensions-DynamicPageList3/pull/55
+git fetch git@github.com:xtexChooser/mediawiki-extensions-DynamicPageList3.git replace-getCategories
+git subtree merge -P mw/extensions/DynamicPageList3 FETCH_HEAD
 
 # End commit
 git commit --allow-empty \
