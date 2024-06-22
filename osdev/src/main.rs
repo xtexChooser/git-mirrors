@@ -1,7 +1,9 @@
 use anyhow::Result;
+use categorize_redir::categorize_redirects;
 use clap::Parser;
 use uncatredir::mark_uncategorized_redirects;
 
+pub mod categorize_redir;
 pub mod consts;
 pub mod uncatredir;
 
@@ -10,6 +12,8 @@ pub mod uncatredir;
 enum Args {
 	#[command(about = "Mark uncategorized redirects")]
 	MarkUncatRedirs,
+	#[command(about = "Categorize redirects")]
+	CategorizeRedirects,
 }
 
 #[tokio::main]
@@ -20,6 +24,7 @@ async fn main() -> Result<()> {
 
 	match args {
 		Args::MarkUncatRedirs => mark_uncategorized_redirects().await?,
+		Args::CategorizeRedirects => categorize_redirects().await?,
 	}
 
 	Ok(())
