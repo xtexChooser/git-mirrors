@@ -1,0 +1,11 @@
+[package]
+name = "psibot-osdev"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow.workspace = true
+clap.workspace = true
+mwbot.workspace = true
+regex.workspace = true
+tokio.workspace = true

@@ -1,0 +1,12 @@
+[workspace]
+resolver = "2"
+
+members = ["osdev"]
+
+[workspace.dependencies]
+anyhow = "1"
+mwbot = { git = "https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git" }
+serde = { version = "1", features = ["derive"] }
+tokio = { version = "1", features = ["full"] }
+clap = { version = "4", features = ["derive"] }
+regex = "1"
