@@ -219,7 +219,7 @@ class Hooks {
 
 		// we can remove the categories by save/restore
 		if ( $reset['categories'] ?? false ) {
-			$saveCategories = $parser->getOutput()->getCategoryMap();
+			$saveCategories = $parser->getOutput()->getCategories();
 		}
 
 		// we can remove the images by save/restore
@@ -556,9 +556,9 @@ class Hooks {
 		if ( !self::$createdLinks['resetdone'] ) {
 			self::$createdLinks['resetdone'] = true;
 
-			foreach ( $parser->getOutput()->getCategoryNames() as $key ) {
+			foreach ( $parser->getOutput()->getCategories() as $key => $val ) {
 				if ( array_key_exists( $key, self::$fixedCategories ) ) {
-					self::$fixedCategories[$key] = $parser->getOutput()->getCategorySortKey( $key );
+					self::$fixedCategories[$key] = $val;
 				}
 			}
 
@@ -618,7 +618,7 @@ class Hooks {
 			}
 
 			if ( isset( self::$createdLinks ) && array_key_exists( 2, self::$createdLinks ) ) {
-				$parser->getOutput()->setCategories( array_diff_assoc( $parser->getOutput()->getCategoryMap(), self::$createdLinks[2] ) );
+				$parser->getOutput()->setCategories( array_diff_assoc( $parser->getOutput()->getCategories(), self::$createdLinks[2] ) );
 			}
 
 			if ( isset( self::$createdLinks ) && array_key_exists( 3, self::$createdLinks ) ) {
