@@ -55,8 +55,8 @@ mergeSubtree() {
 resumeAt="$1"
 while read -r repo; do
 	name="$(yq '.name' <<<"$repo")"
-	subtreePrefix="$(yq '.prefix' <<<"$repo")"
-	giturl="$(yq '.git' <<<"$repo")"
+	subtreePrefix="$(yq '.prefix // ""' <<<"$repo")"
+	giturl="$(yq '.git // ""' <<<"$repo")"
 	branch="$(yq ".branch // \"$defaultBranch\"" <<<"$repo")"
 
 	if [[ -n "$resumeAt" ]]; then
@@ -67,6 +67,10 @@ while read -r repo; do
 			echo "Skipping $name"
 			continue
 		fi
+	fi
+
+	if [[ -z "$giturl" ]] || [[ -z "$subtreePrefix" ]]; then
+		continue
 	fi
 
 	git fetch "$giturl" "$branch"
