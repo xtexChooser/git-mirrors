@@ -63,6 +63,7 @@ http://:8080 http://xtexx.eu.org http://xtexhome.exozy.me {
 	header Content-Security-Policy "
 default-src 'self';
 base-uri 'self';
+connect-src 'self' https://umami.exozy.me;
 frame-ancestors 'none';
 form-action 'self';
 script-src 'self' https://umami.exozy.me;
@@ -153,6 +154,7 @@ http://blog.xtexx.eu.org http://xtexblog.exozy.me {
 	header Content-Security-Policy "
 			default-src 'self';
 			base-uri 'self';
+			connect-src 'self' https://umami.exozy.me;
 			frame-ancestors 'none';
 			form-action 'self';
 			script-src 'self' https://unpkg.com https://umami.exozy.me;
