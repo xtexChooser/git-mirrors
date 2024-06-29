@@ -59,7 +59,12 @@
   kind: extensions
   prefix: mw/extensions/DiscussionTools
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/DiscussionTools
-- name: DynamicPageList3
+- name: DynamicPageList3-Universal-Omega
+  kind: extensions
+  prefix: mw/extensions/DynamicPageList3
+  branch: master
+  git: https://github.com/Universal-Omega/DynamicPageList3
+- name: DynamicPageList3-WeirdGloop
   kind: extensions
   prefix: mw/extensions/DynamicPageList3
   branch: weirdgloop/REL1_41
