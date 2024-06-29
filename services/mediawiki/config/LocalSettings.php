@@ -30,8 +30,8 @@ if (PHP_SAPI === 'cli') {
 	$wgRequestTimeLimit = 60;
 }
 
-$xvHttpHost = $_SERVER['HTTP_HOST'];
 $xvServerName = $xvWikis[$xvWikiID];
+$xvHttpHost = $_SERVER['HTTP_HOST'] ?? $xvServerName;
 
 $xvLoadExtensions = [];
 $xvLoadSkins = [];
