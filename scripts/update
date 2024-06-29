@@ -52,11 +52,22 @@ mergeSubtree() {
 	rm -d mw/extensions/*~* || true
 }
 
+resumeAt="$1"
 while read -r repo; do
 	name="$(yq '.name' <<<"$repo")"
 	subtreePrefix="$(yq '.prefix' <<<"$repo")"
 	giturl="$(yq '.git' <<<"$repo")"
 	branch="$(yq ".branch // \"$defaultBranch\"" <<<"$repo")"
+
+	if [[ -n "$resumeAt" ]]; then
+		if [[ "$resumeAt" == "$name" ]]; then
+			echo "Continuing previous update"
+			resumeAt=""
+		else
+			echo "Skipping $name"
+			continue
+		fi
+	fi
 
 	git fetch "$giturl" "$branch"
 	subtreeCommit="$(git rev-parse FETCH_HEAD)"
