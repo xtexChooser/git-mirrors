@@ -33,6 +33,9 @@ The team has access to the following Forgejo repositories:
 
 Team members:
 
+* https://codeberg.org/viceice [June 2024 Agreement](https://codeberg.org/forgejo/governance/issues/145)
+* https://codeberg.org/earl-warren [June 2024 Agreement](https://codeberg.org/forgejo/governance/issues/146)
+
 ## Devops
 
 Purpose: The team cares of all the technical resources that Forgejo depends on (hardware, CI, static web site hosting, social media etc.). It helps all other teams to use those resources by installing, upgrading or migrating them when needed. If a resource becomes unavailable, it will help restore it in a functional state.
