@@ -1,0 +1,41 @@
+<svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+	<style type="text/css">
+		circle {
+			fill: none;
+			stroke: #000;
+			stroke-width: 15;
+		}
+		path {
+			fill: none;
+			stroke: #000;
+			stroke-width: 25;
+		}
+		.orange {
+			stroke:#ff6600;
+		}
+		.red {
+			stroke:#d40000;
+		}
+		.bubble {
+			fill:none;
+			stroke-width:3.86387;
+			stroke-dasharray:none;
+			stroke-opacity:1;
+		}
+	</style>
+	<g transform="matrix(1.2132701,0,0,1.2132701,6.67299,6.6729858)">
+		<path class="orange" d="m58 168v-98a50 50 0 0 1 50-50h20"/>
+		<path class="red" d="m58 168v-30a50 50 0 0 1 50-50h20"/>
+		<circle class="orange" cx="142" cy="20" r="18"/>
+		<circle class="red" cx="142" cy="88" r="18"/>
+		<circle class="red" cx="58" cy="180" r="18"/>
+	</g>
+		<g id="g18">
+			<circle class="red bubble" cx="170.19116" cy="215.88499" r="7.2773371"/>
+			 <circle class="red bubble" cx="190.23848" cy="238.08986" r="7.2773371"/>
+			 <circle class="red bubble" cx="183.81525" cy="193.42143" r="7.2773371"/>
+			 <circle class="red bubble" cx="166.78542" cy="168.05559" r="7.2773371"/>
+			 <circle class="orange bubble" cx="187.66385" cy="159.54201" r="7.2773371"/>
+		</g>
+	<path style="fill:#ff6600;fill-opacity:1;stroke-width:0;stroke-dasharray:none" d="M 161.96136,199.93902 V 177.388 h -2.39235 a 3.1869728,3.1869728 0 0 1 0,-6.37394 h 38.77484 a 3.1869728,3.1869728 0 0 1 0,6.37394 h -2.3881 v 22.55102 l 21.77766,39.52272 C 221.82972,246.89799 216.45011,256 207.96427,256 h -58.01141 c -8.49011,0 -13.86545,-9.10201 -9.77338,-16.53826 z m -16.19406,42.59921 a 4.7719607,4.7719607 0 0 0 4.18556,7.08783 h 58.01141 a 4.7719607,4.7719607 0 0 0 4.18556,-7.08783 l -8.97029,-16.28331 H 154.73756 Z M 189.5818,177.388 h -21.24649 v 23.37114 a 3.1869728,3.1869728 0 0 1 -0.39519,1.53823 l -9.68838,17.58361 h 41.41365 l -9.68841,-17.58361 a 3.1869728,3.1869728 0 0 1 -0.39518,-1.53823 z"/>
+</svg>
