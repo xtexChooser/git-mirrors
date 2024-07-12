@@ -184,7 +184,7 @@ pub fn main() void {
     var info = arch.boot.BootInfo{
         .alloc = alloc,
         .core_elf = core,
-        .bootloader_str = std.fmt.allocPrint(alloc, "vinia-multiboot/{s}", .{
+        .bootloader_str = std.fmt.allocPrint(alloc, "vinia-multiboot with {s}", .{
             if (bootinfo.flags & mb.MULTIBOOT_INFO_BOOT_LOADER_NAME == 0) "?" else @as(
                 [*:0]const u8,
                 @ptrFromInt(bootinfo.boot_loader_name),
