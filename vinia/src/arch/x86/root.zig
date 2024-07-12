@@ -6,4 +6,4 @@ pub const desc = @import("./desc.zig");
 
 pub const RingLevel = u2;
 
-pub const is64 = @import("builtin").cpu.arch == .x86_64;
+pub const isX64 = @import("builtin").cpu.arch == .x86_64;

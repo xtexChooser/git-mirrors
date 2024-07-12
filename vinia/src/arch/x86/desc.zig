@@ -1,6 +1,6 @@
 const std = @import("std");
 const assert = std.debug.assert;
-const is64 = @import("./root.zig").is64;
+const isX64 = @import("./root.zig").isX64;
 const RingLevel = @import("./root.zig").RingLevel;
 
 pub const SegmentDescriptor = packed struct(u64) {
@@ -66,13 +66,13 @@ pub const CodeSegmentType = packed struct(u4) {
     _: u1 = 1,
 };
 
-pub const Pointer = packed struct(if (is64) u80 else u48) {
+pub const Pointer = packed struct(if (isX64) u80 else u48) {
     limit: u16,
-    base: if (is64) u64 else u32,
+    base: if (isX64) u64 else u32,
 };
 
 pub inline fn loadGdtr(pointer: *const Pointer) void {
-    if (is64) {
+    if (isX64) {
         asm volatile ("lgdtq (%[gdt])"
             :
             : [gdt] "r{eax}" (@intFromPtr(pointer)),
