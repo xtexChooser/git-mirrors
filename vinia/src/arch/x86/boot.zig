@@ -7,6 +7,8 @@ const desc = @import("./desc.zig");
 pub const gdt = @import("./boot/gdt.zig");
 pub const interrupt = @import("./boot/interrupt.zig");
 
+pub const boot_allocator: fn () mem.Allocator = @field(@import("root"), "boot_allocator");
+
 pub const BootInfo = struct {
     alloc: Allocator,
     core_elf: []const u8,

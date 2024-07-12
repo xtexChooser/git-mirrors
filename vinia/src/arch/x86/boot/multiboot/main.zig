@@ -156,7 +156,7 @@ pub fn main() void {
         }
     };
     multiboot_allocator = MultibootAllocator.init(&multiboot_bootinfo, alloc_base, alloc_end);
-    const alloc = multiboot_allocator.?.allocator();
+    const alloc = boot_allocator();
 
     // find core module
     if (bootinfo.flags & mb.MULTIBOOT_INFO_MODS == 0)
@@ -195,4 +195,8 @@ pub fn main() void {
     arch.boot.boot(&info) catch |err| {
         std.builtin.panic(@errorName(err), @errorReturnTrace(), null);
     };
+}
+
+pub inline fn boot_allocator() std.mem.Allocator {
+    return multiboot_allocator.?.allocator();
 }
