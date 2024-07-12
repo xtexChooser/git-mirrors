@@ -263,6 +263,10 @@
   kind: extensions
   prefix: mw/extensions/TitleBlacklist
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/TitleBlacklist
+- name: TitleKey
+  kind: extensions
+  prefix: mw/extensions/TitleKey
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/TitleKey
 - name: TorBlock
   kind: extensions
   prefix: mw/extensions/TorBlock
