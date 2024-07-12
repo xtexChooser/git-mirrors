@@ -297,9 +297,3 @@
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/cldr
 - name: patches
   pri: 150
-- name: patches-DynamicPageList3-replace-getCategories
-  kind: patch
-  prefix: mw/extensions/DynamicPageList3
-  branch: replace-getCategories-uo
-  pri: 150
-  git: https://github.com/xtexChooser/mediawiki-extensions-DynamicPageList3
