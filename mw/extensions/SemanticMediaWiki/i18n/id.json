@@ -17,6 +17,7 @@
 			"RXerself",
 			"Rachmat.Wahidi",
 			"Rachmat04",
+			"Rebeccayoga",
 			"Rex",
 			"පසිඳු කාවින්ද",
 			"아라"
@@ -132,7 +133,7 @@
 	"smw_exportrdf_submit": "Ekspor",
 	"uriresolver": "Pengurai URI",
 	"properties": "Atribut",
-	"categories": "Daftar kategori",
+	"smw-categories": "Daftar kategori",
 	"smw_properties_docu": "Properti berikut digunakan dalam wiki ini.",
 	"smw_property_template": "$1 dari tipe $2 ($3 {{PLURAL:$3|digunakan|digunakan}})",
 	"smw_propertylackspage": "Semua properti harus dideskripsikan dengan suatu halaman!",
@@ -258,6 +259,9 @@
 	"smw_conceptarticlecount": "Menampilkan $1 {{PLURAL:$1|halaman}} berikut.",
 	"smw-livepreview-loading": "Mengunggah...",
 	"smw-datavalue-number-nullnotallowed": "\"$1\" kembali dengan sebuah \"NULL\" yang tidak mengizinkan sebagai nomor.",
+	"smw-preparing": "Menyiapkan...",
+	"smw-facetedsearch-profile-label-default": "Profil bawaan",
+	"smw-facetedsearch-no-filters": "Tanpa filter.",
 	"smw-listingcontinuesabbrev": "samb.",
 	"smw-showingresults": "Di bawah ini ditampilkan hingga {{PLURAL:$1|<strong>1</strong> hasil|<strong>$1</strong> hasil}}, dimulai dari #<strong>$2</strong>."
 }
