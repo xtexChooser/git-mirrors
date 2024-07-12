@@ -26,7 +26,7 @@ menuentry "Cane $CANE_VERSION" --id "cane" {
 }
 
 set default=cane
-set timeout=1
+set timeout=0
 EOF
 cat >>"$modlist" <<EOF
 multiboot
