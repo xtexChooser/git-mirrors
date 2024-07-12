@@ -59,6 +59,7 @@ pub const vga = struct {
                 if (ctx.y >= 24) {
                     ctx.y -= 1;
                     for (buf, buf[80..(80 * 24)]) |*d, s| d.* = s;
+                    @memset(buf[(80 * 23)..(80 * 24)], 0);
                 }
             }
             return bytes.len;
