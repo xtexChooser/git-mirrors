@@ -5,9 +5,9 @@ Using openSUSE Tumbleweed, Arch Linux, Alpine Linux, postmarketOS and LineageOS.
 
 Killing time with Minecraft, Mindustry, Unciv and osu.
 
-Sometimes appears in exozyme project and Chinese Minecraft Wiki editors' chat groups.
+Sometimes appears in exozyme project and Chinese Minecraft Wiki editors' chat groups, etc.
 
-Also in <span>#xtex:sakura.ci</span>.
+Also in <span>#xtexpic:envs.net</span>.
 
 ## Contact
 
@@ -17,10 +17,10 @@ Also in <span>#xtex:sakura.ci</span>.
   - xtex *AT* xtexx.eu.org
   </div>
 - Matrix
-  - [@xtexchooser:sakura.ci](https://matrix.to/#/@xtexchooser:sakura.ci) (preferred)
+  - [@xtex:envs.net](https://matrix.to/#/@xtex:envs.net) (preferred)
   - [@xtex:exozy.me](https://matrix.to/#/@xtex:exozy.me)
 - ActivityPub (only Notes are supported)
-  - [acct:xtexChooser@neko.ci](https://neko.ci/@xtexChooser) (preferred)
+  - [acct:xtex@fe.disroot.org](https://fe.disroot.org/@xtex) (preferred)
   - [acct:xtexChooser@wxw.cat](https://wxw.cat/@xtexChooser)
 - Wikis
   - [Chinese Minecraft Wiki](https://zh.minecraft.wiki/w/User:XtexChooser)
