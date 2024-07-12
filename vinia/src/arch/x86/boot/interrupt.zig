@@ -173,7 +173,7 @@ pub const InterruptContext32 = packed struct {
     ss: u32,
 };
 
-export fn interruptHandler(ctx: *InterruptContext) callconv(.C) void {
+export fn interruptHandler(ctx: *InterruptContext) callconv(.Stdcall) void {
     std.log.debug("interrupt trigered, {any}", .{ctx.*});
     if (ctx.interrupt != 3) @panic("ISR triggered");
 }
