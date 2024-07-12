@@ -140,6 +140,7 @@ pub fn main() void {
     arch.boot.gdt.load_gdt();
     early_log.vga.clear();
     early_log.serial.init();
+    arch.boot.interrupt.load_idt();
 
     // copy boot info
     multiboot_bootinfo = @as(*mb.BootInfo, @ptrFromInt(multiboot_bootinfo_addr)).*;

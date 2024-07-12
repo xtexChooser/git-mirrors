@@ -5,6 +5,7 @@ const log = std.log.scoped(.x86_boot);
 const desc = @import("./desc.zig");
 
 pub const gdt = @import("./boot/gdt.zig");
+pub const interrupt = @import("./boot/interrupt.zig");
 
 pub const BootInfo = struct {
     alloc: Allocator,
@@ -16,6 +17,7 @@ pub const BootInfo = struct {
 /// Things to be done by bootloader before calling this:
 ///   - Enter protect mode
 ///   - Load boot GDT (`gdt.load_gdt`)
+///   - Setup IDT
 pub fn boot(bootinfo: *BootInfo) !void {
     log.info("bootloader: {s}", .{bootinfo.bootloader_str});
 

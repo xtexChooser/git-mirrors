@@ -122,3 +122,52 @@ pub inline fn switchCodeSeg(seg: SegmentSelector) void {
     );
     @fence(.seq_cst);
 }
+
+// only interrupt-gate is needed by us and therefore implemented.
+pub const InterruptDescriptor = if (isX64) InterruptDescriptor64 else InterruptDescriptor32;
+
+pub const InterruptDescriptor64 = packed struct(u128) {
+    offset0: u16,
+    segment: SegmentSelector,
+    ist: u2 = 0,
+    constant0: u5 = 0,
+    ty: u4 = 0b0111,
+    constant1: u1 = 0,
+    priv_level: RingLevel,
+    present: bool = true,
+    offset1: u48,
+    reserved: u32 = 0,
+};
+
+pub const InterruptDescriptor32 = packed struct(u64) {
+    offset0: u16,
+    segment: SegmentSelector,
+    reserved: u5 = 0,
+    constant0: u8 = 0b01110000,
+    priv_level: RingLevel,
+    present: bool = true,
+    offset1: u16,
+};
+
+pub inline fn loadIdtr(pointer: *const Pointer) void {
+    if (isX64) {
+        asm volatile ("lidtq (%[idt])"
+            :
+            : [idt] "r{eax}" (@intFromPtr(pointer)),
+        );
+    } else {
+        asm volatile ("lidtl (%[idt])"
+            :
+            : [idt] "r{eax}" (@intFromPtr(pointer)),
+        );
+    }
+}
+
+pub inline fn loadIdt(desc: []const InterruptDescriptor) void {
+    if (desc.len == 0) @panic("IDT table is empty");
+    const ptr = Pointer{
+        .limit = @sizeOf(InterruptDescriptor) * desc.len - 1,
+        .base = @intFromPtr(desc.ptr),
+    };
+    loadIdtr(&ptr);
+}
