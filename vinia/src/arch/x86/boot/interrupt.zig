@@ -18,23 +18,23 @@ comptime {
         const isr_name = std.fmt.comptimePrint("isr{d}", .{i});
         if (std.mem.indexOfScalar(u8, interrupts_with_errcode, i) != null) {
             asm (std.fmt.comptimePrint(
-                    \\ .global {s}
-                    \\ .type {s}, @function
+                    \\ .global {0s:}
+                    \\ .type {0s:}, @function
                     \\ .align 8
-                    \\ {s}:
-                    \\   push ${d}
+                    \\ {0s:}:
+                    \\   push ${1d:}
                     \\   jmp isr_handler
-                , .{ isr_name, isr_name, isr_name, i }));
+                , .{ isr_name, i }));
         } else {
             asm (std.fmt.comptimePrint(
-                    \\ .global {s}
-                    \\ .type {s}, @function
+                    \\ .global {0s:}
+                    \\ .type {0s:}, @function
                     \\ .align 8
-                    \\ {s}:
+                    \\ {0s:}:
                     \\   push $0 // stub error code
-                    \\   push ${d}
+                    \\   push ${1d:}
                     \\   jmp isr_handler
-                , .{ isr_name, isr_name, isr_name, i }));
+                , .{ isr_name, i }));
         }
     }
 
@@ -174,6 +174,8 @@ pub const InterruptContext32 = packed struct {
 };
 
 export fn interruptHandler(ctx: *InterruptContext) callconv(.Stdcall) void {
-    std.log.debug("interrupt trigered, {any}", .{ctx.*});
-    if (ctx.interrupt != 3) @panic("ISR triggered");
+    // TODO: x86, clean SS and ESP when no privilege-level change occurs
+    //   to avoid leaking data on the stack
+    std.log.err("interrupt trigered: {any}", .{ctx.*});
+    @panic("interrupt triggered");
 }
