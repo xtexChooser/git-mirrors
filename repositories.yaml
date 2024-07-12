@@ -7,6 +7,10 @@
   kind: extensions
   prefix: mw/extensions/AbuseFilter
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/AbuseFilter
+- name: AdvancedSearch
+  kind: extensions
+  prefix: mw/extensions/AdvancedSearch
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/AdvancedSearch
 - name: AntiSpoof
   kind: extensions
   prefix: mw/extensions/AntiSpoof
