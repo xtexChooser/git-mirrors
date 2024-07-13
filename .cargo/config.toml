@@ -1,0 +1,7 @@
+[build]
+target = "x86_64-pc-windows-gnu"
+
+[profile.release]
+opt-level = 3
+lto = true
+incremental = true
