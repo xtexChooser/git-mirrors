@@ -126,7 +126,7 @@ pub inline fn switchCodeSeg(seg: SegmentSelector) void {
 // only interrupt-gate is needed by us and therefore implemented.
 pub const InterruptDescriptor = if (isX64) InterruptDescriptor64 else InterruptDescriptor32;
 
-pub const InterruptDescriptor64 = packed struct(u128) {
+const InterruptDescriptor64 = packed struct(u128) {
     offset0: u16,
     segment: SegmentSelector,
     ist: u2 = 0,
@@ -139,7 +139,7 @@ pub const InterruptDescriptor64 = packed struct(u128) {
     reserved: u32 = 0,
 };
 
-pub const InterruptDescriptor32 = packed struct(u64) {
+const InterruptDescriptor32 = packed struct(u64) {
     offset0: u16,
     segment: SegmentSelector,
     reserved: u5 = 0,
