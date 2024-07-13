@@ -56,6 +56,7 @@ impl eframe::App for MainApp {
             egui::Window::new("开源许可证")
                 .open(&mut self.show_licenses)
                 .vscroll(true)
+                .default_size((320.0, 200.0))
                 .show(ctx, |ui| {
                     ui.label(assets::LICENSE_STR);
                     ui.heading("Cubic-11");
