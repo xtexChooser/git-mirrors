@@ -1,6 +1,6 @@
 #![windows_subsystem = "windows"]
 use anyhow::Result;
-use egui::RichText;
+use mythware::MythwareWindow;
 
 mod assets;
 mod mythware;
@@ -11,11 +11,9 @@ async fn main() -> Result<()> {
         if std::env::var("RUST_LOG").is_err() {
             std::env::set_var("RUST_LOG", "info");
         }
-        unsafe {
-            windows::Win32::System::Console::AllocConsole()?;
-        }
     }
     env_logger::init();
+    log_panics::init();
 
     eframe::run_native(
         "YJYZ Toolkit",
@@ -32,18 +30,17 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
+#[derive(Default)]
 struct MainApp {
     show_licenses: bool,
-    show_mythware: bool,
+    mythware_open: bool,
+    mythware: MythwareWindow,
 }
 
 impl MainApp {
     fn new(cc: &eframe::CreationContext<'_>) -> Result<Self> {
         assets::configure_fonts(&cc.egui_ctx)?;
-        Ok(Self {
-            show_licenses: false,
-            show_mythware: false,
-        })
+        Ok(Default::default())
     }
 }
 
@@ -60,19 +57,12 @@ impl eframe::App for MainApp {
 
             egui::menu::bar(ui, |ui| {
                 if ui.button("极域").clicked() {
-                    self.show_mythware = true;
+                    self.mythware_open = true;
                 }
             });
 
-            if let Some(password) = mythware::PASSWORD.as_ref() {
-                ui.horizontal_wrapped(|ui| {
-                    ui.label("极域密码：");
-                    if password.is_empty() {
-                        ui.label(RichText::new("（空）").italics());
-                    } else {
-                        ui.label(RichText::new(password).italics());
-                    }
-                });
+            if mythware::PASSWORD.read().unwrap().is_some() {
+                self.mythware.show_password(ui, "极域密码：");
             }
 
             egui::Window::new("开源许可证")
@@ -86,10 +76,10 @@ impl eframe::App for MainApp {
                 });
 
             egui::Window::new("极域")
-                .open(&mut self.show_mythware)
+                .open(&mut self.mythware_open)
                 .vscroll(true)
                 .default_size((250.0, 200.0))
-                .show(ctx, mythware::show_window);
+                .show(ctx, |ui| self.mythware.show(ui));
         });
     }
 }
