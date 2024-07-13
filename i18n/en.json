@@ -1,0 +1,10 @@
+{
+	"@metadata": {
+		"authors": [
+			"Brooke Vibber",
+			"Katie Filbert",
+			"Roan Kattouw"
+		]
+	},
+	"chart-desc": "Adds the <code><chart></code> tag for displaying charts"
+}
