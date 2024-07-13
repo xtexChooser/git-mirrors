@@ -6,7 +6,7 @@ mod assets;
 #[tokio::main]
 async fn main() -> Result<()> {
     eframe::run_native(
-        "My egui App",
+        "YJYZ Toolkit",
         eframe::NativeOptions {
             viewport: egui::ViewportBuilder::default().with_inner_size([640.0, 480.0]),
             default_theme: eframe::Theme::Dark,
