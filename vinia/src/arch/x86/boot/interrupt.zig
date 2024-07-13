@@ -1,11 +1,12 @@
 const std = @import("std");
+const panic = std.debug.panic;
 const desc = @import("../desc.zig");
 const isX64 = @import("../root.zig").isX64;
-const GDT_ENTRY_CODE = @import("./gdt.zig").GDT_ENTRY_CODE;
-
+const gdt = @import("./gdt.zig");
 const ioasm = @import("../ioasm.zig");
 const outb = ioasm.outb;
 const inb = ioasm.inb;
+const boot = @import("../boot.zig");
 
 const interrupts_with_errcode = &[_]u8{ 8, 10, 11, 12, 13, 14, 17, 21 };
 
@@ -109,7 +110,7 @@ fn init_idt_table() void {
         entry.* = desc.InterruptDescriptor{
             .offset0 = @truncate(offset),
             .offset1 = @intCast(offset >> 16),
-            .segment = .{ .priv_level = 0, .table = .gdt, .index = GDT_ENTRY_CODE },
+            .segment = .{ .priv_level = 0, .table = .gdt, .index = gdt.GDT_ENTRY_CODE },
             .priv_level = 3,
         };
     }
@@ -127,9 +128,9 @@ pub fn load_idt() void {
     asm volatile ("sti");
 }
 
-pub const InterruptContext = if (isX64) InterruptContext64 else InterruptContext32;
+pub const IsrContext = if (isX64) IsrContext64 else IsrContext32;
 
-pub const InterruptContext64 = packed struct {
+const IsrContext64 = packed struct {
     r15: u64,
     r14: u64,
     r13: u64,
@@ -154,7 +155,7 @@ pub const InterruptContext64 = packed struct {
     ss: u64,
 };
 
-pub const InterruptContext32 = packed struct {
+const IsrContext32 = packed struct {
     eax: u32,
     ecx: u32,
     edx: u32,
@@ -165,17 +166,35 @@ pub const InterruptContext32 = packed struct {
     edi: u32,
     interrupt: u32,
     error_code: u32,
-    origin_esp: u32,
+    eip: u32,
     cs: u32,
     eflags: u32,
     // the following 2 fields are only available when a priv-level change occurs
     esp: u32,
     ss: u32,
 };
-
-export fn interruptHandler(ctx: *InterruptContext) callconv(.Stdcall) void {
-    // TODO: x86, clean SS and ESP when no privilege-level change occurs
-    //   to avoid leaking data on the stack
+export fn interruptHandler(ctx: *IsrContext) callconv(.Stdcall) void {
+    if (@as(desc.SegmentSelector, @bitCast(@as(u16, @truncate(ctx.cs)))).priv_level == 0) {
+        // when no privilege-level changes, SS:ESP are not pushed by CPU
+        // set them to zero to avoid leaking data on stack
+        ctx.ss = 0;
+        ctx.esp = 0;
+    }
     std.log.err("interrupt trigered: {any}", .{ctx.*});
-    @panic("interrupt triggered");
+    switch (ctx.interrupt) {
+        0 => panic("divide zero error @ 0x{x}", .{ctx.eip}),
+        2 => panic("unexpected NMI interrupt", .{}),
+        3 => panic("INT3 @ 0x{x}", .{ctx.eip}),
+        6 => panic("invalid instruction @ 0x{x}", .{ctx.eip}),
+        8 => panic("double fault @ 0x{x}", .{ctx.eip}),
+        10 => panic("invalid TSS exception @ 0x{x}", .{ctx.eip}),
+        11 => panic("segment not present exception @ 0x{x}", .{ctx.eip}),
+        12 => panic("stack segment fault @ 0x{x}", .{ctx.eip}),
+        13 => panic("#GP exception @ 0x{x}", .{ctx.eip}),
+        14 => panic("#PF exception @ 0x{x}", .{ctx.eip}),
+        17 => panic("#AC exception @ 0x{x}", .{ctx.eip}),
+        18 => panic("#MC exception @ 0x{x}", .{ctx.eip}),
+        21 => panic("control register exception @ 0x{x}", .{ctx.eip}),
+        else => @panic("unexpected interrupt"),
+    }
 }
