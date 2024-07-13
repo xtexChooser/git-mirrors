@@ -4,8 +4,16 @@ use std::{
 };
 
 use anyhow::{bail, Result};
+use cached::proc_macro::cached;
 use egui::RichText;
 use log::info;
+use windows::Win32::{
+    Foundation::{BOOL, HWND, LPARAM, WPARAM},
+    UI::WindowsAndMessaging::{
+        EnumWindows, GetClassNameA, GetWindowLongW, GetWindowTextLengthW, GetWindowTextW,
+        PostMessageA, BM_CLICK, GWL_STYLE, WM_COMMAND, WS_SYSMENU,
+    },
+};
 use windows_registry::LOCAL_MACHINE;
 
 fn open_eclass_standard() -> Result<windows_registry::Key> {
@@ -110,6 +118,58 @@ pub fn set_password(password: &str) -> Result<()> {
     Ok(())
 }
 
+pub fn find_broadcast_window() -> Result<Option<HWND>> {
+    static mut WINDOW: Option<HWND> = None;
+    unsafe {
+        WINDOW = None;
+        unsafe extern "system" fn enum_callback(hwnd: HWND, _: LPARAM) -> BOOL {
+            let mut name = [0u8; 20];
+            assert!(GetClassNameA(hwnd, &mut name) >= 0);
+            // check "Afx:" prefix
+            if name[0..4] == [0x41, 0x66, 0x78, 0x3a] {
+                let mut title = Vec::with_capacity(GetWindowTextLengthW(hwnd).try_into().unwrap());
+                assert!(GetWindowTextW(hwnd, &mut title) >= 0);
+                let title = String::from_utf16_lossy(&title);
+                if title.starts_with("屏幕广播") || title.ends_with(" 正在共享屏幕") {
+                    WINDOW = Some(hwnd);
+                    return false.into();
+                }
+            }
+            true.into()
+        }
+        EnumWindows(Some(enum_callback), LPARAM::default())?;
+        if let Some(hwnd) = WINDOW {
+            return Ok(Some(hwnd));
+        }
+    }
+    Ok(None)
+}
+
+#[cached(time = 1, result = true, sync_writes = true)]
+pub fn check_broadcast_fullscreen() -> Result<bool> {
+    if let Some(hwnd) = find_broadcast_window()? {
+        unsafe {
+            if (GetWindowLongW(hwnd, GWL_STYLE) as u32) & WS_SYSMENU.0 != 0 {
+                return Ok(true);
+            }
+        }
+    }
+    Ok(false)
+}
+
+pub fn make_broadcast_window() -> Result<()> {
+    let hwnd = find_broadcast_window()?.unwrap();
+    unsafe {
+        PostMessageA(
+            hwnd,
+            WM_COMMAND,
+            WPARAM(((BM_CLICK << 16) | 1004) as usize),
+            LPARAM(0),
+        )?;
+    }
+    Ok(())
+}
+
 #[derive(Default)]
 pub struct MythwareWindow {
     set_password_buf: Option<String>,
@@ -126,6 +186,19 @@ impl MythwareWindow {
         }
         self.show_password(ui, "密码：");
         ui.label("超级密码：mythware_super_password");
+
+        egui::Grid::new("mythware_actions").show(ui, |ui| {
+            if ui
+                .add_enabled(
+                    check_broadcast_fullscreen().unwrap(),
+                    egui::Button::new("广播窗口化"),
+                )
+                .clicked()
+            {
+                make_broadcast_window().unwrap();
+            }
+            ui.end_row();
+        });
     }
 
     pub fn show_password(&mut self, ui: &mut egui::Ui, label: &str) {
