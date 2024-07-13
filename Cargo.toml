@@ -8,12 +8,17 @@ edition = "2021"
 anyhow = "1.0.86"
 eframe = "0.28.1"
 egui = "0.28.1"
+env_logger = "0.11.3"
+log = { version = "0.4.22", features = ["std"] }
 tokio = { version = "1.38.0", features = ["full"] }
+windows-registry = "0.2.0"
 xz2 = "0.1.7"
 
 [dependencies.windows]
 version = "0.58.0"
-features = []
+features = [
+    "Win32_System_Console"
+]
 
 [build-dependencies]
 winresource = "0.1.17"

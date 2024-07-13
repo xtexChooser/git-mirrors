@@ -1,10 +1,22 @@
 #![windows_subsystem = "windows"]
 use anyhow::Result;
+use egui::RichText;
 
 mod assets;
+mod mythware;
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    if std::env::var("YJYZTOOLS_DEBUG").is_ok() || cfg!(debug_assertions) {
+        if std::env::var("RUST_LOG").is_err() {
+            std::env::set_var("RUST_LOG", "info");
+        }
+        unsafe {
+            windows::Win32::System::Console::AllocConsole()?;
+        }
+    }
+    env_logger::init();
+
     eframe::run_native(
         "YJYZ Toolkit",
         eframe::NativeOptions {
@@ -22,6 +34,7 @@ async fn main() -> Result<()> {
 
 struct MainApp {
     show_licenses: bool,
+    show_mythware: bool,
 }
 
 impl MainApp {
@@ -29,6 +42,7 @@ impl MainApp {
         assets::configure_fonts(&cc.egui_ctx)?;
         Ok(Self {
             show_licenses: false,
+            show_mythware: false,
         })
     }
 }
@@ -38,21 +52,29 @@ impl eframe::App for MainApp {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.heading(format!("YJYZ Tools - {}", env!("CARGO_PKG_VERSION")));
             ui.horizontal(|ui| {
-                if ui.link("源代码").clicked() {
-                    ctx.open_url(egui::OpenUrl::new_tab(
-                        "https://codeberg.org/xtex/yjyz-tools",
-                    ));
-                }
+                ui.hyperlink_to("源代码", "https://codeberg.org/xtex/yjyz-tools");
                 if ui.link("开源许可证").clicked() {
                     self.show_licenses = true;
                 }
             });
 
             egui::menu::bar(ui, |ui| {
-                if ui.button("Open").clicked() {
-                    // …
+                if ui.button("极域").clicked() {
+                    self.show_mythware = true;
                 }
             });
+
+            if let Some(password) = mythware::PASSWORD.as_ref() {
+                ui.horizontal_wrapped(|ui| {
+                    ui.label("极域密码：");
+                    if password.is_empty() {
+                        ui.label(RichText::new("（空）").italics());
+                    } else {
+                        ui.label(RichText::new(password).italics());
+                    }
+                });
+            }
+
             egui::Window::new("开源许可证")
                 .open(&mut self.show_licenses)
                 .vscroll(true)
@@ -62,6 +84,12 @@ impl eframe::App for MainApp {
                     ui.heading("Cubic-11");
                     ui.label(assets::CUBIC11_LICENSE);
                 });
+
+            egui::Window::new("极域")
+                .open(&mut self.show_mythware)
+                .vscroll(true)
+                .default_size((250.0, 200.0))
+                .show(ctx, mythware::show_window);
         });
     }
 }
