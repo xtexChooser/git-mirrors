@@ -5,6 +5,7 @@ use std::ffi::c_void;
 use anyhow::Result;
 use educe::Educe;
 use egui::Id;
+use log::error;
 use mythware::MythwareWindow;
 use raw_window_handle::{HasWindowHandle, RawWindowHandle, Win32WindowHandle};
 use windows::Win32::{
@@ -58,6 +59,10 @@ struct MainApp {
     prevent_screenshot: bool,
     windows_adj_open: bool,
     windows_adj: WindowsAdjWindow,
+    #[educe(Default = None)]
+    error: Option<anyhow::Error>,
+    #[educe(Default = false)]
+    double_error: bool,
 }
 
 impl MainApp {
@@ -71,6 +76,23 @@ const DATA_WINDOW_HWND: u64 = 0xc4dbc123bb779f78;
 
 impl eframe::App for MainApp {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
+        if let Err(err) = self.show(ctx, frame) {
+            error!("ui error: {err:?}");
+            if self.error.is_none() {
+                self.error = Some(err);
+                ctx.request_repaint();
+            } else if !self.double_error {
+                self.double_error = true;
+                ctx.request_repaint();
+            } else {
+                panic!("triple error");
+            }
+        }
+    }
+}
+
+impl MainApp {
+    fn show(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) -> Result<()> {
         ctx.request_repaint_after_secs(0.3);
         ctx.style_mut(|style| style.url_in_tooltip = true);
         ctx.data_mut(|data| {
@@ -92,7 +114,7 @@ impl eframe::App for MainApp {
                     ctx.data(|data| data.get_temp::<usize>(Id::new(DATA_WINDOW_HWND)).unwrap())
                         as *mut c_void,
                 );
-                SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE).unwrap();
+                SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE)?;
             }
         }
 
@@ -100,67 +122,81 @@ impl eframe::App for MainApp {
             && mythware::is_broadcast_fullscreen().unwrap_or(false)
         {
             ctx.send_viewport_cmd(egui::ViewportCommand::Focus);
-            mythware::toggle_broadcast_window().unwrap();
+            mythware::toggle_broadcast_window()?;
         }
 
         if self.mythware.auto_unlock_keyboard && mythware::is_broadcast_on().unwrap_or(false) {
             ctx.request_repaint_after_secs(0.025);
-            mythware::unlock_keyboard().unwrap();
+            mythware::unlock_keyboard()?;
         }
 
-        egui::CentralPanel::default().show(ctx, |ui| {
-            ui.heading(format!("YJYZ Tools - {}", env!("CARGO_PKG_VERSION")));
-            ui.horizontal(|ui| {
-                ui.hyperlink_to("源代码", "https://codeberg.org/xtex/yjyz-tools");
-                if ui.link("开源许可证").clicked() {
-                    self.show_licenses = true;
-                }
-            });
-
-            egui::menu::bar(ui, |ui| {
-                if ui.button("极域").clicked() {
-                    self.mythware_open = true;
-                }
-                if ui.button("系统工具").clicked() {
-                    self.windows_adj_open = true;
-                }
-            });
-
-            ui.horizontal_wrapped(|ui| {
-                ui.checkbox(&mut self.always_on_top, "自动置顶");
-                if ui
-                    .checkbox(&mut self.prevent_screenshot, "防止截屏")
-                    .changed()
-                {
-                    utils::prevent_screenshot(ui.ctx(), self.prevent_screenshot).unwrap();
-                }
-            });
-
-            if mythware::PASSWORD.read().unwrap().is_some() {
-                self.mythware.show_password(ui, "极域密码：");
-            }
-
-            egui::Window::new("开源许可证")
-                .open(&mut self.show_licenses)
-                .vscroll(true)
-                .default_size((320.0, 200.0))
-                .show(ctx, |ui| {
-                    ui.label(assets::LICENSE_STR);
-                    ui.heading("Cubic-11");
-                    ui.label(assets::CUBIC11_LICENSE);
+        egui::CentralPanel::default()
+            .show(ctx, |ui| {
+                ui.heading(format!("YJYZ Tools - {}", env!("CARGO_PKG_VERSION")));
+                ui.horizontal(|ui| {
+                    ui.hyperlink_to("源代码", "https://codeberg.org/xtex/yjyz-tools");
+                    if ui.link("开源许可证").clicked() {
+                        self.show_licenses = true;
+                    }
                 });
 
-            egui::Window::new("极域")
-                .open(&mut self.mythware_open)
-                .vscroll(true)
-                .default_size((300.0, 200.0))
-                .show(ctx, |ui| self.mythware.show(ui));
+                egui::menu::bar(ui, |ui| {
+                    if ui.button("极域").clicked() {
+                        self.mythware_open = true;
+                    }
+                    if ui.button("系统工具").clicked() {
+                        self.windows_adj_open = true;
+                    }
+                });
 
-            egui::Window::new("Windows工具")
-                .open(&mut self.windows_adj_open)
-                .vscroll(true)
-                .default_size((300.0, 200.0))
-                .show(ctx, |ui| self.windows_adj.show(ui));
-        });
+                ui.horizontal_wrapped(|ui| {
+                    ui.checkbox(&mut self.always_on_top, "自动置顶");
+                    if ui
+                        .checkbox(&mut self.prevent_screenshot, "防止截屏")
+                        .changed()
+                    {
+                        utils::prevent_screenshot(ui.ctx(), self.prevent_screenshot)?;
+                    }
+                    Ok::<(), anyhow::Error>(())
+                })
+                .inner?;
+
+                if mythware::PASSWORD.read().unwrap().is_some() {
+                    self.mythware.show_password(ui, "极域密码：")?;
+                }
+
+                egui::Window::new("开源许可证")
+                    .open(&mut self.show_licenses)
+                    .vscroll(true)
+                    .default_size((320.0, 200.0))
+                    .show(ctx, |ui| {
+                        ui.label(assets::LICENSE_STR);
+                        ui.heading("Cubic-11");
+                        ui.label(assets::CUBIC11_LICENSE);
+                    });
+
+                egui::Window::new("极域")
+                    .open(&mut self.mythware_open)
+                    .vscroll(true)
+                    .default_size((300.0, 200.0))
+                    .show(ctx, |ui| self.mythware.show(ui))
+                    .map(|o| o.inner)
+                    .unwrap_or_default()
+                    .unwrap_or(Ok(()))?;
+
+                egui::Window::new("Windows工具")
+                    .open(&mut self.windows_adj_open)
+                    .vscroll(true)
+                    .default_size((300.0, 200.0))
+                    .show(ctx, |ui| self.windows_adj.show(ui))
+                    .map(|o| o.inner)
+                    .unwrap_or_default()
+                    .unwrap_or(Ok(()))?;
+
+                Ok::<(), anyhow::Error>(())
+            })
+            .inner?;
+
+        Ok(())
     }
 }

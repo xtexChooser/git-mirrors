@@ -4,7 +4,14 @@ use anyhow::Result;
 use egui::Id;
 use windows::Win32::{
     Foundation::{CloseHandle, BOOL, HANDLE, HWND, NTSTATUS, RECT},
-    System::Threading::{OpenProcess, PROCESS_SUSPEND_RESUME},
+    System::{
+        Diagnostics::ToolHelp::{
+            CreateToolhelp32Snapshot, Thread32First, Thread32Next, TH32CS_SNAPTHREAD, THREADENTRY32,
+        },
+        Threading::{
+            OpenProcess, OpenThread, TerminateThread, PROCESS_SUSPEND_RESUME, THREAD_TERMINATE,
+        },
+    },
     UI::WindowsAndMessaging::{
         GetWindowRect, SetWindowDisplayAffinity, SetWindowPos, HWND_TOPMOST, SWP_NOSIZE,
         WDA_EXCLUDEFROMCAPTURE, WDA_NONE,
@@ -29,8 +36,8 @@ pub fn prevent_screenshot(ctx: &egui::Context, prevent: bool) -> Result<()> {
         )?;
         let mut rect = RECT::default();
         GetWindowRect(hwnd, &mut rect)?;
-        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE).unwrap();
-        SetWindowPos(hwnd, HWND_TOPMOST, rect.left, rect.top, 0, 0, SWP_NOSIZE).unwrap();
+        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE)?;
+        SetWindowPos(hwnd, HWND_TOPMOST, rect.left, rect.top, 0, 0, SWP_NOSIZE)?;
     }
     Ok(())
 }
@@ -51,6 +58,27 @@ pub fn resume_process(pid: u32) -> Result<()> {
         let handle = OpenProcess(PROCESS_SUSPEND_RESUME, BOOL(0), pid)?;
         NtResumeProcess(handle).ok()?;
         CloseHandle(handle)?;
+    }
+    Ok(())
+}
+
+pub fn force_kill_process(pid: u32) -> Result<()> {
+    unsafe {
+        let snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, pid)?;
+        let mut entry = THREADENTRY32::default();
+        entry.dwSize = std::mem::size_of::<THREADENTRY32>() as u32;
+        Thread32First(snapshot, &mut entry)?;
+        loop {
+            if entry.th32OwnerProcessID == pid {
+                let thread = OpenThread(THREAD_TERMINATE, BOOL(0), entry.th32ThreadID)?;
+                TerminateThread(thread, 0)?;
+                CloseHandle(thread)?;
+            }
+            if Thread32Next(snapshot, &mut entry).is_err() {
+                break;
+            }
+        }
+        CloseHandle(snapshot)?;
     }
     Ok(())
 }

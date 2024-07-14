@@ -2,6 +2,7 @@ use std::{
     ffi::{c_void, OsString},
     os::windows::ffi::OsStringExt,
     path::PathBuf,
+    process::Command,
     str::FromStr,
     sync::{LazyLock, RwLock},
 };
@@ -285,7 +286,23 @@ pub struct MythwareWindow {
 }
 
 impl MythwareWindow {
-    pub fn show(&mut self, ui: &mut egui::Ui) {
+    pub fn show(&mut self, ui: &mut egui::Ui) -> Result<()> {
+        ui.horizontal_wrapped(|ui| {
+            if let Some(pid) = find_studentmain_pid() {
+                if ui.button("关闭极域").clicked() {
+                    utils::force_kill_process(pid)?;
+                    *FIND_STUDENTMAIN_PID.write().unwrap() = None;
+                }
+            } else if let Some(path) = INSTALLATION_PATH.as_ref() {
+                if ui.button("启动极域").clicked() {
+                    Command::new(path.join("StudentMain.exe")).spawn()?;
+                    ui.ctx().request_repaint();
+                    *FIND_STUDENTMAIN_PID.write().unwrap() = None;
+                }
+            }
+            Ok::<(), anyhow::Error>(())
+        })
+        .inner?;
         if let Some(path) = INSTALLATION_PATH.as_ref() {
             ui.horizontal_wrapped(|ui| {
                 let label = ui.label(RichText::new("安装位置：").strong());
@@ -304,50 +321,55 @@ impl MythwareWindow {
                     .labelled_by(label.id);
             });
         }
-        self.show_password(ui, RichText::new("密码：").strong());
+        self.show_password(ui, RichText::new("密码：").strong())?;
         ui.label("超级密码：mythware_super_password");
 
         ui.horizontal_wrapped(|ui| {
             let label = ui.label(RichText::new("屏幕广播：").strong());
-            if is_broadcast_on().unwrap() {
+            if is_broadcast_on()? {
                 if ui
-                    .button(if is_broadcast_fullscreen().unwrap() {
+                    .button(if is_broadcast_fullscreen()? {
                         "广播窗口化"
                     } else {
                         "广播全屏化"
                     })
                     .clicked()
                 {
-                    if !is_broadcast_fullscreen().unwrap() {
+                    if !is_broadcast_fullscreen()? {
                         // toggle into fullscreen
                         self.auto_windowing_broadcast = false;
                     }
-                    toggle_broadcast_window().unwrap();
+                    toggle_broadcast_window()?;
                 }
             } else {
                 ui.label("当前无广播").labelled_by(label.id);
             }
             ui.checkbox(&mut self.auto_windowing_broadcast, "自动窗口化");
             ui.checkbox(&mut self.auto_unlock_keyboard, "自动解除键盘锁");
-        });
+            Ok::<(), anyhow::Error>(())
+        })
+        .inner?;
 
         if let Some(pid) = find_studentmain_pid() {
             ui.horizontal_wrapped(|ui| {
                 let label = ui.label(RichText::new("挂起：").strong());
                 if self.stumain_suspended {
                     if ui.button("取消挂起").labelled_by(label.id).clicked() {
-                        utils::resume_process(pid).unwrap();
+                        utils::resume_process(pid)?;
                         self.stumain_suspended = false;
                     }
                 } else if ui.button("挂起").labelled_by(label.id).clicked() {
-                    utils::suspend_process(pid).unwrap();
+                    utils::suspend_process(pid)?;
                     self.stumain_suspended = true;
                 }
-            });
+                Ok::<(), anyhow::Error>(())
+            })
+            .inner?;
         }
+        Ok(())
     }
 
-    pub fn show_password(&mut self, ui: &mut egui::Ui, label: impl Into<WidgetText>) {
+    pub fn show_password(&mut self, ui: &mut egui::Ui, label: impl Into<WidgetText>) -> Result<()> {
         ui.horizontal_wrapped(|ui| {
             let label = ui.label(label);
             match &mut self.set_password_buf {
@@ -372,7 +394,7 @@ impl MythwareWindow {
                 Some(buf) => {
                     ui.text_edit_singleline(buf).labelled_by(label.id);
                     if ui.button("保存").clicked() {
-                        set_password(buf.as_str()).unwrap();
+                        set_password(buf.as_str())?;
                         self.set_password_buf = None;
                     }
                     if ui.button("取消").clicked() {
@@ -380,6 +402,9 @@ impl MythwareWindow {
                     }
                 }
             };
-        });
+            Ok::<(), anyhow::Error>(())
+        })
+        .inner?;
+        Ok(())
     }
 }
