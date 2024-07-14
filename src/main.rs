@@ -11,10 +11,12 @@ use windows::Win32::{
     Foundation::HWND,
     UI::WindowsAndMessaging::{SetWindowPos, HWND_TOPMOST, SWP_NOMOVE, SWP_NOSIZE},
 };
+use windowsadj::WindowsAdjWindow;
 
 mod assets;
 mod mythware;
 mod utils;
+mod windowsadj;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -54,6 +56,8 @@ struct MainApp {
     always_on_top: bool,
     #[educe(Default = false)]
     prevent_screenshot: bool,
+    windows_adj_open: bool,
+    windows_adj: WindowsAdjWindow,
 }
 
 impl MainApp {
@@ -117,6 +121,9 @@ impl eframe::App for MainApp {
                 if ui.button("极域").clicked() {
                     self.mythware_open = true;
                 }
+                if ui.button("系统工具").clicked() {
+                    self.windows_adj_open = true;
+                }
             });
 
             ui.horizontal_wrapped(|ui| {
@@ -148,6 +155,12 @@ impl eframe::App for MainApp {
                 .vscroll(true)
                 .default_size((300.0, 200.0))
                 .show(ctx, |ui| self.mythware.show(ui));
+
+            egui::Window::new("Windows工具")
+                .open(&mut self.windows_adj_open)
+                .vscroll(true)
+                .default_size((300.0, 200.0))
+                .show(ctx, |ui| self.windows_adj.show(ui));
         });
     }
 }
