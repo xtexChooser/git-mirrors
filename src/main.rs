@@ -133,6 +133,31 @@ impl MainApp {
         egui::CentralPanel::default()
             .show(ctx, |ui| {
                 ui.heading(format!("YJYZ Tools - {}", env!("CARGO_PKG_VERSION")));
+                let mut clear_error = false;
+                if let Some(err) = &self.error {
+                    egui::Window::new("错误")
+                        .collapsible(false)
+                        .scroll(true)
+                        .default_size((600.0, 450.0))
+                        .default_pos((0.0, 40.0))
+                        .show(ctx, |ui| {
+                            if self.double_error {
+                                ui.heading("存在双重错误");
+                            }
+                            if !self.double_error && ui.button("忽略").clicked() {
+                                clear_error = true;
+                            }
+                            ui.code(format!("{:?}", err));
+                        });
+                    if self.double_error {
+                        return Ok(());
+                    }
+                }
+                if clear_error {
+                    self.error = None;
+                    ui.ctx().request_repaint();
+                }
+
                 ui.horizontal(|ui| {
                     ui.hyperlink_to("源代码", "https://codeberg.org/xtex/yjyz-tools");
                     if ui.link("开源许可证").clicked() {
