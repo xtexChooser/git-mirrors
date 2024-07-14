@@ -228,7 +228,7 @@ impl MainApp {
                 egui::Window::new("影子系统")
                     .open(&mut self.powershadow_open)
                     .vscroll(true)
-                    .default_size((170.0, 200.0))
+                    .default_size((170.0, 130.0))
                     .show(ctx, |ui| self.powershadow.show(ui))
                     .map(|o| o.inner)
                     .unwrap_or_default()
