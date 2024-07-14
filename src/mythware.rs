@@ -1,17 +1,24 @@
 use std::{
+    ffi::OsString,
+    os::windows::ffi::OsStringExt,
     path::PathBuf,
+    str::FromStr,
     sync::{LazyLock, RwLock},
 };
 
 use anyhow::{bail, Result};
-use cached::proc_macro::cached;
-use egui::RichText;
+use cached::proc_macro::once;
+use educe::Educe;
+use egui::{RichText, WidgetText};
 use log::info;
-use windows::Win32::{
-    Foundation::{BOOL, HWND, LPARAM, WPARAM},
-    UI::WindowsAndMessaging::{
-        EnumWindows, GetClassNameA, GetWindowLongW, GetWindowTextLengthW, GetWindowTextW,
-        PostMessageA, BM_CLICK, GWL_STYLE, WM_COMMAND, WS_SYSMENU,
+use windows::{
+    core::HRESULT,
+    Win32::{
+        Foundation::{BOOL, HWND, LPARAM, WPARAM},
+        UI::WindowsAndMessaging::{
+            EnumWindows, GetClassNameA, GetWindowLongW, GetWindowTextLengthW, GetWindowTextW,
+            PostMessageA, BM_CLICK, GWL_STYLE, WINDOW_STYLE, WM_COMMAND, WS_SYSMENU,
+        },
     },
 };
 use windows_registry::LOCAL_MACHINE;
@@ -43,6 +50,44 @@ pub static INSTALLATION_PATH: LazyLock<Option<PathBuf>> = LazyLock::new(|| {
         .inspect_err(|err| info!("Mythware e-Learning Class not found: {err}"))
         .ok()
 });
+
+#[derive(Debug, Clone)]
+pub enum SetupType {
+    Teacher,
+    Student,
+}
+
+impl FromStr for SetupType {
+    type Err = anyhow::Error;
+
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        match s {
+            "Teacher" => Ok(Self::Teacher),
+            "Student" => Ok(Self::Student),
+            _ => bail!("unparsable SetupType {}", s),
+        }
+    }
+}
+
+impl TryFrom<String> for SetupType {
+    type Error = anyhow::Error;
+
+    fn try_from(value: String) -> std::result::Result<Self, Self::Error> {
+        Self::from_str(value.as_str())
+    }
+}
+
+pub static SETUP_TYPE: LazyLock<Option<SetupType>> = LazyLock::new(|| {
+    read_setup_type()
+        .inspect_err(|err| info!("cannot read mythware setup type: {err}"))
+        .ok()
+});
+
+pub fn read_setup_type() -> Result<SetupType> {
+    Ok(open_eclass_standard()?
+        .get_string("SetupType")?
+        .try_into()?)
+}
 
 pub fn read_password() -> Result<String> {
     // https://github.com/MuliMuri/Mythware/blob/master/Test/Program.cs
@@ -127,9 +172,9 @@ pub fn find_broadcast_window() -> Result<Option<HWND>> {
             assert!(GetClassNameA(hwnd, &mut name) >= 0);
             // check "Afx:" prefix
             if name[0..4] == [0x41, 0x66, 0x78, 0x3a] {
-                let mut title = Vec::with_capacity(GetWindowTextLengthW(hwnd).try_into().unwrap());
+                let mut title = vec![0; GetWindowTextLengthW(hwnd) as usize + 1];
                 assert!(GetWindowTextW(hwnd, &mut title) >= 0);
-                let title = String::from_utf16_lossy(&title);
+                let title = OsString::from_wide(&title).to_string_lossy().to_string();
                 if title.starts_with("屏幕广播") || title.ends_with(" 正在共享屏幕") {
                     WINDOW = Some(hwnd);
                     return false.into();
@@ -137,7 +182,11 @@ pub fn find_broadcast_window() -> Result<Option<HWND>> {
             }
             true.into()
         }
-        EnumWindows(Some(enum_callback), LPARAM::default())?;
+        if let Err(err) = EnumWindows(Some(enum_callback), LPARAM::default())
+            && err.code() != HRESULT(0)
+        {
+            return Err(err.into());
+        }
         if let Some(hwnd) = WINDOW {
             return Ok(Some(hwnd));
         }
@@ -145,11 +194,16 @@ pub fn find_broadcast_window() -> Result<Option<HWND>> {
     Ok(None)
 }
 
-#[cached(time = 1, result = true, sync_writes = true)]
+#[once(time = 1, result = true, sync_writes = true)]
+pub fn is_broadcast_on() -> Result<bool> {
+    Ok(find_broadcast_window()?.is_some())
+}
+
+#[once(time = 1, result = true, sync_writes = true)]
 pub fn check_broadcast_fullscreen() -> Result<bool> {
     if let Some(hwnd) = find_broadcast_window()? {
         unsafe {
-            if (GetWindowLongW(hwnd, GWL_STYLE) as u32) & WS_SYSMENU.0 != 0 {
+            if (WINDOW_STYLE(GetWindowLongW(hwnd, GWL_STYLE) as u32) & WS_SYSMENU).0 == 0 {
                 return Ok(true);
             }
         }
@@ -157,51 +211,79 @@ pub fn check_broadcast_fullscreen() -> Result<bool> {
     Ok(false)
 }
 
-pub fn make_broadcast_window() -> Result<()> {
-    let hwnd = find_broadcast_window()?.unwrap();
-    unsafe {
-        PostMessageA(
-            hwnd,
-            WM_COMMAND,
-            WPARAM(((BM_CLICK << 16) | 1004) as usize),
-            LPARAM(0),
-        )?;
+pub fn toggle_broadcast_window() -> Result<()> {
+    if let Some(hwnd) = find_broadcast_window()? {
+        unsafe {
+            PostMessageA(
+                hwnd,
+                WM_COMMAND,
+                WPARAM(((BM_CLICK << 16) | 1004) as usize),
+                LPARAM(0),
+            )?;
+        }
+        *CHECK_BROADCAST_FULLSCREEN.write().unwrap() = None;
     }
     Ok(())
 }
 
-#[derive(Default)]
+#[derive(Educe)]
+#[educe(Default)]
 pub struct MythwareWindow {
     set_password_buf: Option<String>,
+    #[educe(Default = true)]
+    pub auto_windowing_broadcast: bool,
 }
 
 impl MythwareWindow {
     pub fn show(&mut self, ui: &mut egui::Ui) {
         if let Some(path) = INSTALLATION_PATH.as_ref() {
             ui.horizontal_wrapped(|ui| {
-                let label = ui.label("安装位置：");
+                let label = ui.label(RichText::new("安装位置：").strong());
                 ui.label(RichText::new(path.to_str().unwrap_or_default()).italics())
                     .labelled_by(label.id);
             });
         }
-        self.show_password(ui, "密码：");
+        if let Some(ty) = SETUP_TYPE.as_ref() {
+            ui.horizontal_wrapped(|ui| {
+                let label = ui.label(RichText::new("安装类型：").strong());
+                let text = match ty {
+                    SetupType::Teacher => "教师端",
+                    SetupType::Student => "学生端",
+                };
+                ui.label(RichText::new(text).italics())
+                    .labelled_by(label.id);
+            });
+        }
+        self.show_password(ui, RichText::new("密码：").strong());
         ui.label("超级密码：mythware_super_password");
 
-        egui::Grid::new("mythware_actions").show(ui, |ui| {
-            if ui
-                .add_enabled(
-                    check_broadcast_fullscreen().unwrap(),
-                    egui::Button::new("广播窗口化"),
-                )
-                .clicked()
-            {
-                make_broadcast_window().unwrap();
-            }
-            ui.end_row();
+        ui.vertical(|ui| {
+            ui.horizontal_wrapped(|ui| {
+                let label = ui.label(RichText::new("屏幕广播：").strong());
+                if is_broadcast_on().unwrap() {
+                    if ui
+                        .button(if check_broadcast_fullscreen().unwrap() {
+                            "广播窗口化"
+                        } else {
+                            "广播全屏化"
+                        })
+                        .clicked()
+                    {
+                        if !check_broadcast_fullscreen().unwrap() {
+                            // toggle into fullscreen
+                            self.auto_windowing_broadcast = false;
+                        }
+                        toggle_broadcast_window().unwrap();
+                    }
+                } else {
+                    ui.label("当前无广播").labelled_by(label.id);
+                }
+                ui.checkbox(&mut self.auto_windowing_broadcast, "自动窗口化");
+            });
         });
     }
 
-    pub fn show_password(&mut self, ui: &mut egui::Ui, label: &str) {
+    pub fn show_password(&mut self, ui: &mut egui::Ui, label: impl Into<WidgetText>) {
         ui.horizontal_wrapped(|ui| {
             let label = ui.label(label);
             match &mut self.set_password_buf {
