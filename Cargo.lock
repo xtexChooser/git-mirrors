@@ -4037,6 +4037,7 @@ dependencies = [
  "eframe",
  "egui",
  "env_logger",
+ "hex",
  "log",
  "log-panics",
  "raw-window-handle 0.6.2",

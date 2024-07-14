@@ -7,6 +7,7 @@ use educe::Educe;
 use egui::Id;
 use log::error;
 use mythware::MythwareWindow;
+use powershadow::PowerShadowWindow;
 use raw_window_handle::{HasWindowHandle, RawWindowHandle, Win32WindowHandle};
 use windows::Win32::{
     Foundation::HWND,
@@ -16,6 +17,7 @@ use windowsadj::WindowsAdjWindow;
 
 mod assets;
 mod mythware;
+mod powershadow;
 mod utils;
 mod windowsadj;
 
@@ -50,6 +52,10 @@ async fn main() -> Result<()> {
 #[derive(Educe)]
 #[educe(Default)]
 struct MainApp {
+    #[educe(Default = None)]
+    error: Option<anyhow::Error>,
+    #[educe(Default = false)]
+    double_error: bool,
     show_licenses: bool,
     mythware_open: bool,
     mythware: MythwareWindow,
@@ -59,10 +65,8 @@ struct MainApp {
     prevent_screenshot: bool,
     windows_adj_open: bool,
     windows_adj: WindowsAdjWindow,
-    #[educe(Default = None)]
-    error: Option<anyhow::Error>,
-    #[educe(Default = false)]
-    double_error: bool,
+    powershadow_open: bool,
+    powershadow: PowerShadowWindow,
 }
 
 impl MainApp {
@@ -172,6 +176,9 @@ impl MainApp {
                     if ui.button("系统工具").clicked() {
                         self.windows_adj_open = true;
                     }
+                    if ui.button("影子系统").clicked() {
+                        self.powershadow_open = true;
+                    }
                 });
 
                 ui.horizontal_wrapped(|ui| {
@@ -214,6 +221,15 @@ impl MainApp {
                     .vscroll(true)
                     .default_size((300.0, 200.0))
                     .show(ctx, |ui| self.windows_adj.show(ui))
+                    .map(|o| o.inner)
+                    .unwrap_or_default()
+                    .unwrap_or(Ok(()))?;
+
+                egui::Window::new("影子系统")
+                    .open(&mut self.powershadow_open)
+                    .vscroll(true)
+                    .default_size((170.0, 200.0))
+                    .show(ctx, |ui| self.powershadow.show(ui))
                     .map(|o| o.inner)
                     .unwrap_or_default()
                     .unwrap_or(Ok(()))?;
