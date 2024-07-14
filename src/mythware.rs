@@ -88,9 +88,7 @@ pub static SETUP_TYPE: LazyLock<Option<SetupType>> = LazyLock::new(|| {
 });
 
 pub fn read_setup_type() -> Result<SetupType> {
-    Ok(open_eclass_standard()?
-        .get_string("SetupType")?
-        .try_into()?)
+    open_eclass_standard()?.get_string("SetupType")?.try_into()
 }
 
 pub fn read_password() -> Result<String> {
@@ -106,7 +104,7 @@ pub fn read_password() -> Result<String> {
         .chunks_exact(4)
         .map(|chunk| u32::from_be_bytes(chunk.try_into().unwrap()))
         .map(|val| val ^ 0x50434c45 ^ 0x454c4350)
-        .flat_map(|val| u32::to_be_bytes(val))
+        .flat_map(u32::to_be_bytes)
         .collect::<Vec<u8>>();
     if knock[0] != *knock.last().unwrap() {
         bail!("the first byte of Knock1 is not equal to the last byte")
@@ -126,8 +124,8 @@ pub fn read_password() -> Result<String> {
 
 pub fn read_password_legacy() -> Result<String> {
     let passwd = open_eclass_standard()?.get_string("UninstallPasswd")?;
-    if passwd.starts_with("Passwd") {
-        Ok(passwd[6..].to_owned())
+    if let Some(passwd) = passwd.strip_prefix("Passwd") {
+        Ok(passwd.to_owned())
     } else {
         Ok(passwd)
     }
@@ -158,7 +156,7 @@ pub fn set_password(password: &str) -> Result<()> {
         .chunks_exact(4)
         .map(|chunk| u32::from_be_bytes(chunk.try_into().unwrap()))
         .map(|val| val ^ 0x454c4350 ^ 0x50434c45)
-        .flat_map(|val| u32::to_be_bytes(val))
+        .flat_map(u32::to_be_bytes)
         .collect::<Vec<u8>>();
     open_eclass_student()?
         .create("")?
@@ -341,11 +339,9 @@ impl MythwareWindow {
                         utils::resume_process(pid).unwrap();
                         self.stumain_suspended = false;
                     }
-                } else {
-                    if ui.button("挂起").labelled_by(label.id).clicked() {
-                        utils::suspend_process(pid).unwrap();
-                        self.stumain_suspended = true;
-                    }
+                } else if ui.button("挂起").labelled_by(label.id).clicked() {
+                    utils::suspend_process(pid).unwrap();
+                    self.stumain_suspended = true;
                 }
             });
         }

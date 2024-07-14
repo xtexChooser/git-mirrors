@@ -34,7 +34,7 @@ pub fn configure_fonts(ctx: &eframe::egui::Context) -> Result<()> {
     {
         // load Cubic-11
         let mut buf = Vec::new();
-        xz2::read::XzDecoder::new(&CUBIC11_FONT[..]).read_to_end(&mut buf)?;
+        xz2::read::XzDecoder::new(CUBIC11_FONT).read_to_end(&mut buf)?;
         fonts
             .font_data
             .insert("cubic11".to_owned(), FontData::from_owned(buf));
