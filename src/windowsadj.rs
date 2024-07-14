@@ -1,6 +1,15 @@
 use anyhow::Result;
 use educe::Educe;
 use egui::{RichText, WidgetText};
+use windows::{
+    core::{w, PCWSTR},
+    Win32::System::Services::{
+        ChangeServiceConfigW, CloseServiceHandle, ControlService, OpenSCManagerW, OpenServiceW,
+        StartServiceW, ENUM_SERVICE_TYPE, SC_MANAGER_ALL_ACCESS, SERVICE_CHANGE_CONFIG,
+        SERVICE_CONTROL_STOP, SERVICE_DISABLED, SERVICE_ERROR, SERVICE_NO_CHANGE, SERVICE_START,
+        SERVICE_STATUS, SERVICE_STOP, SERVICE_SYSTEM_START,
+    },
+};
 use windows_registry::{CURRENT_USER, LOCAL_MACHINE};
 
 #[derive(Educe)]
@@ -21,6 +30,11 @@ impl WindowsAdjWindow {
         }
 
         egui::Grid::new("windows_adj").show(ui, |ui| {
+            ui.label(RichText::new("Windows Update").strong());
+            show_button(ui, "启用", enable_windows_update);
+            show_button(ui, "禁用", disable_windows_update);
+            ui.end_row();
+
             show_button(ui, "启用全部工具", enable_all);
             ui.end_row();
 
@@ -207,4 +221,97 @@ pub fn disable_edge_surf() -> Result<()> {
     Ok(LOCAL_MACHINE
         .create(r"SOFTWARE\Policies\Microsoft\Edge")?
         .set_u32("AllowSurfGame", 0)?)
+}
+
+pub fn enable_windows_update() -> Result<()> {
+    // set group policies
+    let wu = LOCAL_MACHINE.create(r"SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate")?;
+    let au = wu.create(r"AU")?;
+    au.set_u32("NoAutoUpdate", 0)?;
+    au.set_u32("AUOptions", 3)?;
+    au.set_u32("AllowMUUpdateService", 1)?;
+    au.set_u32("AutoInstallMinorUpdates", 0)?;
+    _ = au.remove_value("UseWUServer");
+    _ = wu.remove_value("WUServer");
+    _ = wu.remove_value("WUStatusServer");
+    _ = wu.remove_value("DoNotConnectToWindowsUpdateInternetLocations");
+    wu.set_u32("ExcludeWUDriversInQualityUpdate", 0)?;
+    LOCAL_MACHINE
+        .create(r"SOFTWARE\Policies\Microsoft\Windows\DriverSearching")?
+        .set_u32("DontSearchWindowsUpdate", 0)?;
+
+    unsafe {
+        let sc_manager = OpenSCManagerW(PCWSTR::null(), PCWSTR::null(), SC_MANAGER_ALL_ACCESS)?;
+
+        let wuauserv = OpenServiceW(
+            sc_manager,
+            w!("wuauserv"),
+            SERVICE_CHANGE_CONFIG | SERVICE_START,
+        )?;
+        ChangeServiceConfigW(
+            wuauserv,
+            ENUM_SERVICE_TYPE(SERVICE_NO_CHANGE),
+            SERVICE_SYSTEM_START,
+            SERVICE_ERROR(SERVICE_NO_CHANGE),
+            PCWSTR::null(),
+            PCWSTR::null(),
+            None,
+            PCWSTR::null(),
+            PCWSTR::null(),
+            PCWSTR::null(),
+            PCWSTR::null(),
+        )?;
+        StartServiceW(wuauserv, None)?;
+        CloseServiceHandle(wuauserv)?;
+
+        CloseServiceHandle(sc_manager)?;
+    }
+    Ok(())
+}
+
+pub fn disable_windows_update() -> Result<()> {
+    // set group policies
+    let wu = LOCAL_MACHINE.create(r"SOFTWARE\Policies\Microsoft\Windows\WindowsUpdate")?;
+    let au = wu.create(r"AU")?;
+    au.set_u32("NoAutoUpdate", 1)?;
+    au.set_u32("AUOptions", 0)?;
+    au.set_u32("AllowMUUpdateService", 0)?;
+    au.set_u32("AutoInstallMinorUpdates", 0)?;
+    au.set_u32("UseWUServer", 1)?;
+    wu.set_string("WUServer", "..")?;
+    wu.set_string("WUStatusServer", "..")?;
+    wu.set_u32("DoNotConnectToWindowsUpdateInternetLocations", 1)?;
+    wu.set_u32("ExcludeWUDriversInQualityUpdate", 1)?;
+    LOCAL_MACHINE
+        .create(r"SOFTWARE\Policies\Microsoft\Windows\DriverSearching")?
+        .set_u32("DontSearchWindowsUpdate", 1)?;
+
+    unsafe {
+        let sc_manager = OpenSCManagerW(PCWSTR::null(), PCWSTR::null(), SC_MANAGER_ALL_ACCESS)?;
+
+        let wuauserv = OpenServiceW(
+            sc_manager,
+            w!("wuauserv"),
+            SERVICE_CHANGE_CONFIG | SERVICE_STOP,
+        )?;
+        ChangeServiceConfigW(
+            wuauserv,
+            ENUM_SERVICE_TYPE(SERVICE_NO_CHANGE),
+            SERVICE_DISABLED,
+            SERVICE_ERROR(SERVICE_NO_CHANGE),
+            PCWSTR::null(),
+            PCWSTR::null(),
+            None,
+            PCWSTR::null(),
+            PCWSTR::null(),
+            PCWSTR::null(),
+            PCWSTR::null(),
+        )?;
+        let mut status = SERVICE_STATUS::default();
+        ControlService(wuauserv, SERVICE_CONTROL_STOP, &mut status)?;
+        CloseServiceHandle(wuauserv)?;
+
+        CloseServiceHandle(sc_manager)?;
+    }
+    Ok(())
 }

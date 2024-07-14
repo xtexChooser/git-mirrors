@@ -26,6 +26,7 @@ features = [
     "Win32_UI_WindowsAndMessaging",
     "Win32_System_LibraryLoader",
     "Win32_System_Threading",
+    "Win32_System_Services",
 ]
 
 [build-dependencies]
