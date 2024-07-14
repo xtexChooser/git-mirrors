@@ -21,6 +21,9 @@ impl WindowsAdjWindow {
         }
 
         egui::Grid::new("windows_adj").show(ui, |ui| {
+            show_button(ui, "启用全部工具", enable_all);
+            ui.end_row();
+
             ui.label(RichText::new("命令提示符").strong());
             show_button(ui, "启用", enable_cmd);
             show_button(ui, "禁用", disable_cmd);
@@ -63,6 +66,18 @@ impl WindowsAdjWindow {
             ui.end_row();
         });
     }
+}
+
+pub fn enable_all() -> Result<()> {
+    enable_cmd()?;
+    enable_taskmgr()?;
+    enable_regedit()?;
+    enable_run()?;
+    let _ = remove_all_debuggers();
+    enable_logout()?;
+    enable_chrome_dino()?;
+    enable_edge_surf()?;
+    Ok(())
 }
 
 pub fn enable_cmd() -> Result<()> {
