@@ -4,6 +4,7 @@ use std::ffi::c_void;
 
 use anyhow::Result;
 use educe::Educe;
+use egui::Id;
 use mythware::MythwareWindow;
 use raw_window_handle::{HasWindowHandle, RawWindowHandle, Win32WindowHandle};
 use windows::Win32::{
@@ -13,6 +14,7 @@ use windows::Win32::{
 
 mod assets;
 mod mythware;
+mod utils;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -50,6 +52,8 @@ struct MainApp {
     mythware: MythwareWindow,
     #[educe(Default = true)]
     always_on_top: bool,
+    #[educe(Default = false)]
+    prevent_screenshot: bool,
 }
 
 impl MainApp {
@@ -59,20 +63,32 @@ impl MainApp {
     }
 }
 
+const DATA_WINDOW_HWND: u64 = 0xc4dbc123bb779f78;
+
 impl eframe::App for MainApp {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
         ctx.request_repaint_after_secs(0.3);
         ctx.style_mut(|style| style.url_in_tooltip = true);
+        ctx.data_mut(|data| {
+            data.get_temp_mut_or_insert_with(Id::new(DATA_WINDOW_HWND), || {
+                if let RawWindowHandle::Win32(Win32WindowHandle { hwnd, .. }) =
+                    frame.window_handle().unwrap().as_raw()
+                {
+                    hwnd.get() as usize
+                } else {
+                    panic!("not win32 window")
+                }
+            });
+        });
 
         if self.always_on_top {
             ctx.request_repaint_after_secs(0.04);
             unsafe {
-                if let RawWindowHandle::Win32(Win32WindowHandle { hwnd, .. }) =
-                    frame.window_handle().unwrap().as_raw()
-                {
-                    let hwnd = HWND(hwnd.get() as *mut c_void);
-                    SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE).unwrap();
-                }
+                let hwnd = HWND(
+                    ctx.data(|data| data.get_temp::<usize>(Id::new(DATA_WINDOW_HWND)).unwrap())
+                        as *mut c_void,
+                );
+                SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE).unwrap();
             }
         }
 
@@ -103,7 +119,15 @@ impl eframe::App for MainApp {
                 }
             });
 
-            ui.checkbox(&mut self.always_on_top, "自动置顶");
+            ui.horizontal_wrapped(|ui| {
+                ui.checkbox(&mut self.always_on_top, "自动置顶");
+                if ui
+                    .checkbox(&mut self.prevent_screenshot, "防止截屏")
+                    .changed()
+                {
+                    utils::prevent_screenshot(ui.ctx(), self.prevent_screenshot).unwrap();
+                }
+            });
 
             if mythware::PASSWORD.read().unwrap().is_some() {
                 self.mythware.show_password(ui, "极域密码：");
