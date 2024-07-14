@@ -3,7 +3,8 @@ use std::ffi::c_void;
 use anyhow::Result;
 use egui::Id;
 use windows::Win32::{
-    Foundation::{HWND, RECT},
+    Foundation::{CloseHandle, BOOL, HANDLE, HWND, NTSTATUS, RECT},
+    System::Threading::{OpenProcess, PROCESS_SUSPEND_RESUME},
     UI::WindowsAndMessaging::{
         GetWindowRect, SetWindowDisplayAffinity, SetWindowPos, HWND_TOPMOST, SWP_NOSIZE,
         WDA_EXCLUDEFROMCAPTURE, WDA_NONE,
@@ -30,6 +31,26 @@ pub fn prevent_screenshot(ctx: &egui::Context, prevent: bool) -> Result<()> {
         GetWindowRect(hwnd, &mut rect)?;
         SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE).unwrap();
         SetWindowPos(hwnd, HWND_TOPMOST, rect.left, rect.top, 0, 0, SWP_NOSIZE).unwrap();
+    }
+    Ok(())
+}
+
+pub fn suspend_process(pid: u32) -> Result<()> {
+    windows_targets::link!("ntdll.dll" "system" fn NtSuspendProcess(handle : HANDLE) -> NTSTATUS);
+    unsafe {
+        let handle = OpenProcess(PROCESS_SUSPEND_RESUME, BOOL(0), pid)?;
+        NtSuspendProcess(handle).ok()?;
+        CloseHandle(handle)?;
+    }
+    Ok(())
+}
+
+pub fn resume_process(pid: u32) -> Result<()> {
+    windows_targets::link!("ntdll.dll" "system" fn NtResumeProcess(handle : HANDLE) -> NTSTATUS);
+    unsafe {
+        let handle = OpenProcess(PROCESS_SUSPEND_RESUME, BOOL(0), pid)?;
+        NtResumeProcess(handle).ok()?;
+        CloseHandle(handle)?;
     }
     Ok(())
 }

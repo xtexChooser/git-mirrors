@@ -25,6 +25,8 @@ use windows::{
 };
 use windows_registry::LOCAL_MACHINE;
 
+use crate::utils;
+
 fn open_eclass_standard() -> Result<windows_registry::Key> {
     Ok(LOCAL_MACHINE
         .open(r"SOFTWARE\TopDomain\e-Learning Class Standard\1.00")
@@ -196,12 +198,12 @@ pub fn find_broadcast_window() -> Result<Option<HWND>> {
     Ok(None)
 }
 
-#[once(time = 1, result = true, sync_writes = true)]
+#[once(time = 1, result = true)]
 pub fn is_broadcast_on() -> Result<bool> {
     Ok(find_broadcast_window()?.is_some())
 }
 
-#[once(time = 1, result = true, sync_writes = true)]
+#[once(time = 1, result = true)]
 pub fn is_broadcast_fullscreen() -> Result<bool> {
     if let Some(hwnd) = find_broadcast_window()? {
         unsafe {
@@ -260,6 +262,18 @@ pub fn unlock_keyboard() -> Result<()> {
     Ok(())
 }
 
+#[once(time = 1)]
+pub fn find_studentmain_pid() -> Option<u32> {
+    let mut sys = sysinfo::System::new();
+    sys.refresh_processes();
+    for (pid, process) in sys.processes() {
+        if process.name().to_lowercase() == "studentmain.exe" {
+            return Some(pid.as_u32());
+        }
+    }
+    None
+}
+
 #[derive(Educe)]
 #[educe(Default)]
 pub struct MythwareWindow {
@@ -268,6 +282,8 @@ pub struct MythwareWindow {
     pub auto_windowing_broadcast: bool,
     #[educe(Default = true)]
     pub auto_unlock_keyboard: bool,
+    #[educe(Default = false)]
+    pub stumain_suspended: bool,
 }
 
 impl MythwareWindow {
@@ -293,31 +309,46 @@ impl MythwareWindow {
         self.show_password(ui, RichText::new("密码：").strong());
         ui.label("超级密码：mythware_super_password");
 
-        ui.vertical(|ui| {
+        ui.horizontal_wrapped(|ui| {
+            let label = ui.label(RichText::new("屏幕广播：").strong());
+            if is_broadcast_on().unwrap() {
+                if ui
+                    .button(if is_broadcast_fullscreen().unwrap() {
+                        "广播窗口化"
+                    } else {
+                        "广播全屏化"
+                    })
+                    .clicked()
+                {
+                    if !is_broadcast_fullscreen().unwrap() {
+                        // toggle into fullscreen
+                        self.auto_windowing_broadcast = false;
+                    }
+                    toggle_broadcast_window().unwrap();
+                }
+            } else {
+                ui.label("当前无广播").labelled_by(label.id);
+            }
+            ui.checkbox(&mut self.auto_windowing_broadcast, "自动窗口化");
+            ui.checkbox(&mut self.auto_unlock_keyboard, "自动解除键盘锁");
+        });
+
+        if let Some(pid) = find_studentmain_pid() {
             ui.horizontal_wrapped(|ui| {
-                let label = ui.label(RichText::new("屏幕广播：").strong());
-                if is_broadcast_on().unwrap() {
-                    if ui
-                        .button(if is_broadcast_fullscreen().unwrap() {
-                            "广播窗口化"
-                        } else {
-                            "广播全屏化"
-                        })
-                        .clicked()
-                    {
-                        if !is_broadcast_fullscreen().unwrap() {
-                            // toggle into fullscreen
-                            self.auto_windowing_broadcast = false;
-                        }
-                        toggle_broadcast_window().unwrap();
+                let label = ui.label(RichText::new("挂起：").strong());
+                if self.stumain_suspended {
+                    if ui.button("取消挂起").labelled_by(label.id).clicked() {
+                        utils::resume_process(pid).unwrap();
+                        self.stumain_suspended = false;
                     }
                 } else {
-                    ui.label("当前无广播").labelled_by(label.id);
+                    if ui.button("挂起").labelled_by(label.id).clicked() {
+                        utils::suspend_process(pid).unwrap();
+                        self.stumain_suspended = true;
+                    }
                 }
-                ui.checkbox(&mut self.auto_windowing_broadcast, "自动窗口化");
-                ui.checkbox(&mut self.auto_unlock_keyboard, "自动解除键盘锁");
             });
-        });
+        }
     }
 
     pub fn show_password(&mut self, ui: &mut egui::Ui, label: impl Into<WidgetText>) {
