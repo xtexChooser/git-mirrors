@@ -1,5 +1,5 @@
 use std::{
-    ffi::OsString,
+    ffi::{c_void, OsString},
     os::windows::ffi::OsStringExt,
     path::PathBuf,
     str::FromStr,
@@ -12,12 +12,14 @@ use educe::Educe;
 use egui::{RichText, WidgetText};
 use log::info;
 use windows::{
-    core::HRESULT,
+    core::{HRESULT, PCWSTR},
     Win32::{
-        Foundation::{BOOL, HWND, LPARAM, WPARAM},
+        Foundation::{BOOL, HWND, LPARAM, LRESULT, WPARAM},
+        System::LibraryLoader::GetModuleHandleW,
         UI::WindowsAndMessaging::{
-            EnumWindows, GetClassNameA, GetWindowLongW, GetWindowTextLengthW, GetWindowTextW,
-            PostMessageA, BM_CLICK, GWL_STYLE, WINDOW_STYLE, WM_COMMAND, WS_SYSMENU,
+            ClipCursor, EnumWindows, GetClassNameA, GetWindowLongW, GetWindowTextLengthW,
+            GetWindowTextW, PostMessageA, SetWindowsHookExW, UnhookWindowsHookEx, BM_CLICK,
+            GWL_STYLE, HHOOK, WH_KEYBOARD_LL, WH_MOUSE_LL, WINDOW_STYLE, WM_COMMAND, WS_SYSMENU,
         },
     },
 };
@@ -200,7 +202,7 @@ pub fn is_broadcast_on() -> Result<bool> {
 }
 
 #[once(time = 1, result = true, sync_writes = true)]
-pub fn check_broadcast_fullscreen() -> Result<bool> {
+pub fn is_broadcast_fullscreen() -> Result<bool> {
     if let Some(hwnd) = find_broadcast_window()? {
         unsafe {
             if (WINDOW_STYLE(GetWindowLongW(hwnd, GWL_STYLE) as u32) & WS_SYSMENU).0 == 0 {
@@ -221,7 +223,39 @@ pub fn toggle_broadcast_window() -> Result<()> {
                 LPARAM(0),
             )?;
         }
-        *CHECK_BROADCAST_FULLSCREEN.write().unwrap() = None;
+        *IS_BROADCAST_FULLSCREEN.write().unwrap() = None;
+    }
+    Ok(())
+}
+
+struct UnlockingHook(usize);
+
+impl Drop for UnlockingHook {
+    fn drop(&mut self) {
+        unsafe { UnhookWindowsHookEx(HHOOK(self.0 as *mut c_void)).unwrap() };
+    }
+}
+
+impl From<HHOOK> for UnlockingHook {
+    fn from(value: HHOOK) -> Self {
+        Self(value.0 as usize)
+    }
+}
+
+static UNLOCKING_HOOKS: RwLock<Vec<UnlockingHook>> = RwLock::new(Vec::new());
+
+pub fn unlock_keyboard() -> Result<()> {
+    unsafe {
+        unsafe extern "system" fn hook_proc(_: i32, _: WPARAM, _: LPARAM) -> LRESULT {
+            LRESULT(0)
+        }
+
+        let module = GetModuleHandleW(PCWSTR::null())?;
+        *UNLOCKING_HOOKS.write().unwrap() = vec![
+            SetWindowsHookExW(WH_KEYBOARD_LL, Some(hook_proc), module, 0)?.into(),
+            SetWindowsHookExW(WH_MOUSE_LL, Some(hook_proc), module, 0)?.into(),
+        ];
+        ClipCursor(None)?;
     }
     Ok(())
 }
@@ -232,6 +266,8 @@ pub struct MythwareWindow {
     set_password_buf: Option<String>,
     #[educe(Default = true)]
     pub auto_windowing_broadcast: bool,
+    #[educe(Default = true)]
+    pub auto_unlock_keyboard: bool,
 }
 
 impl MythwareWindow {
@@ -262,14 +298,14 @@ impl MythwareWindow {
                 let label = ui.label(RichText::new("屏幕广播：").strong());
                 if is_broadcast_on().unwrap() {
                     if ui
-                        .button(if check_broadcast_fullscreen().unwrap() {
+                        .button(if is_broadcast_fullscreen().unwrap() {
                             "广播窗口化"
                         } else {
                             "广播全屏化"
                         })
                         .clicked()
                     {
-                        if !check_broadcast_fullscreen().unwrap() {
+                        if !is_broadcast_fullscreen().unwrap() {
                             // toggle into fullscreen
                             self.auto_windowing_broadcast = false;
                         }
@@ -279,6 +315,7 @@ impl MythwareWindow {
                     ui.label("当前无广播").labelled_by(label.id);
                 }
                 ui.checkbox(&mut self.auto_windowing_broadcast, "自动窗口化");
+                ui.checkbox(&mut self.auto_unlock_keyboard, "自动解除键盘锁");
             });
         });
     }

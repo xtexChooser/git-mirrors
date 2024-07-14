@@ -29,7 +29,7 @@ async fn main() -> Result<()> {
         "YJYZ Toolkit",
         eframe::NativeOptions {
             viewport: egui::ViewportBuilder::default()
-                .with_inner_size([640.0, 480.0])
+                .with_inner_size([640.0, 450.0])
                 .with_always_on_top(),
             default_theme: eframe::Theme::Dark,
             centered: true,
@@ -62,6 +62,7 @@ impl MainApp {
 impl eframe::App for MainApp {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
         ctx.request_repaint_after_secs(0.3);
+        ctx.style_mut(|style| style.url_in_tooltip = true);
 
         if self.always_on_top {
             ctx.request_repaint_after_secs(0.04);
@@ -76,10 +77,15 @@ impl eframe::App for MainApp {
         }
 
         if self.mythware.auto_windowing_broadcast
-            && mythware::check_broadcast_fullscreen().unwrap_or(false)
+            && mythware::is_broadcast_fullscreen().unwrap_or(false)
         {
             ctx.send_viewport_cmd(egui::ViewportCommand::Focus);
             mythware::toggle_broadcast_window().unwrap();
+        }
+
+        if self.mythware.auto_unlock_keyboard && mythware::is_broadcast_on().unwrap_or(false) {
+            ctx.request_repaint_after_secs(0.025);
+            mythware::unlock_keyboard().unwrap();
         }
 
         egui::CentralPanel::default().show(ctx, |ui| {
