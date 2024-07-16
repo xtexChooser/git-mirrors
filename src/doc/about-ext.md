@@ -23,12 +23,11 @@ Also in <span>#xtexpic:envs.net</span>.
   - [acct:xtex@fe.disroot.org](https://fe.disroot.org/@xtex) (preferred)
   - [acct:xtexChooser@wxw.cat](https://wxw.cat/@xtexChooser)
 - Wikis
-  - [Chinese Minecraft Wiki](https://zh.minecraft.wiki/w/User:XtexChooser)
+  - [Chinese Minecraft Wiki](https://zh.minecraft.wiki/w/User:Xtex)
   - [Wikipedia](https://zh.wikipedia.org/wiki/User:XtexChooser)
-  - [Project Archive](https://lakeus.xyz/wiki/User:XtexChooser)
+  - [Project Archive](https://lakeus.xyz/wiki/User:Xtex)
 - Forge
   - [Codeberg](https://codeberg.org/xtex) (preferred)
   - [exogit](https://git.exozy.me/xtex)
   - [Source Hut](https://sr.ht/~xtex/)
   - [GitHub](https://github.com/xtexChooser)
-
