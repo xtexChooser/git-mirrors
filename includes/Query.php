@@ -101,6 +101,13 @@ class Query {
 	private $join = [];
 
 	/**
+	 * Index Hints
+	 *
+	 * @var array
+	 */
+	private $indexHints = [];
+
+	/**
 	 * Limit
 	 *
 	 * @var int|bool
@@ -309,6 +316,9 @@ class Query {
 
 			$categoriesGoal = false;
 			$fields = $this->select;
+		}
+		if ( count( $this->indexHints ) ) {
+			$options['USE INDEX'] = $this->indexHints;
 		}
 
 		$queryError = false;
@@ -1383,6 +1393,9 @@ class Query {
 				$this->addSelect( [ 'sel_title' => 'pl.pl_title', 'sel_ns' => 'pl.pl_namespace' ] );
 			}
 
+			// ignorecase causes poor index choice.
+			$this->indexHints['pl'] = 'pl_namespace';
+
 			foreach ( $option as $index => $linkGroup ) {
 				if ( $index == 0 ) {
 					$where = $this->tableNames['page'] . '.page_id=pl.pl_from AND ';
@@ -2187,6 +2200,9 @@ class Query {
 
 		$linksMigration = MediaWikiServices::getInstance()->getLinksMigration();
 		[ $nsField, $titleField ] = $linksMigration->getTitleFields( 'templatelinks' );
+
+		// ignorecase causes poor index choice.
+		$this->indexHints['lt'] = 'lt_namespace_title';
 
 		foreach ( $option as $linkGroup ) {
 			foreach ( $linkGroup as $link ) {
