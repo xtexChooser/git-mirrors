@@ -19,6 +19,11 @@ if ! [[ -e "/srv/atremis" ]]; then
 	sudo git clone --depth 1 --recurse-submodules --shallow-submodules --single-branch https://codeberg.org/xvnet/atremis.git
 	sudo chmod -R a+r atremis
 	popd
+else
+	pushd /srv/atremis
+	sudo git fetch origin main
+	sudo git reset --hard FETCH_HEAD
+	popd
 fi
 
 if ! [[ -e "/srv/secrets" ]]; then
