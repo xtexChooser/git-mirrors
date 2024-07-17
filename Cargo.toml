@@ -6,10 +6,11 @@ members = ["osdev"]
 [workspace.dependencies]
 anyhow = "1.0.86"
 mwbot = { git = "https://gitlab.wikimedia.org/repos/mwbot-rs/mwbot.git" }
-serde = { version = "1.0.203", features = ["derive"] }
+serde = { version = "1.0.204", features = ["derive"] }
 tokio = { version = "1.38.0", features = ["full"] }
-clap = { version = "4.5.7", features = ["derive"] }
+clap = { version = "4.5.9", features = ["derive"] }
 regex = "1.10.5"
 dotenvy = "0.15.7"
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["json", "env-filter", "ansi"] }
+itertools = "0.13.0"
