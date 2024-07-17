@@ -111,6 +111,13 @@ V_DEP_VARS	+= STATES_DIR
 V_POST		= systemd-restart E_UNIT=cronie.service
 $(call end)
 
+# ========================= network tunnelling =========================
+$(call package)
+V_PKG		= wireguard-tools
+V_INSTALLED	= y
+V_INST_FILE	= /usr/bin/wg
+$(call end)
+
 # ========================= maintainer packages =========================
 $(call package)
 V_PKG		= ripgrep
