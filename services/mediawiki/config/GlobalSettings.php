@@ -23,6 +23,7 @@ $wgLocaltimezone = 'UTC';
 // Global Extensions
 $xvLoadExtensions = array_merge($xvLoadExtensions, [
 	'AbuseFilter',
+	'AdvancedSearch',
 	'AntiSpoof',
 	'CategoryTree',
 	'CategoryWatch',
