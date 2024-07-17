@@ -33,10 +33,11 @@ fi
 
 # Update
 pushd /srv/atremis
-./atre pull
-for ((i = 0; i < 3; i++)); do
-	./atre apply
+./atre pull || true
+for ((i = 0; i < 2; i++)); do
+	./atre apply || true
 done
+./atre apply
 ./atre update
 popd
 
