@@ -38,6 +38,7 @@ V_PATH		= /etc/cron.d/dn42-roa
 V_TEMPLATE	= bash-tpl $(STATES_DIR)/services/bird/cron-dn42-roa
 V_DEP_VARS	+= STATES_DIR
 V_POST		+= systemd-restart E_UNIT=cronie.service
+V_DEPS		= pkg-cronie
 $(call end)
 
 $(call fs-file)

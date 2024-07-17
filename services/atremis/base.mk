@@ -88,6 +88,14 @@ V_RUNNING	= y
 V_DEPS		= pkg-cronie
 $(call end)
 
+$(call fs-file)
+V_PATH		= /etc/cron.d/atre-update
+V_TEMPLATE	= bash-tpl $(STATES_DIR)/services/atremis/cron-update
+V_DEP_VARS	+= STATES_DIR
+V_POST		= systemd-restart E_UNIT=cronie.service
+V_DEPS		= pkg-cronie
+$(call end)
+
 # ========================= packages =========================
 $(call package)
 V_PKG		= podman
@@ -102,14 +110,6 @@ V_INSTALLED	= y
 V_INST_FILE	= /usr/bin/jq
 $(call end)
 
-# ========================= cron jobs =========================
-
-$(call fs-file)
-V_PATH		= /etc/cron.d/atre-update
-V_TEMPLATE	= bash-tpl $(STATES_DIR)/services/atremis/cron-update
-V_DEP_VARS	+= STATES_DIR
-V_POST		= systemd-restart E_UNIT=cronie.service
-$(call end)
 
 # ========================= network tunnelling =========================
 $(call package)

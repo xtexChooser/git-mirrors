@@ -34,6 +34,9 @@ fi
 # Update
 pushd /srv/atremis
 ./atre pull
+for ((i = 0; i < 3; i++)); do
+	./atre apply
+done
 ./atre update
 popd
 
