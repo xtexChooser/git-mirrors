@@ -4,7 +4,7 @@ V_DEPS		+= /var/lib/postgresql/balaro/postgres.conf
 V_DEPS		+= /var/lib/postgresql/balaro/postgresql.conf
 V_DEPS		+= /var/lib/postgresql/balaro/pg_ident.conf
 V_DEPS		+= /var/lib/postgresql/balaro/pg_hba.conf
-V_SVCDEPS	+= /var/lib/postgresql/balaro /var/lib/postgresql/balaro/data /var/run/postgresql
+V_DEPS_ORD	+= /var/lib/postgresql/balaro /var/lib/postgresql/balaro/data /var/run/postgresql
 V_ARGS		+= --mount=type=bind,src=/var/lib/postgresql/balaro,dst=/var/lib/postgresql
 V_ARGS		+= --mount=type=bind,src=/var/lib/postgresql/balaro/data,dst=/var/lib/postgresql/data
 V_ARGS		+= --mount=type=bind,src=/var/run/postgresql,dst=/var/run/postgresql

@@ -5,8 +5,8 @@ mediawiki-configs := $(patsubst $(mediawiki-configs-dir)/%,%,$(wildcard $(mediaw
 
 $(call x-container-service)
 V_SERVICE	= mediawiki
-V_SVCDEPS	+= $(addprefix $(mediawiki-configs-dir)/,$(mediawiki-configs))
-V_SVCDEPS	+= /var/run/mediawiki /var/lib/mediawiki
+V_DEPS_ORD	+= $(addprefix $(mediawiki-configs-dir)/,$(mediawiki-configs))
+V_DEPS_ORD	+= /var/run/mediawiki /var/lib/mediawiki
 V_ARGS		+= --mount=type=bind,src=/srv/atremis/services/mediawiki/config,dst=/etc/mediawiki,ro=true
 V_ARGS		+= --mount=type=bind,src=/srv/secrets/mw,dst=/srv/secrets/mw,ro=true
 V_ARGS		+= --mount=type=bind,src=/var/run/mediawiki,dst=/var/run/mediawiki

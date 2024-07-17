@@ -1,6 +1,7 @@
 $(call x-container-service)
 V_SERVICE	= caddy
-V_DEPS		+= /etc/caddy/Caddyfile /var/lib/caddy
+V_DEPS		+= /etc/caddy/Caddyfile
+V_DEPS_ORD	+= /var/lib/caddy
 V_ARGS		+= --cap-add=CAP_NET_BIND_SERVICE
 V_ARGS		+= --env HOME=/root
 V_ARGS		+= --mount=type=bind,src=/etc/caddy,dst=/etc/caddy,ro=true

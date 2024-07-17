@@ -1,7 +1,7 @@
 $(call x-container-service)
 V_SERVICE	= monto
 V_DEPS		+= /var/lib/mariadb/monto/my.cnf
-V_SVCDEPS	+= /var/lib/mariadb/monto /var/run/mariadb
+V_DEPS_ORD	+= /var/lib/mariadb/monto /var/run/mariadb
 V_ARGS		+= --mount=type=bind,src=/var/lib/mariadb/monto,dst=/var/lib/mariadb
 V_ARGS		+= --mount=type=bind,src=/var/run/mariadb/monto,dst=/var/run/mariadb
 V_ARGS		+= --memory=128M

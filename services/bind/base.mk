@@ -1,7 +1,7 @@
 $(call x-container-service)
 V_SERVICE	= bind
 V_DEPS		+= /etc/bind/named.conf
-V_SVCDEPS	+= /var/run/bind podman-image-dns-root-zone podman-image-dns-zones
+V_DEPS_ORD	+= /var/run/bind podman-image-dns-root-zone podman-image-dns-zones
 V_ARGS		+= --mount=type=bind,src=/etc/bind,dst=/etc/bind,ro=true
 V_ARGS		+= --mount=type=bind,src=/var/run/bind,dst=/var/run/bind
 V_ARGS		+= --mount=type=image,source=codeberg.org/xvnet/dns-root-zone:latest,destination=/opt/root-zone
