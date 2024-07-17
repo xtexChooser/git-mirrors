@@ -64,6 +64,7 @@ $$(call fs-file)
 V_PATH		= $(DINITD_DIR)/$1
 V_TEMPLATE	= bash-tpl $(dinit-configs-dir)/$1
 $$(call end)
+systemd-unit-dinit.service: $(DINITD_DIR)/$1
 endef
 $(foreach dinit-config,$(dinit-configs),$(eval $(call dinit-config-template,$(dinit-config))))
 
