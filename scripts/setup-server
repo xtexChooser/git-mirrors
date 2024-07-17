@@ -46,4 +46,4 @@ command -v atre
 
 echo "===== SUCCEED ====="
 echo "PRESS ANY KEY TO RESTART OR CTRL+C TO ABORT"
-read -n1 -r && sudo systemctl restart
+read -n1 -r && sudo systemctl reboot
