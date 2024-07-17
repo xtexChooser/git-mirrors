@@ -71,6 +71,7 @@ $xvLoadExtensions = array_merge($xvLoadExtensions, [
 	'TemplateWizard',
 	'TextExtracts',
 	'TitleBlacklist',
+	'TitleKey',
 	'VisualEditor',
 	'WikiEditor',
 	'XensTweaks',
