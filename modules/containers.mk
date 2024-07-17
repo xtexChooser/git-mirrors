@@ -20,7 +20,8 @@ $(eval x-container-$(V_SERVICE)-stop-cmd:=set -e; $(V_PRE_STOP); $(PODMAN) conta
 $(call mktrace, Define x-container-service target: $(V_SERVICE))
 $(call mktrace-vars,$(X_CONTAINER_SERVICE_VARS))
 
-$(DINITD_DIR)/$(V_SERVICE): $(DINITCTL_DEPS) $(v-deps) $(VENDOR_MODULES_DIR)/containers.mk
+$(DINITD_DIR)/$(V_SERVICE): $(DINITCTL_DEPS) $(v-deps) $(VENDOR_MODULES_DIR)/containers.mk \
+	| $(v-deps-order)
 	@cat >$$@ <<EOF
 	type = process
 	command = bash -c "$(subst ",\",$(subst $$$$,\$$$$,$(x-container-$(V_SERVICE)-start-cmd)))"

@@ -23,7 +23,8 @@ $(call add-fs-directory,/var/run/bird)
 $(call cmd-stamp)
 V_NAME		= bird-conf
 V_CMD		= $(STATES_DIR)/services/bird/script/reconf.sh
-V_DEPS		+= /etc/bird/bird.conf dinit-bird
+V_DEPS		+= /etc/bird/bird.conf
+V_DEPS_ORD	+= dinit-bird
 $(call end)
 
 $(call fs-file)
