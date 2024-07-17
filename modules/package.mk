@@ -9,7 +9,8 @@ $(call mktrace, Define package target: $(V_UNIT))
 $(call mktrace-vars,$(PACKAGE_VARS))
 $(call apply-target,$(V_TARGET_NAME))
 $(call vt-target,$(V_TARGET_NAME))
-$(V_TARGET_NAME): $(v-deps) $(if $(call is-true,$(V_INSTALLED)),$(V_INST_FILE))
+$(V_TARGET_NAME): $(v-deps) $(if $(call is-true,$(V_INSTALLED)),$(V_INST_FILE)) \
+		| $(v-deps-order)
 	export E_MAJOR=pkg E_PKG=$(V_PKG)
 $(if $(call is-true,$(V_INSTALLED)),$(if $(call not,$(V_INST_FILE)),
 	if ! $(V_PKCON) resolve $(V_PKG) | grep 'installed' $(DROP_STDOUT); then

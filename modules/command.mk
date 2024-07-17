@@ -34,7 +34,7 @@ $(call vt-target,$(V_TARGET_NAME))
 $(V_TARGET_NAME): $(V_PATH)
 
 $(call apply-target,$(V_PATH))
-$(V_PATH): $(v-deps)
+$(V_PATH): $(v-deps) | $(v-deps-order)
 	export E_MAJOR=cmd-stamp E_NAME=$(V_NAME)
 	$(V_CMD)
 	$(TOUCH) $$@

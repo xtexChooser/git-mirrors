@@ -19,7 +19,8 @@ $(call vt-target,$(V_TARGET_NAME))
 $(V_TARGET_NAME): $(v-deps) \
 	$(if $(V_GROUPS),$(call empty-rules,$(addprefix group-,$(V_GROUPS)))) \
 	$(if $(V_GID),$(call empty-rules,group-$(V_GID))) \
-	$(if $(V_SHELL),$(call empty-rules,$(V_SHELL)))
+	$(if $(V_SHELL),$(call empty-rules,$(V_SHELL))) \
+	| $(v-deps-order)
 	export E_MAJOR=user E_NAME=$(V_NAME)
 $(if $(call is-true,$(V_EXIST)),
 	if ! grep -E '^$(V_NAME):' $(USER_PASSWD_FILES) $(DROP_STDOUT); then

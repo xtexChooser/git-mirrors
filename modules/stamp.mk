@@ -10,7 +10,7 @@ $(call apply-target,$(V_TARGET_NAME))
 $(call vt-target,$(V_TARGET_NAME))
 $(V_TARGET_NAME): $(V_PATH)
 
-$(V_PATH): $(v-deps)
+$(V_PATH): $(v-deps) | $(v-deps-order)
 	export E_MAJOR=stamp E_NAME=$(V_NAME) E_PATH=$(V_PATH)
 	$$(TOUCH) $$@
 	$(call vpost, E_MINOR=refreshed)

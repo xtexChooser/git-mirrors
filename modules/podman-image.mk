@@ -11,7 +11,7 @@ $(call mktrace-vars,$(PODMAN_IMAGE_VARS))
 
 $(call apply-target,$(V_TARGET_NAME))
 $(call vt-target,$(V_TARGET_NAME))
-$(V_TARGET_NAME): $(v-deps)
+$(V_TARGET_NAME): $(v-deps) | $(v-deps-order)
 	export E_MAJOR=podman_image E_IMAGE=$(V_IMAGE)
 $(if $(call not,$(call is-false,$(V_EXIST))),
 	if ( ! $(PODMAN) image exists $(V_IMAGE) ) || $(if $(call is-true,$(V_LATEST)),true,false) ; then

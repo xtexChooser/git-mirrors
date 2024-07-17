@@ -14,7 +14,8 @@ $(call vt-target,$(V_TARGET_NAME))
 $(V_TARGET_NAME): $(V_PATH)
 )
 $(if $(V_USER)$(V_USER_ID)$(V_GROUP)$(V_GROUP_ID)$(V_ACCESS),$(call vt-target,$(V_PATH)))
-$(V_PATH): $(v-deps) $(call imp-dep,user,$(V_USER)) $(call imp-dep,group,$(V_GROUP))
+$(V_PATH): $(v-deps) $(call imp-dep,user,$(V_USER)) $(call imp-dep,group,$(V_GROUP)) \
+		| $(v-deps-order)
 	export E_MAJOR=fs-directory E_PATH=$(V_PATH)
 	if [[ ! -e $(V_PATH) ]]; then
 		$(MKDIR) -p $(V_PATH)

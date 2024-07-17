@@ -11,7 +11,7 @@ $(call mktrace-vars,$(HOSTNAME_VARS))
 $(if $(call streq,$(V_HOSTNAME),$(HOSTNAME)),,$(call apply-target,$(V_TARGET_NAME)))
 $(call vt-target,$(V_TARGET_NAME))
 
-$(V_TARGET_NAME): $(v-deps)
+$(V_TARGET_NAME): $(v-deps) | $(v-deps-order)
 	export E_MAJOR=hostname E_HOSTNAME=$(V_HOSTNAME) E_PRETTYNAME=$(V_PRETTYNAME)
 	$(MAKE) $(MAKE_FLAGS) hostname-set
 	$(call vpost, E_MINOR=run)

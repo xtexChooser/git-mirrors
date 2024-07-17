@@ -13,7 +13,7 @@ $(call apply-target,$(V_TARGET_NAME))
 $(call vt-target,$(V_TARGET_NAME) $(V_PATH))
 $(V_TARGET_NAME): $(V_PATH)
 
-$(V_PATH): $(V_FILE) $(v-deps)
+$(V_PATH): $(V_FILE) $(v-deps) | $(v-deps-order)
 	export E_MAJOR=podman_kube E_NAME=$(V_NAME) E_PATH=$(V_PATH) E_POD=$(V_POD)
 	if ! ($(PODMAN) pod exists $(V_POD) && [[ -e $(V_PATH) ]]); then
 		$(PODMAN) kube play --replace $(V_FILE) $(DROP_STDOUT)

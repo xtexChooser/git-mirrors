@@ -14,7 +14,8 @@ $(call mktrace-vars,$(SYSTEMD_UNIT_VARS))
 $(call apply-target,$(V_TARGET_NAME))
 $(call vt-target,$(V_TARGET_NAME))
 $(V_TARGET_NAME): $(v-deps) $(if $(V_USER),$(call file-imp-dep,$(SYSTEMD_USER_UNITS_DIR)/$(V_UNIT)), \
-		$(call file-imp-dep,$(SYSTEMD_UNITS_DIR)/$(V_UNIT)))
+		$(call file-imp-dep,$(SYSTEMD_UNITS_DIR)/$(V_UNIT))) \
+		| $(v-deps-order)
 	export E_MAJOR=systemd E_UNIT=$(V_UNIT)
 $(if $(call is-true,$(V_ENABLED)),
 	if ! $(V_SYSTEMCTL) is-enabled $(V_UNIT) $(DROP_STDOUT); then

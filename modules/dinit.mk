@@ -18,7 +18,8 @@ $(V_TARGET_NAME): $(DINITCTL_DEPS) $(v-deps) \
 		$(call file-imp-dep,/lib/dinit.d/$(V_SERVICE)) \
 		$(call file-imp-dep,/run/dinit.d/$(V_SERVICE)) \
 		$(call file-imp-dep,/usr/local/lib/dinit.d/$(V_SERVICE)), \
-		$(call file-imp-dep,$(DINITD_USER_DIR)/$(V_SERVICE)))
+		$(call file-imp-dep,$(DINITD_USER_DIR)/$(V_SERVICE))) \
+		| $(v-deps-order)
 	export E_MAJOR=dinit E_SERVICE=$(V_SERVICE)
 $(if $(call is-true,$(V_RUNNING)),
 	if ! $(V_DINITCTL) is-started $(V_SERVICE) $(DROP_STDOUT); then

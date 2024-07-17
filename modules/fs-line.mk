@@ -12,7 +12,8 @@ $(if $(call streq,$(V_TARGET_NAME),$(V_PATH)),$(call err, fs-line target name ($
 $(call apply-target,$(V_TARGET_NAME))
 $(call vt-target,$(V_TARGET_NAME))
 
-$(V_TARGET_NAME): $(if $(call not,$(findstring no-dep,$(V_FLAGS))$(findstring append,$(V_FLAGS))),$(V_PATH)) $(v-deps)
+$(V_TARGET_NAME): $(if $(call not,$(findstring no-dep,$(V_FLAGS))$(findstring append,$(V_FLAGS))),$(V_PATH)) $(v-deps) \
+		| $(v-deps-order)
 	export E_MAJOR=fs-line E_NAME=$(V_NAME) E_PATH=$(V_PATH)
 	if [[ -e $(V_PATH) ]]; then
 		if ! grep -F '$(V_LINE)' $(V_PATH) $(DROP_STDOUT); then
