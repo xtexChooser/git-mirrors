@@ -17,7 +17,11 @@ sudo chmod -R a+r atremis
 sudo mkdir secrets
 sudo chmod -R 0772 secrets
 
-cd atremis
+cd /srv/atremis
 ./atre pull
+./atre update
 
 command -v atre
+echo SUCCEED
+echo "PRESS ANY KEY TO RESTART OR CTRL+C TO ABORT"
+read -n1 -r && sudo systemctl restart
