@@ -15,8 +15,10 @@ sudo usermod -a -G root "$(whoami)"
 # Fetch atremis
 if ! [[ -e "/srv/atremis" ]]; then
 	sudo mkdir -p /srv
+	pushd /srv
 	sudo git clone --depth 1 --recurse-submodules --shallow-submodules --single-branch https://codeberg.org/xvnet/atremis.git
 	sudo chmod -R a+r atremis
+	popd
 fi
 
 if ! [[ -e "/srv/secrets" ]]; then
@@ -25,11 +27,10 @@ if ! [[ -e "/srv/secrets" ]]; then
 fi
 
 # Update
-(
-	cd /srv/atremis
-	./atre pull
-	./atre update
-)
+pushd /srv/atremis
+./atre pull
+./atre update
+popd
 
 # Validation
 command -v atre
