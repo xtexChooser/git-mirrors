@@ -1,6 +1,6 @@
 DINITCTL = dinitctl
 DINITCTL_SYSTEM = dinitctl --system
-DINITCTL_DEPS := $(call imp-dep,pkg,dinit) $(call imp-dep,systemd-unit,dinit.service)
+DINITCTL_DEPS := $(call imp-dep,pkg,dinit) $(call imp-dep,systemd,dinit.service)
 DINITD_DIR ?= /etc/dinit.d
 DINITD_USER_DIR ?= $(HOME)/.config/dinit.d
 
