@@ -1,0 +1,13 @@
+!! Version 2
+!! functionhooks
+chart
+!! endfunctionhooks
+
+!! test
+chart empty
+!! wikitext
+{{#chart:}}
+!! html
+<p>TODO implement chart parser function
+</p>
+!! end

@@ -20,5 +20,17 @@
 			"i18n"
 		]
 	},
+	"ExtensionMessagesFiles": {
+		"ChartMagic": "Chart.i18n.magic.php"
+	},
+	"HookHandlers": {
+		"main": {
+			"class": "MediaWiki\\Extension\\Chart\\Hooks",
+			"services": []
+		}
+	},
+	"Hooks": {
+		"ParserFirstCallInit": "main"
+	},
 	"manifest_version": 2
 }
