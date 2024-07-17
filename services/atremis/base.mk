@@ -117,6 +117,11 @@ V_PKG		= wireguard-tools
 V_INSTALLED	= y
 V_INST_FILE	= /usr/bin/wg
 $(call end)
+$(call package)
+V_PKG		= tinc
+V_INSTALLED	= y
+V_INST_FILE	= /usr/bin/tincd
+$(call end)
 
 # ========================= maintainer packages =========================
 $(call package)
