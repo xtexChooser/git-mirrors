@@ -3,7 +3,7 @@ set -xe
 
 # Update system
 initPkgs="pacman -Sy archlinux-keyring; pacman -Syuu; pacman -S bash fish make coreutils sudo"
-if command -q sudo; then
+if command -v sudo >/dev/null; then
 	sudo "$initPkgs"
 else
 	su -c "$initPkgs"
