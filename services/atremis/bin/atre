@@ -43,7 +43,7 @@ function atre::pull {
 
 function atre::fetch {
 	atre::log "Fetch updates"
-	atre::root atre internal atre::do_fetch
+	atre::root "$0" internal atre::do_fetch
 }
 
 function atre::do_fetch {
@@ -75,7 +75,7 @@ function atre::root {
 		"$@"
 	else
 		atre::log "Switch to root"
-		sudo atre root "$@"
+		sudo "$0" root "$@"
 	fi
 }
 
@@ -99,7 +99,7 @@ function atre::catlog {
 }
 
 function atre::update {
-	atre::root atre internal atre::prepare_do_update
+	atre::root "$0" internal atre::prepare_do_update
 }
 
 function atre::prepare_do_update {
