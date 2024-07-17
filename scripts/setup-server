@@ -1,27 +1,39 @@
 #!/usr/bin/env bash
-
-set -xet
+set -xe
 
 # Update system
-su -c "pacman -Sy archlinux-keyring; pacman -Syuu; pacman -S bash fish make coreutils busybox sudo"
+initPkgs="pacman -Sy archlinux-keyring; pacman -Syuu; pacman -S bash fish make coreutils sudo"
+if command -q sudo; then
+	sudo "$initPkgs"
+else
+	su -c "$initPkgs"
+fi
 
 # Configure system basics
 sudo usermod -a -G root "$(whoami)"
-[[ -e "/srv" ]] || sudo mkdir /srv
 
 # Fetch atremis
-cd /srv
-sudo git clone --depth 1 --recurse-submodules --shallow-submodules --single-branch https://codeberg.org/xvnet/atremis.git
-sudo chmod -R a+r atremis
+if ! [[ -e "/srv/atremis" ]]; then
+	sudo mkdir -p /srv
+	sudo git clone --depth 1 --recurse-submodules --shallow-submodules --single-branch https://codeberg.org/xvnet/atremis.git
+	sudo chmod -R a+r atremis
+fi
 
-sudo mkdir secrets
-sudo chmod -R 0772 secrets
+if ! [[ -e "/srv/secrets" ]]; then
+	sudo mkdir /srv/secrets
+	sudo chmod -R 0772 /srv/secrets
+fi
 
-cd /srv/atremis
-./atre pull
-./atre update
+# Update
+(
+	cd /srv/atremis
+	./atre pull
+	./atre update
+)
 
+# Validation
 command -v atre
-echo SUCCEED
+
+echo "===== SUCCEED ====="
 echo "PRESS ANY KEY TO RESTART OR CTRL+C TO ABORT"
 read -n1 -r && sudo systemctl restart
