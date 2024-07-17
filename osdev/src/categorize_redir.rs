@@ -83,7 +83,7 @@ pub async fn categorize_redirects() -> Result<()> {
 		}
 
 		// save changes
-		let redirect_template = html
+		let mut redirect_template = html
 			.filter_templates()?
 			.into_iter()
 			.find(|t| t.name() == REDIRECT_PAGE_TEMPLATE);
@@ -99,6 +99,13 @@ pub async fn categorize_redirects() -> Result<()> {
 				revid = resp.newrevid,
 				"Added a stub to redirect"
 			);
+			redirect_template = page
+				.html()
+				.await?
+				.into_mutable()
+				.filter_templates()?
+				.into_iter()
+				.find(|t| t.name() == REDIRECT_PAGE_TEMPLATE);
 		}
 		if !new_templates.is_empty() {
 			// add templates
