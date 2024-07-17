@@ -1,5 +1,6 @@
 DINITCTL = dinitctl
 DINITCTL_SYSTEM = dinitctl --system
+DINITCTL_DEPS = $(call imp-dep,pkg,dinit) $(call imp-dep,systemd-unit,dinit.service)
 DINITD_DIR ?= /etc/dinit.d
 DINITD_USER_DIR ?= $(HOME)/.config/dinit.d
 
@@ -12,7 +13,7 @@ $(call mktrace, Define dinit service target: $(V_SERVICE))
 $(call mktrace-vars,$(DINIT_SERVICE_VARS))
 $(call apply-target,$(V_TARGET_NAME))
 $(call vt-target,$(V_TARGET_NAME))
-$(V_TARGET_NAME): $(v-deps) $(call imp-dep,pkg,dinit) $(call imp-dep,systemd-unit,dinit.service) \
+$(V_TARGET_NAME): $(DINITCTL_DEPS) $(v-deps) \
 		$(if $(V_SYSTEM)$(call streq,root,$(USER)),$(call file-imp-dep,$(DINITD_DIR)/$(V_SERVICE)) \
 		$(call file-imp-dep,/lib/dinit.d/$(V_SERVICE)) \
 		$(call file-imp-dep,/run/dinit.d/$(V_SERVICE)) \
@@ -40,18 +41,18 @@ endef
 $(call define-func, dinit-service)
 
 $(call vt-target, dinit-start dinit-stop dinit-restart dinit-reload dinit-shutdown)
-dinit-start:
+dinit-start: $(DINITCTL_DEPS)
 	$(DINITCTL) start $(E_SERVICE)
 	$(call succ, Started dinit service $(E_SERVICE))
-dinit-stop:
+dinit-stop: $(DINITCTL_DEPS)
 	$(DINITCTL) stop $(E_SERVICE)
 	$(call succ, Stopped dinit service $(E_SERVICE))
-dinit-restart:
+dinit-restart: $(DINITCTL_DEPS)
 	$(DINITCTL) restart $(E_SERVICE)
 	$(call succ, Restarted dinit service $(E_SERVICE))
-dinit-reload:
+dinit-reload: $(DINITCTL_DEPS)
 	$(DINITCTL) reload $(E_SERVICE)
 	$(call succ, Reloaded dinit service $(E_SERVICE))
-dinit-shutdown:
+dinit-shutdown: $(DINITCTL_DEPS)
 	$(DINITCTL) shutdown
 	$(call succ, Shutting down dinit daemon)
