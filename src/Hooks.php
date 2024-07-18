@@ -3,6 +3,7 @@
 namespace MediaWiki\Extension\Chart;
 
 use MediaWiki\Hook\ParserFirstCallInitHook;
+use MediaWiki\Parser\Parser;
 
 class Hooks implements ParserFirstCallInitHook {
 	/** @var ParserFunction */
