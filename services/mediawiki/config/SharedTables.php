@@ -1,6 +1,7 @@
 <?php
 
-$wgSharedDB = 'wikimeta';
+$xvSharedWiki = 'meta';
+$wgSharedDB = 'wiki' . $xvSharedWiki;
 $wgSharedPrefix = '';
 
 $wgSharedTables = [
@@ -8,6 +9,7 @@ $wgSharedTables = [
 	'user_autocreate_serial',
 	'actor',
 	'spoofuser',
+	'sites',
 ];
 if (str_ends_with($xvHttpHost, 'w.xvnet.eu.org')) {
 	$wgCookieDomain = '.w.xvnet.eu.org';
@@ -30,12 +32,12 @@ $xvLoadExtensions[] = 'GlobalCssJs';
 $wgUseGlobalSiteCssJs = true;
 if ($xvWikiID != 'meta') {
 	$wgGlobalCssJsConfig = [
-		'wiki' => $wgSharedDB,
+		'wiki' => $xvSharedWiki,
 		'source' => 'metawiki',
 	];
 } else {
 	$wgGlobalCssJsConfig = [
-		'wiki' => $wgDBname,
+		'wiki' => $xvSharedWiki,
 		'source' => 'local',
 	];
 }
