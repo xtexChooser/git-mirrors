@@ -118,6 +118,7 @@ $wgDiff3 = '/usr/bin/diff3';
 $wgDiffEngine = 'wikidiff2';
 $wgTemplateSandboxEditNamespaces = [NS_TEMPLATE, 828 /* NS_MODULE */];
 $wgEnableEditRecovery = true;
+$wgAllowSiteCSSOnRestrictedPages = true;
 
 // Shared Uploads
 $wgUseSharedUploads = true;
