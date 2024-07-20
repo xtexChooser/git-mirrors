@@ -165,7 +165,7 @@ $wgUploadPath = 'https://' .
 	. '/images/' . $xvWikiID;
 $wgHashedUploadDirectory = true;
 $wgSVGConverter = 'ImageMagick';
-$wgFileExtensions[] = array_merge($wgFileExtensions, [
+$wgFileExtensions = array_merge($wgFileExtensions, [
 	'svg',
 	'ogg',
 	'ico',
