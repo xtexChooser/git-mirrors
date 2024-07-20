@@ -13,7 +13,7 @@ $wgUsePathInfo = true;
 $wgArticlePath = '/w/$1';
 $wgMainPageIsDomainRoot = true;
 
-require_once (dirname(__FILE__) . '/Database.php');
+require_once(dirname(__FILE__) . '/Database.php');
 $wgPHPSessionHandling = 'disable';
 
 // Localisation
@@ -164,10 +164,12 @@ $wgUploadPath = 'https://' .
 	(str_ends_with($xvHttpHost, 'w.xvnet0.eu.org') ? 'uploads.w.xvnet0.eu.org' : 'uploads.w.xvnet.eu.org')
 	. '/images/' . $xvWikiID;
 $wgHashedUploadDirectory = true;
-$wgFileExtensions[] = 'svg';
 $wgSVGConverter = 'ImageMagick';
-$wgFileExtensions[] = 'ogg';
-$wgFileExtensions[] = 'ico';
+$wgFileExtensions[] = array_merge($wgFileExtensions, [
+	'svg',
+	'ogg',
+	'ico',
+]);
 
 // Patrolling
 $wgUseRCPatrol = true;
