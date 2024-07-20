@@ -28,7 +28,7 @@ class BrowseBySubjectTest extends \PHPUnit_Framework_TestCase {
 	private $applicationFactory;
 	private $stringValidator;
 
-	protected function setUp() : void {
+	protected function setUp(): void {
 		parent::setUp();
 
 		$this->testEnvironment = new TestEnvironment();
@@ -39,13 +39,12 @@ class BrowseBySubjectTest extends \PHPUnit_Framework_TestCase {
 		$this->stringValidator = $utilityFactory->newValidatorFactory()->newStringValidator();
 	}
 
-	protected function tearDown() : void {
+	protected function tearDown(): void {
 		$this->testEnvironment->tearDown();
 		parent::tearDown();
 	}
 
 	public function testCanConstruct() {
-
 		$instance = new BrowseBySubject(
 			$this->apiFactory->newApiMain( ['subject' => 'Foo' ] ),
 			'browsebysubject'
@@ -58,7 +57,6 @@ class BrowseBySubjectTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testExecuteForValidSubject() {
-
 		$semanticData = $this->semanticDataFactory->newEmptySemanticData(
 			new DIWikiPage( 'Foo', NS_MAIN )
 		);
@@ -99,7 +97,6 @@ class BrowseBySubjectTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testRawJsonPrintOutput() {
-
 		$parameters = [ 'subject' => 'Foo', 'subobject' => 'Bar'  ];
 
 		$dataItem = new DIWikiPage(
@@ -150,7 +147,6 @@ class BrowseBySubjectTest extends \PHPUnit_Framework_TestCase {
 
 
 	public function testHtmlJsonPrintOutput() {
-
 		$parameters = [
 			'subject' => 'Foo',
 			'subobject' => 'Bar',
@@ -230,7 +226,6 @@ class BrowseBySubjectTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	protected function assertInternalArrayStructure( $setup, $result, $field, $internalType, $definition ) {
-
 		if ( isset( $setup[$field] ) && $setup[$field] ) {
 
 			$this->assertInternalType(
