@@ -32,3 +32,8 @@ buildfile("vmlinux")
 buildfile("Makefile")
 buildfile("modules.builtin")
 safeclean("string.format(\"cd %s; make clean\", fs:parent(path))")
+
+type("composer", "Composer", "composer.json")
+buildfile("vendor")
+rmrf("vendor")
+

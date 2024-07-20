@@ -35,11 +35,11 @@ registry:create({
         return true
     end,
     do_fast_clean = function(path)
-        if fs:exists(fs:side(path, ".gradle")) then
-            fs:rmrf(fs:side(path, ".gradle"))
-        end
         if fs:exists(fs:side(path, "build")) then
             fs:rmrf(fs:side(path, "build"))
+        end
+        if fs:exists(fs:side(path, ".gradle")) then
+            fs:rmrf(fs:side(path, ".gradle"))
         end
     end,
 })
@@ -54,11 +54,11 @@ registry:create({
         return true
     end,
     do_fast_clean = function(path)
-        if fs:exists(fs:side(path, ".gradle")) then
-            fs:rmrf(fs:side(path, ".gradle"))
-        end
         if fs:exists(fs:side(path, "build")) then
             fs:rmrf(fs:side(path, "build"))
+        end
+        if fs:exists(fs:side(path, ".gradle")) then
+            fs:rmrf(fs:side(path, ".gradle"))
         end
     end,
 })
@@ -92,11 +92,11 @@ registry:create({
         return true
     end,
     do_fast_clean = function(path)
-        if fs:exists(fs:side(path, "zig-cache")) then
-            fs:rmrf(fs:side(path, "zig-cache"))
-        end
         if fs:exists(fs:side(path, "zig-out")) then
             fs:rmrf(fs:side(path, "zig-out"))
+        end
+        if fs:exists(fs:side(path, "zig-cache")) then
+            fs:rmrf(fs:side(path, "zig-cache"))
         end
     end,
 })
@@ -123,4 +123,20 @@ registry:create({
             error("failed to execute fast clean command at " .. path)
         end
     end
+})
+registry:create({
+    id = "composer",
+    name = "Composer",
+    file_name = "composer.json",
+    filter = function(path)
+        if not fs:exists(fs:side(path, "vendor")) then
+            return false
+        end
+        return true
+    end,
+    do_fast_clean = function(path)
+        if fs:exists(fs:side(path, "vendor")) then
+            fs:rmrf(fs:side(path, "vendor"))
+        end
+    end,
 })
