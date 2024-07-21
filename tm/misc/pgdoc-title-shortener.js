@@ -19,9 +19,8 @@
 	'use strict';
 
 	if (document.title.startsWith('PostgreSQL: Documentation: ')) {
-		document.title = document.title.replace(
-			/^PostgreSQL: Documentation: \d+: /,
-			'PGDoc: '
-		);
+		document.title = document.title
+			.replace(/^PostgreSQL: Documentation: \d+:\s*/, 'PGDoc: ')
+			.replace('PGDoc: Chapter', 'PGDoc:');
 	}
 })();
