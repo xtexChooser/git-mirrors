@@ -12,6 +12,7 @@
 // @supportURL   https://codeberg.org/xtex/gadgets/issues
 // @downloadURL  https://codeberg.org/xtex/gadgets/raw/branch/stable/tm/misc/pgdoc-title-shortener.js
 // @updateURL    https://codeberg.org/xtex/gadgets/raw/branch/stable/tm/misc/pgdoc-title-shortener.js
+// @license      Unlicense
 // ==/UserScript==
 
 (function () {
