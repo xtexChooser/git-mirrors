@@ -6,12 +6,12 @@ Show all missing images in page.
 
 ```javascript
 mw.loader.load(
-	'https://xtex.codeberg.page/mw-gadgets/@main/generic/missing-images-tracker/script.js'
+	'https://xtex.codeberg.page/gadgets/@main/mw/generic/missing-images-tracker/script.js'
 );
 ```
 
 ```javascript
 mw.loader.load(
-	'https://xtex.codeberg.page/mw-gadgets/@stable/generic/missing-images-tracker/script.js'
+	'https://xtex.codeberg.page/gadgets/@stable/mw/generic/missing-images-tracker/script.js'
 );
 ```

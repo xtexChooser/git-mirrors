@@ -6,12 +6,12 @@
 
 ```javascript
 mw.loader.load(
-	'https://xtex.codeberg.page/mw-gadgets/@main/minecraft-wiki/zh-cmd-deprecate-tracker/script.js'
+	'https://xtex.codeberg.page/gadgets/@main/mw/minecraft-wiki/zh-cmd-deprecate-tracker/script.js'
 );
 ```
 
 ```javascript
 mw.loader.load(
-	'https://xtex.codeberg.page/mw-gadgets/@stable/minecraft-wiki/zh-cmd-deprecate-tracker/script.js'
+	'https://xtex.codeberg.page/gadgets/@stable/mw/minecraft-wiki/zh-cmd-deprecate-tracker/script.js'
 );
 ```
