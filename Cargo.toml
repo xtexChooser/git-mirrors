@@ -1,0 +1,24 @@
+[package]
+name = "odino"
+version = "0.1.0"
+edition = "2021"
+description = "A identity provider service."
+homepage = "https://w.xvnet.eu.org/w/Odino_(software)"
+repository = "https://codeberg.org/xvnet/odino.git"
+authors = ["Xensor V"]
+license = "Apache-2.0"
+
+[dependencies]
+actix-web = "4.8.0"
+anyhow = { version = "1.0.86", features = ["backtrace"] }
+chrono = { version = "0.4.38", features = ["serde"] }
+clap = { version = "4.5.9", features = ["derive"] }
+crc = "3.2.1"
+rand = "0.8.5"
+serde = { version = "1.0.204", features = ["derive"] }
+sqlx = { version = "0.7.4", features = ["macros", "postgres", "runtime-tokio-rustls", "uuid", "chrono", "json"], default-features = false }
+tokio = { version = "1.38.1", features = ["full"] }
+toml = "0.8.15"
+tracing = "0.1.40"
+tracing-subscriber = { version = "0.3.18", features = ["json"] }
+uuid = { version = "1.10.0", features = ["serde", "fast-rng", "v7", "v4"] }
