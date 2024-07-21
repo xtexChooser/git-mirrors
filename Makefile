@@ -1,10 +1,8 @@
 .PHONY: stable fmt
 
 stable:
-	git switch stable
-	git merge --stat --no-edit main
-	git switch main
-	git push origin main stable
+	git update-ref refs/heads/stable refs/heads/main
+	git push origin stable:stable --force
 
 fmt:
 	prettier --write '.'
