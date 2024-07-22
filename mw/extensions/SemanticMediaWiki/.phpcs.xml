@@ -40,10 +40,8 @@
 		<exclude name="MediaWiki.Commenting.PropertyDocumentation.NotShortIntVar" />
 		<exclude name="MediaWiki.Commenting.MissingCovers.MissingCovers" />
 		<exclude name="PSR12.Properties.ConstantVisibility.NotFound" />
-		<exclude name="MediaWiki.WhiteSpace.SpaceAfterClosure.NoWhitespaceAfterClosure" />
 		<exclude name="Squiz.WhiteSpace.OperatorSpacing.NoSpaceAfter" />
 		<exclude name="Squiz.WhiteSpace.OperatorSpacing.NoSpaceBefore" />
-		<exclude name="MediaWiki.WhiteSpace.SpaceAfterClosure.NoWhitespaceAfterClosure" />
 		<exclude name="MediaWiki.WhiteSpace.SpaceBeforeSingleLineComment.NewLineComment" />
 		<exclude name="Generic.WhiteSpace.DisallowSpaceIndent.SpacesUsed" />
 		<exclude name="MediaWiki.WhiteSpace.MultipleEmptyLines.MultipleEmptyLines" />
@@ -53,7 +51,6 @@
 		<exclude name="MediaWiki.Commenting.FunctionComment.WrongStyle" />
 		<exclude name="Squiz.WhiteSpace.OperatorSpacing.SpacingAfter" />
 		<exclude name="MediaWiki.PHPUnit.MockBoilerplate.returnCallback" />
-		<exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing.SpacingBeforeClose" />
 		<exclude name="MediaWiki.PHPUnit.AssertEquals.False" />
 		<exclude name="MediaWiki.Commenting.DocComment.SpacingDocStar" />
 		<exclude name="MediaWiki.Classes.UnusedUseStatement.UnnecessaryUse" />
@@ -111,7 +108,6 @@
 		<exclude name="MediaWiki.Commenting.PropertyDocumentation.NotShortBoolVar" />
 		<exclude name="MediaWiki.Commenting.FunctionComment.MissingParamName" />
 		<exclude name="MediaWiki.Commenting.PhpunitAnnotations.NotClass" />
-		<exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing.SpaceBeforeComma" />
 		<exclude name="Squiz.WhiteSpace.SemicolonSpacing.Incorrect" />
 		<exclude name="Squiz.PHP.NonExecutableCode.Unreachable" />
 		<exclude name="MediaWiki.Commenting.FunctionComment.NotShortIntParam" />
@@ -136,15 +132,10 @@
 		<exclude name="MediaWiki.PHPUnit.AssertEquals.NumericString" />
 		<exclude name="MediaWiki.PHPUnit.SpecificAssertions.assertIsArray" />
 		<exclude name="Universal.WhiteSpace.CommaSpacing.NoSpaceAfterInFunctionDeclaration" />
-		<exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing.NoSpaceBeforeArg" />
 		<exclude name="MediaWiki.Commenting.DocComment.SyntaxAlignedDocClose" />
-		<exclude name="MediaWiki.WhiteSpace.SpaceAfterClosure.NoWhitespaceAfterArrow" />
 		<exclude name="PSR2.Classes.ClassDeclaration.SpaceBeforeName" />
-		<exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing.SpacingAfterOpen" />
 		<exclude name="MediaWiki.PHPUnit.MockBoilerplate.returnValueMap" />
-		<exclude name="Generic.Formatting.SpaceAfterNot.Incorrect" />
 		<exclude name="PSR2.Files.EndFileNewline.TooMany" />
-		<exclude name="Squiz.WhiteSpace.ObjectOperatorSpacing.Before" />
 		<exclude name="MediaWiki.WhiteSpace.SpaceyParenthesis.SpaceBeforeOpeningParenthesis" />
 		<exclude name="Generic.Functions.OpeningFunctionBraceKernighanRitchie.SpaceBeforeBrace" />
 		<exclude name="MediaWiki.PHPUnit.MockBoilerplate.ExactlyOnce" />
@@ -184,7 +175,6 @@
 		<exclude name="PSR2.ControlStructures.ElseIfDeclaration.NotAllowed" />
 		<exclude name="MediaWiki.Usage.ForbiddenFunctions.assert" />
 		<exclude name="MediaWiki.Commenting.FunctionComment.NotParenthesisParamType" />
-		<exclude name="Squiz.WhiteSpace.ObjectOperatorSpacing.After" />
 		<exclude name="Squiz.Classes.SelfMemberReference.SpaceAfter" />
 		<exclude name="MediaWiki.Commenting.FunctionComment.SpacingBeforeReturnType" />
 		<exclude name="PSR2.ControlStructures.SwitchDeclaration.SpaceBeforeColonCASE" />
@@ -217,7 +207,6 @@
 		<exclude name="MediaWiki.Commenting.FunctionComment.UppercasePrimitiveStringReturn" />
 		<exclude name="MediaWiki.NamingConventions.PrefixedGlobalFunctions.allowedPrefix" />
 		<exclude name="MediaWiki.Commenting.LicenseComment.LicenseTagNonFileComment" />
-		<exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing.SpaceAfterEquals" />
 		<exclude name="MediaWiki.VariableAnalysis.MisleadingGlobalNames.Misleading$wgCategoryCollation" />
 		<exclude name="MediaWiki.Usage.DirUsage.FunctionFound" />
 	</rule>

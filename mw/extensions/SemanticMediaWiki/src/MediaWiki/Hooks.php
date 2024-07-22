@@ -159,7 +159,7 @@ class Hooks {
 	 * @param array &$vars
 	 */
 	public static function registerExtensionCheck( array &$vars ) {
-		$vars['wgHooks']['BeforePageDisplay']['smw-extension-check'] = function( $outputPage ) {
+		$vars['wgHooks']['BeforePageDisplay']['smw-extension-check'] = function ( $outputPage ) {
 			$beforePageDisplay = new BeforePageDisplay();
 
 			$beforePageDisplay->setOptions(
@@ -688,7 +688,7 @@ class Hooks {
 		return true;
 	}
 
-	private function getETag( $parserCache, $page, $pOpts) {
+	private function getETag( $parserCache, $page, $pOpts ) {
 		if ( method_exists( $parserCache, 'makeParserOutputKey' ) ) {
 			// 1.36+
 			return 'W/"' . $parserCache->makeParserOutputKey( $page, $pOpts	) .
