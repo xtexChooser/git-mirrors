@@ -22,6 +22,10 @@
 			"href": "MIT-2.0"
 		},
 		{
+			"rel": "webmention",
+			"href": "https://webmention.io/xtexx.eu.org_indieauth/webmention"
+		},
+		{
 			"rel": "lrdd",
 			"type": "application/xrd+xml",
 			"href": "https://xtexx.eu.org/.well-known/webfinger?resource={uri}"
