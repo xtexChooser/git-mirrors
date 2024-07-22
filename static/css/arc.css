@@ -2,4 +2,4 @@
 @import "color.css";
 @import "layout.css";
 @import "content.css";
-@import "print.css";
+@import "print.css" print;
