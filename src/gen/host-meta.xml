@@ -5,7 +5,7 @@
 	<Link rel="about" href="https://xtexx.eu.org/site_about" />
 	<Link rel="copyright" href="https://xtexx.eu.org/site_about#license" />
 	<Link rel="author" href="mailto:xtex@xtexx.eu.org" />
-	<Link rel="license" href="MIT-2.0" />
+	<Link rel="license" href="https://www.mozilla.org/en-US/MPL/2.0/" />
 	<Link rel="webmention" href="https://webmention.io/xtexx.eu.org_indieauth/webmention" />
 	<Link rel="lrdd" type="application/xrd+xml" href="https://xtexx.eu.org/.well-known/webfinger?resource={uri}" />
 </XRD>
