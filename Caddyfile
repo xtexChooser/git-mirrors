@@ -51,9 +51,9 @@ http://:8080 http://xtexx.eu.org http://xtexhome.exozy.me {
 	bind unix/{$UDS_DIR:.}/xtexhome{$UDS_SUFFIX:.sock}|0777 tcp/localhost
 
 	root * src
-	try_files {path}.xhtml {path}.html {path} {path}/
+	try_files {path}.html {path} {path}/
 	file_server {
-		index index.xhtml index.html
+		index index.html
 	}
 
 	redir /blog/* https://blog.xtexx.eu.org/misc/migration-to-home/ permanent
@@ -71,9 +71,6 @@ style-src 'self' https://unpkg.com;
 object-src 'none';
 		"
 
-	@xhtml path / /*.xhtml
-	header @xhtml Content-Type "application/xhtml+xml; utf-8"
-
 	@indexjsonld {
 		path /
 		header Accept *application/ld+json*
@@ -84,7 +81,7 @@ object-src 'none';
 	}
 
 	templates {
-		mime "application/xhtml+xml" "application/json"
+		mime "text/html" "application/json"
 	}
 
 	header /keys/gpg-0xD8045B91-bin.asc Content-Type application/octet-stream
