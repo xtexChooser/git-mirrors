@@ -10,10 +10,16 @@ mod server;
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
 struct Args {
-    #[arg(short, long)]
+    #[arg(short, long, help = "Path to the configuration file")]
     config: Option<PathBuf>,
-    #[arg(long, default_value = "false")]
+    #[arg(
+        long,
+        default_value = "false",
+        help = "Update the database schema and exit"
+    )]
     update: bool,
+    #[arg(long, default_value = "false", help = "Frontend development mode")]
+    fe_dev: bool,
 }
 
 #[actix_web::main]
@@ -22,9 +28,11 @@ async fn main() -> Result<()> {
 
     tracing_subscriber::fmt().json().init();
 
-    let server =
-        IdServer::new(&args.config.unwrap_or(PathBuf::from("odino.toml")))
-            .await?;
+    let server = IdServer::new(
+        &args.config.unwrap_or(PathBuf::from("odino.toml")),
+        args.fe_dev,
+    )
+    .await?;
 
     if args.update {
         database::schema::update(&server.database)
