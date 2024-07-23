@@ -220,6 +220,22 @@ Observer (access to team discussions and history of actions, without any moderat
 
 * https://codeberg.org/oliverpool ([Jan 2024 Agreement](https://codeberg.org/forgejo/governance/issues/55))
 
+
+## Liberapay team members
+
+Purpose: Receive a share of donations distributed via the [liberapay team](https://liberapay.com/forgejo).
+
+Accountability:
+
+* Manage the Forgejo liberapay team account, which was created by the Codeberg account (@fnetx has access)
+* Decide on a fair distribution of the incoming funds among the team members
+
+Team members:
+
+* Fallback: Codeberg e.V. receives part of the share to make use of leftover budget (@fnetx can manage the account)
+* @algernon ([July 2024 Agreement](https://codeberg.org/forgejo/governance/issues/151))
+
+
 ## [GitHub organisation](https://github.com/forgejo) owners as of 2024-01-09
 
 This organisation is only use to prevent squatting. Its information must be kept up-to-date (website, forge and social links).
