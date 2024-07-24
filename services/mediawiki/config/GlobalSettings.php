@@ -120,6 +120,7 @@ $wgConditionalUserOptions['twocolconflict-enabled'] = [
 $wgVisualEditorEnableWikitext = true;
 $wgVisualEditorUseSingleEditTab = true;
 $wgDefaultUserOptions['visualeditor-editor'] = "visualeditor";
+$wgDefaultUserOptions['visualeditor-newwikitext'] = 1;
 
 // Misc
 $wgNamespacesWithSubpages[NS_MAIN] = true;
