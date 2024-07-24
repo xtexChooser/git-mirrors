@@ -150,7 +150,10 @@ $wgRemoveGroups['staff'] = true;
 $wgGroupPermissions['bureaucrat']['interwiki'] = true;
 $wgAddGroups['bureaucrat'] = array_diff(array_keys($wgGroupPermissions), array('staff', 'suppress'));
 $wgRemoveGroups['bureaucrat'] = true;
+$wgGroupPermissions['sysop']['userrights'] = true;
 $wgGroupPermissions['sysop']['patrolmarks'] = true;
+$wgAddGroups['sysop'] = ['bot', 'interface-admin'];
+$wgRemoveGroups['sysop'] = ['sysop', 'bot', 'autoconfirmed'];
 $wgAutoConfirmCount = 10;
 
 // Shared Uploads
