@@ -139,6 +139,7 @@ $wgTemplateSandboxEditNamespaces = [NS_TEMPLATE, 828 /* NS_MODULE */];
 $wgEnableEditRecovery = true;
 $wgAllowSiteCSSOnRestrictedPages = true;
 $wgMFSiteStylesRenderBlocking = true;
+$wgDefaultUserOptions['editrecovery'] = 1;
 
 // User rights
 $wgGroupPermissions['staff']['interwiki'] = true;
