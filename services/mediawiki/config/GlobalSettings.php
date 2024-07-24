@@ -125,7 +125,6 @@ $wgDefaultUserOptions['visualeditor-newwikitext'] = 1;
 // Misc
 $wgNamespacesWithSubpages[NS_MAIN] = true;
 $wgEnableMetaDescriptionFunctions = true;
-$wgGroupPermissions['staff']['interwiki'] = true;
 $wgDefaultUserOptions['usecodemirror'] = true;
 $wgJsonConfigEnableLuaSupport = true;
 $wgAllowCrossOrigin = true;
@@ -140,6 +139,14 @@ $wgTemplateSandboxEditNamespaces = [NS_TEMPLATE, 828 /* NS_MODULE */];
 $wgEnableEditRecovery = true;
 $wgAllowSiteCSSOnRestrictedPages = true;
 $wgMFSiteStylesRenderBlocking = true;
+
+// User rights
+$wgGroupPermissions['staff']['interwiki'] = true;
+$wgGroupPermissions['staff']['editinterfacesite'] = true;
+$wgGroupPermissions['staff']['userrights'] = true;
+$wgGroupPermissions['staff']['ipblock-exempt'] = true;
+$wgAddGroups['staff'] = true;
+$wgRemoveGroups['staff'] = true;
 
 // Shared Uploads
 $wgUseSharedUploads = true;
