@@ -119,7 +119,7 @@ $wgConditionalUserOptions['twocolconflict-enabled'] = [
 // use VE by default
 $wgVisualEditorEnableWikitext = true;
 $wgVisualEditorUseSingleEditTab = true;
-$wgDefaultUserOptions['visualeditor-editor'] = "visualeditor";
+$wgDefaultUserOptions['visualeditor-editor'] = 'visualeditor';
 $wgDefaultUserOptions['visualeditor-newwikitext'] = 1;
 
 // Misc
@@ -148,7 +148,7 @@ $wgGroupPermissions['staff']['ipblock-exempt'] = true;
 $wgAddGroups['staff'] = true;
 $wgRemoveGroups['staff'] = true;
 $wgGroupPermissions['bureaucrat']['interwiki'] = true;
-$wgAddGroups['bureaucrat'] = array_diff(array_keys($wgGroupPermissions), array("staff"));
+$wgAddGroups['bureaucrat'] = array_diff(array_keys($wgGroupPermissions), array('staff', 'suppress'));
 $wgRemoveGroups['bureaucrat'] = true;
 $wgGroupPermissions['sysop']['patrolmarks'] = true;
 $wgAutoConfirmCount = 10;
