@@ -48,7 +48,7 @@ Accountability:
 Team members:
 
 * https://codeberg.org/crystal [April 2023 Agreement](https://codeberg.org/forgejo/governance/issues/18)
-* https://codeberg.org/earl-warren [April 2023 Agreement](https://codeberg.org/forgejo/governance/issues/12)
+* https://codeberg.org/earl-warren [July 2024 Agreement](https://codeberg.org/forgejo/governance/issues/140)
 
 ## Contributors
 
@@ -166,7 +166,7 @@ Accountability:
 Team members:
 
 * https://codeberg.org/crystal [March 2024 Agreement](https://codeberg.org/forgejo/governance/issues/80)
-* https://codeberg.org/earl-warren [March 2023 Agreement](https://codeberg.org/forgejo/governance/issues/3)
+* https://codeberg.org/earl-warren [July 2024 Agreement](https://codeberg.org/forgejo/governance/issues/141)
 
 ## Security
 
