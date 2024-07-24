@@ -147,6 +147,7 @@ $wgGroupPermissions['staff']['userrights'] = true;
 $wgGroupPermissions['staff']['ipblock-exempt'] = true;
 $wgAddGroups['staff'] = true;
 $wgRemoveGroups['staff'] = true;
+$wgGroupPermissions['bureaucrat']['interwiki'] = true;
 
 // Shared Uploads
 $wgUseSharedUploads = true;
