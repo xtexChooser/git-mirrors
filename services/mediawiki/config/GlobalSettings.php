@@ -118,6 +118,7 @@ $wgConditionalUserOptions['twocolconflict-enabled'] = [
 // Visual Editor
 // use VE by default
 $wgVisualEditorEnableWikitext = true;
+$wgVisualEditorUseSingleEditTab = true;
 $wgDefaultUserOptions['visualeditor-editor'] = "visualeditor";
 
 // Misc
