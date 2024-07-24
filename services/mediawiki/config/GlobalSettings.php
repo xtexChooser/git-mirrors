@@ -103,6 +103,10 @@ $wgConditionalUserOptions['betafeatures-auto-enroll'] = [
 	[1, [CUDCOND_USERGROUP, 'sysop']],
 	[1, [CUDCOND_USERGROUP, 'staff']],
 ];
+$wgConditionalUserOptions['showhiddencats'] = [
+	[1, [CUDCOND_USERGROUP, 'sysop']],
+	[1, [CUDCOND_USERGROUP, 'staff']],
+];
 
 // Misc
 $wgNamespacesWithSubpages[NS_MAIN] = true;
