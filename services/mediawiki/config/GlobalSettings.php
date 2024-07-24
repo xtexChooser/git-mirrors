@@ -99,8 +99,10 @@ $wgTurnstileSendRemoteIP = false;
 
 // BetaFeatures
 $xvLoadExtensions[] = 'BetaFeatures';
-// TODO: enable betafeatures by default for sysops
-// https://gerrit.wikimedia.org/r/c/mediawiki/core/+/1022496
+$wgConditionalUserOptions['betafeatures-auto-enroll'] = [
+	[1, [CUDCOND_USERGROUP, 'sysop']],
+	[1, [CUDCOND_USERGROUP, 'staff']],
+];
 
 // Misc
 $wgNamespacesWithSubpages[NS_MAIN] = true;
