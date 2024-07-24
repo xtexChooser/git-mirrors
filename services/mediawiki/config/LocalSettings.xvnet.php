@@ -21,3 +21,6 @@ $wgGroupPermissions['user']['edit'] = false;
 $wgGroupPermissions['emailconfirmed']['edit'] = true;
 
 $xvLoadExtensions[] = 'Cargo';
+
+// Experimental
+$wgVisualEditorEnableTocWidget = true;
