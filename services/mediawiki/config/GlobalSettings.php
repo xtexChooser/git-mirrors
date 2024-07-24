@@ -115,6 +115,11 @@ $wgConditionalUserOptions['twocolconflict-enabled'] = [
 	[1, [CUDCOND_USERGROUP, 'staff']],
 ];
 
+// Visual Editor
+// use VE by default
+$wgVisualEditorEnableWikitext = true;
+$wgDefaultUserOptions['visualeditor-editor'] = "visualeditor";
+
 // Misc
 $wgNamespacesWithSubpages[NS_MAIN] = true;
 $wgEnableMetaDescriptionFunctions = true;
