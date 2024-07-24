@@ -72,6 +72,7 @@ $xvLoadExtensions = array_merge($xvLoadExtensions, [
 	'TextExtracts',
 	'TitleBlacklist',
 	'TitleKey',
+	'TwoColConflict',
 	'VisualEditor',
 	'WikiEditor',
 	'XensTweaks',
@@ -104,6 +105,12 @@ $wgConditionalUserOptions['betafeatures-auto-enroll'] = [
 	[1, [CUDCOND_USERGROUP, 'staff']],
 ];
 $wgConditionalUserOptions['showhiddencats'] = [
+	[1, [CUDCOND_USERGROUP, 'sysop']],
+	[1, [CUDCOND_USERGROUP, 'staff']],
+];
+$wgTwoColConflictBetaFeature = false;
+// @TODO: Testing this
+$wgConditionalUserOptions['twocolconflict-enabled'] = [
 	[1, [CUDCOND_USERGROUP, 'sysop']],
 	[1, [CUDCOND_USERGROUP, 'staff']],
 ];
