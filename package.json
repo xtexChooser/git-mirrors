@@ -3,7 +3,8 @@
 	"version": "0.0.0",
 	"private": true,
 	"workspaces": [
-		"cli"
+		"cli",
+		"service"
 	],
 	"scripts": {
 		"test": "grunt test && npm run -w cli test"
