@@ -275,6 +275,10 @@
   kind: extensions
   prefix: mw/extensions/TorBlock
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/TorBlock
+- name: TwoColConflict
+  kind: extensions
+  prefix: mw/extensions/TwoColConflict
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/TwoColConflict
 - name: Vector
   kind: skins
   prefix: mw/skins/Vector
