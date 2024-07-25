@@ -1,0 +1,40 @@
+clone:
+  - name: git
+    image: woodpeckerci/plugin-git
+    settings:
+      partial: false
+      depth: 0
+steps:
+  - name: update
+    image: alpine
+    secrets: [codeberg_token]
+    commands:
+      - ./scripts/update
+      - git remote set-url origin "https://xvbot:$CODEBERG_TOKEN@codeberg.org/xvnet/mediawiki.git"
+  - name: commit
+    image: appleboy/drone-git-push
+    settings:
+      remote_name: origin
+      branch: bot/update
+      local_ref: main
+      force: true
+      author_name: "xvbot-mwupdater"
+      author_email: "xvbot+codeberg@xvnet.eu.org"
+  - name: pr
+    image: johnwalkerx/gitea-pull-request-create-plugin
+    settings:
+      gitea_address: https://codeberg.org
+      gitea_token:
+        from_secret: codeberg_token
+      owner: ${CI_REPO_OWNER}
+      repo: ${CI_REPO_NAME}
+      branch: bot/update
+      base_branch: main
+      pr_title: "[bot] Update MediaWiki"
+      pr_body: ""
+      delete_branch_after_merge: true
+when:
+  - event: cron
+    cron: update
+  - event: manual
+    evaluate: 'TARGET == "update"'
