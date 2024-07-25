@@ -9,9 +9,6 @@ const renderChart = async (
 	height: number
 ): Promise<void> => {
 	try {
-		console.log( 'source', sourceFile );
-		console.log( 'output', outputFile );
-
 		// eslint-disable-next-line security/detect-non-literal-fs-filename
 		const jsonData = fs.readFileSync( sourceFile, 'utf8' );
 		const sourceData = JSON.parse( jsonData ) as DataValues;
@@ -29,8 +26,9 @@ const renderChart = async (
 
 		const svg = chart.renderToSVGString();
 
+		// - means stdout
 		// eslint-disable-next-line security/detect-non-literal-fs-filename
-		fs.writeFileSync( outputFile, svg );
+		fs.writeFileSync( outputFile === '-' ? process.stdout.fd : outputFile, svg );
 
 		chart.dispose();
 	} catch ( error ) {
