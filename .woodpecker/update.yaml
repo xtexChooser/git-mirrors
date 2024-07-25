@@ -9,6 +9,9 @@ steps:
     image: alpine
     secrets: [codeberg_token]
     commands:
+      - apk add --no-cache bash curl jq git yq coreutils git-subtree
+      - git config --global user.name "xvbot-mwupdater"
+      - git config --global user.email "xvbot+codeberg@xvnet.eu.org"
       - ./scripts/update
       - git remote set-url origin "https://xvbot:$CODEBERG_TOKEN@codeberg.org/xvnet/mediawiki.git"
   - name: commit
