@@ -6,7 +6,7 @@ directionalAudio:true
 gamma:0.5
 guiScale:2
 particles:1
-resourcePacks:["vanilla","file/Default-Dark-Mode-1.20.2+-2023.11.0.zip","file/Twemoji Visibility 1.4.zip","file/Redstone Tweaks 2.4.3.zip","file/shiny ores 1.20 v1.2.zip"]
+resourcePacks:["vanilla","file/Default-Dark-Mode-1.20.2+-2023.11.0.zip","file/Twemoji Visibility 1.4.zip","file/Redstone Tweaks 2.4.3.zip","file/shiny ores 1.20 v1.2.zip", "file/key_language_pack.zip"]
 lang:zh_meme
 tutorialStep:none
 joinedFirstServer:true
