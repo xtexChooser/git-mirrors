@@ -163,11 +163,6 @@ hash = "529f85e7837b766acfd4031d3563d5d96f4d0a83f00dd5328a1b943abda3f8b9"
 metafile = true
 
 [[files]]
-file = "mods/beenfo.pw.toml"
-hash = "47af0e306c0efbc5c368f3784d57fc0c60608f51f3f39047f49aae6829159c6f"
-metafile = true
-
-[[files]]
 file = "mods/better-ping-display-fabric.pw.toml"
 hash = "5309c13521cd3781aed216c44ab66f87a08eaf10d891fdce05bb7e045f59ea8c"
 metafile = true
@@ -373,11 +368,6 @@ hash = "cce89b418e7dd00df7d58eb6556472385aff2f2934c4bfde1b7a2dcd3b1d17cc"
 metafile = true
 
 [[files]]
-file = "mods/morecullingextra.pw.toml"
-hash = "195c57beb3db8380c6ffe13851490be377844ce96cbd142ae96625650b4badb3"
-metafile = true
-
-[[files]]
 file = "mods/no-chat-reports.pw.toml"
 hash = "100a5dfaccb55b107edc57e11fafc1222dc443ce9b669f0d79a39b488e3e45ae"
 metafile = true
@@ -499,6 +489,11 @@ metafile = true
 [[files]]
 file = "resourcepacks/foliage+.pw.toml"
 hash = "5c446fd8e27e740927c9e38c44f92d403a3206c0cd8e413861f37e9fb14b84bf"
+metafile = true
+
+[[files]]
+file = "resourcepacks/key-language-pack.pw.toml"
+hash = "a9a38f3367cee0ca5af3e4fde9a9abb35614d843f15ebcbf3bada6bd8a1852b1"
 metafile = true
 
 [[files]]

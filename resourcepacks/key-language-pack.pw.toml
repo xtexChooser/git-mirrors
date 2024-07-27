@@ -1,0 +1,13 @@
+name = "Key Language Pack"
+filename = "key_language_pack.zip"
+side = "client"
+
+[download]
+url = "https://cdn.modrinth.com/data/QCLPvYpB/versions/ZjXQ2nB8/key_language_pack.zip"
+hash-format = "sha1"
+hash = "d05788a27c7c5cb1f15e4f765f864b5f2081e96c"
+
+[update]
+[update.modrinth]
+mod-id = "QCLPvYpB"
+version = "ZjXQ2nB8"
