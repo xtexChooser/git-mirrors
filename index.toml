@@ -360,8 +360,8 @@ hash = "595baa2bb72f3af291c3e5afae919db7f26e4f7e2d73aea527fce947b861376c"
 metafile = true
 
 [[files]]
-file = "mods/quit.pw.toml"
-hash = "7b9d8e31005486370dbdc3736c1dafe50391aaf89e8164f5663792a39afe2708"
+file = "mods/quit-or-not.pw.toml"
+hash = "42e8e2977afe9e4a25ea095dfa9e6fd2a420860bf2f298009d4abbba2b2d6142"
 metafile = true
 
 [[files]]
@@ -461,7 +461,7 @@ metafile = true
 
 [[files]]
 file = "options.txt"
-hash = "a032b368f2552b5ff9428f83da1515f5f13be8d433b784a8c731dbfaddcd063c"
+hash = "dd26ea1393bd7b45e4e3c0500f0dd68121667e41e7465203c6fb58851417ce10"
 
 [[files]]
 file = "resourcepacks/bettersky.pw.toml"

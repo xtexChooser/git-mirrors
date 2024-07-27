@@ -17,8 +17,6 @@ key_key.custom-crosshair-mod.edit_crosshair:key.keyboard.unknown
 key_key.saveToolbarActivator:key.keyboard.unknown
 key_key.loadToolbarActivator:key.keyboard.unknown
 key_key.imblocker.switchIMEState:key.keyboard.f6
-key_key.quit.fast_quit:key.keyboard.unknown
-key_key.quit.boss_key:key.keyboard.unknown
 key_key.chesttracker.open_gui:key.keyboard.y
 key_key.whereisit.finditem:key.keyboard.unknown
 key_key.inventoryhud.toggle:key.keyboard.unknown

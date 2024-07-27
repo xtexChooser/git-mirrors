@@ -1,0 +1,13 @@
+name = "Quit or Not"
+filename = "QuitOrNot-Fabric-1.21-1.1.0.jar"
+side = "both"
+
+[download]
+hash-format = "sha1"
+hash = "1e469cd5bee87c976f3449a6557b3409fe06830f"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 5528051
+project-id = 943927
