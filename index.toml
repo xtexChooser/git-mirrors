@@ -2,7 +2,7 @@ hash-format = "sha256"
 
 [[files]]
 file = "CREDITS.md"
-hash = "7e477248f60651f2cbe09c68d441901fa3e4c04f8ba47f434f798e04a30d9648"
+hash = "bf9f8ddf740d2fb0a92b9fdc731edddc0586b2ad536dc03b76b53a6b17dd61cc"
 
 [[files]]
 file = "LICENSE"
@@ -306,7 +306,7 @@ metafile = true
 
 [[files]]
 file = "mods/litematica.pw.toml"
-hash = "1fb35950708c9d175558b05ec68487ff22c7b965dc394a62e58da02d7b28dfcc"
+hash = "c891462536142f2ecc6cf6e3be85751add47649c37857603ea9dbf13bd0cb541"
 metafile = true
 
 [[files]]
@@ -421,12 +421,7 @@ metafile = true
 
 [[files]]
 file = "mods/tweakeroo.pw.toml"
-hash = "e74d89e26bf7d98e1869ede3b09096b31b0dd2304d6595d6f806535e2a664eb9"
-metafile = true
-
-[[files]]
-file = "mods/tweakroo.pw.toml"
-hash = "47db45e0d650447910574d256636a611fc54a7af7f25a49595a0b7d46d3988cc"
+hash = "6a762ede5c093c16268f9e3a82a753a38b18f5b1ca629341f8314a391a38d470"
 metafile = true
 
 [[files]]
