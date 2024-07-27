@@ -1,0 +1,6 @@
+{
+  "enableKey": true,
+  "buttonWaitTime": 0,
+  "toastKeepTime": 5000,
+  "toastDelay": 100
+}
