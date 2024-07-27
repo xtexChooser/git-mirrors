@@ -1,7 +1,0 @@
-name = "tweakroo"
-filename = "tweakeroo-fabric-1.21-0.20.999-sakura.21.jar"
-
-[download]
-url = "https://github.com/sakura-ryoko/tweakeroo/releases/download/1.21-sakura.21/tweakeroo-fabric-1.21-0.20.999-sakura.21.jar"
-hash-format = "sha256"
-hash = "6c8dad64eb1e5eb5abd2765e9f016e07ebb1200a5d309bb727dbf608ec8bc0f7"

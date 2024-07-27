@@ -1,13 +1,7 @@
 name = "Tweakeroo"
-filename = "tweakeroo-fabric-1.20.6-0.20.0.jar"
-side = "both"
+filename = "tweakeroo-fabric-1.21-0.20.999-sakura.21.jar"
 
 [download]
-hash-format = "sha1"
-hash = "8f01bdfc54583e1431ea3457913d7c1fc1ef5139"
-mode = "metadata:curseforge"
-
-[update]
-[update.curseforge]
-file-id = 5450185
-project-id = 297344
+url = "https://github.com/sakura-ryoko/tweakeroo/releases/download/1.21-sakura.21/tweakeroo-fabric-1.21-0.20.999-sakura.21.jar"
+hash-format = "sha256"
+hash = "6c8dad64eb1e5eb5abd2765e9f016e07ebb1200a5d309bb727dbf608ec8bc0f7"
