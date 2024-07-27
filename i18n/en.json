@@ -6,5 +6,5 @@
 			"Roan Kattouw"
 		]
 	},
-	"chart-desc": "Adds the <code>{{#chart:}}</code> parser function for displaying charts"
+	"chart-desc": "Adds the <code><nowiki>{{#chart:}}</nowiki></code> parser function for displaying charts"
 }
