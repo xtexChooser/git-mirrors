@@ -1,13 +1,13 @@
 name = "Better Sky"
-filename = "§fBetter §4§lSky §71.20.zip"
+filename = "§fBetter §4§lSky §71.21.zip"
 side = "client"
 
 [download]
-url = "https://cdn.modrinth.com/data/Zrixe2pD/versions/lfhNpukV/%C2%A7fBetter%20%C2%A74%C2%A7lSky%20%C2%A771.20.zip"
+url = "https://cdn.modrinth.com/data/Zrixe2pD/versions/LDyt9RdZ/%C2%A7fBetter%20%C2%A74%C2%A7lSky%20%C2%A771.21.zip"
 hash-format = "sha1"
-hash = "ccaa9ff59421b11f3dd4bb5173f1c178042f9fd3"
+hash = "f9119a5bb9a3373e75366479ff67562aeeffbc72"
 
 [update]
 [update.modrinth]
 mod-id = "Zrixe2pD"
-version = "lfhNpukV"
+version = "LDyt9RdZ"
