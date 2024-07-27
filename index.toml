@@ -49,10 +49,6 @@ file = "config/iris.properties"
 hash = "fc273072f132ab4beba18bdee72e80cce7f82775d91219b39bbff41f9ac5158c"
 
 [[files]]
-file = "config/languagereload.json"
-hash = "e8a42171cdf76c4d3a3b991fa36e3c9fc7bab83ec8c3800ee0de000ec2ddd78c"
-
-[[files]]
 file = "config/litematica.json"
 hash = "ad6fdf495f150d0090f237808fea75a6088a666951de9e88f8ce368e2ac0d33b"
 
@@ -294,11 +290,6 @@ hash = "4ee72fa3b6d91ccec6ec3420396db368dc5097350ee2bb909af3a65f0446c9d5"
 metafile = true
 
 [[files]]
-file = "mods/language-reload.pw.toml"
-hash = "fd77358f512f332ee2113e5fd9d8929ff9fc5952c78f3693c98e27b0de77fef9"
-metafile = true
-
-[[files]]
 file = "mods/lazy-language-loader.pw.toml"
 hash = "2dbfbcf3d122fa6f771b8bb49cfbd230b4374028336bb842070b851812ec26c7"
 metafile = true
@@ -475,7 +466,7 @@ metafile = true
 
 [[files]]
 file = "options.txt"
-hash = "bd6b7e2fdba8181f1a679063d3ff4b1c0c6ecdd611bb9f3e554e7cf99c6fffcc"
+hash = "0f274e677f77fa756936f77b15034b34f4741d928f04242b644ae5d013e6670c"
 
 [[files]]
 file = "resourcepacks/bettersky.pw.toml"
