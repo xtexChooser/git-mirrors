@@ -194,8 +194,8 @@ hash = "a9a6c19b7ad9b6d836f96890c758ec90e1dc7acf69892a2361736965cb81059b"
 metafile = true
 
 [[files]]
-file = "mods/clickthrough.pw.toml"
-hash = "dbede39f3ccff414382384857789cb049c3525fcc8cc7209295743ffd92e4730"
+file = "mods/clickthrough2.0.pw.toml"
+hash = "e6ac7696899b326dc6889b62737a4ff8a3bbed4d6bf3a00777953cb9bfd6f9a6"
 metafile = true
 
 [[files]]
