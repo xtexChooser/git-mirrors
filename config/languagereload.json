@@ -4,8 +4,7 @@
     "zh_cn"
   ],
   "previousFallbacks": [
-    "zh_meme"
   ],
-  "language": "zh_meme",
-  "previousLanguage": "zh_cn"
+  "language": "zh_cn",
+  "previousLanguage": "en_us"
 }

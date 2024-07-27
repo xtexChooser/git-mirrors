@@ -53,12 +53,8 @@ file = "config/iris.properties"
 hash = "fc273072f132ab4beba18bdee72e80cce7f82775d91219b39bbff41f9ac5158c"
 
 [[files]]
-file = "config/lambdynlights.toml"
-hash = "83b8c0bbd7c92d6e668155d49f5266a1537988d76866e16ff310e2faa07ad2e3"
-
-[[files]]
 file = "config/languagereload.json"
-hash = "b9eb0ae31d89d6879b5da3c6b198ba58aee0400852dc569726b3b720e22f1d1a"
+hash = "e8a42171cdf76c4d3a3b991fa36e3c9fc7bab83ec8c3800ee0de000ec2ddd78c"
 
 [[files]]
 file = "config/litematica.json"
@@ -79,6 +75,10 @@ hash = "4353e96331fed165dfd5dff9af6048eaa69393afe57167b66c162e5a29baddf5"
 [[files]]
 file = "config/roughlyenoughitems/config.json5"
 hash = "421613508ff033c031b0cc83ce8d57b53d51737036be4c695a2ad60b32fd7861"
+
+[[files]]
+file = "config/ryoamiclights.toml"
+hash = "83b8c0bbd7c92d6e668155d49f5266a1537988d76866e16ff310e2faa07ad2e3"
 
 [[files]]
 file = "config/seedcracker.json"
