@@ -33,10 +33,6 @@ file = "config/debugify.json"
 hash = "6996193d411b58e087ab2c76c0a209a28d075e847ca8416cd5f3e74fe1633903"
 
 [[files]]
-file = "config/durabilityviewer.json"
-hash = "1150874b1d86a2bc9c081232194f618e67ae0be3362d515d484b2f67f8e4f788"
-
-[[files]]
 file = "config/dynamicfps.toml"
 hash = "3429fa956cf7b9f29667fcfc74fdc4b505d25c4ec9a237281f33ff87e2e9df23"
 
@@ -223,8 +219,8 @@ hash = "b50942a1bec0085be9e0e8902f43623593c38e66dab0117c5a28cbe90dcd80dd"
 metafile = true
 
 [[files]]
-file = "mods/durabilityviewer.pw.toml"
-hash = "9beb7bc96330525b1ee0431c6feb7c24fa85c7037ecbff3fef01905430b9c9d7"
+file = "mods/durability-tooltip.pw.toml"
+hash = "8625ecc64637f1bc3de1b872017f5f83d448a0a8ef30c643c9a01cc68acb1b90"
 metafile = true
 
 [[files]]
@@ -428,6 +424,11 @@ hash = "621e56ad677649509141a20b4a4a6042ea30af69c1527153681f8f2c4cf0104b"
 metafile = true
 
 [[files]]
+file = "mods/supermartijn642s-config-lib.pw.toml"
+hash = "a694429e03e20de9d94ddfe3964321ad981c16008f449789ee9ebb1c5c4470bc"
+metafile = true
+
+[[files]]
 file = "mods/tweakermore.pw.toml"
 hash = "00f99d9ab44814e87d3c54a1bd4ec64089f9a07721f2d207ee116327c313fb2f"
 metafile = true
@@ -474,7 +475,7 @@ metafile = true
 
 [[files]]
 file = "options.txt"
-hash = "5c06d848c3a0d171737d3daae4c626889a6348d32edaa18d194d54607dea242d"
+hash = "bd6b7e2fdba8181f1a679063d3ff4b1c0c6ecdd611bb9f3e554e7cf99c6fffcc"
 
 [[files]]
 file = "resourcepacks/bettersky.pw.toml"
