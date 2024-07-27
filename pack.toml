@@ -1,12 +1,12 @@
 name = "xtex's MP Pack"
 author = "xtex"
-version = "2.15.0"
+version = "2.15.1"
 pack-format = "packwiz:1.1.0"
 
 [index]
 file = "index.toml"
 hash-format = "sha256"
-hash = "bc58b90ff046260209b74325ce6e91cdea461bf5558a233d2a2c54683d944401"
+hash = "4fa5b90df7ef64f3af4810a68b308775c44becebc5b54cad0f064c744def8a46"
 
 [versions]
 fabric = "0.16.0"

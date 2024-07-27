@@ -75,7 +75,7 @@ This is a complete list of all mods, resource packs and shaders included in this
 - No Chat Reports
 - ObsidianUI
 - Pseudo-localization Language Pack
-- Quit
+- Quit or Not
 - Redstone Tweaks
 - Reese's Sodium Options
 - ReplayMod
@@ -155,7 +155,6 @@ This is a complete list of all mods, resource packs and shaders included in this
 - [AudioShutdown](https://modrinth.com/mod/cSJudN5h)
 - [Architectury API](https://modrinth.com/mod/lhGA9TYQ)
 - [bad packets](https://modrinth.com/mod/ftdbN0KK)
-- [Quit](https://modrinth.com/mod/bcIar9jW)
 - [Concurrent Chunk Management Engine (Fabric)](https://modrinth.com/mod/VSNURh3q)
 - [Chat Heads](https://modrinth.com/mod/Wb5oqrBJ)
 - [Chest Tracker](https://modrinth.com/mod/ni4SrKmq)

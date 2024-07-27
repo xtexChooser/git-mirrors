@@ -2,7 +2,7 @@ hash-format = "sha256"
 
 [[files]]
 file = "CREDITS.md"
-hash = "bf9f8ddf740d2fb0a92b9fdc731edddc0586b2ad536dc03b76b53a6b17dd61cc"
+hash = "217115f01807631738769dc0056c396155717645d9019ba0cd0ad52d41a2f0e7"
 
 [[files]]
 file = "LICENSE"
@@ -59,6 +59,10 @@ hash = "8f5b042919783ab53ace20e94a89620964e275426fa3faf7aa93345dc2031ac3"
 [[files]]
 file = "config/modmenu.json"
 hash = "5feba4460fc88646c7cfab6828322785e145086d47e87a0a50039ca82c05e606"
+
+[[files]]
+file = "config/quit-or-not.json"
+hash = "d564407c44e490301bcdd8336c4800d04b9f19826c746958b5e7493900267219"
 
 [[files]]
 file = "config/replaymod.json"
