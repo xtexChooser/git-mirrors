@@ -1,13 +1,7 @@
-name = "Litematica"
-filename = "litematica-fabric-1.20.6-0.18.1.jar"
-side = "both"
+name = "litematica"
+filename = "litematica-fabric-1.21-0.18.999-sakura.29.jar"
 
 [download]
-hash-format = "sha1"
-hash = "d38ac5eac860b7a51a2e667eca18c411e19f5d60"
-mode = "metadata:curseforge"
-
-[update]
-[update.curseforge]
-file-id = 5523424
-project-id = 308892
+url = "https://github.com/sakura-ryoko/litematica/releases/download/1.21-sakura.29/litematica-fabric-1.21-0.18.999-sakura.29.jar"
+hash-format = "sha256"
+hash = "0c78fc6c0aac5892aa067c23466cf2a9180e51fc26b82738bf49751fb40ca268"
