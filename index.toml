@@ -139,6 +139,11 @@ hash = "068ffc5d9bee0b15d558725d7ddb67e82a6cb0849a6e1e0e3346d4fa9d34f5bc"
 metafile = true
 
 [[files]]
+file = "mods/advancements-reloaded.pw.toml"
+hash = "92e4bff606befa1dc14ee5334f2530ff9af709df3547937be906583150382e30"
+metafile = true
+
+[[files]]
 file = "mods/appleskin.pw.toml"
 hash = "420663a6a26a3d60ca7bd07f942ba7ab3379daaf26772181a040e2caf97ff6e7"
 metafile = true
@@ -264,13 +269,8 @@ hash = "7e431c4461f779a679e3dfc29698b6b2a106ede121b6584386ed94f6cddbb7a4"
 metafile = true
 
 [[files]]
-file = "mods/imblocker-original.pw.toml"
-hash = "dfb711f3c7c8a07eb794cb7b9025d81289ac02d9c227f9e26760091dd7573725"
-metafile = true
-
-[[files]]
 file = "mods/imblocker.pw.toml"
-hash = "7e9782d0edd364770e441aaa779cb249756d0154eca2e21b795bc9bb195d21b9"
+hash = "dfb711f3c7c8a07eb794cb7b9025d81289ac02d9c227f9e26760091dd7573725"
 metafile = true
 
 [[files]]

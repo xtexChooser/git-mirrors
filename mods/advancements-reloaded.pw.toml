@@ -1,0 +1,13 @@
+name = "AdvancementInfo Reloaded"
+filename = "advancementinforeloaded-0.3.0-1.21.jar"
+side = "client"
+
+[download]
+url = "https://cdn.modrinth.com/data/tLuRLqpa/versions/uoqZQuGD/advancementinforeloaded-0.3.0-1.21.jar"
+hash-format = "sha1"
+hash = "de67a8487236930d58265d49a9f95750730c9dc6"
+
+[update]
+[update.modrinth]
+mod-id = "tLuRLqpa"
+version = "uoqZQuGD"
