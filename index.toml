@@ -134,11 +134,6 @@ hash = "6e4a1ad878793ab3c3b7df30ea8e4177a65c3632d1b35277683d6f6b333cb073"
 metafile = true
 
 [[files]]
-file = "mods/advancementinfo.pw.toml"
-hash = "068ffc5d9bee0b15d558725d7ddb67e82a6cb0849a6e1e0e3346d4fa9d34f5bc"
-metafile = true
-
-[[files]]
 file = "mods/advancements-reloaded.pw.toml"
 hash = "92e4bff606befa1dc14ee5334f2530ff9af709df3547937be906583150382e30"
 metafile = true
@@ -505,6 +500,11 @@ metafile = true
 [[files]]
 file = "resourcepacks/key-language-pack.pw.toml"
 hash = "a9a38f3367cee0ca5af3e4fde9a9abb35614d843f15ebcbf3bada6bd8a1852b1"
+metafile = true
+
+[[files]]
+file = "resourcepacks/pslp4mc.pw.toml"
+hash = "dd5df57b9c925894ee3577ca807894d6e15d2bde6c1e66fd9446780de48522d1"
 metafile = true
 
 [[files]]

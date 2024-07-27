@@ -1,0 +1,13 @@
+name = "Pseudo-localization Language Pack"
+filename = "MCJE_JAVAFRE_QPS-PLOC_V06.zip"
+side = "client"
+
+[download]
+url = "https://cdn.modrinth.com/data/oZcsj8Sx/versions/rVPW1jWa/MCJE_JAVAFRE_QPS-PLOC_V06.zip"
+hash-format = "sha1"
+hash = "8c57bf9a2c50514b635c27b6106569a3d5f74e67"
+
+[update]
+[update.modrinth]
+mod-id = "oZcsj8Sx"
+version = "rVPW1jWa"
