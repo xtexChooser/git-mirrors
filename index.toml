@@ -474,7 +474,7 @@ metafile = true
 
 [[files]]
 file = "options.txt"
-hash = "1105312a1b095614abfa2e13df3ec3eb405a407f33277df2e4ae7497088d50f7"
+hash = "5c06d848c3a0d171737d3daae4c626889a6348d32edaa18d194d54607dea242d"
 
 [[files]]
 file = "resourcepacks/bettersky.pw.toml"
