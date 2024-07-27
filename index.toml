@@ -393,6 +393,11 @@ hash = "100a5dfaccb55b107edc57e11fafc1222dc443ce9b669f0d79a39b488e3e45ae"
 metafile = true
 
 [[files]]
+file = "mods/obsidianui.pw.toml"
+hash = "595baa2bb72f3af291c3e5afae919db7f26e4f7e2d73aea527fce947b861376c"
+metafile = true
+
+[[files]]
 file = "mods/quick_hotkeys.pw.toml"
 hash = "d01901c3ddefb29da936aaf79e31a1fba298810cbae0a411bb9c0ef7486e1761"
 metafile = true
@@ -415,6 +420,11 @@ metafile = true
 [[files]]
 file = "mods/replaymod.pw.toml"
 hash = "c99ea25a5698ba5d286cc5df09d10fb5737f955981776694519a5ccd43119f58"
+metafile = true
+
+[[files]]
+file = "mods/ryoamiclights.pw.toml"
+hash = "249b71e84f094f716c122fbdd366e802159482d5d68681acb6e8d73ed9685bad"
 metafile = true
 
 [[files]]
