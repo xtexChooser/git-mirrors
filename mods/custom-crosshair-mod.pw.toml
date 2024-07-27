@@ -1,13 +1,13 @@
 name = "Custom Crosshair Mod"
-filename = "custom-crosshair-mod-v1.6.0-fabric-mc1.20.6.jar"
+filename = "custom-crosshair-mod-v1.6.0-fabric-mc1.21.jar"
 side = "both"
 
 [download]
-url = "https://cdn.modrinth.com/data/o1tyE5vJ/versions/QSJXIEwU/custom-crosshair-mod-v1.6.0-fabric-mc1.20.6.jar"
+url = "https://cdn.modrinth.com/data/o1tyE5vJ/versions/uM4PGwYW/custom-crosshair-mod-v1.6.0-fabric-mc1.21.jar"
 hash-format = "sha1"
-hash = "6dbbacb861283d153507bef17a522ff147b4c603"
+hash = "cd63b21cc708d7186aca0bc3d716a5e63d309e4d"
 
 [update]
 [update.modrinth]
 mod-id = "o1tyE5vJ"
-version = "QSJXIEwU"
+version = "uM4PGwYW"

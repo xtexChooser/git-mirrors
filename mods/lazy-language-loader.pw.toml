@@ -1,13 +1,13 @@
 name = "lazy-language-loader"
-filename = "lazy-language-loader-0.3.6.jar"
+filename = "lazy-language-loader-0.3.7.jar"
 side = "client"
 
 [download]
-url = "https://cdn.modrinth.com/data/Nz0RSWrF/versions/Z9rtEyTY/lazy-language-loader-0.3.6.jar"
+url = "https://cdn.modrinth.com/data/Nz0RSWrF/versions/4cZkq7uT/lazy-language-loader-0.3.7.jar"
 hash-format = "sha1"
-hash = "7cd531df671b08e07abb475f3280fe4d6719d519"
+hash = "ea6349ba680dc616df1dc9b0d348b9d416bf2025"
 
 [update]
 [update.modrinth]
 mod-id = "Nz0RSWrF"
-version = "Z9rtEyTY"
+version = "4cZkq7uT"
