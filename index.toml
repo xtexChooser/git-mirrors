@@ -243,6 +243,11 @@ hash = "57c91a1102545d755ee320febca4902f12aecb0c562cc7db089823a723365259"
 metafile = true
 
 [[files]]
+file = "mods/fabric-api.pw.toml"
+hash = "2aaff0682f57de54888dda0c66ca6584b700460886064622aebe2d0d68ef0e23"
+metafile = true
+
+[[files]]
 file = "mods/fabric-language-kotlin.pw.toml"
 hash = "14e87ff6253d2bd02697e46b4a9b5060465d72b71663def5236f829e30bac6d6"
 metafile = true
@@ -380,11 +385,6 @@ metafile = true
 [[files]]
 file = "mods/no-chat-reports.pw.toml"
 hash = "ad96bd81072a10f638ae343938b819f8ab95e11cbb6147f7a81d2e30a49e115a"
-metafile = true
-
-[[files]]
-file = "mods/qsl.pw.toml"
-hash = "f720ff14754b9b1a0bfc9e32438f971cd0f6841f1ff49c885154aed59a9bc1af"
 metafile = true
 
 [[files]]
