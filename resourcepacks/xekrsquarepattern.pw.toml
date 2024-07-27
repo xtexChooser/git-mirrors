@@ -1,13 +1,13 @@
 name = "XeKrSquarePattern"
-filename = "XKSPv3.14forMC1.20.zip"
+filename = "Squareful 方纹v3.21 for MC1.20.2+.zip"
 side = "client"
 
 [download]
-url = "https://cdn.modrinth.com/data/rq4lDGdf/versions/QmfAFSri/XKSPv3.14forMC1.20.zip"
+url = "https://cdn.modrinth.com/data/rq4lDGdf/versions/HkvaOR7b/Squareful%20%E6%96%B9%E7%BA%B9v3.21%20for%20MC1.20.2%2B.zip"
 hash-format = "sha1"
-hash = "224e2d127c152b8fad0fd27c4320a19c6d5c519d"
+hash = "a0789bb9dd9eb0e681e6d967b58255a0630a8c37"
 
 [update]
 [update.modrinth]
 mod-id = "rq4lDGdf"
-version = "QmfAFSri"
+version = "HkvaOR7b"

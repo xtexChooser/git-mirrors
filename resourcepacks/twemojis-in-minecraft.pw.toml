@@ -1,13 +1,13 @@
 name = "Twemojis In Minecraft"
-filename = "Twemoji Visibility 1.2.2.zip"
+filename = "Twemoji Visibility 1.4.zip"
 side = "both"
 
 [download]
-url = "https://cdn.modrinth.com/data/WdYcUVh8/versions/yCdGB9y2/Twemoji%20Visibility%201.2.2.zip"
+url = "https://cdn.modrinth.com/data/WdYcUVh8/versions/BHiWtQiz/Twemoji%20Visibility%201.4.zip"
 hash-format = "sha1"
-hash = "ae98f6271f825f683ebb71d46bfee4b417ea2418"
+hash = "fa1a91f31a3672ad4a9b4650d06feb0ebbead7a9"
 
 [update]
 [update.modrinth]
 mod-id = "WdYcUVh8"
-version = "yCdGB9y2"
+version = "BHiWtQiz"

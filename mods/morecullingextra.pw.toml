@@ -1,0 +1,13 @@
+name = "More Culling Extra"
+filename = "MoreCullingExtra-1.1-1.20.1.jar"
+side = "client"
+
+[download]
+url = "https://cdn.modrinth.com/data/dFKMFBrn/versions/5i4XW7V3/MoreCullingExtra-1.1-1.20.1.jar"
+hash-format = "sha1"
+hash = "2e20c8818758b4daf8b1dd034d21fef0d13b56a2"
+
+[update]
+[update.modrinth]
+mod-id = "dFKMFBrn"
+version = "5i4XW7V3"
