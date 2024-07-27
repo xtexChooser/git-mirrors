@@ -7,7 +7,8 @@
 		"service"
 	],
 	"scripts": {
-		"test": "grunt test && npm run -w cli test"
+		"test": "grunt test && npm run -w cli test",
+		"build": "npm run -w cli build"
 	},
 	"devDependencies": {
 		"@typescript-eslint/eslint-plugin": "^7.17.0",
