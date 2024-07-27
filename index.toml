@@ -264,6 +264,11 @@ hash = "7e431c4461f779a679e3dfc29698b6b2a106ede121b6584386ed94f6cddbb7a4"
 metafile = true
 
 [[files]]
+file = "mods/imblocker-original.pw.toml"
+hash = "dfb711f3c7c8a07eb794cb7b9025d81289ac02d9c227f9e26760091dd7573725"
+metafile = true
+
+[[files]]
 file = "mods/imblocker.pw.toml"
 hash = "7e9782d0edd364770e441aaa779cb249756d0154eca2e21b795bc9bb195d21b9"
 metafile = true
