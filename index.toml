@@ -303,11 +303,6 @@ hash = "4ee72fa3b6d91ccec6ec3420396db368dc5097350ee2bb909af3a65f0446c9d5"
 metafile = true
 
 [[files]]
-file = "mods/lambdynamiclights.pw.toml"
-hash = "d398662ae6e9d87e89384ba50a9787dbeb9425902a18b0cd8239efd0b966b453"
-metafile = true
-
-[[files]]
 file = "mods/language-reload.pw.toml"
 hash = "fd77358f512f332ee2113e5fd9d8929ff9fc5952c78f3693c98e27b0de77fef9"
 metafile = true
@@ -318,23 +313,13 @@ hash = "2dbfbcf3d122fa6f771b8bb49cfbd230b4374028336bb842070b851812ec26c7"
 metafile = true
 
 [[files]]
-file = "mods/lazydfu.pw.toml"
-hash = "b4ca05b39b85c27cd97ccb65d5fb832f5e9fd7ee5710542a3e69dfa30a97ea7d"
-metafile = true
-
-[[files]]
 file = "mods/libipn.pw.toml"
 hash = "4ba4a6bfb2a8a35f378cfff1ea81a46d08ee1c3ab344be34cb792aa0e5418ed2"
 metafile = true
 
 [[files]]
-file = "mods/litematica-printer-easyplace-extension.pw.toml"
-hash = "439e6de918dfe124e1002f0448586355e5894c4fa0db115358776378f66b543c"
-metafile = true
-
-[[files]]
 file = "mods/litematica-printer.pw.toml"
-hash = "ac57a6d6e456f9bd7cd072937f51de7ce59bbad75b511f18875bb7a0de39f9ab"
+hash = "439e6de918dfe124e1002f0448586355e5894c4fa0db115358776378f66b543c"
 metafile = true
 
 [[files]]
@@ -395,11 +380,6 @@ metafile = true
 [[files]]
 file = "mods/obsidianui.pw.toml"
 hash = "595baa2bb72f3af291c3e5afae919db7f26e4f7e2d73aea527fce947b861376c"
-metafile = true
-
-[[files]]
-file = "mods/quick_hotkeys.pw.toml"
-hash = "d01901c3ddefb29da936aaf79e31a1fba298810cbae0a411bb9c0ef7486e1761"
 metafile = true
 
 [[files]]
