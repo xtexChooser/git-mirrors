@@ -328,6 +328,11 @@ hash = "4ba4a6bfb2a8a35f378cfff1ea81a46d08ee1c3ab344be34cb792aa0e5418ed2"
 metafile = true
 
 [[files]]
+file = "mods/litematica-printer-easyplace-extension.pw.toml"
+hash = "439e6de918dfe124e1002f0448586355e5894c4fa0db115358776378f66b543c"
+metafile = true
+
+[[files]]
 file = "mods/litematica-printer.pw.toml"
 hash = "ac57a6d6e456f9bd7cd072937f51de7ce59bbad75b511f18875bb7a0de39f9ab"
 metafile = true
