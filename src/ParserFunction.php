@@ -24,8 +24,9 @@ class ParserFunction {
 			'node',
 			'./dist/index.js',
 			'line',
-			// TODO provide input file (or stdin)
-			'data.json',
+			// TODO provide input files
+			'chart-data.json',
+			'chart-definition.json',
 			'-'
 		)
 			->workingDirectory( dirname( __DIR__ ) . '/cli' )
