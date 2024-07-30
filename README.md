@@ -2,7 +2,22 @@ This is a MediaWiki extension for displaying charts.
 
 For more information, see https://www.mediawiki.org/wiki/Extension:Chart
 
+== Usage ==
+
+Install, compile the service, and configure the Data: namespace per notes below.
+
+Charts are expected to be configured on `.chart` pages in the Data: namespace, and
+render using data from tabular `.tab` pages also in the Data: namespace.
+
+Sample usage invoking both explicitly:
+
+```
+{{#chart:format=1993 Canadian federal election.chart
+|data=1993 Canadian federal election.tab}}
+```
+
 == Installation ==
+- Install the JsonConfig extension; see https://www.mediawiki.org/wiki/Extension:JsonConfig#Installation
 - Clone this repo into the `extensions/Chart` directory in your MediaWiki installation
 - In the `extensions/Chart` directory, run `npm install && npm run -w cli build`
 - Add `wfLoadExtension( 'Chart' )` at the bottom of `LocalSettings.php`
@@ -24,3 +39,56 @@ docker compose build
 docker compose down
 docker compose up -d
 ```
+
+== JsonConfig dependency ==
+
+For the local `Data:` namespace, the `JsonConfig` extension is required to be running
+and configured for "`.tab`" tabular data and "`.chart`" formatting definitions.
+
+=== .tab tabular data ===
+
+The "`.tab`" data pages are as per https://www.mediawiki.org/wiki/Help:Tabular_Data
+
+Sample config for local development:
+
+```php
+	// Safety: before extension.json, these values were initialized by JsonConfig.php
+	$wgJsonConfigModels = $wgJsonConfigModels ?? [];
+	$wgJsonConfigs = $wgJsonConfigs ?? [];
+
+	// https://www.mediawiki.org/wiki/Extension:JsonConfig#Configuration
+	$wgJsonConfigModels['Tabular.JsonConfig'] = 'JsonConfig\JCTabularContent';
+	$wgJsonConfigs['Tabular.JsonConfig'] = [
+		'namespace' => 486,
+		'nsName' => 'Data',
+		// page name must end in ".tab", and contain at least one symbol
+		'pattern' => '/.\.tab$/',
+		'license' => 'CC0-1.0',
+		'isLocal' => true,
+	];
+```
+
+A sample .tab page may be found in the `sample/` folder.
+
+=== .chart format descriptions ===
+
+The "`.chart`" data pages are custom for this extension and also build on `JsonConfig`.
+
+```php
+	// Safety: before extension.json, these values were initialized by JsonConfig.php
+	$wgJsonConfigModels = $wgJsonConfigModels ?? [];
+	$wgJsonConfigs = $wgJsonConfigs ?? [];
+
+	// https://www.mediawiki.org/wiki/Extension:JsonConfig#Configuration
+	$wgJsonConfigModels['Chart.JsonConfig'] = 'MediaWiki\Extension\Chart\JCChartContent';
+	$wgJsonConfigs['Chart.JsonConfig'] = [
+		'namespace' => 486,
+		'nsName' => 'Data',
+		// page name must end in ".chart", and contain at least one symbol
+		'pattern' => '/.\.chart$/',
+		'license' => 'CC0-1.0',
+		'isLocal' => true,
+	];
+```
+
+Sample .chart page may be found under the `sample/` folder.
