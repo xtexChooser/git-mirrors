@@ -10,6 +10,7 @@ use MediaWiki\Parser\Parser;
 use MediaWiki\Shell\Shell;
 use MediaWiki\Status\Status;
 use MediaWiki\Title\Title;
+use MWCryptHash;
 use WikiPage;
 
 class ParserFunction {
@@ -108,6 +109,13 @@ class ParserFunction {
 		} else {
 			return $this->renderError( $parser->msg( 'chart-error-data-source-page-not-found' )->text() );
 		}
+
+		// Prefix for IDs in the SVG. This has to be unique between charts on the same page, to
+		// prevent ID collisions (T371558). If the same chart with the same data is displayed twice
+		// on the same page, this gives them the same ID prefixes and causes their IDs to collide,
+		// but that doesn't seem to cause a problem in practice.
+		$definitionForHash = json_encode( [ 'format' => $formatData, 'source' => $sourceData ] );
+		$formatData->idPrefix = 'mw-chart-' . MWCryptHash::hash( $definitionForHash, false );
 
 		$chartPath = tempnam( \wfTempDir(), 'chart-json' );
 		file_put_contents( $chartPath, json_encode( $formatData ) );

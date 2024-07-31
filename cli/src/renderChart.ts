@@ -1,5 +1,6 @@
 import * as echarts from 'echarts';
 import * as fs from 'fs';
+import { optimize } from 'svgo';
 import { ChartData, WikiLineChart } from './chart.js';
 import { createLineChart } from './charts/LineChart.js';
 
@@ -29,11 +30,17 @@ const renderChart = async (
 
 		chart.setOption( eChartsSpec );
 
-		const svg = chart.renderToSVGString();
+		const rawSvg = chart.renderToSVGString();
+		// Use SVGO to prefix all IDs in the SVG
+		const processedSvg = optimize( rawSvg, {
+			plugins: [
+				{ name: 'prefixIds', params: { prefix: chartDef.idPrefix } }
+			]
+		} ).data;
 
 		// - means stdout
 		// eslint-disable-next-line security/detect-non-literal-fs-filename
-		fs.writeFileSync( outputFile === '-' ? process.stdout.fd : outputFile, svg );
+		fs.writeFileSync( outputFile === '-' ? process.stdout.fd : outputFile, processedSvg );
 
 		chart.dispose();
 	} catch ( error ) {
