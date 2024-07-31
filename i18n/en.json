@@ -6,5 +6,8 @@
 			"Roan Kattouw"
 		]
 	},
-	"chart-desc": "Adds the <code><nowiki>{{#chart:}}</nowiki></code> parser function for displaying charts"
+	"chart-desc": "Adds the <code><nowiki>{{#chart:}}</nowiki></code> parser function for displaying charts",
+	"chart-error-shell-disabled": "Charts cannot be rendered because shell execution is disabled",
+	"chart-error-shell-no-response": "Chart is currently unavailable.",
+	"chart-error-shell-error": "There was an error rendering the chart."
 }
