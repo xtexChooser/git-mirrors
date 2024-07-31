@@ -3,11 +3,15 @@
 		"authors": [
 			"Brooke Vibber",
 			"Katie Filbert",
-			"Roan Kattouw"
+			"Roan Kattouw",
+			"Jon Robson"
 		]
 	},
 	"chart-desc": "Adds the <code><nowiki>{{#chart:}}</nowiki></code> parser function for displaying charts",
-	"chart-error-shell-disabled": "Charts cannot be rendered because shell execution is disabled",
+	"chart-error-chart-definition-not-found": "Chart definition page not found.",
+	"chart-error-data-source-page-not-found": "Chart tabular data source page not found.",
+	"chart-error-incompatible-data-source": "Tabular data source page is incompatible with charts.",
+	"chart-error-shell-disabled": "Charts cannot be rendered because shell execution is disabled.",
 	"chart-error-shell-no-response": "Chart is currently unavailable.",
 	"chart-error-shell-error": "There was an error rendering the chart."
 }
