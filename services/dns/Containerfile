@@ -12,4 +12,4 @@ COPY --from=builder /bld/out/zsk/*.key /
 
 LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
 LABEL org.opencontainers.image.title="XVN Authoritative Zone Files"
-LABEL org.opencontainers.image.vendor="XV-NET"
+LABEL org.opencontainers.image.vendor="Xensor V Network"

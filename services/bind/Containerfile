@@ -38,7 +38,7 @@ LABEL org.opencontainers.image.licenses="MPL-2.0"
 LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
 LABEL org.opencontainers.image.title="bind"
 LABEL org.opencontainers.image.url="https://bind.isc.org/"
-LABEL org.opencontainers.image.vendor="XV-NET"
+LABEL org.opencontainers.image.vendor="Xensor V Network"
 
 WORKDIR /
 EXPOSE 53/udp 53/tcp 953/tcp
