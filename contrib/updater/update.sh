@@ -21,7 +21,7 @@ function doUpdate() {
 			'https://codeberg.org/api/v1/repos/xvnet/mediawiki/pulls' \
 			-H 'Accept: application/json' \
 			-H 'Content-Type: application/json' \
-			-H "Authorization: $CODEBERG_TOKEN" \
+			-H "Authorization: token $CODEBERG_TOKEN" \
 			-SL --retry 2 \
 			-d "$(jo -- base=main head="bot/update" title="[bot] Merge upstream" \
 				body="$(printf 'Updated-at: %s\nCI-Link: <%s>' "$(date -u)" "$CI_STEP_URL")" \
@@ -31,7 +31,7 @@ function doUpdate() {
 
 if doUpdate; then
 	curl \
-		-H "Authorization: Bearer $NTFY_TOKEN" \
+		-H "Authorization: token Bearer $NTFY_TOKEN" \
 		-H "X-Title: MediaWiki auto-update succeeded" \
 		-H "X-Actions: view, View on CI, $CI_STEP_URL" \
 		-H "X-Tags: mediawiki,mwupdater,pipeline-success" \
@@ -50,13 +50,13 @@ if doUpdate; then
 				"$issue" \
 				-H 'Accept: application/json' \
 				-H 'Content-Type: application/json' \
-				-H "Authorization: $CODEBERG_TOKEN" \
+				-H "Authorization: token $CODEBERG_TOKEN" \
 				-SL --retry 2 \
 				-d "$(jo -- state=close)"
 		done
 else
 	curl \
-		-H "Authorization: Bearer $NTFY_TOKEN" \
+		-H "Authorization: token Bearer $NTFY_TOKEN" \
 		-H "X-Title: MediaWiki auto-update failed" \
 		-H "X-Actions: view, View on CI, $CI_STEP_URL" \
 		-H "X-Tags: mediawiki,mwupdater,pipeline-failure" \
@@ -76,7 +76,7 @@ else
 			'https://codeberg.org/api/v1/repos/xvnet/mediawiki/issues' \
 			-H 'Accept: application/json' \
 			-H 'Content-Type: application/json' \
-			-H "Authorization: $CODEBERG_TOKEN" \
+			-H "Authorization: token $CODEBERG_TOKEN" \
 			-SL --retry 2 \
 			-d "$(jo title="[bot] MW Auto-updater fails" \
 				body="$(printf 'CI-Link: <%s>' "$CI_STEP_URL")" \
