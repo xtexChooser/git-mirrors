@@ -15,8 +15,9 @@ if [[ "$VERSION" != "" ]]; then
 	pipeline="$pipeline $VERSION"
 fi
 
-desc="Pipeline: $CI_PIPELINE_NUMBER
-Triggerred by: $CI_PIPELINE_EVENT"
+desc="CI-Pipeline-Number: $CI_PIPELINE_NUMBER
+CI-Link: <$CI_STEP_URL>
+Triggerred-by-event: $CI_PIPELINE_EVENT"
 priority=min
 
 if [[ "$CI_PIPELINE_STATUS" == "success" ]]; then
