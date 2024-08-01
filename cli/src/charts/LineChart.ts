@@ -79,6 +79,7 @@ export const createLineChart = (
 	const legendPosition = getLegendPosition();
 
 	const chartSpec: EChartsOption = {
+		animation: false,
 		xAxis: {
 			type: 'category',
 			axisLabel: {
