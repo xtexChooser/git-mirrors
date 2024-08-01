@@ -9,20 +9,18 @@ program
 	.command( 'line' )
 	.description( 'Render a line chart' )
 	.argument( '<source>', 'Source file path' )
+	.argument( '<definition>', 'Chart definition json' )
 	.argument( '<output>', 'Output file path' )
-	.option( '--width <width>', 'Width of the chart', '800' )
-	.option( '--height <height>', 'Height of the chart', '600' )
 	.action(
 		async (
 			sourceFile: string,
-			outputFile: string,
-			options: { width: string; height: string }
+			chartDefFile: string,
+			outputFile: string
 		) => {
 			await renderChart(
 				sourceFile,
-				outputFile,
-				parseInt( options.width, 10 ),
-				parseInt( options.height, 10 )
+				chartDefFile,
+				outputFile
 			);
 		}
 	);

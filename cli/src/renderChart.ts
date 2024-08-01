@@ -1,25 +1,30 @@
 import * as echarts from 'echarts';
 import fs from 'fs';
-import { DataValues, generateEchartsSpec } from './generateEchartsSpec.js';
+import { ChartData, WikiLineChart } from './chart.js';
+import { createLineChart } from './charts/LineChart.js';
 
 const renderChart = async (
 	sourceFile: string,
-	outputFile: string,
-	width: number,
-	height: number
+	chartDefFile: string,
+	outputFile: string
 ): Promise<void> => {
 	try {
 		// eslint-disable-next-line security/detect-non-literal-fs-filename
 		const jsonData = fs.readFileSync( sourceFile, 'utf8' );
-		const sourceData = JSON.parse( jsonData ) as DataValues;
+		const sourceData = JSON.parse( jsonData ) as ChartData;
 
-		const eChartsSpec = generateEchartsSpec( sourceData );
+		// eslint-disable-next-line security/detect-non-literal-fs-filename
+		const chartDefinitionJson = fs.readFileSync( chartDefFile, 'utf8' );
+		const chartDef = JSON.parse( chartDefinitionJson ) as WikiLineChart;
+
+		const eChartsSpec = createLineChart( chartDef, sourceData );
+		const { width, height } = chartDef;
 
 		const chart = echarts.init( null, 'vintage', {
 			renderer: 'svg',
 			ssr: true,
-			width: width,
-			height: height
+			width,
+			height
 		} );
 
 		chart.setOption( eChartsSpec );
