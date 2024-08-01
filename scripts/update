@@ -30,7 +30,7 @@ mergeSubtree() {
 					} || true
 				done
 			fi
-			git merge --continue
+			git merge --continue --no-edit
 		fi
 	else
 		echo "Adding: $name"
