@@ -72,6 +72,14 @@ class ParserFunction {
 				// @fixme remote will require going through JCSingleton::getContent?
 				//$formatContent = JCSingleton::getContent( $format->getTitleValue() );
 				$formatData = $formatContent->getLocalizedData( $parser->getTargetLanguage() );
+
+				// Record a dependency on the chart page, so that the page embedding the chart
+				// is reparsed when the chart page is edited
+				$parser->getOutput()->addTemplate(
+					$formatPage->getTitle(),
+					$formatPage->getId(),
+					$formatPage->getRevisionRecord()->getId()
+				);
 			}
 		} else {
 			return $this->renderError( $parser->msg( 'chart-error-chart-definition-not-found' )->text() );
@@ -86,6 +94,14 @@ class ParserFunction {
 				// @fixme remote will require going through JCSingleton::getContent?
 				//$sourceContent = JCSingleton::getContent( $source->getTitleValue() );
 				$sourceData = $sourceContent->getLocalizedData( $parser->getTargetLanguage() );
+
+				// Record a dependency on the data page, so that the page embedding the chart
+				// is reparsed when the data page is edited
+				$parser->getOutput()->addTemplate(
+					$sourcePage->getTitle(),
+					$sourcePage->getId(),
+					$sourcePage->getRevisionRecord()->getId()
+				);
 			} else {
 				return $this->renderError( $parser->msg( 'chart-error-incompatible-data-source' )->text() );
 			}
