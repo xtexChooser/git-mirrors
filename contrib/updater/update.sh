@@ -31,7 +31,7 @@ function doUpdate() {
 
 if doUpdate; then
 	curl \
-		-H "Authorization: token Bearer $NTFY_TOKEN" \
+		-H "Authorization: Bearer $NTFY_TOKEN" \
 		-H "X-Title: MediaWiki auto-update succeeded" \
 		-H "X-Actions: view, View on CI, $CI_STEP_URL" \
 		-H "X-Tags: mediawiki,mwupdater,pipeline-success" \
@@ -56,7 +56,7 @@ if doUpdate; then
 		done
 else
 	curl \
-		-H "Authorization: token Bearer $NTFY_TOKEN" \
+		-H "Authorization: Bearer $NTFY_TOKEN" \
 		-H "X-Title: MediaWiki auto-update failed" \
 		-H "X-Actions: view, View on CI, $CI_STEP_URL" \
 		-H "X-Tags: mediawiki,mwupdater,pipeline-failure" \

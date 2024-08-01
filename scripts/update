@@ -13,7 +13,7 @@ mergeSubtree() {
 
 	if [[ -e "$prefix" ]]; then
 		echo "Merging: $name"
-		if ! git subtree -P "$prefix" merge "$commit"; then
+		if ! git merge -Xsubtree="$prefix" --no-edit "$commit"; then
 			echo "Trying to resolve merge conflicts"
 			if [[ -e "$prefix"/.gitmodules ]]; then
 				grep 'path = ' "$prefix"/.gitmodules | cut -d'=' -f2 | awk '{print "'"$prefix"'/" $1}' | while read -r dir; do
@@ -30,7 +30,7 @@ mergeSubtree() {
 					} || true
 				done
 			fi
-			git merge --continue --no-edit
+			git commit --no-edit
 		fi
 	else
 		echo "Adding: $name"
