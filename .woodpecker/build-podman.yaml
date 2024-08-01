@@ -1,0 +1,27 @@
+steps:
+    - name: build
+      image: woodpeckerci/plugin-docker-buildx
+      settings:
+          platforms: linux/amd64,linux/arm64/v8
+          repo: codeberg.org/${CI_REPO_OWNER}/podman
+          registry: codeberg.org
+          username: ${CI_REPO_OWNER}
+          password:
+              from_secret: codeberg_token
+          context: services/podman
+          dockerfile: services/podman/Containerfile
+    - name: send-ntfy
+      image: alpine
+      secrets: [ntfy_token]
+      when:
+          - status: [success, failure]
+      commands:
+          - ./scripts/pkgs/send-log.sh
+when:
+    - event: push
+      path:
+          include: [".woodpecker/build-podman.yaml", "services/podman/Containerfile"]
+    - event: cron
+      cron: build-pkgs
+    - event: manual
+      evaluate: 'TARGET == "all" || TARGET == "podman"'

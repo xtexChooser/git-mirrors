@@ -1,0 +1,14 @@
+FROM docker.io/library/alpine
+
+RUN set -eux; \
+	apk add --no-cache podman
+
+ENTRYPOINT [ "/usr/bin/podman" ]
+CMD []
+
+LABEL org.opencontainers.image.licenses="Apache-2.0"
+LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
+LABEL org.opencontainers.image.title="Podman"
+LABEL org.opencontainers.image.url="https://podman.io/"
+LABEL org.opencontainers.image.vendor="XV-NET"
+LABEL org.opencontainers.image.documentation="https://podman.io/docs"
