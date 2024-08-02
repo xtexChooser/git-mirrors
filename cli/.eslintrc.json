@@ -1,5 +1,13 @@
 {
 	"parserOptions": {
 		"sourceType": "module"
-	}
+	},
+	"overrides": [
+		{
+			"files": "**/*.ts",
+			"rules": {
+				"n/no-missing-import": "off"
+			}
+		}
+	]
 }
