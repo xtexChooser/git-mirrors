@@ -15,7 +15,8 @@ export interface WikiLineChart {
     interpolate: 'basis',
     showSymbols: boolean,
     colors: string[],
-    source: string
+    source: string,
+    idPrefix: string
 }
 
 export interface Field {
