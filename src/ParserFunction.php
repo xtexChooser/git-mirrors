@@ -127,7 +127,7 @@ class ParserFunction {
 
 		$error = $result->getStderr();
 		if ( $error ) {
-			$logger->warning( 'Chart shell command failed to generate output', [
+			$logger->warning( 'Chart shell command returned error: {error}', [
 				'error' => $error
 			] );
 
