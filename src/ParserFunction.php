@@ -42,7 +42,7 @@ class ParserFunction {
 		}
 
 		$format = null;
-		$data = null;
+		$dataSource = null;
 		$width = null;
 		$height = null;
 		foreach ( $args as $arg ) {
@@ -54,7 +54,7 @@ class ParserFunction {
 						$format = $value;
 						break;
 					case 'data':
-						$data = $value;
+						$dataSource = $value;
 						break;
 					// @unstable: @todo revisit after T371712
 					case 'width':
@@ -83,6 +83,9 @@ class ParserFunction {
 				// @fixme remote will require going through JCSingleton::getContent?
 				//$formatContent = JCSingleton::getContent( $format->getTitleValue() );
 				$formatData = $formatContent->getLocalizedData( $parser->getTargetLanguage() );
+				if ( !$dataSource && $formatData->source ) {
+					$dataSource = $formatData->source;
+				}
 
 				// Record a dependency on the chart page, so that the page embedding the chart
 				// is reparsed when the chart page is edited
@@ -97,7 +100,7 @@ class ParserFunction {
 		}
 
 		$sourceData = (object)[ 'fields' => [], 'data' => [] ];
-		$sourceTitle = Title::newFromText( $data, $ns );
+		$sourceTitle = Title::newFromText( $dataSource, $ns );
 		if ( $sourceTitle ) {
 			$sourcePage = new WikiPage( $sourceTitle );
 			$sourceContent = $sourcePage->getContent();
