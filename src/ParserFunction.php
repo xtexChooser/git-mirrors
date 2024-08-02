@@ -42,6 +42,8 @@ class ParserFunction {
 
 		$format = null;
 		$data = null;
+		$width = null;
+		$height = null;
 		foreach ( $args as $arg ) {
 			// @fixme use proper i18n-friendly magic words
 			if ( strpos( $arg, '=' ) >= 0 ) {
@@ -52,6 +54,14 @@ class ParserFunction {
 						break;
 					case 'data':
 						$data = $value;
+						break;
+					// @unstable: @todo revisit after T371712
+					case 'width':
+						$width = $value;
+						break;
+					// @unstable: @todo revisit after T371712
+					case 'height':
+						$height = $value;
 						break;
 					default:
 						// no-op
@@ -114,14 +124,9 @@ class ParserFunction {
 		$sourcePath = tempnam( \wfTempDir(), 'data-json' );
 		file_put_contents( $sourcePath, json_encode( $sourceData ) );
 
-		$result = Shell::command(
-			'node',
-			'./dist/index.js',
-			'line',
-			$sourcePath,
-			$chartPath,
-			'-'
-		)
+		$shellArgs = $this->getShellArgs( $sourcePath, $chartPath, $width, $height );
+
+		$result = Shell::command( ...$shellArgs )
 			->workingDirectory( dirname( __DIR__ ) . '/cli' )
 			->execute();
 
@@ -154,5 +159,35 @@ class ParserFunction {
 		}
 
 		return $status->getValue();
+	}
+
+	/**
+	 * @param string $sourcePath
+	 * @param string $chartPath
+	 * @param string|null $width
+	 * @param string|null $height
+	 * @return string[]
+	 */
+	private function getShellArgs( string $sourcePath, string $chartPath, ?string $width, ?string $height ): array {
+		$shellArgs = [
+			'node',
+			'./dist/index.js',
+			'line',
+			$sourcePath,
+			$chartPath,
+			'-'
+		];
+
+		if ( $width ) {
+			$shellArgs[] = "--width";
+			$shellArgs[] = $width;
+		}
+
+		if ( $height ) {
+			$shellArgs[] = "--height";
+			$shellArgs[] = $height;
+		}
+
+		return $shellArgs;
 	}
 }

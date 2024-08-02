@@ -11,16 +11,21 @@ program
 	.argument( '<source>', 'Source file path' )
 	.argument( '<definition>', 'Chart definition json' )
 	.argument( '<output>', 'Output file path' )
+	.option( '-w, --width <number>', 'Chart width' )
+	.option( '-h, --height <number>', 'Chart height' )
 	.action(
 		async (
 			sourceFile: string,
 			chartDefFile: string,
-			outputFile: string
+			outputFile: string,
+			options: { width?: string; height?: string }
 		) => {
 			await renderChart(
 				sourceFile,
 				chartDefFile,
-				outputFile
+				outputFile,
+				options.width,
+				options.height
 			);
 		}
 	);
