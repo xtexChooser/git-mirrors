@@ -1,9 +1,7 @@
 import * as echarts from 'echarts';
 import * as fs from 'fs';
-// eslint-disable-next-line n/no-missing-import
-import { ChartData, WikiLineChart } from './chart';
-// eslint-disable-next-line n/no-missing-import
-import { createLineChart } from './charts/LineChart';
+import { ChartData, WikiLineChart } from './chart.js';
+import { createLineChart } from './charts/LineChart.js';
 
 const renderChart = async (
 	sourceFile: string,

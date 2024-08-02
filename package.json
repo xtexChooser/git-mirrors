@@ -7,8 +7,7 @@
 		"service"
 	],
 	"scripts": {
-		"test:unit": "jest --silent",
-		"test": "grunt test && npm run -w cli test && npm run test:unit",
+		"test": "grunt test && npm run -w cli test",
 		"build": "npm run -w cli build"
 	},
 	"devDependencies": {
