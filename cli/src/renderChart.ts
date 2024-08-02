@@ -8,7 +8,9 @@ import { createLineChart } from './charts/LineChart';
 const renderChart = async (
 	sourceFile: string,
 	chartDefFile: string,
-	outputFile: string
+	outputFile: string,
+	widthOption?: string,
+	heightOption?: string
 ): Promise<void> => {
 	try {
 		// eslint-disable-next-line security/detect-non-literal-fs-filename
@@ -20,7 +22,8 @@ const renderChart = async (
 		const chartDef = JSON.parse( chartDefinitionJson ) as WikiLineChart;
 
 		const eChartsSpec = createLineChart( chartDef, sourceData );
-		const { width, height } = chartDef;
+		const width = widthOption ? parseInt( widthOption ) : chartDef.width;
+		const height = heightOption ? parseInt( heightOption ) : chartDef.height;
 
 		const chart = echarts.init( null, 'vintage', {
 			renderer: 'svg',
