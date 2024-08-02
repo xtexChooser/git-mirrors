@@ -1,5 +1,5 @@
 import { EChartsOption, LegendComponentOption } from 'echarts';
-import { ChartData, ChartValues, Field, WikiLineChart } from '../chart';
+import { ChartData, ChartValues, Field, WikiLineChart } from '../chart.js';
 
 interface SeriesItem {
   name: string;
