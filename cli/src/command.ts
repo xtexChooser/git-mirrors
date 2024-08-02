@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { renderChart } from './renderChart';
+import { renderChart } from './renderChart.js';
 
 const program = new Command();
 
