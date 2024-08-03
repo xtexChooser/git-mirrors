@@ -9,9 +9,7 @@ use Language;
 class JCChartContent extends JCDataContent {
 
 	protected function createDefaultView() {
-		// @todo implement a default rendering view
-		//return new JCChartContentView();
-		return parent::createDefaultView();
+		return new JCChartContentView();
 	}
 
 	/**

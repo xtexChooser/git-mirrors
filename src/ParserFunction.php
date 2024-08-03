@@ -3,17 +3,42 @@
 namespace MediaWiki\Extension\Chart;
 
 use JsonConfig\JCTabularContent;
+use Language;
 use MediaWiki\Html\Html;
-use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Message\Message;
+use MediaWiki\Page\PageIdentity;
+use MediaWiki\Page\PageReference;
 use MediaWiki\Parser\Parser;
+use MediaWiki\Parser\ParserOutput;
 use MediaWiki\Shell\Shell;
-use MediaWiki\Status\Status;
 use MediaWiki\Title\Title;
-use MWCryptHash;
+use MessageLocalizer;
 use WikiPage;
 
-class ParserFunction {
+class ParserFunction implements MessageLocalizer {
+	/** @var Language */
+	private $language;
+
+	/** @var ?PageReference */
+	private $page;
+
+	/** @var ChartRenderer */
+	private $chartRenderer;
+
+	public function __construct( Language $language, ?PageReference $page ) {
+		$this->language = $language;
+		$this->page = $page;
+		$this->chartRenderer = new ChartRenderer();
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function msg( $key, ...$params ): Message {
+		return wfMessage( $key, ...$params )->inLanguage( $this->language )->page( $this->page );
+	}
+
 	/**
 	 * Renders an error
 	 *
@@ -26,15 +51,28 @@ class ParserFunction {
 	}
 
 	/**
-	 * Entry point for the `{{#chart:}}` parser function.
+	 * Static entry point for the `{{#chart:}}` parser function.
+	 *
+	 * Wrapper for render() that creates an instance of this class based on the Parser's state.
+	 * This is needed because these Parser getters don't work yet in the ParserFirstCallInit hook.
+	 *
+	 * @param Parser $parser
+	 * @param string ...$args
+	 * @return array
+	 */
+	public static function funcHook( Parser $parser, ...$args ) {
+		$instance = new static( $parser->getTargetLanguage(), $parser->getPage() );
+		return $instance->render( $parser, ...$args );
+	}
+
+	/**
+	 * Main entry point for the `{{#chart:}}` parser function.
 	 *
 	 * @param Parser $parser
 	 * @param string ...$args
 	 * @return array
 	 */
 	public function render( Parser $parser, ...$args ) {
-		$logger = LoggerFactory::getInstance( 'Chart' );
-
 		// @todo incrementExpensiveFunctionCount
 
 		if ( Shell::isDisabled() ) {
@@ -43,8 +81,7 @@ class ParserFunction {
 
 		$format = null;
 		$dataSource = null;
-		$width = null;
-		$height = null;
+		$options = [];
 		foreach ( $args as $arg ) {
 			// @fixme use proper i18n-friendly magic words
 			if ( strpos( $arg, '=' ) >= 0 ) {
@@ -58,11 +95,11 @@ class ParserFunction {
 						break;
 					// @unstable: @todo revisit after T371712
 					case 'width':
-						$width = $value;
+						$options['width'] = $value;
 						break;
 					// @unstable: @todo revisit after T371712
 					case 'height':
-						$height = $value;
+						$options['height'] = $value;
 						break;
 					default:
 						// no-op
@@ -70,135 +107,120 @@ class ParserFunction {
 			}
 		}
 
-		// TODO use dependency injection
-		$config = MediaWikiServices::getInstance()->getMainConfig();
-		$ns = $config->get( 'JsonConfigs' )['Chart.JsonConfig']['namespace'];
-
-		$formatData = (object)[];
-		$formatTitle = Title::newFromText( $format, $ns );
-		if ( $formatTitle ) {
-			$formatPage = new WikiPage( $formatTitle );
-			$formatContent = $formatPage->getContent();
-			if ( $formatContent instanceof JCChartContent ) {
-				// @fixme remote will require going through JCSingleton::getContent?
-				//$formatContent = JCSingleton::getContent( $format->getTitleValue() );
-				$formatData = $formatContent->getLocalizedData( $parser->getTargetLanguage() );
-				if ( !$dataSource && $formatData->source ) {
-					$dataSource = $formatData->source;
-				}
-
-				// Record a dependency on the chart page, so that the page embedding the chart
-				// is reparsed when the chart page is edited
-				$parser->getOutput()->addTemplate(
-					$formatPage->getTitle(),
-					$formatPage->getId(),
-					$formatPage->getRevisionRecord()->getId()
-				);
+		if ( !$format ) {
+			return $this->renderError( $this->msg( 'chart-error-chart-definition-not-found' )->text() );
+		}
+		$definitionTitle = $this->resolvePageInDataNamespace( $format );
+		if ( !$definitionTitle ) {
+			return $this->renderError( $this->msg( 'chart-error-chart-definition-not-found' )->text() );
+		}
+		$dataTitle = null;
+		if ( $dataSource !== null ) {
+			$dataTitle = $this->resolvePageInDataNamespace( $dataSource );
+			if ( !$dataTitle ) {
+				return $this->renderError( $this->msg( 'chart-error-chart-definition-not-found' )->text() );
 			}
-		} else {
-			return $this->renderError( $parser->msg( 'chart-error-chart-definition-not-found' )->text() );
 		}
 
-		$sourceData = (object)[ 'fields' => [], 'data' => [] ];
-		$sourceTitle = Title::newFromText( $dataSource, $ns );
-		if ( $sourceTitle ) {
-			$sourcePage = new WikiPage( $sourceTitle );
-			$sourceContent = $sourcePage->getContent();
-			if ( $sourceContent instanceof JCTabularContent ) {
-				// @fixme remote will require going through JCSingleton::getContent?
-				//$sourceContent = JCSingleton::getContent( $source->getTitleValue() );
-				$sourceData = $sourceContent->getLocalizedData( $parser->getTargetLanguage() );
+		$html = $this->renderChart( $parser->getOutput(), $definitionTitle, $dataTitle, $options );
 
-				// Record a dependency on the data page, so that the page embedding the chart
-				// is reparsed when the data page is edited
-				$parser->getOutput()->addTemplate(
-					$sourcePage->getTitle(),
-					$sourcePage->getId(),
-					$sourcePage->getRevisionRecord()->getId()
-				);
-			} else {
-				return $this->renderError( $parser->msg( 'chart-error-incompatible-data-source' )->text() );
-			}
-		} else {
-			return $this->renderError( $parser->msg( 'chart-error-data-source-page-not-found' )->text() );
-		}
-
-		// Prefix for IDs in the SVG. This has to be unique between charts on the same page, to
-		// prevent ID collisions (T371558). If the same chart with the same data is displayed twice
-		// on the same page, this gives them the same ID prefixes and causes their IDs to collide,
-		// but that doesn't seem to cause a problem in practice.
-		$definitionForHash = json_encode( [ 'format' => $formatData, 'source' => $sourceData ] );
-		$formatData->idPrefix = 'mw-chart-' . MWCryptHash::hash( $definitionForHash, false );
-
-		$chartPath = tempnam( \wfTempDir(), 'chart-json' );
-		file_put_contents( $chartPath, json_encode( $formatData ) );
-		$sourcePath = tempnam( \wfTempDir(), 'data-json' );
-		file_put_contents( $sourcePath, json_encode( $sourceData ) );
-
-		$shellArgs = $this->getShellArgs( $sourcePath, $chartPath, $width, $height );
-
-		$result = Shell::command( ...$shellArgs )
-			->workingDirectory( dirname( __DIR__ ) . '/cli' )
-			->execute();
-
-		$error = $result->getStderr();
-		if ( $error ) {
-			$logger->warning( 'Chart shell command returned error: {error}', [
-				'error' => $error
-			] );
-
-			// @todo tracking category
-			$status = Status::newFatal( 'chart-error-shell-error' );
-		} else {
-			$svg = $result->getStdout();
-
-			// HACK work around a parser bug that inserts <p> tags even though we said not to parse
-			$svg = str_replace( ">\n", '>', $svg );
-
-			// Phan complains that we're outputting HTML that came from a shell command -- but we trust
-			// our own shell script
-			$chartOutput = [ "<div class=\"mw-chart\">$svg</div>", 'noparse' => true, 'isHTML' => true ];
-			$status = Status::newGood( $chartOutput );
-		}
-
-		unlink( $chartPath );
-		unlink( $sourcePath );
-
-		if ( !$status->isGood() ) {
-			// If no SVG was returned, then the Shell command didn't return anything so treat this an error
-			return $this->renderError( $parser->msg( 'chart-error-shell-error' )->text() );
-		}
-
-		return $status->getValue();
+		// HACK work around a parser bug that inserts <p> tags even though we said not to parse
+		$html = str_replace( ">\n", '>', $html );
+		return [ $html, 'noparse' => true, 'isHTML' => true ];
 	}
 
 	/**
-	 * @param string $sourcePath
-	 * @param string $chartPath
-	 * @param string|null $width
-	 * @param string|null $height
-	 * @return string[]
+	 * Look up a page in the Data: namespace. This takes a string like "Foo.tab" and returns a
+	 * Title object corresponding to Data:Foo.tab.
+	 *
+	 * @param string $pageName Name of a Data page, without the namespace prefix
+	 * @return ?Title Title object for that page in the Data: namespace (or null if invalid)
 	 */
-	private function getShellArgs( string $sourcePath, string $chartPath, ?string $width, ?string $height ): array {
-		$shellArgs = [
-			'node',
-			'./dist/index.js',
-			'line',
-			$sourcePath,
-			$chartPath,
-			'-'
-		];
+	private function resolvePageInDataNamespace( string $pageName ): ?Title {
+		// TODO we should provide this setting and the namespace ourselves, so that we don't have
+		// to rely on the admin to set it up in the config
+		$config = MediaWikiServices::getInstance()->getMainConfig();
+		$dataNs = $config->get( 'JsonConfigs' )['Chart.JsonConfig']['namespace'];
+		return Title::newFromText( $pageName, $dataNs );
+	}
 
-		if ( $width ) {
-			$shellArgs[] = "--width";
-			$shellArgs[] = $width;
+	/**
+	 * Render a chart from a definition page and a tabular data page.
+	 *
+	 * @param ParserOutput $output ParserOutput the chart is being rendered into. Used to record
+	 *   dependencies on the chart and data pages.
+	 * @param PageIdentity|JCChartContent $chartDefinition Chart definition page. If this is a
+	 *   JCChartContent object, that content will be used directly; if it's a PageIdentity, the
+	 *   content of that page will be fetched.
+	 * @param ?PageIdentity $tabularData Tabular data page. If this is not set, the default source
+	 *   page specified on the chart definition page will be used.
+	 * @param array{width?:string,height?:string} $options Additional rendering options:
+	 *   'width': Width of the chart, in pixels. Overrides width specified in the chart definition
+	 *   'height': Height of the chart, in pixels. Overrides height specified in the chart definition.
+	 * @return string HTML
+	 */
+	public function renderChart(
+		ParserOutput $output,
+		$chartDefinition,
+		?PageIdentity $tabularData = null,
+		array $options = []
+	): string {
+		if ( $chartDefinition instanceof JCChartContent ) {
+			$definitionContent = $chartDefinition;
+		} else {
+			// @fixme remote will require going through JCSingleton::getContent?
+			//$definitionContent = JCSingleton::getContent( $chartDefinition );
+			$definitionPage = new WikiPage( $chartDefinition );
+			if ( !$definitionPage->exists() ) {
+				return Html::errorBox( $this->msg( 'chart-error-chart-definition-not-found' )->text() );
+			}
+			$definitionContent = $definitionPage->getContent();
+			if ( !( $definitionContent instanceof JCChartContent ) ) {
+				return Html::errorBox( $this->msg( 'chart-error-incompatible-chart-definition' )->text() );
+			}
+			// Record a dependency on the chart page, so that the page embedding the chart
+			// is reparsed when the chart page is edited
+			$output->addTemplate(
+				$definitionPage->getTitle(),
+				$definitionPage->getId(),
+				$definitionPage->getRevisionRecord()->getId()
+			);
 		}
+		$definitionObj = $definitionContent->getLocalizedData( $this->language );
 
-		if ( $height ) {
-			$shellArgs[] = "--height";
-			$shellArgs[] = $height;
+		if ( !$tabularData ) {
+			if ( !isset( $definitionObj->source ) ) {
+				return Html::errorBox( $this->msg( 'chart-error-default-source-not-specified' )->text() );
+			}
+			$tabularData = $this->resolvePageInDataNamespace( $definitionObj->source );
+			if ( !$tabularData ) {
+				return Html::errorBox( $this->msg( 'chart-error-data-source-page-not-found' )->text() );
+			}
 		}
+		// @fixme remote will require going through JCSingleton::getContent?
+		//$dataContent = JCSingleton::getContent( $tabularData );
+		$dataPage = new WikiPage( $tabularData );
+		if ( !$dataPage->exists() ) {
+			return Html::errorBox( $this->msg( 'chart-error-data-source-page-not-found' )->text() );
+		}
+		$dataContent = $dataPage->getContent();
+		if ( !( $dataContent instanceof JCTabularContent ) ) {
+			return Html::errorBox( $this->msg( 'chart-error-incompatible-data-source' )->text() );
+		}
+		// Record a dependency on the data page, so that the page embedding the chart
+		// is reparsed when the data page is edited
+		$output->addTemplate(
+			$dataPage->getTitle(),
+			$dataPage->getId(),
+			$dataPage->getRevisionRecord()->getId()
+		);
+		$dataObj = $dataContent->getLocalizedData( $this->language );
 
-		return $shellArgs;
+		$status = $this->chartRenderer->renderSVG( $definitionObj, $dataObj, $options );
+		if ( !$status->isGood() ) {
+			return Html::errorBox( $this->msg( 'chart-error-shell-error' )->text() );
+		}
+		$svg = $status->getValue();
+		return Html::rawElement( 'div', [ 'class' => 'mw-chart' ], $svg );
 	}
 }
