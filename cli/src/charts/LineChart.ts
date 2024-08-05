@@ -6,9 +6,19 @@ interface SeriesItem {
   type: 'line';
   data: number[];
   showSymbol: boolean;
+	itemStyle?: {
+		color?: string;
+	};
+	lineStyle?: {
+		color?: string;
+	}
 }
 
-const newSeries = ( field: Field, showSymbol: boolean ): SeriesItem => {
+const hexColorRegex = /^#([a-fA-F0-9]{3}|[a-fA-F0-9]{6}|[a-fA-F0-9]{8})$/;
+
+const isValidColor = ( color: string ): boolean => hexColorRegex.test( color );
+
+const newSeries = ( field: Field, showSymbol: boolean, color?: string ): SeriesItem => {
 	const seriesName = field.title || field.name;
 
 	const series: SeriesItem = {
@@ -17,6 +27,14 @@ const newSeries = ( field: Field, showSymbol: boolean ): SeriesItem => {
 		data: [],
 		showSymbol
 	};
+
+	if ( color && isValidColor( color ) ) {
+		series.itemStyle = series.itemStyle || {};
+		series.itemStyle.color = color;
+
+		series.lineStyle = series.lineStyle || {};
+		series.lineStyle.color = color;
+	}
 
 	return series;
 };
@@ -65,12 +83,15 @@ export const createLineChart = (
 
 	const seriesList: SeriesItem[] = [];
 
-	const { xAxis, legend, showSymbols = false } = chartDefinition;
+	const { xAxis, legend, colors = [], showSymbols = false } = chartDefinition;
 
 	chartData.schema.fields.forEach( ( field, idx ) => {
 		// skip header row
 		if ( idx > 0 ) {
-			seriesList.push( newSeries( field, showSymbols ) );
+			// handle if colors are not provided in the chart definition
+			// or there are fewer colors than the number of series
+			const color = colors.length && colors[ idx - 1 ] || undefined;
+			seriesList.push( newSeries( field, showSymbols, color ) );
 		}
 	} );
 
