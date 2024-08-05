@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": [
+			"Méthodes Bulebe Hangi"
+		]
+	},
+	"chart-error-chart-definition-not-found": "La page de définition du graphique n'a pas été trouvée.",
+	"chart-error-data-source-page-not-found": "la page de source de données du tableau n'a pas été trouvée.",
+	"chart-error-default-source-not-specified": "La page définition du graphique ne spécifie pas une source de données par défaut.",
+	"chart-error-incompatible-chart-definition": "La page définition est incompatible avec les graphiques.",
+	"chart-error-incompatible-data-source": "La page de source de données tabulaire est incompatible avec les graphiques.",
+	"chart-error-shell-disabled": "Les graphiques ne peuvent pas être rendus parce que l'exécution de la coquille est désactivée.",
+	"chart-error-shell-no-response": "a carte est actuellement indisponible.",
+	"chart-error-shell-error": "Une erreur s'est produite lors de l'affichage du graphique"
+}
