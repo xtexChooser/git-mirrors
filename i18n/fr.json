@@ -4,6 +4,7 @@
 			"Méthodes Bulebe Hangi"
 		]
 	},
+	"chart-desc": "Ajoute la fonction d'analyseur <code><nowiki>{{#chart:}}</nowiki></code> pour l'affichage des graphiques",
 	"chart-error-chart-definition-not-found": "La page de définition du graphique n'a pas été trouvée.",
 	"chart-error-data-source-page-not-found": "la page de source de données du tableau n'a pas été trouvée.",
 	"chart-error-default-source-not-specified": "La page définition du graphique ne spécifie pas une source de données par défaut.",
