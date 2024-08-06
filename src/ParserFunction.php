@@ -17,19 +17,18 @@ use MessageLocalizer;
 use WikiPage;
 
 class ParserFunction implements MessageLocalizer {
-	/** @var Language */
-	private $language;
+
+	private Language $language;
 
 	/** @var ?PageReference */
 	private $page;
 
-	/** @var ChartRenderer */
-	private $chartRenderer;
+	private ChartRenderer $chartRenderer;
 
-	public function __construct( Language $language, ?PageReference $page ) {
+	public function __construct( ChartRenderer $chartRenderer, Language $language, ?PageReference $page ) {
+		$this->chartRenderer = $chartRenderer;
 		$this->language = $language;
 		$this->page = $page;
-		$this->chartRenderer = new ChartRenderer();
 	}
 
 	/**
@@ -61,7 +60,8 @@ class ParserFunction implements MessageLocalizer {
 	 * @return array
 	 */
 	public static function funcHook( Parser $parser, ...$args ) {
-		$instance = new static( $parser->getTargetLanguage(), $parser->getPage() );
+		$chartRenderer = MediaWikiServices::getInstance()->getService( 'Chart.ChartRenderer' );
+		$instance = new static( $chartRenderer, $parser->getTargetLanguage(), $parser->getPage() );
 		return $instance->render( $parser, ...$args );
 	}
 

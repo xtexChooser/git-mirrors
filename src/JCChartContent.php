@@ -5,11 +5,16 @@ namespace MediaWiki\Extension\Chart;
 use JsonConfig\JCDataContent;
 use JsonConfig\JCUtils;
 use Language;
+use MediaWiki\MediaWikiServices;
 
 class JCChartContent extends JCDataContent {
 
 	protected function createDefaultView() {
-		return new JCChartContentView();
+		$services = MediaWikiServices::getInstance();
+		$chartRenderer = $services->getService( 'Chart.ChartRenderer' );
+		$languageFactory = $services->getLanguageFactory();
+
+		return new JCChartContentView( $chartRenderer, $languageFactory );
 	}
 
 	/**

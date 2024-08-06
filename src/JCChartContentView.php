@@ -4,13 +4,23 @@ namespace MediaWiki\Extension\Chart;
 
 use JsonConfig\JCContent;
 use JsonConfig\JCContentView;
-use MediaWiki\MediaWikiServices;
+use MediaWiki\Languages\LanguageFactory;
 use MediaWiki\Page\PageReference;
 use MediaWiki\Parser\ParserOutput;
 use MediaWiki\Title\Title;
 use ParserOptions;
 
 class JCChartContentView extends JCContentView {
+
+	private ChartRenderer $chartRenderer;
+
+	private LanguageFactory $languageFactory;
+
+	public function __construct( ChartRenderer $chartRenderer, LanguageFactory $languageFactory ) {
+		$this->chartRenderer = $chartRenderer;
+		$this->languageFactory = $languageFactory;
+	}
+
 	/**
 	 * @param JCContent $content
 	 * @param PageReference $page
@@ -25,12 +35,10 @@ class JCChartContentView extends JCContentView {
 		ParserOutput &$output
 	): string {
 		'@phan-var JCChartContent $content';
-		// TODO use dependency injection?
-		$languageFactory = MediaWikiServices::getInstance()->getLanguageFactory();
-		$lang = $languageFactory->getLanguage( $output->getLanguage() ??
+		$lang = $this->languageFactory->getLanguage( $output->getLanguage() ??
 			Title::newFromPageReference( $page )->getPageLanguage()
 		);
-		$parserFunction = new ParserFunction( $lang, $page );
+		$parserFunction = new ParserFunction( $this->chartRenderer, $lang, $page );
 
 		return $parserFunction->renderChart( $output, $content );
 	}
@@ -46,7 +54,7 @@ class JCChartContentView extends JCContentView {
 	"version": 1,
 
 	$licenseIntro
-	
+
 	// Default width and height of the chart. Can be overridden on each page that uses the chart.
 	"width": 600,
 	"height": 400,

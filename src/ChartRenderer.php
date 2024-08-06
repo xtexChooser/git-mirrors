@@ -2,13 +2,23 @@
 
 namespace MediaWiki\Extension\Chart;
 
-use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\Shell\Shell;
 use MediaWiki\Status\Status;
 use MWCryptHash;
+use Psr\Log\LoggerInterface;
 use stdclass;
 
 class ChartRenderer {
+
+	private LoggerInterface $logger;
+
+	/**
+	 * @param LoggerInterface $logger
+	 */
+	public function __construct( LoggerInterface $logger ) {
+		$this->logger = $logger;
+	}
+
 	/**
 	 * Render a chart from a definition object and a tabular data object.
 	 *
@@ -41,8 +51,7 @@ class ChartRenderer {
 
 		$error = $result->getStderr();
 		if ( $error ) {
-			// TODO use dependency injection for LoggerFactory
-			LoggerFactory::getInstance( 'Chart' )->warning(
+			$this->logger->warning(
 				'Chart shell command returned error: {error}',
 				[ 'error' => $error ]
 			);

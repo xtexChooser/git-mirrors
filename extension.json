@@ -18,6 +18,9 @@
 	"AutoloadNamespaces": {
 		"MediaWiki\\Extension\\Chart\\": "src/"
 	},
+	"ServiceWiringFiles": [
+		"src/ServiceWiring.php"
+	],
 	"MessagesDirs": {
 		"Chart": [
 			"i18n"
