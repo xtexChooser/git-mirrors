@@ -5,15 +5,17 @@ interface SeriesItem {
   name: string;
   type: 'line';
   data: number[];
+  showSymbol: boolean;
 }
 
-const newSeries = ( field: Field ): SeriesItem => {
+const newSeries = ( field: Field, showSymbol: boolean ): SeriesItem => {
 	const seriesName = field.title || field.name;
 
-	const series : SeriesItem = {
+	const series: SeriesItem = {
 		name: seriesName,
 		type: 'line',
-		data: []
+		data: [],
+		showSymbol
 	};
 
 	return series;
@@ -25,15 +27,16 @@ const getTitle = ( chartDefinition: WikiLineChart ): string | undefined => {
 };
 
 // @todo do we allow legend position as an option in the chart definition?
-const getLegendPosition = () : string => 'right';
+const getLegendPosition = (): string => 'right';
 
-const getLegend = () : LegendComponentOption => {
+const getLegend = (): LegendComponentOption => {
 	const legendPosition = getLegendPosition();
-	const legend : LegendComponentOption = {
+	const legend: LegendComponentOption = {
 		type: 'plain',
 		orient: 'horizontal',
 		right: legendPosition === 'right' ? 5 : undefined,
-		top: legendPosition === 'top' ? 5 : legendPosition === 'right' ? 'center' : undefined,
+		top: legendPosition === 'top' ? 5 :
+			legendPosition === 'right' ? 'center' : undefined,
 		left: legendPosition === 'left' ? 5 : undefined,
 		bottom: legendPosition === 'bottom' ? 5 : undefined,
 		padding: [ 5, 5, 5, 5 ]
@@ -46,15 +49,28 @@ const getLegend = () : LegendComponentOption => {
 	return legend;
 };
 
+const validateChartDefinition = ( chartDefinition: WikiLineChart ): WikiLineChart => {
+	if ( typeof chartDefinition.showSymbols !== 'boolean' ) {
+		chartDefinition.showSymbols = false;
+	}
+
+	return chartDefinition;
+};
+
 export const createLineChart = (
-	chartDefinition: WikiLineChart,
+	chartDefinitionInput: WikiLineChart,
 	chartData: ChartData
 ): EChartsOption => {
+	const chartDefinition = validateChartDefinition( chartDefinitionInput );
+
 	const seriesList: SeriesItem[] = [];
 
+	const { xAxis, legend, showSymbols = false } = chartDefinition;
+
 	chartData.schema.fields.forEach( ( field, idx ) => {
+		// skip header row
 		if ( idx > 0 ) {
-			seriesList.push( newSeries( field ) );
+			seriesList.push( newSeries( field, showSymbols ) );
 		}
 	} );
 
@@ -64,7 +80,7 @@ export const createLineChart = (
 		const [ xAxisValue, ...dataItems ] = values;
 
 		const dateValue = new Date( xAxisValue );
-		if ( chartDefinition.xAxis.type === 'date' ) {
+		if ( xAxis.type === 'date' ) {
 			const dateFormatted = dateValue.toISOString().split( 'T' )[ 0 ];
 			xAxisValues.push( dateFormatted );
 		} else {
@@ -110,7 +126,7 @@ export const createLineChart = (
 		series: seriesList
 	};
 
-	if ( chartDefinition.legend ) {
+	if ( legend ) {
 		chartSpec.legend = getLegend();
 	}
 
