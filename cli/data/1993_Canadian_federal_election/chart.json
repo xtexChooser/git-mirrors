@@ -10,7 +10,7 @@
 	"type": "line",
 	"interpolate": "basis",
 	"colors": [ "#9999FF", "#EA6D6A", "#F4A460", "#87CEFA", "#3CB371", "#FF00FF" ],
-	"xAxis": { "title": "", "angle": -40, "type": "date" },
+	"xAxis": { "title": "", "angle": 90, "type": "date" },
 	"yAxis": { "title": "%support" },
 	"legend": "Party",
 	"showSymbols": true,

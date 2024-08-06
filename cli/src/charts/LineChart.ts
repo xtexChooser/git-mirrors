@@ -115,12 +115,14 @@ export const createLineChart = (
 
 	const legendPosition = getLegendPosition();
 
+	const xAxisLabelRotate = xAxis.angle !== null ? xAxis.angle : 0;
+
 	const chartSpec: EChartsOption = {
 		animation: false,
 		xAxis: {
 			type: 'category',
 			axisLabel: {
-				rotate: 90
+				rotate: xAxisLabelRotate
 			},
 			nameRotate: 0,
 			nameLocation: 'middle',
