@@ -4,10 +4,12 @@
 			"Amire80"
 		]
 	},
+	"chart-desc": "הוספת פונקציית המפענח <code><nowiki>{{#chart:}}</nowiki></code> להצגת תרשימים.",
 	"chart-error-chart-definition-not-found": "דף הגדרת התשים לא נמצא.",
 	"chart-error-data-source-page-not-found": "דף המקור לנתונים הטבלאיים של התרשים לא נמצא.",
 	"chart-error-default-source-not-specified": "דף הגדרת התרשים לא מציין מקור נתונים התחלתי.",
 	"chart-error-incompatible-chart-definition": "דף ההגדרה אינו תואם לתרשימים.",
 	"chart-error-incompatible-data-source": "דף המקור לנתונים הטבלאיים אינו תואם לתרשימים.",
-	"chart-error-shell-disabled": "לא ניתן לתצג את התרשימים כי הרצת הפקודות במסוף כבויה."
+	"chart-error-shell-disabled": "לא ניתן לתצג את התרשימים כי הרצת הפקודות במסוף כבויה.",
+	"chart-error-shell-error": "אירעה שגיאה בעת תיצוג התרשים."
 }
