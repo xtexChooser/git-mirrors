@@ -36,7 +36,7 @@ impl WindowsAdjWindow {
             show_button(ui, "禁用", disable_windows_update)?;
             ui.end_row();
 
-            show_button(ui, "启用全部工具", enable_all)?;
+            show_button(ui, "解锁全部工具", enable_all)?;
             ui.end_row();
 
             ui.label(RichText::new("命令提示符").strong());
@@ -78,6 +78,11 @@ impl WindowsAdjWindow {
             ui.label(RichText::new("edge://surf").strong());
             show_button(ui, "启用", enable_edge_surf)?;
             show_button(ui, "禁用", disable_edge_surf)?;
+            ui.end_row();
+
+            ui.label(RichText::new("ACD 解锁").strong());
+            show_button(ui, "启用", enable_acd_unlocking)?;
+            show_button(ui, "禁用", disable_acd_unlocking)?;
             ui.end_row();
 
             Ok::<(), anyhow::Error>(())
@@ -318,4 +323,16 @@ pub fn disable_windows_update() -> Result<()> {
         CloseServiceHandle(sc_manager)?;
     }
     Ok(())
+}
+
+pub fn enable_acd_unlocking() -> Result<()> {
+    Ok(LOCAL_MACHINE
+        .create(r"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System")?
+        .set_u32("DisableCAD", 0)?)
+}
+
+pub fn disable_acd_unlocking() -> Result<()> {
+    Ok(LOCAL_MACHINE
+        .create(r"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System")?
+        .set_u32("DisableCAD", 1)?)
 }

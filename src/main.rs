@@ -1,4 +1,4 @@
-#![windows_subsystem = "windows"]
+// #![windows_subsystem = "windows"]
 #![feature(let_chains)]
 use std::ffi::c_void;
 
@@ -38,7 +38,6 @@ async fn main() -> Result<()> {
             viewport: egui::ViewportBuilder::default()
                 .with_inner_size([640.0, 450.0])
                 .with_always_on_top(),
-            default_theme: eframe::Theme::Dark,
             centered: true,
             ..Default::default()
         },
@@ -197,7 +196,7 @@ impl MainApp {
                     self.mythware.show_password(ui, "极域密码：")?;
                 }
 
-                egui::Window::new("开源许可证")
+                egui::Window::new("开源许可")
                     .open(&mut self.show_licenses)
                     .vscroll(true)
                     .default_size((320.0, 200.0))

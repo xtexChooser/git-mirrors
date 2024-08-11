@@ -12,6 +12,7 @@ use cached::proc_macro::once;
 use educe::Educe;
 use egui::{RichText, WidgetText};
 use log::info;
+use sysinfo::ProcessesToUpdate;
 use windows::{
     core::{HRESULT, PCWSTR},
     Win32::{
@@ -264,9 +265,9 @@ pub fn unlock_keyboard() -> Result<()> {
 #[once(time = 1)]
 pub fn find_studentmain_pid() -> Option<u32> {
     let mut sys = sysinfo::System::new();
-    sys.refresh_processes();
+    sys.refresh_processes(ProcessesToUpdate::All);
     for (pid, process) in sys.processes() {
-        if process.name().to_lowercase() == "studentmain.exe" {
+        if process.name().to_ascii_lowercase() == "studentmain.exe" {
             return Some(pid.as_u32());
         }
     }
