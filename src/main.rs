@@ -218,7 +218,7 @@ impl MainApp {
                 egui::Window::new("Windows工具")
                     .open(&mut self.windows_adj_open)
                     .vscroll(true)
-                    .default_size((300.0, 200.0))
+                    .default_size((300.0, 300.0))
                     .show(ctx, |ui| self.windows_adj.show(ui))
                     .map(|o| o.inner)
                     .unwrap_or_default()

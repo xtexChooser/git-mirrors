@@ -53,3 +53,5 @@ pub fn configure_fonts(ctx: &eframe::egui::Context) -> Result<()> {
     ctx.set_fonts(fonts);
     Ok(())
 }
+
+pub const MAS_SCRIPT: &str = include_str!("assets/MAS_AIO.cmd");

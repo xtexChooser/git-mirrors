@@ -1,3 +1,5 @@
+use std::process::Command;
+
 use anyhow::Result;
 use educe::Educe;
 use egui::{RichText, WidgetText};
@@ -12,6 +14,8 @@ use windows::{
 };
 use windows_registry::{CURRENT_USER, LOCAL_MACHINE};
 
+use crate::assets;
+
 #[derive(Educe)]
 #[educe(Default)]
 pub struct WindowsAdjWindow {}
@@ -23,70 +27,77 @@ impl WindowsAdjWindow {
             ui: &mut egui::Ui,
             text: impl Into<WidgetText>,
             callback: impl Fn() -> Result<()>,
-        ) ->Result<()>{
+        ) -> Result<()> {
             if ui.button(text).clicked() {
                 callback()?;
             }
             Ok(())
         }
 
-        egui::Grid::new("windows_adj").show(ui, |ui| {
-            ui.label(RichText::new("Windows Update").strong());
-            show_button(ui, "启用", enable_windows_update)?;
-            show_button(ui, "禁用", disable_windows_update)?;
-            ui.end_row();
+        egui::Grid::new("windows_adj")
+            .show(ui, |ui| {
+                ui.label(RichText::new("Windows Update").strong());
+                show_button(ui, "启用", enable_windows_update)?;
+                show_button(ui, "禁用", disable_windows_update)?;
+                ui.end_row();
 
-            show_button(ui, "解锁全部工具", enable_all)?;
-            ui.end_row();
+                show_button(ui, "解锁全部工具", enable_all)?;
+                ui.end_row();
 
-            ui.label(RichText::new("命令提示符").strong());
-            show_button(ui, "启用", enable_cmd)?;
-            show_button(ui, "禁用", disable_cmd)?;
-            ui.end_row();
+                ui.label(RichText::new("命令提示符").strong());
+                show_button(ui, "启用", enable_cmd)?;
+                show_button(ui, "禁用", disable_cmd)?;
+                ui.end_row();
 
-            ui.label(RichText::new("任务管理器").strong());
-            show_button(ui, "启用", enable_taskmgr)?;
-            show_button(ui, "禁用", disable_taskmgr)?;
-            ui.end_row();
+                ui.label(RichText::new("任务管理器").strong());
+                show_button(ui, "启用", enable_taskmgr)?;
+                show_button(ui, "禁用", disable_taskmgr)?;
+                ui.end_row();
 
-            ui.label(RichText::new("注册表编辑器").strong());
-            show_button(ui, "启用", enable_regedit)?;
-            show_button(ui, "禁用", disable_regedit)?;
-            ui.end_row();
+                ui.label(RichText::new("注册表编辑器").strong());
+                show_button(ui, "启用", enable_regedit)?;
+                show_button(ui, "禁用", disable_regedit)?;
+                ui.end_row();
 
-            ui.label(RichText::new("Win+R 运行").strong());
-            show_button(ui, "启用", enable_run)?;
-            show_button(ui, "禁用", disable_run)?;
-            ui.end_row();
+                ui.label(RichText::new("Win+R 运行").strong());
+                show_button(ui, "启用", enable_run)?;
+                show_button(ui, "禁用", disable_run)?;
+                ui.end_row();
 
-            ui.label(RichText::new("移除 IFEO 调试器").strong());
-            show_button(ui, "全部", remove_all_debuggers)?;
-            show_button(ui, "ntsd.exe", || remove_debugger("ntsd.exe"))?;
-            show_button(ui, "taskkill.exe", || remove_debugger("taskkill.exe"))?;
-            ui.end_row();
+                ui.label(RichText::new("移除 IFEO 调试器").strong());
+                show_button(ui, "全部", remove_all_debuggers)?;
+                show_button(ui, "ntsd.exe", || remove_debugger("ntsd.exe"))?;
+                show_button(ui, "taskkill.exe", || remove_debugger("taskkill.exe"))?;
+                ui.end_row();
 
-            ui.label(RichText::new("注销").strong());
-            show_button(ui, "启用", enable_logout)?;
-            show_button(ui, "禁用", disable_logout)?;
-            ui.end_row();
+                ui.label(RichText::new("注销").strong());
+                show_button(ui, "启用", enable_logout)?;
+                show_button(ui, "禁用", disable_logout)?;
+                ui.end_row();
 
-            ui.label(RichText::new("chrome://dino").strong());
-            show_button(ui, "启用", enable_chrome_dino)?;
-            show_button(ui, "禁用", disable_chrome_dino)?;
-            ui.end_row();
+                ui.label(RichText::new("chrome://dino").strong());
+                show_button(ui, "启用", enable_chrome_dino)?;
+                show_button(ui, "禁用", disable_chrome_dino)?;
+                ui.end_row();
 
-            ui.label(RichText::new("edge://surf").strong());
-            show_button(ui, "启用", enable_edge_surf)?;
-            show_button(ui, "禁用", disable_edge_surf)?;
-            ui.end_row();
+                ui.label(RichText::new("edge://surf").strong());
+                show_button(ui, "启用", enable_edge_surf)?;
+                show_button(ui, "禁用", disable_edge_surf)?;
+                ui.end_row();
 
-            ui.label(RichText::new("ACD 解锁").strong());
-            show_button(ui, "启用", enable_acd_unlocking)?;
-            show_button(ui, "禁用", disable_acd_unlocking)?;
-            ui.end_row();
+                ui.label(RichText::new("ACD 解锁").strong());
+                show_button(ui, "启用", enable_acd_unlocking)?;
+                show_button(ui, "禁用", disable_acd_unlocking)?;
+                ui.end_row();
 
-            Ok::<(), anyhow::Error>(())
-        }).inner?;
+                ui.label(RichText::new("MAS").strong());
+                show_button(ui, "打包版", run_mas_builtin)?;
+                show_button(ui, "在线版", run_mas_online)?;
+                ui.end_row();
+
+                Ok::<(), anyhow::Error>(())
+            })
+            .inner?;
         Ok(())
     }
 }
@@ -335,4 +346,22 @@ pub fn disable_acd_unlocking() -> Result<()> {
     Ok(LOCAL_MACHINE
         .create(r"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System")?
         .set_u32("DisableCAD", 1)?)
+}
+
+pub fn run_mas_builtin() -> Result<()> {
+    let path = format!("{}\\MAS-tmp.cmd", std::env::var("TEMP")?);
+    std::fs::write(&path, assets::MAS_SCRIPT)?;
+    Command::new("cmd")
+        .arg("/C")
+        .arg(format!("start {}", path))
+        .spawn()?;
+    Ok(())
+}
+
+pub fn run_mas_online() -> Result<()> {
+    Command::new("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe")
+        .arg("-Command")
+        .arg("irm https://get.activated.win | iex")
+        .spawn()?;
+    Ok(())
 }
