@@ -14,6 +14,5 @@
 	"chart-error-incompatible-chart-definition": "Definition page is incompatible with charts.",
 	"chart-error-incompatible-data-source": "Tabular data source page is incompatible with charts.",
 	"chart-error-shell-disabled": "Charts cannot be rendered because shell execution is disabled.",
-	"chart-error-shell-no-response": "Chart is currently unavailable.",
 	"chart-error-shell-error": "There was an error rendering the chart."
 }
