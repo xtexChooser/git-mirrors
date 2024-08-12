@@ -233,6 +233,7 @@ Team members:
 
 * Fallback: Codeberg e.V. receives part of the share to make use of leftover budget (@fnetx can manage the account)
 * @algernon ([July 2024 Agreement](https://codeberg.org/forgejo/governance/issues/151))
+* @viceice ([August 2024 Agreement](https://codeberg.org/forgejo/governance/issues/157))
 
 
 ## [GitHub organisation](https://github.com/forgejo) owners as of 2024-01-09
