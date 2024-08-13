@@ -2,12 +2,12 @@
 
 namespace MediaWiki\Extension\Chart;
 
+use JsonConfig\JCSingleton;
 use JsonConfig\JCTabularContent;
 use Language;
 use MediaWiki\Html\Html;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Message\Message;
-use MediaWiki\Page\PageIdentity;
 use MediaWiki\Page\PageReference;
 use MediaWiki\Parser\Parser;
 use MediaWiki\Parser\ParserOutput;
@@ -149,10 +149,10 @@ class ParserFunction implements MessageLocalizer {
 	 *
 	 * @param ParserOutput $output ParserOutput the chart is being rendered into. Used to record
 	 *   dependencies on the chart and data pages.
-	 * @param PageIdentity|JCChartContent $chartDefinition Chart definition page. If this is a
+	 * @param Title|JCChartContent $chartDefinition Chart definition page. If this is a
 	 *   JCChartContent object, that content will be used directly; if it's a PageIdentity, the
 	 *   content of that page will be fetched.
-	 * @param ?PageIdentity $tabularData Tabular data page. If this is not set, the default source
+	 * @param ?Title $tabularData Tabular data page. If this is not set, the default source
 	 *   page specified on the chart definition page will be used.
 	 * @param array{width?:string,height?:string} $options Additional rendering options:
 	 *   'width': Width of the chart, in pixels. Overrides width specified in the chart definition
@@ -162,29 +162,32 @@ class ParserFunction implements MessageLocalizer {
 	public function renderChart(
 		ParserOutput $output,
 		$chartDefinition,
-		?PageIdentity $tabularData = null,
+		?Title $tabularData = null,
 		array $options = []
 	): string {
 		if ( $chartDefinition instanceof JCChartContent ) {
 			$definitionContent = $chartDefinition;
 		} else {
-			// @fixme remote will require going through JCSingleton::getContent?
-			//$definitionContent = JCSingleton::getContent( $chartDefinition );
 			$definitionPage = new WikiPage( $chartDefinition );
-			if ( !$definitionPage->exists() ) {
+			$definitionContent = JCSingleton::getContent( $chartDefinition->getTitleValue() );
+			if ( !$definitionContent ) {
 				return Html::errorBox( $this->msg( 'chart-error-chart-definition-not-found' )->text() );
 			}
-			$definitionContent = $definitionPage->getContent();
 			if ( !( $definitionContent instanceof JCChartContent ) ) {
 				return Html::errorBox( $this->msg( 'chart-error-incompatible-chart-definition' )->text() );
 			}
-			// Record a dependency on the chart page, so that the page embedding the chart
-			// is reparsed when the chart page is edited
-			$output->addTemplate(
-				$definitionPage->getTitle(),
-				$definitionPage->getId(),
-				$definitionPage->getRevisionRecord()->getId()
-			);
+			if ( $definitionPage->exists() ) {
+				// Record a dependency on the chart page, so that the page embedding the chart
+				// is reparsed when the chart page is edited
+				$output->addTemplate(
+					$definitionPage->getTitle(),
+					$definitionPage->getId(),
+					$definitionPage->getRevisionRecord()->getId()
+				);
+			} else {
+				// @todo register cross-site dependencies using extended GlobalUsage
+				// and allow updates to trigger re-parses of affected pages
+			}
 		}
 		$definitionObj = $definitionContent->getLocalizedData( $this->language );
 
@@ -197,23 +200,26 @@ class ParserFunction implements MessageLocalizer {
 				return Html::errorBox( $this->msg( 'chart-error-data-source-page-not-found' )->text() );
 			}
 		}
-		// @fixme remote will require going through JCSingleton::getContent?
-		//$dataContent = JCSingleton::getContent( $tabularData );
 		$dataPage = new WikiPage( $tabularData );
-		if ( !$dataPage->exists() ) {
+		$dataContent = JCSingleton::getContent( $tabularData->getTitleValue() );
+		if ( !$dataContent ) {
 			return Html::errorBox( $this->msg( 'chart-error-data-source-page-not-found' )->text() );
 		}
-		$dataContent = $dataPage->getContent();
 		if ( !( $dataContent instanceof JCTabularContent ) ) {
 			return Html::errorBox( $this->msg( 'chart-error-incompatible-data-source' )->text() );
 		}
-		// Record a dependency on the data page, so that the page embedding the chart
-		// is reparsed when the data page is edited
-		$output->addTemplate(
-			$dataPage->getTitle(),
-			$dataPage->getId(),
-			$dataPage->getRevisionRecord()->getId()
-		);
+		if ( $dataPage->exists() ) {
+			// Record a dependency on the data page, so that the page embedding the chart
+			// is reparsed when the data page is edited
+			$output->addTemplate(
+				$dataPage->getTitle(),
+				$dataPage->getId(),
+				$dataPage->getRevisionRecord()->getId()
+			);
+		} else {
+			// @todo register cross-site dependencies using extended GlobalUsage
+			// and allow updates to trigger re-parses of affected pages
+		}
 		$dataObj = $dataContent->getLocalizedData( $this->language );
 
 		$status = $this->chartRenderer->renderSVG( $definitionObj, $dataObj, $options );

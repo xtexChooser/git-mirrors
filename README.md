@@ -49,13 +49,15 @@ and configured for "`.tab`" tabular data and "`.chart`" formatting definitions.
 
 The "`.tab`" data pages are as per https://www.mediawiki.org/wiki/Help:Tabular_Data
 
-Sample config for local development:
+Sample config for local development, with a central wiki sharing out its data pages:
 
 ```php
 	// Safety: before extension.json, these values were initialized by JsonConfig.php
 	$wgJsonConfigModels = $wgJsonConfigModels ?? [];
 	$wgJsonConfigs = $wgJsonConfigs ?? [];
 
+	// Tabular data is supported, but not configured on by default, in JsonConfig.
+	// This should be simplified.
 	// https://www.mediawiki.org/wiki/Extension:JsonConfig#Configuration
 	$wgJsonConfigModels['Tabular.JsonConfig'] = 'JsonConfig\JCTabularContent';
 	$wgJsonConfigs['Tabular.JsonConfig'] = [
@@ -64,8 +66,18 @@ Sample config for local development:
 		// page name must end in ".tab", and contain at least one symbol
 		'pattern' => '/.\.tab$/',
 		'license' => 'CC0-1.0',
-		'isLocal' => true,
+		// allows the cache keys to be shared between wikis
+		'isLocal' => false,
 	];
+
+	if ( $wgDBname === 'my_central_wiki' ) {
+		$wgJsonConfigs['Tabular.JsonConfig']['store'] = true;
+	} else {
+		$wgJsonConfigs['Tabular.JsonConfig']['remote'] = [
+			'url' => 'https://my-central-wiki.example.com/w/api.php'
+		];
+	}
+
 ```
 
 A sample .tab page may be found in the `sample/` folder.
@@ -79,6 +91,8 @@ The "`.chart`" data pages are custom for this extension and also build on `JsonC
 	$wgJsonConfigModels = $wgJsonConfigModels ?? [];
 	$wgJsonConfigs = $wgJsonConfigs ?? [];
 
+	// Chart data is supported here in the Chart extension, and currently must be
+	// configured manually as well. This should be simplified.
 	// https://www.mediawiki.org/wiki/Extension:JsonConfig#Configuration
 	$wgJsonConfigModels['Chart.JsonConfig'] = 'MediaWiki\Extension\Chart\JCChartContent';
 	$wgJsonConfigs['Chart.JsonConfig'] = [
@@ -87,8 +101,17 @@ The "`.chart`" data pages are custom for this extension and also build on `JsonC
 		// page name must end in ".chart", and contain at least one symbol
 		'pattern' => '/.\.chart$/',
 		'license' => 'CC0-1.0',
-		'isLocal' => true,
+		// allows the cache keys to be shared between wikis
+		'isLocal' => false,
 	];
+
+	if ( $wgDBname === 'my_central_wiki' ) {
+		$wgJsonConfigs['Chart.JsonConfig']['store'] = true;
+	} else {
+		$wgJsonConfigs['Chart.JsonConfig']['remote'] = [
+			'url' => 'https://my-central-wiki.example.com/w/api.php'
+		];
+	}
 ```
 
 Sample .chart page may be found under the `sample/` folder.
