@@ -11,6 +11,5 @@
 	"chart-error-incompatible-chart-definition": "Страницата со одердби е нескладна со графиконите.",
 	"chart-error-incompatible-data-source": "Изворната страница со табеларни податоци е нескладна со графиконите.",
 	"chart-error-shell-disabled": "Графиконите не можат да се исцртаат бидејќи извршувањето на обвивката е оневозможено.",
-	"chart-error-shell-no-response": "Графиконот моментално е недостапен.",
 	"chart-error-shell-error": "Се јави грешка при исцртувањето на графиконот."
 }

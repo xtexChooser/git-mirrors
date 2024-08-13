@@ -11,6 +11,5 @@
 	"chart-error-incompatible-chart-definition": "Tərif səhifəsi qrafiklərlə uyğun gəlmir.",
 	"chart-error-incompatible-data-source": "Cədvəl məlumat mənbəyi səhifəsi qrafiklərlə uyğun gəlmir.",
 	"chart-error-shell-disabled": "Qrafiklər göstərilə bilməz, çünki shell icrası deaktivdir.",
-	"chart-error-shell-no-response": "Qrafiklər hazırda əlçatan deyil.",
 	"chart-error-shell-error": "Qrafik yaradılarkən xəta baş verdi."
 }
