@@ -74,26 +74,18 @@ class LoginNotify implements LoggerAwareInterface {
 	/** We don't have data to confirm or deny this is a known system */
 	public const USER_NO_INFO = 'no info';
 
-	/** @var BagOStuff */
-	private $cache;
-	/** @var ServiceOptions */
-	private $config;
-	/** @var LoggerInterface Usually instance of LoginNotify log */
-	private $log;
+	private BagOStuff $cache;
+	private ServiceOptions $config;
+	private LoggerInterface $log;
 	/** @var string Salt for cookie hash. DON'T USE DIRECTLY, use getSalt() */
 	private $salt;
 	/** @var string */
 	private $secret;
-	/** @var IBufferingStatsdDataFactory */
-	private $stats;
-	/** @var LBFactory */
-	private $lbFactory;
-	/** @var JobQueueGroup */
-	private $jobQueueGroup;
-	/** @var CentralIdLookup */
-	private $centralIdLookup;
-	/** @var AuthManager */
-	private $authManager;
+	private IBufferingStatsdDataFactory $stats;
+	private LBFactory $lbFactory;
+	private JobQueueGroup $jobQueueGroup;
+	private CentralIdLookup $centralIdLookup;
+	private AuthManager $authManager;
 	/** @var int|null */
 	private $fakeTime;
 
