@@ -2,7 +2,7 @@ hash-format = "sha256"
 
 [[files]]
 file = "CREDITS.md"
-hash = "217115f01807631738769dc0056c396155717645d9019ba0cd0ad52d41a2f0e7"
+hash = "6fbf0d7e68d123229881d1bb1c581b76bd3b0569c5182e5b629f4211f6058a36"
 
 [[files]]
 file = "LICENSE"
@@ -465,7 +465,7 @@ metafile = true
 
 [[files]]
 file = "options.txt"
-hash = "dd26ea1393bd7b45e4e3c0500f0dd68121667e41e7465203c6fb58851417ce10"
+hash = "53beb5a7c4222aed7f7e91d004f48da39e920ce015dbec7fbe25b26e07486bb0"
 
 [[files]]
 file = "resourcepacks/bettersky.pw.toml"
@@ -484,7 +484,7 @@ metafile = true
 
 [[files]]
 file = "resourcepacks/key-language-pack.pw.toml"
-hash = "a9a38f3367cee0ca5af3e4fde9a9abb35614d843f15ebcbf3bada6bd8a1852b1"
+hash = "8f0852be91335c395768c1c3f9b969f9370d9a83e27f039829f89abc5c21afc6"
 metafile = true
 
 [[files]]
