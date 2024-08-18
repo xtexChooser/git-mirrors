@@ -3,8 +3,7 @@
 	"version": "0.0.0",
 	"private": true,
 	"workspaces": [
-		"cli",
-		"service"
+		"cli"
 	],
 	"scripts": {
 		"test:unit": "jest --silent",
