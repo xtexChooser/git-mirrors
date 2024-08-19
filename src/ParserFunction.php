@@ -79,7 +79,7 @@ class ParserFunction implements MessageLocalizer {
 			return $this->renderError( $parser->msg( 'chart-error-shell-disabled' )->text() );
 		}
 
-		$format = null;
+		$definition = array_shift( $args );
 		$dataSource = null;
 		$options = [];
 		foreach ( $args as $arg ) {
@@ -87,9 +87,6 @@ class ParserFunction implements MessageLocalizer {
 			if ( str_contains( $arg, '=' ) ) {
 				[ $key, $value ] = array_map( 'trim', explode( '=', $arg, 2 ) );
 				switch ( $key ) {
-					case 'format':
-						$format = $value;
-						break;
 					case 'data':
 						$dataSource = $value;
 						break;
@@ -107,10 +104,10 @@ class ParserFunction implements MessageLocalizer {
 			}
 		}
 
-		if ( !$format ) {
+		if ( !$definition ) {
 			return $this->renderError( $this->msg( 'chart-error-chart-definition-not-found' )->text() );
 		}
-		$definitionTitle = $this->resolvePageInDataNamespace( $format );
+		$definitionTitle = $this->resolvePageInDataNamespace( $definition );
 		if ( !$definitionTitle ) {
 			return $this->renderError( $this->msg( 'chart-error-chart-definition-not-found' )->text() );
 		}
