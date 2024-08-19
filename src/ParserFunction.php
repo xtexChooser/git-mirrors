@@ -84,8 +84,8 @@ class ParserFunction implements MessageLocalizer {
 		$options = [];
 		foreach ( $args as $arg ) {
 			// @fixme use proper i18n-friendly magic words
-			if ( strpos( $arg, '=' ) >= 0 ) {
-				[ $key, $value ] = explode( '=', $arg, 2 );
+			if ( str_contains( $arg, '=' ) ) {
+				[ $key, $value ] = array_map( 'trim', explode( '=', $arg, 2 ) );
 				switch ( $key ) {
 					case 'format':
 						$format = $value;
