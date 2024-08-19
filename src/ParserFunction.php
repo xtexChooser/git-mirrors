@@ -79,23 +79,28 @@ class ParserFunction implements MessageLocalizer {
 			return $this->renderError( $parser->msg( 'chart-error-shell-disabled' )->text() );
 		}
 
+		$magicWords = $parser->getMagicWordFactory()->newArray( [
+			'chart_data',
+			'chart_width',
+			'chart_height'
+		] );
+
 		$definition = array_shift( $args );
 		$dataSource = null;
 		$options = [];
 		foreach ( $args as $arg ) {
-			// @fixme use proper i18n-friendly magic words
 			if ( str_contains( $arg, '=' ) ) {
 				[ $key, $value ] = array_map( 'trim', explode( '=', $arg, 2 ) );
-				switch ( $key ) {
-					case 'data':
+				switch ( $magicWords->matchStartToEnd( $key ) ) {
+					case 'chart_data':
 						$dataSource = $value;
 						break;
 					// @unstable: @todo revisit after T371712
-					case 'width':
+					case 'chart_width':
 						$options['width'] = $value;
 						break;
 					// @unstable: @todo revisit after T371712
-					case 'height':
+					case 'chart_height':
 						$options['height'] = $value;
 						break;
 					default:
