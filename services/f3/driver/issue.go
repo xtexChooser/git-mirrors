@@ -48,7 +48,7 @@ func (o *issue) ToFormat() f3.Interface {
 		return o.NewFormat()
 	}
 
-	var milestone *f3.Reference
+	milestone := &f3.Reference{}
 	if o.forgejoIssue.Milestone != nil {
 		milestone = f3_tree.NewIssueMilestoneReference(o.forgejoIssue.Milestone.ID)
 	}
@@ -82,9 +82,11 @@ func (o *issue) ToFormat() f3.Interface {
 func (o *issue) FromFormat(content f3.Interface) {
 	issue := content.(*f3.Issue)
 	var milestone *issues_model.Milestone
+	var milestoneID int64
 	if issue.Milestone != nil {
+		milestoneID = issue.Milestone.GetIDAsInt()
 		milestone = &issues_model.Milestone{
-			ID: issue.Milestone.GetIDAsInt(),
+			ID: milestoneID,
 		}
 	}
 	o.forgejoIssue = &issues_model.Issue{
@@ -95,6 +97,7 @@ func (o *issue) FromFormat(content f3.Interface) {
 			ID: issue.PosterID.GetIDAsInt(),
 		},
 		Content:     issue.Content,
+		MilestoneID: milestoneID,
 		Milestone:   milestone,
 		IsClosed:    issue.State == f3.IssueStateClosed,
 		CreatedUnix: timeutil.TimeStamp(issue.Created.Unix()),
