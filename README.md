@@ -12,14 +12,15 @@ render using data from tabular `.tab` pages also in the Data: namespace.
 Sample usage invoking both explicitly:
 
 ```
-{{#chart:format=1993 Canadian federal election.chart
-|data=1993 Canadian federal election.tab}}
+{{#chart:1993 Canadian federal election.chart|data=1993 Canadian federal election.tab}}
 ```
 
 == Installation ==
 - Install the JsonConfig extension; see https://www.mediawiki.org/wiki/Extension:JsonConfig#Installation
 - Clone this repo into the `extensions/Chart` directory in your MediaWiki installation
-- In the `extensions/Chart` directory, run `npm install && npm run -w cli build`
+- Clone the `chart-renderer` repo from https://gitlab.wikimedia.org/repos/mediawiki/services/chart-renderer.git
+  into the `extensions/Chart/chart-renderer` directory
+- In the `chart-renderer` directory, run `npm install` and `npm run build`
 - Add `wfLoadExtension( 'Chart' )` at the bottom of `LocalSettings.php`
 
 == Additional setup steps for MediaWiki-Docker ==
@@ -39,6 +40,25 @@ docker compose build
 docker compose down
 docker compose up -d
 ```
+
+== CLI renderer or HTTP service ==
+By default, the Chart extension renders charts by shelling out to the `cli.js` script in the
+`chart-renderer` directory. This is the recommended setup for local development.
+
+If you want to shell out to the CLI renderer, but the `chart-renderer` directory is in a different
+location, customize the path to the `cli.js` script by adding the following to `LocalSettings.php`:
+```
+$wgChartCliPath = 'path/to/chart-renderer/cli.js';
+```
+
+In production environments, using the HTTP service is recommended. To set up the HTTP service,
+clone the `chart-renderer` directory, run `npm install`, then run `npm start` to start the service.
+Then point the Chart extension to the service by adding the following to `LocalSettings.php`:
+```
+$wgChartServiceUrl = 'http://localhost:6284/v1/chart/render';
+```
+If the chart-renderer service runs on a different machine than the PHP web server, adjust the
+`$wgChartServiceUrl` setting accordingly.
 
 == JsonConfig dependency ==
 
