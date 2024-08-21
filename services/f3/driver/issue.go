@@ -150,7 +150,7 @@ func (o *issue) Patch(ctx context.Context) {
 	index := node.GetID().Int64()
 	id := getIssueID(ctx, project, index)
 	o.Trace("id = %d, repo_id = %d, index = %d, assignees = %v", id, project, index, o.forgejoIssue.Assignees)
-	if _, err := db.GetEngine(ctx).Where("`id` = ?", id).Cols("name", "content", "is_closed", "milestone_id").Update(o.forgejoIssue); err != nil {
+	if _, err := db.GetEngine(ctx).Where("`id` = ?", id).Cols("name", "content", "is_closed", "milestone_id", "is_locked").Update(o.forgejoIssue); err != nil {
 		panic(fmt.Errorf("%v %v", o.forgejoIssue, err))
 	}
 
