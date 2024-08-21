@@ -3,7 +3,7 @@ target = "x86_64-pc-windows-gnu"
 rustflags = [
     # avoid api-ms-win-core-winrt-error-l1-1-0.dll
     "--cfg=windows_slim_errors",
-    # use mold
+    # use lld
     "-C",
     "link-arg=-fuse-ld=lld"
 ]
