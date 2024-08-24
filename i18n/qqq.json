@@ -13,5 +13,5 @@
 	"chart-error-incompatible-chart-definition": "Error message when the chart definition page is incompatible with charts. Shown to user in Codex message box.",
 	"chart-error-incompatible-data-source": "Error message when the tabular data source page is incompatible with charts. Shown to user in Codex message box.",
 	"chart-error-shell-disabled": "Error message when shell execution is disabled. Shown to user in Codex message box.",
-	"chart-error-shell-error": "Error message when executing the shell script returned an error."
+	"chart-error-rendering-error": "Error message when executing the service or shell script returned an error."
 }

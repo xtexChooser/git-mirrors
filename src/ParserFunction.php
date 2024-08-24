@@ -11,7 +11,6 @@ use MediaWiki\Message\Message;
 use MediaWiki\Page\PageReference;
 use MediaWiki\Parser\Parser;
 use MediaWiki\Parser\ParserOutput;
-use MediaWiki\Shell\Shell;
 use MediaWiki\Title\Title;
 use MessageLocalizer;
 use WikiPage;
@@ -74,10 +73,6 @@ class ParserFunction implements MessageLocalizer {
 	 */
 	public function render( Parser $parser, ...$args ) {
 		// @todo incrementExpensiveFunctionCount
-
-		if ( Shell::isDisabled() ) {
-			return $this->renderError( $parser->msg( 'chart-error-shell-disabled' )->text() );
-		}
 
 		$magicWords = $parser->getMagicWordFactory()->newArray( [
 			'chart_data',
@@ -226,7 +221,7 @@ class ParserFunction implements MessageLocalizer {
 
 		$status = $this->chartRenderer->renderSVG( $definitionObj, $dataObj, $options );
 		if ( !$status->isGood() ) {
-			return Html::errorBox( $this->msg( 'chart-error-shell-error' )->text() );
+			return Html::errorBox( $status->getHTML() );
 		}
 		$svg = $status->getValue();
 		return Html::rawElement( 'div', [ 'class' => 'mw-chart' ], $svg );

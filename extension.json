@@ -15,6 +15,17 @@
 			"JsonConfig": "*"
 		}
 	},
+	"config": {
+		"ChartServiceUrl": {
+			"value": null,
+			"description": "URL to the chart-renderer service. If both ChartCliPath and this setting are set, this setting is used."
+		},
+		"ChartCliPath": {
+			"value": null,
+			"description": "File path to the chart-renderer CLI script. Defaults to 'path/to/extensions/Chart/chart-renderer/cli.js'. If both ChartServiceUrl and this setting are set, this setting is ignored and ChartServiceUrl is used."
+		}
+	},
+	"callback": "MediaWiki\\Extension\\Chart\\Hooks::onRegistration",
 	"AutoloadNamespaces": {
 		"MediaWiki\\Extension\\Chart\\": "src/"
 	},
