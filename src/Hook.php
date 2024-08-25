@@ -199,7 +199,7 @@ class Hook {
 			// https://gerrit.wikimedia.org/r/#/c/319255/2/includes/WatchedItemStore.php
 		}
 
-		$dbw = wfGetDB( DB_MASTER );
+		$dbw = wfGetDB( DB_PRIMARY );
 		foreach ( array_chunk( $rows, 100 ) as $toInsert ) {
 			// Use INSERT IGNORE to avoid overwriting the notification timestamp
 			// if there's already an entry for this page
