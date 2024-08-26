@@ -173,7 +173,9 @@ class ApiQueryGlobalBlocks extends ApiQueryBase {
 				$this->setContinueEnumParameter( 'start', wfTimestamp( TS_ISO_8601, $row->gb_timestamp ) );
 				break;
 			}
-			$block = [];
+			$block = [
+				ApiResult::META_TYPE => 'assoc'
+			];
 			if ( $fld_id ) {
 				$block['id'] = $row->gb_id;
 			}
