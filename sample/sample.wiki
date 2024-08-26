@@ -1,3 +1,2 @@
-{{#chart:format=1993 Canadian federal election.chart
-|data=1993 Canadian federal election.tab}}
+{{#chart:1993 Canadian federal election.chart}}
 
