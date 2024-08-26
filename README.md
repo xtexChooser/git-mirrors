@@ -69,7 +69,7 @@ and configured for "`.tab`" tabular data and "`.chart`" formatting definitions.
 
 The "`.tab`" data pages are as per https://www.mediawiki.org/wiki/Help:Tabular_Data
 
-Sample config for local development, with a central wiki sharing out its data pages:
+Sample config for local development:
 
 ```php
 	// Safety: before extension.json, these values were initialized by JsonConfig.php
@@ -86,9 +86,14 @@ Sample config for local development, with a central wiki sharing out its data pa
 		// page name must end in ".tab", and contain at least one symbol
 		'pattern' => '/.\.tab$/',
 		'license' => 'CC0-1.0',
-		// allows the cache keys to be shared between wikis
-		'isLocal' => false,
+		'isLocal' => true,
 	];
+```
+
+If you want to host the Data namespace on a single, central wiki that other wikis pull from,
+add the following after the configuration above:
+```php
+	$wgJsonConfigs['Tabular.JsonConfig']['isLocal'] = false;
 
 	if ( $wgDBname === 'my_central_wiki' ) {
 		$wgJsonConfigs['Tabular.JsonConfig']['store'] = true;
@@ -97,7 +102,6 @@ Sample config for local development, with a central wiki sharing out its data pa
 			'url' => 'https://my-central-wiki.example.com/w/api.php'
 		];
 	}
-
 ```
 
 A sample .tab page may be found in the `sample/` folder.
@@ -121,9 +125,14 @@ The "`.chart`" data pages are custom for this extension and also build on `JsonC
 		// page name must end in ".chart", and contain at least one symbol
 		'pattern' => '/.\.chart$/',
 		'license' => 'CC0-1.0',
-		// allows the cache keys to be shared between wikis
-		'isLocal' => false,
+		'isLocal' => true,
 	];
+```
+
+If you want to host the Data namespace on a single, central wiki that other wikis pull from,
+add the following after the configuration above:
+```php
+	$wgJsonConfigs['Chart.JsonConfig']['isLocal'] = false;
 
 	if ( $wgDBname === 'my_central_wiki' ) {
 		$wgJsonConfigs['Chart.JsonConfig']['store'] = true;
