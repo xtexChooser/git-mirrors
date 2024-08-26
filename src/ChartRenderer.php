@@ -73,13 +73,14 @@ class ChartRenderer {
 	}
 
 	private function renderWithService( stdclass $chartDef, stdclass $tabularData, array $options ): Status {
+		$requestData = array_merge( [
+			'definition' => $chartDef,
+			'data' => $tabularData,
+		], $options );
+
 		$requestOptions = [
 			'method' => 'POST',
-			'postData' => json_encode( [
-				'definition' => $chartDef,
-				'data' => $tabularData,
-				...$options
-			] )
+			'postData' => json_encode( $requestData )
 		];
 		$request = $this->httpRequestFactory->create(
 			$this->options->get( 'ChartServiceUrl' ),
