@@ -11,5 +11,5 @@
 	"chart-error-incompatible-chart-definition": "定義頁面與圖表不相容",
 	"chart-error-incompatible-data-source": "表格資料來源頁面與圖表不相容。",
 	"chart-error-shell-disabled": "因為未啟用 shell 擴充功能，無法呈現圖表。",
-	"chart-error-shell-error": "呈現圖表時發生錯誤。"
+	"chart-error-rendering-error": "呈現圖表時發生錯誤。"
 }

@@ -11,5 +11,5 @@
 	"chart-error-incompatible-chart-definition": "Definitiepagina is niet compatibel met diagrammen.",
 	"chart-error-incompatible-data-source": "De pagina met tabelgegevensbronnen is niet compatibel met diagrammen.",
 	"chart-error-shell-disabled": "Diagrammen kunnen niet worden weergegeven omdat shell-uitvoering is uitgeschakeld.",
-	"chart-error-shell-error": "Er is een fout opgetreden bij het weergeven van het diagram."
+	"chart-error-rendering-error": "Er is een fout opgetreden bij het weergeven van het diagram."
 }

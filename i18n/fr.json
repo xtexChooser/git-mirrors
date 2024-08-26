@@ -11,5 +11,5 @@
 	"chart-error-incompatible-chart-definition": "La page définition est incompatible avec les graphiques.",
 	"chart-error-incompatible-data-source": "La page de source de données tabulaire est incompatible avec les graphiques.",
 	"chart-error-shell-disabled": "Les graphiques ne peuvent pas être rendus parce que l'exécution de la coquille est désactivée.",
-	"chart-error-shell-error": "Une erreur s'est produite lors de l'affichage du graphique"
+	"chart-error-rendering-error": "Une erreur s'est produite lors de l'affichage du graphique"
 }

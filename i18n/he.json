@@ -11,5 +11,5 @@
 	"chart-error-incompatible-chart-definition": "דף ההגדרה אינו תואם לתרשימים.",
 	"chart-error-incompatible-data-source": "דף המקור לנתונים הטבלאיים אינו תואם לתרשימים.",
 	"chart-error-shell-disabled": "לא ניתן לתצג את התרשימים כי הרצת הפקודות במסוף כבויה.",
-	"chart-error-shell-error": "אירעה שגיאה בעת תיצוג התרשים."
+	"chart-error-rendering-error": "אירעה שגיאה בעת תיצוג התרשים."
 }
