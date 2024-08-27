@@ -5,6 +5,5 @@
 /vendor
 node_modules
 .eslintcache
-/cli/dist
 /coverage
 chart-renderer
