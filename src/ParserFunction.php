@@ -105,17 +105,17 @@ class ParserFunction implements MessageLocalizer {
 		}
 
 		if ( !$definition ) {
-			return $this->renderError( $this->msg( 'chart-error-chart-definition-not-found' )->text() );
+			return $this->renderError( $this->msg( 'chart-error-chart-definition-not-found' )->escaped() );
 		}
 		$definitionTitle = $this->resolvePageInDataNamespace( $definition );
 		if ( !$definitionTitle ) {
-			return $this->renderError( $this->msg( 'chart-error-chart-definition-not-found' )->text() );
+			return $this->renderError( $this->msg( 'chart-error-chart-definition-not-found' )->escaped() );
 		}
 		$dataTitle = null;
 		if ( $dataSource !== null ) {
 			$dataTitle = $this->resolvePageInDataNamespace( $dataSource );
 			if ( !$dataTitle ) {
-				return $this->renderError( $this->msg( 'chart-error-chart-definition-not-found' )->text() );
+				return $this->renderError( $this->msg( 'chart-error-chart-definition-not-found' )->escaped() );
 			}
 		}
 
@@ -168,10 +168,10 @@ class ParserFunction implements MessageLocalizer {
 			$definitionPage = new WikiPage( $chartDefinition );
 			$definitionContent = JCSingleton::getContent( $chartDefinition->getTitleValue() );
 			if ( !$definitionContent ) {
-				return Html::errorBox( $this->msg( 'chart-error-chart-definition-not-found' )->text() );
+				return Html::errorBox( $this->msg( 'chart-error-chart-definition-not-found' )->escaped() );
 			}
 			if ( !( $definitionContent instanceof JCChartContent ) ) {
-				return Html::errorBox( $this->msg( 'chart-error-incompatible-chart-definition' )->text() );
+				return Html::errorBox( $this->msg( 'chart-error-incompatible-chart-definition' )->escaped() );
 			}
 			if ( $definitionPage->exists() ) {
 				// Record a dependency on the chart page, so that the page embedding the chart
@@ -190,20 +190,20 @@ class ParserFunction implements MessageLocalizer {
 
 		if ( !$tabularData ) {
 			if ( !isset( $definitionObj->source ) ) {
-				return Html::errorBox( $this->msg( 'chart-error-default-source-not-specified' )->text() );
+				return Html::errorBox( $this->msg( 'chart-error-default-source-not-specified' )->escaped() );
 			}
 			$tabularData = $this->resolvePageInDataNamespace( $definitionObj->source );
 			if ( !$tabularData ) {
-				return Html::errorBox( $this->msg( 'chart-error-data-source-page-not-found' )->text() );
+				return Html::errorBox( $this->msg( 'chart-error-data-source-page-not-found' )->escaped() );
 			}
 		}
 		$dataPage = new WikiPage( $tabularData );
 		$dataContent = JCSingleton::getContent( $tabularData->getTitleValue() );
 		if ( !$dataContent ) {
-			return Html::errorBox( $this->msg( 'chart-error-data-source-page-not-found' )->text() );
+			return Html::errorBox( $this->msg( 'chart-error-data-source-page-not-found' )->escaped() );
 		}
 		if ( !( $dataContent instanceof JCTabularContent ) ) {
-			return Html::errorBox( $this->msg( 'chart-error-incompatible-data-source' )->text() );
+			return Html::errorBox( $this->msg( 'chart-error-incompatible-data-source' )->escaped() );
 		}
 		if ( $dataPage->exists() ) {
 			// Record a dependency on the data page, so that the page embedding the chart
