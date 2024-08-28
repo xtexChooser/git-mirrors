@@ -3,6 +3,9 @@
     --color-body-bg: #fcfcfc;
     --color-text: #333333;
     --color-link: #6d8af2;
+    --color-button-text: var(--color-text);
+    --color-button-bg: #0062cc;
+    --color-button-outline: #61a3ea9e;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -32,15 +35,6 @@ h6 {
     line-height: 1.2;
 }
 
-a:link,
-a:visited,
-a:active,
-a:link:hover {
-    color: var(--color-link);
-}
-a:focus {
-    outline: solid 2px var(--outline-color-progressive--focus, #36c);
-}
 h1 a:empty:before,
 h2 a:empty:before,
 h3 a:empty:before,
@@ -120,6 +114,7 @@ td {
 
 ul.hlist {
     display: inline-flex;
+    padding: 0;
 }
 ul.hlist li {
     display: inline;
@@ -127,10 +122,34 @@ ul.hlist li {
 ul.hlist li::marker {
     content: none;
 }
-ul.hlist li:not(:last-child)::after {
+ul.hlist:not(.hlist-buttons) li:not(:last-child)::after {
     content: "|";
     padding-left: 0.25em;
     padding-right: 0.25em;
+}
+ul.hlist-buttons li {
+    padding: 0 0.28em;
+}
+
+a:not(.button):link,
+a:not(.button):visited,
+a:not(.button):active,
+a:not(.button):link:hover {
+    color: var(--color-link);
+}
+a:not(.button):focus {
+    outline: solid 2px var(--outline-color-progressive--focus, #36c);
+}
+
+.button {
+    text-decoration: none;
+    color: var(--color-button-text);
+    width: 12em;
+    display: inline-block;
+    background-color: var(--color-button-bg);
+}
+.button:focus {
+    outline: solid var(--color-button-outline) 0.1em;
 }
 
 #nav {

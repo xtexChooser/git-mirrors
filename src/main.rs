@@ -5,7 +5,9 @@ use clap::Parser;
 use server::IdServer;
 
 mod database;
+mod idp;
 mod server;
+mod user;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]

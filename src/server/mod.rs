@@ -1,9 +1,10 @@
 use std::{
+    collections::HashMap,
     fmt::{Debug, Display},
     marker::PhantomData,
     net::SocketAddr,
     path::{Path, PathBuf},
-    sync::{Arc, OnceLock},
+    sync::{Arc, Mutex, OnceLock},
 };
 
 use actix_web::{
@@ -14,19 +15,29 @@ use actix_web::{
 use anyhow::{Context, Result};
 use embed::EmbedAssets;
 use handlebars::Handlebars;
+use itertools::Itertools;
+use rand::SeedableRng;
+use rand_chacha::ChaChaRng;
+use register::RegisterConfig;
 use serde::{Deserialize, Serialize};
 use sqlx::PgPool;
 use tracing::{error, info};
 
-use crate::database;
+use crate::{
+    database,
+    idp::{IdProvider, IdProviderConfig, IdProviderFactory, IdProviderId},
+};
 
 pub mod embed;
 pub mod frontend;
+pub mod register;
 
 pub struct IdServer {
     pub config: ServerConfig,
     pub database: PgPool,
+    pub providers: HashMap<IdProviderId, IdProvider>,
     pub template: Arc<Handlebars<'static>>,
+    pub csrng: Mutex<ChaChaRng>,
 }
 
 impl IdServer {
@@ -51,10 +62,21 @@ impl IdServer {
         )?;
         let template = Arc::new(template);
 
+        let providers = config
+            .idp
+            .iter()
+            .map(|(key, value)| (IdProviderId::from(key.as_str()), value))
+            .map(|(id, idp)| idp.to_idp(id).map(|idp| (id, idp)))
+            .try_collect()?;
+
+        let csrng = Mutex::new(ChaChaRng::from_entropy());
+
         Ok(Self {
             config,
             database,
+            providers,
             template,
+            csrng,
         })
     }
 
@@ -78,7 +100,12 @@ impl IdServer {
                         "/fec".to_string(),
                         PhantomData,
                     ))
-                    .route("/", web::get().to(frontend::serve_index));
+                    .route("/", web::get().to(frontend::serve_index))
+                    .service(
+                        web::resource("/register")
+                            .get(register::serve_get)
+                            .post(register::serve_post),
+                    );
                 if let Some(overlay) =
                     server_data.config.frontend.overlay.as_ref()
                 {
@@ -106,7 +133,14 @@ impl IdServer {
     }
 }
 
-pub static ID_SERVER: OnceLock<Arc<IdServer>> = OnceLock::new();
+static ID_SERVER: OnceLock<Arc<IdServer>> = OnceLock::new();
+impl IdServer {
+    pub fn get() -> &'static Self {
+        ID_SERVER
+            .get()
+            .expect("IdServer::get must be called after initialization")
+    }
+}
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "kebab-case", deny_unknown_fields)]
@@ -116,6 +150,8 @@ pub struct ServerConfig {
     #[serde(default)]
     pub frontend: FrontendConfig,
     pub site: SiteConfig,
+    pub idp: HashMap<String, IdProviderConfig>,
+    pub register: RegisterConfig,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

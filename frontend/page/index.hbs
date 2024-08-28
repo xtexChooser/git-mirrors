@@ -1,0 +1,16 @@
+{{#> base/page}}
+{{#*inline "head"}}
+<title>{{site_name}}</title>
+<link rel="stylesheet" href="{{site_path}}/fec/page/index.css">
+{{/inline}}
+{{#*inline "content"}}
+<div id="index-box">
+	<h1 id="index-site-name">{{site_name}}</h1>
+	<p id="index-site-desc">{{lookup (site) "description"}}</p>
+	<ul class="hlist hlist-buttons">
+		<li><a class="button" href="{{site_path}}/login">Login</a></li>
+		<li><a class="button" href="{{site_path}}/register">Register</a></li>
+	</ul>
+</div>
+{{/inline}}
+{{/base/page}}

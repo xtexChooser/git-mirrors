@@ -9,14 +9,15 @@ pub const MIGRATIONS: [&str; 2] = [
 pub const CURRENT_VERSION: u32 = MIGRATIONS.len() as u32;
 
 pub async fn update(db: &PgPool) -> Result<()> {
-    let dbname = sqlx::query_scalar::<_, String>("SELECT current_database()")
-        .fetch_one(db)
-        .await?;
+    let dbname =
+        sqlx::query_scalar::<_, String>(r#"SELECT current_database()"#)
+            .fetch_one(db)
+            .await?;
     let lock = crc::Crc::<u64>::new(&crc::CRC_64_GO_ISO)
         .checksum(format!("odino-update-{}", dbname).as_bytes())
         as i64;
     let mut conn = db.acquire().await?;
-    sqlx::query("SELECT pg_advisory_lock($1)")
+    sqlx::query(r#"SELECT pg_advisory_lock($1)"#)
         .bind(lock)
         .execute(&mut *conn)
         .await?;
@@ -34,7 +35,7 @@ pub async fn update(db: &PgPool) -> Result<()> {
         (*transaction).execute(MIGRATIONS[version as usize]).await?;
         version += 1;
 
-        sqlx::query("UPDATE schema_version SET \"version\" = $1")
+        sqlx::query(r#"UPDATE "schema_version" SET "version" = $1"#)
             .bind(version as i32)
             .execute(&mut *transaction)
             .await?;
@@ -43,7 +44,7 @@ pub async fn update(db: &PgPool) -> Result<()> {
         transaction.commit().await?;
     }
 
-    sqlx::query("SELECT pg_advisory_unlock($1)")
+    sqlx::query(r#"SELECT pg_advisory_unlock($1)"#)
         .bind(lock)
         .execute(&mut *conn)
         .await?;
@@ -53,7 +54,7 @@ pub async fn update(db: &PgPool) -> Result<()> {
 
 pub async fn get_version(db: &PgPool) -> Result<u32> {
     match sqlx::query_scalar::<_, i32>(
-        "SELECT version FROM schema_version WHERE id = 0 LIMIT 1",
+        r#"SELECT "version" FROM "schema_version" WHERE "id" = 0 LIMIT 1"#,
     )
     .fetch_optional(db)
     .await
@@ -68,7 +69,7 @@ pub async fn check(db: &PgPool) -> Result<()> {
     let schema_version = get_version(db).await?;
     if schema_version < CURRENT_VERSION {
         bail!(
-            r"Current database schema is outdated, this odino expects {}, but the database is {}.
+            "Current database schema is outdated, this odino expects {}, but the database is {}.
                     Run odino with --update to update the schema.",
             CURRENT_VERSION,
             schema_version
