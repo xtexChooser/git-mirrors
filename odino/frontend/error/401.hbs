@@ -1,0 +1,12 @@
+{{#> base/page}}
+{{#*inline "head"}}
+<title>{{status-msg}} - {{site_name}}</title>
+{{/inline}}
+{{#*inline "content"}}
+<section>
+	<h1>Login required</h1>
+	<p>{{status}} - {{status-msg}}</p>
+	<p>You need to <a href="{{site_path}}/login">login</a> to continue.</p>
+</section>
+{{/inline}}
+{{/base/page}}

@@ -1,0 +1,12 @@
+{{#> base/page}}
+{{#*inline "head"}}
+<title>{{status-msg}} - {{site_name}}</title>
+{{/inline}}
+{{#*inline "content"}}
+<section>
+	<h1>We hit an error.</h1>
+	<p>{{status}} - {{status-msg}}</p>
+	<p>{{error}}</p>
+</section>
+{{/inline}}
+{{/base/page}}

@@ -1,0 +1,52 @@
+[package]
+name = "odino"
+version = "0.1.0"
+edition = "2021"
+description = "A identity provider service."
+homepage = "https://w.xvnet.eu.org/w/Odino_(software)"
+repository = "https://codeberg.org/xvnet/odino.git"
+authors = ["Xensor V"]
+license = "Apache-2.0"
+
+[dependencies]
+actix-files = "0.6.6"
+actix-web = "4.8.0"
+anyhow = { version = "1.0.86", features = ["backtrace"] }
+argon2 = { version = "0.5.3", features = ["std"] }
+async-trait = "0.1.81"
+base64 = "0.22.1"
+bytes = "1.6.1"
+chrono = { version = "0.4.38", features = ["serde"] }
+clap = { version = "4.5.9", features = ["derive"] }
+crc = "3.2.1"
+crypto-common = "0.1.6"
+digest = "0.10.7"
+downcast-rs = "1.2.1"
+futures = "0.3.30"
+handlebars = { version = "6.0.0", features = ["dir_source", "rust-embed"] }
+handlebars_misc_helpers = { version = "0.16.3", default-features = false, features = ["string", "uuid", "regex", "jsonnet"] }
+hex = "0.4.3"
+hkdf = "0.12.4"
+hmac = "0.12.1"
+itertools = "0.13.0"
+mime = "0.3.17"
+mime_guess = "2.0.5"
+nom = "7.1.3"
+password-hash = { version = "0.5.0", features = ["std"] }
+pbkdf2 = { version = "0.12.2", features = ["password-hash", "simple", "std"] }
+rand = "0.8.5"
+rand_chacha = { version = "0.3.1", features = ["simd"] }
+rand_core = "0.6.4"
+rust-embed = { version = "8.5.0", features = ["interpolate-folder-path"] }
+scrypt = "0.11.0"
+serde = { version = "1.0.204", features = ["derive"] }
+serde_json = "1.0.120"
+sha2 = "0.10.8"
+sha3 = "0.10.8"
+sqlx = { version = "0.7.4", features = ["macros", "postgres", "runtime-tokio-rustls", "uuid", "chrono", "json"], default-features = false }
+thiserror = "1.0.63"
+tokio = { version = "1.38.1", features = ["full"] }
+toml = "0.8.15"
+tracing = "0.1.40"
+tracing-subscriber = { version = "0.3.18", features = ["json"] }
+uuid = { version = "1.10.0", features = ["serde", "fast-rng", "v7", "v4"] }
