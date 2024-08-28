@@ -10,7 +10,7 @@ docker := `echo ${DOCKER:-docker}`
 
 arch := if arch() == "x86_64" { "amd64" } else { "arm64" }
 
-builder_image := "ghcr.io/sebadob/rauthy-builder"
+builder_image := `echo ${BUILDER_IMAGE:-ghcr.io/sebadob/rauthy-builder}`
 #builder_tag_date := "20240620"
 builder_tag_date := "20240505"
 
