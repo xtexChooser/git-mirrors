@@ -173,7 +173,7 @@ $wgForeignFileRepos[] = [
 // Email
 $wgEnableEmail = true;
 $wgSMTP = [
-	'host' => 'smtp-mail.outlook.com',
+	'host' => 'smtp-relay.brevo.com',
 	'IDHost' => 'w.xvnet.eu.org',
 	'localhost' => $xvServerName,
 	'port' => 587,
