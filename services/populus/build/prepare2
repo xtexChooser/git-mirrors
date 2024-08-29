@@ -1,0 +1,22 @@
+#!/usr/bin/env sh
+set -eux
+
+apk add --no-cache \
+	build-base rust cargo musl-dev postgresql-client
+# TODO: unpin version after https://github.com/launchbadge/sqlx/pull/3459
+cargo install sqlx-cli@0.8.0 --no-default-features --features rustls,postgres
+export PATH="$HOME/.cargo/bin:$PATH"
+cd populus-src
+
+# prepare the database
+export PGPASSWORD=builder
+psql -h prepare-database -U postgres -d postgres -a -f postgres/sql-scripts/init.sql
+psql -h prepare-database -U postgres -d rauthy -a -f postgres/sql-scripts/init-rauthy.sql
+
+# prepare for sqlx offline build
+export DATABASE_URL="postgresql://rauthy:123SuperSafe@prepare-database/rauthy"
+sqlx migrate run --source migrations/postgres
+
+cd ..
+# prepare for container to use
+mv -v populus-src services/populus/build/src

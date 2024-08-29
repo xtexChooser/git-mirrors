@@ -1,0 +1,36 @@
+FROM docker.io/library/alpine AS builder
+
+ADD src /bld
+WORKDIR /bld
+
+# Build dependencies:
+# openssl-dev perl make: for vendored openssl
+# curl: for utoipa-swagger-ui
+RUN set -euxo pipefail; \
+	apk add --no-cache build-base rust cargo musl-dev just nodejs npm bash \
+		openssl-dev perl make curl sd; \
+	export PUB_URL="127.0.0.1:8443"; \
+	export DATABASE_URL="postgresql://rauthy:123SuperSafe@prepare-database/rauthy"; \
+	cd frontend; \
+	npm install; \
+	just __build-ui; \
+	cd ..; \
+	cargo build \
+		--release \
+		--features default,postgres;
+
+FROM docker.io/library/alpine
+
+ARG TARGET_USER="10001:10001"
+USER $TARGET_USER
+
+COPY --from=builder --chown=$TARGET_USER /bld/target/release/rauthy /usr/bin/rauthy
+WORKDIR /data
+
+ENTRYPOINT ["/usr/bin/rauthy"]
+
+LABEL org.opencontainers.image.licenses="Apache-2.0"
+LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
+LABEL org.opencontainers.image.title="Populus"
+LABEL org.opencontainers.image.url="https://codeberg.org/xvnet/populus"
+LABEL org.opencontainers.image.vendor="Xensor V Project"
