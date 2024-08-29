@@ -26,7 +26,7 @@ export const REGEX_API_KEY = /^[a-zA-Z0-9_/-]{2,24}$/gm;
 //     - some letters in Latin-1 Supplement
 //     - all of Katakana, CJK Unified Ideographs, CJK Unified Ideographs Ext A,
 //         CJK Radicals Supplement, Katakana Phonetic Extensions
-//     - most of)Hiragana, CJK Compatibility Ideographs, 
+//     - most of Hiragana, CJK Compatibility Ideographs, 
 //         Kangxi Radicals
 //     - a part of Halfwidth and Fullwidth Forms
 //   Unicode SMP and SIP planes are not included due to JavaScript regex limitations
