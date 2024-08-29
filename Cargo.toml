@@ -13,10 +13,12 @@ license = "Apache-2.0"
 panic = "abort"
 
 [profile.release]
-codegen-units = 1
+# populus changed for faster build
+# or else it crashes Codeberg CI
+# codegen-units = 1
 lto = true
-strip = true
-panic = "abort"
+strip = false
+panic = "unwind"
 
 [workspace.dependencies]
 accept-language = "3"
