@@ -10,4 +10,3 @@ LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
 LABEL org.opencontainers.image.title="PostgreSQL"
 LABEL org.opencontainers.image.url="https://www.postgresql.org/"
 LABEL org.opencontainers.image.vendor="Xensor V Project"
-
