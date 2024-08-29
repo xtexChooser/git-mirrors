@@ -85,6 +85,7 @@ Team members:
 * https://codeberg.org/KaKi87
 * https://codeberg.org/maltejur
 * https://codeberg.org/n0toose
+* https://codeberg.org/patdyn
 * https://codeberg.org/realaravinth
 * https://codeberg.org/rome-user
 * https://codeberg.org/snematoda
