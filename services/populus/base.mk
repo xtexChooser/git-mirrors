@@ -6,7 +6,7 @@ V_DEPS		+= /etc/populus/populus.cfg
 V_DEPS_ORD	+= /var/run/populus
 V_ARGS		+= --mount=type=bind,src=/etc/populus,dst=/etc/populus,ro=true
 V_ARGS		+= --mount=type=bind,src=/srv/secrets/populus,dst=/srv/secrets/populus,ro=true
-V_ARGS		+= --mount=type=bind,src=/var/run/populus,dst=/var/run/populus
+V_ARGS		+= --mount=type=bind,src=/var/run/populus,dst=/var/run/populus,chown=true
 V_ARGS		+= --memory=256M
 V_ARGS 		+= codeberg.org/xvnet/populus:latest
 $(call end)
