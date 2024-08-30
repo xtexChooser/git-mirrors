@@ -36,7 +36,7 @@ use rauthy_common::utils::{
 use rauthy_error::{ErrorResponse, ErrorResponseType};
 use redhac::{cache_del, cache_get, cache_get_from, cache_get_value, cache_insert, AckLevel};
 use reqwest::header::{ACCEPT, AUTHORIZATION};
-use reqwest::{tls, Url};
+use reqwest::tls;
 use ring::digest;
 use serde::{Deserialize, Serialize};
 use serde_json::value;
@@ -711,24 +711,14 @@ impl AuthProviderCallback {
             pkce_challenge: payload.pkce_challenge,
         };
 
-        let location = Url::parse_with_params(
-            &provider.authorization_endpoint,
-            &[
-                ("response_type", "code"),
-                ("client_id", &provider.client_id),
-                ("redirect_uri", PROVIDER_CALLBACK_URI_ENCODED.as_str()),
-                ("scope", &provider.scope),
-                ("state", &slf.callback_id),
-            ],
-        ).map_err(|_| {
-            ErrorResponse::new(
-                ErrorResponseType::Internal,
-                "Malformed authorization endpoint",
-            )
-        })?;
-
-        let mut location = location.to_string();
-
+        let mut location = format!(
+            "{}?client_id={}&redirect_uri={}&response_type=code&scope={}&state={}",
+            provider.authorization_endpoint,
+            provider.client_id,
+            *PROVIDER_CALLBACK_URI_ENCODED,
+            provider.scope,
+            slf.callback_id
+        );
         if provider.use_pkce {
             write!(
                 location,
