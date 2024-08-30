@@ -2,7 +2,9 @@
 
 This is a fork of [Rauthy](https://github.com/sebadob/rauthy), with some extra features and experimental changes. Xensor V Project uses this as their primary identity management service.
 
-# Rauthy
+For more information about the features provided by Populus, have a look at [our wiki](https://w.xvnet.eu.org/w/Populus_(software)).
+
+## Rauthy
 
 **CAUTION:**  
 There has not been any third party security audit for this project.
