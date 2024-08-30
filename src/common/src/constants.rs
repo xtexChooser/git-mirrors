@@ -227,9 +227,6 @@ lazy_static! {
         };
         format!("{}://{}/auth/v1/providers/callback", scheme, pub_url)
     };
-    pub static ref PROVIDER_CALLBACK_URI_ENCODED: String = {
-        PROVIDER_CALLBACK_URI.replace(':', "%3A").replace('/', "%2F")
-    };
 
     pub static ref DEVICE_GRANT_CODE_CACHE_SIZE: u32 = env::var("DEVICE_GRANT_CODE_CACHE_SIZE")
         .unwrap_or_else(|_| String::from("1000"))

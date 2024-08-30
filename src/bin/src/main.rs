@@ -655,7 +655,10 @@ async fn actix_main(app_state: web::Data<AppState>) -> std::io::Result<()> {
             app = app.service(swagger.clone());
         }
 
-        if matches!(app_state.listen_scheme, ListenScheme::UnixHttp | ListenScheme::UnixHttps) {
+        if matches!(
+            app_state.listen_scheme,
+            ListenScheme::UnixHttp | ListenScheme::UnixHttps
+        ) {
             app = app.app_data(UseDummyAddress);
         }
 
