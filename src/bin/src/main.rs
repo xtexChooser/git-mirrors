@@ -81,6 +81,15 @@ async fn main() -> Result<(), Box<dyn Error>> {
     if args.len() > 1 && args[1] == "test" {
         test_mode = true;
         dotenvy::from_filename("rauthy.test.cfg").ok();
+    } else if dotenvy::from_filename("populus.cfg").is_ok() {
+        // load populus configurations
+        if let Some(includes) = env::var("CONFIG_INCLUDES").ok() {
+            includes
+                .split_ascii_whitespace()
+                .map(|include| dotenvy::from_filename_override(include))
+                .collect::<dotenvy::Result<Vec<_>>>()?;
+        }
+        dotenvy::dotenv_override().ok();
     } else {
         dotenvy::from_filename("rauthy.cfg").expect("'rauthy.cfg' error");
         dotenvy::dotenv_override().ok();
