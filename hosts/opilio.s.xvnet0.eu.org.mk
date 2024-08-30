@@ -25,3 +25,6 @@ $(call load-state, services/mariadb/monto)
 
 ### tiang::tag opilio mediawiki
 $(call load-state, services/mediawiki)
+
+### tiang::tag opilio populus
+$(call load-state, services/populus)

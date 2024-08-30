@@ -25,8 +25,8 @@ ARG TARGET_USER="10001:10001"
 USER $TARGET_USER
 
 COPY --from=builder --chown=$TARGET_USER /bld/target/release/rauthy /usr/bin/rauthy
-WORKDIR /data
 
+WORKDIR /etc/populus
 ENTRYPOINT ["/usr/bin/rauthy"]
 
 LABEL org.opencontainers.image.licenses="Apache-2.0"
