@@ -8,6 +8,7 @@ ns				43200	IN	AAAA	fd00:443a:ef14:2::1
 
 ; Servers
 opilio.s				IN	AAAA	fd00:443a:ef14:1::1
+*.opilio.s				IN	CNAME	opilio.s
 
 ; Services
 ntfy					IN	CNAME	opilio.s
