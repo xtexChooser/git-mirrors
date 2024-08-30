@@ -24,6 +24,7 @@ FROM docker.io/library/alpine
 ARG TARGET_USER="10001:10001"
 USER $TARGET_USER
 
+RUN apk add --no-cache libgcc
 COPY --from=builder --chown=$TARGET_USER /bld/target/release/rauthy /usr/bin/rauthy
 
 WORKDIR /etc/populus
