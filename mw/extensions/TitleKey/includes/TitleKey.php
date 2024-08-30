@@ -221,23 +221,12 @@ class TitleKey implements
 	 * @param DatabaseUpdater $updater
 	 */
 	public function onLoadExtensionSchemaUpdates( $updater ) {
-		$dbType = $updater->getDB()->getType();
-		$dir = __DIR__ . '/../db_patches';
-		if ( $dbType !== 'mysql' ) {
-			$dir .= "/$dbType";
-		}
+		$db = $updater->getDB();
+		$path = dirname( __DIR__ ) . '/sql';
 		$updater->addExtensionTable(
 			'titlekey',
-			"$dir/tables-generated.sql"
+			$db->getType() === 'postgres' ? "$path/titlekey.pg.sql" : "$path/titlekey.sql"
 		);
-		if ( $dbType === 'mysql' ) {
-			$updater->modifyExtensionField(
-				'titlekey',
-				'af_actor',
-				"$dir/abstractSchemaChanges/patch-modify-tk_key.sql"
-			);
-		}
-
 		$updater->addPostDatabaseUpdateMaintenance( RebuildTitleKeys::class );
 	}
 
