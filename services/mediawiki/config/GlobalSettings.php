@@ -140,6 +140,8 @@ $wgEnableEditRecovery = true;
 $wgAllowSiteCSSOnRestrictedPages = true;
 $wgMFSiteStylesRenderBlocking = true;
 $wgDefaultUserOptions['editrecovery'] = 1;
+$wgOAuthGroupsToNotify[] = 'sysop';
+$wgOAuthGroupsToNotify[] = 'staff';
 
 // User rights
 $wgGroupPermissions['staff']['interwiki'] = true;
@@ -156,6 +158,16 @@ $wgGroupPermissions['sysop']['patrolmarks'] = true;
 $wgAddGroups['sysop'] = ['bot', 'interface-admin'];
 $wgRemoveGroups['sysop'] = ['sysop', 'bot', 'autoconfirmed'];
 $wgAutoConfirmCount = 10;
+$wgGroupPermissions['autoconfirmed']['mwoauthproposeconsumer'] = true;
+$wgGroupPermissions['sysop']['mwoauthmanageconsumer'] = true;
+$wgGroupPermissions['sysop']['mwoauthsuppress'] = true;
+$wgGroupPermissions['bureaucrat']['mwoauthmanageconsumer'] = true;
+$wgGroupPermissions['bureaucrat']['mwoauthsuppress'] = true;
+$wgGroupPermissions['staff']['mwoauthproposeconsumer'] = true;
+$wgGroupPermissions['staff']['mwoauthmanageconsumer'] = true;
+$wgGroupPermissions['staff']['mwoauthsuppress'] = true;
+$wgGroupPermissions['staff']['mwoauthviewsuppressed'] = true;
+$wgGroupPermissions['staff']['mwoauthviewprivate'] = true;
 
 // Shared Uploads
 $wgUseSharedUploads = true;
@@ -211,3 +223,11 @@ $wgFileExtensions = array_merge($wgFileExtensions, [
 $wgUseRCPatrol = true;
 $wgUseNPPatrol = true;
 $wgUseFilePatrol = true;
+
+// Public keys
+$wgOAuth2PublicKey = <<<EOF
+-----BEGIN PUBLIC KEY-----
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE6dk4RIVV3eVNbHBd/8ov7i/ljQFu
+U/a6RwrI5yo5PRbTGYAaz5cdGnNjbkq3CCEc0Fd6LH9w0LU0d1uSDOS5vw==
+-----END PUBLIC KEY-----
+EOF;

@@ -48,3 +48,6 @@ $wgGlobalUserPageDBname = $wgSharedDB;
 
 // Global Preferences
 $xvLoadExtensions[] = 'GlobalPreferences';
+
+// OAuth
+$wgMWOAuthCentralWiki = $wgSharedDB;
