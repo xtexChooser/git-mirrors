@@ -25,8 +25,9 @@ use rauthy_api_types::auth_providers::{
 use rauthy_api_types::users::UserValuesRequest;
 use rauthy_common::constants::{
     APPLICATION_JSON, CACHE_NAME_12HR, CACHE_NAME_AUTH_PROVIDER_CALLBACK, COOKIE_UPSTREAM_CALLBACK,
-    IDX_AUTH_PROVIDER, IDX_AUTH_PROVIDER_TEMPLATE, PROVIDER_CALLBACK_URI, PROVIDER_LINK_COOKIE,
-    RAUTHY_VERSION, UPSTREAM_AUTH_CALLBACK_TIMEOUT_SECS, WEBAUTHN_REQ_EXP,
+    IDX_AUTH_PROVIDER, IDX_AUTH_PROVIDER_TEMPLATE, PROVIDER_CALLBACK_URI,
+    PROVIDER_CALLBACK_URI_ENCODED, PROVIDER_LINK_COOKIE, RAUTHY_VERSION,
+    UPSTREAM_AUTH_CALLBACK_TIMEOUT_SECS, WEBAUTHN_REQ_EXP,
 };
 use rauthy_common::utils::{
     base64_decode, base64_encode, base64_url_encode, base64_url_no_pad_decode, get_rand,
@@ -715,12 +716,11 @@ impl AuthProviderCallback {
             &[
                 ("response_type", "code"),
                 ("client_id", &provider.client_id),
-                ("redirect_uri", PROVIDER_CALLBACK_URI.as_str()),
+                ("redirect_uri", PROVIDER_CALLBACK_URI_ENCODED.as_str()),
                 ("scope", &provider.scope),
                 ("state", &slf.callback_id),
             ],
-        )
-        .map_err(|_| {
+        ).map_err(|_| {
             ErrorResponse::new(
                 ErrorResponseType::Internal,
                 "Malformed authorization endpoint",
