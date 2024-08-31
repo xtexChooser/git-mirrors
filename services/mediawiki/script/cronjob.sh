@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -euxo pipefail
+set -euo pipefail
 
 echo "== MediaWiki cron jobs starting @ $(date -u)"
 
@@ -16,7 +16,7 @@ for wiki in "${wikis[@]}"; do
 	echo "==== $wiki: Generating sitemaps ..."
 	/srv/atremis/services/atremis/bin/atre s mediawiki maint "$wiki" generateSitemap \
 		--memory-limit=64M \
-		--fspath /var/lib/mediawiki/sitemap/meta/ \
+		--fspath /var/lib/mediawiki/sitemap/"$wiki"/ \
 		--urlpath=/sitemap/ \
 		--skip-redirects
 
