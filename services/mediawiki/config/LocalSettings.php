@@ -11,11 +11,24 @@ $xvWikis = [
 if (defined('MW_DB')) {
 	$xvWikiID = MW_DB;
 	$xvMaintScript = true;
-} else if ($_SERVER['MW_WIKI']) {
+} else if ($_SERVER['MW_WIKI'] ?: false) {
 	$xvWikiID = $_SERVER['MW_WIKI'];
 	$xvMaintScript = false;
 } else {
 	die('Unknown wiki.');
+}
+
+$xvDebug = false;
+if ($_SERVER['MW_DEBUG'] ?: false) {
+	$xvDebug = true;
+} else if ($_SERVER['HTTP_X_XENS_WIKIS_DEBUG'] ?: false) {
+	$xvDebug = true;
+}
+
+if ($xvDebug) {
+	$wgDevelopmentWarnings = true;
+	ini_set('display_errors', true);
+	header('X-Xens-Wikis-Debug: true');
 }
 
 setlocale(LC_ALL, 'en_US.UTF-8');
@@ -36,9 +49,9 @@ $xvHttpHost = $_SERVER['HTTP_HOST'] ?? $xvServerName;
 $xvLoadExtensions = [];
 $xvLoadSkins = [];
 
-require_once ('/srv/secrets/mw/Secrets.php');
-require_once (dirname(__FILE__) . '/GlobalSettings.php');
-require_once (dirname(__FILE__) . '/LocalSettings.' . $xvWikiID . '.php');
+require_once('/srv/secrets/mw/Secrets.php');
+require_once(dirname(__FILE__) . '/GlobalSettings.php');
+require_once(dirname(__FILE__) . '/LocalSettings.' . $xvWikiID . '.php');
 
 wfLoadExtensions($xvLoadExtensions);
 wfLoadSkins($xvLoadSkins);
