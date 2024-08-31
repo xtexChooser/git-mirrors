@@ -121,6 +121,7 @@ $wgVisualEditorEnableWikitext = true;
 $wgVisualEditorUseSingleEditTab = true;
 $wgDefaultUserOptions['visualeditor-editor'] = 'visualeditor';
 $wgDefaultUserOptions['visualeditor-newwikitext'] = 1;
+$wgVisualEditorAvailableNamespaces['Project'] = true;
 
 // Misc
 $wgNamespacesWithSubpages[NS_MAIN] = true;
