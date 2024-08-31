@@ -4,7 +4,7 @@ set -euxo pipefail
 
 echo "== MediaWiki cron jobs starting @ $(date -u)"
 
-echo "=== Collecting wikis: $wiki"
+echo "=== Collecting wikis"
 readarray -t wikis < <(find /srv/atremis/services/mediawiki/config -name 'LocalSettings.*.php' -printf '%f\n' | cut -d'.' -f2)
 
 for wiki in "${wikis[@]}"; do
