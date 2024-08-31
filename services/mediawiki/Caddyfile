@@ -1,5 +1,13 @@
 (mediawiki) {
 	import securitytxt
+	handle /sitemap {
+		uri strip_prefix /sitemap
+		root /var/lib/mediawiki/sitemap/{args[0]}
+		file_server
+	}
+	handle /sitemap.xml {
+		redir /sitemap/sitemap-index-wiki{args[0]}.xml permanent
+	}
 	handle {
 		root * /opt/mediawiki
 		php_fastcgi unix//var/run/mediawiki/php-fpm.sock {
