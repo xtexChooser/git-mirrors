@@ -159,6 +159,7 @@ $wgGroupPermissions['sysop']['patrolmarks'] = true;
 $wgAddGroups['sysop'] = ['bot', 'interface-admin'];
 $wgRemoveGroups['sysop'] = ['sysop', 'bot', 'autoconfirmed'];
 $wgAutoConfirmCount = 10;
+$wgAutoConfirmAge = 60 * 60 * 24 * 3;
 $wgGroupPermissions['autoconfirmed']['mwoauthproposeconsumer'] = true;
 $wgGroupPermissions['sysop']['mwoauthmanageconsumer'] = true;
 $wgGroupPermissions['sysop']['mwoauthsuppress'] = true;
