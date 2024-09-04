@@ -100,8 +100,8 @@ class JCChartContent extends JCDataContent {
 			$result->yAxis = $axis( $data->yAxis );
 		}
 
-		if ( isset( $data->legend ) ) {
-			$result->legend = $localize( $data->legend );
+		if ( isset( $data->showLegend ) ) {
+			$result->showLegend = $data->showLegend;
 		}
 		if ( isset( $data->linewidth ) ) {
 			$result->linewidth = $data->linewidth;
