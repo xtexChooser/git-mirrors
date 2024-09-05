@@ -240,6 +240,13 @@ Team members:
     * @patdyn
 
 
+## Sustainability Team 
+
+Purpose: The team focuses on concerted efforts to make Forgejo a durable endeavour. This includes taking a lead on fundraising, work out propositions on strategic planning, and coordinating related activities within the community. The team also monitors the distribution of funding, and acts as a mediator in the event of a disagreement.
+
+Accountability: The administrative aspects of grant applications from start to finish.
+
+
 ## [GitHub organisation](https://github.com/forgejo) owners as of 2024-01-09
 
 This organisation is only use to prevent squatting. Its information must be kept up-to-date (website, forge and social links).
