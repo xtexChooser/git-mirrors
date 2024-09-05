@@ -14,7 +14,7 @@ V_ARGS		+= --mount=type=bind,src=/etc/bird,dst=/etc/bird,ro=true
 V_ARGS		+= --mount=type=bind,src=/var/run/bird,dst=/var/run/bird
 V_ARGS		+= --publish-all
 V_ARGS		+= --network=host --ipc=host --cap-add=CAP_NET_ADMIN --privileged
-V_ARGS 		+= codeberg.org/xvnet/bird:$(strip $(BIRD_VERSION))
+V_ARGS 		+= codeberg.org/xens/bird:$(strip $(BIRD_VERSION))
 V_ARGS 		+= -R
 $(call end)
 

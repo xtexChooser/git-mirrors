@@ -52,7 +52,7 @@ WORKDIR /var/lib/mariadb
 ENTRYPOINT [ "/usr/local/mysql/bin/mariadbd" ]
 
 LABEL org.opencontainers.image.licenses="GPL-2.0-or-later"
-LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
+LABEL org.opencontainers.image.source="https://codeberg.org/xens/atremis"
 LABEL org.opencontainers.image.title="MariaDB"
 LABEL org.opencontainers.image.url="https://mariadb.com/"
 LABEL org.opencontainers.image.vendor="Xensor V Project"

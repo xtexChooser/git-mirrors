@@ -10,6 +10,6 @@ FROM scratch
 COPY --from=builder /bld/out/zones /
 COPY --from=builder /bld/out/zsk/*.key /
 
-LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
+LABEL org.opencontainers.image.source="https://codeberg.org/xens/atremis"
 LABEL org.opencontainers.image.title="XVN Authoritative Zone Files"
 LABEL org.opencontainers.image.vendor="Xensor V Project"

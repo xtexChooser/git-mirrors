@@ -25,7 +25,7 @@ WORKDIR /
 ENTRYPOINT [ "/usr/local/sbin/bird", "-f" ]
 
 LABEL org.opencontainers.image.licenses="GPL-2.0-or-later"
-LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
+LABEL org.opencontainers.image.source="https://codeberg.org/xens/atremis"
 LABEL org.opencontainers.image.title="BIRD"
 LABEL org.opencontainers.image.url="https://bird.network.cz/"
 LABEL org.opencontainers.image.vendor="Xensor V Project"

@@ -11,7 +11,7 @@ V_ARGS		+= --publish=80:80/tcp --publish=80:80/udp
 V_ARGS		+= --publish=443:443/tcp --publish=443:443/udp
 V_ARGS		+= --memory=64M
 $(call invoke-hooks,caddy-container-opts)
-V_ARGS 		+= codeberg.org/xvnet/x-caddy
+V_ARGS 		+= codeberg.org/xens/x-caddy
 $(call end)
 
 $(call add-fs-directory,/var/lib/caddy)

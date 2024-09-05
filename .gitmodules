@@ -1,6 +1,6 @@
 [submodule "external/leonis"]
 	path = external/leonis
-	url = https://codeberg.org/xvnet/leonis.git
+	url = https://codeberg.org/xens/leonis.git
 [submodule "external/tianguan"]
 	path = external/tianguan
-	url = https://codeberg.org/xvnet/tianguan.git
+	url = https://codeberg.org/xens/tianguan.git

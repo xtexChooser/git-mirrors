@@ -7,7 +7,7 @@ ENTRYPOINT [ "/usr/bin/podman" ]
 CMD []
 
 LABEL org.opencontainers.image.licenses="Apache-2.0"
-LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
+LABEL org.opencontainers.image.source="https://codeberg.org/xens/atremis"
 LABEL org.opencontainers.image.title="Podman"
 LABEL org.opencontainers.image.url="https://podman.io/"
 LABEL org.opencontainers.image.vendor="Xensor V Project"

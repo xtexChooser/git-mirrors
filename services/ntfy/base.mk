@@ -10,7 +10,7 @@ V_ARGS		+= --mount=type=bind,src=/var/lib/ntfy,dst=/var/lib/ntfy
 V_ARGS		+= --mount=type=bind,src=/var/cache/ntfy,dst=/var/cache/ntfy
 V_ARGS		+= --mount=type=bind,src=/var/log/ntfy,dst=/var/log/ntfy
 V_ARGS		+= --memory=64M
-V_ARGS 		+= codeberg.org/xvnet/ntfy:latest
+V_ARGS 		+= codeberg.org/xens/ntfy:latest
 $(call end)
 
 $(call fs-file)

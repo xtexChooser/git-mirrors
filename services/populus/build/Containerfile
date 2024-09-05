@@ -32,7 +32,7 @@ WORKDIR /etc/populus
 ENTRYPOINT ["/usr/bin/rauthy"]
 
 LABEL org.opencontainers.image.licenses="Apache-2.0"
-LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
+LABEL org.opencontainers.image.source="https://codeberg.org/xens/atremis"
 LABEL org.opencontainers.image.title="Populus"
-LABEL org.opencontainers.image.url="https://codeberg.org/xvnet/populus"
+LABEL org.opencontainers.image.url="https://codeberg.org/xens/populus"
 LABEL org.opencontainers.image.vendor="Xensor V Project"

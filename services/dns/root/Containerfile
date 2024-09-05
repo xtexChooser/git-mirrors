@@ -10,7 +10,7 @@ COPY --from=builder /bld/out/root.zone.signed /root.zone
 COPY --from=builder /bld/out/root.hint /root.hint
 COPY --from=builder /bld/out/dnssec-zsk.key /root.zsk.key
 
-LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
+LABEL org.opencontainers.image.source="https://codeberg.org/xens/atremis"
 LABEL org.opencontainers.image.title="XVN Root Zone Files"
 LABEL org.opencontainers.image.url="https://www.iana.org/domains/root"
 LABEL org.opencontainers.image.vendor="Xensor V Project"

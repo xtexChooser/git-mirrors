@@ -6,7 +6,7 @@ ENV PGDATA=/var/lib/postgresql
 RUN mkdir -p "$PGDATA" && chown -R root:root "$PGDATA" && chmod 1777 "$PGDATA"
 
 LABEL org.opencontainers.image.licenses="PostgreSQL"
-LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
+LABEL org.opencontainers.image.source="https://codeberg.org/xens/atremis"
 LABEL org.opencontainers.image.title="PostgreSQL"
 LABEL org.opencontainers.image.url="https://www.postgresql.org/"
 LABEL org.opencontainers.image.vendor="Xensor V Project"

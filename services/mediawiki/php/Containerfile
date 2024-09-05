@@ -34,7 +34,7 @@ WORKDIR /opt/mediawiki
 ENTRYPOINT [ "php-fpm" ]
 
 LABEL org.opencontainers.image.licenses="PHP-3.01"
-LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
+LABEL org.opencontainers.image.source="https://codeberg.org/xens/atremis"
 LABEL org.opencontainers.image.title="MediaWiki-PHP"
 LABEL org.opencontainers.image.url="https://www.php.net/"
 LABEL org.opencontainers.image.vendor="Xensor V Project"

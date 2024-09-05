@@ -8,7 +8,7 @@ sed -i -e 's/include/#include/' .bird-valid.conf
 
 podman run -it --rm --name bird-validate -v "$(pwd)":/validate \
 	--privileged \
-	codeberg.org/xvnet/bird:latest \
+	codeberg.org/xens/bird:latest \
 	-p -c /validate/.bird-valid.conf
 
 rm -f .bird-valid.conf

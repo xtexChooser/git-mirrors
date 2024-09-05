@@ -9,7 +9,7 @@ V_ARGS		+= --mount=type=bind,src=/srv/secrets/populus,dst=/srv/secrets/populus,r
 V_ARGS		+= --mount=type=bind,src=/var/run/populus,dst=/var/run/populus,chown=true
 V_ARGS		+= --memory=256M
 V_ARGS		+= --hostname=idp.$(HOSTNAME)
-V_ARGS 		+= codeberg.org/xvnet/populus:latest
+V_ARGS 		+= codeberg.org/xens/populus:latest
 $(call end)
 
 $(call fs-file)

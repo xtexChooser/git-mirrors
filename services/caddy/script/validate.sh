@@ -7,7 +7,7 @@ make HOSTNAME=opilio.s.xvnet0.eu.org USER=root LEONIS_LOAD_ALL=y do-tpl TPL_BACK
 sed -i -e 's/include/#include/' .caddy-valid.Caddyfile
 
 podman run -it --rm --name caddy-validate -v "$(pwd)":/validate \
-	codeberg.org/xvnet/x-caddy:latest \
+	codeberg.org/xens/x-caddy:latest \
 	caddy validate --config /validate/.caddy-valid.Caddyfile --adapter caddyfile
 
 rm -f .caddy-valid.Caddyfile

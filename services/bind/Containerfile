@@ -35,7 +35,7 @@ COPY --from=builder /usr/local /usr/local
 RUN mkdir -p /etc/bind /var/run/bind
 
 LABEL org.opencontainers.image.licenses="MPL-2.0"
-LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
+LABEL org.opencontainers.image.source="https://codeberg.org/xens/atremis"
 LABEL org.opencontainers.image.title="bind"
 LABEL org.opencontainers.image.url="https://bind.isc.org/"
 LABEL org.opencontainers.image.vendor="Xensor V Project"

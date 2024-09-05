@@ -4,4 +4,4 @@ set -eux
 apk add --no-cache \
 	git
 
-git clone --depth 1 --recurse-submodules --shallow-submodules https://codeberg.org/xvnet/populus populus-src
+git clone --depth 1 --recurse-submodules --shallow-submodules https://codeberg.org/xens/populus populus-src

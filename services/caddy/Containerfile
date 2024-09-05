@@ -11,7 +11,7 @@ FROM docker.io/library/caddy:alpine
 COPY --from=builder /usr/bin/caddy /usr/bin/caddy
 
 LABEL org.opencontainers.image.licenses="Apache-2.0"
-LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
+LABEL org.opencontainers.image.source="https://codeberg.org/xens/atremis"
 LABEL org.opencontainers.image.title="X-Caddy"
 LABEL org.opencontainers.image.url="https://caddyserver.com/"
 LABEL org.opencontainers.image.vendor="XV-NET"

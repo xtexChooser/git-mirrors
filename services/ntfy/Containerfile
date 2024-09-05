@@ -10,7 +10,7 @@ ENTRYPOINT ["ntfy"]
 CMD [ "serve" ]
 
 LABEL org.opencontainers.image.licenses="Apache-2.0 OR GPL-2.0-or-later"
-LABEL org.opencontainers.image.source="https://codeberg.org/xvnet/atremis"
+LABEL org.opencontainers.image.source="https://codeberg.org/xens/atremis"
 LABEL org.opencontainers.image.title="ntfy"
 LABEL org.opencontainers.image.url="https://ntfy.sh/"
 LABEL org.opencontainers.image.vendor="Xensor V Project"
