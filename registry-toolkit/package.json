@@ -1,0 +1,51 @@
+{
+  "name": "@xvnet/registry-toolkit",
+  "version": "0.1.2",
+  "description": "Toolkit to work with the xvnet registry",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc --build",
+    "watch": "tsc --watch",
+    "lint": "eslint src/**.ts",
+    "start": "node dist/index.js",
+    "format": "prettier --write src/**"
+  },
+  "keywords": [],
+  "author": "xvnet",
+  "license": "Apache-2.0",
+  "homepage": "https://codeberg.org/xvnet/registry-toolkit",
+  "bugs": {
+    "url": "https://codeberg.org/xvnet/registry-toolkit/issues"
+  },
+  "files": [
+    "src",
+    "dist"
+  ],
+  "bin": {
+    "xvnet-registry": "dist/index.js"
+  },
+  "devDependencies": {
+    "@types/ip": "^1.1.0",
+    "@types/jsonpath": "^0.2.0",
+    "@types/node": "^18.11.10",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "eslint": "^8.28.0",
+    "eslint-config-prettier": "^8.5.0",
+    "prettier": "^2.8.1",
+    "typescript": "*"
+  },
+  "dependencies": {
+    "ajv": "^8.11.2",
+    "axios": "^1.2.1",
+    "commander": "^9.4.1",
+    "ip": "^1.1.8",
+    "jsonpath": "^1.1.1",
+    "pino": "^8.7.0",
+    "pino-pretty": "^9.1.1",
+    "sort-keys": "^5.0.0",
+    "yaml": "^2.2.0"
+  }
+}

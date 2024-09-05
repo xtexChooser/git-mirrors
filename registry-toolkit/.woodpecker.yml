@@ -1,0 +1,41 @@
+variables:
+    - &file Containerfile
+    - &repo codeberg.org/xvnet/registry-toolkit
+
+pipeline:
+    node-build:
+        image: node
+        commands:
+            - npm install
+            - npm run build
+
+    node-push:
+        image: node
+        secrets: [cb_token]
+        commands:
+            - npm config set -- '//codeberg.org/api/packages/xvnet/npm/:_authToken' $CB_TOKEN
+            - npm publish
+        when:
+            event: tag
+
+    container-build:
+        image: woodpeckerci/plugin-docker-buildx
+        group: build
+        settings:
+            dockerfile: *file
+            dry_run: true
+            repo: *repo
+            tags: latest
+
+    container-push:
+        image: woodpeckerci/plugin-docker-buildx
+        settings:
+            dockerfile: *file
+            repo: *repo
+            registry: codeberg.org
+            tags: latest
+            username: ${CI_REPO_OWNER}
+            password:
+                from_secret: cb_token
+        when:
+            event: push
