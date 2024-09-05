@@ -1,0 +1,38 @@
+branches: main
+
+variables:
+  - &file Containerfile
+  - &repo codeberg.org/xtex-vnet/spica
+
+pipeline:
+  container-build:
+    image: woodpeckerci/plugin-docker-buildx
+    group: build
+    settings:
+      dockerfile: *file
+      dry_run: true
+      repo: *repo
+      tags: latest
+
+  rust-build:
+    image: rust
+    group: build
+    environment: [CARGO_TERM_COLOR=always]
+    commands:
+      - rustup default nightly
+      - cargo check
+      - cargo test
+
+  container-push:
+    image: woodpeckerci/plugin-docker-buildx
+    settings:
+      dockerfile: *file
+      platforms: linux/arm64/v8,linux/amd64
+      repo: *repo
+      registry: codeberg.org
+      tags: latest
+      username: ${CI_REPO_OWNER}
+      password:
+        from_secret: oci_token
+    when:
+      event: push

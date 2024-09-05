@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>SPICA Signer Server</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://unpkg.com/spcss@latest/sp.min.css" />
+  <style>
+    .crt_tools {
+      float: right;
+    }
+
+    .crt_tools ul {
+      display: inline;
+      padding: 0;
+    }
+
+    .crt_tools li {
+      display: inline;
+      margin: 0;
+    }
+
+    .crt_tools li::after {
+      content: ' | ';
+      font-weight: bold;
+    }
+
+    .crt_tools li:last-child::after {
+      content: none;
+    }
+  </style>
+</head>
+{% macro ossl_opts_table(opts) -%}<table>
+  <tr>
+    <th>key</th>
+    <th>value</th>
+  </tr>
+  {% for (k, v) in opts %}<tr>
+    <td><code>{{k}}</code></td>
+    <td><code>{{v}}</code></td>
+  </tr>
+  {% endfor %}
+</table>
+{%- endmacro %}
+
+<body>
+  <h1>
+    <a href="https://codeberg.org/XTEX-VNET/spica" target="_blank">SPICA</a>
+    Signer Server
+  </h1>
+  <p>This is a SPICA certificate signer server.</p>
+  <p>
+    {% if show_config %}<a href="./">[Less]</a>
+    {% else %}<a href="./config.html">[More]</a>
+    {% endif %}
+  </p>
+  <div>
+    <h2>Certificates</h2>
+    <ol>
+      {% for cert in config.cert %}<li>
+        {{ cert.id }}
+        <span class="crt_tools">
+          [<ul>
+            <li><a href="{{ cert.id }}/text.txt">text</a></li>
+            <li><a href="{{ cert.id }}/cert.crt">crt</a></li>
+          </ul>]
+        </span>
+        {% if show_config %}<div>
+          <h4>OpenSSL Options</h4>
+          {% call ossl_opts_table(cert.openssl_opt.clone()) %}
+        </div>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+  {% if show_config %}<div>
+    <h2>Roles</h2>
+    <p>OTP required: <span>{{ config.otp_required }}</span></p>
+    <ol>
+      {% for role in config.role %}<li>
+        {{ role.id }}
+        {% if role.prefer_hash.is_some() %}
+        <p>Preferred hash: <span>{{ role.prefer_hash.as_ref().unwrap() }}</span></p>
+        {% endif %}
+        <div>
+          <h4>ACL rules</h4>
+          <ol>
+            {% for acl in role.acl %}<li>
+              <p>Certificates: <code>{{ acl.certs.join(", ") }}</code></p>
+              <p>Max validity: <span>{{ format!("{:?}", acl.max_expire) }}</span></p>
+              <p>Allowed DNS Names: {% if acl.allowed_san_dns.is_some() %}
+              <ol>
+                {% for name in acl.allowed_san_dns.as_ref().unwrap() %}
+                <li><code>{{ name }}</code></li>
+                {% endfor %}
+              </ol>
+              {% else %}not filtered{% endif %}
+              </p>
+              {% if acl.can_custom_serial %}
+              <p>Can custom serial</p>
+              {% endif %}
+              {% if acl.can_custom_openssl_opts %}
+              <p>Can custom OpenSSL options</p>
+              {% endif %}
+              <p>OpenSSL Options{% call ossl_opts_table(acl.openssl_opt.clone()) %}</p>
+              {% if acl.prefer_hash.is_some() %}
+              <p>Preferred hash: <span>{{ acl.prefer_hash.as_ref().unwrap() }}</span></p>
+              {% endif %}
+            </li>
+            {% endfor %}
+          </ol>
+        </div>
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+  {% endif %}
+</body>
+
+</html>
