@@ -1,0 +1,14 @@
+jtd:
+  optionalProperties:
+    ref:
+      elements:
+        properties:
+          path:
+            type: string
+          schema:
+            type: string
+  properties:
+    jtd: {}
+    schema:
+      type: string
+schema: SCHEMA

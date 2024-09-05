@@ -1,0 +1,6 @@
+descr: Public Access with ZeroTier One
+net: xvnet
+origin:
+  - 4244310001
+route6: fd00:443a:ef14:2:1::/80
+source: xvnet

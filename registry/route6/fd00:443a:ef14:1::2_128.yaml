@@ -1,0 +1,6 @@
+descr: XV-NET us-dal1
+net: xvnet
+origin:
+  - 4244310002
+route6: fd00:443a:ef14:1::2/128
+source: xvnet

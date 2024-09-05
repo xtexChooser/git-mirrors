@@ -1,0 +1,9 @@
+auth:
+  - pgp-fingerprint 43D55EC7285804D1E9FEAAFB978F2E760D9DB0EB
+  - ssh-ed25519
+    AAAAC3NzaC1lZDI1NTE5AAAAIC9Xq225dYzTPQLc3ixSeRSlaq/8pSTAVI+flvSMMApe
+mail:
+  - xtex@xtexx.ml
+  - xtexchooser@duck.com
+mntner: XTEX-MNT-XVNET
+source: xvnet

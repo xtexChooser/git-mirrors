@@ -1,0 +1,6 @@
+mnter:
+  - XTEX-MNT-XVNET
+registry: xvnet
+source: xvnet
+url:
+  - https://codeberg.org/xvnet/registry

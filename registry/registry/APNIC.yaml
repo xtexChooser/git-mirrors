@@ -1,0 +1,7 @@
+mnter:
+  - XTEX-MNT-XVNET
+registry: APNIC
+source: xvnet
+url:
+  - whois://whois.arin.net
+  - rdap://rdap.apnic.net/

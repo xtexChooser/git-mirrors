@@ -1,0 +1,4 @@
+descr: XV-NET
+inet6num: fd00:443a:ef14::/48
+net: xvnet
+source: xvnet

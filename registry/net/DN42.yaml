@@ -1,0 +1,9 @@
+as_block:
+  - 4242420000-4242423999
+inetnum:
+  - fd00::/8
+  - 172.20.0.0/14
+mnter:
+  - XTEX-MNT-XVNET
+net: DN42
+source: xvnet

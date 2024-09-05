@@ -1,0 +1,46 @@
+name: Generate ROA
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: "15 */6 * * *"
+
+jobs:
+  generate:
+    name: Generate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          path: distrib
+          ssh-key: ${{ secrets.DISTRIB_KEY }}
+          repository: XTEX-VNET/distrib
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: latest
+      - run: npm install -g pnpm
+
+      - name: Generate
+        run: |
+          rm -rf distrib/registry | true
+          make
+          make lint_report
+          mv dist distrib/registry
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: distrib/registry
+
+      - name: Commit
+        working-directory: ./distrib
+        run: |
+          git config user.name "XTEX-VNET Registry Distrib Bot"
+          git config user.email "bot@xvnet.ga"
+          git add .
+          git commit -m "Update $(date -u +"%Y %m %d %H:%M:%S")" | true
+          git push

@@ -1,0 +1,4 @@
+descr: XV-NET us-dal1
+inet6num: fd00:443a:ef14:1::2/128
+net: xvnet
+source: xvnet

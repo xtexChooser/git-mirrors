@@ -1,0 +1,17 @@
+jtd:
+  optionalProperties:
+    descr:
+      type: string
+  properties:
+    inet6num:
+      type: string
+    net:
+      type: string
+    source:
+      type: string
+ref:
+  - path: source
+    schema: REGISTRY
+  - path: net
+    schema: NET
+schema: INET6NUM

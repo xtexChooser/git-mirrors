@@ -1,0 +1,6 @@
+mnter:
+  - XTEX-MNT-XVNET
+registry: DN42
+source: xvnet
+url:
+  - https://git.dn42.dev/dn42/registry

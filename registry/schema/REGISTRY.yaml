@@ -1,0 +1,21 @@
+jtd:
+  optionalProperties:
+    descr:
+      type: string
+  properties:
+    mnter:
+      elements:
+        type: string
+    registry:
+      type: string
+    source:
+      type: string
+    url:
+      elements:
+        type: string
+ref:
+  - path: source
+    schema: REGISTRY
+  - path: mntner
+    schema: MNTNER
+schema: REGISTRY

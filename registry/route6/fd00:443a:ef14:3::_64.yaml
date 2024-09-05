@@ -1,0 +1,7 @@
+descr: Anycast Name Servers
+max_len: 128
+net: xvnet
+origin:
+  - 4244310001
+route6: fd00:443a:ef14:3::/64
+source: xvnet

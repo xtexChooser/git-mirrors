@@ -1,0 +1,7 @@
+mnter:
+  - XTEX-MNT-XVNET
+registry: LACNIC
+source: xvnet
+url:
+  - whois://whois.lacnic.net
+  - rdap://rdap.lacnic.net/rdap/

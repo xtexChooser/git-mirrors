@@ -1,0 +1,6 @@
+descr: XV-NET nl-alk1
+net: xvnet
+origin:
+  - 4244310001
+route: 10.160.0.1/32
+source: xvnet

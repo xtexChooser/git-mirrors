@@ -1,0 +1,6 @@
+descr: XV-NET nl-alk1
+net: xvnet
+origin:
+  - 4244310001
+route6: fd00:443a:ef14:1::1/128
+source: xvnet

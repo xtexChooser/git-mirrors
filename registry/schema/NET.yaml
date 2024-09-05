@@ -1,0 +1,24 @@
+jtd:
+  optionalProperties:
+    descr:
+      type: string
+  properties:
+    as_block:
+      elements:
+        type: string
+    inetnum:
+      elements:
+        type: string
+    mnter:
+      elements:
+        type: string
+    net:
+      type: string
+    source:
+      type: string
+ref:
+  - path: source
+    schema: REGISTRY
+  - path: mnter.*
+    schema: MNTNER
+schema: NET

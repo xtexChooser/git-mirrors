@@ -1,0 +1,18 @@
+pipeline:
+    dnscontrol:
+        group: deploy
+        image: stackexchange/dnscontrol
+        secrets: [cloudflare_api_token]
+        commands:
+            - cd dns
+            - /usr/local/bin/dnscontrol check
+            - /usr/local/bin/dnscontrol preview
+            - /usr/local/bin/dnscontrol push
+
+    roa:
+        group: deploy
+        image: node
+        commands:
+            - npm install -g pnpm
+            - make
+            - make lint_report

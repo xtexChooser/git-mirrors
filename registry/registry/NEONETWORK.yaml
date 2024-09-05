@@ -1,0 +1,6 @@
+mnter:
+  - XTEX-MNT-XVNET
+registry: NEONETWORK
+source: xvnet
+url:
+  - https://github.com/NeoCloud/NeoNetwork

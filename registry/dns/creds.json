@@ -1,0 +1,12 @@
+{
+    "none": {
+        "TYPE": "NONE"
+    },
+    "bind": {
+        "TYPE": "BIND"
+    },
+    "cloudflare": {
+        "TYPE": "CLOUDFLAREAPI",
+        "apitoken": "$CLOUDFLARE_API_TOKEN"
+    }
+}

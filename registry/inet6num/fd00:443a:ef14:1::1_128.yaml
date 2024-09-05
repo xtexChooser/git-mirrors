@@ -1,0 +1,4 @@
+descr: XV-NET nl-alk1
+inet6num: fd00:443a:ef14:1::1/128
+net: xvnet
+source: xvnet

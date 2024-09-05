@@ -1,0 +1,24 @@
+jtd:
+  optionalProperties:
+    descr:
+      type: string
+    max_len:
+      type: uint16
+  properties:
+    net:
+      type: string
+    origin:
+      elements:
+        type: uint32
+    route:
+      type: string
+    source:
+      type: string
+ref:
+  - path: source
+    schema: REGISTRY
+  - path: origin.*
+    schema: AUT-NUM
+  - path: net
+    schema: NET
+schema: ROUTE
