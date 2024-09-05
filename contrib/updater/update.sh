@@ -7,18 +7,18 @@ git config --global user.email "xvbot+codeberg@xvnet.eu.org"
 
 function doUpdate() {
 	scripts/update
-	git remote set-url origin "https://xvbot:$CODEBERG_TOKEN@codeberg.org/xvnet/mediawiki.git"
+	git remote set-url origin "https://xvbot:$CODEBERG_TOKEN@codeberg.org/xens/mediawiki.git"
 	git push --force origin HEAD:bot/update
 
 	# create a PR
 	pulls="$(curl -X 'GET' \
-		'https://codeberg.org/api/v1/repos/xvnet/mediawiki/pulls?state=open&labels=239913' \
+		'https://codeberg.org/api/v1/repos/xens/mediawiki/pulls?state=open&labels=239913' \
 		-H 'Accept: application/json' \
 		-SL --retry 2 |
 		jq '. | length')"
 	if [[ "$pulls" == "0" ]]; then
 		curl -X 'POST' \
-			'https://codeberg.org/api/v1/repos/xvnet/mediawiki/pulls' \
+			'https://codeberg.org/api/v1/repos/xens/mediawiki/pulls' \
 			-H 'Accept: application/json' \
 			-H 'Content-Type: application/json' \
 			-H "Authorization: token $CODEBERG_TOKEN" \
@@ -42,7 +42,7 @@ if doUpdate; then
 
 	# close warning issues
 	curl -X 'GET' \
-		'https://codeberg.org/api/v1/repos/xvnet/mediawiki/issues?state=open&labels=bot%2Fupdate-fail&type=issues&limit=1' \
+		'https://codeberg.org/api/v1/repos/xens/mediawiki/issues?state=open&labels=bot%2Fupdate-fail&type=issues&limit=1' \
 		-H 'Accept: application/json' |
 		jq -r '.[] | .url' |
 		while read -r issue; do
@@ -67,13 +67,13 @@ else
 
 	# create a warning issue
 	issues="$(curl -X 'GET' \
-		'https://codeberg.org/api/v1/repos/xvnet/mediawiki/issues?state=open&labels=bot%2Fupdate-fail&type=issues&limit=1' \
+		'https://codeberg.org/api/v1/repos/xens/mediawiki/issues?state=open&labels=bot%2Fupdate-fail&type=issues&limit=1' \
 		-H 'Accept: application/json' \
 		-SL --retry 2 |
 		jq '. | length')"
 	if [[ "$issues" == "0" ]]; then
 		curl -X 'POST' \
-			'https://codeberg.org/api/v1/repos/xvnet/mediawiki/issues' \
+			'https://codeberg.org/api/v1/repos/xens/mediawiki/issues' \
 			-H 'Accept: application/json' \
 			-H 'Content-Type: application/json' \
 			-H "Authorization: token $CODEBERG_TOKEN" \

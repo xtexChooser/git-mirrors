@@ -1,4 +1,4 @@
-FROM codeberg.org/xvnet/x-mediawiki-php AS bld
+FROM codeberg.org/xens/x-mediawiki-php AS bld
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN set -eux; apk add --no-cache bash git
