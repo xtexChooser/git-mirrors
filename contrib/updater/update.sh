@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
-sudo apk add curl jq git yq coreutils git-subtree jo \
+apk add curl jq git yq coreutils git-subtree jo \
 	php{,-calendar,-ctype,-dom,-fileinfo,-iconv,-intl,-xml,-mbstring,-xmlreader} \
 	composer pnpm
 
