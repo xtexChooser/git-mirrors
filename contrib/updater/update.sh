@@ -3,7 +3,7 @@
 set -e
 apk add curl jq git yq coreutils git-subtree jo \
 	php{,-calendar,-ctype,-dom,-fileinfo,-iconv,-intl,-xml,-mbstring,-xmlreader} \
-	composer pnpm
+	composer npm
 
 git config --global user.name "xvbot-mwupdater"
 git config --global user.email "xvbot+codeberg@xvnet.eu.org"
