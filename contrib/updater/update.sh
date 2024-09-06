@@ -7,6 +7,7 @@ git config --global user.email "xvbot+codeberg@xvnet.eu.org"
 
 function doUpdate() {
 	scripts/update
+	scripts/updatetweaks
 	git remote set-url origin "https://xvbot:$CODEBERG_TOKEN@codeberg.org/xens/mediawiki.git"
 	git push --force origin HEAD:bot/update
 

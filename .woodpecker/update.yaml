@@ -9,7 +9,9 @@ steps:
     image: alpine
     secrets: [codeberg_token, ntfy_token]
     commands:
-      - apk add --no-cache bash curl jq git yq coreutils git-subtree jo
+      - apk add --no-cache bash curl jq git yq coreutils git-subtree jo \
+        php php-calendar php-ctype php-dom php-fileinfo php-iconv php-intl \
+        php-xml php-mbstring php-xmlreader composer pnpm
       - ./contrib/updater/update.sh || exit 1
 when:
   - event: cron
