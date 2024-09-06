@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"xtex"
+			"xtex",
+			"Codeberg Translate contributors"
 		]
 	},
 	"XensTweaks-desc": "为所有Xens Wikis提供额外的功能",
