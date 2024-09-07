@@ -119,7 +119,8 @@ class Hook {
 		# Is anyone watching the category?
 		if ( $store->countWatchers( $cat->getTitle() ) > 0 ) {
 			# Send them a notification!
-			$user = User::newFromId( $page->getUser() );
+			$user = MediaWikiServices::getInstance()->getUserFactory()
+				->newFromId( $page->getUser() );
 
 			EchoEvent::create( [
 				'type' => 'categorywatch-add',
