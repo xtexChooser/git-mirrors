@@ -100,11 +100,7 @@ class Hook {
 	 */
 	private static function getWatchedItemStore() {
 		wfDebugLog( 'CategoryWatch', __METHOD__ );
-		if ( method_exists( 'WatchedItemStore', 'getDefaultInstance' ) ) {
-			return WatchedItemStore::getDefaultInstance();
-		} else {
-			return MediaWikiServices::getInstance()->getWatchedItemStore();
-		}
+		return MediaWikiServices::getInstance()->getWatchedItemStore();
 	}
 
 	/**
@@ -137,17 +133,10 @@ class Hook {
 		}
 		$watchers = [];
 		foreach ( self::getWatchers( $cat->getTitle() ) as $watcher ) {
-			if ( method_exists( MediaWikiServices::class, 'getUserOptionsLookup' ) ) {
-				// MediaWiki 1.35+
-				if ( MediaWikiServices::getInstance()->getUserOptionsLookup()
-					->getOption( $watcher, 'catwatch-watch-pages' )
-				) {
-					$watchers[] = $watcher;
-				}
-			} else {
-				if ( $watcher->getOption( 'catwatch-watch-pages' ) ) {
-					$watchers[] = $watcher;
-				}
+			if ( MediaWikiServices::getInstance()->getUserOptionsLookup()
+				->getOption( $watcher, 'catwatch-watch-pages' )
+			) {
+				$watchers[] = $watcher;
 			}
 		}
 		self::addUserBatchForWatch( $watchers, $cat->getTitle() );
@@ -218,12 +207,12 @@ class Hook {
 	 *
 	 * @param Category $cat that page is being removed from
 	 * @param WikiPage $page that is being removed
-	 * @param int $pageID Page ID that this happened in. (not given pre 1.27ish)
+	 * @param int $pageID Page ID that this happened in.
 	 * @see https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:Hooks/CategoryAfterPageRemoved
 	 * @SuppressWarnings(PHPMD.UnusedFormalParameter)
 	 */
 	public static function onCategoryAfterPageRemoved(
-		Category $cat, WikiPage $page, $pageID = 0
+		Category $cat, WikiPage $page, $pageID
 	) {
 		wfDebugLog( 'CategoryWatch', __METHOD__ );
 		# Is anyone watching the category?
