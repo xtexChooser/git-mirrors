@@ -13,6 +13,9 @@
 	"chart-error-default-source-not-specified": "Chart definition page does not specify a default data source.",
 	"chart-error-incompatible-chart-definition": "Definition page is incompatible with charts.",
 	"chart-error-incompatible-data-source": "Tabular data source page is incompatible with charts.",
+	"chart-error-invalid-height": "Height must be an integer greater than or equal to 100.",
+	"chart-error-invalid-width": "Width must be an integer greater than or equal to 100.",
 	"chart-error-shell-disabled": "Charts cannot be rendered because shell execution is disabled.",
-	"chart-error-rendering-error": "There was an error rendering the chart."
+	"chart-error-rendering-error": "There was an error rendering the chart.",
+	"chart-error-unexpected": "Unexpected error occurred when rendering the chart."
 }

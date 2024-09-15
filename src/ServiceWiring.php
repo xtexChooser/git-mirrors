@@ -12,6 +12,9 @@ use MediaWiki\MediaWikiServices;
 
 /** @phpcs-require-sorted-array */
 return [
+	'Chart.ChartArgumentsParser' => static function ( MediaWikiServices $services ): ChartArgumentsParser {
+		return new ChartArgumentsParser( $services->get( 'Chart.DataPageResolver' ) );
+	},
 	'Chart.ChartRenderer' => static function ( MediaWikiServices $services ): ChartRenderer {
 		return new ChartRenderer(
 			new ServiceOptions(
@@ -22,5 +25,8 @@ return [
 			$services->getFormatterFactory(),
 			LoggerFactory::getInstance( 'Chart' )
 		);
+	},
+	'Chart.DataPageResolver' => static function ( MediaWikiServices $services ): DataPageResolver {
+		return new DataPageResolver();
 	},
 ];
