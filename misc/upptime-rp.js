@@ -27,7 +27,7 @@
 				node.setAttribute('src', RP + src);
 
 			const style = node.getAttribute('style');
-			if (style && style.includes('https://'))
+			if (style && style.replace(RP + 'https://', '').includes('https://'))
 				node.setAttribute('style', style.replace('https://', RP + 'https://'));
 		}
 		for (const mutation of mutationList) {
