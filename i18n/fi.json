@@ -1,0 +1,14 @@
+{
+	"@metadata": {
+		"authors": [
+			"Samoasambia"
+		]
+	},
+	"chart-desc": "Lisää <code><nowiki>{{#chart:}}</nowiki></code>-jäsenninfunktion kaavioiden näyttämistä varten",
+	"chart-error-chart-definition-not-found": "Kaavion määrittelysivua ei löydy.",
+	"chart-error-data-source-page-not-found": "Kaavion taulukkotiedon lähdesivua ei löydy.",
+	"chart-error-default-source-not-specified": "Kaavion määrittelysivua ei määritä oletustietolähdettä.",
+	"chart-error-incompatible-chart-definition": "Määrittelysivu ei ole yhteensopiva kaavioiden kanssa.",
+	"chart-error-incompatible-data-source": "Taulukkotiedon lähdesivu ei ole yhteensopiva kaavioiden kanssa.",
+	"chart-error-rendering-error": "Kaavion renderöinnissä tapahtui virhe."
+}
