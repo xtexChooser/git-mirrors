@@ -10,7 +10,10 @@ runMW() {
 	echo "Usage: atre s mediawiki createwiki <WIKI ID>" >&2
 	exit 1
 }
-echo "Creating wiki $1"
+domain="$(jq -r ".$1" /srv/atremis/services/mediawiki/config/sites.json)"
+echo "Creating wiki $1 at $domain"
+[[ -n "$domain" ]] || exit 1
+[[ -e /srv/atremis/services/mediawiki/config/sites/SiteSettings."$1".php ]] || exit 1
 
 if [[ "$1" != "meta" ]]; then
 	runMW php maintenance/sql.php --wiki "meta" --query "CREATE DATABASE wiki$1"
@@ -24,5 +27,9 @@ else
 	runMW php maintenance/sql.php --wiki "$1" maintenance/tables.sql
 	runMW php maintenance/run.php --wiki "$1" update --quick
 fi
+
+runMW php maintenance/run.php --wiki "meta" addSite wiki"$1" xvwiki \
+	--pagepath "https://$domain/w/\$1" \
+	--filepath "https://$domain/\$1"
 
 echo "Wiki $1 initialized"
