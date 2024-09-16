@@ -49,7 +49,7 @@ mergeSubtree() {
 			git commit -m "Remove gitsubmodules in $prefix"
 		fi
 	fi
-	rm -d mw/extensions/*~* || true
+	rm -d mw/{extensions,skins}/*~* || true
 }
 
 resumeAt="$1"
@@ -89,6 +89,6 @@ while read -r repo; do
 	done <<<"$(yq -o=json -I=0 '(.submodules // [])[]' <<<"$repo")"
 done <<<"$(yq -o=json -I=0 '. | sort_by(.pri // 100) | .[]' repositories.yaml)"
 
-rm -d mw/extensions/*~* || true
+rm -d mw/{extensions,skins}/*~* || true
 
 echo "Done"
