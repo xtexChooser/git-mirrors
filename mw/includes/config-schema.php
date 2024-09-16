@@ -2140,8 +2140,22 @@ return [
 					],
 					'needsPage' => false,
 				],
+				'renameUserTable' => [
+					'class' => 'MediaWiki\\RenameUser\\Job\\RenameUserTableJob',
+					'services' => [
+						'MainConfig',
+						'DBLoadBalancerFactory',
+					],
+				],
+				'renameUserDerived' => [
+					'class' => 'MediaWiki\\RenameUser\\Job\\RenameUserDerivedJob',
+					'services' => [
+						'RenameUserFactory',
+						'UserFactory',
+					],
+				],
 				'renameUser' => [
-					'class' => 'MediaWiki\\RenameUser\\RenameUserJob',
+					'class' => 'MediaWiki\\RenameUser\\Job\\RenameUserTableJob',
 					'services' => [
 						'MainConfig',
 						'DBLoadBalancerFactory',
