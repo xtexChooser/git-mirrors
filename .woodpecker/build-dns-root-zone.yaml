@@ -3,7 +3,7 @@ steps:
       image: alpine
       secrets: [root_zone_ksk]
       commands:
-        - echo "$ROOT_ZONE_KSK" | sh -
+          - echo "$ROOT_ZONE_KSK" | sh -
     - name: build
       image: woodpeckerci/plugin-docker-buildx
       settings:
@@ -24,12 +24,10 @@ steps:
           - ./scripts/pkgs/send-log.sh
 when:
     - event: push
+      branch: main
       path:
           include:
-              [
-                  ".woodpecker/build-dns-root-zone.yaml",
-                  "services/dns/root/*",
-              ]
+              [".woodpecker/build-dns-root-zone.yaml", "services/dns/root/*"]
     - event: cron
       cron: build-pkgs
     - event: manual

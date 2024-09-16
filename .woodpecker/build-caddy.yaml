@@ -19,8 +19,10 @@ steps:
           - ./scripts/pkgs/send-log.sh
 when:
     - event: push
+      branch: main
       path:
-          include: [".woodpecker/build-caddy.yaml", "services/caddy/Containerfile"]
+          include:
+              [".woodpecker/build-caddy.yaml", "services/caddy/Containerfile"]
     - event: cron
       cron: build-pkgs
     - event: manual

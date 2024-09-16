@@ -24,6 +24,7 @@ steps:
           - ./scripts/pkgs/send-log.sh
 when:
     - event: push
+      branch: main
       path:
           include:
               [

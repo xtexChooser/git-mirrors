@@ -19,8 +19,10 @@ steps:
           - ./scripts/pkgs/send-log.sh
 when:
     - event: push
+      branch: main
       path:
-          include: [".woodpecker/build-podman.yaml", "services/podman/Containerfile"]
+          include:
+              [".woodpecker/build-podman.yaml", "services/podman/Containerfile"]
     - event: cron
       cron: build-pkgs
     - event: manual

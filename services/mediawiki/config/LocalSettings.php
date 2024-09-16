@@ -3,11 +3,6 @@ if (!defined('MEDIAWIKI')) {
 	die('Not an entry point.');
 }
 
-$xvWikis = [
-	'meta' => 'meta.w.xvnet.eu.org',
-	'xvnet' => 'w.xvnet.eu.org',
-];
-
 if (defined('MW_DB')) {
 	$xvWikiID = MW_DB;
 	$xvMaintScript = true;
@@ -17,6 +12,11 @@ if (defined('MW_DB')) {
 } else {
 	die('Unknown wiki.');
 }
+
+$xvWikis = [
+	'meta' => 'meta.w.xvnet.eu.org',
+	'xvnet' => 'w.xvnet.eu.org',
+];
 
 $xvDebug = false;
 if ($_SERVER['MW_DEBUG'] ?: false) {
@@ -49,9 +49,13 @@ $xvHttpHost = $_SERVER['HTTP_HOST'] ?? $xvServerName;
 $xvLoadExtensions = [];
 $xvLoadSkins = [];
 
+function xvLoadConfig($file) {
+	require_once('/etc/mediawiki/' . $file);
+}
+
 require_once('/srv/secrets/mw/Secrets.php');
-require_once(dirname(__FILE__) . '/GlobalSettings.php');
-require_once(dirname(__FILE__) . '/LocalSettings.' . $xvWikiID . '.php');
+xvLoadConfig('GlobalSettings.php');
+xvLoadConfig('LocalSettings.' . $xvWikiID . '.php');
 
 wfLoadExtensions($xvLoadExtensions);
 wfLoadSkins($xvLoadSkins);
