@@ -130,6 +130,10 @@
   kind: extensions
   prefix: mw/extensions/Linter
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Linter
+- name: Lockdown
+  kind: extensions
+  prefix: mw/extensions/Lockdown
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Lockdown
 - name: LoginNotify
   kind: extensions
   prefix: mw/extensions/LoginNotify
