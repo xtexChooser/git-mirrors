@@ -259,6 +259,10 @@
   kind: extensions
   prefix: mw/extensions/Thanks
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Thanks
+- name: ThrottleOverride
+  kind: extensions
+  prefix: mw/extensions/ThrottleOverride
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/ThrottleOverride
 - name: Timeless
   kind: skins
   prefix: mw/skins/Timeless
