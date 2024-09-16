@@ -1,3 +1,6 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
 root = true
 
 [*]
@@ -6,7 +9,10 @@ indent_size = 4
 end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = false
-insert_final_newline = true
+insert_final_newline = false
 
 [*.{yaml,yml}]
 indent_style = space
+
+[*.php]
+php_diagnostic_php0417 = false

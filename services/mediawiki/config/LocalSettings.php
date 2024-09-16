@@ -3,15 +3,8 @@ if (!defined('MEDIAWIKI')) {
 	die('Not an entry point.');
 }
 
-// set environment locale
-setlocale(LC_ALL, 'en_US.UTF-8');
-
-// read site list
-$xvWikis = wfLoadJson('/etc/mediawiki/sites.json');
-
-// extract wiki ID
 if (defined('MW_DB')) {
-	$xvWikiID = constant('MW_DB');
+	$xvWikiID = MW_DB;
 	$xvMaintScript = true;
 } else if ($_SERVER['MW_WIKI'] ?: false) {
 	$xvWikiID = $_SERVER['MW_WIKI'];
@@ -20,43 +13,49 @@ if (defined('MW_DB')) {
 	die('Unknown wiki.');
 }
 
+$xvWikis = [
+	'meta' => 'meta.w.xvnet.eu.org',
+	'xvnet' => 'w.xvnet.eu.org',
+];
+
+$xvDebug = false;
+if ($_SERVER['MW_DEBUG'] ?: false) {
+	$xvDebug = true;
+} else if ($_SERVER['HTTP_X_XENS_WIKIS_DEBUG'] ?: false) {
+	$xvDebug = true;
+}
+
+if ($xvDebug) {
+	$wgDevelopmentWarnings = true;
+	ini_set('display_errors', true);
+	header('X-Xens-Wikis-Debug: true');
+}
+
+setlocale(LC_ALL, 'en_US.UTF-8');
+
+if (PHP_SAPI === 'cli') {
+	$wgRequestTimeLimit = 0;
+} elseif ($xvMaintScript) {
+	$wgRequestTimeLimit = 86400;
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+	$wgRequestTimeLimit = 200;
+} else {
+	$wgRequestTimeLimit = 60;
+}
+
 $xvServerName = $xvWikis[$xvWikiID];
 $xvHttpHost = $_SERVER['HTTP_HOST'] ?? $xvServerName;
 
-// development mode
-$xvDebug = boolval($_SERVER['MW_DEBUG'] ?? false)
-	|| boolval($_SERVER['HTTP_X_XENS_WIKIS_DEBUG'] ?? false)
-	|| $xvMaintScript;
-if ($xvDebug) {
-	header('X-Xens-Wikis-Debug: true');
-	$wgDevelopmentWarnings = true;
-	ini_set('display_errors', true);
+$xvLoadExtensions = [];
+$xvLoadSkins = [];
+
+function xvLoadConfig($file) {
+	require_once('/etc/mediawiki/' . $file);
 }
 
-// request timeouts
-if (PHP_SAPI === 'cli')
-	$wgRequestTimeLimit = 0;
-elseif ($xvMaintScript)
-	$wgRequestTimeLimit = 86400;
-elseif ($_SERVER['REQUEST_METHOD'] === 'POST')
-	$wgRequestTimeLimit = 200;
-else
-	$wgRequestTimeLimit = 60;
+require_once('/srv/secrets/mw/Secrets.php');
+xvLoadConfig('GlobalSettings.php');
+xvLoadConfig('LocalSettings.' . $xvWikiID . '.php');
 
-// user agent
-ini_set('user_agent', "Xens Wikis, $xvWikiID (op@xvnet0.eu.org)");
-
-// force to use default messages in maintenance scripts
-if ($xvMaintScript)
-	$wgUseDatabaseMessages = false;
-
-function xvLoadConfig($file)
-{
-	require_once "/etc/mediawiki/$file";
-}
-
-require_once '/srv/secrets/mw/Secrets.php';
-xvLoadConfig('common/ConfigTypes.php');
-xvLoadConfig('common/ConfigUtils.php');
-xvLoadConfig('common/GlobalDefaults.php');
-xvLoadConfig("sites/SiteSettings.$xvWikiID.php");
+wfLoadExtensions($xvLoadExtensions);
+wfLoadSkins($xvLoadSkins);
