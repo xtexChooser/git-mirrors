@@ -50,8 +50,10 @@ $wgUseSharedUploads = false;
 // Namespaces
 const NS_MEMBER = 3000;
 const NS_MEMBER_TALK = 3001;
-$wgExtraNamespaces[NS_MEMBER] = 'Member';
-$wgExtraNamespaces[NS_MEMBER_TALK] = 'Member_talk';
+$wgExtraNamespaces[NS_MEMBER] = '社员';
+$wgExtraNamespaces[NS_MEMBER_TALK] = '社员讨论';
+$wgNamespaceAliases['Member'] = NS_MEMBER;
+$wgNamespaceAliases['Member_talk'] = NS_MEMBER_TALK;
 $wgContentNamespaces[] = NS_MEMBER;
 $wgNamespaceAliases['M'] = NS_MEMBER;
 $wgNamespaceAliases['MT'] = NS_MEMBER_TALK;
@@ -60,8 +62,10 @@ xvMergeInto('wgNonincludableNamespaces', [NS_MEMBER, NS_MEMBER_TALK]);
 
 const NS_STAFF = 3002;
 const NS_STAFF_TALK = 3003;
-$wgExtraNamespaces[NS_STAFF] = 'Staff';
-$wgExtraNamespaces[NS_STAFF_TALK] = 'Staff_talk';
+$wgExtraNamespaces[NS_STAFF] = '社干';
+$wgExtraNamespaces[NS_STAFF_TALK] = '社干讨论';
+$wgNamespaceAliases['Staff'] = NS_STAFF;
+$wgNamespaceAliases['Staff_talk'] = NS_STAFF_TALK;
 $wgNamespaceAliases['S'] = NS_STAFF;
 xvSetAssocTrues('wgNamespacesWithSubpages', [NS_STAFF, NS_STAFF_TALK]);
 xvMergeInto('wgNonincludableNamespaces', [NS_STAFF, NS_STAFF_TALK]);
