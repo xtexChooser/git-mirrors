@@ -4,9 +4,6 @@ $wgMetaNamespace = "Project";
 $wgLocalInterwikis[] = 'hgdns';
 $xvCentralized = false;
 
-// FIXME: Disable lockdown after configured
-$xvEmergSecLockdown = true;
-
 // Localisation
 $wgLanguageCode = 'zh-hans';
 xvMergeInto('wgHiddenPrefs', ['language', 'variant', 'noconvertlink']);
