@@ -1,7 +1,7 @@
 <?php
 
 // Shared Tables
-$wgSharedDB = 'wiki' . $xvCentralWiki;
+$wgSharedDB = "wiki$xvCentralWiki";
 $wgSharedPrefix = '';
 
 $wgSharedTables = [
@@ -18,10 +18,10 @@ else if (str_ends_with($xvHttpHost, 'w.xvnet0.eu.org'))
 	$wgCookieDomain = '.w.xvnet0.eu.org';
 
 // Resource Loaders
-$wgResourceLoaderSources['metawiki'] = array(
+$wgResourceLoaderSources['metawiki'] = [
 	'apiScript' => 'https://meta.w.xvnet.eu.org/api.php',
 	'loadScript' => 'https://meta.w.xvnet.eu.org/load.php',
-);
+];
 
 // GlobalBlocking
 if ($xvUseGlobalBlocking) {
