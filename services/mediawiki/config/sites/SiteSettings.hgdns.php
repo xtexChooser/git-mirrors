@@ -28,7 +28,6 @@ $wgDefaultUserOptions['watchdefault'] = 0;
 xvLoadSkin('Citizen');
 $wgDefaultSkin = $wgDefaultMobileSkin = 'Citizen';
 $wgCitizenShowPageTools = 'login';
-$wgCitizenEnableCJKFonts = true;
 
 // User Rights
 xvRemovePermission('edit', ['*']);
