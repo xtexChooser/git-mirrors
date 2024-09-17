@@ -101,7 +101,7 @@ if (xvIsExtensionLoaded('CodeMirror')) {
 if (xvIsExtensionLoaded('TemplateSandbox')) {
 	$wgTemplateSandboxEditNamespaces = [NS_TEMPLATE];
 	if (xvIsExtensionLoaded('Scribunto'))
-		$wgTemplateSandboxEditNamespaces[] = NS_MODULE;
+		$wgTemplateSandboxEditNamespaces[] = 828; // NS_MODULE
 }
 
 if ($xvUseMobileFrontend) {
