@@ -131,7 +131,7 @@ $xvVisualEditorNamespaces = ['User', 'File', 'Category', 'Project'];
 
 // MobileFrontend
 $xvUseMobileFrontend = true;
-$xvDefaultMobileSkin = 'minerva';
+$wgDefaultMobileSkin = 'minerva';
 
 // Misc
 $wgNamespacesWithSubpages[NS_MAIN] = true;

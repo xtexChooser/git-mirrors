@@ -115,7 +115,6 @@ if (xvIsExtensionLoaded('TemplateSandbox')) {
 
 if ($xvUseMobileFrontend) {
 	xvLoadExtension('MobileFrontend');
-	$wgDefaultMobileSkin = $xvDefaultMobileSkin;
 	$wgMFSiteStylesRenderBlocking = true;
 }
 
