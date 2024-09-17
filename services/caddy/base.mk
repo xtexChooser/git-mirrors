@@ -1,7 +1,6 @@
 $(call x-container-service)
 V_SERVICE	= caddy
-V_DEPS		+= /etc/caddy/Caddyfile
-V_DEPS_ORD	+= /var/lib/caddy
+V_DEPS_ORD	+= /var/lib/caddy /etc/caddy/Caddyfile
 V_ARGS		+= --cap-add=CAP_NET_BIND_SERVICE
 V_ARGS		+= --env HOME=/root
 V_ARGS		+= --mount=type=bind,src=/etc/caddy,dst=/etc/caddy,ro=true
@@ -22,4 +21,11 @@ $(call fs-file)
 V_PATH		= /etc/caddy/Caddyfile
 V_TEMPLATE	= bash-tpl $(STATES_DIR)/services/caddy/Caddyfile
 V_DEPS		+= $(wildcard $(STATES_DIR)/services/caddy/config/*.caddyfile) $(CADDY_INCLUDES)
+$(call end)
+
+$(call cmd-stamp)
+V_NAME		= caddy-reload
+V_CMD		= $(STATES_DIR)/services/caddy/script/reload.sh
+V_DEPS		+= /etc/caddy/Caddyfile
+V_DEPS_ORD	+= dinit-caddy
 $(call end)
