@@ -15,19 +15,24 @@
 	}
 }
 
-w.xvnet.eu.org w.xvnet0.eu.org http://wiki.xvn {
-	import mediawiki "xvnet"
+uploads.w.xvnet.eu.org uploads.w.xvnet0.eu.org http://uploads.wiki.xvn {
+	import securitytxt
+	handle {
+		root * /var/lib/mediawiki
+		header Access-Control-Allow-Origin *
+		redir / https://w.xvnet.eu.org/w/uploads.w.xvnet.eu.org permanent
+		file_server /images/*
+	}
 }
 
 meta.w.xvnet.eu.org meta.w.xvnet0.eu.org http://meta.wiki.xvn {
 	import mediawiki "meta"
 }
 
-uploads.w.xvnet.eu.org uploads.w.xvnet0.eu.org http://uploads.wiki.xvn {
-	import securitytxt
-	handle {
-		root * /var/lib/mediawiki
-		file_server /images/*
-		redir / https://w.xvnet.eu.org/w/uploads.w.xvnet.eu.org permanent
-	}
+w.xvnet.eu.org w.xvnet0.eu.org http://wiki.xvn {
+	import mediawiki "xvnet"
+}
+
+hgdns.w.xvnet.eu.org hgdns.w.xvnet0.eu.org http://hgdns.wiki.xvn {
+	import mediawiki "hgdns"
 }

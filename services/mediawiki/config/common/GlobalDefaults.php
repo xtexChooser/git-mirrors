@@ -165,6 +165,8 @@ xvGrantPermissionsTo('staff', [
 	'patrolmarks',
 	'renameuser',
 	'globalblock',
+	'createaccount',
+	'noratelimit',
 ]);
 $wgAddGroups['staff'] = true;
 $wgRemoveGroups['staff'] = true;
@@ -216,6 +218,7 @@ $wgSMTP = [
 ];
 $wgEmergencyContact = $xvOpContactEmail;
 $wgPasswordSender = $xvSMTPSender;
+$xvUseEmailConfirmed = false;
 
 // Scribunto
 $wgScribuntoDefaultEngine = 'luasandbox';
@@ -272,3 +275,7 @@ $xvUseGlobalUserrights = true;
 $xvUseGlobalCssJs = true;
 $xvUseGlobalUserPage = true;
 $xvUseGlobalPreferences = true;
+
+// Extensions
+$xvUseCargo = false;
+$xvUseLockdown = false;

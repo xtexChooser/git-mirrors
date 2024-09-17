@@ -17,11 +17,10 @@ $wgDefaultSkin = $wgDefaultMobileSkin = 'lakeus';
 
 $wgLocalInterwikis[] = 'xvn';
 
-$wgAutopromote['emailconfirmed'] = APCOND_EMAILCONFIRMED;
-$wgImplicitGroups[] = 'emailconfirmed';
+$xvUseEmailConfirmed = true;
 xvRemovePermission('edit', ['*', 'user']);
 $wgGroupPermissions['emailconfirmed']['edit'] = true;
 
-xvLoadExtension('Cargo');
+$xvUseCargo = true;
 
 require_once "$xvConfigDirectory/common/GlobalSettings.php";

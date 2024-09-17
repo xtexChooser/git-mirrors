@@ -37,6 +37,9 @@ if ($xvEmergSecLockdown) {
 	$wgMWOAuthReadOnly = true;
 }
 
+// Localisation
+date_default_timezone_set($wgLocaltimezone);
+
 // Centralization
 if ($xvCentralized)
 	require_once "$xvConfigDirectory/common/Centralization.php";
@@ -69,8 +72,14 @@ if ($xvUseCaptcha) {
 	xvGrantPermission('skipcaptcha', ['staff', 'sysop', 'bureaucrat', 'bot']);
 	if ($xvSkipCaptchaForAutoconfirmed) {
 		$wgGroupPermissions['autoconfirmed']['skipcaptcha'] = true;
-		$wgGroupPermissions['emailconfirmed']['skipcaptcha'] = true;
+		if ($xvUseEmailConfirmed)
+			$wgGroupPermissions['emailconfirmed']['skipcaptcha'] = true;
 	}
+}
+
+if ($xvUseEmailConfirmed) {
+	$wgAutopromote['emailconfirmed'] = APCOND_EMAILCONFIRMED;
+	$wgImplicitGroups[] = 'emailconfirmed';
 }
 
 if (xvIsExtensionLoaded('BetaFeatures')) {
@@ -191,4 +200,12 @@ if ($xvEmergSecLockdown) {
 	]));
 	xvRemovePermissionsFrom('*', $allRights);
 	xvGrantPermissionsTo('staff', $allRights);
+}
+
+if ($xvUseLockdown) {
+	xvLoadExtension('Lockdown');
+}
+
+if ($xvUseCargo) {
+	xvLoadExtension('Cargo');
 }
