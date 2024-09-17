@@ -1,6 +1,4 @@
 <?php
-use MediaWiki\MediaWikiServices;
-
 if ($xvUseDatabaseMonto)
 	require_once "$xvConfigDirectory/common/Database.php";
 
@@ -71,9 +69,7 @@ if ($xvUseCaptcha) {
 	xvGrantPermission('skipcaptcha', ['staff', 'sysop', 'bureaucrat', 'bot']);
 	if ($xvSkipCaptchaForAutoconfirmed) {
 		$wgGroupPermissions['autoconfirmed']['skipcaptcha'] = true;
-		if ($wgAllowConfirmedEmail) {
-			$wgGroupPermissions['emailconfirmed']['skipcaptcha'] = true;
-		}
+		$wgGroupPermissions['emailconfirmed']['skipcaptcha'] = true;
 	}
 }
 
@@ -180,7 +176,19 @@ if (xvIsExtensionLoaded('Echo')) {
 }
 
 if ($xvEmergSecLockdown) {
-	$allPermissions = MediaWikiServices::getInstance()->getPermissionManager()->getAllPermissions();
-	xvRemovePermissionsFrom('*', $allPermissions);
-	xvGrantPermissionsTo('staff', $allPermissions);
+	/**
+	 * @global string[] $wgAvailableRights
+	 */
+	global $wgAvailableRights;
+	$allRights = array_unique(array_merge($wgAvailableRights, [
+		'edit',
+		'read',
+		'createaccount',
+		'autoconfirmed',
+		'writeapi',
+		'move',
+		'bot'
+	]));
+	xvRemovePermissionsFrom('*', $allRights);
+	xvGrantPermissionsTo('staff', $allRights);
 }
