@@ -164,6 +164,9 @@ xvGrantPermissionsTo('staff', [
 	'userrights',
 	'ipblock-exempt',
 	'patrolmarks',
+	'renameuser',
+	'globalblock',
+	'throttleoverride',
 ]);
 $wgAddGroups['staff'] = true;
 $wgRemoveGroups['staff'] = true;
@@ -173,6 +176,9 @@ xvGrantPermissionsTo('bureaucrat', [
 	'interwiki',
 	'userrights',
 	'ipblock-exempt',
+]);
+xvRemovePermissionsFrom('bureaucrat', [
+	'renameuser',
 ]);
 $wgAddGroups['bureaucrat'] = array_diff(array_keys($wgGroupPermissions), [
 	'staff',
@@ -188,7 +194,7 @@ xvGrantPermissionsTo('sysop', [
 	'patrolmarks',
 ]);
 $wgAddGroups['sysop'] = ['bot', 'interface-admin'];
-$wgRemoveGroups['sysop'] = ['sysop', 'bot', 'autoconfirmed'];
+$wgRemoveGroups['sysop'] = ['sysop', 'bot', 'autoconfirmed', 'interface-admin'];
 
 // User rights - autoconfirmed
 $wgAutoConfirmCount = 10;
