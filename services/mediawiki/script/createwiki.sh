@@ -6,8 +6,8 @@ runMW() {
 	podman exec -it mediawiki "$@"
 }
 
-(($# != 1)) && {
-	echo "Usage: atre s mediawiki createwiki <WIKI ID>" >&2
+(($# != 2)) && {
+	echo "Usage: atre s mediawiki createwiki <WIKI ID> <DOMAIN>" >&2
 	exit 1
 }
 domain="$(jq -r ".$1" /srv/atremis/services/mediawiki/config/sites.json)"
