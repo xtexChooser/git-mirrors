@@ -25,7 +25,7 @@ $wgResourceLoaderSources['metawiki'] = [
 
 // GlobalBlocking
 if ($xvUseGlobalBlocking) {
-	wfLoadExtension('GlobalBlocking');
+	xvLoadExtension('GlobalBlocking');
 	$wgDatabaseVirtualDomains['virtual-globalblocking'] = 'wikimeta';
 	$wgGlobalBlockingBlockXFF = true;
 	$wgGlobalBlockRemoteReasonUrl = $wgResourceLoaderSources['metawiki']['apiScript'];
@@ -33,13 +33,13 @@ if ($xvUseGlobalBlocking) {
 
 // GlobalUserrights
 if ($xvUseGlobalUserrights) {
-	wfLoadExtension('GlobalUserrights');
+	xvLoadExtension('GlobalUserrights');
 	$wgSharedTables[] = 'global_user_groups';
 }
 
 // GlobalCssJs
 if ($xvUseGlobalCssJs) {
-	wfLoadExtension('GlobalCssJs');
+	xvLoadExtension('GlobalCssJs');
 	$wgUseGlobalSiteCssJs = true;
 	$wgGlobalCssJsConfig = [
 		'wiki' => $wgSharedDB,
@@ -50,14 +50,14 @@ if ($xvUseGlobalCssJs) {
 
 // GlobalUserPage
 if ($xvUseGlobalUserPage) {
-	wfLoadExtension('GlobalUserPage');
+	xvLoadExtension('GlobalUserPage');
 	$wgGlobalUserPageAPIUrl = $wgResourceLoaderSources['metawiki']['apiScript'];
 	$wgGlobalUserPageDBname = $wgSharedDB;
 }
 
 // GlobalPreferences
 if ($xvUseGlobalPreferences) {
-	wfLoadExtension('GlobalPreferences');
+	xvLoadExtension('GlobalPreferences');
 }
 
 // OAuth

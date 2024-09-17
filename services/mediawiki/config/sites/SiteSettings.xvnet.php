@@ -12,7 +12,7 @@ $wgRightsText = "Creative Commons Attribution-ShareAlike 4.0 International (CC B
 $wgRightsIcon = "$wgResourceBasePath/resources/assets/licenses/cc-by-sa.png";
 
 $xvUseGlobalSkins = false;
-wfLoadSkin('Lakeus');
+xvLoadSkin('Lakeus');
 $wgDefaultSkin = $wgDefaultMobileSkin = 'lakeus';
 
 $wgLocalInterwikis[] = 'xvn';
@@ -22,6 +22,6 @@ $wgImplicitGroups[] = 'emailconfirmed';
 xvRemovePermission('edit', ['*', 'user']);
 $wgGroupPermissions['emailconfirmed']['edit'] = true;
 
-wfLoadExtension('Cargo');
+xvLoadExtension('Cargo');
 
 require_once "$xvConfigDirectory/common/GlobalSettings.php";

@@ -4,11 +4,11 @@ if ($xvUseDatabaseMonto)
 
 // global extensions
 if ($xvUseGlobalExtensions)
-	wfLoadExtensions($xvGlobalExtensions);
+	xvLoadExtensions($xvGlobalExtensions);
 
 // global skins
 if ($xvUseGlobalSkins)
-	wfLoadSkins($xvGlobalSkins);
+	xvLoadSkins($xvGlobalSkins);
 
 // emergeny locks
 if ($xvEmergAbuse) {
@@ -43,15 +43,15 @@ if ($xvCentralized)
 
 // CAPTCHA
 if ($xvUseCaptcha) {
-	wfLoadExtension('ConfirmEdit');
+	xvLoadExtension('ConfirmEdit');
 
 	switch ($xvCaptchaType) {
 		case XvCaptchaType::Turnstile:
-			wfLoadExtension('ConfirmEdit/Turnstile');
+			xvLoadExtension('ConfirmEdit/Turnstile');
 			$wgTurnstileSendRemoteIP = false;
 			break;
 		case XvCaptchaType::Questy:
-			wfLoadExtension('ConfirmEdit/QuestyCaptcha');
+			xvLoadExtension('ConfirmEdit/QuestyCaptcha');
 			break;
 	}
 
@@ -81,7 +81,7 @@ if (xvIsExtensionLoaded('BetaFeatures')) {
 }
 
 if ($xvUseVisualEditor) {
-	wfLoadExtension('VisualEditor');
+	xvLoadExtension('VisualEditor');
 	$wgVisualEditorEnableWikitext = true;
 	$wgVisualEditorEnableTocWidget = true;
 
@@ -105,7 +105,7 @@ if (xvIsExtensionLoaded('TemplateSandbox')) {
 }
 
 if ($xvUseMobileFrontend) {
-	wfLoadExtension('MobileFrontend');
+	xvLoadExtension('MobileFrontend');
 	$wgDefaultMobileSkin = $xvDefaultMobileSkin;
 	$wgMFSiteStylesRenderBlocking = true;
 }

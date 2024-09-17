@@ -102,6 +102,62 @@ function xvMergeInto2(string $variable, string $k, array ...$values)
 	$GLOBALS[$variable][$k] = array_merge($GLOBALS[$variable][$k], ...$values);
 }
 
+$xvLoadedExtensions = [];
+
+/**
+ * Load a extension
+ * 
+ * @param string $extension Extension name
+ * @param string $path Extension JSON path
+ * @return void
+ */
+function xvLoadExtension(string $extension, ?string $path = null)
+{
+	global $xvLoadedExtensions;
+	$xvLoadedExtensions[] = $extension;
+	wfLoadExtension($extension, $path);
+}
+
+/**
+ * Load extensions
+ * 
+ * @param string[] $extensions Extension names
+ * @return void
+ */
+function xvLoadExtensions(array $extensions)
+{
+	global $xvLoadedExtensions;
+	$xvLoadedExtensions[] = array_merge($xvLoadedExtensions, $extensions);
+	wfLoadExtensions($extensions);
+}
+
+/**
+ * Load a skin
+ * 
+ * @param string $skin Skin name
+ * @param string $path Skin JSON path
+ * @return void
+ */
+function xvLoadSkin(string $skin, ?string $path = null)
+{
+	global $xvLoadedExtensions;
+	$xvLoadedExtensions[] = $skin;
+	wfLoadSkin($skin, $path);
+}
+
+/**
+ * Load skins
+ * 
+ * @param string[] $skins Skin names
+ * @return void
+ */
+function xvLoadSkins(array $skins)
+{
+	global $xvLoadedExtensions;
+	$xvLoadedExtensions[] = array_merge($xvLoadedExtensions, $skins);
+	wfLoadSkins($skins);
+}
+
 /**
  * Check if an extension is loaded
  * 
@@ -110,7 +166,8 @@ function xvMergeInto2(string $variable, string $k, array ...$values)
  */
 function xvIsExtensionLoaded(string $extension)
 {
-	return ExtensionRegistry::getInstance()->isLoaded($extension);
+	global $xvLoadedExtensions;
+	return in_array($extension, $xvLoadedExtensions);
 }
 
 /**

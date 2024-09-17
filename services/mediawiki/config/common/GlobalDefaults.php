@@ -83,7 +83,7 @@ $xvGlobalExtensions = [
 	'TwoColConflict',
 	'WikiEditor',
 ];
-wfLoadExtension('XensTweaks'); // always load XensTweaks
+xvLoadExtension('XensTweaks'); // always load XensTweaks
 
 // Global Skins
 $xvUseGlobalSkins = true;
@@ -166,7 +166,6 @@ xvGrantPermissionsTo('staff', [
 	'patrolmarks',
 	'renameuser',
 	'globalblock',
-	'throttleoverride',
 ]);
 $wgAddGroups['staff'] = true;
 $wgRemoveGroups['staff'] = true;
