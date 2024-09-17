@@ -71,6 +71,7 @@ git commit --no-edit -m "$(printf 'tree-wide: upgrade(%s/%s): Introduce downstre
 ((count++)) || true
 
 # Apply patches
+scripts/pick 1022466 # sql.php: Add noshared to sql.php to avoid operations on shared DB
 
 # End commit
 git commit --allow-empty \
