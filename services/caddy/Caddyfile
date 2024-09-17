@@ -1,5 +1,10 @@
 {
 	email acme@xvnet.eu.org
+	pki {
+		ca local {
+			name "<% $HOSTNAME %> Caddy Internal CA"
+		}
+	}
 }
 
 .INCLUDE services/caddy/config/securitytxt.caddyfile
