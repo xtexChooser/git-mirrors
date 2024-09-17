@@ -12,6 +12,7 @@ runMW() {
 }
 domain="$(jq -r ".$1" /srv/atremis/services/mediawiki/config/sites.json)"
 echo "Creating wiki $1 at $domain"
+echo "---------- To revert changes: sudo podman exec -it mediawiki php maintenance/sql.php --wiki \"meta\" --query \"DROP DATABASE wiki$1;\""
 [[ -n "$domain" ]] || exit 1
 [[ -e /srv/atremis/services/mediawiki/config/sites/SiteSettings."$1".php ]] || exit 1
 
