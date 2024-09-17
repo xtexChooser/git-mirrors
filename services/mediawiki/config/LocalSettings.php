@@ -15,7 +15,7 @@ xvLoadConfig('common/ConfigTypes.php');
 xvLoadConfig('common/ConfigUtils.php');
 
 // read site list
-$xvWikis = xvLoadJson('/etc/mediawiki/sites.json');
+$xvWikis = xvLoadJson('sites.json');
 
 // extract wiki ID
 if (defined('MW_DB')) {
