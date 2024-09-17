@@ -4,6 +4,8 @@ $wgMetaNamespace = "Project";
 $wgLocalInterwikis[] = 'hgdns';
 $xvCentralized = false;
 
+$xvEmergSecLockdown = true;
+
 // Localisation
 $wgLanguageCode = 'zh-hans';
 xvMergeInto('wgHiddenPrefs', ['language', 'variant', 'noconvertlink']);
