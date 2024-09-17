@@ -75,6 +75,8 @@ $wgNamespaceAliases['P'] = NS_PROJECT;
 $xvUseLockdown = true;
 $wgSpecialPageLockdown['Export'] = ['user'];
 
+$wgNamespacePermissionLockdown[NS_MAIN]['edit'] = ['sysop'];
+
 $wgNamespacePermissionLockdown[NS_MEMBER]['read'] = ['user'];
 $wgNamespacePermissionLockdown[NS_MEMBER]['edit'] = ['user'];
 $wgNamespacePermissionLockdown[NS_MEMBER_TALK] = $wgNamespacePermissionLockdown[NS_MEMBER];
@@ -86,7 +88,6 @@ $wgNamespacePermissionLockdown[NS_STAFF_TALK] = $wgNamespacePermissionLockdown[N
 xvSetAssocTrues('wgNamespacesToBeSearchedDefault', [
 	NS_MAIN,
 	NS_MEMBER,
-	NS_MEMBER_TALK,
 	NS_PROJECT,
 ]);
 
