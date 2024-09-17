@@ -1,0 +1,72 @@
+html {
+	font-size: @html-font-size;
+}
+
+html,
+body {
+	font-family: var( --font-family-base );
+	font-variation-settings: 'GRAD' var( --font-grade );
+	font-weight: var( --font-weight-normal );
+	/*
+	 * TODO: Revisit this when italic VF is better supported
+	 * Don't let browser faux font styles and weight
+	 * 1. We are already using VF
+	 * 2. Not all font styles apply to some languages (e.g. Italic is different in ZH)
+	 */
+	// font-synthesis: none;
+}
+
+input {
+	font-family: var( --font-family-base ); // Override browser's default
+}
+
+b,
+strong {
+	font-weight: var( --font-weight-semibold );
+}
+
+cite {
+	font-style: inherit;
+}
+
+blockquote {
+	font-style: italic;
+	/* NOTE: This only works for Chromium browsers for now */
+	text-wrap: pretty;
+
+	cite {
+		font-size: var( --font-size-x-small );
+		font-style: normal;
+	}
+}
+
+sub,
+sup {
+	font-size: 80%;
+}
+
+em {
+	:lang( ja ) &,
+	:lang( ko ) &,
+	:lang( mn ) &,
+	:lang( zh ) & {
+		/* CJK languages do not use italics for emphasis */
+		font-style: normal;
+		text-emphasis: filled;
+	}
+
+	:lang( ja ) &,
+	:lang( ko ) &,
+	:lang( mn ) & {
+		text-emphasis-position: over right;
+	}
+
+	:lang( zh ) & {
+		text-emphasis-position: under right;
+	}
+}
+
+.citizen-body {
+	font-size: var( --font-size-medium );
+	line-height: var( --line-height );
+}

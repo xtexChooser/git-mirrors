@@ -1,0 +1,182 @@
+@import '../mixins.less';
+
+.citizen-pref {
+	&__button {
+		&[ aria-expanded='true' ] {
+			background-color: var( --background-color-button-quiet--active );
+		}
+	}
+}
+
+#citizen-pref {
+	&-header {
+		padding: var( --space-lg ) var( --space-md ) 0;
+		font-size: 1rem;
+		font-weight: var( --font-weight-semibold );
+		color: var( --color-emphasized );
+	}
+
+	// TODO: unify the dropdown menu style somewhere
+	&-panel {
+		.citizen-header-card( end );
+		transform-origin: var( --transform-origin-offset-end ) var( --transform-origin-offset-end );
+
+		@media ( min-width: @min-width-breakpoint-desktop ) {
+			transform-origin: var( --transform-origin-offset-start ) var( --transform-origin-offset-end );
+		}
+
+		// TODO: Somehow refactor this module to use citizen-menu__Card
+		&.citizen-pref-panel--active {
+			z-index: @z-index-dropdown;
+			transition: var( --transition-menu );
+			transition-property: transform;
+			transform: none;
+
+			> * {
+				opacity: 1;
+				transition: var( --transition-menu );
+				transition-property: opacity;
+			}
+		}
+
+		fieldset {
+			padding: 0 var( --space-md );
+			margin: 0;
+			font-size: var( --font-size-small );
+			appearance: none;
+			border: 0;
+		}
+	}
+}
+
+// New clientPrefs styles
+.citizen-client-prefs {
+	display: flex;
+	flex-direction: column;
+	gap: var( --space-xs );
+	padding-bottom: var( --space-lg );
+
+	form {
+		display: grid;
+		// This is not the best because it does not adapt to the text length but will revisit later
+		grid-template-columns: repeat( 3, 1fr );
+		gap: var( --space-xxs );
+		text-align: center;
+	}
+
+	&-radio {
+		&__input {
+			// Hide radio button because we use label as button
+			display: none;
+
+			&:checked {
+				~ .citizen-client-prefs-radio__label {
+					border-color: var( --color-progressive );
+				}
+			}
+		}
+
+		&__label {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			height: 100%;
+			padding: var( --space-xs ) var( --space-md );
+			font-weight: var( --font-weight-medium );
+			cursor: pointer;
+			border: var( --border-width-thick ) solid var( --border-color-base );
+			border-radius: var( --border-radius-medium );
+
+			&:hover {
+				border-color: var( --color-progressive--hover );
+			}
+
+			&:active {
+				border-color: var( --color-progressive--active );
+			}
+		}
+	}
+}
+
+#citizen-client-prefs {
+	.citizen-menu {
+		&__content {
+			padding: 0 var( --space-md );
+		}
+	}
+}
+
+#skin-client-prefs-skin-theme {
+	.citizen-client-prefs-radio__label {
+		background: var( --color-surface-0 );
+
+		&[ for='skin-client-pref-skin-theme-value-day' ] {
+			// color-base of day theme
+			color: ~'hsl( var( --color-primary__h ), 30%, 20% )';
+			// color-surface-0 of day theme
+			background: ~'hsl( var( --color-primary__h ), 30%, 96% )';
+		}
+
+		&[ for='skin-client-pref-skin-theme-value-night' ] {
+			// color-base of night theme
+			color: ~'hsl( var( --color-primary__h ), 25%, 80% )';
+			// color-surface-0 of night theme
+			background: ~'hsl( var( --color-primary__h ), 20%, 10% )';
+		}
+	}
+}
+
+#skin-client-prefs-citizen-feature-custom-font-size {
+	.citizen-client-prefs-radio__label {
+		font-size: var( --font-size-medium );
+
+		&[ for='skin-client-pref-citizen-feature-custom-font-size-value-small' ] {
+			font-size: var( --font-size-small );
+		}
+
+		&[ for='skin-client-pref-citizen-feature-custom-font-size-value-large' ] {
+			font-size: var( --font-size-large );
+		}
+	}
+}
+
+#skin-client-prefs-citizen-feature-pure-black {
+	display: none;
+
+	form {
+		grid-template-columns: repeat( 2, 1fr );
+	}
+
+	// Display on dark theme
+	.skin-theme-clientpref-night & {
+		display: block;
+	}
+
+	@media ( prefers-color-scheme: dark ) {
+		.skin-theme-clientpref-os & {
+			display: block;
+		}
+	}
+
+	.citizen-client-prefs-radio__label[ for='skin-client-pref-citizen-feature-pure-black-value-1' ] {
+		background-color: #000;
+	}
+}
+
+#skin-client-prefs-citizen-feature-autohide-navigation {
+	display: none;
+
+	@media ( max-width: @max-width-breakpoint-tablet ) {
+		display: block;
+	}
+
+	form {
+		grid-template-columns: repeat( 2, 1fr );
+	}
+}
+
+@media ( hover: hover ) {
+	.citizen-pref:hover .citizen-pref__button .citizen-ui-icon::before {
+		transform: rotate3d( 0, 0, 1, 90deg );
+	}
+}

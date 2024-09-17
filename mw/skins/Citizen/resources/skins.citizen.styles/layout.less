@@ -1,0 +1,89 @@
+.citizen-page-container {
+	display: flex; // Should fix weird margin issues
+	flex-direction: column;
+	min-height: 100vh; // Ensure footer goes to the bottom of the page
+	min-height: stretch; // for iOS, excludes safe areas
+}
+
+.mw-body,
+.parsoid-body {
+	min-height: 100vh; // avoid footer being in the middle of the page
+}
+
+.citizen-body-container {
+	display: grid;
+	grid-template-areas:
+ 'header'
+		'afterHeader'
+		'content'
+		'footer';
+	// Using auto as min value will cause overflow
+	grid-template-columns: minmax( 0, var( --width-layout ) );
+	gap: 0 var( --space-xl );
+	justify-content: center;
+	padding: 0 var( --padding-page );
+	margin: var( --space-xl ) 0; // don't collide with other components (e.g. notice)
+}
+
+.citizen-page-header {
+	z-index: @z-index-above-content;
+	display: flex;
+	flex-wrap: wrap;
+	grid-area: header;
+	gap: var( --space-md );
+	align-items: center;
+	padding-top: var( --space-md );
+	padding-bottom: var( --space-md );
+}
+
+.citizen-page-heading {
+	flex-grow: 1;
+}
+
+.firstHeading-container {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+.citizen-body {
+	z-index: @z-index-base; // Stop body content going over sticky header
+	grid-area: content;
+}
+
+@media ( min-width: @min-width-breakpoint-desktop ) {
+	.citizen-page-container {
+		// Reserve space for header
+		margin-left: var( --header-size );
+	}
+
+	.citizen-toc-enabled {
+		.citizen-body-container {
+			grid-template-areas:
+ 'header header'
+				'afterHeader afterHeader'
+				'content sidebar'
+				'footer footer';
+			grid-template-columns: minmax( 0, var( --width-layout ) ) var( --width-toc );
+		}
+	}
+
+	.citizen-animations-ready {
+		.citizen-body-container {
+			transition: var( --transition-menu );
+			transition-property: grid;
+		}
+	}
+}
+
+/* Wider page width for certain namespaces */
+@media ( min-width: @min-width-breakpoint-desktop-wide ) {
+	// 1 - Special, 6 - File, 14 - Category
+	.ns {
+		&--1,
+		&-6,
+		&-14 {
+			--width-layout: var( --width-layout--extended );
+		}
+	}
+}

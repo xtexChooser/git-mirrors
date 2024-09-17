@@ -1,0 +1,365 @@
+/*
+ * Citizen
+ *
+ * SkinStyles for Extension:UploadWizard
+ * Module: ext.uploadWizard
+ * Version: REL1_39 9cd7a02
+ *
+ * Date: 2023-01-08
+*/
+
+@import '../../../resources/variables.less';
+@import '../../../resources/mixins.less';
+
+// Disable sticky header
+#citizen-page-header-sticky-sentinel {
+	display: none;
+}
+
+/* uw.CopyMetadataWidget.less */
+.mwe-upwiz-copyMetadataWidget {
+	border-top-color: var( --border-color-base );
+	border-bottom-color: var( --border-color-base );
+
+	@media ( max-width: @max-width-breakpoint-tablet ) {
+		padding-left: 0;
+	}
+}
+
+/* uw.ui.Thanks.less */
+#mwe-upwiz-stepdiv-thanks {
+	.mwe-upwiz-thanks-update-delay {
+		font-weight: var( --font-weight-semibold );
+	}
+
+	.mwe-upwiz-mv-cta-confirmation {
+		color: var( --color-success );
+	}
+}
+
+/* uw.ui.Metadata.less */
+h3.mwe-upwiz-metadata-title {
+	font-size: var( --font-size-x-large );
+}
+
+.mwe-upwiz-metadata-booklet.oo-ui-bookletLayout {
+	> .oo-ui-menuLayout-menu {
+		.mwe-upwiz-metadata-page--error {
+			background-color: var( --background-color-destructive-subtle );
+			border-color: transparent;
+		}
+	}
+
+	> .oo-ui-menuLayout-content {
+		.wbmi-statements-widget {
+			border-bottom-color: var( --border-color-base );
+		}
+	}
+}
+
+/* uploadWizard.less */
+#upload-wizard {
+	/* Remove hardcoded width */
+	min-width: auto;
+	max-width: none;
+	margin-top: 0;
+}
+
+#mwe-upwiz-steps {
+	display: flex;
+	justify-content: space-evenly;
+	overflow: hidden; // Hide arrow overflow
+	line-height: var( --line-height-sm );
+	background-color: transparent;
+	border-bottom: var( --border-width-base ) solid var( --border-color-base );
+
+	&::before,
+	&::after {
+		display: none; // Pseudo elements do not play well with flex
+	}
+
+	li {
+		width: auto !important;
+		height: auto;
+		color: var( --color-subtle );
+		background-color: transparent;
+
+		div {
+			padding: var( --space-sm ) var( --space-md );
+		}
+
+		&.head {
+			font-weight: var( --font-weight-semibold );
+			color: var( --color-progressive );
+			background-color: transparent;
+		}
+
+		&.arrow {
+			&::before,
+			&::after {
+				display: none;
+			}
+		}
+	}
+}
+
+#mwe-upwiz-tutorial {
+	/*
+	 * Allow content to overflow
+	 * We don't resize the campaign image because of map and readibility
+	*/
+	max-width: 100%;
+	overflow: auto;
+}
+
+.mwe-upwiz-add-files-0,
+#mwe-upwiz-files {
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+.mwe-upwiz-add-files-0 {
+	.mwe-upwiz-add-file {
+		font-size: 1rem;
+	}
+}
+
+#mwe-upwiz-files {
+	margin-right: 0;
+	margin-left: 0;
+}
+
+.mwe-upwiz-file {
+	&.odd {
+		.mwe-upwiz-visible-file {
+			background-color: transparent;
+		}
+	}
+
+	&-status {
+		color: var( --color-subtle );
+	}
+
+	&:hover {
+		.mwe-upwiz-visible-file {
+			background-color: var( --background-color-button-quiet--hover ) !important;
+		}
+	}
+}
+
+.mwe-upwiz-visible-file-filename {
+	padding: var( --space-md ) 0;
+
+	&-text {
+		font-weight: var( --font-weight-semibold );
+		color: var( --color-emphasized );
+	}
+}
+
+.mwe-upwiz-add-file.oo-ui-selectFileInputWidget {
+	max-width: none; // Full width for file drop widget
+}
+
+.mwe-upwiz-patent-rights .oo-ui-panelLayout .oo-ui-panelLayout:not( :last-child ) {
+	box-shadow: 0 1em 1px -1em var( --border-color-base );
+}
+
+.mwe-upwiz-patent-rights-filelist {
+	box-shadow: 0 0 1px 0 var( --border-color-base );
+}
+
+.mwe-upwiz-patent-weapon-policy {
+	background-color: var( --color-surface-2 );
+	border-color: var( --border-color-base );
+}
+
+.mwe-upwiz-license-metadata {
+	background-color: var( --color-surface-2 );
+	border-color: var( --border-color-base );
+}
+
+#mwe-upwiz-flickr-disclaimer {
+	font-size: var( --font-size-small );
+	background-color: var( --color-surface-2 );
+}
+
+.mwe-upwiz-thumbnail {
+	background-color: var( --color-surface-0 );
+
+	&-link {
+		canvas,
+		img {
+			border-radius: var( --border-radius-base );
+			box-shadow: var( --box-shadow-drop-medium );
+		}
+	}
+}
+
+#mwe-upwiz-deeds-thumbnails {
+	padding-bottom: 1em; // Even out margin
+	overflow-x: auto;
+	white-space: nowrap;
+	background: transparent;
+	border-bottom: var( --border-width-base ) solid var( --border-color-base );
+}
+
+.mwe-upwiz-deed {
+	margin: var( --space-xs ) 0;
+	background-color: var( --color-surface-2 );
+	border-radius: var( --border-radius-base );
+
+	&-option-title {
+		+ .mwe-upwiz-deed-form {
+			border-top: var( --border-width-base ) solid var( --border-color-base );
+		}
+	}
+
+	&-form-internal {
+		padding: var( --space-sm ) var( --space-md );
+	}
+
+	&-license-group {
+		&-subhead {
+			color: var( --color-subtle );
+		}
+
+		&-body {
+			margin-top: var( --space-md );
+		}
+	}
+
+	.mwe-upwiz-deed-option-title {
+		.oo-ui-optionWidget {
+			display: block;
+			padding: var( --space-sm ) var( --space-md );
+			border-radius: var( --border-radius-base );
+
+			&.oo-ui-widget-enabled {
+				&:hover {
+					background-color: var( --background-color-button-quiet--hover );
+				}
+
+				&:active {
+					background-color: var( --background-color-button-quiet--active );
+				}
+			}
+		}
+	}
+
+	/* More obvious selected state */
+	&.selected {
+		.mwe-upwiz-deed-option-title {
+			.oo-ui-optionWidget.oo-ui-widget-enabled {
+				background-color: var( --background-color-progressive-subtle );
+			}
+		}
+	}
+}
+
+.mwe-upwiz-details-fieldname {
+	font-size: var( --font-size-x-small );
+	font-weight: var( --font-weight-normal );
+	// Citizen label styles
+	color: var( --color-subtle );
+	letter-spacing: 0.05em;
+}
+
+.mwe-title {
+	font-family: var( --font-family-base );
+}
+
+.mwe-small-print {
+	font-size: var( --font-size-x-small );
+	color: var( --color-subtle );
+}
+
+.mwe-upwiz-license-custom .oo-ui-textInputWidget textarea {
+	font-family: var( --font-family-monospace );
+}
+
+.mwe-readonly {
+	background-color: var( --color-surface-0 );
+}
+
+.ui-corner-top {
+	border-top-left-radius: var( --border-radius-base );
+	border-top-right-radius: var( --border-radius-base );
+}
+
+.ui-corner-bottom {
+	border-bottom-right-radius: var( --border-radius-base );
+	border-bottom-left-radius: var( --border-radius-base );
+}
+
+.ui-corner-all {
+	border-radius: var( --border-radius-base );
+}
+
+.filled + .filled {
+	border-color: var( --border-color-base );
+}
+
+.mwe-upwiz-objref-pick-image {
+	font-weight: var( --font-weight-semibold );
+}
+
+.mwe-upwiz-objref-pick-image input:disabled + label {
+	color: var( --color-subtle );
+}
+
+.mwe-upwiz-objref-notice-existing-image {
+	font-weight: var( --font-weight-semibold );
+}
+
+@media ( max-width: @max-width-breakpoint-tablet ) {
+	#mwe-upwiz-stepdiv-details {
+		/* Single column in limited width */
+		.mwe-upwiz-data,
+		.mwe-upwiz-thumbnail-side {
+			float: none;
+			width: auto;
+		}
+	}
+}
+
+/* uw.FieldLayout.less */
+.mwe-upwiz-fieldLayout {
+	.mwe-upwiz-fieldLayout-indicator {
+		font-size: var( --font-size-x-small );
+		color: var( --color-subtle );
+	}
+
+	.mwe-upwiz-details-help {
+		font-size: var( --font-size-small );
+	}
+}
+
+/* uw.SingleLanguageInputWidget.less */
+.mwe-upwiz-singleLanguageInputWidget {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var( --space-xs );
+	background-color: var( --color-surface-2 );
+	border-color: transparent;
+	border-radius: var( --border-radius-medium );
+
+	.mwe-upwiz-singleLanguageInputWidget-language {
+		margin-right: 0;
+	}
+
+	.mwe-upwiz-singleLanguageInputWidget-text {
+		padding-top: 0;
+	}
+}
+
+/* uw.MetadataContent.less */
+.mwe-upwiz-metadata-content {
+	.mwe-upwiz-metadata-content-caption {
+		font-family: var( --font-family-base );
+		font-weight: var( --font-weight-semibold );
+	}
+}
+
+.mwe-upwiz-metadata-pendingOverlay {
+	background-color: var( --background-color-backdrop-light );
+}

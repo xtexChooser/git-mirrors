@@ -1,0 +1,176 @@
+.citizen-header {
+	--header-icon-size: ~'calc( var( --header-button-size ) / 2 )';
+	--header-button-size: ~'calc( var( --header-size ) - var(  --space-xs ) * 2 )';
+	--header-direction: row;
+	position: fixed;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: @z-index-fixed;
+	display: flex;
+	flex-direction: var( --header-direction );
+	gap: var( --space-xxs );
+	padding: var( --space-xs );
+	background-color: var( --color-surface-0 );
+	border-top: var( --border-width-base ) solid var( --border-color-base );
+	transition: var( --transition-menu );
+	transition-property: transform;
+
+	&__item {
+		display: flex;
+		align-items: center;
+	}
+
+	&__button {
+		display: grid;
+		place-items: center;
+		width: var( --header-button-size );
+		height: var( --header-button-size );
+		border-radius: var( --border-radius-base );
+		contain: strict;
+
+		// Pure CSS icons
+		&Icon {
+			width: var( --header-icon-size );
+			height: var( --header-icon-size );
+			overflow: hidden; // Sometimes CSS animation can clip
+			filter: var( --filter-invert );
+			contain: strict;
+		}
+
+		&Icon,
+		.citizen-ui-icon {
+			margin: auto;
+		}
+
+		&Icon,
+		.citizen-ui-icon::before {
+			opacity: var( --opacity-icon-base );
+			transition: var( --transition-hover );
+			transition-property: transform, opacity;
+		}
+
+		&:hover {
+			background-color: var( --background-color-button-quiet--hover );
+
+			.citizen-ui-icon::before,
+			.citizen-header__buttonIcon {
+				opacity: var( --opacity-icon-base--hover );
+			}
+		}
+
+		&:active {
+			background-color: var( --background-color-button-quiet--active );
+
+			.citizen-ui-icon::before,
+			.citizen-header__buttonIcon {
+				opacity: var( --opacity-icon-base--selected );
+			}
+		}
+
+		// Disable default padding when menu item is used as header button
+		.citizen-menu .mw-list-item & {
+			padding: 0;
+		}
+	}
+
+	&__logo {
+		padding: 0 var( --space-xs ) 0 0;
+		margin: 0 var( --space-xxs );
+		border-right: var( --border-width-base ) solid var( --border-color-base );
+
+		img {
+			margin: auto;
+		}
+	}
+
+	&__inner {
+		display: flex;
+		flex-direction: var( --header-direction );
+		flex-grow: 1;
+		gap: var( --space-xxs );
+		justify-content: space-between;
+		min-width: 0;
+		overflow-x: auto;
+	}
+
+	&__start,
+	&__end {
+		display: flex;
+		flex-direction: var( --header-direction );
+		flex-shrink: 0; // let _inner handle the overflow
+		gap: var( --space-xxs );
+
+		// Hide top-level menu header labels
+		> .citizen-menu > .citizen-menu__heading {
+			.sr-only;
+		}
+	}
+
+	&__start {
+		align-items: center;
+		min-width: 0;
+	}
+
+	.citizen-dropdown {
+		&-summary {
+			display: grid;
+			place-items: center;
+			width: var( --header-button-size );
+			height: var( --header-button-size );
+			border-radius: var( --border-radius-base );
+			contain: strict;
+		}
+	}
+}
+
+// Notifications
+#p-notifications {
+	ul {
+		display: flex;
+		flex-direction: var( --header-direction );
+		gap: var( --space-xxs );
+		align-items: center;
+	}
+
+	// Echo badge styles do not load before init in 1.39
+	.citizen-echo-notification-badge {
+		.citizen-ui-icon + span {
+			.sr-only;
+		}
+	}
+}
+
+// Reset hover styles if it is a touch device
+// This is dumb but hover:hover overrides active states
+@media ( hover: none ) {
+	.citizen-header {
+		&__button {
+			&:hover {
+				background-color: transparent;
+
+				.citizen-header__buttonIcon {
+					opacity: var( --opacity-icon-base );
+				}
+			}
+		}
+	}
+}
+
+@media ( min-width: @min-width-breakpoint-desktop ) {
+	.citizen-header {
+		--header-direction: column;
+		top: 0;
+		right: unset;
+		left: 0;
+		border-top: 0;
+		border-right: var( --border-width-base ) solid var( --border-color-base );
+
+		&__logo {
+			padding: 0 0 var( --space-xs ) 0;
+			margin: var( --space-xxs ) 0;
+			border-right: 0;
+			border-bottom: var( --border-width-base ) solid var( --border-color-base );
+		}
+	}
+}

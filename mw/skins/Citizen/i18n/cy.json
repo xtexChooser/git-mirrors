@@ -1,0 +1,22 @@
+{
+	"@metadata": {
+		"authors": [
+			"Afalau",
+			"Ceirios"
+		]
+	},
+	"citizen-prefs-talkpage": "[[mw:Skin_talk:Citizen|Sgwrs]]",
+	"citizen-languages-toggle": "Mwy o ieithoedd",
+	"citizen-actions-more-toggle": "Mwy o weithredoedd",
+	"citizen-sitestats-articles-label": "erthyglau",
+	"citizen-sitestats-images-label": "ffeiliau",
+	"citizen-sitestats-users-label": "defnyddwyr",
+	"citizen-sitestats-edits-label": "golygiadau",
+	"citizen-page-info-copyright": "Hawlfraint",
+	"citizen-page-info-credits": "Cydnabyddiaeth",
+	"citizen-search-fulltext": "Chwilio testun",
+	"citizen-search-mediasearch": "Chwilio cyfryngau",
+	"citizen-search-editpage": "Golygu neu greu tudalen",
+	"citizen-share": "Rhannu'r dudalen hon",
+	"citizen-tagline-user-regdate": "Ymunodd $1"
+}
