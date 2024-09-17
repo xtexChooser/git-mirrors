@@ -6,12 +6,20 @@ if (!defined('MEDIAWIKI')) {
 // set environment locale
 setlocale(LC_ALL, 'en_US.UTF-8');
 
+function xvLoadConfig($file)
+{
+	require_once "/etc/mediawiki/$file";
+}
+
+xvLoadConfig('common/ConfigTypes.php');
+xvLoadConfig('common/ConfigUtils.php');
+
 // read site list
-$xvWikis = wfLoadJson('/etc/mediawiki/sites.json');
+$xvWikis = xvLoadJson('/etc/mediawiki/sites.json');
 
 // extract wiki ID
 if (defined('MW_DB')) {
-	$xvWikiID = constant('MW_DB');
+	$xvWikiID = MW_DB;
 	$xvMaintScript = true;
 } else if ($_SERVER['MW_WIKI'] ?: false) {
 	$xvWikiID = $_SERVER['MW_WIKI'];
@@ -50,13 +58,6 @@ ini_set('user_agent', "Xens Wikis, $xvWikiID (op@xvnet0.eu.org)");
 if ($xvMaintScript)
 	$wgUseDatabaseMessages = false;
 
-function xvLoadConfig($file)
-{
-	require_once "/etc/mediawiki/$file";
-}
-
 require_once '/srv/secrets/mw/Secrets.php';
-xvLoadConfig('common/ConfigTypes.php');
-xvLoadConfig('common/ConfigUtils.php');
 xvLoadConfig('common/GlobalDefaults.php');
 xvLoadConfig("sites/SiteSettings.$xvWikiID.php");

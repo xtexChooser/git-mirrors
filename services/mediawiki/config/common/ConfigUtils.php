@@ -112,3 +112,13 @@ function xvIsExtensionLoaded(string $extension)
 {
 	return ExtensionRegistry::getInstance()->isLoaded($extension);
 }
+
+/**
+ * Load json from file
+ * @param string $file
+ * @return array
+ */
+function xvLoadJson(string $file): array
+{
+	return json_decode(file_get_contents("/etc/mediawiki/$file"), true);
+}
