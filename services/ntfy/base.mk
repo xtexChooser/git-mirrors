@@ -18,8 +18,6 @@ V_PATH		= /etc/ntfy/server.yml
 V_TEMPLATE	= bash-tpl $(STATES_DIR)/services/ntfy/server.yml
 $(call end)
 
-CADDY_INCLUDES += $(STATES_DIR)/services/ntfy/Caddyfile
-
 $(call add-fs-directory,/var/run/ntfy)
 $(call add-fs-directory,/var/lib/ntfy)
 $(call add-fs-directory,/var/cache/ntfy)

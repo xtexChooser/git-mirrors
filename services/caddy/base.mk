@@ -17,10 +17,9 @@ $(call end)
 $(call add-fs-directory,/var/lib/caddy)
 
 CADDY_INCLUDES :=
+$(call invoke-hooks,caddy-configs)
 $(call fs-file)
 V_PATH		= /etc/caddy/Caddyfile
 V_TEMPLATE	= bash-tpl $(STATES_DIR)/services/caddy/Caddyfile
-V_DEP_VARS	+= CADDY_INCLUDES
-V_DEPS		+= $(wildcard $(STATES_DIR)/services/caddy/config/*.caddyfile)
+V_DEPS		+= $(wildcard $(STATES_DIR)/services/caddy/config/*.caddyfile) $(CADDY_INCLUDES)
 $(call end)
-$(call defer-deps,/etc/caddy/Caddyfile,CADDY_INCLUDES)

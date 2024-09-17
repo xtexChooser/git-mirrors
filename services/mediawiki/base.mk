@@ -22,8 +22,6 @@ V_NAME		= x-mediawiki
 V_IMAGE		= codeberg.org/xens/x-mediawiki:latest
 $(call end)
 
-CADDY_INCLUDES += $(STATES_DIR)/services/mediawiki/Caddyfile
-
 $(call add-fs-directory,/var/run/mediawiki)
 $(call add-fs-directory,/var/lib/mediawiki)
 

@@ -17,6 +17,4 @@ V_PATH		= /etc/populus/populus.cfg
 V_TEMPLATE	= bash-tpl $(STATES_DIR)/services/populus/populus.cfg
 $(call end)
 
-CADDY_INCLUDES += $(STATES_DIR)/services/populus/Caddyfile
-
 $(call add-fs-directory,/var/run/populus)
