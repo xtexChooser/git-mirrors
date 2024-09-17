@@ -127,7 +127,7 @@ function xvLoadExtension(string $extension, ?string $path = null)
 function xvLoadExtensions(array $extensions)
 {
 	global $xvLoadedExtensions;
-	$xvLoadedExtensions[] = array_merge($xvLoadedExtensions, $extensions);
+	$xvLoadedExtensions = array_merge($xvLoadedExtensions, $extensions);
 	wfLoadExtensions($extensions);
 }
 
@@ -154,7 +154,7 @@ function xvLoadSkin(string $skin, ?string $path = null)
 function xvLoadSkins(array $skins)
 {
 	global $xvLoadedExtensions;
-	$xvLoadedExtensions[] = array_merge($xvLoadedExtensions, $skins);
+	$xvLoadedExtensions = array_merge($xvLoadedExtensions, $skins);
 	wfLoadSkins($skins);
 }
 
