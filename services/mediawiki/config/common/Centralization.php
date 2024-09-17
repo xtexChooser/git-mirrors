@@ -50,7 +50,7 @@ if ($xvUseGlobalCssJs) {
 
 // GlobalUserPage
 if ($xvUseGlobalUserPage) {
-	$xvLoadExtensions[] = 'GlobalUserPage';
+	wfLoadExtension('GlobalUserPage');
 	$wgGlobalUserPageAPIUrl = $wgResourceLoaderSources['metawiki']['apiScript'];
 	$wgGlobalUserPageDBname = $wgSharedDB;
 }
