@@ -43,6 +43,11 @@
   kind: extensions
   prefix: mw/extensions/CiteThisPage
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/CiteThisPage
+- name: Citizen
+  kind: skins
+  prefix: mw/skins/Citizen
+  git: https://github.com/StarCitizenTools/mediawiki-skins-Citizen.git
+  branch: main
 - name: CodeEditor
   kind: extensions
   prefix: mw/extensions/CodeEditor
