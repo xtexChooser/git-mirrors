@@ -2,8 +2,7 @@
 
 // Emergeny Switches
 $xvEmergAbuse = false;
-// FIXME: temporary enable security lockdown for testing
-$xvEmergSecLockdown = true;
+$xvEmergSecLockdown = false;
 
 // Testing wikis
 $xvTesting = false;
