@@ -6,13 +6,10 @@ if (!defined('MEDIAWIKI')) {
 // set environment locale
 setlocale(LC_ALL, 'en_US.UTF-8');
 
-function xvLoadConfig($file)
-{
-	require_once "/etc/mediawiki/$file";
-}
-
-xvLoadConfig('common/ConfigTypes.php');
-xvLoadConfig('common/ConfigUtils.php');
+// config utilities
+$xvConfigDirectory = __DIR__;
+require_once "$xvConfigDirectory/common/ConfigTypes.php";
+require_once "$xvConfigDirectory/common/ConfigUtils.php";
 
 // read site list
 $xvWikis = xvLoadJson('sites.json');
@@ -21,7 +18,7 @@ $xvWikis = xvLoadJson('sites.json');
 if (defined('MW_DB')) {
 	$xvWikiID = MW_DB;
 	$xvMaintScript = true;
-} else if ($_SERVER['MW_WIKI'] ?: false) {
+} else if ($_SERVER['MW_WIKI'] ?? false) {
 	$xvWikiID = $_SERVER['MW_WIKI'];
 	$xvMaintScript = false;
 } else {
@@ -59,5 +56,5 @@ if ($xvMaintScript)
 	$wgUseDatabaseMessages = false;
 
 require_once '/srv/secrets/mw/Secrets.php';
-xvLoadConfig('common/GlobalDefaults.php');
-xvLoadConfig("sites/SiteSettings.$xvWikiID.php");
+require_once "$xvConfigDirectory/common/GlobalDefaults.php";
+require_once "$xvConfigDirectory/sites/SiteSettings.$xvWikiID.php";

@@ -14,4 +14,4 @@ $wgDefaultSkin = $wgDefaultMobileSkin = 'lakeus';
 
 $wgLocalInterwikis[] = 'meta';
 
-xvLoadConfig('common/GlobalSettings.php');
+require_once "$xvConfigDirectory/common/GlobalSettings.php";

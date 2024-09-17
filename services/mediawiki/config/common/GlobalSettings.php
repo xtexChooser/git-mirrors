@@ -2,7 +2,7 @@
 use MediaWiki\MediaWikiServices;
 
 if ($xvUseDatabaseMonto)
-	xvLoadConfig('common/Database.php');
+	require_once "$xvConfigDirectory/common/Database.php";
 
 // global extensions
 if ($xvUseGlobalExtensions)
@@ -41,7 +41,7 @@ if ($xvEmergSecLockdown) {
 
 // Centralization
 if ($xvCentralized)
-	xvLoadConfig('common/Centralization.php');
+	require_once "$xvConfigDirectory/common/Centralization.php";
 
 // CAPTCHA
 if ($xvUseCaptcha) {

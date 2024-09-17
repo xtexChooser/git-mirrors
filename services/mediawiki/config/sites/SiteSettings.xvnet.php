@@ -24,4 +24,4 @@ $wgGroupPermissions['emailconfirmed']['edit'] = true;
 
 wfLoadExtension('Cargo');
 
-xvLoadConfig('common/GlobalSettings.php');
+require_once "$xvConfigDirectory/common/GlobalSettings.php";
