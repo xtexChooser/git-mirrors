@@ -33,9 +33,9 @@ w.xvnet.eu.org w.xvnet0.eu.org http://wiki.xvn {
 	import mediawiki "xvnet"
 }
 
-hgdns.w.xvnet.eu.org hgdns.w.xvnet0.eu.org http://hgdns.wiki.xvn {
-	import mediawiki "hgdns"
-}
+# hgdns.w.xvnet.eu.org hgdns.w.xvnet0.eu.org http://hgdns.wiki.xvn {
+# 	import mediawiki "hgdns"
+# }
 
 hgdns.ren {
 	tls internal
