@@ -132,4 +132,83 @@ $wgContactConfig['join'] = [
 	'RLStyleModules' => [],
 ];
 
+$wgContactConfig['interview'] = [
+	'RecipientUser' => 'Xtex',
+	'SenderName' => '',
+	'RequireDetails' => true,
+	'IncludeIP' => false,
+	'MustBeLoggedIn' => false,
+	'NameReadonly' => false,
+	'EmailReadonly' => false,
+	'SubjectReadonly' => true,
+	'MustHaveEmail' => false,
+	'AdditionalFields' => [
+		'stunum' => [
+			'label' => '班级与学号？',
+			'help' => '记得写学号，好多人报名表只写了班级。',
+			'type' => 'text',
+			'required' => true,
+		],
+		'departments' => [
+			'class' => 'HTMLMultiSelectField',
+			'label' => '希望加入的部门',
+			'options' => [
+				'编程部' => 'depart-sw',
+				'硬件部' => 'depart-hw',
+				'有意愿成为社干' => 'want-leader',
+			]
+		],
+		'experience' => [
+			'class' => 'HTMLMultiSelectField',
+			'label' => '请选择：',
+			'options' => [
+				'有兴趣学习编程' => 'want-learn',
+				'我觉得我还算比较会用电脑' => 'computer-ok',
+				'大致了解计算机各组件的作用' => 'know-usage',
+				'以前学习过编程（C/C++）' => 'previous-learnt-cpp',
+				'以前学习过编程（其他语言）' => 'previous-learnt-other',
+				'以前参加过相关比赛' => 'previous-joint-competition',
+				'真的真的很想学编程或装机' => 'really-want',
+				'我就是想来玩游戏的' => 'just-gaming',
+				'1+1=2' => 'math1',
+				'(16 >>> 3) = 1' => 'math2',
+				'PHP是世界上最棒的语言' => 'php-is-best',
+				'我要成立一中音游社' => 'i-wanna-rhythm-club',
+				'你说的对' => 'you-r-right',
+			]
+		],
+		'other' => [
+			'label' => '还有什么想说的吗',
+			'type' => 'textarea',
+			'rows' => 7,
+		],
+		'luogu' => [
+			'label' => '洛谷UID（如果有的话）',
+			'type' => 'text',
+			'required' => false,
+		],
+		'wiki-username' => [
+			'label' => '选个用户名吧',
+			'help' => '面试通过后会在本网站创建一个账号（虽然没什么用）',
+			'type' => 'text',
+			'required' => true,
+		],
+		'polface' => [
+			'label' => '政治面貌',
+			'help' => '是团员写团员，不是团员写群众，学校要统一收集的',
+			'type' => 'text',
+			'required' => true,
+		],
+		'contact' => [
+			'label' => '个人联系方式',
+			'help' => '这个也是学校要统一收集的',
+			'type' => 'text',
+			'required' => true,
+		],
+	],
+	'DisplayFormat' => 'table',
+	'RLModules' => [],
+	'RLStyleModules' => [],
+];
+
 require_once "$xvConfigDirectory/common/GlobalSettings.php";
