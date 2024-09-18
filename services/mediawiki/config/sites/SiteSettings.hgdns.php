@@ -193,8 +193,7 @@ $wgContactConfig['interview'] = [
 		],
 		'other' => [
 			'label' => '还有什么想说的吗',
-			'type' => 'text
-				'4倍根号下4+k' => 'c1c2-a',area',
+			'type' => 'textarea',
 			'rows' => 7,
 		],
 		'luogu' => [
