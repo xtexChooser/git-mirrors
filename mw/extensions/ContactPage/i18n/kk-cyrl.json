@@ -1,0 +1,21 @@
+{
+	"@metadata": {
+		"authors": [
+			"Arystanbek",
+			"DannyS712",
+			"СеніңШешең"
+		]
+	},
+	"contactpage": "Контакт беті",
+	"contactpage-title": "Байланыс",
+	"contactpage-pagetext": "Байланысу үшін төмендегі пішінді қолданыңыз.",
+	"contactpage-legend": "Электроныды хат жіберу",
+	"contactpage-defsubject": "Хабар",
+	"contactpage-fromname": "Сіздің есіміңіз:",
+	"contactpage-fromaddress": "Сіздің э-почта мекенжайыңыз:",
+	"contactpage-formfootnotes": "(жауап алу үшін қажет)",
+	"contactpage-includeip": "Бұл хабарға IP мекенжайымды қосу.",
+	"contactpage-usermailererror": "Mail нысаны қате қайтарды: $1",
+	"contactpage-captcha-error": "CAPTCHA қате",
+	"contactpage-config-error-title": "Байланыс пішіні қате"
+}

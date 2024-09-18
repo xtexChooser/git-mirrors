@@ -1,0 +1,64 @@
+{
+	"name": "ContactPage",
+	"version": "2.3",
+	"author": [
+		"Daniel Kinzler",
+		"Sam Reed"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:ContactPage",
+	"descriptionmsg": "contactpage-desc",
+	"license-name": "GPL-2.0-or-later",
+	"type": "specialpage",
+	"requires": {
+		"MediaWiki": ">= 1.42.0"
+	},
+	"ExtensionMessagesFiles": {
+		"ContactPageAliases": "ContactPage.alias.php"
+	},
+	"MessagesDirs": {
+		"ContactPage": [
+			"i18n"
+		]
+	},
+	"config": {
+		"ContactConfig": {
+			"value": {
+				"default": {
+					"RecipientUser": null,
+					"SenderEmail": null,
+					"SenderName": null,
+					"RequireDetails": false,
+					"IncludeIP": false,
+					"MustBeLoggedIn": false,
+					"MustHaveEmail": false,
+					"NameReadonly": false,
+					"EmailReadonly": false,
+					"SubjectReadonly": false,
+					"UseCustomBlockMessage": false,
+					"RLModules": [],
+					"RLStyleModules": [],
+					"AdditionalFields": {
+						"Text": {
+							"label-message": "emailmessage",
+							"type": "textarea",
+							"required": true
+						}
+					}
+				}
+			},
+			"merge_strategy": "array_plus_2d"
+		}
+	},
+	"SpecialPages": {
+		"Contact": {
+			"class": "MediaWiki\\Extension\\ContactPage\\SpecialContact",
+			"services": [
+				"UserOptionsLookup"
+			]
+		}
+	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\ContactPage\\": "includes/"
+	},
+	"manifest_version": 2
+}
