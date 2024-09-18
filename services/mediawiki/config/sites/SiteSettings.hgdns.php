@@ -169,6 +169,7 @@ $wgContactConfig['interview'] = [
 				'以前学习过编程（其他语言）' => 'previous-learnt-other',
 				'以前参加过相关比赛' => 'previous-joint-competition',
 				'真的真的很想学编程或装机' => 'really-want',
+				'参加过一中的计算机或数学物理自主招生考试' => 'yz-contest',
 				'我就是想来玩游戏的' => 'just-gaming',
 				'1+1=2' => 'math1',
 				'(16 >>> 3) = 1' => 'math2',
