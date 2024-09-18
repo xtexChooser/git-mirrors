@@ -208,3 +208,11 @@ if ($xvUseLockdown) {
 if ($xvUseCargo) {
 	xvLoadExtension('Cargo');
 }
+
+if ($xvUseSecurePoll) {
+	xvLoadExtension('SecurePoll');
+	$wgSecurePollCreateRemoteScriptPath = $wgServer;
+	$wgGroupPermissions['electionadmin'] = [];
+	$wgGroupPermissions['sysop']['securepoll-create-poll'] = true;
+	$wgGroupPermissions['staff']['securepoll-view-voter-pii'] = true;
+}

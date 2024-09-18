@@ -279,3 +279,9 @@ $xvUseGlobalPreferences = true;
 // Extensions
 $xvUseCargo = false;
 $xvUseLockdown = false;
+
+// SecurePoll
+$xvUseSecurePoll = false;
+$wgSecurePollUseLogging = true;
+$wgSecurePollUseNamespace = true;
+$wgSecurePollSingleTransferableVoteEnabled = true;
