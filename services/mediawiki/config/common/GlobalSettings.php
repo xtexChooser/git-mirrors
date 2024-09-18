@@ -209,6 +209,10 @@ if ($xvUseCargo) {
 	xvLoadExtension('Cargo');
 }
 
+if ($xvUseContactPage) {
+	xvLoadExtension('ContactPage');
+}
+
 if ($xvUseSecurePoll) {
 	xvLoadExtension('SecurePoll');
 	$wgSecurePollCreateRemoteScriptPath = $wgServer;

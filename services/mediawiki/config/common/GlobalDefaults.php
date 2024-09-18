@@ -279,6 +279,7 @@ $xvUseGlobalPreferences = true;
 // Extensions
 $xvUseCargo = false;
 $xvUseLockdown = false;
+$xvUseContactPage = false;
 
 // SecurePoll
 $xvUseSecurePoll = false;

@@ -89,4 +89,47 @@ xvSetAssocTrues('wgNamespacesToBeSearchedDefault', [
 	NS_PROJECT,
 ]);
 
+// ContactPage
+$xvUseContactPage = true;
+$wgContactConfig['join'] = [
+	'RecipientUser' => 'Xtex',
+	'SenderName' => '',
+	'RequireDetails' => true,
+	'IncludeIP' => false,
+	'MustBeLoggedIn' => false,
+	'NameReadonly' => false,
+	'EmailReadonly' => false,
+	'SubjectReadonly' => true,
+	'MustHaveEmail' => false,
+	'AdditionalFields' => [
+		'stunum' => [
+			'label' => '班级与学号？',
+			'type' => 'text',
+			'required' => true,
+		],
+		'name' => [
+			'label' => '姓名',
+			'type' => 'text',
+			'required' => true,
+		],
+		'departments' => [
+			'class' => 'HTMLMultiSelectField',
+			'label' => '加入的部门',
+			'options' => [
+				'编程部' => 'depart-sw',
+				'硬件部' => 'depart-hw',
+				'有意愿成为社干' => 'want-leader',
+			]
+		],
+		'contact' => [
+			'label' => '联系方式',
+			'type' => 'text',
+			'required' => true,
+		],
+	],
+	'DisplayFormat' => 'table',
+	'RLModules' => [],
+	'RLStyleModules' => [],
+];
+
 require_once "$xvConfigDirectory/common/GlobalSettings.php";
