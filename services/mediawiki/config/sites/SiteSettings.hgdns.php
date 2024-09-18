@@ -183,9 +183,18 @@ $wgContactConfig['interview'] = [
 				'学校的希沃是2019年的' => '2019-seewo',
 			]
 		],
+		'c1c2' => [
+			'class' => 'HTMLMultiSelectField',
+			'label' => '设双曲线 C1：<math>\frac{x^2}{a^2} - \frac{y^2}{4} = k (a>2, k>0)</math>，椭圆 C2：<math>\frac{x^2}{a^2} + \frac{y^2}{4} = 1</math>，若C2的短轴长与C1的实轴长的比值等于C2的离心率，则C1在C2的一条准线上截得线段的长为',
+			'options' => [
+				'2' => 'c1c2-a',
+				'4' => 'c1c2-b',
+			]
+		],
 		'other' => [
 			'label' => '还有什么想说的吗',
-			'type' => 'textarea',
+			'type' => 'text
+				'4倍根号下4+k' => 'c1c2-a',area',
 			'rows' => 7,
 		],
 		'luogu' => [
