@@ -186,6 +186,7 @@ $wgContactConfig['interview'] = [
 		'c1c2' => [
 			'class' => 'HTMLMultiSelectField',
 			'label-message' => 'contactpage-interview-math',
+			'help' => '说实话出题人也不会这个',
 			'options' => [
 				'2' => 'c1c2-a',
 				'4' => 'c1c2-b',
