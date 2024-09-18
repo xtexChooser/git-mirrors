@@ -235,6 +235,10 @@
   kind: extensions
   prefix: mw/extensions/SecureLinkFixer
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/SecureLinkFixer
+- name: SecurePoll
+  kind: extensions
+  prefix: mw/extensions/SecurePoll
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/SecurePoll
 - name: SemanticMediaWiki
   kind: extensions
   prefix: mw/extensions/SemanticMediaWiki
