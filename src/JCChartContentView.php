@@ -5,6 +5,8 @@ namespace MediaWiki\Extension\Chart;
 use JsonConfig\JCContent;
 use JsonConfig\JCContentView;
 use MediaWiki\Languages\LanguageFactory;
+use MediaWiki\Logger\LoggerFactory;
+use MediaWiki\MediaWikiServices;
 use MediaWiki\Page\PageReference;
 use MediaWiki\Parser\ParserOutput;
 use MediaWiki\Title\Title;
@@ -31,16 +33,32 @@ class JCChartContentView extends JCContentView {
 	 * @return string
 	 */
 	public function valueToHtml(
-		JCContent $content, PageReference $page, $revId, ParserOptions $options, $generateHtml,
+		JCContent $content,
+		PageReference $page,
+		$revId,
+		ParserOptions $options,
+		$generateHtml,
 		ParserOutput &$output
 	): string {
+		$logger = LoggerFactory::getInstance( 'Chart' );
+		$chartArgumentsParser = MediaWikiServices::getInstance()->getService( 'Chart.ChartArgumentsParser' );
+		$dataPageResolver = MediaWikiServices::getInstance()->getService( 'Chart.DataPageResolver' );
+
 		'@phan-var JCChartContent $content';
 		$lang = $this->languageFactory->getLanguage( $output->getLanguage() ??
 			Title::newFromPageReference( $page )->getPageLanguage()
 		);
-		$parserFunction = new ParserFunction( $this->chartRenderer, $lang, $page );
 
-		return $parserFunction->renderChart( $output, $content );
+		$parserFunction = new ParserFunction(
+			$this->chartRenderer,
+			$lang,
+			$chartArgumentsParser,
+			$dataPageResolver,
+			$logger,
+			$page
+		);
+
+		return $parserFunction->renderChartForDefinitionContent( $output, $content );
 	}
 
 	/**

@@ -12,6 +12,9 @@
 	"chart-error-default-source-not-specified": "Error message when the chart definition page does not specify a default data source page. Shown to user in Codex message box.",
 	"chart-error-incompatible-chart-definition": "Error message when the chart definition page is incompatible with charts. Shown to user in Codex message box.",
 	"chart-error-incompatible-data-source": "Error message when the tabular data source page is incompatible with charts. Shown to user in Codex message box.",
+	"chart-error-invalid-height": "Error message when the width parser function parameter is not an integer or is too small. Show to the user in Codex message box.",
+	"chart-error-invalid-width": "Error message when the width parser function parameter is not an integer or is too small. Show to the user in Codex message box.",
 	"chart-error-shell-disabled": "Error message when shell execution is disabled. Shown to user in Codex message box.",
-	"chart-error-rendering-error": "Error message when executing the service or shell script returned an error."
+	"chart-error-rendering-error": "Error message when executing the service or shell script returned an error.",
+	"chart-error-unexpected": "Error message when an unexpected technical error happened when rendering a chart. Shown to the user in a Codex message box."
 }
