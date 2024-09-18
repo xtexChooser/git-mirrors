@@ -185,7 +185,7 @@ $wgContactConfig['interview'] = [
 		],
 		'c1c2' => [
 			'class' => 'HTMLMultiSelectField',
-			'label' => '设双曲线 C1：<math>\frac{x^2}{a^2} - \frac{y^2}{4} = k (a>2, k>0)</math>，椭圆 C2：<math>\frac{x^2}{a^2} + \frac{y^2}{4} = 1</math>，若C2的短轴长与C1的实轴长的比值等于C2的离心率，则C1在C2的一条准线上截得线段的长为',
+			'label-message' => 'contactpage-interview-math',
 			'options' => [
 				'2' => 'c1c2-a',
 				'4' => 'c1c2-b',
