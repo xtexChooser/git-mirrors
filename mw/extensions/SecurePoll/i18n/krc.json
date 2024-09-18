@@ -1,0 +1,19 @@
+{
+	"@metadata": {
+		"authors": [
+			"Ernác",
+			"Iltever",
+			"Къарачайлы"
+		]
+	},
+	"securepoll-header-timestamp": "Заман",
+	"securepoll-header-voter-name": "Ат",
+	"securepoll-header-voter-domain": "Домен",
+	"securepoll-header-reason": "Чурум",
+	"securepoll-header-admin": "Админ",
+	"securepoll-translate-title": "Кёчюр: $1",
+	"securepoll-submit-translate": "Джангырт",
+	"securepoll-submit-select-lang": "Кёчюр",
+	"securepoll-subpage-translate": "Кёчюр",
+	"securepoll-votereligibility-title": "Сайлаучу хакъны конфигурациясы"
+}

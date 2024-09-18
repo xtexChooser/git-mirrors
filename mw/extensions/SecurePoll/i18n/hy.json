@@ -1,0 +1,20 @@
+{
+	"@metadata": {
+		"authors": [
+			"Kareyac",
+			"Սերգեյ Սաֆարյան"
+		]
+	},
+	"securepoll-vote-csrf": "Ձախողվեց",
+	"securepoll-header-action": "Գործողություն",
+	"securepoll-header-reason": "Պատճառ",
+	"securepoll-header-admin": "Ադմին",
+	"securepoll-subpage-list": "Ցանկ",
+	"securepoll-create-option-wiki-all_wikis": "Բոլոր վիքիներ",
+	"securepoll-create-label-property_admins": "Ադմիններ՝",
+	"securepoll-create-label-questions-option": "=== Ընտրանքներ ===",
+	"securepoll-create-label-comment": "Պատճառ",
+	"securepoll-translation-result-error-title": "Սխալներ",
+	"securepoll-translation-result-import-pages-title": "Էջեր",
+	"securepoll-translation-import-action-done": "Արված է"
+}

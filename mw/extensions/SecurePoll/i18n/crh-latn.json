@@ -1,0 +1,11 @@
+{
+	"@metadata": {
+		"authors": [
+			"TayfunEt.",
+			"Zolgoyo",
+			"Don Alessandro"
+		]
+	},
+	"securepoll-welcome": "<strong>{{GENDER:$1|Hoş keldiñiz}} $1!</strong>",
+	"securepolllog-form-date-label": "Bu tarihtan (ve daa evelâ):"
+}

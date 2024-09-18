@@ -1,0 +1,13 @@
+{
+	"@metadata": {
+		"authors": [
+			"Cabal"
+		]
+	},
+	"securepoll-translate-title": "\"$1\" ਤਰਜਮਾ ਕਰੋ",
+	"securepoll-submit-select-lang": "ਤਰਜਮਾ ਕਰੋ",
+	"securepoll-subpage-translate": "ਤਰਜਮਾ ਕਰੋ",
+	"securepoll-translate-import-button-label": "ਤਰਜਮੇ ਦਰਾਮਦ ਕਰੋ",
+	"securepoll-translation-result-description": "ਤੋਂ ਦਰਾਮਤ ਕੀਤੇ ਤਰਜਮੇ",
+	"securepoll-translation-import-dialog-title": "ਤਰਜਮੇ ਦਰਾਮਦ ਕਰੋ"
+}
