@@ -108,13 +108,13 @@ $wgContactConfig['join'] = [
 			'required' => true,
 		],
 		'name' => [
-			'label' => '姓名',
+			'label' => '姓名？',
 			'type' => 'text',
 			'required' => true,
 		],
 		'departments' => [
 			'class' => 'HTMLMultiSelectField',
-			'label' => '加入的部门',
+			'label' => '希望加入的部门',
 			'options' => [
 				'编程部' => 'depart-sw',
 				'硬件部' => 'depart-hw',
@@ -122,7 +122,7 @@ $wgContactConfig['join'] = [
 			]
 		],
 		'contact' => [
-			'label' => '联系方式',
+			'label' => '联系方式（微信/QQ均可）',
 			'type' => 'text',
 			'required' => true,
 		],
