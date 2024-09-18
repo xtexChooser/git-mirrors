@@ -174,8 +174,13 @@ $wgContactConfig['interview'] = [
 				'1+1=2' => 'math1',
 				'(16 >>> 3) = 1' => 'math2',
 				'PHP是世界上最棒的语言' => 'php-is-best',
+				'阳江一中是世界上最棒的学校' => 'yjyz-is-best',
 				'我要成立一中音游社' => 'i-wanna-rhythm-club',
 				'你说的对' => 'you-r-right',
+				'集线器和交换机可以随意互相替换，不会引起广播风暴 ' => 'switch-swap-safe',
+				'一台安卓设备启动时，最先加载的代码是PBL ' => 'pbl-first',
+				'PHY是L2协议 ' => 'phy-l2',
+				'学校的希沃是2019年的' => '2019-seewo',
 			]
 		],
 		'other' => [
