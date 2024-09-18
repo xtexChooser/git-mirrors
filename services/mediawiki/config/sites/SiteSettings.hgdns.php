@@ -89,8 +89,4 @@ xvSetAssocTrues('wgNamespacesToBeSearchedDefault', [
 	NS_PROJECT,
 ]);
 
-// SecurePoll
-$xvUseSecurePoll = true;
-$wgGroupPermissions['sysop']['securepoll-view-voter-pii'] = true;
-
 require_once "$xvConfigDirectory/common/GlobalSettings.php";
