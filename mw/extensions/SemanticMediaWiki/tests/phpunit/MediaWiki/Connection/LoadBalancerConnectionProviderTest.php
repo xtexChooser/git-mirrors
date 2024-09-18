@@ -2,7 +2,6 @@
 
 namespace SMW\Tests\MediaWiki\Connection;
 
-use DatabaseBase;
 use ReflectionClass;
 use SMW\Tests\PHPUnitCompat;
 use SMW\MediaWiki\Connection\LoadBalancerConnectionProvider;
@@ -40,7 +39,7 @@ class LoadBalancerConnectionProviderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testGetAndReleaseConnection() {
-		$database = $this->getMockBuilder( '\IDatabase' )
+		$database = $this->getMockBuilder( '\Wikimedia\Rdbms\IDatabase' )
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -57,7 +56,7 @@ class LoadBalancerConnectionProviderTest extends \PHPUnit_Framework_TestCase {
 		$connection = $instance->getConnection();
 
 		$this->assertInstanceOf(
-			'\IDatabase',
+			'\Wikimedia\Rdbms\IDatabase',
 			$instance->getConnection()
 		);
 
@@ -69,7 +68,7 @@ class LoadBalancerConnectionProviderTest extends \PHPUnit_Framework_TestCase {
 	}
 
 	public function testGetAndReleaseConnectionRef() {
-		$database = $this->getMockBuilder( '\IDatabase' )
+		$database = $this->getMockBuilder( '\Wikimedia\Rdbms\IDatabase' )
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -84,7 +83,7 @@ class LoadBalancerConnectionProviderTest extends \PHPUnit_Framework_TestCase {
 		$connection = $instance->getConnection();
 
 		$this->assertInstanceOf(
-			'\IDatabase',
+			'\Wikimedia\Rdbms\IDatabase',
 			$instance->getConnection()
 		);
 
