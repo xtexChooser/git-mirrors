@@ -29,8 +29,9 @@ else
 	runMW php maintenance/run.php --wiki "$1" update --quick
 fi
 
-runMW php maintenance/run.php --wiki "meta" addSite wiki"$1" xvwiki \
-	--pagepath "https://$domain/w/\$1" \
-	--filepath "https://$domain/\$1"
+# this is broken
+# runMW php maintenance/run.php --wiki "meta" addSite wiki"$1" xvwiki \
+# 	--pagepath "https://$domain/w/\$1" \
+# 	--filepath "https://$domain/\$1"
 
 echo "Wiki $1 initialized"
