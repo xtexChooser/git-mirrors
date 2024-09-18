@@ -60,6 +60,10 @@
   kind: extensions
   prefix: mw/extensions/ConfirmEdit
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/ConfirmEdit
+- name: ContactPage
+  kind: extensions
+  prefix: mw/extensions/ContactPage
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/ContactPage
 - name: Description2
   kind: extensions
   prefix: mw/extensions/Description2
