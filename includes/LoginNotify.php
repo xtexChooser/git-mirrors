@@ -777,7 +777,8 @@ class LoginNotify implements LoggerAwareInterface {
 					] )
 					->caller( $fname )
 					->execute();
-			}
+			},
+			$fname
 		);
 	}
 
