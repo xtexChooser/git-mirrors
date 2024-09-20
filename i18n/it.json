@@ -1,0 +1,9 @@
+{
+	"@metadata": {
+		"authors": [
+			"Beta16"
+		]
+	},
+	"chart-error-invalid-height": "L'altezza deve essere un numero intero maggiore o uguale a 100.",
+	"chart-error-invalid-width": "La larghezza deve essere un numero intero maggiore o uguale a 100."
+}

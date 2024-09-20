@@ -10,5 +10,8 @@
 	"chart-error-default-source-not-specified": "Kaavion määrittelysivua ei määritä oletustietolähdettä.",
 	"chart-error-incompatible-chart-definition": "Määrittelysivu ei ole yhteensopiva kaavioiden kanssa.",
 	"chart-error-incompatible-data-source": "Taulukkotiedon lähdesivu ei ole yhteensopiva kaavioiden kanssa.",
-	"chart-error-rendering-error": "Kaavion renderöinnissä tapahtui virhe."
+	"chart-error-invalid-height": "Korkeuden on oltava kokonaisluku, joka on suurempi tai yhtä suuri kuin 100.",
+	"chart-error-invalid-width": "Leveyden on oltava kokonaisluku, joka on suurempi tai yhtä suuri kuin 100.",
+	"chart-error-rendering-error": "Kaavion renderöinnissä tapahtui virhe.",
+	"chart-error-unexpected": "Kaaviota renderöinnissä tapahtui odottamaton virhe."
 }
