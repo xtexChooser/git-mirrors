@@ -231,6 +231,11 @@
   kind: extensions
   prefix: mw/extensions/Scribunto
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Scribunto
+- name: SearchDigest
+  kind: extensions
+  prefix: mw/extensions/SearchDigest
+  git: https://github.com/weirdgloop/mediawiki-extensions-SearchDigest
+  branch: master
 - name: SecureLinkFixer
   kind: extensions
   prefix: mw/extensions/SecureLinkFixer
