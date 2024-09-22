@@ -64,6 +64,7 @@ $wgExtraNamespaces[NS_STAFF] = '社干';
 $wgExtraNamespaces[NS_STAFF_TALK] = '社干讨论';
 $wgNamespaceAliases['Staff'] = NS_STAFF;
 $wgNamespaceAliases['Staff_talk'] = NS_STAFF_TALK;
+$wgContentNamespaces[] = NS_STAFF;
 $wgNamespaceAliases['S'] = NS_STAFF;
 xvSetAssocTrues('wgNamespacesWithSubpages', [NS_STAFF, NS_STAFF_TALK]);
 xvMergeInto('wgNonincludableNamespaces', [NS_STAFF, NS_STAFF_TALK]);
