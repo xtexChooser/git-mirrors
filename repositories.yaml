@@ -257,6 +257,10 @@
   kind: extensions
   prefix: mw/extensions/SyntaxHighlight_GeSHi
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/SyntaxHighlight_GeSHi
+- name: TabberNeue
+  kind: extensions
+  prefix: mw/extensions/TabberNeue
+  git: https://github.com/weirdgloop/mediawiki-extensions-TabberNeue
 - name: TemplateData
   kind: extensions
   prefix: mw/extensions/TemplateData
