@@ -191,28 +191,6 @@ $wgContactConfig['interview'] = [
 			],
 			'required' => false,
 		],
-		'c1c2' => [
-			'type' => 'multiselect',
-			'label-message' => 'contactpage-interview-math',
-			'help' => '说实话出题人也不会这个，也不指望有人能做出来，这是数学选必二的内容，所以不会就直接留空吧',
-			'options' => [
-				'2' => 'c1c2-a',
-				'4' => 'c1c2-b',
-			],
-			'required' => false,
-		],
-		'time-complexity' => [
-			'type' => 'multiselect',
-			'label' => '假设一个长度为n的整数数组中每个元素值互不相同，且这个数组是无序的。要找到这个数组中的最大元素的时间复杂度是多少？',
-			'help' => '也不指望有人能做出来，这是今年CSP-J/S竞赛S组初赛的题目，所以不会就直接留空吧，学一学期就会了',
-			'options' => [
-				'O(n)' => 'time-comp-n',
-				'O(log n)' => 'time-comp-log-n',
-				'O(n log n)' => 'time-comp-n-log-n',
-				'O(1)' => 'time-comp-unit',
-			],
-			'required' => false,
-		],
 		'other' => [
 			'label' => '还有什么想说的吗',
 			'help' => '这个也可以留空的',
