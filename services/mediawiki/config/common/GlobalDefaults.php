@@ -146,6 +146,7 @@ $wgDefaultUserOptions['editrecovery'] = 1;
 $wgUseRCPatrol = true;
 $wgUseNPPatrol = true;
 $wgUseFilePatrol = true;
+$wgFragmentMode = 'html5';
 
 $wgConditionalUserOptions['showhiddencats'] = [
 	[1, [CUDCOND_USERGROUP, 'sysop']],
