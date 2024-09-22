@@ -261,6 +261,7 @@
   kind: extensions
   prefix: mw/extensions/TabberNeue
   git: https://github.com/weirdgloop/mediawiki-extensions-TabberNeue
+  branch: main
 - name: TemplateData
   kind: extensions
   prefix: mw/extensions/TemplateData
