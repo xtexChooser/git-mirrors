@@ -89,6 +89,9 @@ xvSetAssocTrues('wgNamespacesToBeSearchedDefault', [
 	NS_PROJECT,
 ]);
 
+// Uploads
+xvMergeInto('wgFileExtensions', ['pdf']);
+
 // ContactPage
 $xvUseContactPage = true;
 $wgContactConfig['join'] = [
