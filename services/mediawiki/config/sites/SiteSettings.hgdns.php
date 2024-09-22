@@ -56,6 +56,7 @@ $wgNamespaceAliases['M'] = NS_MEMBER;
 $wgNamespaceAliases['MT'] = NS_MEMBER_TALK;
 xvSetAssocTrues('wgNamespacesWithSubpages', [NS_MEMBER, NS_MEMBER_TALK]);
 xvMergeInto('wgNonincludableNamespaces', [NS_MEMBER, NS_MEMBER_TALK]);
+$wgVisualEditorAvailableNamespaces['社员'] = true;
 
 const NS_STAFF = 3002;
 const NS_STAFF_TALK = 3003;
@@ -66,8 +67,10 @@ $wgNamespaceAliases['Staff_talk'] = NS_STAFF_TALK;
 $wgNamespaceAliases['S'] = NS_STAFF;
 xvSetAssocTrues('wgNamespacesWithSubpages', [NS_STAFF, NS_STAFF_TALK]);
 xvMergeInto('wgNonincludableNamespaces', [NS_STAFF, NS_STAFF_TALK]);
+$wgVisualEditorAvailableNamespaces['社干'] = true;
 
 $wgNamespaceAliases['P'] = NS_PROJECT;
+$wgNamespaceAliases['U'] = NS_USER;
 
 // Lockdown
 $xvUseLockdown = true;
