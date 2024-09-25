@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Méthodes Bulebe Hangi"
+			"Méthodes Bulebe Hangi",
+			"Terio legale"
 		]
 	},
 	"chart-desc": "Ajoute la fonction d'analyseur <code><nowiki>{{#chart:}}</nowiki></code> pour l'affichage des graphiques",
@@ -10,6 +11,9 @@
 	"chart-error-default-source-not-specified": "La page définition du graphique ne spécifie pas une source de données par défaut.",
 	"chart-error-incompatible-chart-definition": "La page définition est incompatible avec les graphiques.",
 	"chart-error-incompatible-data-source": "La page de source de données tabulaire est incompatible avec les graphiques.",
+	"chart-error-invalid-height": "La hauteur doit être un entier supérieur ou égal à 100.",
+	"chart-error-invalid-width": "La largeur doit être un entier supérieur ou égal à 100.",
 	"chart-error-shell-disabled": "Les graphiques ne peuvent pas être rendus parce que l'exécution de la coquille est désactivée.",
-	"chart-error-rendering-error": "Une erreur s'est produite lors de l'affichage du graphique"
+	"chart-error-rendering-error": "Une erreur s'est produite lors de l'affichage du graphique",
+	"chart-error-unexpected": "Une erreur inattendue s'est produite lors du rendu du graphique."
 }
