@@ -246,6 +246,10 @@ Purpose: The team focuses on concerted efforts to make Forgejo a durable endeavo
 
 Accountability: The administrative aspects of grant applications from start to finish.
 
+Team members:
+
+- [avobs](https://codeberg.org/avobs)
+
 
 ## [GitHub organisation](https://github.com/forgejo) owners as of 2024-01-09
 
