@@ -1,0 +1,10 @@
+{
+	"@metadata": {
+		"authors": [
+			"Pragathi. BH"
+		]
+	},
+	"chart-error-invalid-height": "ಎತ್ತರ 100 ಡ್ದ್ ಮಲ್ಲ ಅತ್ತ್ಂಡ ಸಮ ಆವೊಡು.",
+	"chart-error-invalid-width": "ಅಗಲ 100 ಡ್ದ್ ಮಲ್ಲ ಅತ್ತ್ಂಡ ಸಮ ಆವೊಡು.",
+	"chart-error-unexpected": "ಚಾರ್ಟ್ ನ್ ತೋಜಾವುನಗ ಅನಿರೀಕ್ಷಿತ ದೋಷ ಉಂಡು."
+}
