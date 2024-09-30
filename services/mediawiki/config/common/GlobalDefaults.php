@@ -262,6 +262,8 @@ $wgFileExtensions = array_merge($wgFileExtensions, [
 	'ogg',
 	'ico',
 ]);
+$wgThumbLimits = [120, 250, 300];
+$wgDefaultUserOptions['thumbsize'] = 1;
 
 // Echo
 $wgNotificationSender = $xvSMTPSender;
