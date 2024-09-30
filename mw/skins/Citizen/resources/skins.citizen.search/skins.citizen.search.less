@@ -2,20 +2,8 @@
 @import '../mixins.less';
 
 .citizen-typeahead {
-	--size-icon: 1.25rem; // reset
-	position: absolute;
-	top: 100%;
-	left: -1px; // IDK why is it off by 1px
-	box-sizing: content-box; // Magic to align with search input
-	width: 100%;
-	max-height: ~'calc( var( --header-card-maxheight ) - var( --height-search-bar ) )';
-	margin: 0; // Reset <ol> styles
-	overflow: auto;
-	overscroll-behavior: contain;
-	border-top-color: transparent;
 	border-bottom-right-radius: var( --border-radius-medium );
 	border-bottom-left-radius: var( --border-radius-medium );
-	.citizen-card( false );
 
 	a {
 		&:hover,
@@ -41,184 +29,13 @@
 			display: flex;
 			align-items: center;
 			overflow: hidden;
-			font-size: var( --font-size-small );
 			white-space: nowrap;
 			pointer-events: none;
-
-			// HACK: Target mobile Safari only to prevent auto zooming the input field
-			@supports (-webkit-touch-callout: none) {
-				font-size: 1rem;
-			}
 
 			&-query {
 				color: var( --color-emphasized );
 			}
 		}
-	}
-
-	&-item {
-		&-group {
-			&-list {
-				margin: 0;
-				list-style: none;
-			}
-
-			// FIXME: Use a generic attribute
-			&[ data-mw-citizen-typeahead-group='action' ] .citizen-typeahead-item-group-list {
-				display: flex;
-				gap: var( --space-xxs );
-				padding-right: var( --space-sm );
-				padding-left: var( --space-sm );
-				margin-top: var( --space-xs );
-				margin-bottom: var( --space-xs );
-				overflow-x: auto;
-			}
-		}
-	}
-
-	&__item {
-		&--active {
-			background-color: var( --background-color-button-quiet--hover );
-		}
-
-		&--hidden {
-			display: none;
-		}
-
-		&-chip {
-			white-space: nowrap;
-			border-radius: var( --border-radius-medium );
-
-			.citizen-typeahead {
-				&__content {
-					padding: var( --space-xs ) var( --space-sm );
-					margin: 0;
-					border: var( --border-width-base ) solid var( --border-color-base );
-					border-radius: var( --border-radius-medium );
-				}
-
-				&__thumbnail {
-					width: 1rem;
-					height: 1rem;
-				}
-			}
-		}
-
-		&-sm {
-			font-size: var( --font-size-small );
-
-			.citizen-typeahead {
-				&__content {
-					padding: var( --space-sm ) 0;
-				}
-
-				&__thumbnail {
-					height: var( --size-icon );
-					background-color: transparent;
-
-					&.citizen-ui-icon {
-						width: var( --size-icon );
-					}
-				}
-			}
-		}
-
-		&-md {
-			.citizen-typeahead {
-				&__thumbnail {
-					background-color: #eaecf0;
-					background-position: center;
-					background-size: cover;
-					border-radius: var( --border-radius-medium );
-
-					&.citizen-ui-icon {
-						width: 100%;
-						height: 60px;
-						background-color: var( --color-surface-3 );
-
-						.citizen-typeahead &::before {
-							background-size: 20px;
-						}
-					}
-				}
-			}
-		}
-
-		&-lg {
-			.citizen-typeahead {
-				&__content {
-					flex-direction: column;
-					padding: var( --space-xl ) 0;
-					text-align: center;
-				}
-
-				&__thumbnail {
-					margin-bottom: var( --space-sm );
-				}
-			}
-		}
-
-		&-sm,
-		&-md {
-			.citizen-typeahead {
-				&__thumbnail {
-					margin-right: var( --space-sm );
-				}
-
-				&__text {
-					white-space: nowrap;
-				}
-			}
-		}
-
-		&-md,
-		&-lg {
-			.citizen-typeahead {
-				&__title {
-					font-weight: var( --font-weight-semibold );
-				}
-
-				&__description {
-					margin-top: 0.1rem;
-				}
-			}
-		}
-	}
-
-	&__content {
-		display: flex;
-		align-items: center;
-		padding: var( --space-xs ) 0;
-		margin: 0 var( --space-sm );
-		color: var( --color-base );
-	}
-
-	&__thumbnail {
-		flex-shrink: 0;
-		width: 100%;
-		max-width: 60px;
-		height: 60px;
-		overflow: hidden;
-
-		// Needed the specificity, we should refactor this
-		.citizen-typeahead &.citizen-ui-icon::before {
-			background-size: contain;
-		}
-	}
-
-	&__text {
-		flex-grow: 1;
-		overflow: hidden;
-	}
-
-	&__header {
-		display: flex;
-		justify-content: space-between;
-	}
-
-	&__title {
-		flex-shrink: 0;
-		color: var( --color-emphasized );
 	}
 
 	&__highlight {
@@ -231,66 +48,12 @@
 		color: var( --color-emphasized );
 	}
 
-	&__label {
-		--size-icon: 0.8125rem;
-		display: flex;
-		gap: var( --space-xxs );
-		margin-left: var( --space-xs );
-		font-size: var( --font-size-x-small );
-		color: var( --color-base );
-
-		.citizen-ui-icon {
-			margin-right: var( --space-xxs );
-		}
-	}
-
 	&__labelItem {
 		display: flex;
+		gap: var( --space-xxs );
 		align-items: center;
-	}
-
-	&__description {
 		font-size: var( --font-size-x-small );
 		color: var( --color-subtle );
-	}
-
-	&__title,
-	&__description {
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
-
-	&__actions {
-		position: absolute;
-		right: var( --space-sm );
-	}
-
-	&__keyboard {
-		display: none;
-		padding: 0 8px;
-		background-color: var( --color-surface-1 );
-		border-radius: var( --border-radius-base );
-	}
-}
-
-.citizen-search__card:has( .citizen-typeahead ) {
-	border-bottom-color: transparent;
-	border-bottom-right-radius: 0;
-	border-bottom-left-radius: 0;
-
-	.citizen-typeahead {
-		border-top-color: transparent;
-	}
-}
-
-// HACK: This is as close as we can to detect whether there is a keyboard in CSS
-@media ( hover: hover ) and ( pointer: fine ) {
-	.citizen-typeahead {
-		&__item--active {
-			.citizen-typeahead__keyboard {
-				display: block;
-			}
-		}
 	}
 }
 

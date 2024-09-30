@@ -1,33 +1,48 @@
-@width-search-bar: 640px;
+@width-search-bar: 800px;
+@position-offset-y-desktop: 3.5rem; /* Sync with search button position */
 
 .citizen-search {
 	--width-search-bar: @width-search-bar;
 	--height-search-bar: 2.75rem;
 
+	@media ( min-width: @min-width-breakpoint-desktop ) {
+		--height-search-bar: 3rem;
+	}
+
 	.citizen-menu__card {
-		--size-icon: var( --height-search-bar );
+		--size-icon: 1rem;
 		position: fixed;
 		top: 0;
 		right: 0;
 		left: 0;
 		width: var( --width-search-bar );
 		max-width: ~'calc(100vw - var( --padding-page ) )';
-		height: var( --height-search-bar );
+		max-height: var( --header-card-maxheight );
 		margin-right: auto;
 		margin-left: auto;
-		overflow: initial;
+		overflow-y: auto;
+		overscroll-behavior: contain;
 		transform-origin: center var( --transform-origin-offset-start );
 		contain: none;
 
-		.citizen-ui-icon {
-			&::before {
-				background-size: 1rem;
-			}
+		@media ( min-width: @min-width-breakpoint-desktop ) {
+			top: @position-offset-y-desktop;
+			max-height: ~'calc( 100vh - ( var( --space-xs ) + @{position-offset-y-desktop} ) * 2 )';
+			overflow-y: auto;
 		}
 	}
 
 	.citizen-dropdown-details[ open ] + .citizen-menu__card > .citizen-search__form {
 		transition: none; /* Do not animate typeahead since it looks weird */
+	}
+
+	&__formButton,
+	&__formIcon {
+		display: grid;
+		place-content: center;
+		/* Sync with left icons (--size-icon + --space-sm * 2) and typeahead */
+		width: ~'calc( 1.25rem + var( --space-sm ) * 2 )';
+		height: var( --height-search-bar );
 	}
 
 	&__formButton {
@@ -74,8 +89,28 @@
 		}
 	}
 
+	&__form,
+	&__footer {
+		position: sticky;
+		z-index: @z-index-stacking-1;
+		background-color: inherit;
+	}
+
 	&__form {
+		top: 0;
 		display: flex;
+		height: 100%;
+		overflow: hidden;
+		font-size: var( --font-size-small );
+
+		// HACK: Target mobile Safari only to prevent auto zooming the input field
+		@supports (-webkit-touch-callout: none) {
+			font-size: 1rem;
+		}
+
+		@media ( min-width: @min-width-breakpoint-desktop ) {
+			font-size: var( --font-size-medium );
+		}
 
 		/**
 		 * Loading indicator for searchbox
@@ -90,15 +125,10 @@
 	#searchInput {
 		flex-grow: 1;
 		padding: 0;
-		font-size: var( --font-size-small );
+		font-size: inherit;
 		appearance: none;
 		background: transparent; // Cancel default background
 		border: 0; // Cancel default border
-
-		// HACK: Target mobile Safari only to prevent auto zooming the input field
-		@supports (-webkit-touch-callout: none) {
-			font-size: 1rem;
-		}
 
 		&:focus {
 			outline: 0;
@@ -110,6 +140,28 @@
 		// Remove browser native clear all button in search field
 		&::-webkit-search-cancel-button {
 			-webkit-appearance: none;
+		}
+	}
+
+	&__footer {
+		bottom: 0;
+		display: flex;
+		gap: var( --space-lg );
+		align-items: center;
+		justify-content: space-between;
+		min-height: 2.5rem;
+		padding: 0 var( --space-md );
+		overflow: hidden;
+		font-size: var( --font-size-x-small );
+		color: var( --color-subtle );
+		white-space: nowrap;
+		border-top: 1px solid var( --border-color-base );
+
+		&-start,
+		&-end {
+			display: flex;
+			gap: var( --space-md );
+			align-items: center;
 		}
 	}
 }

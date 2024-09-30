@@ -1,15 +1,20 @@
-const PREFIX = 'citizen-typeahead';
 const SEARCH_LOADING_CLASS = 'citizen-loading';
 
 // Config object from getCitizenSearchResourceLoaderConfig()
 const config = require( './config.json' );
 
-const htmlHelper = require( './htmlHelper.js' )();
 const searchPresults = require( './searchPresults.js' )();
 const searchClient = require( './searchClient.js' )( config );
 const searchHistory = require( './searchHistory.js' )( config );
 const searchResults = require( './searchResults.js' )();
 const searchQuery = require( './searchQuery.js' )();
+
+const templateTypeaheadElement = require( './templates/TypeaheadElement.mustache' );
+const templateTypeaheadPlaceholder = require( './templates/TypeaheadPlaceholder.mustache' );
+const templateTypeaheadList = require( './templates/TypeaheadList.mustache' );
+const templateTypeaheadListItem = require( './templates/TypeaheadListItem.mustache' );
+
+const compiledTemplates = {};
 
 const typeahead = {
 	/** @type {HTMLElement | undefined} */
@@ -22,7 +27,6 @@ const typeahead = {
 			const typeaheadFormElement = formEl;
 			this.element = typeaheadFormElement;
 			typeaheadFormElement.setAttribute( 'aria-owns', typeahead.element.id );
-			typeaheadFormElement.appendChild( typeahead.element );
 		},
 		setLoadingState: function ( state ) {
 			this.element.classList.toggle( SEARCH_LOADING_CLASS, state );
@@ -111,19 +115,16 @@ const typeahead = {
 			}
 
 			/* Enter to click on the active item */
-			if ( typeahead.items.elements[ typeahead.items.index ] ) {
-				const link = typeahead.items.elements[ typeahead.items.index ].querySelector( `.${ PREFIX }__content` );
-				if ( event.key === 'Enter' && link instanceof HTMLAnchorElement ) {
-					event.preventDefault();
-					link.click();
-				}
+			const link = typeahead.items.elements[ typeahead.items.index ];
+			if ( event.key === 'Enter' && link && link instanceof HTMLAnchorElement ) {
+				event.preventDefault();
+				link.click();
 			}
 		}
 	},
 	items: {
 		/** @type {NodeList | undefined} */
 		elements: undefined,
-		groupElements: undefined,
 		index: -1,
 		max: 0,
 		setMax: function ( x ) {
@@ -156,12 +157,12 @@ const typeahead = {
 		toggle: function ( item ) {
 			this.elements.forEach( ( element, index ) => {
 				if ( item !== element ) {
-					element.classList.remove( 'citizen-typeahead__item--active' );
+					delete element.dataset.mwTypeaheadSelected;
 				} else {
-					if ( item.classList.contains( 'citizen-typeahead__item--active' ) ) {
-						item.classList.remove( 'citizen-typeahead__item--active' );
+					if ( item.dataset.mwTypeaheadSelected ) {
+						delete item.dataset.mwTypeaheadSelected;
 					} else {
-						item.classList.add( 'citizen-typeahead__item--active' );
+						item.dataset.mwTypeaheadSelected = '';
 						typeahead.input.element.setAttribute( 'aria-activedescendant', item.id );
 						this.setIndex( index );
 					}
@@ -181,38 +182,9 @@ const typeahead = {
 		},
 		set: function () {
 			const typeaheadElement = typeahead.element;
-			this.groupElements = typeaheadElement.querySelectorAll( '.citizen-typeahead-item-group' );
-			this.elements = typeaheadElement.querySelectorAll( '.citizen-typeahead__item[role="option"]' );
+			this.elements = typeaheadElement.querySelectorAll( '.citizen-typeahead-group[data-mw-typeahead-keyboard-navigation] .citizen-typeahead-list-item-link' );
 			this.bindMouseHoverEvent();
 			this.setMax( this.elements.length );
-		},
-		clear: function () {
-			if ( !this.elements ) {
-				return;
-			}
-			this.groupElements.forEach( ( element ) => {
-				element.remove();
-			} );
-			this.elements = undefined;
-		}
-	},
-	suggestions: {
-		/** @type {NodeList | undefined} */
-		elements: undefined,
-		set: function () {
-			this.elements = typeahead.element.querySelectorAll( '.citizen-typeahead__item-page' );
-		},
-		/* Remove all existing suggestions from typeahead */
-		clear: function () {
-			if ( !this.elements ) {
-				return;
-			}
-
-			this.set();
-			typeahead.input.element.setAttribute( 'aria-activedescendant', '' );
-			typeahead.items.clearIndex();
-			// Remove loading animation
-			typeahead.form.setLoadingState( false );
 		}
 	},
 	onBlur: function ( event ) {
@@ -237,17 +209,28 @@ const typeahead = {
 	onClick: function ( event ) {
 		// Extra safety so closest won't tranverse out of the typeahead
 		if ( typeahead.element.contains( event.target ) ) {
-			const item = event.target.closest( '.citizen-typeahead__item' );
-			if ( item instanceof HTMLElement ) {
-				let historyLabel;
-				// User click on a suggestion -> save the matched title > title
-				if ( item.classList.contains( 'citizen-typeahead__item-page' ) ) {
-					historyLabel = item.querySelector( '.citizen-typeahead__label' ).innerText || item.querySelector( '.citizen-typeahead__title' ).innerText;
+			const link = event.target.closest( '.citizen-typeahead-list-item-link' );
+			// Early exit if target is not a link
+			if ( !link ) {
+				return;
+			}
+
+			const group = event.target.closest( '.citizen-typeahead-group' );
+
+			// Save to history on click
+			const historyType = group.dataset.mwTypeaheadHistoryValue;
+			if ( historyType ) {
+				let historyText;
+				if ( historyType === 'query' ) {
+					historyText = searchQuery.value;
 				} else {
-					historyLabel = searchQuery.value;
+					const historyTextEl = link.querySelector( `.citizen-typeahead-list-item-${ historyType }` );
+					if ( historyTextEl && historyTextEl.innerText ) {
+						historyText = historyTextEl.innerText;
+					}
 				}
-				if ( historyLabel ) {
-					searchHistory.add( historyLabel );
+				if ( historyText ) {
+					searchHistory.add( historyText );
 				}
 			}
 		}
@@ -311,18 +294,39 @@ const typeahead = {
 			} );
 	},
 	init: function ( formEl, inputEl ) {
-		const template = mw.template.get( 'skins.citizen.search', 'resources/skins.citizen.search/templates/typeahead.mustache' );
+		// Compile Mustache templates
+		// TODO: Find better way to handle this
+		this.mustacheCompiler = mw.template.getCompiler( 'mustache' );
+		Object.assign( compiledTemplates, {
+			TypeaheadElement: this.mustacheCompiler.compile( templateTypeaheadElement ),
+			TypeaheadPlaceholder: this.mustacheCompiler.compile( templateTypeaheadPlaceholder ),
+			TypeaheadList: this.mustacheCompiler.compile( templateTypeaheadList ),
+			TypeaheadListItem: this.mustacheCompiler.compile( templateTypeaheadListItem )
+		} );
+
 		const data = {
-			'msg-searchsuggest-search': mw.message( 'searchsuggest-search' ).text(),
-			'msg-citizen-search-empty-desc': mw.message( 'citizen-search-empty-desc' ).text()
+			'data-placeholder': { hidden: true },
+			'array-lists': [
+				{ type: 'action', class: 'citizen-typeahead-group--chips', hidden: true, historyValue: 'query' },
+				{ type: 'history', hidden: true, keyboardNavigation: true },
+				{ type: 'page', hidden: true, keyboardNavigation: true, historyValue: 'title' }
+			]
 		};
-		this.element = template.render( data ).get()[ 1 ];
+		const partials = {
+			TypeaheadPlaceholder: compiledTemplates.TypeaheadPlaceholder,
+			TypeaheadList: compiledTemplates.TypeaheadList
+		};
+		this.element = compiledTemplates.TypeaheadElement.render( data, partials ).get()[ 0 ];
+
+		formEl.after( this.element );
+
 		this.form.init( formEl );
 		this.input.init( inputEl );
 
 		searchHistory.init();
+		searchResults.init();
 
-		searchPresults.render( this.element );
+		searchPresults.render( compiledTemplates );
 		// Init the value in case of undef error
 		typeahead.items.set();
 
@@ -342,19 +346,28 @@ async function getSuggestions() {
 	const typeaheadInputElement = typeahead.input.element;
 
 	const renderSuggestions = ( results ) => {
-		const fragment = document.createDocumentFragment();
+		const groupEl = document.getElementById( 'citizen-typeahead-group-page' );
+		const listEl = document.getElementById( 'citizen-typeahead-list-page' );
+		const placeholderEl = document.getElementById( 'citizen-typeahead-placeholder' );
+
 		if ( results.length > 0 ) {
-			fragment.append( searchResults.getResultsHTML( results, searchQuery.valueHtml ) );
+			// TODO: This should be a generic method
+			listEl.outerHTML = searchResults.getResultsHTML(
+				results,
+				searchQuery.valueHtml,
+				compiledTemplates
+			);
+			groupEl.hidden = false;
+			placeholderEl.innerHTML = '';
+			placeholderEl.hidden = true;
 		} else {
 			// Update placeholder with no result content
-			fragment.append( searchResults.getPlaceholderHTML( searchQuery.valueHtml ) );
+			listEl.innerHTML = '';
+			groupEl.hidden = true;
+			placeholderEl.innerHTML = searchResults.getPlaceholderHTML( searchQuery.valueHtml, compiledTemplates );
+			placeholderEl.hidden = false;
 		}
 
-		htmlHelper.removeItemGroup( typeahead.element, 'suggestion' );
-		typeahead.element.querySelector( '.citizen-typeahead__item-placeholder' )?.remove();
-		typeahead.element.append( fragment );
-		typeahead.suggestions.set();
-		// In case if somehow typeahead.suggestions.clear() didn't clear the loading animation
 		typeahead.form.setLoadingState( false );
 		typeahead.items.set();
 	};
@@ -372,7 +385,6 @@ async function getSuggestions() {
 
 	try {
 		const response = await fetch;
-		typeahead.suggestions.clear();
 		renderSuggestions( response.results );
 	} catch ( error ) {
 		typeahead.form.setLoadingState( false );
@@ -390,16 +402,18 @@ async function getSuggestions() {
  *
  */
 function updateTypeaheadItems() {
+	typeahead.input.element.setAttribute( 'aria-activedescendant', '' );
+	typeahead.items.clearIndex();
+
 	if ( searchQuery.isValid ) {
-		searchPresults.clear( typeahead.element );
-		searchResults.render( typeahead.element, searchQuery );
+		searchPresults.clear();
+		searchResults.render( searchQuery, compiledTemplates );
 		getSuggestions();
 	} else {
-		searchResults.clear( typeahead.element );
-		typeahead.items.clear();
-		searchPresults.render( typeahead.element );
-		typeahead.items.set();
+		searchResults.clear();
+		searchPresults.render( compiledTemplates );
 	}
+	typeahead.items.set();
 }
 
 /**

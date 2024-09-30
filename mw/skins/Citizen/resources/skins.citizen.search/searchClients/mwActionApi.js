@@ -3,6 +3,15 @@
 const fetchJson = require( '../fetch.js' );
 const urlGenerator = require( '../urlGenerator.js' );
 
+// Based on mediawiki.searchSuggest
+// eslint-disable-next-line array-callback-return
+const searchNS = Object.entries( mw.config.get( 'wgFormattedNamespaces' ) ).map( ( [ nsID ] ) => {
+	if ( nsID >= 0 && mw.user.options.get( 'searchNs' + nsID ) ) {
+		// Cast string key to number
+		return Number( nsID );
+	}
+} ).filter( ( item ) => item !== undefined );
+
 /**
  * @typedef {Object} ActionResponse
  * @property {ActionQuery[]} query
@@ -151,6 +160,7 @@ function mwActionApiSearchClient( config ) {
 			const descriptionSource = config.wgCitizenSearchDescriptionSource;
 
 			const searchApiUrl = config.wgScriptPath + '/api.php';
+
 			const params = {
 				format: 'json',
 				formatversion: '2',
@@ -159,6 +169,7 @@ function mwActionApiSearchClient( config ) {
 				maxage: cacheExpiry,
 				generator: 'prefixsearch',
 				gpssearch: q,
+				gpsnamespace: searchNS,
 				gpslimit: limit.toString(),
 				redirects: '',
 				prop: 'pageprops|pageimages',
