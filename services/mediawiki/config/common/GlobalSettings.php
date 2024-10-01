@@ -77,6 +77,15 @@ if ($xvUseCaptcha) {
 	}
 }
 
+// Images
+if ($xvUseSelfHostedImages) {
+	$wgUploadPath = $wgServer . '/images';
+} else if (str_ends_with($xvHttpHost, 'w.xvnet0.eu.org')) {
+	$wgUploadPath = 'https://uploads.w.xvnet0.eu.org/images/' . $xvWikiID;
+} else {
+	$wgUploadPath = 'https://uploads.w.xvnet.eu.org/images/' . $xvWikiID;
+}
+
 if ($xvUseEmailConfirmed) {
 	$wgAutopromote['emailconfirmed'] = APCOND_EMAILCONFIRMED;
 	$wgImplicitGroups[] = 'emailconfirmed';

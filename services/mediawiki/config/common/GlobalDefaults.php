@@ -252,9 +252,7 @@ $wgAllowCopyUploads = true;
 $wgCopyUploadsFromSpecialUpload = true;
 xvGrantPermission('upload_by_url', ['sysop', 'staff', 'autoconfirmed']);
 $wgUploadDirectory = "/var/lib/mediawiki/images/$xvWikiID";
-$wgUploadPath = 'https://' .
-	(str_ends_with($xvHttpHost, 'w.xvnet0.eu.org') ? 'uploads.w.xvnet0.eu.org' : 'uploads.w.xvnet.eu.org')
-	. '/images/' . $xvWikiID;
+$xvUseSelfHostedImages = false;
 $wgHashedUploadDirectory = true;
 $wgSVGConverter = 'ImageMagick';
 $wgFileExtensions = array_merge($wgFileExtensions, [
