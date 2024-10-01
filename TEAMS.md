@@ -248,7 +248,7 @@ Accountability: The administrative aspects of grant applications from start to f
 
 Team members:
 
-- [avobs](https://codeberg.org/avobs)
+- [avobs](https://codeberg.org/avobs) ([September 2024 Agreement](https://codeberg.org/forgejo/governance/issues/179))
 
 
 ## [GitHub organisation](https://github.com/forgejo) owners as of 2024-01-09
