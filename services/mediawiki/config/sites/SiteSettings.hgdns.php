@@ -1,6 +1,6 @@
 <?php
 $wgSitename = "幻光电脑社";
-$wgMetaNamespace = "Project";
+$wgMetaNamespace = "FLCC";
 $wgLocalInterwikis[] = 'hgdns';
 $xvCentralized = false;
 $xvUseSelfHostedImages = true;
@@ -16,6 +16,19 @@ $wgDefaultUserOptions['date'] = 'ISO 8601';
 $wgRightsUrl = "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt";
 $wgRightsText = "CC0 1.0公有领域";
 $wgRightsIcon = "$wgResourceBasePath/resources/assets/licenses/cc-0.png";
+
+// Logo
+$wgLogos = [
+	'svg' => '/images/2/2a/FLCC_Logo.svg',
+	'icon' => '/images/b/b1/FLCC_Logo_512px.png',
+	'wordmark' => [
+		'1x' => '/images/b/ba/FLCC_Wordmark.svg',
+		'src' => '/images/a/ac/FLCC_Wordmark.png',
+		'width' => 124,
+		'height' => 32,
+	],
+];
+$wgFavicon = '/images/9/95/FLCC_Logo.ico';
 
 // Default User Options
 $wgDefaultUserOptions['watchcreations'] = 0;
