@@ -6,6 +6,11 @@
 		root /var/lib/mediawiki/sitemap/{args[0]}
 		file_server
 	}
+	handle /images/* {
+		uri strip_prefix /images
+		root /var/lib/mediawiki/images/{args[0]}
+		file_server
+	}
 	handle {
 		root * /opt/mediawiki
 		php_fastcgi unix//var/run/mediawiki/php-fpm.sock {
