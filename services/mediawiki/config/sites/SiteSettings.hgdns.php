@@ -3,6 +3,7 @@ $wgSitename = "幻光电脑社";
 $wgMetaNamespace = "Project";
 $wgLocalInterwikis[] = 'hgdns';
 $xvCentralized = false;
+$xvUseSelfHostedImages = true;
 
 // Localisation
 $wgLanguageCode = 'zh-hans';
