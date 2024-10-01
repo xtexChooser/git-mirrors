@@ -5,7 +5,7 @@ set -euo pipefail
 echo "== MediaWiki cron jobs starting @ $(date -u)"
 
 echo "=== Collecting wikis"
-readarray -t wikis < <(find /srv/atremis/services/mediawiki/config -name 'LocalSettings.*.php' -printf '%f\n' | cut -d'.' -f2)
+readarray -t wikis < <(jq -r 'keys[]' /srv/atremis/services/mediawiki/config/sites.json)
 
 for wiki in "${wikis[@]}"; do
 	echo "=== Processing wiki: $wiki"
