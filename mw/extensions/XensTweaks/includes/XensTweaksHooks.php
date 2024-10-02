@@ -115,7 +115,8 @@ class XensTweaksHooks {
 	 * Prevent infinite looping of main page requests with cache parameters.
 	 */
 	public static function onTestCanonicalRedirect( $request, $title, $output ) {
-		if ( $title->isMainPage() && strpos( $request->getRequestURL(), '/?' ) === 0 ) {
+		global $wgScriptPath;
+		if ( $title->isMainPage() && str_starts_with( $request->getRequestURL(), $wgScriptPath . '/?' ) ) {
 			return false;
 		}
 	}
@@ -126,10 +127,10 @@ class XensTweaksHooks {
 	 * because $wgMainPageIsDomainRoot doesn't apply to the internal URL, which is used for purging.
 	 */
 	public static function onGetLocalURLInternal( $title, &$url, $query ) {
-		global $wgArticlePath, $wgScript, $wgMainPageIsDomainRoot;
+		global $wgArticlePath, $wgScript, $wgMainPageIsDomainRoot, $wgScriptPath;
 		$dbkey = wfUrlencode( $title->getPrefixedDBkey() );
-		if ( $title->isMainPage() && $wgMainPageIsDomainRoot ) {
-			$url = wfAppendQuery( '/', $query );
+		if ( $wgMainPageIsDomainRoot && $title->isMainPage() ) {
+			$url = wfAppendQuery( $wgScriptPath . '/', $query );
 		} elseif ( $url == "{$wgScript}?title={$dbkey}&{$query}" ) {
 			$url = wfAppendQuery( str_replace( '$1', $dbkey, $wgArticlePath ), $query );
 		}
