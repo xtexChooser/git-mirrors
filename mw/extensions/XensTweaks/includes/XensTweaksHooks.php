@@ -100,6 +100,17 @@ class XensTweaksHooks {
 		}
 		/* Open Graph protocol */
 		$out->addMeta( 'og:url', $title->getFullURL() );
+
+		// Baidu site verification
+		global $wgXensTweaksMetaSiteVerifications;
+		if ( $title->isMainPage() ) {
+			if ( isset( $wgXensTweaksMetaSiteVerifications['360-site'] ) ) {
+				$out->addMeta( '360-site-verification', htmlspecialchars( $wgXensTweaksMetaSiteVerifications['360-site'] ) );
+			}
+			if ( isset( $wgXensTweaksMetaSiteVerifications['baidu'] ) ) {
+				$out->addMeta( 'baidu-site-verification', htmlspecialchars( $wgXensTweaksMetaSiteVerifications['baidu'] ) );
+			}
+		}
 	}
 
 	// Cache OpenSearch for 600 seconds. (10 minutes)

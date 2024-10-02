@@ -48,6 +48,9 @@
 		},
 		"ProtectSiteInterface": {
 			"value": true
+		},
+		"MetaSiteVerifications": {
+			"value": {}
 		}
 	},
 	"AvailableRights": [
