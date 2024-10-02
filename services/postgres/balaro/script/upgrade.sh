@@ -10,6 +10,7 @@ read -r newversion
 
 mkdir -p /var/lib/postgresql/balaro{,/newdata}
 sudo dinitctl stop balaro || true
+podman image pull codeberg.org/xens/postgres:"$oldversion"
 
 time \
 	podman run -it --rm --user "root:root" \
