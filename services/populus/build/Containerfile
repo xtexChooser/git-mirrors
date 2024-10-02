@@ -7,10 +7,10 @@ WORKDIR /bld
 # openssl-dev perl make: for vendored openssl
 # curl: for utoipa-swagger-ui
 # cmake: for ruma-common
-# rust-bindgen: for aws-lc-sys
+# rust-bindgen, clang: for aws-lc-sys
 RUN set -euxo pipefail; \
 	apk add --no-cache build-base rust cargo musl-dev just nodejs npm bash \
-		openssl-dev perl make curl sd cmake rust-bindgen; \
+		openssl-dev perl make curl sd cmake rust-bindgen clang; \
 	export PUB_URL="127.0.0.1:8443"; \
 	export DATABASE_URL="postgresql://rauthy:123SuperSafe@prepare-database/rauthy"; \
 	cd frontend; \
