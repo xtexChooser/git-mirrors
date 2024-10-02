@@ -11,8 +11,10 @@ RUN set -euxo pipefail; \
 		openssl-dev perl make curl sd; \
 	export PUB_URL="127.0.0.1:8443"; \
 	export DATABASE_URL="postgresql://rauthy:123SuperSafe@prepare-database/rauthy"; \
-	just build-ui; \
+	cd frontend; \
+	npm install; \
 	cd ..; \
+	just build-ui; \
 	cargo build \
 		--release \
 		--features default,postgres;

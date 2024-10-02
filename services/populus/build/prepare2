@@ -3,8 +3,7 @@ set -eux
 
 apk add --no-cache \
 	build-base rust cargo musl-dev postgresql-client
-# TODO: unpin version after https://github.com/launchbadge/sqlx/pull/3459
-cargo install sqlx-cli@0.8.0 --no-default-features --features rustls,postgres
+cargo install sqlx-cli --no-default-features --features rustls,postgres
 export PATH="$HOME/.cargo/bin:$PATH"
 cd populus-src
 
