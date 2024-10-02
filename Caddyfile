@@ -137,14 +137,6 @@ object-src 'none';
 	handle /tea {
 		teapot
 	}
-
-	redir /hgdnszx /hgdnszx/ temporary
-	handle_path /hgdnszx/* {
-		reverse_proxy http://127.0.0.1:33459 {
-			trusted_proxies private_ranges
-			header_up X-Forwarded-For {http.request.header.X-Forwarded-For}
-		}
-	}
 }
 
 http://blog.xtexx.eu.org http://xtexblog.exozy.me {
