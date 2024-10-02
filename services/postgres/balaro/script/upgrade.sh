@@ -1,38 +1,35 @@
 #!/usr/bin/env bash
 
-set -e
+set -eo pipefail
 
 echo -n "Enter old version: "
 read -r oldversion
 
-echo -n "Enter new version: "
-read -r newversion
+set -ux
 
-mkdir -p /var/lib/postgresql/balaro{,/newdata}
-sudo dinitctl stop balaro || true
+dinitctl stop balaro
+mkdir -vp /var/lib/postgresql/balaroold
+mv -v /var/lib/postgresql/balaro{,old}/data
+cp -v /var/lib/postgresql/balaro/* /var/lib/postgresql/balaroold/
+
 podman image pull codeberg.org/xens/postgres:"$oldversion"
+podman run -it -d --user "root:root" \
+	--name balaroold \
+	-v /var/lib/postgresql/balaroold:/var/lib/postgresql \
+	-v /var/lib/postgresql/balaroold/data:/var/lib/postgresql/data \
+	--publish=5632:5432/tcp \
+	codeberg.org/xens/postgres:"$oldversion"
 
-time \
-	podman run -it --rm --user "root:root" \
-	-v /var/lib/postgresql/balaro:/var/lib/postgresql \
-	-v /var/lib/postgresql/balaro/data:/var/lib/postgresql/data \
-	--mount=type=image,source=codeberg.org/xens/postgres:"$oldversion",destination=/old \
-	--entrypoint pg_upgrade \
-	codeberg.org/xens/postgres:"$newversion" \
-	-b /old/usr/local/bin/ \
-	-B /usr/local/bin/ \
-	-d /var/lib/postgresql/balaro \
-	-D /var/lib/postgresql/balaro/newdata
+time atre svc postgres/balaro initdb
+dinitctl start balaro
 
-echo '==== Moving data to olddata'
-mv /var/lib/postgresql/balaro/{data,olddata}
-echo '==== Cleaning newdata'
-rm -rf /var/lib/postgresql/balaro/newdata/{postgres.conf,postgresql.conf,pg_ident.conf,pg_hba.conf}
-echo '==== Moving newdata to data'
-mv /var/lib/postgresql/balaro/{newdata,data}
-echo '==== Updating PG_VERSION'
-cp /var/lib/postgresql/balaro/data/PG_VERSION /var/lib/postgresql/balaro/PG_VERSION
+time (
+	podman exec -it balaroold pg_dumpall | podman exec -it balaro psql -d postgres -p 5433
+)
+dinitctl stop balaro
+podman stop balaroold
 
 echo '====== pg_upgrade finished'
 echo 'After confirming, run the following code to restart PG:'
 echo '   sudo dinitctl start balaro'
+echo '   sudo rm -rf /var/lib/postgresql/balaroold'
