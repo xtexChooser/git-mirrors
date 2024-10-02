@@ -4,7 +4,7 @@ members = ["src/*"]
 exclude = ["rauthy-client"]
 
 [workspace.package]
-version = "0.25.0"
+version = "0.26.0"
 edition = "2021"
 authors = ["Sebastian Dobe <sebastiandobe@mailbox.org>"]
 license = "Apache-2.0"
@@ -20,6 +20,10 @@ lto = true
 strip = false
 panic = "unwind"
 
+[patch.crates-io]
+#hiqlite = { git = "https://github.com/sebadob/hiqlite.git", package = "hiqlite" }
+#hiqlite = { path = "../hiqlite/hiqlite", package = "hiqlite" }
+
 [workspace.dependencies]
 accept-language = "3"
 actix = "0.13"
@@ -28,7 +32,7 @@ actix-service = "2"
 actix-web = { version = "4", features = ["rustls-0_23"] }
 actix-web-actors = "4"
 actix-web-lab = "0.22"
-actix-web-prom = "0.8.0"
+actix-web-prom = "0.9.0"
 actix-web-validator = "6"
 anyhow = "1"
 argon2 = { version = "0.5", features = ["std", "zeroize"] }
@@ -40,7 +44,7 @@ bincode = "1"
 cached = "0.53.1"
 chacha20poly1305 = { version = "0.10", features = ["std"] }
 chrono = { version = "0.4", default-features = false, features = ["clock", "serde", "std"] }
-cidr = "0.2.2"
+cidr = "0.3.0"
 cron = "0.12"
 cryptr = { version = "0.5.1", features = ["s3", "streaming"] }
 css-color = "0.2"
@@ -52,7 +56,7 @@ futures = "0.3"
 futures-util = "0.3"
 gethostname = "0.5.0"
 hex = { version = "0.4", features = ["serde"] }
-#hiqlite = { git = "https://github.com/sebadob/hiqlite" }
+hiqlite = { version = "0.2.1", default-features = false, features = ["cache", "listen_notify"] }
 hmac-sha256 = { version = "1.1.7", features = ["traits010"] }
 hmac-sha512 = { version = "1.1.5", features = ["traits010", "sha384"] }
 image = { version = "0.25.1", default-features = false, features = [
@@ -67,16 +71,14 @@ lettre = { version = "0.11", default-features = false, features = [
 mime = "0.3.17"
 mime_guess = "2"
 num_cpus = "1"
+num-traits = "0.2.19"
 once_cell = "1.19.0"
-## Add openssl-sys as a direct dependency, so it can be cross compiled to
-## x86_64-unknown-linux-musl using the "vendored" feature below
 openssl = { version = "0.10.64", features = ["vendored"] }
 openssl-sys = { version = "0.9.102", features = ["vendored"] }
 oxiri = "0.2.2"
 prometheus = "0.13.3"
 rand = "0.8"
 rand_core = { version = "0.6", features = ["std"] }
-redhac = "0.10.3"
 regex = "1"
 reqwest = { version = "0.12.3", default-features = false, features = ["json", "rustls-tls"] }
 ring = "0.17"
@@ -84,6 +86,7 @@ rio_api = "0.8.4"
 rio_turtle = "0.8.4"
 rsa = { version = "0.9.3", features = ["serde", "sha2"] }
 ruma = { version = "0.10.1", features = ["client-api-c", "client-ext-client-api", "client-reqwest", "markdown", "rand"] }
+rust-embed = "8.5.0"
 rustls = { version = "0.23", default-features = false, features = ["logging", "std", "tls12", "ring"] }
 rustls-pki-types = "1.4.1"
 rustls-pemfile = "2.1.2"
@@ -92,17 +95,16 @@ serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 serde_json_path = "0.6.7"
 serde_with = { version = "3.8.1", features = ["macros"] }
-spow = "0.3"
-# pinned to 0.8.0 because 0.8.1 has been yanked
-sqlx = { version = "=0.8.0", features = ["macros", "migrate", "postgres", "runtime-tokio", "sqlite", "tls-rustls", "uuid"] }
+spow = { version = "0.4", features = ["server"] }
+sqlx = { version = "0.8.2", features = ["macros", "migrate", "postgres", "runtime-tokio", "sqlite", "tls-rustls", "uuid"] }
+strum = { version = "0.26.3", features = ["derive"] }
 time = { version = "0.3", features = ["formatting", "local-offset", "macros", "parsing", "serde"] }
 tracing = { version = "0.1", features = ["attributes"] }
 tracing-subscriber = { version = "0.3", features = ["env-filter", "tracing"] }
 tokio = { version = "1", features = ["full"] }
 utoipa = { version = "4", features = ["actix_extras", "chrono", "openapi_extensions"] }
-utoipa-swagger-ui = { version = "7.0.1", features = ["actix-web"] }
+utoipa-swagger-ui = { version = "=7.0.1", features = ["actix-web"] }
 uuid = { version = "1", features = ["serde", "v4"] }
-# v0.18 breaks a lot of things - sticking to 0.16 for now
 validator = { version = "0.18", features = ["derive"] }
 webauthn-rs = { version = "0.5", features = [
     "danger-allow-state-serialisation", "danger-credential-internals"

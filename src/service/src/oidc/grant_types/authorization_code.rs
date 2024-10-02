@@ -1,8 +1,9 @@
 use crate::token_set::{
-    AuthCodeFlow, DeviceCodeFlow, DpopFingerprint, TokenNonce, TokenScopes, TokenSet,
+    AuthCodeFlow, AuthTime, DeviceCodeFlow, DpopFingerprint, TokenNonce, TokenScopes, TokenSet,
 };
 use actix_web::http::header::{HeaderName, HeaderValue};
 use actix_web::{web, HttpRequest};
+use chrono::Utc;
 use rauthy_api_types::oidc::TokenRequest;
 use rauthy_common::constants::HEADER_DPOP_NONCE;
 use rauthy_common::utils::{base64_url_encode, real_ip_from_req};
@@ -19,7 +20,10 @@ use std::str::FromStr;
 use time::OffsetDateTime;
 use tracing::warn;
 
-#[tracing::instrument(skip_all, fields(client_id = req_data.client_id, username = req_data.username))]
+#[tracing::instrument(
+    skip_all,
+    fields(client_id = req_data.client_id, username = req_data.username)
+)]
 pub async fn grant_type_authorization_code(
     data: &web::Data<AppState>,
     req: HttpRequest,
@@ -56,11 +60,11 @@ pub async fn grant_type_authorization_code(
     // check for DPoP header
     let mut headers = Vec::new();
     let dpop_fingerprint =
-        if let Some(proof) = DPoPProof::opt_validated_from(data, &req, &header_origin).await? {
+        if let Some(proof) = DPoPProof::opt_validated_from(&req, &header_origin).await? {
             if let Some(nonce) = &proof.claims.nonce {
                 headers.push((
                     HeaderName::from_str(HEADER_DPOP_NONCE).unwrap(),
-                    HeaderValue::from_str(nonce).unwrap(),
+                    HeaderValue::from_str(nonce)?,
                 ));
             };
             Some(DpopFingerprint(proof.jwk_fingerprint()?))
@@ -73,7 +77,7 @@ pub async fn grant_type_authorization_code(
 
     // get the oidc code from the cache
     let idx = req_data.code.as_ref().unwrap().to_owned();
-    let code = match AuthCode::find(data, idx).await? {
+    let code = match AuthCode::find(idx).await? {
         None => {
             warn!(
                 "'auth_code' could not be found inside the cache - Host: {}",
@@ -129,6 +133,7 @@ pub async fn grant_type_authorization_code(
             }
         }
     }
+
     // We will not perform another `redirect_uri` check at this point, like stated in the RFC.
     // It is just unnecessary because of the way Rauthy handles the flow init during GET /authorize.
     //
@@ -144,6 +149,7 @@ pub async fn grant_type_authorization_code(
         &user,
         data,
         &client,
+        AuthTime::given(user.last_login.unwrap_or_else(|| Utc::now().timestamp())),
         dpop_fingerprint,
         code.nonce.clone().map(TokenNonce),
         Some(TokenScopes(code.scopes.join(" "))),
@@ -158,9 +164,9 @@ pub async fn grant_type_authorization_code(
         let mut session = Session::find(data, sid).await?;
 
         session.last_seen = OffsetDateTime::now_utc().unix_timestamp();
-        session.state = SessionState::Auth;
+        session.state = SessionState::Auth.as_str().to_string();
         if let Err(err) = session.validate_user_expiry(&user) {
-            code.delete(data).await?;
+            code.delete().await?;
             return Err(err);
         }
         session.validate_user_expiry(&user)?;
@@ -169,7 +175,7 @@ pub async fn grant_type_authorization_code(
         session.groups = user.groups;
         session.save(data).await?;
     }
-    code.delete(data).await?;
+    code.delete().await?;
 
     // update timestamp if it is a dynamic client
     if client.is_dynamic() {

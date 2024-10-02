@@ -17,6 +17,7 @@ use utoipa::ToSchema;
 
 pub mod api_cookie;
 pub mod app_state;
+pub mod cache;
 pub mod email;
 pub mod entity;
 pub mod events;
@@ -234,6 +235,8 @@ pub struct JwtRefreshClaims {
     pub azp: String,
     pub typ: JwtTokenType,
     pub uid: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub auth_time: Option<i64>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub cnf: Option<JktClaim>,
     #[serde(skip_serializing_if = "Option::is_none")]

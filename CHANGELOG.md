@@ -1,8 +1,150 @@
 # Changelog
 
-## UNRELEASED
+## 0.26.0
+
+### Breaking
+
+#### Deprecated API Routes Removal
+
+The following API routes have been deprecated in the last version and have now been fully removed:
+
+- `/oidc/tokenInfo`
+- `/oidc/rotateJwk`
+
+#### Cache Config
+
+The whole `CACHE` section in the config has been changed:
+
+```
+#####################################
+############## CACHE ################
+#####################################
+
+# Can be set to 'k8s' to try to split off the node id from the hostname
+# when Hiqlite is running as a StatefulSet inside Kubernetes.
+# Will be ignored if `HQL_NODE_ID_FROM=k8s`
+#HQL_NODE_ID_FROM=k8s
+
+# The node id must exist in the nodes and there must always be
+# at least a node with ID 1
+HQL_NODE_ID=1
+
+# All cluster member nodes.
+# To make setting the env var easy, the values are separated by `\s`
+# while nodes are separated by `\n`
+# in the following format:
+#
+# id addr_raft addr_api
+# id addr_raft addr_api
+# id addr_raft addr_api
+#
+# 2 nodes must be separated by 2 `\n`
+HQL_NODES="
+1 localhost:8100 localhost:8200
+"
+
+# If set to `true`, all SQL statements will be logged for debugging
+# purposes.
+# default: false
+#HQL_LOG_STATEMENTS=false
+
+# If given, these keys / certificates will be used to establish
+# TLS connections between nodes.
+#HQL_TLS_RAFT_KEY=tls/key.pem
+#HQL_TLS_RAFT_CERT=tls/cert-chain.pem
+#HQL_TLS_RAFT_DANGER_TLS_NO_VERIFY=true
+
+#HQL_TLS_API_KEY=tls/key.pem
+#HQL_TLS_API_CERT=tls/cert-chain.pem
+#HQL_TLS_API_DANGER_TLS_NO_VERIFY=true
+
+# Secrets for Raft internal authentication as well as for the API.
+# These must be at least 16 characters long and you should provide
+# different ones for both variables.
+HQL_SECRET_RAFT=SuperSecureSecret1337
+HQL_SECRET_API=SuperSecureSecret1337
+
+# You can either parse `ENC_KEYS` and `ENC_KEY_ACTIVE` from the
+# environment with setting this value to `env`, or parse them from
+# a file on disk with `file:path/to/enc/keys/file`
+# default: env
+#HQL_ENC_KEYS_FROM=env
+```
+
+[0919767](https://github.com/sebadob/rauthy/commit/09197670e6491f83a8b739c0f195d4b842abe771)
+
+#### `/auth/v1/health` Response Change
+
+The response for `/auth/v1/health` has been changed.
+
+If you did not care about the response body, there is nothing to do for you. The body itself returns different values
+now:
+
+```rust
+struct HealthResponse {
+    db_healthy: bool,
+    cache_healthy: bool,
+}
+```
+
+[0919767](https://github.com/sebadob/rauthy/commit/09197670e6491f83a8b739c0f195d4b842abe771)
 
 ### Changes
+
+#### ZH-Hans Translations
+
+Translations for `ZH-Hans` have been added to Rauthy. These exist in all places other than the Admin UI, just like the
+existing ones already.
+
+[ec6c2c3](https://github.com/sebadob/rauthy/commit/ec6c2c3bb4e8b41fa0cd2a60ccc4043d051c17a5)  
+[fcba3c7](https://github.com/sebadob/rauthy/commit/fcba3c7cd7bce7e15d911c0f9d7f55f852e7c424)
+
+#### Support for deep-linking client apps like Tauri
+
+Up until v0.25, it was not possible to set the `Allowed Origin` for a client in a way that Rauthy would allow access
+for instance from inside a Tauri app. The reason is that Tauri (and most probably others) do not set an HTTP / HTTPS
+scheme in the `Origin` header, but something like `tauri://`.
+
+Rauthy has now support for such situations with adjusted validation for the Origin values and a new config variable
+to allow specific, additional `Origin` schemes:
+
+```
+# To bring support for applications using deep-linking, you can set custom URL
+# schemes to be accepted when present in the `Origin` header. For instance, a
+# Tauri app would set `tauri://` instead of `https://`.
+#
+# Provide the value as a space separated list of Strings, like for instance:
+# "tauri myapp"
+ADDITIONAL_ALLOWED_ORIGIN_SCHEMES="tauri myapp"
+```
+
+[d52f76c](https://github.com/sebadob/rauthy/commit/d52f76c71b350a08bb67080e620b87bf55d00389)
+
+#### More stable health checks in HA
+
+For HA deployments, the `/health` checks are more stable now.  
+The quorum is also checked, which will detect network segmentations. To achieve this and still make it possible to use
+the health check in situations like Kubernetes rollouts, a delay has been added, which will simply always return `true`
+after a fresh app start. This initial delay make it possible to use the endpoint inside Kubernetes and will not prevent
+from scheduling the other nodes. This solves a chicken-and-egg problem.
+
+You usually do not need to care about it, but this value can of course be configured:
+
+```
+# Defines the time in seconds after which the `/health` endpoint 
+# includes HA quorum checks. The initial delay solves problems 
+# like Kubernetes StatefulSet starts that include the health 
+# endpoint in the scheduling routine. In these cases, the scheduler 
+# will not start other Pods if the first does not become healthy.
+# 
+# This is a chicken-and-egg problem which the delay solves.
+# There is usually no need to adjust this value.
+#
+# default: 30
+#HEALTH_CHECK_DELAY_SECS=30
+```
+
+[5d1ddca](https://github.com/sebadob/rauthy/commit/5d1ddcac2222b77f9a38baf93b44f896f5ba7933)
 
 #### Migration to `ruma`
 
@@ -27,7 +169,55 @@ notifications, you must set a newly introduced config variable:
 #EVENT_MATRIX_SERVER_URL=https://matrix.org
 ```
 
-[]()
+[0b50376](https://github.com/sebadob/rauthy/commit/0b5037610d475e7ad6fc0a8bf3b851330088cab1)
+
+#### Internal Migration from `redhac` to `hiqlite`
+
+The internal cache layer has been migrated from [redhac](https://github.com/sebadob/redhac)
+to [Hiqlite](https://github.com/sebadob/hiqlite).
+
+A few weeks ago, I started rewriting the whole persistence layer from scratch in a separate project. `redhac` is working
+fine, but it has some issues I wanted to get rid of.
+
+- its network layer is way too complicated which makes it very hard to maintain
+- there is no "sync from other nodes" functionality, which is not a problem on its own, but leads to the following
+- for security reasons, the whole cache is invalidated when a node has a temporary network issue
+- it is very sensitive to even short term network issues and leader changes happen too often for my taste
+
+I started the [Hiqlite](https://github.com/sebadob/hiqlite) project some time ago to get rid of these things and have
+additional features. It is outsourced to make it generally usable in other contexts as well.
+
+This first step will also make it possible to only have a single container image in the future without the need to
+decide between Postgres and SQLite via the tag.
+
+[0919767](https://github.com/sebadob/rauthy/commit/09197670e6491f83a8b739c0f195d4b842abe771)
+
+#### Local Development
+
+The way the container images are built, the builder for the images is built and also the whole `justfile` have been
+changed quite a bit. This will not concern you if you are not working with the code.
+
+The way of wrapping and executing everything inside a container, even during local dev, became tedious to maintain,
+especially for different architectures and I wanted to get rid of the burden of maintenance, because it did not provide
+that many benefits. Postgres and Mailcrab will of course still run in containers, but the code itself for backend and
+frontend will be built and executed locally.
+
+The reason I started doing all of this inside containers beforehand was to not need a few additional tool installed
+locally to make everything work, but the high maintenance was not worth it in the end. This change now reduced the
+size of the Rauthy builder image from 2x ~4.5GB down to 1x ~1.9GB, which already is a big improvement. Additionally,
+you don't even need to download the builder image at all when you are not creating a production build, while beforehand
+you always needed the builder image in any case.
+
+To encounter the necessary dev tools installation and first time setup, I instead added a new `just` recipe called
+`setup` which will do everything necessary, as long as you have the prerequisites available (which you needed before
+as well anyway, apart from `npm`). This has been updated in the
+[CONTRIBUTING.md](https://github.com/sebadob/rauthy/blob/main/CONTRIBUTING.md).
+
+### Bugfix
+
+- The `refresh_token` grant type on the `/token` endpoint did not set the original `auth_time` for the `id_token`, but
+  instead calculated it from `now()` each time.
+  [aa6e07d](https://github.com/sebadob/rauthy/commit/aa6e07db8822e72e28329b0ecea52e6113851d4a)
 
 ## v0.25.0
 

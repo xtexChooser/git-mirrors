@@ -49,7 +49,7 @@ pub async fn get_auth_headers() -> Result<HeaderMap, Box<dyn Error>> {
 }
 
 pub fn get_backend_url() -> String {
-    dotenvy::from_filename("rauthy.test.cfg").ok();
+    dotenvy::from_filename_override("rauthy.test.cfg").ok();
     let scheme = match env::var("LISTEN_SCHEME")
         .unwrap_or_else(|_| String::from("http"))
         .to_lowercase()
@@ -95,6 +95,7 @@ pub async fn session_headers() -> (HeaderMap, TokenSet) {
     // we need a session in Init state
     let url_session = format!("{}/oidc/session", backend_url);
     let res = client.post(&url_session).send().await.unwrap();
+    assert!(res.status().is_success());
     let headers = cookie_csrf_headers_from_res_direct(res).await.unwrap();
 
     let req_login = LoginRequest {

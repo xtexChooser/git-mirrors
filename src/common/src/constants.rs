@@ -1,6 +1,7 @@
 use crate::utils::build_trusted_proxies;
 use crate::DbType;
 use actix_web::http::Uri;
+use chrono::{DateTime, Utc};
 use lazy_static::lazy_static;
 use regex::Regex;
 use std::env;
@@ -16,7 +17,6 @@ pub enum CookieMode {
 }
 
 pub const RAUTHY_VERSION: &str = env!("CARGO_PKG_VERSION");
-
 pub const CONTENT_TYPE_WEBP: &str = "image/webp";
 pub const HEADER_DPOP_NONCE: &str = "DPoP-Nonce";
 pub const HEADER_ALLOW_ALL_ORIGINS: (&str, &str) = ("access-control-allow-origin", "*");
@@ -49,20 +49,18 @@ pub const EVENTS_LATEST_LIMIT: u16 = 100;
 pub const GRANT_TYPE_DEVICE_CODE: &str = "urn:ietf:params:oauth:grant-type:device_code";
 pub const UPSTREAM_AUTH_CALLBACK_TIMEOUT_SECS: u16 = 300;
 
-pub const CACHE_NAME_12HR: &str = "12hr";
-pub const CACHE_NAME_AUTH_CODES: &str = "auth-codes";
-pub const CACHE_NAME_DEVICE_CODES: &str = "device-codes";
-pub const CACHE_NAME_AUTH_PROVIDER_CALLBACK: &str = "auth-provider-callback";
-pub const CACHE_NAME_CLIENTS_DYN: &str = "clients-dyn";
-pub const CACHE_NAME_DPOP_NONCES: &str = "dpop-nonces";
-pub const CACHE_NAME_EPHEMERAL_CLIENTS: &str = "ephemeral-clients";
-pub const CACHE_NAME_IP_RATE_LIMIT: &str = "ip_rate_limit";
-pub const CACHE_NAME_LOGIN_DELAY: &str = "login-dly";
-pub const CACHE_NAME_SESSIONS: &str = "sessions";
-pub const CACHE_NAME_POW: &str = "pow";
-pub const CACHE_NAME_USERS: &str = "users";
-pub const CACHE_NAME_WEBAUTHN: &str = "webauthn";
-pub const CACHE_NAME_WEBAUTHN_DATA: &str = "webauthn-data";
+pub const CACHE_TTL_APP: Option<i64> = Some(43200);
+pub const CACHE_TTL_AUTH_PROVIDER_CALLBACK: Option<i64> =
+    Some(UPSTREAM_AUTH_CALLBACK_TIMEOUT_SECS as i64);
+pub const CACHE_TTL_SESSION: Option<i64> = Some(14400);
+// TODO maybe add a size limit to hiqlite to fix users cache, or simply always append?
+// No size limit means the cache could grow infinitely in theory, at least until every user from
+// the DB is inside the cache. However, this will not exceed a too high value even for 1_000_000
+// users.
+//
+// CAUTION: With WebID enabled there can actually exist 4 entries per user with different indexes
+// in the current layout!
+pub const CACHE_TTL_USER: Option<i64> = Some(600);
 
 pub const IDX_APP_VERSION: &str = "rauthy_app_version";
 pub const IDX_AUTH_PROVIDER: &str = "auth_provider_";
@@ -83,16 +81,33 @@ pub const IDX_SCOPES: &str = "scopes_";
 pub const IDX_SESSION: &str = "session_";
 pub const IDX_SESSIONS: &str = "sessions";
 pub const IDX_USERS: &str = "users_";
-pub const USER_COUNT_IDX: &str = "users_count_total";
+pub const IDX_USER_COUNT: &str = "users_count_total";
 pub const IDX_USERS_VALUES: &str = "users_values_";
 pub const IDX_USER_ATTR_CONFIG: &str = "user_attrs_";
 pub const IDX_WEBAUTHN: &str = "webauthn_";
 
+// TODO drop `lazy_static` and use rust 1.80 built-in features
 lazy_static! {
+    pub static ref APP_START: DateTime<Utc> = Utc::now();
+
+    pub static ref CACHE_TTL_AUTH_CODE: Option<i64> = Some(300 + *WEBAUTHN_REQ_EXP as i64);
+    pub static ref CACHE_TTL_DEVICE_CODE: Option<i64> = Some(*DEVICE_GRANT_CODE_LIFETIME as i64);
+    pub static ref CACHE_TTL_DYN_CLIENT: Option<i64> = Some(*DYN_CLIENT_RATE_LIMIT_SEC as i64);
+    pub static ref CACHE_TTL_DPOP_NONCE: Option<i64> = Some(*DPOP_NONCE_EXP as i64);
+    pub static ref CACHE_TTL_EPHEMERAL_CLIENT: Option<i64> = Some(env::var("EPHEMERAL_CLIENTS_CACHE_LIFETIME")
+            .unwrap_or_else(|_| String::from("3600"))
+            .parse::<i64>()
+            .expect("EPHEMERAL_CLIENTS_CACHE_LIFETIME cannot be parsed to i64 - bad format"));
+    pub static ref CACHE_TTL_IP_RATE_LIMIT: Option<i64> = (*DEVICE_GRANT_RATE_LIMIT).map(|i| i as i64);
+    pub static ref CACHE_TTL_POW: Option<i64> = Some(*POW_EXP as i64);
+    pub static ref CACHE_TTL_WEBAUTHN: Option<i64> = Some(*WEBAUTHN_REQ_EXP as i64);
+    pub static ref CACHE_TTL_WEBAUTHN_DATA: Option<i64> = Some(*WEBAUTHN_DATA_EXP as i64);
+
     pub static ref RAUTHY_ADMIN_ROLE: String = "rauthy_admin".to_string();
+
     pub static ref DATABASE_URL: String = env::var("DATABASE_URL").expect("DATABASE_URL is not set");
     pub static ref DB_TYPE: DbType = DbType::from_str(&DATABASE_URL).unwrap();
-    pub static ref ROLE_ADMIN: String = "rauthy_admin".to_string();
+
     pub static ref DEV_MODE: bool = env::var("DEV_MODE")
         .unwrap_or_else(|_| String::from("false"))
         .parse::<bool>()
@@ -101,8 +116,6 @@ lazy_static! {
         .unwrap_or_else(|_| String::from("false"))
         .parse::<bool>()
         .expect("DEV_DPOP_HTTP cannot be parsed to bool - bad format");
-    pub static ref HA_MODE: bool =
-        env::var("HA_MODE").map(|s| s.to_lowercase() == "true").unwrap_or(false);
 
     pub static ref RE_ATTR: Regex = Regex::new(r"^[a-zA-Z0-9-_/]{2,32}$").unwrap();
     pub static ref RE_ATTR_DESC: Regex = Regex::new(r"^[a-zA-Z0-9-_/\s]{0,128}$").unwrap();
@@ -128,7 +141,15 @@ lazy_static! {
     pub static ref RE_LOWERCASE: Regex = Regex::new(r"^[a-z0-9-_/]{2,128}$").unwrap();
     pub static ref RE_LOWERCASE_SPACE: Regex = Regex::new(r"^[a-z0-9-_/\s]{2,128}$").unwrap();
     pub static ref RE_MFA_CODE: Regex = Regex::new(r"^[a-zA-Z0-9]{48}$").unwrap();
-    pub static ref RE_ORIGIN: Regex = Regex::new(r"^(http|https)://[a-z0-9.:-]+$").unwrap();
+    pub static ref RE_ORIGIN: Regex = {
+        let additional_schemes = ADDITIONAL_ALLOWED_ORIGIN_SCHEMES.join("|");
+        let pattern = if additional_schemes.is_empty() {
+            r"^(http|https)://[a-z0-9.:-]+$".to_string()
+        } else {
+            format!("^(http|https|{})://[a-z0-9.:-]+$", additional_schemes)
+        };
+        Regex::new(&pattern).unwrap()
+    };
     pub static ref RE_PEM: Regex = Regex::new(r"^(-----BEGIN CERTIFICATE-----)[a-zA-Z0-9+/=\n]+(-----END CERTIFICATE-----)$").unwrap();
     pub static ref RE_PHONE: Regex = Regex::new(r"^\+[0-9]{0,32}$").unwrap();
     // we have a pretty high upper limit for characters here just to be sure that even if
@@ -177,6 +198,11 @@ lazy_static! {
     pub static ref AUTH_HEADER_MFA: String = env::var("AUTH_HEADER_MFA")
         .unwrap_or_else(|_| String::from("x-forwarded-user-mfa"));
 
+     pub static ref HEALTH_CHECK_DELAY_SECS: u16 = env::var("HEALTH_CHECK_DELAY_SECS")
+        .unwrap_or_else(|_| "30".to_string())
+        .parse::<u16>()
+        .expect("HEALTH_CHECK_DELAY_SECS cannot be parsed to u16 - bad format");
+
     pub static ref COOKIE_MODE: CookieMode = {
         let var = env::var("COOKIE_MODE").unwrap_or_else(|_| "host".to_string());
         match var.as_str() {
@@ -211,6 +237,11 @@ lazy_static! {
         };
         format!("{}://{}", scheme, *PUB_URL)
     };
+    pub static ref ADDITIONAL_ALLOWED_ORIGIN_SCHEMES: Vec<String> = env::var("ADDITIONAL_ALLOWED_ORIGIN_SCHEMES")
+        .unwrap_or_else(|_| String::from(""))
+        .split(' ')
+        .filter_map(|scheme| scheme.is_empty().not().then_some(scheme.to_string()))
+        .collect();
 
     pub static ref PROVIDER_CALLBACK_URI: String = {
         let listen_scheme = env::var("LISTEN_SCHEME");
@@ -231,10 +262,6 @@ lazy_static! {
         PROVIDER_CALLBACK_URI.replace(':', "%3A").replace('/', "%2F")
     };
 
-    pub static ref DEVICE_GRANT_CODE_CACHE_SIZE: u32 = env::var("DEVICE_GRANT_CODE_CACHE_SIZE")
-        .unwrap_or_else(|_| String::from("1000"))
-        .parse::<u32>()
-        .expect("DEVICE_GRANT_CODE_CACHE_SIZE cannot be parsed to u32 - bad format");
     pub static ref DEVICE_GRANT_CODE_LIFETIME: u16 = env::var("DEVICE_GRANT_CODE_LIFETIME")
         .unwrap_or_else(|_| String::from("300"))
         .parse::<u16>()
@@ -327,10 +354,6 @@ lazy_static! {
             .map(|scope| scope.to_string())
             .collect::<Vec<String>>()
             .join(",");
-    pub static ref EPHEMERAL_CLIENTS_CACHE_LIFETIME: u64 = env::var("EPHEMERAL_CLIENTS_CACHE_LIFETIME")
-            .unwrap_or_else(|_| String::from("3600"))
-            .parse::<u64>()
-            .expect("EPHEMERAL_CLIENTS_CACHE_LIFETIME cannot be parsed to u64 - bad format");
 
     pub static ref EXPERIMENTAL_FED_CM_ENABLE: bool = env::var("EXPERIMENTAL_FED_CM_ENABLE")
         .unwrap_or_else(|_| String::from("false"))
