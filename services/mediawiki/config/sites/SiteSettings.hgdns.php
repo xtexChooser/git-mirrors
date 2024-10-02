@@ -30,6 +30,12 @@ $wgLogos = [
 ];
 $wgFavicon = '/images/9/95/FLCC_Logo.ico';
 
+// Search Engine Verifications
+$wgXensTweaksMetaSiteVerifications = [
+	'360' => 'c648dc5a048d60a8eecb07e78a1d0b23',
+	'baidu' => 'codeva-BqKf8qjZMW',
+];
+
 // Default User Options
 $wgDefaultUserOptions['watchcreations'] = 0;
 $wgDefaultUserOptions['watchuploads'] = 0;
