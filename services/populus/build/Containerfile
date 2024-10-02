@@ -6,9 +6,10 @@ WORKDIR /bld
 # Build dependencies:
 # openssl-dev perl make: for vendored openssl
 # curl: for utoipa-swagger-ui
+# cmake: for ruma-common
 RUN set -euxo pipefail; \
 	apk add --no-cache build-base rust cargo musl-dev just nodejs npm bash \
-		openssl-dev perl make curl sd; \
+		openssl-dev perl make curl sd cmake; \
 	export PUB_URL="127.0.0.1:8443"; \
 	export DATABASE_URL="postgresql://rauthy:123SuperSafe@prepare-database/rauthy"; \
 	cd frontend; \
