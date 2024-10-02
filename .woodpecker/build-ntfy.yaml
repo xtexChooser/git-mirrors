@@ -9,7 +9,7 @@ steps:
           platforms: linux/amd64,linux/arm64
           repo: codeberg.org/${CI_REPO_OWNER}/ntfy
           registry: codeberg.org
-          tags: ${VERSION}
+          tags: "${VERSION}"
           build_args:
               - VERSION=${VERSION}
           username: ${CI_REPO_OWNER}

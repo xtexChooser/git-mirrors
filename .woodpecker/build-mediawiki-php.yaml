@@ -9,7 +9,7 @@ steps:
           platforms: linux/amd64
           repo: codeberg.org/${CI_REPO_OWNER}/x-mediawiki-php
           registry: codeberg.org
-          tags: ${VERSION}
+          tags: "${VERSION}"
           build_args:
               - VERSION=${VERSION}
           username: ${CI_REPO_OWNER}
