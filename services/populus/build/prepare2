@@ -9,7 +9,7 @@ cd populus-src
 
 # prepare the database
 export PGPASSWORD=builder
-psql -h prepare-database -U postgres -d postgres -a -f postgres/sql-scripts/init.sql
+psql -h prepare-database -U postgres -d postgres -a -f postgres/sql-scripts/init-db.sql
 psql -h prepare-database -U postgres -d rauthy -a -f postgres/sql-scripts/init-rauthy.sql
 
 # prepare for sqlx offline build
