@@ -287,3 +287,8 @@ $xvUseSecurePoll = false;
 $wgSecurePollUseLogging = true;
 $wgSecurePollUseNamespace = true;
 $wgSecurePollSingleTransferableVoteEnabled = true;
+
+// Math
+$wgMathValidModes = ['source', 'mathml', 'native', 'mathjax'];
+$wgDefaultUserOptions['math'] = 'mathjax';
+$wgMathEnableFormulaLinks = true;
