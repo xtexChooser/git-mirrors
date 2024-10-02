@@ -27,7 +27,7 @@ steps:
       image: alpine
       secrets: [ntfy_token]
       environment:
-          VERSION: ${VERSION}
+          VERSION: "${VERSION}"
       when:
           - status: [success, failure]
       commands:

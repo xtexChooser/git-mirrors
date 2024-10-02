@@ -11,7 +11,7 @@ steps:
           registry: codeberg.org
           tags: ${VERSION}
           build_args:
-              - VERSION=${VERSION}
+              - VERSION="${VERSION}"
           username: ${CI_REPO_OWNER}
           password:
               from_secret: codeberg_token
@@ -26,7 +26,7 @@ steps:
       image: alpine
       secrets: [ntfy_token]
       environment:
-          VERSION: ${VERSION}
+          VERSION: "${VERSION}"
       when:
           - status: [success, failure]
       commands:

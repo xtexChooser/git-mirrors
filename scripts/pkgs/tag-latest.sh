@@ -4,7 +4,7 @@ set -e
 repo="$1"
 version="$(grep -F '# TAG:LATEST' <"$2" | cut -d'-' -f2 | cut -d'#' -f1 | xargs)"
 pkgversion="$3"
-if [ "$version" == "$pkgversion" ]; then
+if [ "$version" = "$pkgversion" ] || [ "$version" = "\"$pkgversion\"" ]; then
 	command -q -v skopeo || apk add skopeo
 	echo Logging into registry
 	skopeo login -u "$CODEBERG_TOKEN" -p "$CODEBERG_TOKEN" codeberg.org
