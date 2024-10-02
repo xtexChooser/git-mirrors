@@ -32,7 +32,7 @@ $wgFavicon = '/images/9/95/FLCC_Logo.ico';
 
 // Search Engine Verifications
 $wgXensTweaksMetaSiteVerifications = [
-	'360' => 'c648dc5a048d60a8eecb07e78a1d0b23',
+	'360-site' => 'c648dc5a048d60a8eecb07e78a1d0b23',
 	'baidu' => 'codeva-BqKf8qjZMW',
 ];
 
