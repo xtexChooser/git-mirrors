@@ -1,6 +1,6 @@
 matrix:
     VERSION:
-        - 9.21.1 # TAG:LATEST
+        - "9.21.1" # TAG:LATEST
 
 steps:
     - name: build
@@ -11,7 +11,7 @@ steps:
           registry: codeberg.org
           tags: ${VERSION}
           build_args:
-              VERSION: ${VERSION}
+              - VERSION=${VERSION}
           username: ${CI_REPO_OWNER}
           password:
               from_secret: codeberg_token
