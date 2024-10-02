@@ -10,14 +10,13 @@ read -r newversion
 
 mkdir -p /var/lib/postgresql/balaro{,/newdata}
 sudo dinitctl stop balaro || true
-sudo dinitctl unload balaro || true
 
 time \
 	podman run -it --rm --user "root:root" \
 	-v /var/lib/postgresql/balaro:/var/lib/postgresql \
 	-v /var/lib/postgresql/balaro/data:/var/lib/postgresql/data \
 	--mount=type=image,source=codeberg.org/xens/postgres:"$oldversion",destination=/old \
-	--entrypoint pg_upgrade
+	--entrypoint pg_upgrade \
 	codeberg.org/xens/postgres:"$newversion" \
 	-b /old/usr/local/bin/ \
 	-B /usr/local/bin/ \
@@ -35,5 +34,4 @@ cp /var/lib/postgresql/balaro/data/PG_VERSION /var/lib/postgresql/balaro/PG_VERS
 
 echo '====== pg_upgrade finished'
 echo 'After confirming, run the following code to restart PG:'
-echo '   sudo dinitctl reload balaro'
 echo '   sudo dinitctl start balaro'
