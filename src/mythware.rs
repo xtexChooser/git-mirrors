@@ -95,7 +95,7 @@ pub fn read_setup_type() -> Result<SetupType> {
 
 pub fn read_password() -> Result<String> {
     // https://github.com/MuliMuri/Mythware/blob/master/Test/Program.cs
-    let knock = open_eclass_student()?.get_bytes("Knock1")?;
+    let knock = open_eclass_student()?.get_value("Knock1")?;
     if knock.len() % 4 != 0 {
         bail!("length of Knock1 is not multiplies of 4");
     }
@@ -162,7 +162,7 @@ pub fn set_password(password: &str) -> Result<()> {
         .collect::<Vec<u8>>();
     open_eclass_student()?
         .create("")?
-        .set_bytes("Knock1", &knock)?;
+        .set_bytes("Knock1", windows_registry::Type::Bytes, &knock)?;
     *PASSWORD.write().unwrap() = Some(password.to_owned());
     Ok(())
 }
