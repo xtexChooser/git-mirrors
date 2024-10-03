@@ -180,7 +180,7 @@ $wgContactConfig['interview'] = [
 			'type' => 'multiselect',
 			'label' => '希望加入的部门',
 			'options' => [
-				'编程部' => 'depart-sw',
+				'编程部（已满）' => 'depart-sw',
 				'硬件部' => 'depart-hw',
 				'有意愿成为社干' => 'want-leader',
 			],
