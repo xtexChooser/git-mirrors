@@ -5,7 +5,8 @@ use std::ffi::c_void;
 use anyhow::Result;
 use educe::Educe;
 use egui::Id;
-use log::error;
+use licenser::LicenserWindow;
+use log::{error, warn};
 use mythware::MythwareWindow;
 use powershadow::PowerShadowWindow;
 use raw_window_handle::{HasWindowHandle, RawWindowHandle, Win32WindowHandle};
@@ -14,8 +15,10 @@ use windows::Win32::{
     UI::WindowsAndMessaging::{SetWindowPos, HWND_TOPMOST, SWP_NOMOVE, SWP_NOSIZE},
 };
 use windowsadj::WindowsAdjWindow;
+use yjyz_tools::license::{self, LicenseFeatures};
 
 mod assets;
+mod licenser;
 mod mythware;
 mod powershadow;
 mod utils;
@@ -31,6 +34,10 @@ async fn main() -> Result<()> {
     }
     env_logger::init();
     log_panics::init();
+
+    if *license::IS_SUDOER {
+        warn!("Sudoer mode is set");
+    }
 
     eframe::run_native(
         "YJYZ Toolkit",
@@ -66,6 +73,8 @@ struct MainApp {
     windows_adj: WindowsAdjWindow,
     powershadow_open: bool,
     powershadow: PowerShadowWindow,
+    licenser_open: bool,
+    licenser: LicenserWindow,
 }
 
 impl MainApp {
@@ -110,6 +119,15 @@ impl MainApp {
             });
         });
 
+        if license::LICENSES.is_empty() {
+            egui::CentralPanel::default().show(ctx, |ui| {
+                ui.heading(format!("YJYZ Tools - {}", env!("CARGO_PKG_VERSION")));
+                ui.heading("找不到许可文件");
+                ui.label("在此设备上找不到有效的许可文件。");
+            });
+            return Ok(());
+        }
+
         if self.always_on_top {
             ctx.request_repaint_after_secs(0.04);
             unsafe {
@@ -121,16 +139,18 @@ impl MainApp {
             }
         }
 
-        if self.mythware.auto_windowing_broadcast
-            && mythware::is_broadcast_fullscreen().unwrap_or(false)
-        {
-            ctx.send_viewport_cmd(egui::ViewportCommand::Focus);
-            mythware::toggle_broadcast_window()?;
-        }
+        if license::is_set(LicenseFeatures::MYTHWARE_WINDOWING) {
+            if self.mythware.auto_windowing_broadcast
+                && mythware::is_broadcast_fullscreen().unwrap_or(false)
+            {
+                ctx.send_viewport_cmd(egui::ViewportCommand::Focus);
+                mythware::toggle_broadcast_window()?;
+            }
 
-        if self.mythware.auto_unlock_keyboard && mythware::is_broadcast_on().unwrap_or(false) {
-            ctx.request_repaint_after_secs(0.025);
-            mythware::unlock_keyboard()?;
+            if self.mythware.auto_unlock_keyboard && mythware::is_broadcast_on().unwrap_or(false) {
+                ctx.request_repaint_after_secs(0.025);
+                mythware::unlock_keyboard()?;
+            }
         }
 
         egui::CentralPanel::default()
@@ -178,6 +198,11 @@ impl MainApp {
                     if ui.button("影子系统").clicked() {
                         self.powershadow_open = true;
                     }
+                    if *license::IS_SUDOER {
+                        if ui.button("创建许可").clicked() {
+                            self.licenser_open = true;
+                        }
+                    }
                 });
 
                 ui.horizontal_wrapped(|ui| {
@@ -195,6 +220,13 @@ impl MainApp {
                 if mythware::PASSWORD.read().unwrap().is_some() {
                     self.mythware.show_password(ui, "极域密码：")?;
                 }
+
+                ui.vertical(|ui| {
+                    ui.label("已加载许可文件：");
+                    for claims in license::LICENSES.iter() {
+                        ui.label(format!("- {}", claims.id));
+                    }
+                });
 
                 egui::Window::new("开源许可")
                     .open(&mut self.show_licenses)
@@ -229,6 +261,15 @@ impl MainApp {
                     .vscroll(true)
                     .default_size((170.0, 130.0))
                     .show(ctx, |ui| self.powershadow.show(ui))
+                    .map(|o| o.inner)
+                    .unwrap_or_default()
+                    .unwrap_or(Ok(()))?;
+
+                egui::Window::new("许可生成")
+                    .open(&mut self.licenser_open)
+                    .vscroll(true)
+                    .default_size((250.0, 300.0))
+                    .show(ctx, |ui| self.licenser.show(ui))
                     .map(|o| o.inner)
                     .unwrap_or_default()
                     .unwrap_or(Ok(()))?;

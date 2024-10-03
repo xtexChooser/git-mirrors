@@ -1,1 +1,5 @@
 /target
+/maint/keys
+*.pem
+*.key
+*.lic

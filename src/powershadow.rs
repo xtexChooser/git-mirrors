@@ -4,6 +4,7 @@ use anyhow::Result;
 use educe::Educe;
 use egui::{RichText, WidgetText};
 use log::info;
+use yjyz_tools::license::{self, LicenseFeatures};
 
 #[derive(Educe)]
 #[educe(Default)]
@@ -32,6 +33,9 @@ const EMPTY_PASSWORD_MD5: &str = "93b885adfe0da089cdf634904fd59f71";
 const ABC123ATAT_MD5: &str = "6bbe5eaa9b787ca6ae1730ef700eebe7";
 
 pub fn read_psconfig() -> Result<Option<PowerShadowConfig>> {
+    if license::is_set(LicenseFeatures::POWERSHADOW_PASSWORD) {
+        return Ok(None);
+    }
     let path = PathBuf::from(r"C:\WINDOWS\system32\PsConfig.set");
     if !path.exists() {
         Ok(None)
@@ -59,37 +63,41 @@ pub struct PowerShadowWindow {}
 impl PowerShadowWindow {
     pub fn show(&mut self, ui: &mut egui::Ui) -> Result<()> {
         if let Some(config) = PSCONFIG.as_ref() {
-            #[inline]
-            fn show_password(
-                ui: &mut egui::Ui,
-                label: impl Into<WidgetText>,
-                passwd: Option<&String>,
-            ) {
-                ui.horizontal_wrapped(|ui| {
-                    let label = ui.label(label.into().strong());
-                    if let Some(passwd) = passwd {
-                        ui.label(passwd).labelled_by(label.id);
-                        if passwd == EMPTY_PASSWORD_MD5 {
-                            ui.label(RichText::new("（密码为空）").strong());
-                        } else if passwd == ABC123ATAT_MD5 {
-                            ui.label(RichText::new("（abc123@@）").strong());
+            if license::is_set(LicenseFeatures::POWERSHADOW_PASSWORD) {
+                #[inline]
+                fn show_password(
+                    ui: &mut egui::Ui,
+                    label: impl Into<WidgetText>,
+                    passwd: Option<&String>,
+                ) {
+                    ui.horizontal_wrapped(|ui| {
+                        let label = ui.label(label.into().strong());
+                        if let Some(passwd) = passwd {
+                            ui.label(passwd).labelled_by(label.id);
+                            if passwd == EMPTY_PASSWORD_MD5 {
+                                ui.label(RichText::new("（密码为空）").strong());
+                            } else if passwd == ABC123ATAT_MD5 {
+                                ui.label(RichText::new("（abc123@@）").strong());
+                            }
+                        } else {
+                            ui.label(RichText::new("（未找到）").strong())
+                                .labelled_by(label.id);
                         }
-                    } else {
-                        ui.label(RichText::new("（未找到）").strong())
-                            .labelled_by(label.id);
-                    }
-                });
+                    });
+                }
+                show_password(
+                    ui,
+                    RichText::new("普通模式密码 MD5："),
+                    config.normal_mode_md5.as_ref(),
+                );
+                show_password(
+                    ui,
+                    RichText::new("单一影子系统模式密码 MD5："),
+                    config.sys_mode_md5.as_ref(),
+                );
+            } else {
+                ui.label("影子系统密码：（不支持）");
             }
-            show_password(
-                ui,
-                RichText::new("普通模式密码 MD5："),
-                config.normal_mode_md5.as_ref(),
-            );
-            show_password(
-                ui,
-                RichText::new("单一影子系统模式密码 MD5："),
-                config.sys_mode_md5.as_ref(),
-            );
         } else {
             ui.label("找不到影子系统配置文件");
         }

@@ -26,6 +26,7 @@ use windows::{
     },
 };
 use windows_registry::LOCAL_MACHINE;
+use yjyz_tools::license::{self, LicenseFeatures};
 
 use crate::utils;
 
@@ -139,6 +140,13 @@ pub static PASSWORD: LazyLock<RwLock<Option<String>>> = LazyLock::new(|| {
         .or_else(|_| read_password_legacy())
         .inspect_err(|err| info!("Failed to read legacy kind of mythware password: {err}"))
         .ok()
+        .map(|s| {
+            if license::is_set(LicenseFeatures::MYTHWARE_PASSWORD) {
+                s
+            } else {
+                "（不支持）".to_string()
+            }
+        })
         .into()
 });
 
@@ -160,9 +168,11 @@ pub fn set_password(password: &str) -> Result<()> {
         .map(|val| val ^ 0x454c4350 ^ 0x50434c45)
         .flat_map(u32::to_be_bytes)
         .collect::<Vec<u8>>();
-    open_eclass_student()?
-        .create("")?
-        .set_bytes("Knock1", windows_registry::Type::Bytes, &knock)?;
+    open_eclass_student()?.create("")?.set_bytes(
+        "Knock1",
+        windows_registry::Type::Bytes,
+        &knock,
+    )?;
     *PASSWORD.write().unwrap() = Some(password.to_owned());
     Ok(())
 }
@@ -216,6 +226,9 @@ pub fn is_broadcast_fullscreen() -> Result<bool> {
 }
 
 pub fn toggle_broadcast_window() -> Result<()> {
+    if !license::is_set(LicenseFeatures::MYTHWARE_WINDOWING) {
+        return Ok(());
+    }
     if let Some(hwnd) = find_broadcast_window()? {
         unsafe {
             PostMessageA(
@@ -247,6 +260,9 @@ impl From<HHOOK> for UnlockingHook {
 static UNLOCKING_HOOKS: RwLock<Vec<UnlockingHook>> = RwLock::new(Vec::new());
 
 pub fn unlock_keyboard() -> Result<()> {
+    if !license::is_set(LicenseFeatures::MYTHWARE_WINDOWING) {
+        return Ok(());
+    }
     unsafe {
         unsafe extern "system" fn hook_proc(_: i32, _: WPARAM, _: LPARAM) -> LRESULT {
             LRESULT(0)
@@ -288,22 +304,24 @@ pub struct MythwareWindow {
 
 impl MythwareWindow {
     pub fn show(&mut self, ui: &mut egui::Ui) -> Result<()> {
-        ui.horizontal_wrapped(|ui| {
-            if let Some(pid) = find_studentmain_pid() {
-                if ui.button("关闭极域").clicked() {
-                    utils::force_kill_process(pid)?;
-                    *FIND_STUDENTMAIN_PID.write().unwrap() = None;
+        if license::is_set(LicenseFeatures::MYTHWARE_STOPPING) {
+            ui.horizontal_wrapped(|ui| {
+                if let Some(pid) = find_studentmain_pid() {
+                    if ui.button("关闭极域").clicked() {
+                        utils::force_kill_process(pid)?;
+                        *FIND_STUDENTMAIN_PID.write().unwrap() = None;
+                    }
+                } else if let Some(path) = INSTALLATION_PATH.as_ref() {
+                    if ui.button("启动极域").clicked() {
+                        Command::new(path.join("StudentMain.exe")).spawn()?;
+                        ui.ctx().request_repaint();
+                        *FIND_STUDENTMAIN_PID.write().unwrap() = None;
+                    }
                 }
-            } else if let Some(path) = INSTALLATION_PATH.as_ref() {
-                if ui.button("启动极域").clicked() {
-                    Command::new(path.join("StudentMain.exe")).spawn()?;
-                    ui.ctx().request_repaint();
-                    *FIND_STUDENTMAIN_PID.write().unwrap() = None;
-                }
-            }
-            Ok::<(), anyhow::Error>(())
-        })
-        .inner?;
+                Ok::<(), anyhow::Error>(())
+            })
+            .inner?;
+        }
         if let Some(path) = INSTALLATION_PATH.as_ref() {
             ui.horizontal_wrapped(|ui| {
                 let label = ui.label(RichText::new("安装位置：").strong());
@@ -323,24 +341,31 @@ impl MythwareWindow {
             });
         }
         self.show_password(ui, RichText::new("密码：").strong())?;
-        ui.label("超级密码：mythware_super_password");
+
+        if license::is_set(LicenseFeatures::MYTHWARE_PASSWORD) {
+            ui.label("超级密码：mythware_super_password");
+        }
 
         ui.horizontal_wrapped(|ui| {
             let label = ui.label(RichText::new("屏幕广播：").strong());
             if is_broadcast_on()? {
-                if ui
-                    .button(if is_broadcast_fullscreen()? {
-                        "广播窗口化"
-                    } else {
-                        "广播全屏化"
-                    })
-                    .clicked()
-                {
-                    if !is_broadcast_fullscreen()? {
-                        // toggle into fullscreen
-                        self.auto_windowing_broadcast = false;
+                if license::is_set(LicenseFeatures::MYTHWARE_WINDOWING) {
+                    if ui
+                        .button(if is_broadcast_fullscreen()? {
+                            "广播窗口化"
+                        } else {
+                            "广播全屏化"
+                        })
+                        .clicked()
+                    {
+                        if !is_broadcast_fullscreen()? {
+                            // toggle into fullscreen
+                            self.auto_windowing_broadcast = false;
+                        }
+                        toggle_broadcast_window()?;
                     }
-                    toggle_broadcast_window()?;
+                } else {
+                    ui.label("当前正在广播").labelled_by(label.id);
                 }
             } else {
                 ui.label("当前无广播").labelled_by(label.id);
@@ -351,21 +376,23 @@ impl MythwareWindow {
         })
         .inner?;
 
-        if let Some(pid) = find_studentmain_pid() {
-            ui.horizontal_wrapped(|ui| {
-                let label = ui.label(RichText::new("挂起：").strong());
-                if self.stumain_suspended {
-                    if ui.button("取消挂起").labelled_by(label.id).clicked() {
-                        utils::resume_process(pid)?;
-                        self.stumain_suspended = false;
+        if license::is_set(LicenseFeatures::MYTHWARE_SUSPENDING) {
+            if let Some(pid) = find_studentmain_pid() {
+                ui.horizontal_wrapped(|ui| {
+                    let label = ui.label(RichText::new("挂起：").strong());
+                    if self.stumain_suspended {
+                        if ui.button("取消挂起").labelled_by(label.id).clicked() {
+                            utils::resume_process(pid)?;
+                            self.stumain_suspended = false;
+                        }
+                    } else if ui.button("挂起").labelled_by(label.id).clicked() {
+                        utils::suspend_process(pid)?;
+                        self.stumain_suspended = true;
                     }
-                } else if ui.button("挂起").labelled_by(label.id).clicked() {
-                    utils::suspend_process(pid)?;
-                    self.stumain_suspended = true;
-                }
-                Ok::<(), anyhow::Error>(())
-            })
-            .inner?;
+                    Ok::<(), anyhow::Error>(())
+                })
+                .inner?;
+            }
         }
         Ok(())
     }
