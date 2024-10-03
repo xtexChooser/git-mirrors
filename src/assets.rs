@@ -3,7 +3,7 @@ use std::{fs, io::Read, path::PathBuf};
 use anyhow::Result;
 use egui::{FontData, FontFamily};
 
-pub const CUBIC11_FONT: &[u8] = include_bytes!("assets/Cubic_11_1.300_R.ttf.xz");
+pub const CUBIC11_FONT: &[u8] = include_bytes!("assets/Cubic_11.ttf.xz");
 pub const CUBIC11_LICENSE: &str = include_str!("assets/Cubic_11-LICENSE.txt");
 
 pub const LICENSE_STR: &str = include_str!("../LICENSE");
