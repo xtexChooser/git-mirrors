@@ -9,6 +9,7 @@ $wgSharedTables = [
 	'user_autocreate_serial',
 	'actor',
 	'sites',
+	'bot_passwords',
 ];
 
 // Shared Cookies
