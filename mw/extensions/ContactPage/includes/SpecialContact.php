@@ -222,33 +222,44 @@ class SpecialContact extends UnlistedSpecialPage {
 
 		$additional = $config['AdditionalFields'] ?? [];
 
-		$formItems = [
-			'FromName' => [
-				'label-message' => $this->getFormSpecificMessageKey( 'contactpage-fromname' ),
-				'type' => 'text',
-				'required' => $config['RequireDetails'],
-				'default' => $fromName,
-				'disabled' => $nameReadonly,
-			],
-			'FromAddress' => [
-				'label-message' => $this->getFormSpecificMessageKey( 'contactpage-fromaddress' ),
-				'type' => 'email',
-				'required' => $config['RequireDetails'],
-				'default' => $fromAddress,
-				'disabled' => $emailReadonly,
-			]
-		];
-
-		if ( !$config['RequireDetails'] ) {
-			$formItems['FromInfo'] = [
-				'label' => '',
-				'type' => 'info',
-				'default' => Html::rawElement( 'small', [],
-					$this->msg(
-						$this->getFormSpecificMessageKey( 'contactpage-formfootnotes' )
-					)->escaped()
-				),
-				'raw' => true,
+		$formItems = [];
+		if ( !$config['HideDetails'] ) {
+			$formItems += [
+				'FromName' => [
+					'label-message' => $this->getFormSpecificMessageKey( 'contactpage-fromname' ),
+					'type' => 'text',
+					'required' => $config['RequireDetails'],
+					'default' => $fromName,
+					'disabled' => $nameReadonly,
+				],
+				'FromAddress' => [
+					'label-message' => $this->getFormSpecificMessageKey( 'contactpage-fromaddress' ),
+					'type' => 'email',
+					'required' => $config['RequireDetails'],
+					'default' => $fromAddress,
+					'disabled' => $emailReadonly,
+				]
+			];
+			if ( !$config['RequireDetails'] ) {
+				$formItems['FromInfo'] = [
+					'label' => '',
+					'type' => 'info',
+					'default' => Html::rawElement(
+						'small',
+						[],
+						$this->msg(
+							$this->getFormSpecificMessageKey( 'contactpage-formfootnotes' )
+						)->escaped()
+					),
+					'raw' => true,
+				];
+			}
+			$additional += [
+				'CCme' => [
+					'label-message' => $this->getFormSpecificMessageKey( 'emailccme' ),
+					'type' => 'check',
+					'default' => $this->userOptionsLookup->getBoolOption( $user, 'ccmeonemails' ),
+				]
 			];
 		}
 
@@ -260,11 +271,6 @@ class SpecialContact extends UnlistedSpecialPage {
 				'disabled' => $subjectReadonly,
 			],
 		] + $additional + [
-			'CCme' => [
-				'label-message' => $this->getFormSpecificMessageKey( 'emailccme' ),
-				'type' => 'check',
-				'default' => $this->userOptionsLookup->getBoolOption( $this->getUser(), 'ccmeonemails' ),
-			],
 			'FormType' => [
 				'class' => 'HTMLHiddenField',
 				'label' => 'Type',
