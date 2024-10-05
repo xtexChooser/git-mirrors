@@ -28,7 +28,6 @@
 					"SenderEmail": null,
 					"SenderName": null,
 					"RequireDetails": false,
-					"HideDetails": false,
 					"IncludeIP": false,
 					"MustBeLoggedIn": false,
 					"MustHaveEmail": false,
