@@ -8,7 +8,9 @@ WORKDIR /bld
 # curl: for utoipa-swagger-ui
 # cmake: for ruma-common
 # rust-bindgen, clang: for aws-lc-sys
+# FIXME: remove :edge and apk update when rust 1.81 in available in alpine main repo
 RUN set -euxo pipefail; \
+	apk update; \
 	apk add --no-cache build-base rust cargo musl-dev just nodejs npm bash \
 		openssl-dev perl make curl sd cmake rust-bindgen clang18-libclang; \
 	export PUB_URL="127.0.0.1:8443"; \
