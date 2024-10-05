@@ -24,7 +24,7 @@ use MediaWiki\Session\SessionManager;
 use MediaWiki\SpecialPage\UnlistedSpecialPage;
 use MediaWiki\Status\Status;
 use MediaWiki\User\Options\UserOptionsLookup;
-use MediaWiki\User\User;
+use MediaWiki\User\UserFactory;
 use UserBlockedError;
 use UserMailer;
 
@@ -33,17 +33,19 @@ use UserMailer;
  * @ingroup SpecialPage
  */
 class SpecialContact extends UnlistedSpecialPage {
-	/** @var UserOptionsLookup */
-	private $userOptionsLookup;
+	private UserOptionsLookup $userOptionsLookup;
+	private UserFactory $userFactory;
 	/** @var HookRunner|null */
 	private $contactPageHookRunner;
 
 	/**
 	 * @param UserOptionsLookup $userOptionsLookup
+	 * @param UserFactory $userFactory
 	 */
-	public function __construct( UserOptionsLookup $userOptionsLookup ) {
+	public function __construct( UserOptionsLookup $userOptionsLookup, UserFactory $userFactory ) {
 		parent::__construct( 'Contact' );
 		$this->userOptionsLookup = $userOptionsLookup;
+		$this->userFactory = $userFactory;
 	}
 
 	/**
@@ -150,7 +152,7 @@ class SpecialContact extends UnlistedSpecialPage {
 		}
 
 		// Display error if recipient has email disabled
-		$recipient = User::newFromName( $config['RecipientUser'] );
+		$recipient = $this->userFactory->newFromName( $config['RecipientUser'] );
 		if ( $recipient === null || !$recipient->canReceiveEmail() ) {
 			$this->getOutput()->showErrorPage( 'noemailtitle', 'noemailtext' );
 			return;
@@ -305,7 +307,7 @@ class SpecialContact extends UnlistedSpecialPage {
 			}
 		}
 		$form->setSubmitCallback( [ $this, 'processInput' ] );
-		$form->loadData();
+		$form->prepareForm();
 
 		// Stolen from Special:EmailUser
 		if ( !$this->getContactPageHookRunner()->onEmailUserForm( $form ) ) {
@@ -358,7 +360,10 @@ class SpecialContact extends UnlistedSpecialPage {
 		$senderIP = $request->getIP();
 
 		// Setup user that is going to receive the contact page response
-		$contactRecipientUser = User::newFromName( $config['RecipientUser'] );
+		$contactRecipientUser = $this->userFactory->newFromName( $config['RecipientUser'] );
+		if ( $contactRecipientUser === null || !$contactRecipientUser->canReceiveEmail() ) {
+			return [ 'noemailtext' ];
+		}
 		$contactRecipientAddress = MailAddress::newFromUser( $contactRecipientUser );
 
 		// Used when user hasn't set an email, when $wgUserEmailUseReplyTo is true,
