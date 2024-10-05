@@ -22,7 +22,9 @@ while [ $# -ne 0 ]; do
 	*)
 		errResetTo="$(git rev-parse HEAD)"
 		git revert --no-edit "$1"
-		./scripts/pick --try "$(git log -1 "$1" --format='%(trailers:key=Change-Id,valueonly,separator=)')"
+		change="$(git log -1 "$1" --format='%(trailers:key=Change-Id,valueonly,separator=)')"
+		echo "Re-applying change: $change"
+		./scripts/pick --try "$change"
 		newcommit="$(git rev-parse HEAD)"
 		if [[ "$newcommit" == "$errResetTo" ]]; then
 			continue
