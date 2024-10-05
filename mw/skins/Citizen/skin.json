@@ -1,6 +1,6 @@
 {
 	"name": "Citizen",
-	"version": "2.31.0",
+	"version": "2.32.0",
 	"author": [
 		"[https://www.mediawiki.org/wiki/User:Alistair3149 Alistair3149]",
 		"[https://www.mediawiki.org/wiki/User:Octfx Octfx]",
@@ -32,6 +32,7 @@
 			"args": [
 				{
 					"name": "citizen",
+					"supportsMwHeading": true,
 					"responsive": true,
 					"link": {
 						"text-wrapper": {
@@ -248,6 +249,7 @@
 				"resources/skins.citizen.search/searchClients/smwAskApi.js"
 			],
 			"messages": [
+				"citizen-search-advancedsearch",
 				"citizen-search-fulltext",
 				"citizen-search-editpage",
 				"citizen-search-mediasearch",
