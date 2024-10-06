@@ -52,3 +52,9 @@ ed25519-dalek = { version = "^2", features = ["rand_core"] }
 
 [package.metadata.winresource]
 OriginalFilename = "yjyz-tools.exe"
+
+[package.metadata.release]
+allow-branch = ["main"]
+pre-release-commit-message = "Release"
+tag-message = "Release {{version}}"
+publish = false
