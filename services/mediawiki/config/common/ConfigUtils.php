@@ -86,7 +86,7 @@ function xvSetAssocTrues(string $variable, array $keys)
  */
 function xvMergeInto(string $variable, array ...$values)
 {
-	$GLOBALS[$variable] = array_merge($GLOBALS[$variable] ?? [], $values);
+	$GLOBALS[$variable] = array_merge($GLOBALS[$variable] ?? [], ...$values);
 }
 
 /**
