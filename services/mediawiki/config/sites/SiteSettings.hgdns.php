@@ -40,9 +40,6 @@ $wgXensTweaksMetaSiteVerifications = [
 $wgDefaultUserOptions['watchcreations'] = 0;
 $wgDefaultUserOptions['watchuploads'] = 0;
 $wgDefaultUserOptions['watchdefault'] = 0;
-xvMergeInto('wgHiddenPrefs', [
-	'skin',
-]);
 
 // Skin
 xvLoadSkin('Citizen');
