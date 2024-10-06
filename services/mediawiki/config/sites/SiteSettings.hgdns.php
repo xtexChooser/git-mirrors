@@ -42,6 +42,7 @@ $wgDefaultUserOptions['watchuploads'] = 0;
 $wgDefaultUserOptions['watchdefault'] = 0;
 
 // Skin
+$xvUseGlobalSkins = false;
 xvLoadSkin('Citizen');
 $wgDefaultSkin = $wgDefaultMobileSkin = 'Citizen';
 $wgCitizenShowPageTools = 'login';
