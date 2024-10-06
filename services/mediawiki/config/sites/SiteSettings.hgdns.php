@@ -45,7 +45,6 @@ xvMergeInto('wgHiddenPrefs', [
 ]);
 
 // Skin
-$xvUseGlobalSkins = false;
 xvLoadSkin('Citizen');
 $wgDefaultSkin = $wgDefaultMobileSkin = 'Citizen';
 $wgCitizenShowPageTools = 'login';
