@@ -43,6 +43,7 @@ $wgDefaultUserOptions['watchdefault'] = 0;
 xvMergeInto('wgHiddenPrefs', ['realname']);
 
 // Skin
+$xvUseGlobalSkins = false;
 xvLoadSkin('Citizen');
 $wgDefaultSkin = $wgDefaultMobileSkin = 'Citizen';
 $wgCitizenShowPageTools = 'login';
