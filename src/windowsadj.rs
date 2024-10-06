@@ -183,9 +183,7 @@ pub fn remove_debugger(name: &str) -> Result<()> {
 
 pub fn remove_all_debuggers() -> Result<()> {
     for name in LOCAL_MACHINE
-        .create(format!(
-            r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options",
-        ))?
+        .create(r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options")?
         .keys()?
     {
         remove_debugger(&name)?;

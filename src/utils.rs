@@ -65,8 +65,10 @@ pub fn resume_process(pid: u32) -> Result<()> {
 pub fn force_kill_process(pid: u32) -> Result<()> {
     unsafe {
         let snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, pid)?;
-        let mut entry = THREADENTRY32::default();
-        entry.dwSize = std::mem::size_of::<THREADENTRY32>() as u32;
+        let mut entry = THREADENTRY32 {
+            dwSize: std::mem::size_of::<THREADENTRY32>() as u32,
+            ..Default::default()
+        };
         Thread32First(snapshot, &mut entry)?;
         loop {
             if entry.th32OwnerProcessID == pid {

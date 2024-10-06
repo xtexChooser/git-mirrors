@@ -29,7 +29,7 @@ mod utils;
 mod windowsadj;
 
 #[tokio::main]
-async fn main() -> Result<()> {
+async fn main() {
     #[cfg(debug_assertions)]
     if std::env::var("YJYZTOOLS_DEBUG").is_ok() {
         if std::env::var("RUST_LOG").is_err() {
@@ -40,13 +40,10 @@ async fn main() -> Result<()> {
     env_logger::init();
     log_panics::init();
 
-    if *mythware::SETUP_TYPE == Some(mythware::SetupType::Teacher) {
-        if license::LICENSES.is_empty()
-            || !license::is_set(LicenseFeatures::ALLOW_INSECURE)
-            || !license::is_set(LicenseFeatures::MYTHWARE_ALLOW_TEACHER)
-        {
-            panic!("unavailable: 4f82b84f-481a-426d-8361-795008110549")
-        }
+    if *mythware::SETUP_TYPE == Some(mythware::SetupType::Teacher)
+        && !license::is_set(LicenseFeatures::MYTHWARE_ALLOW_TEACHER)
+    {
+        panic!("unavailable: 4f82b84f-481a-426d-8361-795008110549")
     }
 
     if !license::is_set(LicenseFeatures::NO_SECURITY_CHECK) {
@@ -88,8 +85,6 @@ async fn main() -> Result<()> {
         Box::new(|cc| Ok(Box::new(MainApp::new(cc)?))),
     )
     .unwrap();
-
-    Ok(())
 }
 
 static ASYNC_ERROR: RwLock<Option<anyhow::Error>> = RwLock::new(None);
@@ -257,10 +252,8 @@ impl MainApp {
                     if ui.button("影子系统").clicked() {
                         self.powershadow_open = true;
                     }
-                    if *license::IS_SUDOER {
-                        if ui.button("创建许可").clicked() {
-                            self.licenser_open = true;
-                        }
+                    if *license::IS_SUDOER && ui.button("创建许可").clicked() {
+                        self.licenser_open = true;
                     }
                 });
 

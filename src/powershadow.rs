@@ -41,17 +41,18 @@ pub fn read_psconfig() -> Result<Option<PowerShadowConfig>> {
         Ok(None)
     } else {
         let psconfig = fs::read(path)?;
-        let mut config = PowerShadowConfig::default();
-        config.normal_mode_md5 = psconfig
-            .windows(PATTERN_NORMAL_PASSWD.len() + 16)
-            .find(|s| s[0..PATTERN_NORMAL_PASSWD.len()] == PATTERN_NORMAL_PASSWD)
-            .map(|s| &s[PATTERN_NORMAL_PASSWD.len()..])
-            .map(|s| hex::encode(s));
-        config.sys_mode_md5 = psconfig
-            .windows(PATTERN_SYSMODE_PASSWD.len() + 16)
-            .find(|s| s[0..PATTERN_SYSMODE_PASSWD.len()] == PATTERN_SYSMODE_PASSWD)
-            .map(|s| &s[PATTERN_SYSMODE_PASSWD.len()..])
-            .map(|s| hex::encode(s));
+        let config = PowerShadowConfig {
+            normal_mode_md5: psconfig
+                .windows(PATTERN_NORMAL_PASSWD.len() + 16)
+                .find(|s| s[0..PATTERN_NORMAL_PASSWD.len()] == PATTERN_NORMAL_PASSWD)
+                .map(|s| &s[PATTERN_NORMAL_PASSWD.len()..])
+                .map(hex::encode),
+            sys_mode_md5: psconfig
+                .windows(PATTERN_SYSMODE_PASSWD.len() + 16)
+                .find(|s| s[0..PATTERN_SYSMODE_PASSWD.len()] == PATTERN_SYSMODE_PASSWD)
+                .map(|s| &s[PATTERN_SYSMODE_PASSWD.len()..])
+                .map(hex::encode),
+        };
         Ok(Some(config))
     }
 }

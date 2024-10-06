@@ -51,8 +51,7 @@ pub fn detect_analysis_tools() -> Result<()> {
         let proc = sysinfo
             .processes()
             .values()
-            .filter(move |val: &&Process| val.name().eq_ignore_ascii_case(exe))
-            .next();
+            .find(move |val: &&Process| val.name().eq_ignore_ascii_case(exe));
         if let Some(proc) = proc {
             let mut hasher = DefaultHasher::new();
             proc.exe()

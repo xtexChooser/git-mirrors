@@ -119,7 +119,7 @@ impl Updater {
         if UPDATE.read().unwrap().is_some() {
             return true;
         }
-        return license::is_set(LicenseFeatures::MUST_UPDATE);
+        license::is_set(LicenseFeatures::MUST_UPDATE)
     }
 
     pub fn show(&mut self, ui: &mut egui::Ui) -> Result<()> {
@@ -146,10 +146,10 @@ impl Updater {
                         ui.ctx().open_url(OpenUrl::new_tab(&update.download));
                     }
 
-                    if !license::is_set(LicenseFeatures::MUST_UPDATE) {
-                        if ui.button("不更新").clicked() {
-                            self.dismissed = true;
-                        }
+                    if !license::is_set(LicenseFeatures::MUST_UPDATE)
+                        && ui.button("不更新").clicked()
+                    {
+                        self.dismissed = true;
                     }
                 });
             } else {

@@ -153,9 +153,9 @@ pub fn find_licenses() -> Vec<PathBuf> {
     const LICENSE_NAMES: &[&str] = &[
         ".yjyz-tools.lic",
         ".license.key",
+        "yjyz-tools.lic",
         "yjyz-tools.key",
-        "yjyz-tools.license",
-        "yjyz/yjyz-tools.license",
+        "yjyz/yjyz-tools.lic",
         "yjyz-tools/yjyz-tools.lic",
         "license.key",
         "license",
@@ -205,7 +205,7 @@ pub fn load_licenses() -> Vec<v1::LicenseClaims> {
     licenses
 }
 
-pub static LICENSES: LazyLock<Vec<v1::LicenseClaims>> = LazyLock::new(|| load_licenses());
+pub static LICENSES: LazyLock<Vec<v1::LicenseClaims>> = LazyLock::new(load_licenses);
 pub static IS_SUDOER: LazyLock<bool> = LazyLock::new(|| {
     LICENSES
         .iter()
