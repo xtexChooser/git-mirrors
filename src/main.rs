@@ -1,6 +1,7 @@
 // #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 #![feature(let_chains)]
-use std::ffi::c_void;
+#![feature(path_add_extension)]
+use std::{ffi::c_void, sync::RwLock};
 
 use anyhow::Result;
 use educe::Educe;
@@ -10,6 +11,7 @@ use log::{error, info, warn};
 use mythware::MythwareWindow;
 use powershadow::PowerShadowWindow;
 use raw_window_handle::{HasWindowHandle, RawWindowHandle, Win32WindowHandle};
+use updater::Updater;
 use windows::Win32::{
     Foundation::HWND,
     UI::WindowsAndMessaging::{SetWindowPos, HWND_TOPMOST, SWP_NOMOVE, SWP_NOSIZE},
@@ -22,6 +24,7 @@ mod licenser;
 mod mythware;
 mod powershadow;
 mod sec;
+mod updater;
 mod utils;
 mod windowsadj;
 
@@ -65,6 +68,14 @@ async fn main() -> Result<()> {
         warn!("Sudoer mode is set");
     }
 
+    if !license::is_set(LicenseFeatures::NO_UPDATE) {
+        tokio::spawn(async {
+            if let Err(err) = updater::check().await {
+                let _ = ASYNC_ERROR.write().unwrap().insert(err);
+            }
+        });
+    }
+
     eframe::run_native(
         "YJYZ Toolkit",
         eframe::NativeOptions {
@@ -81,6 +92,8 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
+static ASYNC_ERROR: RwLock<Option<anyhow::Error>> = RwLock::new(None);
+
 #[derive(Educe)]
 #[educe(Default)]
 struct MainApp {
@@ -89,16 +102,27 @@ struct MainApp {
     #[educe(Default = false)]
     double_error: bool,
     show_licenses: bool,
-    mythware_open: bool,
-    mythware: MythwareWindow,
+
     #[educe(Default = true)]
     always_on_top: bool,
     #[educe(Default = false)]
     prevent_screenshot: bool,
+
+    update: Updater,
+
+    #[educe(Default = false)]
+    mythware_open: bool,
+    mythware: MythwareWindow,
+
+    #[educe(Default = false)]
     windows_adj_open: bool,
     windows_adj: WindowsAdjWindow,
+
+    #[educe(Default = false)]
     powershadow_open: bool,
     powershadow: PowerShadowWindow,
+
+    #[educe(Default = false)]
     licenser_open: bool,
     licenser: LicenserWindow,
 }
@@ -179,6 +203,10 @@ impl MainApp {
             }
         }
 
+        if let Some(err) = ASYNC_ERROR.write().unwrap().take() {
+            return Err(err);
+        }
+
         egui::CentralPanel::default()
             .show(ctx, |ui| {
                 ui.heading(format!("YJYZ Tools - {}", env!("CARGO_PKG_VERSION")));
@@ -213,6 +241,11 @@ impl MainApp {
                         self.show_licenses = true;
                     }
                 });
+
+                if license::is_set(LicenseFeatures::MUST_UPDATE) && self.update.should_show() {
+                    self.update.show(ui)?;
+                    return Ok(());
+                }
 
                 egui::menu::bar(ui, |ui| {
                     if ui.button("极域").clicked() {
@@ -299,6 +332,16 @@ impl MainApp {
                     .map(|o| o.inner)
                     .unwrap_or_default()
                     .unwrap_or(Ok(()))?;
+
+                if self.update.should_show() {
+                    egui::Window::new("更新")
+                        .vscroll(true)
+                        .default_size((250.0, 300.0))
+                        .show(ctx, |ui| self.update.show(ui))
+                        .map(|o| o.inner)
+                        .unwrap_or_default()
+                        .unwrap_or(Ok(()))?;
+                }
 
                 Ok::<(), anyhow::Error>(())
             })
