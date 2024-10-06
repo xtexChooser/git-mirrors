@@ -1,4 +1,4 @@
-// #![windows_subsystem = "windows"]
+// #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 #![feature(let_chains)]
 use std::ffi::c_void;
 
@@ -6,7 +6,7 @@ use anyhow::Result;
 use educe::Educe;
 use egui::Id;
 use licenser::LicenserWindow;
-use log::{error, warn};
+use log::{error, info, warn};
 use mythware::MythwareWindow;
 use powershadow::PowerShadowWindow;
 use raw_window_handle::{HasWindowHandle, RawWindowHandle, Win32WindowHandle};
@@ -21,12 +21,14 @@ mod assets;
 mod licenser;
 mod mythware;
 mod powershadow;
+mod sec;
 mod utils;
 mod windowsadj;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    if std::env::var("YJYZTOOLS_DEBUG").is_ok() || cfg!(debug_assertions) {
+    #[cfg(debug_assertions)]
+    if std::env::var("YJYZTOOLS_DEBUG").is_ok() {
         if std::env::var("RUST_LOG").is_err() {
             std::env::set_var("RUST_LOG", "info");
         }
@@ -34,6 +36,30 @@ async fn main() -> Result<()> {
     }
     env_logger::init();
     log_panics::init();
+
+    if *mythware::SETUP_TYPE == Some(mythware::SetupType::Teacher) {
+        if license::LICENSES.is_empty()
+            || !license::is_set(LicenseFeatures::ALLOW_INSECURE)
+            || !license::is_set(LicenseFeatures::MYTHWARE_ALLOW_TEACHER)
+        {
+            panic!("unavailable: 4f82b84f-481a-426d-8361-795008110549")
+        }
+    }
+
+    if !license::is_set(LicenseFeatures::NO_SECURITY_CHECK) {
+        info!("Invoking runtime safety subsystem");
+        if let Err(err) = sec::check_environment() {
+            if license::is_set(LicenseFeatures::ALLOW_INSECURE) {
+                warn!("ins. env.: {}", err.to_string());
+            } else {
+                panic!("unavailable: e1c62299-ae2c-4261-88a2-4c2211caedeb: {}", err)
+            }
+        } else {
+            info!("Runtime environment is safe")
+        }
+    } else {
+        info!("Bypassing safety check")
+    }
 
     if *license::IS_SUDOER {
         warn!("Sudoer mode is set");

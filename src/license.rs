@@ -77,8 +77,10 @@ pub mod v1 {
             const NO_UPDATES = 1 << 3; //
             const MUST_UPDATE = 1 << 4; //
             const MUST_ONLINE = 1 << 5; //
+            const NO_SECURITY_CHECK = 1 << 6;
+            const ALLOW_INSECURE = 1 << 7;
 
-            const MYTHWARE_ALLOW_TEACHER = 1 << 16; //
+            const MYTHWARE_ALLOW_TEACHER = 1 << 16;
             const MYTHWARE_PASSWORD = 1 << 17;
             const MYTHWARE_WINDOWING = 1 << 18;
             const MYTHWARE_STOPPING = 1 << 19;

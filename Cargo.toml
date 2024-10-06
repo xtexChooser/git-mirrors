@@ -18,6 +18,7 @@ hex = "0.4.3"
 hex-literal = "0.4.1"
 log = { version = "0.4.22", features = ["std"] }
 log-panics = { version = "2.1.0", features = ["with-backtrace"] }
+phf = { version = "0.11.2", features = ["macros"] }
 raw-window-handle = { version = "0.6.2", features = ["std"] }
 serde = { version = "1.0.210", features = ["derive"] }
 serde_bytes = "0.11.15"
@@ -36,9 +37,11 @@ features = [
     "Win32_System_Threading",
     "Win32_System_Services",
     "Win32_System_Diagnostics_ToolHelp",
+    "Win32_System_Diagnostics_Debug",
 ]
 
 [build-dependencies]
+cmake = "0.1.51"
 winresource = "0.1.17"
 
 [dev-dependencies]

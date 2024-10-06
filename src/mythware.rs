@@ -58,7 +58,7 @@ pub static INSTALLATION_PATH: LazyLock<Option<PathBuf>> = LazyLock::new(|| {
         .ok()
 });
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Copy, Hash)]
 pub enum SetupType {
     Teacher,
     Student,
