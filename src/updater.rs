@@ -2,7 +2,7 @@ use std::{
     fs,
     sync::{
         atomic::{AtomicBool, Ordering},
-        LazyLock,
+        RwLock,
     },
 };
 
@@ -12,12 +12,12 @@ use egui::OpenUrl;
 use log::info;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
-use tokio::{process::Command, sync::RwLock};
+use tokio::process::Command;
 use yjyz_tools::license::{self, LicenseFeatures};
 
 use crate::ASYNC_ERROR;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 pub struct VersionJson {
     pub version: String,
     #[serde(default)]
@@ -27,11 +27,11 @@ pub struct VersionJson {
 }
 
 static CHECK_COMPLETED: AtomicBool = AtomicBool::new(false);
-static UPDATE: LazyLock<RwLock<Option<VersionJson>>> = LazyLock::new(|| RwLock::new(None));
+static UPDATE: RwLock<Option<VersionJson>> = RwLock::new(None);
 
 pub async fn check() -> Result<()> {
     let mut path = std::path::absolute(std::env::current_exe()?)?;
-    path.add_extension(".upd.bat");
+    path.add_extension("upd.bat");
     if path.exists() {
         info!("Removing update bat ...");
         fs::remove_file(path)?;
@@ -48,14 +48,15 @@ pub async fn check() -> Result<()> {
         .await?;
     if resp.version != env!("CARGO_PKG_VERSION") {
         info!("Found update: {}", resp.version);
-        let _ = UPDATE.write().await.insert(resp);
+        let _ = UPDATE.write().unwrap().insert(resp);
     }
     CHECK_COMPLETED.store(true, Ordering::Relaxed);
     Ok(())
 }
 
 pub async fn do_update() -> Result<()> {
-    if let Some(update) = &*UPDATE.read().await {
+    let update = UPDATE.read().unwrap().to_owned();
+    if let Some(update) = update {
         info!("Doing update ...");
         let resp = Box::new(
             reqwest::get(&update.download)
@@ -79,9 +80,9 @@ pub async fn do_update() -> Result<()> {
         }
 
         let path = std::path::absolute(std::env::current_exe()?)?;
-        fs::write(path.with_added_extension(".updtmp"), *resp)?;
+        fs::write(path.with_added_extension("updtmp"), *resp)?;
 
-        let bat_path = path.with_added_extension(".upd.bat");
+        let bat_path = path.with_added_extension("upd.bat");
         let exe_path = path.to_str().unwrap().to_string();
         let proc_name = std::env::current_exe()?
             .file_name()
@@ -115,7 +116,7 @@ impl Updater {
         if license::is_set(LicenseFeatures::NO_UPDATE) || self.dismissed {
             return false;
         }
-        if UPDATE.blocking_read().is_some() {
+        if UPDATE.read().unwrap().is_some() {
             return true;
         }
         return license::is_set(LicenseFeatures::MUST_UPDATE);
@@ -125,7 +126,7 @@ impl Updater {
         if self.updating {
             ui.heading("正在更新，请稍候……");
         } else if CHECK_COMPLETED.load(Ordering::Relaxed) {
-            if let Some(update) = &*UPDATE.blocking_read() {
+            if let Some(update) = &*UPDATE.read().unwrap() {
                 ui.vertical(|ui| {
                     ui.heading(format!("新版本可用：{}", update.version));
                     if let Some(message) = &update.message {
