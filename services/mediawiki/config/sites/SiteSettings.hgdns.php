@@ -13,9 +13,9 @@ xvMergeInto('wgHiddenPrefs', ['date', 'timecorrection']);
 $wgDefaultUserOptions['date'] = 'ISO 8601';
 
 // Copyrights
-$wgRightsUrl = "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt";
-$wgRightsText = "CC0 1.0公有领域";
-$wgRightsIcon = "$wgResourceBasePath/resources/assets/licenses/cc-0.png";
+$wgRightsUrl = "/w/FLCC:著作权";
+$wgRightsText = "混合许可证";
+$wgRightsIcon = '/images/b/ba/FLCC_Wordmark.svg';
 
 // Logo
 $wgLogos = [
