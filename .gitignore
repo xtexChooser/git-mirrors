@@ -3,3 +3,4 @@
 *.pem
 *.key
 *.lic
+/maint/version.json
