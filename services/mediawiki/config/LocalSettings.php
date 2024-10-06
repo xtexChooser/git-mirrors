@@ -35,7 +35,9 @@ $xvDebug = boolval($_SERVER['MW_DEBUG'] ?? false)
 if ($xvDebug) {
 	header('X-Xens-Wikis-Debug: true');
 	$wgDevelopmentWarnings = true;
-	ini_set('display_errors', true);
+	ini_set('display_errors', '1');
+	ini_set('display_startup_errors', '1');
+	error_reporting(E_ALL);
 }
 
 // request timeouts
