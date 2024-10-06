@@ -7,9 +7,9 @@ use windows::{
     core::{w, PCWSTR},
     Win32::System::Services::{
         ChangeServiceConfigW, CloseServiceHandle, ControlService, OpenSCManagerW, OpenServiceW,
-        StartServiceW, ENUM_SERVICE_TYPE, SC_MANAGER_ALL_ACCESS, SERVICE_CHANGE_CONFIG,
-        SERVICE_CONTROL_STOP, SERVICE_DISABLED, SERVICE_ERROR, SERVICE_NO_CHANGE, SERVICE_START,
-        SERVICE_STATUS, SERVICE_STOP, SERVICE_SYSTEM_START,
+        StartServiceW, ENUM_SERVICE_TYPE, SC_MANAGER_ALL_ACCESS, SERVICE_AUTO_START,
+        SERVICE_CHANGE_CONFIG, SERVICE_CONTROL_STOP, SERVICE_DISABLED, SERVICE_ERROR,
+        SERVICE_NO_CHANGE, SERVICE_START, SERVICE_STATUS, SERVICE_STOP,
     },
 };
 use windows_registry::{CURRENT_USER, LOCAL_MACHINE};
@@ -271,7 +271,7 @@ pub fn enable_windows_update() -> Result<()> {
         let _ = ChangeServiceConfigW(
             wuauserv,
             ENUM_SERVICE_TYPE(SERVICE_NO_CHANGE),
-            SERVICE_SYSTEM_START,
+            SERVICE_AUTO_START,
             SERVICE_ERROR(SERVICE_NO_CHANGE),
             PCWSTR::null(),
             PCWSTR::null(),
@@ -281,8 +281,8 @@ pub fn enable_windows_update() -> Result<()> {
             PCWSTR::null(),
             PCWSTR::null(),
         );
-        let _ = StartServiceW(wuauserv, None);
-        let _ = CloseServiceHandle(wuauserv);
+        StartServiceW(wuauserv, None)?;
+        CloseServiceHandle(wuauserv)?;
 
         CloseServiceHandle(sc_manager)?;
     }
