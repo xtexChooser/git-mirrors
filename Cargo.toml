@@ -3,6 +3,8 @@ name = "yjyz-tools"
 description = "阳江一中实用工具"
 version = "0.1.0"
 edition = "2021"
+license = "BSD-3-Clause"
+repository = "https://codeberg.org/xtex/yjyz-tools"
 
 [dependencies]
 anyhow = { version = "1.0.89", features = ["backtrace"] }
