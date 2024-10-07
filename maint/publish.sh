@@ -6,8 +6,8 @@ version="$(grep -E '^version = "(.*)"$' Cargo.toml | head -n1 | tail -c+12 | hea
 mkdir -p maint/dist
 
 echo "Creating release ..."
-if [[ "$(cargo release changes)" == "" ]]; then
-    echo "No new changes, skipping releasing ..."
+if [[ "${NOREL:-}" != "" ]]; then
+    echo "Skipping releasing ..."
 else
     cargo release patch -x --no-confirm
 fi
