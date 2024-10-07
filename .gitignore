@@ -4,3 +4,4 @@
 *.key
 *.lic
 /maint/version.json
+/maint/dist

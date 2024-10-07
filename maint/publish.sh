@@ -2,6 +2,11 @@
 set -euo pipefail
 
 version="$(grep -E '^version = "(.*)"$' Cargo.toml | head -n1 | tail -c+12 | head -c-2)"
+[[ -e Cargo.toml ]] || exit 1
+mkdir -p maint/dist
+
+echo "Creating release ..."
+cargo release patch -x --no-confirm
 
 echo "Setting version to $version ..."
 yq -i -I 4 ".version |= \"$version\"" maint/version.json
@@ -9,12 +14,19 @@ yq -i -I 4 ".version |= \"$version\"" maint/version.json
 echo "Building x86-64 prebuilt binary ..."
 cargo build --release --target x86_64-pc-windows-gnu
 
+echo "Compressing binaries with UPX ..."
+upx --best --lzma target/x86_64-pc-windows-gnu/release/yjyz-tools.exe \
+    -o maint/dist/yzt-prebuilt.exe
+
 echo "Updating checksums ..."
-checksum="$(sha256sum target/x86_64-pc-windows-gnu/release/yjyz-tools.exe | cut -d' ' -f1)"
+checksum="$(sha256sum maint/dist/yzt-prebuilt.exe | cut -d' ' -f1)"
 yq -i -I 4 ".sha256sum |= \"$checksum\"" maint/version.json
 
+echo "Preparing version JSON ..."
+cp -vp maint/version.json maint/dist/version_v1.json
+yq -i -I 0 "." maint/version_v1.json
+
 echo "Sending files ..."
-rsync -p maint/version.json \
-    envs.net:public_html/yjyz-tools/version_v1.json
-rsync -p target/x86_64-pc-windows-gnu/release/yjyz-tools.exe \
-    envs.net:public_html/yjyz-tools/yzt-prebuilt.exe
+rsync -vp maint/dist/ envs.net:public_html/yjyz-tools/
+
+echo "New version published!"
