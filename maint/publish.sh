@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-version="$(grep -E '^version = "(.*)"$' Cargo.toml | head -n1 | tail -c+12 | head -c-2)"
 [[ -e Cargo.toml ]] || exit 1
 mkdir -p maint/dist
 
@@ -12,6 +11,7 @@ else
     cargo release patch -x --no-confirm
 fi
 
+version="$(grep -E '^version = "(.*)"$' Cargo.toml | head -n1 | tail -c+12 | head -c-2)"
 echo "Setting version to $version ..."
 yq -i -I 4 ".version |= \"$version\"" maint/version.json
 
