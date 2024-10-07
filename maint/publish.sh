@@ -6,7 +6,11 @@ version="$(grep -E '^version = "(.*)"$' Cargo.toml | head -n1 | tail -c+12 | hea
 mkdir -p maint/dist
 
 echo "Creating release ..."
-cargo release patch -x --no-confirm
+if [[ "$(cargo release changes)" != "" ]]; then
+    echo "No new changes, skipping releasing ..."
+else
+    cargo release patch -x --no-confirm
+fi
 
 echo "Setting version to $version ..."
 yq -i -I 4 ".version |= \"$version\"" maint/version.json
@@ -24,7 +28,7 @@ yq -i -I 4 ".sha256sum |= \"$checksum\"" maint/version.json
 
 echo "Preparing version JSON ..."
 cp -vp maint/version.json maint/dist/version_v1.json
-yq -i -I 0 "." maint/version_v1.json
+yq -i -I 0 "." maint/dist/version_v1.json
 
 echo "Sending files ..."
 rsync -vp maint/dist/ envs.net:public_html/yjyz-tools/
