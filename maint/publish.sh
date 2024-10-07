@@ -6,7 +6,7 @@ version="$(grep -E '^version = "(.*)"$' Cargo.toml | head -n1 | tail -c+12 | hea
 mkdir -p maint/dist
 
 echo "Creating release ..."
-if [[ "$(cargo release changes)" != "" ]]; then
+if [[ "$(cargo release changes)" == "" ]]; then
     echo "No new changes, skipping releasing ..."
 else
     cargo release patch -x --no-confirm
@@ -19,6 +19,7 @@ echo "Building x86-64 prebuilt binary ..."
 cargo build --release --target x86_64-pc-windows-gnu
 
 echo "Compressing binaries with UPX ..."
+rm -vf maint/dist/yzt-prebuilt.exe
 upx --best --lzma target/x86_64-pc-windows-gnu/release/yjyz-tools.exe \
     -o maint/dist/yzt-prebuilt.exe
 
