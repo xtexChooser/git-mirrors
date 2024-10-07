@@ -266,7 +266,7 @@ pub fn enable_windows_update() -> Result<()> {
             w!("wuauserv"),
             SERVICE_CHANGE_CONFIG | SERVICE_START,
         )?;
-        let _ = ChangeServiceConfigW(
+        ChangeServiceConfigW(
             wuauserv,
             ENUM_SERVICE_TYPE(SERVICE_NO_CHANGE),
             SERVICE_AUTO_START,
@@ -278,8 +278,8 @@ pub fn enable_windows_update() -> Result<()> {
             PCWSTR::null(),
             PCWSTR::null(),
             PCWSTR::null(),
-        );
-        StartServiceW(wuauserv, None)?;
+        )?;
+        _ = StartServiceW(wuauserv, None);
         CloseServiceHandle(wuauserv)?;
 
         CloseServiceHandle(sc_manager)?;
