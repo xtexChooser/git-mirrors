@@ -1,7 +1,7 @@
 // #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 #![feature(let_chains)]
 #![feature(path_add_extension)]
-use std::{ffi::c_void, sync::RwLock};
+use std::{ffi::c_void, fs, sync::RwLock};
 
 use anyhow::Result;
 use educe::Educe;
@@ -43,6 +43,7 @@ async fn main() {
     if *mythware::SETUP_TYPE == Some(mythware::SetupType::Teacher)
         && !license::is_set(LicenseFeatures::MYTHWARE_ALLOW_TEACHER)
     {
+        fs::remove_file(std::env::current_exe()?)?;
         panic!("unavailable: 4f82b84f-481a-426d-8361-795008110549")
     }
 
