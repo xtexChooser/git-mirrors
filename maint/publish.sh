@@ -32,6 +32,6 @@ cp -vp maint/version.json maint/dist/version_v1.json
 yq -i -I 0 "." maint/dist/version_v1.json
 
 echo "Sending files ..."
-rsync -vp maint/dist/ envs.net:public_html/yjyz-tools/
+rsync -rvp maint/dist/ envs.net:public_html/yjyz-tools/
 
 echo "New version published!"
