@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -E
+set -euo pipefail
 
 version="$(grep -E '^version = "(.*)"$' Cargo.toml | head -n1 | tail -c+12 | head -c-2)"
 
