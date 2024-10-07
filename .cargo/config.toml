@@ -5,10 +5,11 @@ rustflags = [
     "--cfg=windows_slim_errors",
     # use lld
     "-C",
-    "link-arg=-fuse-ld=lld"
+    "link-arg=-fuse-ld=lld",
 ]
 
 [profile.release]
-opt-level = 3
+opt-level = "s"
 lto = true
-incremental = true
+strip = "debuginfo"
+codegen-units = 1
