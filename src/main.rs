@@ -29,7 +29,7 @@ mod utils;
 mod windowsadj;
 
 #[tokio::main]
-async fn main() {
+async fn main() -> Result<()> {
     #[cfg(debug_assertions)]
     if std::env::var("YJYZTOOLS_DEBUG").is_ok() {
         if std::env::var("RUST_LOG").is_err() {
@@ -86,6 +86,8 @@ async fn main() {
         Box::new(|cc| Ok(Box::new(MainApp::new(cc)?))),
     )
     .unwrap();
+
+    Ok(())
 }
 
 static ASYNC_ERROR: RwLock<Option<anyhow::Error>> = RwLock::new(None);
