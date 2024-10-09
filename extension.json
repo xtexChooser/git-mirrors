@@ -37,6 +37,17 @@
 			"i18n"
 		]
 	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "",
+		"remoteExtPath": "Chart"
+	},
+	"ResourceModules": {
+		"ext.chart.styles": {
+			"styles": [
+				"resources/ext.chart.styles/main.less"
+			]
+		}
+	},
 	"ExtensionMessagesFiles": {
 		"ChartMagic": "Chart.i18n.magic.php"
 	},
@@ -47,6 +58,7 @@
 		}
 	},
 	"Hooks": {
+		"BeforePageDisplay": "main",
 		"ParserFirstCallInit": "main"
 	},
 	"manifest_version": 2
