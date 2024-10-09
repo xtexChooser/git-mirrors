@@ -12,7 +12,5 @@ $magicWords = [];
 /** English (English) */
 $magicWords['en'] = [
 	'chart' => [ 0, 'chart' ],
-	'chart_data' => [ 0, 'data' ],
-	'chart_width' => [ 0, 'width' ],
-	'chart_height' => [ 0, 'height' ]
+	'chart_data' => [ 0, 'data' ]
 ];
