@@ -56,8 +56,6 @@ class JCChartContent extends JCDataContent {
 		};
 
 		$result->version = $data->version;
-		$result->width = $data->width;
-		$result->height = $data->height;
 		if ( isset( $data->type ) ) {
 			$result->type = $data->type;
 		}

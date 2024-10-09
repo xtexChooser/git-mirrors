@@ -13,14 +13,13 @@ class ChartArgumentsParser {
 
 	public function parseArguments( Parser $parser, array $args ): ParsedArguments {
 		$magicWords = $parser->getMagicWordFactory()->newArray( [
-			'chart_data',
-			'chart_width',
-			'chart_height'
+			'chart_data'
 		] );
 
 		$definition = array_shift( $args );
 		$dataSource = null;
 		$options = [];
+
 		$errors = [];
 		foreach ( $args as $arg ) {
 			if ( str_contains( $arg, '=' ) ) {
@@ -28,36 +27,6 @@ class ChartArgumentsParser {
 				switch ( $magicWords->matchStartToEnd( $key ) ) {
 					case 'chart_data':
 						$dataSource = $value;
-						break;
-					// @unstable: @todo revisit after T371712
-					case 'chart_width':
-						$filteredValue = filter_var( $value, FILTER_VALIDATE_INT, [
-							'options' => [ 'min_range' => 100 ]
-						] );
-
-						if ( $filteredValue === false ) {
-							$errors[] = [
-								'key' => 'chart-error-invalid-width',
-								'params' => [ $value ]
-							];
-						} else {
-							$options[ 'width' ] = $filteredValue;
-						}
-						break;
-					// @unstable: @todo revisit after T371712
-					case 'chart_height':
-						$filteredValue = filter_var( $value, FILTER_VALIDATE_INT, [
-							'options' => [ 'min_range' => 100 ]
-						] );
-
-						if ( $filteredValue === false ) {
-							$errors[] = [
-								'key' => 'chart-error-invalid-height',
-								'params' => [ $value ]
-							];
-						} else {
-							$options[ 'height' ] = $filteredValue;
-						}
 						break;
 					default:
 						// no-op
