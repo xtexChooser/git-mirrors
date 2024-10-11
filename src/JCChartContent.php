@@ -97,10 +97,6 @@ class JCChartContent extends JCDataContent {
 		if ( isset( $data->yAxis ) ) {
 			$result->yAxis = $axis( $data->yAxis );
 		}
-
-		if ( isset( $data->showLegend ) ) {
-			$result->showLegend = $data->showLegend;
-		}
 		if ( isset( $data->linewidth ) ) {
 			$result->linewidth = $data->linewidth;
 		}
