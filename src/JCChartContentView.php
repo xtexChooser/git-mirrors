@@ -71,14 +71,10 @@ class JCChartContentView extends JCContentView {
 	// !!!!! All comments will be automatically deleted on save !!!!!
 	"version": 1,
 
-	$licenseIntro
-
-	// Default width and height of the chart. Can be overridden on each page that uses the chart.
-	"width": 600,
-	"height": 400,
+	$licenseIntro,
 
 	// Name of a tabular data page to use as the data source. Can be overridden on each page that uses the chart.
-	"source": "",
+	"source": "Example.tab",
 
 	// Chart type. Available types are: line
 	"type": "line",
