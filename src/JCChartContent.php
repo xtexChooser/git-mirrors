@@ -59,35 +59,11 @@ class JCChartContent extends JCDataContent {
 		if ( isset( $data->type ) ) {
 			$result->type = $data->type;
 		}
-		if ( isset( $data->interpolate ) ) {
-			$result->interpolate = $data->interpolate;
-		}
-		if ( isset( $data->colors ) ) {
-			$result->colors = $data->colors;
-		}
 
 		$axis = static function ( $src ) use ( $localize ) {
 			$dst = (object)[];
 			if ( isset( $src->title ) ) {
 				$dst->title = $localize( $src->title );
-			}
-			if ( isset( $src->min ) ) {
-				$dst->min = $src->min;
-			}
-			if ( isset( $src->max ) ) {
-				$dst->max = $src->max;
-			}
-			if ( isset( $src->format ) ) {
-				$dst->format = $localize( $src->format );
-			}
-			if ( isset( $src->angle ) ) {
-				$dst->angle = $src->angle;
-			}
-			if ( isset( $src->type ) ) {
-				$dst->type = $src->type;
-			}
-			if ( isset( $src->grid ) ) {
-				$dst->grid = $src->grid;
 			}
 			return $dst;
 		};
@@ -96,36 +72,6 @@ class JCChartContent extends JCDataContent {
 		}
 		if ( isset( $data->yAxis ) ) {
 			$result->yAxis = $axis( $data->yAxis );
-		}
-		if ( isset( $data->linewidth ) ) {
-			$result->linewidth = $data->linewidth;
-		}
-		if ( isset( $data->showValues ) ) {
-			$src = $data->showValues;
-			$dst = (object)[];
-			if ( isset( $src->format ) ) {
-				$dst->format = $localize( $src->format );
-			}
-			if ( isset( $src->fontcolor ) ) {
-				$dst->fontcolor = $src->fontcolor;
-			}
-			if ( isset( $src->fontsize ) ) {
-				$dst->fontsize = $src->fontsize;
-			}
-			if ( isset( $src->offset ) ) {
-				$dst->offset = $src->offset;
-			}
-			if ( isset( $src->angle ) ) {
-				$dst->angle = $src->angle;
-			}
-			$result->showValues = $dst;
-		}
-
-		if ( isset( $data->showSymbols ) ) {
-			$result->showSymbols = $data->showSymbols;
-		}
-		if ( isset( $data->innerRadius ) ) {
-			$result->innerRadius = $data->innerRadius;
 		}
 		if ( isset( $data->source ) ) {
 			$result->source = $data->source;
