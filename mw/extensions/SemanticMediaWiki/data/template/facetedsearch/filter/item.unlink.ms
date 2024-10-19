@@ -1,1 +1,0 @@
-<li><div class="filter-item" style="color:#888"><span class="filter-item-label"><span>{{key}}</span><span class="filter-item-unlink"><a href="{{href}}">✖</a></span></span><span class="filter-item-count">{{count}}</span></div><input type="hidden" name="{{hidden-name}}" form="search-input-form" value="{{hidden-value}}"></li>

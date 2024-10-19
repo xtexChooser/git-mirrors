@@ -1,1 +1,0 @@
-<div class="filter-items-input"><input type="search" placeholder="{{placeholder}}"></div>

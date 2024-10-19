@@ -1,1 +1,0 @@
-<li><div class="filter-item"><span class="filter-item-link"><a href="{{href}}">{{key}}</a></span><span class="filter-item-count">{{count}}</span></div></li>
