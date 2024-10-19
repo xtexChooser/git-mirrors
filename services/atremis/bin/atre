@@ -80,12 +80,36 @@ function atre::root {
 }
 
 function atre::svc {
-	local svc=$1 script=$2
-	local scriptFile=$atreDir/services/$svc/scripts/$script.sh
-	[[ ! -f "$scriptFile" ]] && atre::error "Script $svc $script not found"
-	atre::log "Running script $svc $script"
-	shift 2
-	atre::root "$scriptFile" "$@"
+	atre::root "$0" internal atre::callSvc "$@"
+}
+
+function atre::callSvc {
+	local svc="$1" script="$2"
+	local svcDir="$atreDir/services/$svc"
+	atre::log "Running script: $svc $script"
+	if [[ -f "$svcDir/scripts/$script.sh" ]]; then
+		shift 2
+		"$svcDir/scripts/$script.sh" "$@"
+		return
+	elif [[ -f "$svcDir/maint.sh" ]]; then
+		(
+			# shellcheck source=/dev/null
+			source "$svcDir/maint.sh"
+			if declare -fF "atre::$svc::$script" >/dev/null; then
+				shift 2
+				"atre::$svc::$script" "$@"
+			elif declare -fF "atre::maintenance::$svc" >/dev/null; then
+				shift 1
+				"atre::maintenance::$svc" "$@"
+			else
+				atre::error "Maintenance script $svc $script not found"
+			fi
+			return
+		)
+		return
+	else
+		atre::error "Maintenance script $svc $script not found"
+	fi
 }
 
 function atre::catlog {
