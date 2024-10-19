@@ -81,7 +81,7 @@ function atre::root {
 
 function atre::svc {
 	local svc=$1 script=$2
-	local scriptFile=$atreDir/services/$svc/script/$script.sh
+	local scriptFile=$atreDir/services/$svc/scripts/$script.sh
 	[[ ! -f "$scriptFile" ]] && atre::error "Script $svc $script not found"
 	atre::log "Running script $svc $script"
 	shift 2
