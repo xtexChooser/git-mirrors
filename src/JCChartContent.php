@@ -4,7 +4,7 @@ namespace MediaWiki\Extension\Chart;
 
 use JsonConfig\JCDataContent;
 use JsonConfig\JCUtils;
-use Language;
+use MediaWiki\Language\Language;
 use MediaWiki\MediaWikiServices;
 
 class JCChartContent extends JCDataContent {
