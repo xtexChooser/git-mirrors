@@ -1,13 +1,8 @@
 #citizen-page-header-sticky-sentinel {
-	grid-area: afterHeader; // align right above content
 	height: 1px;
 	margin-top: -1px;
 	visibility: hidden;
 	contain: strict;
-}
-
-#citizen-page-header-sticky-placeholder {
-	grid-area: afterHeader;
 }
 
 .ve-activated,
@@ -25,8 +20,8 @@
 	&::before {
 		position: absolute;
 		top: 0;
-		right: ~'calc( var(--padding-page ) * -1 )';
-		left: ~'calc( var(--padding-page ) * -1 )';
+		right: 0;
+		left: 0;
 		z-index: @z-index-bottom;
 		height: 100%;
 		content: '';
@@ -83,6 +78,12 @@
 			background-color: var( --background-color-button-quiet--active );
 		}
 	}
+
+	// Collapse page tools label in sticky header
+	.page-actions > .mw-portlet li > a {
+		gap: 0;
+		font-size: 0;
+	}
 }
 
 html {
@@ -117,7 +118,7 @@ html {
 // Make sticky header more compact if there are less screen estate
 @media ( max-height: 800px ) {
 	.citizen-page-header--sticky {
-		.citizen-page-header {
+		.citizen-page-header-inner {
 			padding-top: var( --space-sm );
 			padding-bottom: var( --space-sm );
 		}
