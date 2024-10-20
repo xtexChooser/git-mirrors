@@ -52,7 +52,7 @@ function atre::publog {
 			-H "Authorization: Bearer $PUBLOGS_TOKEN" \
 			-H "X-Title: $messageHeader: $title" \
 			-H "X-Tags: $tags" \
-			-d "$(printf '%s\n' "$@")" \
+			-d "$(printf '%s\n' "Timestamp: $(date -Iseconds -u)" "$@")" \
 			https://ntfy.xvnet.eu.org/publogs >/dev/null
 	fi
 }
