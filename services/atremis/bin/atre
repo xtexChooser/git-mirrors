@@ -58,6 +58,7 @@ function atre::publog {
 			-H "X-Tags: $tags" \
 			-d "$(printf '%s\n' "Timestamp: $(date -Iseconds -u)" "$@")" \
 			https://ntfy.xvnet.eu.org/publogs >/dev/null
+		atre::log "Publicly logged: $title"
 	fi
 }
 
