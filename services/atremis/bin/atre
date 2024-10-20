@@ -207,14 +207,14 @@ function atre::main {
 	apply)
 		atre::apply "$@"
 		;;
-	root | su | sudo)
+	su | sudo)
 		[ $# -eq 0 ] && atre::root "$SHELL" && exit
 		atre::root "$@"
 		;;
 	svc | s)
 		atre::svc "$@"
 		;;
-	log | logs | catlog)
+	log | logs)
 		atre::catlog "$@"
 		;;
 	internal)
