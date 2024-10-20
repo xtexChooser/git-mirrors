@@ -58,6 +58,6 @@ OriginalFilename = "yjyz-tools.exe"
 
 [package.metadata.release]
 allow-branch = ["main"]
-pre-release-commit-message = "Release version {{version}}"
+pre-release-commit-message = "chore: Release version {{version}}"
 tag-message = "Release {{version}}"
 publish = false
