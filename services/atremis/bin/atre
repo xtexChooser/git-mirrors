@@ -113,16 +113,9 @@ function atre::apply {
 
 function atre::root {
 	atre::assertNonDevel
-	if [[ -n "$isRootUser" ]]; then
-		# DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus
-		# XDG_RUNTIME_DIR=/run/user/$(id -u)
-		# export DBUS_SESSION_BUS_ADDRESS XDG_RUNTIME_DIR
+	atre::log "Switch to root"
+	sudo --preserve-env=ATREMIS_USER \
 		"$@"
-	else
-		atre::log "Switch to root"
-		sudo --preserve-env=ATREMIS_USER \
-			"$0" root "$@"
-	fi
 }
 
 function atre::svc {
@@ -227,7 +220,7 @@ function atre::main {
 		atre::publog "$@"
 		;;
 	*)
-		atre::error "unknown option: $1"
+		atre::error "unknown option: $cmd"
 		;;
 	esac
 }
