@@ -24,7 +24,7 @@ $(call add-fs-directory,/var/run/bird)
 
 $(call cmd-stamp)
 V_NAME		= bird-conf
-V_CMD		= $(STATES_DIR)/atre svc reconf
+V_CMD		= $(STATES_DIR)/atre svc bird reconf
 V_DEPS		+= /etc/bird/bird.conf
 V_DEPS_ORD	+= dinit-bird
 $(call end)
