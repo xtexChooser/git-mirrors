@@ -127,6 +127,10 @@ function atre::svc {
 }
 
 function atre::callSvc {
+	(($# < 2)) && {
+		echo "usage: atre svc <SERVICE> <SCRIPT>" >&2
+		return 1
+	}
 	local svc="${1//\//::}" script="$2"
 	local svcDir="$atreDir/services/$1"
 	atre::log "Running script: $svc $script"
