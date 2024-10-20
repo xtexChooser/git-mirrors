@@ -25,7 +25,7 @@ $(call end)
 
 $(call cmd-stamp)
 V_NAME		= caddy-reload
-V_CMD		= $(STATES_DIR)/services/caddy/script/reload.sh
+V_CMD		= $(STATES_DIR)/atre svc caddy reload
 V_DEPS		+= /etc/caddy/Caddyfile
 V_DEPS_ORD	+= dinit-caddy
 $(call end)
