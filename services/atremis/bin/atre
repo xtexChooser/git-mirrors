@@ -175,14 +175,14 @@ function atre::catlog {
 
 function atre::update {
 	atre::assertNonDevel
-	atre::root "$0" internal atre::prepare_do_update
+	atre::root "$0" internal atre::prepareForUpdate
 }
 
-function atre::prepare_do_update {
-	atre::do_update | tee --append /var/log/atremis/update.log
+function atre::prepareForUpdate {
+	atre::doUpdate | tee --append /var/log/atremis/update.log
 }
 
-function atre::do_update {
+function atre::doUpdate {
 	atre::pull
 	atre::svc atremis update-containers
 	atre::apply
