@@ -2,7 +2,9 @@
 set -euo pipefail
 
 atreDir=/srv/atremis
-user="$(id -un)"
+user="${ATREMIS_USER:-}"
+[[ -n "$user" ]] || user="$(id -un)"
+export ATREMIS_USER="$user"
 isRootUser=""
 ! [[ "$user" == "root" ]] || isRootUser="true"
 # shellcheck source=/dev/null
@@ -99,7 +101,8 @@ function atre::root {
 		"$@"
 	else
 		atre::log "Switch to root"
-		sudo "$0" root "$@"
+		sudo --preserve-env=ATREMIS_USER \
+			"$0" root "$@"
 	fi
 }
 
