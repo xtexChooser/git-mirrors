@@ -1,3 +1,5 @@
+BALARO_VERSION ?= 17.0
+
 $(call x-container-service)
 V_SERVICE	= balaro
 V_DEPS		+= /var/lib/postgresql/balaro/postgres.conf
@@ -11,7 +13,7 @@ V_ARGS		+= --mount=type=bind,src=/var/run/postgresql,dst=/var/run/postgresql
 V_ARGS		+= --memory=128M
 V_ARGS		+= --user=root:root
 V_ARGS		+= --publish=5433:5432/tcp
-V_ARGS 		+= codeberg.org/xens/postgres:latest
+V_ARGS 		+= codeberg.org/xens/postgres:$(strip $(BIRD_VERSION))
 $(call end)
 
 $(call fs-file)
