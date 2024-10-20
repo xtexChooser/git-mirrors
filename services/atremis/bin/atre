@@ -2,10 +2,12 @@
 set -euo pipefail
 
 atreDir=/srv/atremis
+user="$(id -un)"
 isRootUser=""
-! [[ "$(id -un)" == "root" ]] || isRootUser="true"
+! [[ "$user" == "root" ]] || isRootUser="true"
 # shellcheck source=/dev/null
 ! [[ -f /srv/secrets/atre/env.sh ]] || source /srv/secrets/atre/env.sh
+shortHostname="$(hostname -s)"
 
 function atre::log {
 	echo -e "\e[0;34m${FUNCNAME[1]}: $*\e[0m"
@@ -31,7 +33,27 @@ COMMAND:
     apply                       Apply configuration
     root [COMMAND]              Run command as root
 	update                      Update
+	publog <LOG>                Send log to publogs channel
 XXX
+}
+
+function atre::publog {
+	if [[ -n "$PUBLOGS_TOKEN" ]]; then
+		local messageHeader tags="s:$shortHostname"
+		if [[ -n "$isRootUser" ]]; then
+			messageHeader="$shortHostname"
+		else
+			messageHeader="$user@$shortHostname"
+			tags+=",u:$user"
+		fi
+		local title="$1"
+		shift
+		curl -Sf --proto '=https' --tlsv1.2 --max-time 5 \
+			-H "X-Title: $messageHeader: $title" \
+			-H "X-Tags: $tags" \
+			-d "$(printf '%s\n' "$@")" \
+			https://ntfy.xvnet.eu.org/publogs >/dev/null
+	fi
 }
 
 function atre::pull {
@@ -172,6 +194,9 @@ function atre::main {
 		;;
 	update | upd)
 		atre::update "$@"
+		;;
+	publog)
+		atre::publog "$@"
 		;;
 	*)
 		atre::error "unknown option: $1"
