@@ -9,7 +9,7 @@ BIRD_VERSION ?= 2.15.1
 $(call x-container-service)
 V_SERVICE	= bird
 V_DEPS_ORD	+= /etc/bird/bird.conf /var/run/bird
-V_PRE_STOP	= $(abspath $(STATES_DIR)/services/bird/script/stop.sh)
+V_PRE_STOP	= $(abspath $(STATES_DIR)/atre) svc bird stop
 V_ARGS		+= --mount=type=bind,src=/etc/bird,dst=/etc/bird,ro=true
 V_ARGS		+= --mount=type=bind,src=/var/run/bird,dst=/var/run/bird
 V_ARGS		+= --publish-all
@@ -22,7 +22,7 @@ $(call add-fs-directory,/var/run/bird)
 
 $(call cmd-stamp)
 V_NAME		= bird-conf
-V_CMD		= $(STATES_DIR)/services/bird/script/reconf.sh
+V_CMD		= $(STATES_DIR)/atre svc reconf
 V_DEPS		+= /etc/bird/bird.conf
 V_DEPS_ORD	+= dinit-bird
 $(call end)
