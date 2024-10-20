@@ -2,13 +2,19 @@
 set -euo pipefail
 
 atreDir=/srv/atremis
+isDevelEnv=""
+if ! [[ -e "$atreDir" ]]; then
+	atreDir="$(pwd)"
+	isDevelEnv=y
+fi
+
 shortHostname="$(hostname -s)"
 
 realUser="$(id -un)"
 user="${ATREMIS_USER:-$realUser}"
 export ATREMIS_USER="$user"
 isRootUser=""
-! [[ "$realUser" == "root" ]] || isRootUser="true"
+! [[ "$realUser" == "root" ]] || isRootUser=y
 
 # shellcheck source=/dev/null
 ! [[ -f /srv/secrets/atre/env.sh ]] || source /srv/secrets/atre/env.sh
@@ -20,6 +26,10 @@ function atre::log {
 function atre::error {
 	echo -e "\e[0;31m${FUNCNAME[1]}: $*\e[0m" 1>&2
 	exit 1
+}
+
+function atre::assertNonDevel {
+	[[ -z "$isDevelEnv" ]] || atre::error "Not available in development environment"
 }
 
 function atre::succ {
@@ -42,6 +52,7 @@ XXX
 }
 
 function atre::publog {
+	[[ -z "$isDevelEnv" ]] || return
 	if [[ -n "$PUBLOGS_TOKEN" ]]; then
 		local messageHeader tags="s:$shortHostname"
 		if [[ -n "$isRootUser" ]]; then
@@ -63,7 +74,8 @@ function atre::publog {
 }
 
 function atre::pull {
-	cd $atreDir
+	atre::assertNonDevel
+	cd "$atreDir"
 
 	atre::fetch || true
 
@@ -71,12 +83,14 @@ function atre::pull {
 }
 
 function atre::fetch {
+	atre::assertNonDevel
 	atre::log "Fetch updates"
 	atre::root "$0" internal atre::callFetch
 }
 
 function atre::callFetch {
-	cd $atreDir
+	atre::assertNonDevel
+	cd "$atreDir"
 	git fetch --depth 1 origin
 	git reset --hard origin/main
 	git submodule sync --recursive
@@ -91,12 +105,14 @@ function atre::callFetch {
 }
 
 function atre::apply {
+	atre::assertNonDevel
 	atre::log "Apply configuration"
-	cd $atreDir
+	cd "$atreDir"
 	atre::root make "${@:-apply}"
 }
 
 function atre::root {
+	atre::assertNonDevel
 	if [[ -n "$isRootUser" ]]; then
 		# DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus
 		# XDG_RUNTIME_DIR=/run/user/$(id -u)
@@ -110,7 +126,11 @@ function atre::root {
 }
 
 function atre::svc {
-	atre::root "$0" internal atre::callSvc "$@"
+	if [[ -z "$isDevelEnv" ]]; then
+		atre::root "$0" internal atre::callSvc "$@"
+	else
+		atre::callSvc "$@"
+	fi
 }
 
 function atre::callSvc {
@@ -143,6 +163,7 @@ function atre::callSvc {
 }
 
 function atre::catlog {
+	atre::assertNonDevel
 	local svc=$1
 	local scriptFile=$atreDir/services/$svc/script/catlog.sh
 	if [[ -f "$scriptFile" ]]; then
@@ -153,6 +174,7 @@ function atre::catlog {
 }
 
 function atre::update {
+	atre::assertNonDevel
 	atre::root "$0" internal atre::prepare_do_update
 }
 
@@ -168,7 +190,6 @@ function atre::do_update {
 
 function atre::main {
 	[ $# -eq 0 ] && atre::usage && exit
-	[ ! -d "$atreDir" ] && atre::error "$atreDir does not exist"
 	local cmd=$1
 	shift
 
