@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
+set -euo pipefail
 
 atreDir=/srv/atremis
 isRootUser=""
-[[ "$(id -un)" == "root" ]] && isRootUser="true"
-
-set -euo pipefail
+! [[ "$(id -un)" == "root" ]] || isRootUser="true"
+# shellcheck source=/dev/null
+! [[ -f /srv/secrets/atre/env.sh ]] || source /srv/secrets/atre/env.sh
 
 function atre::log {
 	echo -e "\e[0;34m${FUNCNAME[1]}: $*\e[0m"
