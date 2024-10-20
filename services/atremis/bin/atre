@@ -55,7 +55,7 @@ function atre::publog {
 	[[ -z "$isDevelEnv" ]] || return
 	if [[ -n "$PUBLOGS_TOKEN" ]]; then
 		local messageHeader tags="s:$shortHostname"
-		if [[ -n "$isRootUser" ]]; then
+		if [[ "$user" == "root" ]]; then
 			messageHeader="$shortHostname"
 		else
 			messageHeader="$user@$shortHostname"
