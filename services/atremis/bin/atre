@@ -104,7 +104,7 @@ function atre::root {
 }
 
 function atre::svc {
-	atre::root "$0" internal atre::callSvc "$@"
+	atre::callSvc "$@"
 }
 
 function atre::callSvc {
@@ -113,7 +113,7 @@ function atre::callSvc {
 	atre::log "Running script: $svc $script"
 	if [[ -f "$svcDir/scripts/$script.sh" ]]; then
 		shift 2
-		"$svcDir/scripts/$script.sh" "$@"
+		atre::root "$svcDir/scripts/$script.sh" "$@"
 		return
 	elif [[ -f "$svcDir/maint.sh" ]]; then
 		(
