@@ -43,10 +43,10 @@ function atre::pull {
 
 function atre::fetch {
 	atre::log "Fetch updates"
-	atre::root "$0" internal atre::do_fetch
+	atre::root "$0" internal atre::callFetch
 }
 
-function atre::do_fetch {
+function atre::callFetch {
 	cd $atreDir
 	git fetch --depth 1 origin
 	git reset --hard origin/main
