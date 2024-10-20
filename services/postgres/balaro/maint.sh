@@ -26,6 +26,8 @@ atre::postgres::balaro::initdb() {
 }
 
 atre::postgres::balaro::upgrade() {
+	atre::publog "Start upgrading Balaro database ..."
+
 	local oldversion
 	echo -n "Enter old version: "
 	read -r oldversion
@@ -51,6 +53,8 @@ atre::postgres::balaro::upgrade() {
 	)
 	dinitctl stop balaro
 	podman stop balaroold
+
+	atre::publog "End upgrading Balaro database ..."
 
 	echo '====== pg_upgrade finished'
 	echo 'After confirming, run the following code to restart PG:'
