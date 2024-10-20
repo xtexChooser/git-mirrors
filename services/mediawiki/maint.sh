@@ -17,7 +17,7 @@ atre::mediawiki::shell() {
 }
 
 atre::mediawiki::update() {
-	atre::publog "MW: Running update: $1" \
+	atre::publog "MW: $1: Running update script" \
 		"MediaWiki-Wiki: $1"
 	atre::mediawiki::maint "$1" update --quick
 	return
@@ -29,10 +29,10 @@ atre::mediawiki::delwiki() {
 		return 1
 	}
 	echo "Deleting wiki: $1"
-	atre::publog "MW: Deleting wiki: $1" \
+	atre::publog "MW: $1: Deleting wiki" \
 		"MediaWiki-Wiki: $1"
 	atre::mediawiki::maint meta sql --query "DROP DATABASE wiki$1;"
-	atre::publog "MW: Deleted wiki: $1" \
+	atre::publog "MW: $1: Deleted wiki" \
 		"MediaWiki-Wiki: $1"
 	echo "Deleted wiki: $1"
 	return
@@ -51,7 +51,7 @@ atre::mediawiki::addwiki() {
 	[[ -e /srv/atremis/services/mediawiki/config/sites/SiteSettings."$wiki".php ]] || atre::error "Wiki site settings not found"
 
 	echo "Creating wiki $wiki, at $domain"
-	atre::publog "MW: Creating wiki: $wiki" \
+	atre::publog "MW: $wiki: Creating wiki" \
 		"MediaWiki-Wiki: $wiki"
 
 	if [[ "$wiki" == "meta" ]]; then
@@ -72,7 +72,7 @@ atre::mediawiki::addwiki() {
 		--pagepath "https://$domain/w/\$1" \
 		--filepath "https://$domain/\$1"
 
-	atre::publog "MW: Created wiki: $wiki" \
+	atre::publog "MW: $wiki: Created wiki" \
 		"MediaWiki-Wiki: $wiki"
 	echo "Wiki $1 is created"
 }
@@ -87,12 +87,58 @@ atre::mediawiki::addcargo() {
 	[[ -e /srv/atremis/services/mediawiki/config/sites/SiteSettings."$wiki".php ]] || atre::error "Wiki site settings not found"
 
 	echo "Creating cargo database $wiki, at $domain"
-	atre::publog "MW: Creating cargo database for $wiki" \
+	atre::publog "MW: $wiki: Creating cargo database" \
 		"MediaWiki-Wiki: $wiki"
 
 	atre::mediawiki::maint meta sql --query "CREATE DATABASE wikicargo$wiki"
 
-	atre::publog "MW: Created cargo database for $wiki" \
+	atre::publog "MW: $wiki: Created cargo database" \
 		"MediaWiki-Wiki: $wiki"
 	echo "Wiki cargo database created for $1"
+}
+
+atre::mediawiki::allwikis() {
+	jq -r 'keys[]' /srv/atremis/services/mediawiki/config/sites.json
+	return
+}
+
+atre::mediawiki::cronjob() {
+	local wiki="${1:-}"
+	if [[ -z "$wiki" ]]; then
+		echo "== MediaWiki cron jobs starting @ $(date -u)"
+
+		echo "=== Collecting wikis"
+		readarray -t wikis < <(atre::mediawiki::allwikis)
+		for wiki in "${wikis[@]}"; do
+			echo "=== Processing wiki: $wiki"
+			atre::mediawiki::cronjob "$wiki"
+		done
+
+		echo "== MediaWiki cron jobs completed @ $(date -u)"
+	else
+		atre::publog "MW: $wiki: Started cron jobs" \
+			"MediaWiki-Wiki: $wiki"
+
+		echo "==== $wiki: Running queued jobs ..."
+		atre::mediawiki::maint "$wiki" runJobs
+
+		echo "==== $wiki: Generating sitemaps ..."
+		atre::mediawiki::maint "$wiki" generateSitemap \
+			--memory-limit=128M \
+			--fspath /var/lib/mediawiki/sitemap/"$wiki"/ \
+			--urlpath=/sitemap/ \
+			--skip-redirects
+
+		echo "==== $wiki: Updating special pages ..."
+		atre::mediawiki::maint "$wiki" updateSpecialPages
+
+		echo "==== $wiki: Updating site stats ..."
+		atre::mediawiki::maint "$wiki" initSiteStats \
+			--memory-limit 128M \
+			--update \
+			--active
+
+		atre::publog "MW: $wiki: Finished cron jobs" \
+			"MediaWiki-Wiki: $wiki"
+	fi
 }
