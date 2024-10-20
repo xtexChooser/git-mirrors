@@ -33,11 +33,11 @@ usage: $0 <COMMAND>
 COMMAND:
     help                        Print usage
     pull                        Fetch and apply changes from repository
-	fetch                       Fetch changes from repository
+    fetch                       Fetch changes from repository
     apply                       Apply configuration
     root [COMMAND]              Run command as root
-	update                      Update
-	publog <LOG>                Send log to publogs channel
+    update                      Update
+    publog <LOG>                Send log to publogs channel
 XXX
 }
 
