@@ -48,7 +48,8 @@ function atre::publog {
 		fi
 		local title="$1"
 		shift
-		curl -Sf --proto '=https' --tlsv1.2 --max-time 5 \
+		curl -sSf --proto '=https' --tlsv1.2 --max-time 5 \
+			-H "Authorization: Bearer $PUBLOGS_TOKEN" \
 			-H "X-Title: $messageHeader: $title" \
 			-H "X-Tags: $tags" \
 			-d "$(printf '%s\n' "$@")" \
