@@ -1,1 +1,1 @@
-0 */6 * * * root <% $(realpath "$STATES_DIR") %>/services/bird/script/update-dn42-roa.sh
+0 */6 * * * root <% $(realpath "$STATES_DIR") %>/atre svc bird update-dn42-roa
