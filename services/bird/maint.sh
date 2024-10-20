@@ -47,8 +47,8 @@ atre::bird::validate() {
 }
 
 atre::bird::update-dn42-roa() {
-	curl -SL -o /etc/bird/roa_dn42.conf https://explorer.burble.com/api/roa/bird/2/4
-	curl -SL -o /etc/bird/roa_dn42_v6.conf https://explorer.burble.com/api/roa/bird/2/6
+	curl -SL -o /var/cache/bird/dn42_roa_v4.conf https://explorer.burble.com/api/roa/bird/2/4
+	curl -SL -o /var/cache/bird/dn42_roa_v6.conf https://explorer.burble.com/api/roa/bird/2/6
 	atre::bird::reconf
 	return
 }
