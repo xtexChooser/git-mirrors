@@ -72,6 +72,10 @@
   kind: extensions
   prefix: mw/extensions/DiscussionTools
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/DiscussionTools
+- name: DismissableSiteNotice
+  kind: extensions
+  prefix: mw/extensions/DismissableSiteNotice
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/DismissableSiteNotice
 - name: DynamicPageList3-Universal-Omega
   kind: extensions
   prefix: mw/extensions/DynamicPageList3
