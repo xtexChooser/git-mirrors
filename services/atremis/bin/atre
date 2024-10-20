@@ -108,8 +108,8 @@ function atre::svc {
 }
 
 function atre::callSvc {
-	local svc="$1" script="$2"
-	local svcDir="$atreDir/services/$svc"
+	local svc="${1//\//::}" script="$2"
+	local svcDir="$atreDir/services/$1"
 	atre::log "Running script: $svc $script"
 	if [[ -f "$svcDir/scripts/$script.sh" ]]; then
 		shift 2
