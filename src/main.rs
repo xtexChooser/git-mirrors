@@ -233,12 +233,14 @@ impl MainApp {
                     ui.ctx().request_repaint();
                 }
 
-                ui.horizontal(|ui| {
-                    ui.hyperlink_to("源代码", "https://codeberg.org/xtex/yjyz-tools");
-                    if ui.link("开源许可证").clicked() {
-                        self.show_licenses = true;
-                    }
-                });
+                if license::is_set(LicenseFeatures::SHOW_SOURCE_LINK) {
+                    ui.horizontal(|ui| {
+                        ui.hyperlink_to("源代码", "https://codeberg.org/xtex/yjyz-tools");
+                        if ui.link("开源许可证").clicked() {
+                            self.show_licenses = true;
+                        }
+                    });
+                }
 
                 if license::is_set(LicenseFeatures::MUST_UPDATE) && self.update.should_show() {
                     self.update.show(ui)?;
