@@ -18,7 +18,7 @@ function atre::log {
 }
 
 function atre::error {
-	echo -e "\e[0;31matre: $*\e[0m" 1>&2
+	echo -e "\e[0;31m${FUNCNAME[1]}: $*\e[0m" 1>&2
 	exit 1
 }
 
