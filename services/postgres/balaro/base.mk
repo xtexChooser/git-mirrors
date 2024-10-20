@@ -13,7 +13,7 @@ V_ARGS		+= --mount=type=bind,src=/var/run/postgresql,dst=/var/run/postgresql
 V_ARGS		+= --memory=128M
 V_ARGS		+= --user=root:root
 V_ARGS		+= --publish=5433:5432/tcp
-V_ARGS 		+= codeberg.org/xens/postgres:$(strip $(BIRD_VERSION))
+V_ARGS 		+= codeberg.org/xens/postgres:$(strip $(BALARO_VERSION))
 $(call end)
 
 $(call fs-file)
