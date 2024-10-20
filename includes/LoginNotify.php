@@ -8,9 +8,6 @@
 
 namespace LoginNotify;
 
-use BagOStuff;
-use ExtensionRegistry;
-use IBufferingStatsdDataFactory;
 use JobQueueGroup;
 use JobSpecification;
 use LogicException;
@@ -19,6 +16,7 @@ use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Extension\CentralAuth\User\CentralAuthUser;
 use MediaWiki\Extension\Notifications\Model\Event;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\Request\WebRequest;
 use MediaWiki\User\CentralId\CentralIdLookup;
 use MediaWiki\User\User;
@@ -29,12 +27,14 @@ use Psr\Log\LoggerInterface;
 use UnexpectedValueException;
 use Wikimedia\Assert\Assert;
 use Wikimedia\IPUtils;
+use Wikimedia\ObjectCache\BagOStuff;
 use Wikimedia\Rdbms\IDatabase;
 use Wikimedia\Rdbms\IExpression;
 use Wikimedia\Rdbms\IMaintainableDatabase;
 use Wikimedia\Rdbms\IReadableDatabase;
 use Wikimedia\Rdbms\LBFactory;
 use Wikimedia\Rdbms\LikeValue;
+use Wikimedia\Stats\IBufferingStatsdDataFactory;
 
 /**
  * Handle sending notifications on login from unknown source.

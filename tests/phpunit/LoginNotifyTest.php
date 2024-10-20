@@ -10,6 +10,7 @@ use MediaWiki\Request\FauxRequest;
 use MediaWiki\User\CentralId\LocalIdLookup;
 use MediaWiki\User\User;
 use MediaWiki\User\UserFactory;
+use Wikimedia\ObjectCache\HashBagOStuff;
 use Wikimedia\TestingAccessWrapper;
 
 // phpcs:disable MediaWiki.WhiteSpace.SpaceBeforeSingleLineComment.NewLineComment
