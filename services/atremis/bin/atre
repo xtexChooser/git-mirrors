@@ -2,14 +2,16 @@
 set -euo pipefail
 
 atreDir=/srv/atremis
-user="${ATREMIS_USER:-}"
-[[ -n "$user" ]] || user="$(id -un)"
+shortHostname="$(hostname -s)"
+
+realUser="$(id -un)"
+user="${ATREMIS_USER:-$realUser}"
 export ATREMIS_USER="$user"
 isRootUser=""
-! [[ "$user" == "root" ]] || isRootUser="true"
+! [[ "$realUser" == "root" ]] || isRootUser="true"
+
 # shellcheck source=/dev/null
 ! [[ -f /srv/secrets/atre/env.sh ]] || source /srv/secrets/atre/env.sh
-shortHostname="$(hostname -s)"
 
 function atre::log {
 	echo -e "\e[0;34m${FUNCNAME[1]}: $*\e[0m"
