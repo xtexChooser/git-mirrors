@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"McDutchie",
 			"Siebrand"
 		]
 	},
@@ -10,6 +11,9 @@
 	"chart-error-default-source-not-specified": "Op de pagina met de diagramdefinitie wordt geen standaardgegevensbron opgegeven.",
 	"chart-error-incompatible-chart-definition": "Definitiepagina is niet compatibel met diagrammen.",
 	"chart-error-incompatible-data-source": "De pagina met tabelgegevensbronnen is niet compatibel met diagrammen.",
+	"chart-error-invalid-height": "De lengte moet een geheel getal groter dan of gelijk aan 100 zijn.",
+	"chart-error-invalid-width": "De breedte moet een geheel getal groter dan of gelijk aan 100 zijn.",
 	"chart-error-shell-disabled": "Diagrammen kunnen niet worden weergegeven omdat shell-uitvoering is uitgeschakeld.",
-	"chart-error-rendering-error": "Er is een fout opgetreden bij het weergeven van het diagram."
+	"chart-error-rendering-error": "Er is een fout opgetreden bij het weergeven van het diagram.",
+	"chart-error-unexpected": "Er is een onverwachte fout opgetreden bij het weergeven van de grafiek."
 }
