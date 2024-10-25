@@ -1,5 +1,63 @@
 # Changelog
 
+## 0.26.2
+
+### Bugfix
+
+This patch reverts an unintended change to the `user:group` inside the container images.
+This will fix issues with migrations from existing deployments using SQLite with manually managed
+volume access rights.
+
+v0.26.0 changed from `scratch` to `gcr.io/distroless/cc-debian12:nonroot` as the base image for the final deployment.
+The distroless image however sets a user of `65532` by default, while it always has been `10001:10001` before.
+The affected versions are
+
+- `0.26.0`
+- `0.26.1`
+
+Starting from this release (`0.26.2`), the user inside the container will be the same one as before:
+
+`10001:10001`
+
+[839724001710cb095f39ff7df6be00708a01801a](https://github.com/sebadob/rauthy/pull/596/commits/839724001710cb095f39ff7df6be00708a01801a)
+
+## 0.26.1
+
+### Changes
+
+#### Upstream Auth Provider Query Params
+
+Some upstream auth providers need custom query params appended to their authorization endpoint URL.
+Rauthy will now accept URLs in the auth provider config with pre-defined query params, as long as they
+don't interfere with OIDC default params.
+
+[7dee26a](https://github.com/sebadob/rauthy/commit/7dee26af0ab757cd80395652fe03f82ffbc2c8bc)
+
+#### Option Log Fmt as JSON
+
+To make automatic parsing of logs possible (to some extent), you now have the ability to change the logging output from
+text to json with the following new config variable:
+
+```
+# You can change the log output format to JSON, if you set:
+# `LOG_FMT=json`.
+# Keep in mind, that some logs will include escaped values,
+# for instance when `Text` already logs a JSON in debug level.
+# Some other logs like an Event for instance will be formatted 
+# as Text anyway. If you need to auto-parse events, please consider 
+# using an API token and listen ot them actively.
+# default: text
+#LOG_FMT=text
+```
+
+[1ef1353](https://github.com/sebadob/rauthy/commit/1ef1353162655fb5dc54396b02c73ef80ff0506a)
+
+### Bugfix
+
+- With relaxing requirements for password resets for new users, a bug has been introduced that would prevent
+  a user from registering an only-passkey account when doing the very first "password reset".
+  [de2cfea](https://github.com/sebadob/rauthy/commit/de2cfea107cff4fb98fc81be692d0b83cf597398)
+
 ## 0.26.0
 
 ### Breaking
