@@ -31,10 +31,11 @@ or `mailto:xtexchooser_AT_duck.com` or `acct:xtexchooser@neko.ci` or `matrix: @x
 
 {{<hlist>}}
 
-- [exozyme](https://exozy.me)
+- [exozyme](https://exozy.me/)
 - [molyuu](https://molyuu.cyou/)
+- [sugarmgp](https://blog.sugarmgp.icu/)
 - [chitang](https://chitang.dev/)
-- [dn42](https://dn42.dev)
+- [dn42](https://dn42.dev/)
 - [minecraft wiki](https://zh.minecraft.wiki/)
 
 {{</hlist>}}
