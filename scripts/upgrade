@@ -85,6 +85,4 @@ git switch main
 git tag -s -m "Initial tree of $1 branch" "$oldBranch"/init main
 git branch -D tmp-upgrade
 
-git push --force --follow-tags
-
 echo "Done/remember to check patches manually"
