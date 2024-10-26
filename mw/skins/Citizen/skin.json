@@ -1,6 +1,6 @@
 {
 	"name": "Citizen",
-	"version": "2.34.0",
+	"version": "2.37.0",
 	"author": [
 		"[https://www.mediawiki.org/wiki/User:Alistair3149 Alistair3149]",
 		"[https://www.mediawiki.org/wiki/User:Octfx Octfx]",
@@ -34,6 +34,7 @@
 					"name": "citizen",
 					"supportsMwHeading": true,
 					"responsive": true,
+					"toc": false,
 					"link": {
 						"text-wrapper": {
 							"tag": "span"
@@ -340,7 +341,6 @@
 				"articlesSearch",
 				"bell",
 				"block",
-				"clear",
 				"collapse",
 				"database",
 				"die",
@@ -607,6 +607,7 @@
 			"+mediawiki.editfont.styles": "skinStyles/mediawiki/mediawiki.editfont.styles.less",
 			"+mediawiki.interface.helpers.styles": "skinStyles/mediawiki/mediawiki.interface.helpers.styles.less",
 			"+mediawiki.notification": "skinStyles/mediawiki/mediawiki.notification.less",
+			"+mediawiki.page.ready": "skinStyles/mediawiki/teleportTarget.less",
 			"+mediawiki.pager.styles": "skinStyles/mediawiki/mediawiki.pager.styles.less",
 			"mediawiki.skinning.content.parsoid": [],
 			"mediawiki.skinning.interface": [],
@@ -764,6 +765,7 @@
 		},
 		"OverflowNowrapClasses": {
 			"value": [
+				"noresize",
 				"citizen-table-nowrap",
 				"cargoDynamicTable",
 				"dataTable",

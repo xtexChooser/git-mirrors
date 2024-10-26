@@ -1,6 +1,16 @@
 .citizen-dropdown {
 	.citizen-menu__card {
 		z-index: @z-index-dropdown;
+		max-width: 80vw;
+		transition-timing-function: var( --transition-timing-function-ease-in );
+		transition-duration: var( --transition-duration-base );
+		transition-property: transform;
+
+		> * {
+			transition-timing-function: var( --transition-timing-function-ease-in );
+			transition-duration: var( --transition-duration-base );
+			transition-property: opacity;
+		}
 	}
 
 	&-summary {
@@ -48,15 +58,15 @@
 	&-details {
 		&[ open ] {
 			+ .citizen-menu__card {
-				transition: var( --transition-menu );
-				transition-property: transform;
+				transition-timing-function: var( --transition-timing-function-ease-out );
+				transition-duration: var( --transition-duration-medium );
 				transform: none;
 
 				> * {
 					opacity: 1;
-					transition: var( --transition-menu );
 					transition-delay: var( --transition-delay-menu );
-					transition-property: opacity;
+					transition-timing-function: var( --transition-timing-function-ease-out );
+					transition-duration: var( --transition-duration-medium );
 				}
 			}
 
@@ -71,6 +81,10 @@
 	}
 
 	@media ( max-width: @max-width-breakpoint-tablet ) {
+		.citizen-menu__card {
+			max-width: ~'calc( 100vw - var( --space-xs ) * 2 )';
+		}
+
 		// Add dismiss affordnance backdrop
 		&-details {
 			&::before {
@@ -79,6 +93,9 @@
 				-webkit-backdrop-filter: blur( 2px );
 				backdrop-filter: blur( 2px );
 				opacity: 0;
+				transition-timing-function: var( --transition-timing-function-ease );
+				transition-duration: var( --transition-duration-base );
+				transition-property: opacity;
 			}
 
 			&[ open ] {
@@ -87,8 +104,7 @@
 					inset: 0;
 					z-index: @z-index-off-canvas-backdrop;
 					opacity: 1;
-					transition: var( --transition-menu );
-					transition-property: opacity;
+					transition-duration: var( --transition-duration-medium );
 				}
 
 				> .citizen-dropdown-summary {
