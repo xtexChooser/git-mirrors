@@ -7,3 +7,7 @@ steps:
       - cp -R public /srv/http/xtex1
       - rm -rf /srv/http/xtex
       - mv /srv/http/xtex1 /srv/http/xtex
+when:
+  - event: manual
+  - event: push
+    branch: main
