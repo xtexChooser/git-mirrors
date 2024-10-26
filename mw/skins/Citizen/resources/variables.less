@@ -2,11 +2,11 @@
  * Citizen
  *
  * All LESS variables used in the skin must be defined here
- * Use CSS variables from cssvariables.less is preferrable
+ * Use CSS variables from tokens.less is preferrable
  * Only import this stylesheet when LESS variables is nessecary
  *
  * Related files:
- * - Citizen CSS variables: skins.citizen.styles/common/cssvariables.less
+ * - Citizen tokens: skins.citizen.styles/tokens.less
  * - Override MW skin default variables: mediawiki.less/mediawiki.skin.variables.less
  *
 */
@@ -26,9 +26,6 @@
 
 /* == Spacing == */
 @space-unit: 1rem;
-@line-height-xs: 1.25;
-@line-height-sm: 1.375;
-@line-height-md: 1.6;
 
 /* == Fonts == */
 /*
@@ -100,8 +97,8 @@
 @padding-page:	16px;
 
 /* Transitions */
-@transition-hover: 150ms cubic-bezier( 0.215, 0.61, 0.355, 1 );
-@transition-menu: 250ms cubic-bezier( 0.4, 0, 0.2, 1 );
+@transition-hover: var( --transition-duration-base ) var( --transition-timing-function-ease );
+@transition-menu: var( --transition-duration-medium ) var( --transition-timing-function-ease-out );
 
 /*
  * Framework

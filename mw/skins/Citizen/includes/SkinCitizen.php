@@ -28,12 +28,12 @@ use MediaWiki\Skins\Citizen\Components\CitizenComponentMainMenu;
 use MediaWiki\Skins\Citizen\Components\CitizenComponentPageFooter;
 use MediaWiki\Skins\Citizen\Components\CitizenComponentPageHeading;
 use MediaWiki\Skins\Citizen\Components\CitizenComponentPageSidebar;
+use MediaWiki\Skins\Citizen\Components\CitizenComponentPageTools;
 use MediaWiki\Skins\Citizen\Components\CitizenComponentSearchBox;
 use MediaWiki\Skins\Citizen\Components\CitizenComponentSiteStats;
 use MediaWiki\Skins\Citizen\Components\CitizenComponentUserInfo;
 use MediaWiki\Skins\Citizen\Partials\BodyContent;
 use MediaWiki\Skins\Citizen\Partials\Metadata;
-use MediaWiki\Skins\Citizen\Partials\PageTools;
 use MediaWiki\Skins\Citizen\Partials\Theme;
 use SkinMustache;
 use SkinTemplate;
@@ -44,6 +44,9 @@ use SkinTemplate;
  */
 class SkinCitizen extends SkinMustache {
 	use GetConfigTrait;
+
+	/** @var null|array for caching purposes */
+	private $languages;
 
 	/**
 	 * Overrides template, styles and scripts module
@@ -73,6 +76,19 @@ class SkinCitizen extends SkinMustache {
 	}
 
 	/**
+	 * Calls getLanguages with caching.
+	 * From Vector 2022
+	 *
+	 * @return array
+	 */
+	protected function getLanguagesCached(): array {
+		if ( $this->languages === null ) {
+			$this->languages = $this->getLanguages();
+		}
+		return $this->languages;
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	public function getTemplateData(): array {
@@ -88,7 +104,6 @@ class SkinCitizen extends SkinMustache {
 		$isTemp = $user->isTemp();
 
 		$bodycontent = new BodyContent( $this );
-		$tools = new PageTools( $this );
 
 		$components = [
 			'data-footer' => new CitizenComponentFooter(
@@ -114,6 +129,17 @@ class SkinCitizen extends SkinMustache {
 				$pageLang,
 				$title,
 				$user
+			),
+			'data-page-tools' => new CitizenComponentPageTools(
+				$config,
+				$localizer,
+				$title,
+				$user,
+				count( $this->getLanguagesCached() ),
+				$parentData['data-portlets-sidebar'],
+				// These portlets can be unindexed
+				$parentData['data-portlets']['data-languages'] ?? [],
+				$parentData['data-portlets']['data-variants'] ?? []
 			),
 			'data-search-box' => new CitizenComponentSearchBox(
 				$localizer,
@@ -142,11 +168,14 @@ class SkinCitizen extends SkinMustache {
 			}
 		}
 
+		// HACK: So that we can use Icon.mustache in Header__logo.mustache
+		$parentData['data-logos']['icon-home'] = 'home';
+
 		return array_merge( $parentData, [
 			// Booleans
 			'toc-enabled' => !empty( $parentData['data-toc'] ),
 			'html-body-content--formatted' => $bodycontent->decorateBodyContent( $parentData['html-body-content'] )
-		], $tools->getPageToolsData( $parentData ) );
+		] );
 	}
 
 	/**
@@ -196,22 +225,26 @@ class SkinCitizen extends SkinMustache {
 		// Add theme handler
 		$skinTheme->setSkinTheme( $options );
 
-		// Disable default ToC since it is handled by Citizen
-		$options['toc'] = false;
-
 		// Clientprefs feature handling
 		$this->addClientPrefFeature( 'citizen-feature-autohide-navigation', '1' );
 		$this->addClientPrefFeature( 'citizen-feature-pure-black', '0' );
 		$this->addClientPrefFeature( 'citizen-feature-custom-font-size' );
 		$this->addClientPrefFeature( 'citizen-feature-custom-width' );
 
-		// Collapsible sections
-		// Load in content pages
-		if ( $title !== null && $title->isContentPage() ) {
-			// Since we merged the sections module into core styles and scripts to reduce RL modules
-			// The style is now activated through the class below
-			if ( $this->getConfigValue( 'CitizenEnableCollapsibleSections' ) === true ) {
+		if ( $title !== null ) {
+			// Collapsible sections
+			if (
+				$this->getConfigValue( 'CitizenEnableCollapsibleSections' ) === true &&
+				$title->isContentPage()
+			) {
 				$options['bodyClasses'][] = 'citizen-sections-enabled';
+			}
+
+			// Add a HTML class to indicate the page is a main page
+			// T363281
+			// TODO: Remove this when we move to 1.43 because this is in core
+			if ( $title->isMainPage() ) {
+				$options['bodyClasses'][] = 'page-Main_Page';
 			}
 		}
 

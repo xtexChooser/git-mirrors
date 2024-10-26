@@ -8,6 +8,8 @@
  * Date: 2024-02-26
 */
 
+@import '../../../resources/variables.less';
+
 /* Special:Version */
 /* MediaWiki License */
 #mw-version-license + .plainlinks {
@@ -27,19 +29,24 @@
 #sv-software {
 	display: block;
 	max-width: none;
-	line-height: var( --line-height-sm );
+	line-height: var( --line-height-xx-small );
 	box-shadow: none;
 
 	tbody {
 		display: grid;
-		grid-template-columns: repeat( auto-fit, minmax( 320px, 1fr ) );
+		grid-template-columns: 1fr 1fr;
 		gap: var( --space-xs );
+
+		@media ( min-width: @min-width-breakpoint-desktop ) {
+			grid-template-columns: repeat( auto-fit, minmax( 320px, 1fr ) );
+		}
 	}
 
 	tr {
-		display: flex;
-		flex-direction: column;
+		display: grid;
+		place-content: center;
 		padding: var( --space-sm ) var( --space-md );
+		text-align: center;
 		border: var( --border-width-base ) solid var( --border-color-base );
 		border-radius: var( --border-radius-medium );
 
@@ -53,8 +60,8 @@
 		border-top: 0;
 
 		&:first-child {
-			font-size: var( --font-size-x-large );
-			font-weight: var( --font-weight-semibold );
+			font-size: var( --font-size-large );
+			font-weight: var( --font-weight-semi-bold );
 		}
 	}
 }
@@ -76,7 +83,7 @@
 
 .mw-version-ext-name,
 .mw-version-library-name {
-	font-weight: var( --font-weight-semibold );
+	font-weight: var( --font-weight-semi-bold );
 }
 
 .skin-theme-clientpref-night {
