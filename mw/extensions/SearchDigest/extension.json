@@ -1,0 +1,95 @@
+{
+	"name": "SearchDigest",
+	"author": [
+		"[https://github.com/jayktaylor Jayden Bailey]",
+		"..."
+	],
+	"url": "https://github.com/weirdgloop/mediawiki-extensions-SearchDigest",
+	"version": "1.5.1",
+	"descriptionmsg": "searchdigest-desc",
+	"license-name": "GPL-3.0+",
+	"manifest_version": 1,
+	"config": {
+		"SearchDigestStrikeValidPages": true,
+		"SearchDigestCreateRedirect": true,
+		"SearchDigestMinimumMisses": 10,
+		"SearchDigestDateThreshold": 604800
+	},
+	"type": "other",
+	"requires": {
+		"MediaWiki": ">= 1.38.0"
+	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\SearchDigest\\": "src/"
+	},
+	"SpecialPages": {
+		"SearchDigest": "MediaWiki\\Extension\\SearchDigest\\SpecialSearchDigest"
+	},
+	"ResourceModules": {
+		"ext.searchdigest.styles": {
+			"styles": "ext.searchdigest.styles.css"
+		},
+		"ext.searchdigest.redirect": {
+			"packageFiles": [
+				"ext.searchdigest.redirect.js",
+				{
+					"name": "data.json",
+					"callback": "MediaWiki\\Extension\\SearchDigest\\SearchDigestHooks::getModuleData"
+				}
+			],
+			"styles": "ext.searchdigest.redirect.css",
+			"messages": [
+						"searchdigest-redirect-buttontext",
+						"searchdigest-redirect-successtext",
+						"searchdigest-redirect-missing-target",
+						"searchdigest-redirect-problem",
+						"searchdigest-redirect-inputplaceholder",
+						"searchdigest-redirect-helptext",
+						"searchdigest-redirect-redirectbutton",
+						"searchdigest-redirect-title",
+						"cancel"
+			],
+			"dependencies": [
+						"oojs-ui-core",
+						"oojs-ui-windows",
+						"mediawiki.api",
+						"mediawiki.jqueryMsg"
+			]
+		}
+	},
+	"JobClasses": {
+		"SearchDigestJob": "MediaWiki\\Extension\\SearchDigest\\SearchDigestJob"
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "src/modules",
+		"remoteExtPath": "SearchDigest/src/modules"
+	},
+	"MessagesDirs": {
+		"SearchDigest": "i18n"
+	},
+	"ExtensionMessagesFiles": {
+		"SearchDigestAlias": "SearchDigest.i18n.alias.php"
+	},
+	"HookHandlers": {
+		"main": {
+			"class": "MediaWiki\\Extension\\SearchDigest\\SearchDigestHooks"
+		}
+	},
+	"Hooks": {
+		"LoadExtensionSchemaUpdates": "main",
+		"SpecialSearchNogomatch": "main"
+	},
+	"AvailableRights": [
+		"searchdigest-reader",
+		"searchdigest-admin"
+	],
+	"GroupPermissions": {
+		"*": {
+			"searchdigest-reader": true,
+			"searchdigest-reader-stats": true
+		},
+		"sysop": {
+			"searchdigest-block": true
+		}
+	}
+}
