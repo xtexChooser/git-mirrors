@@ -1,0 +1,13 @@
+{
+	"root": true,
+	"extends": [
+		"../../modules/.eslintrc.json",
+		"wikimedia/qunit"
+	],
+	"globals": {
+		"sinon": "readonly"
+	},
+	"rules": {
+		"no-jquery/no-class-state": "off"
+	}
+}
