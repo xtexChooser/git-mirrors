@@ -1,0 +1,66 @@
+{
+	"name": "TitleKey",
+	"version": "1.0",
+	"author": [
+		"Brion Vibber",
+		"..."
+	],
+	"license-name": "GPL-2.0-or-later",
+	"url": "https://www.mediawiki.org/wiki/Extension:TitleKey",
+	"descriptionmsg": "titlekey-desc",
+	"type": "other",
+	"requires": {
+		"MediaWiki": ">= 1.42"
+	},
+	"MessagesDirs": {
+		"TitleKey": [
+			"i18n"
+		]
+	},
+	"AutoloadClasses": {
+		"RebuildTitleKeys": "maintenance/rebuildTitleKeys.php"
+	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\TitleKey\\": "includes/"
+	},
+	"ExtensionFunctions": [
+		"MediaWiki\\Extension\\TitleKey\\TitleKey::setup"
+	],
+	"HookHandlers": {
+		"TitleKeyHooks": {
+			"class": "MediaWiki\\Extension\\TitleKey\\TitleKey"
+		}
+	},
+	"Hooks": {
+		"PageDeleteComplete": {
+			"handler": "TitleKeyHooks"
+		},
+		"PageSaveComplete": {
+			"handler": "TitleKeyHooks"
+		},
+		"PageUndeleteComplete": {
+			"handler": "TitleKeyHooks"
+		},
+		"PageMoveCompleting": {
+			"handler": "TitleKeyHooks"
+		},
+		"LoadExtensionSchemaUpdates": {
+			"handler": "TitleKeyHooks"
+		}
+	},
+	"SearchMappings": {
+		"TitleKey": {
+			"class": "MediaWiki\\Extension\\TitleKey\\SearchEngineMySQL"
+		},
+		"TitleKeyMySQL": {
+			"class": "MediaWiki\\Extension\\TitleKey\\SearchEngineMySQL"
+		},
+		"TitleKeyPostgres": {
+			"class": "MediaWiki\\Extension\\TitleKey\\SearchEnginePostgres"
+		},
+		"TitleKeySqlite": {
+			"class": "MediaWiki\\Extension\\TitleKey\\SearchEngineSqlite"
+		}
+	},
+	"manifest_version": 2
+}
