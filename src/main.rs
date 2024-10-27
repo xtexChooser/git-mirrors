@@ -2,7 +2,7 @@
 #![feature(let_chains)]
 #![feature(path_add_extension)]
 use std::{
-    cmp, fs,
+    fs,
     sync::{Arc, RwLock},
     time::Duration,
 };
@@ -171,7 +171,7 @@ impl eframe::App for MainApp {
 
 impl MainApp {
     fn show(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) -> Result<()> {
-        let mut repaint_after = 300;
+        ctx.request_repaint_after(Duration::from_millis(300));
         ctx.style_mut(|style| style.url_in_tooltip = true);
         ctx.data_mut(|data| {
             data.get_temp_mut_or_insert_with(Id::new(DATA_WINDOW_HWND), || {
@@ -201,14 +201,8 @@ impl MainApp {
                 ctx.send_viewport_cmd(egui::ViewportCommand::Focus);
                 mythware::toggle_broadcast_window()?;
             }
-
-            if self.mythware.auto_unlock_keyboard && mythware::is_broadcast_on().unwrap_or(false) {
-                repaint_after = cmp::min(repaint_after, 25);
-                mythware::unlock_keyboard()?;
-            }
         }
 
-        ctx.request_repaint_after(Duration::from_millis(repaint_after));
         if let Some(err) = ASYNC_ERROR.write().unwrap().take() {
             return Err(err);
         }
@@ -315,7 +309,7 @@ impl MainApp {
                     .open(&mut self.mythware_open)
                     .vscroll(true)
                     .default_size((300.0, 200.0))
-                    .show(ctx, |ui| self.mythware.show(ui))
+                    .show(ctx, |ui| self.mythware.show(ui, &self.worker))
                     .map(|o| o.inner)
                     .unwrap_or_default()
                     .unwrap_or(Ok(()))?;

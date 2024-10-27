@@ -28,7 +28,7 @@ use windows::{
 use windows_registry::LOCAL_MACHINE;
 use yjyz_tools::license::{self, LicenseFeatures};
 
-use crate::utils;
+use crate::{utils, worker::WorkerStateRef};
 
 fn open_eclass_standard() -> Result<windows_registry::Key> {
     Ok(LOCAL_MACHINE
@@ -303,7 +303,7 @@ pub struct MythwareWindow {
 }
 
 impl MythwareWindow {
-    pub fn show(&mut self, ui: &mut egui::Ui) -> Result<()> {
+    pub fn show(&mut self, ui: &mut egui::Ui, worker: &WorkerStateRef) -> Result<()> {
         if license::is_set(LicenseFeatures::MYTHWARE_STOPPING) {
             ui.horizontal_wrapped(|ui| {
                 if let Some(pid) = find_studentmain_pid() {
@@ -371,7 +371,12 @@ impl MythwareWindow {
                 ui.label("当前无广播").labelled_by(label.id);
             }
             ui.checkbox(&mut self.auto_windowing_broadcast, "自动窗口化");
-            ui.checkbox(&mut self.auto_unlock_keyboard, "自动解除键盘锁");
+            if ui
+                .checkbox(&mut self.auto_unlock_keyboard, "自动解除键盘锁")
+                .changed()
+            {
+                worker.write().unwrap().mythware_auto_unlock_keyboard = self.auto_unlock_keyboard;
+            }
             Ok::<(), anyhow::Error>(())
         })
         .inner?;
