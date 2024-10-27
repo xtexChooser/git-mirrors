@@ -1,7 +1,11 @@
 // #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 #![feature(let_chains)]
 #![feature(path_add_extension)]
-use std::{cmp, ffi::c_void, fs, sync::RwLock, time::Duration};
+use std::{
+    cmp, fs,
+    sync::{Arc, RwLock},
+    time::Duration,
+};
 
 use anyhow::Result;
 use educe::Educe;
@@ -12,11 +16,8 @@ use mythware::MythwareWindow;
 use powershadow::PowerShadowWindow;
 use raw_window_handle::{HasWindowHandle, RawWindowHandle, Win32WindowHandle};
 use updater::Updater;
-use windows::Win32::{
-    Foundation::HWND,
-    UI::WindowsAndMessaging::{SetWindowPos, HWND_TOPMOST, SWP_NOMOVE, SWP_NOSIZE},
-};
 use windowsadj::WindowsAdjWindow;
+use worker::WorkerState;
 use yjyz_tools::license::{self, LicenseFeatures};
 
 mod assets;
@@ -27,6 +28,7 @@ mod sec;
 mod updater;
 mod utils;
 mod windowsadj;
+mod worker;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -74,6 +76,17 @@ async fn main() -> Result<()> {
         });
     }
 
+    let worker_state = Arc::new(RwLock::new(WorkerState::default()));
+
+    {
+        let worker_state = worker_state.clone();
+        tokio::spawn(async move {
+            if let Err(err) = worker::run(worker_state).await {
+                let _ = ASYNC_ERROR.write().unwrap().insert(err);
+            }
+        });
+    }
+
     eframe::run_native(
         "YJYZ Toolkit",
         eframe::NativeOptions {
@@ -83,7 +96,7 @@ async fn main() -> Result<()> {
             centered: true,
             ..Default::default()
         },
-        Box::new(|cc| Ok(Box::new(MainApp::new(cc)?))),
+        Box::new(|cc| Ok(Box::new(MainApp::new(cc, worker_state)?))),
     )
     .unwrap();
 
@@ -100,6 +113,8 @@ struct MainApp {
     #[educe(Default = false)]
     double_error: bool,
     show_licenses: bool,
+
+    worker: Arc<RwLock<WorkerState>>,
 
     #[educe(Default = true)]
     always_on_top: bool,
@@ -126,9 +141,12 @@ struct MainApp {
 }
 
 impl MainApp {
-    fn new(cc: &eframe::CreationContext<'_>) -> Result<Self> {
+    fn new(cc: &eframe::CreationContext<'_>, worker: Arc<RwLock<WorkerState>>) -> Result<Self> {
         assets::configure_fonts(&cc.egui_ctx)?;
-        Ok(Default::default())
+        Ok(Self {
+            worker,
+            ..Default::default()
+        })
     }
 }
 
@@ -174,17 +192,6 @@ impl MainApp {
                 ui.label("在此设备上找不到有效的许可文件。");
             });
             return Ok(());
-        }
-
-        if self.always_on_top {
-            repaint_after = cmp::min(repaint_after, 40);
-            unsafe {
-                let hwnd = HWND(
-                    ctx.data(|data| data.get_temp::<usize>(Id::new(DATA_WINDOW_HWND)).unwrap())
-                        as *mut c_void,
-                );
-                SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE)?;
-            }
         }
 
         if license::is_set(LicenseFeatures::MYTHWARE_WINDOWING) {
@@ -264,7 +271,15 @@ impl MainApp {
                 });
 
                 ui.horizontal_wrapped(|ui| {
-                    ui.checkbox(&mut self.always_on_top, "自动置顶");
+                    if ui.checkbox(&mut self.always_on_top, "自动置顶").changed() {
+                        if self.always_on_top {
+                            self.worker.write().unwrap().always_on_top = Some(ctx.data(|data| {
+                                data.get_temp::<usize>(Id::new(DATA_WINDOW_HWND)).unwrap()
+                            }));
+                        } else {
+                            self.worker.write().unwrap().always_on_top = None;
+                        }
+                    }
                     if ui
                         .checkbox(&mut self.prevent_screenshot, "防止截屏")
                         .changed()
