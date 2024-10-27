@@ -1,6 +1,6 @@
 - name: core
   prefix: mw
-  defaultBranch: REL1_42
+  defaultBranch: REL1_43
   pri: 0
   git: https://gerrit.wikimedia.org/r/mediawiki/core
 - name: AbuseFilter
