@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": [
+			"Joao Xavier"
+		]
+	},
+	"globalprefs-set-local-exception": "Krear lokal eceptajo por ca [[Special:GlobalPreferences#$1|globala preferajo]].",
+	"globalprefs-error-header": "Eroro",
+	"globalpreferences": "Globala preferaji",
+	"globalprefs-info-label": "Globala preferaji:",
+	"globalprefs-info-link": "Figurizar vua globala preferaji",
+	"globalprefs-info-help": "La preferaji establisata globale aplikesos por omna Wiki.",
+	"globalprefs-restoreprefs": "Removar omna globala preferaji, omnaloke",
+	"globalprefs-col-header": "Selektez adinfre opcioni qui divenus globala (t.e., uzesos en omna Wikipedii)"
+}

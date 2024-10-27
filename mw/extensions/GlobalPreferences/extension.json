@@ -1,0 +1,128 @@
+{
+	"name": "GlobalPreferences",
+	"version": "0.1.2",
+	"author": [
+		"Kunal Mehta",
+		"Sam Wilson",
+		"Max Semenik"
+	],
+	"license-name": "GPL-2.0-or-later",
+	"url": "https://www.mediawiki.org/wiki/Extension:GlobalPreferences",
+	"descriptionmsg": "globalprefs-desc",
+	"type": "specialpage",
+	"requires": {
+		"MediaWiki": ">= 1.43"
+	},
+	"config": {
+		"GlobalPreferencesDB": {
+			"value": null
+		},
+		"GlobalPreferencesAutoPrefs": {
+			"value": []
+		}
+	},
+	"SpecialPages": {
+		"GlobalPreferences": {
+			"class": "GlobalPreferences\\SpecialGlobalPreferences",
+			"services": [
+				"PermissionManager",
+				"PreferencesFactory"
+			]
+		}
+	},
+	"MessagesDirs": {
+		"GlobalPreferences": [
+			"i18n",
+			"i18n/api"
+		]
+	},
+	"ExtensionMessagesFiles": {
+		"GlobalPreferencesAlias": "GlobalPreferences.alias.php"
+	},
+	"AutoloadNamespaces": {
+		"GlobalPreferences\\": "includes/"
+	},
+	"Hooks": {
+		"SaveUserOptions": "Hooks",
+		"PreferencesFormPreSave": "Hooks",
+		"LoadExtensionSchemaUpdates": "LoadExtensionSchemaUpdates",
+		"MediaWikiServices": "MediaWikiServices",
+		"BeforePageDisplay": "Hooks"
+	},
+	"HookHandlers": {
+		"Hooks": {
+			"class": "GlobalPreferences\\Hooks",
+			"services": [
+				"PreferencesFactory",
+				"UserOptionsManager"
+			]
+		},
+		"MediaWikiServices": {
+			"class": "GlobalPreferences\\HookHandler\\MediaWikiServicesHookHandler"
+		},
+		"LoadExtensionSchemaUpdates": {
+			"class": "GlobalPreferences\\HookHandler\\LoadExtensionSchemaUpdatesHookHandler"
+		}
+	},
+	"UserOptionsStoreProviders": {
+		"GlobalPreferences": {
+			"class": "GlobalPreferences\\GlobalUserOptionsStore",
+			"services": [
+				"CentralIdLookup"
+			]
+		}
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "resources",
+		"remoteExtPath": "GlobalPreferences/resources"
+	},
+	"ResourceModules": {
+		"ext.GlobalPreferences.global": {
+			"scripts": "ext.GlobalPreferences.global.js",
+			"dependencies": [
+				"oojs-ui-core",
+				"mediawiki.widgets",
+				"mediawiki.widgets.CheckMatrixWidget",
+				"mediawiki.widgets.UsersMultiselectWidget"
+			],
+			"messages": [
+				"globalprefs-select-all"
+			]
+		},
+		"ext.GlobalPreferences.local": {
+			"scripts": "ext.GlobalPreferences.local.js"
+		},
+		"ext.GlobalPreferences.global-nojs": {
+			"styles": "ext.GlobalPreferences.global-nojs.css"
+		},
+		"ext.GlobalPreferences.local-nojs": {
+			"styles": "ext.GlobalPreferences.local-nojs.css"
+		}
+	},
+	"APIModules": {
+		"globalpreferences": {
+			"class": "GlobalPreferences\\ApiGlobalPreferences",
+			"services": [
+				"PreferencesFactory",
+				"UserOptionsManager"
+			]
+		},
+		"globalpreferenceoverrides": {
+			"class": "GlobalPreferences\\ApiGlobalPreferenceOverrides",
+			"services": [
+				"PreferencesFactory",
+				"UserOptionsManager"
+			]
+		}
+	},
+	"APIMetaModules": {
+		"globalpreferences": {
+			"class": "GlobalPreferences\\ApiQueryGlobalPreferences",
+			"services": [
+				"PreferencesFactory",
+				"UserOptionsLookup"
+			]
+		}
+	},
+	"manifest_version": 2
+}

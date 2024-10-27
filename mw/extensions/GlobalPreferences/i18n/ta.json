@@ -1,0 +1,12 @@
+{
+	"@metadata": {
+		"authors": [
+			"Balajijagadesh",
+			"Fahimrazick"
+		]
+	},
+	"globalprefs-error-header": "பிழை",
+	"globalpreferences": "பொதுவான விருப்பங்கள்",
+	"globalprefs-info-label": "பொதுவான விருப்பங்கள்:",
+	"globalprefs-info-link": "உமது பொதுவான விருப்பங்களை அமைக்க"
+}
