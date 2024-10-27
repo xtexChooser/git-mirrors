@@ -1,0 +1,37 @@
+{
+	"root": true,
+	"extends": [
+		"wikimedia/client",
+		"wikimedia/jquery",
+		"wikimedia/mediawiki"
+	],
+	"globals": {
+		"ve": "readonly",
+		"RangeFix": "readonly"
+	},
+	"parserOptions": {
+		"sourceType": "commonjs"
+	},
+	"rules": {
+		"max-len": "off"
+	},
+	"settings": {
+		"polyfills": [
+			"URL",
+			"URLSearchParams"
+		],
+		"jsdoc": {
+			"preferredTypes": {
+				"CommentController": "CommentController",
+				"CommentDetails": "CommentDetails",
+				"CommentItem": "CommentItem",
+				"DmMWPingNode": "DmMWPingNode",
+				"HeadingItem": "HeadingItem",
+				"MemoryStorage": "MemoryStorage",
+				"moment": "moment",
+				"ThreadItemSet": "ThreadItemSet",
+				"ThreadItem": "ThreadItem"
+			}
+		}
+	}
+}
