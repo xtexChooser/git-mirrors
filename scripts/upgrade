@@ -15,7 +15,7 @@ if ! git diff-index --quiet HEAD --; then
 fi
 
 # Archive the old tree
-git tag -s -m "Archive of $oldBranch branch" "$oldBranch"/last main
+git tag -fs -m "Archive of $oldBranch branch" "$oldBranch"/last main
 git branch -D tmp-upgrade || true
 git switch --orphan tmp-upgrade
 
