@@ -1,0 +1,190 @@
+@import 'mediawiki.skin.variables.less';
+@import 'mediawiki.mixins.less';
+
+@font-size-description: 12px;
+@line-height-description: 1.2;
+
+// When space doesn't allow, stack the parameters form and parameters list
+// using a fixed height for the parameters form.
+@media ( max-width: @max-width-breakpoint-mobile ) {
+	.ext-templatewizard-menu {
+		// Use extra-specific CSS rule to override OOUI rule which uses !important.
+		.oo-ui-menuLayout.oo-ui-menuLayout-showMenu.oo-ui-menuLayout-before {
+			> .oo-ui-menuLayout-menu {
+				// stylelint-disable-next-line declaration-no-important
+				height: 200px !important;
+				width: 100%;
+				overflow: scroll;
+			}
+
+			> .oo-ui-menuLayout-content {
+				left: 0;
+				// stylelint-disable-next-line declaration-no-important
+				top: 200px !important;
+			}
+		}
+	}
+}
+
+.ext-templatewizard-searchform {
+	.ext-templatewizard-description,
+	.ext-templatewizard-redirectedfrom {
+		color: @color-subtle;
+		display: block;
+		font-size: @font-size-description;
+		line-height: @line-height-description;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.ext-templatewizard-description {
+		@max-lines: 2;
+		display: -webkit-box;
+		max-height: @max-lines * unit( @line-height-description, em );
+		-webkit-line-clamp: @max-lines;
+		-webkit-box-orient: vertical;
+	}
+
+	.ext-templatewizard-redirectedfrom {
+		font-style: italic;
+		white-space: nowrap;
+	}
+
+	.oo-ui-inputWidget {
+		margin-right: 0;
+	}
+
+	.oo-ui-comboBoxInputWidget .oo-ui-iconElement-icon {
+		// HACK: This should be fixed in OOUI; the icon is behind
+		// the input rather than in front
+		z-index: 1;
+	}
+}
+
+.ext-templatewizard-templatetitlebar {
+	background-color: @background-color-interactive-subtle;
+	color: @color-base;
+	border-bottom: @border-subtle;
+	display: block;
+	position: relative;
+	width: 100%;
+	overflow: hidden;
+	z-index: 4;
+
+	.ext-templatewizard-title-and-buttons {
+		.flex-display();
+		align-items: center;
+
+		.ext-templatewizard-title {
+			.flex( 2 );
+			font-weight: @font-weight-bold;
+			font-size: 1em;
+			margin: 7px;
+		}
+
+		.ext-templatewizard-buttons {
+			.flex( 1 );
+			text-align: right;
+		}
+	}
+
+	.ext-templatewizard-description {
+		margin: 0 7px 7px 7px;
+		font-size: @font-size-description;
+		overflow: auto;
+		max-height: 65px;
+		overflow-wrap: break-word;
+
+		p {
+			margin: 0 0 7px 0;
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+
+		.ext-templatewizard-notice {
+			color: @color-destructive;
+		}
+	}
+}
+
+.ext-templatewizard-templateform {
+	overflow: hidden;
+
+	// Both menu columns.
+	.oo-ui-menuLayout-menu .ext-templatewizard-parameter-list,
+	.oo-ui-menuLayout-content .ext-templatewizard-fields {
+		padding: 8px;
+		margin: 0;
+		position: absolute;
+		overflow: auto;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		right: 0;
+	}
+
+	// Left-side parameter list.
+	.oo-ui-menuLayout-menu {
+		border-right: @border-color-subtle;
+
+		.ext-templatewizard-section-header {
+			color: @color-subtle;
+			font-size: 12px;
+			font-weight: @font-weight-bold;
+			text-transform: uppercase;
+		}
+
+		.ext-templatewizard-parameter-list-inner {
+			padding-left: 20px;
+
+			.oo-ui-buttonElement.oo-ui-buttonElement-frameless.oo-ui-flaggedElement-progressive,
+			.oo-ui-buttonElement.oo-ui-buttonElement-frameless.oo-ui-flaggedElement-destructive {
+				.oo-ui-labelElement-label {
+					// HACK: Override OOUI styles by making only the icon colorful,
+					// and leaving the text of the label in base grey.
+					color: @color-base;
+				}
+			}
+		}
+
+		.oo-ui-buttonElement-button,
+		.oo-ui-buttonElement-label {
+			white-space: normal;
+			font-weight: normal;
+		}
+
+		// Button to add or remove all fields
+		.ext-templatewizard-add-remove-all {
+			background-color: @background-color-base;
+			border-top: @border-subtle;
+			position: absolute;
+			bottom: 0;
+			width: 100%;
+
+			span.oo-ui-widget {
+				display: block;
+				margin: 8px;
+			}
+
+			a.oo-ui-buttonElement-button {
+				display: block;
+				font-weight: @font-weight-bold;
+			}
+		}
+	}
+
+	// Right-side form fields.
+	.oo-ui-menuLayout-content {
+		padding: 16px;
+
+		.ext-templatewizard-fields {
+			overflow-x: hidden;
+		}
+		// Make the date fields full-width to match all other fields.
+		.mw-widget-dateInputWidget.oo-ui-textInputWidget {
+			width: 100%;
+		}
+	}
+}
