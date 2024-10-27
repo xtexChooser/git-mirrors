@@ -1,0 +1,28 @@
+/composer.lock
+/node_modules/
+/vendor/
+tests/selenium/log
+
+# Editors
+*.kate-swp
+*~
+\#*#
+.#*
+.*.swp
+.project
+.buildpath
+.classpath
+.settings
+.env
+cscope.files
+cscope.out
+*.orig
+## NetBeans
+nbproject*
+project.index
+## Sublime
+sublime-*
+sftp-config.json
+/.eslintcache
+## vscode
+.vscode/
