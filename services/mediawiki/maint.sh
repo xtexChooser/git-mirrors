@@ -20,6 +20,8 @@ atre::mediawiki::update() {
 	atre::publog "MW: $1: Running update script" \
 		"MediaWiki-Wiki: $1"
 	atre::mediawiki::maint "$1" update --quick
+	atre::publog "MW: $1: Update script finished" \
+		"MediaWiki-Wiki: $1"
 	return
 }
 
