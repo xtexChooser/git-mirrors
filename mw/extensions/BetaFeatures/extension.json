@@ -1,0 +1,117 @@
+{
+	"name": "BetaFeatures",
+	"version": "0.1",
+	"author": [
+		"MarkTraceur (Mark Holmquist)"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:BetaFeatures",
+	"descriptionmsg": "betafeatures-desc",
+	"license-name": "GPL-2.0-or-later",
+	"type": "other",
+	"requires": {
+		"MediaWiki": ">= 1.43"
+	},
+	"config": {
+		"BetaFeaturesAllowList": {
+			"value": null
+		},
+		"BetaFeatures": {
+			"value": []
+		}
+	},
+	"ExtensionMessagesFiles": {
+		"BetaFeaturesAlias": "BetaFeatures.alias.php"
+	},
+	"APIListModules": {
+		"betafeatures": {
+			"class": "MediaWiki\\Extension\\BetaFeatures\\ApiQueryBetaFeatures",
+			"services": [
+				"DBLoadBalancerFactory",
+				"HookContainer"
+			]
+		}
+	},
+	"Hooks": {
+		"SaveUserOptions": "main",
+		"GetPreferences": "main",
+		"UserGetDefaultOptions": "main",
+		"SkinTemplateNavigation::Universal": "main",
+		"LoadExtensionSchemaUpdates": "schema",
+		"MakeGlobalVariablesScript": "main",
+		"PreferencesGetIcon": "main",
+		"ExtensionTypes": "main"
+	},
+	"HookHandlers": {
+		"main": {
+			"class": "MediaWiki\\Extension\\BetaFeatures\\Hooks",
+			"services": [
+				"MainConfig",
+				"DBLoadBalancerFactory",
+				"HookContainer",
+				"JobQueueGroupFactory",
+				"SkinFactory",
+				"UserFactory",
+				"UserIdentityUtils",
+				"UserOptionsManager",
+				"ObjectCacheFactory"
+			]
+		},
+		"schema": {
+			"class": "MediaWiki\\Extension\\BetaFeatures\\SchemaHooks"
+		}
+	},
+	"MessagesDirs": {
+		"BetaFeatures": [
+			"i18n",
+			"i18n/api"
+		]
+	},
+	"ResourceModules": {
+		"ext.betaFeatures": {
+			"scripts": [
+				"betafeatures.js"
+			],
+			"styles": [
+				"betafeatures.less"
+			],
+			"messages": [
+				"betafeatures-feature-autoenrolled"
+			],
+			"dependencies": [
+				"jquery.client",
+				"oojs-ui-core"
+			]
+		},
+		"ext.betaFeatures.styles": {
+			"styles": [
+				"betafeatures.nojs.less"
+			]
+		}
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "resources",
+		"remoteExtPath": "BetaFeatures/resources"
+	},
+	"JobClasses": {
+		"updateBetaFeaturesUserCounts": {
+			"class": "MediaWiki\\Extension\\BetaFeatures\\UpdateBetaFeatureUserCountsJob",
+			"services": [
+				"DBLoadBalancerFactory"
+			],
+			"needsPage": false
+		}
+	},
+	"SpecialPages": {
+		"BetaFeatures": "MediaWiki\\Extension\\BetaFeatures\\SpecialBetaFeatures"
+	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\BetaFeatures\\": "includes/"
+	},
+	"TestAutoloadClasses": {
+		"BetaFeaturesDatabaseTestCase": "tests/phpunit/BetaFeaturesDatabaseTestCase.php"
+	},
+	"DefaultUserOptions": {
+		"betafeatures-auto-enroll": false
+	},
+	"manifest_version": 2
+}
