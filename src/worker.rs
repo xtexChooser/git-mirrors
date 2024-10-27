@@ -15,7 +15,9 @@ pub struct WorkerState {
     pub always_on_top: Option<usize>,
 }
 
-pub async fn run(state: Arc<RwLock<WorkerState>>) -> Result<()> {
+pub type WorkerStateRef = Arc<RwLock<WorkerState>>;
+
+pub async fn run(state: WorkerStateRef) -> Result<()> {
     loop {
         let mut delay = 40;
 

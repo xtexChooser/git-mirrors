@@ -17,7 +17,7 @@ use powershadow::PowerShadowWindow;
 use raw_window_handle::{HasWindowHandle, RawWindowHandle, Win32WindowHandle};
 use updater::Updater;
 use windowsadj::WindowsAdjWindow;
-use worker::WorkerState;
+use worker::{WorkerState, WorkerStateRef};
 use yjyz_tools::license::{self, LicenseFeatures};
 
 mod assets;
@@ -114,7 +114,7 @@ struct MainApp {
     double_error: bool,
     show_licenses: bool,
 
-    worker: Arc<RwLock<WorkerState>>,
+    worker: WorkerStateRef,
 
     #[educe(Default = true)]
     always_on_top: bool,
@@ -141,7 +141,7 @@ struct MainApp {
 }
 
 impl MainApp {
-    fn new(cc: &eframe::CreationContext<'_>, worker: Arc<RwLock<WorkerState>>) -> Result<Self> {
+    fn new(cc: &eframe::CreationContext<'_>, worker: WorkerStateRef) -> Result<Self> {
         assets::configure_fonts(&cc.egui_ctx)?;
         Ok(Self {
             worker,
