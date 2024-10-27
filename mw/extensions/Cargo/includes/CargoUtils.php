@@ -1,0 +1,1410 @@
+<?php
+/**
+ * Utility functions for the Cargo extension.
+ *
+ * @author Yaron Koren
+ * @ingroup Cargo
+ */
+
+use MediaWiki\Linker\LinkRenderer;
+use MediaWiki\Linker\LinkTarget;
+use MediaWiki\MediaWikiServices;
+
+class CargoUtils {
+
+	/** @var \Wikimedia\Rdbms\IMaintainableDatabase|null */
+	private static $CargoDB = null;
+
+	/**
+	 * @return \Wikimedia\Rdbms\IMaintainableDatabase
+	 */
+	public static function getDB() {
+		if ( self::$CargoDB != null && self::$CargoDB->isOpen() ) {
+			return self::$CargoDB;
+		}
+
+		global $wgDBuser, $wgDBpassword, $wgDBprefix, $wgDBservers;
+		global $wgCargoDBserver, $wgCargoDBname, $wgCargoDBuser, $wgCargoDBpassword, $wgCargoDBprefix, $wgCargoDBtype, $wgCargoDBfilePath;
+
+		$services = MediaWikiServices::getInstance();
+		$dbr = self::getMainDBForRead();
+		$server = $dbr->getServer();
+		$name = $dbr->getDBname();
+		$type = $dbr->getType();
+
+		// We need $wgCargoDBtype for other functions.
+		if ( $wgCargoDBtype === null ) {
+			$wgCargoDBtype = $type;
+		}
+		$dbServer = $wgCargoDBserver === null ? $server : $wgCargoDBserver;
+		$dbName = $wgCargoDBname === null ? $name : $wgCargoDBname;
+
+		// Server (host), db name, and db type can be retrieved from $dbr via
+		// public methods, but username and password cannot. If these values are
+		// not set for Cargo, get them from either $wgDBservers or wgDBuser and
+		// $wgDBpassword, depending on whether or not there are multiple DB servers.
+		if ( $wgCargoDBuser !== null ) {
+			$dbUsername = $wgCargoDBuser;
+		} elseif ( is_array( $wgDBservers ) && isset( $wgDBservers[0] ) ) {
+			$dbUsername = $wgDBservers[0]['user'];
+		} else {
+			$dbUsername = $wgDBuser;
+		}
+		if ( $wgCargoDBpassword !== null ) {
+			$dbPassword = $wgCargoDBpassword;
+		} elseif ( is_array( $wgDBservers ) && isset( $wgDBservers[0] ) ) {
+			$dbPassword = $wgDBservers[0]['password'];
+		} else {
+			$dbPassword = $wgDBpassword;
+		}
+
+		if ( $wgCargoDBprefix !== null ) {
+			$dbTablePrefix = $wgCargoDBprefix;
+		} else {
+			$dbTablePrefix = $wgDBprefix . 'cargo__';
+		}
+
+		$params = [
+			'host' => $dbServer,
+			'user' => $dbUsername,
+			'password' => $dbPassword,
+			'dbname' => $dbName,
+			'tablePrefix' => $dbTablePrefix,
+		];
+
+		if ( $type === 'sqlite' ) {
+			if ( $wgCargoDBfilePath !== null ) {
+				$params['dbFilePath'] = $wgCargoDBfilePath;
+			} else {
+				$params['dbFilePath'] = $dbr->getDbFilePath();
+			}
+		} elseif ( $type === 'postgres' ) {
+			global $wgDBport;
+			// @TODO - a $wgCargoDBport variable is still needed.
+			$params['port'] = $wgDBport;
+		}
+
+		self::$CargoDB = $services->getDatabaseFactory()->create( $wgCargoDBtype, $params );
+		return self::$CargoDB;
+	}
+
+	/**
+	 * Provides a reference to the main (not the Cargo) database for read
+	 * access.
+	 *
+	 * @return \Wikimedia\Rdbms\IMaintainableDatabase
+	 */
+	public static function getMainDBForRead() {
+		$lbFactory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
+		if ( method_exists( $lbFactory, 'getReplicaDatabase' ) ) {
+			// MW 1.40+
+			// The correct type \Wikimedia\Rdbms\IReadableDatabase cannot be used
+			// as return type, as that class only exists since 1.40.
+			// @phan-suppress-next-line PhanTypeMismatchReturnSuperType
+			return $lbFactory->getReplicaDatabase();
+		} else {
+			// @phan-suppress-next-line PhanTypeMismatchReturnSuperType
+			return $lbFactory->getMainLB()->getConnection( DB_REPLICA );
+		}
+	}
+
+	/**
+	 * Provides a reference to the main (not the Cargo) database for write
+	 * access.
+	 *
+	 * @return \Wikimedia\Rdbms\IMaintainableDatabase
+	 */
+	public static function getMainDBForWrite() {
+		$lbFactory = MediaWikiServices::getInstance()->getDBLoadBalancerFactory();
+		if ( method_exists( $lbFactory, 'getPrimaryDatabase' ) ) {
+			// MW 1.40+
+			// @phan-suppress-next-line PhanTypeMismatchReturnSuperType
+			return $lbFactory->getPrimaryDatabase();
+		} else {
+			// @phan-suppress-next-line PhanTypeMismatchReturnSuperType
+			return $lbFactory->getMainLB()->getConnection( DB_PRIMARY );
+		}
+	}
+
+	/**
+	 * Gets a page property for the specified page ID and property name.
+	 */
+	public static function getPageProp( $pageID, $pageProp ) {
+		$dbr = self::getMainDBForRead();
+		$value = $dbr->selectField( 'page_props', [
+				'pp_value'
+			], [
+				'pp_page' => $pageID,
+					'pp_propname' => $pageProp,
+			],
+			__METHOD__
+		);
+
+		if ( !$value ) {
+			return null;
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Similar to getPageProp().
+	 */
+	public static function getAllPageProps( $pageProp ) {
+		$dbr = self::getMainDBForRead();
+		$res = $dbr->select( 'page_props', [
+			'pp_page',
+			'pp_value'
+			], [
+			'pp_propname' => $pageProp
+			],
+			__METHOD__
+		);
+
+		$pagesPerValue = [];
+		foreach ( $res as $row ) {
+			$pageID = $row->pp_page;
+			$pageValue = $row->pp_value;
+			if ( array_key_exists( $pageValue, $pagesPerValue ) ) {
+				$pagesPerValue[$pageValue][] = $pageID;
+			} else {
+				$pagesPerValue[$pageValue] = [ $pageID ];
+			}
+		}
+
+		return $pagesPerValue;
+	}
+
+	/**
+	 * Gets the template page where this table is defined -
+	 * hopefully there's exactly one of them.
+	 */
+	public static function getTemplateIDForDBTable( $tableName ) {
+		$dbr = self::getMainDBForRead();
+		$page = $dbr->selectField( 'page_props', [
+			'pp_page'
+			], [
+			'pp_value' => $tableName,
+			'pp_propname' => 'CargoTableName'
+			],
+			__METHOD__
+		);
+		if ( !$page ) {
+			return null;
+		}
+		return $page;
+	}
+
+	public static function formatError( $errorString ) {
+		return Html::element( 'div', [ 'class' => 'error' ], $errorString );
+	}
+
+	public static function displayErrorMessage( OutputPage $out, Message $message ) {
+		$out->wrapWikiTextAsInterface( 'error', $message->plain() );
+	}
+
+	public static function getTables() {
+		$tableNames = [];
+		$dbr = self::getMainDBForRead();
+		$res = $dbr->select( 'cargo_tables', 'main_table', '', __METHOD__ );
+		foreach ( $res as $row ) {
+			$tableName = $row->main_table;
+			// Skip "replacement" tables.
+			if ( substr( $tableName, -6 ) == '__NEXT' ) {
+				continue;
+			}
+			$tableNames[] = $tableName;
+		}
+		return $tableNames;
+	}
+
+	public static function getParentTables( $tableName ) {
+		$parentTables = [];
+		$dbr = self::getMainDBForRead();
+		$res = $dbr->select( 'cargo_tables', [ 'template_id', 'main_table' ], '', __METHOD__ );
+		foreach ( $res as $row ) {
+			if ( $tableName == $row->main_table ) {
+				$parentTables = self::getPageProp( $row->template_id, 'CargoParentTables' );
+			}
+		}
+		if ( $parentTables ) {
+			return unserialize( $parentTables );
+		}
+	}
+
+	public static function getChildTables( $tableName ) {
+		$childTables = [];
+		$allParentTablesInfo = self::getAllPageProps( 'CargoParentTables' );
+		foreach ( $allParentTablesInfo as $parentTablesInfoStr => $templateIDs ) {
+			$parentTablesInfo = unserialize( $parentTablesInfoStr );
+			foreach ( $parentTablesInfo as $parentTableInfo ) {
+				$remoteTable = $parentTableInfo['Name'];
+				if ( $remoteTable !== $tableName ) {
+					continue;
+				}
+				$localField = $parentTableInfo['_localField'];
+				$remoteField = $parentTableInfo['_remoteField'];
+				// There should only ever be one ID here... right?
+				foreach ( $templateIDs as $templateID ) {
+					$childTable = self::getPageProp( $templateID, 'CargoTableName' );
+					$childTables[] = [
+						'childTable' => $childTable,
+						'childField' => $localField,
+						'parentTable' => $remoteTable,
+						'parentField' => $remoteField
+					];
+				}
+			}
+		}
+		return $childTables;
+	}
+
+	public static function getDrilldownTabsParams( $tableName ) {
+		$drilldownTabs = [];
+		$dbr = self::getMainDBForRead();
+		$res = $dbr->select( 'cargo_tables', [ 'template_id', 'main_table' ], '', __METHOD__ );
+		foreach ( $res as $row ) {
+			if ( $tableName == $row->main_table ) {
+				$drilldownTabs = self::getPageProp( $row->template_id, 'CargoDrilldownTabsParams' );
+			}
+		}
+		if ( $drilldownTabs ) {
+			return unserialize( $drilldownTabs );
+		}
+	}
+
+	public static function getTableSchemas( $tableNames ) {
+		$mainTableNames = [];
+		foreach ( $tableNames as $tableName ) {
+			if ( strpos( $tableName, '__' ) !== false &&
+				strpos( $tableName, '__NEXT' ) === false ) {
+				// We just want the first part of it.
+				$tableNameParts = explode( '__', $tableName );
+				$tableName = $tableNameParts[0];
+			}
+			if ( !in_array( $tableName, $mainTableNames ) ) {
+				$mainTableNames[] = $tableName;
+			}
+		}
+		$tableSchemas = [];
+		$dbr = self::getMainDBForRead();
+		$res = $dbr->select( 'cargo_tables', [ 'main_table', 'table_schema' ],
+			[ 'main_table' => $mainTableNames ], __METHOD__ );
+		foreach ( $res as $row ) {
+			$tableName = $row->main_table;
+			$tableSchemaString = $row->table_schema;
+			$tableSchemas[$tableName] = CargoTableSchema::newFromDBString( $tableSchemaString );
+		}
+
+		// Validate the table names.
+		if ( count( $tableSchemas ) < count( $mainTableNames ) ) {
+			foreach ( $mainTableNames as $tableName ) {
+				if ( !array_key_exists( $tableName, $tableSchemas ) ) {
+					throw new MWException( wfMessage( "cargo-unknowntable", $tableName )->parse() );
+				}
+			}
+		}
+
+		return $tableSchemas;
+	}
+
+	/**
+	 * Get the Cargo table for the passed-in template specified via
+	 * either #cargo_declare or #cargo_attach, if the template has a
+	 * call to either one.
+	 */
+	public static function getTableNameForTemplate( $templateTitle ) {
+		$templatePageID = $templateTitle->getArticleID();
+		$declaredTableName = self::getPageProp( $templatePageID, 'CargoTableName' );
+		if ( $declaredTableName !== null ) {
+			return [ $declaredTableName, true ];
+		}
+		$attachedTableName = self::getPageProp( $templatePageID, 'CargoAttachedTable' );
+		return [ $attachedTableName, false ];
+	}
+
+	/**
+	 * Make the alias different from table name to avoid removal of aliases (when passed
+	 * in to Mediawiki's select() call) if the alias and table name are the same.
+	 * Aliases are needed because sometimes the same table can be joined more than once, if
+	 * it serves as two different parent tables
+	 * @param string $tableName
+	 * @return string
+	 */
+	public static function makeDifferentAlias( $tableName ) {
+		$tableAlias = $tableName . "_alias";
+		return $tableAlias;
+	}
+
+	/**
+	 * Splits a string by the delimiter, but ensures that parentheses,
+	 * separators and "the other quote" (single quote in a double quoted
+	 * string, double quote in a single quoted string, etc.) inside a quoted
+	 * string are not considered lexically.
+	 * @param string $delimiter The delimiter to split by.
+	 * @param string $string The string to split.
+	 * @param bool $includeBlankValues Whether to include blank values in the returned array.
+	 * @return string[] Array of substrings (with or without blank values).
+	 * @throws MWException On unmatched quotes or incomplete escape sequences.
+	 */
+	public static function smartSplit( $delimiter, $string, $includeBlankValues = false ) {
+		if ( $string == '' ) {
+			return [];
+		}
+
+		$ignoreNextChar = false;
+		$returnValues = [];
+		$numOpenParentheses = 0;
+		$curReturnValue = '';
+		$strLength = strlen( $string );
+		for ( $i = 0; $i < $strLength; $i++ ) {
+			$curChar = $string[$i];
+
+			if ( $ignoreNextChar ) {
+				// If previous character was a backslash,
+				// ignore the current one, since it's escaped.
+				// What if this one is a backslash too?
+				// Doesn't matter - it's escaped.
+				$ignoreNextChar = false;
+			} elseif ( $curChar == '(' ) {
+				$numOpenParentheses++;
+			} elseif ( $curChar == ')' ) {
+				$numOpenParentheses--;
+			} elseif ( $curChar == '\'' || $curChar == '"' || $curChar == '`' ) {
+				$pos = self::findQuotedStringEnd( $string, $curChar, $i + 1 );
+				if ( $pos === false ) {
+					throw new MWException( "Error: unmatched quote in SQL string constant." );
+				}
+				$curReturnValue .= substr( $string, $i, $pos - $i );
+				$i = $pos;
+			} elseif ( $curChar == '\\' ) {
+				$ignoreNextChar = true;
+			}
+
+			if ( $curChar == $delimiter && $numOpenParentheses == 0 ) {
+				$returnValues[] = trim( $curReturnValue );
+				$curReturnValue = '';
+			} else {
+				$curReturnValue .= $curChar;
+			}
+		}
+		$returnValues[] = trim( $curReturnValue );
+
+		if ( $ignoreNextChar ) {
+			throw new MWException( "Error: incomplete escape sequence." );
+		}
+
+		if ( $includeBlankValues ) {
+			return $returnValues;
+		}
+
+		// Remove empty strings (but not other quasi-empty values, like '0') and re-key the array.
+		$noEmptyStrings = static function ( $s ) {
+			return $s !== '';
+		};
+		return array_values( array_filter( $returnValues, $noEmptyStrings ) );
+	}
+
+	/**
+	 * Finds the end of a quoted string.
+	 */
+	public static function findQuotedStringEnd( $string, $quoteChar, $pos ) {
+		$ignoreNextChar = false;
+		$strLength = strlen( $string );
+		for ( $i = $pos; $i < $strLength; $i++ ) {
+			$curChar = $string[$i];
+			if ( $ignoreNextChar ) {
+				$ignoreNextChar = false;
+			} elseif ( $curChar == $quoteChar ) {
+				if ( $i + 1 < $strLength && $string[$i + 1] == $quoteChar ) {
+					$i++;
+				} else {
+					return $i;
+				}
+			} elseif ( $curChar == '\\' ) {
+				$ignoreNextChar = true;
+			}
+		}
+		if ( $ignoreNextChar ) {
+			throw new MWException( "Error: incomplete escape sequence." );
+		}
+		return false;
+	}
+
+	/**
+	 * Deletes text within quotes and raises and exception if a quoted string
+	 * is not closed.
+	 */
+	public static function removeQuotedStrings( ?string $string ): string {
+		if ( $string === null ) {
+			return '';
+		}
+
+		$noQuotesPattern = '/("|\')([^\\1\\\\]|\\\\.)*?\\1/s';
+		$string = preg_replace( $noQuotesPattern, '', $string );
+		if ( strpos( $string, '"' ) !== false || strpos( $string, "'" ) !== false ) {
+			throw new MWException( "Error: unclosed string literal." );
+		}
+		return $string;
+	}
+
+	/**
+	 * Get rid of the "File:" or "Image:" (in the wiki's language) at the
+	 * beginning of a file name, if it's there.
+	 */
+	public static function removeNamespaceFromFileName( $fileName ) {
+		$fileTitle = Title::newFromText( $fileName, NS_FILE );
+		if ( $fileTitle == null ) {
+			return null;
+		}
+		return $fileTitle->getText();
+	}
+
+	/**
+	 * Generates a Regular Expression to match $fieldName in a SQL string.
+	 * Allows for $ as valid identifier character.
+	 */
+	public static function getSQLFieldPattern( $fieldName, $closePattern = true ) {
+		$fieldName = str_replace( '$', '\$', $fieldName );
+		$pattern = '/([^\w$.,]|^)' . $fieldName;
+		return $pattern . ( $closePattern ? '([^\w$]|$)/' : '' );
+	}
+
+	/**
+	 * Generates a Regular Expression to match $tableName.$fieldName in a
+	 * SQL string. Allows for $ as valid identifier character.
+	 */
+	public static function getSQLTableAndFieldPattern( $tableName, $fieldName, $closePattern = true ) {
+		$fieldName = str_replace( '$', '\$', $fieldName );
+		$tableName = str_replace( '$', '\$', $tableName );
+		$pattern = '/([^\w$,]|^)' . $tableName . '\.' . $fieldName;
+		return $pattern . ( $closePattern ? '([^\w$]|$)/ui' : '' );
+	}
+
+	/**
+	 * Generates a Regular Expression to match $tableName in a SQL string.
+	 * Allows for $ as valid identifier character.
+	 */
+	public static function getSQLTablePattern( $tableName, $closePattern = true ) {
+		$tableName = str_replace( '$', '\$', $tableName );
+		$pattern = '/([^\w$]|^)(' . $tableName . ')\.(\w*)';
+		return $pattern . ( $closePattern ? '/ui' : '' );
+	}
+
+	/**
+	 * Determines whether a string is a literal.
+	 * This may need different handling for different (non-MySQL) DB types.
+	 */
+	public static function isSQLStringLiteral( $string ) {
+		return $string[0] == "'" && substr( $string, -1, 1 ) == "'";
+	}
+
+	public static function getDateFunctions( $dateDBField ) {
+		global $wgCargoDBtype;
+
+		// Unfortunately, date handling in general - and date extraction
+		// specifically - is done differently in almost every DB
+		// system. If support was ever added for SQLite,
+		// that would require special handling as well.
+		if ( $wgCargoDBtype == 'postgres' ) {
+			$yearValue = "DATE_PART('year', $dateDBField)";
+			$monthValue = "DATE_PART('month', $dateDBField)";
+			$dayValue = "DATE_PART('day', $dateDBField)";
+		} else { // MySQL
+			$yearValue = "YEAR($dateDBField)";
+			$monthValue = "MONTH($dateDBField)";
+			$dayValue = "DAY($dateDBField)";
+		}
+		return [ $yearValue, $monthValue, $dayValue ];
+	}
+
+	/**
+	 * Parses a piece of wikitext differently depending on whether
+	 * we're in a special or regular page.
+	 *
+	 * @param string $value
+	 * @param Parser|null $parser
+	 * @return string
+	 */
+	public static function smartParse( $value, $parser ) {
+		global $wgRequest;
+
+		// Escape immediately if it's blank or null.
+		if ( $value == '' ) {
+			return '';
+		}
+
+		// This decode() call is here in case the value was
+		// set using {{PAGENAME}}, which for some reason
+		// HTML-encodes some of its characters - see
+		// https://www.mediawiki.org/wiki/Help:Magic_words#Page_names
+		// Of course, String and Page fields could be set using
+		// {{PAGENAME}} as well, but those seem less likely.
+		$value = htmlspecialchars_decode( $value );
+
+		// Add a newline at the beginning if it looks like the value
+		// starts with a bulleted or numbered list, to make sure that
+		// the first line gets formatted correctly.
+		if ( strpos( $value, '*' ) === 0 || strpos( $value, '#' ) === 0 ) {
+			$value = "\n" . $value;
+		}
+
+		// Parse it as if it's wikitext. The exact call
+		// depends on whether we're in a special page or not.
+		if ( $parser === null ) {
+			$parser = MediaWikiServices::getInstance()->getParser();
+		}
+
+		// Parser::getTitle() throws a TypeError if it would have
+		// returned null, so just catch the error.
+		// Why would the title be null? It's not clear, but it seems to
+		// happen in at least once case: in "action=pagevalues" for a
+		// page with non-ASCII characters in its name.
+		try {
+			$title = $parser->getTitle();
+		} catch ( TypeError $e ) {
+			$title = null;
+		}
+
+		if ( $title === null ) {
+			global $wgTitle;
+			$title = $wgTitle;
+		}
+
+		if ( $title != null && $title->isSpecial( 'RunJobs' ) ) {
+			// Conveniently, if this is called from within a job
+			// being run, the name of the page will be
+			// Special:RunJobs.
+			// If that's the case, do nothing - we don't need to
+			// parse the value.
+		// This next clause should only be called for Cargo's special
+		// pages, not for SF's Special:RunQuery. Don't know about other
+		// special pages.
+		} elseif ( ( $title != null && $title->isSpecialPage() && !$wgRequest->getCheck( 'wpRunQuery' ) ) ||
+			// The 'pagevalues' action is also a Cargo special page.
+			$wgRequest->getVal( 'action' ) == 'pagevalues' ) {
+			$parserOptions = ParserOptions::newFromAnon();
+			$parserForInnerParse = MediaWikiServices::getInstance()->getParserFactory()->create();
+			$parserOutput = $parserForInnerParse->parse( $value, $title, $parserOptions );
+			$value = $parserOutput->getText( [ 'unwrap' => true ] );
+		} else {
+			$value = $parser->internalParse( $value );
+		}
+		return $value;
+	}
+
+	public static function parsePageForStorage( $title, $pageContents ) {
+		// Special handling for the Approved Revs extension.
+		$approvedContent = null;
+		if ( class_exists( 'ApprovedRevs' ) ) {
+			$approvedContent = ApprovedRevs::getApprovedContent( $title );
+		}
+		if ( $approvedContent != null ) {
+			if ( method_exists( $approvedContent, 'getText' ) ) {
+				// Approved Revs 1.0+
+				$pageText = $approvedContent->getText();
+			} else {
+				$pageText = $approvedContent;
+			}
+		} else {
+			$pageText = $pageContents;
+		}
+		$parser = MediaWikiServices::getInstance()->getParser();
+		$parserOptions = ParserOptions::newFromAnon();
+		$parser->parse( $pageText, $title, $parserOptions );
+	}
+
+	/**
+	 * Drop, and then create again, the database table(s) holding the
+	 * data for this template.
+	 * Why "tables"? Because every field that holds a list of values gets
+	 * its own helper table.
+	 *
+	 * @param int $templatePageID
+	 * @return bool
+	 * @throws MWException
+	 */
+	public static function recreateDBTablesForTemplate(
+		$templatePageID,
+		$createReplacement,
+		User $user,
+		$tableName = null,
+		$tableSchema = null,
+		$parentTables = null
+	) {
+		if ( $tableName == null ) {
+			$tableName = self::getPageProp( $templatePageID, 'CargoTableName' );
+		}
+
+		if ( $tableSchema == null ) {
+			$tableSchemaString = self::getPageProp( $templatePageID, 'CargoFields' );
+			// First, see if there even is DB storage for this template -
+			// if not, exit.
+			if ( $tableSchemaString === null ) {
+				return false;
+			}
+			$tableSchema = CargoTableSchema::newFromDBString( $tableSchemaString );
+		} else {
+			$tableSchemaString = $tableSchema->toDBString();
+		}
+
+		$dbw = self::getMainDBForWrite();
+		$cdb = self::getDB();
+
+		// Cannot run any recreate if a replacement table exists.
+		$possibleReplacementTable = $tableName . '__NEXT';
+		if ( self::tableFullyExists( $tableName ) && self::tableFullyExists( $possibleReplacementTable ) ) {
+			throw new MWException( wfMessage( 'cargo-recreatedata-replacementexists', $tableName, $possibleReplacementTable )->parse() );
+		}
+
+		if ( $createReplacement ) {
+			$tableName .= '__NEXT';
+			if ( $cdb->tableExists( $possibleReplacementTable, __METHOD__ ) ) {
+				// The replacement table exists, but it does
+				// not have a row in cargo_tables - this is
+				// hopefully a rare occurrence.
+				try {
+					$cdb->begin( __METHOD__ );
+					$cdb->dropTable( $tableName, __METHOD__ );
+					$cdb->commit( __METHOD__ );
+				} catch ( Exception $e ) {
+					throw new MWException( "Caught exception ($e) while trying to drop Cargo table. "
+					. "Please make sure that your database user account has the DROP permission." );
+				}
+			}
+		} else {
+			// @TODO - is an array really necessary? Shouldn't it
+			// always be just one table name? Tied in with that,
+			// if a table name was already specified, do we need
+			// to do a lookup here?
+			$tableNames = [];
+			$res = $dbw->select( 'cargo_tables', 'main_table', [ 'template_id' => $templatePageID ], __METHOD__ );
+			foreach ( $res as $row ) {
+				$tableNames[] = $row->main_table;
+			}
+
+			// For whatever reason, that DB query might have failed -
+			// if so, just add the table name here.
+			if ( $tableName != null && !in_array( $tableName, $tableNames ) ) {
+				$tableNames[] = $tableName;
+			}
+
+			$mainTableAlreadyExists = self::tableFullyExists( $tableNames[0] );
+			foreach ( $tableNames as $curTable ) {
+				try {
+					$cdb->begin( __METHOD__ );
+					$cdb->dropTable( $curTable, __METHOD__ );
+					$cdb->commit( __METHOD__ );
+				} catch ( Exception $e ) {
+					throw new MWException( "Caught exception ($e) while trying to drop Cargo table. "
+					. "Please make sure that your database user account has the DROP permission." );
+				}
+				$dbw->delete( 'cargo_pages', [ 'table_name' => $curTable ], __METHOD__ );
+			}
+
+			$dbw->delete( 'cargo_tables', [ 'template_id' => $templatePageID ], __METHOD__ );
+		}
+
+		self::createCargoTableOrTables( $cdb, $dbw, $tableName, $tableSchema, $tableSchemaString, $templatePageID );
+
+		if ( !$createReplacement ) {
+			// Log this.
+			if ( $mainTableAlreadyExists ) {
+				self::logTableAction( 'recreatetable', $tableName, $user );
+			} else {
+				self::logTableAction( 'createtable', $tableName, $user );
+			}
+		}
+
+		return true;
+	}
+
+	public static function tableFullyExists( $tableName ) {
+		$dbr = self::getMainDBForRead();
+		$numRows = $dbr->selectRowCount( 'cargo_tables', '*', [ 'main_table' => $tableName ], __METHOD__ );
+		if ( $numRows == 0 ) {
+			return false;
+		}
+
+		$cdb = self::getDB();
+		return $cdb->tableExists( $tableName, __METHOD__ );
+	}
+
+	public static function fieldTypeToSQLType( $fieldType, $dbType, $size = null ) {
+		global $wgCargoDefaultStringBytes;
+
+		// Possible values for $dbType: "mysql", "postgres", "sqlite"
+		// @TODO - make sure it's one of these.
+		if ( $fieldType == 'Integer' ) {
+			switch ( $dbType ) {
+				case "mysql":
+				case "postgres":
+					return 'Int';
+				case "sqlite":
+					return 'INTEGER';
+			}
+		} elseif ( $fieldType == 'Float' || $fieldType == 'Rating' ) {
+			switch ( $dbType ) {
+				case "mysql":
+					return 'Double';
+				case "postgres":
+					return 'Numeric';
+				case "sqlite":
+					return 'REAL';
+			}
+		} elseif ( $fieldType == 'Boolean' ) {
+			switch ( $dbType ) {
+				case "mysql":
+				case "postgres":
+					return 'Boolean';
+				case "sqlite":
+					return 'INTEGER';
+			}
+		} elseif ( $fieldType == 'Date' || $fieldType == 'Start date' || $fieldType == 'End date' ) {
+			switch ( $dbType ) {
+				case "mysql":
+				case "postgres":
+					return 'Date';
+				case "sqlite":
+					// Should really be 'REAL', with
+					// accompanying handling.
+					return 'TEXT';
+			}
+		} elseif ( $fieldType == 'Datetime' || $fieldType == 'Start datetime' || $fieldType == 'End datetime' ) {
+			// Some DB types have a datetime type that includes
+			// the time zone, but MySQL unfortunately doesn't,
+			// so the best solution for time zones is probably
+			// to have a separate field for them.
+			switch ( $dbType ) {
+				case "mysql":
+					return 'Datetime';
+				case "postgres":
+					return 'Timestamp';
+				case "sqlite":
+					// Should really be 'REAL', with
+					// accompanying handling.
+					return 'TEXT';
+			}
+		} elseif ( $fieldType == 'Text' || $fieldType == 'Wikitext' ) {
+			switch ( $dbType ) {
+				case "mysql":
+				case "postgres":
+				case "sqlite":
+					return 'Text';
+			}
+		} elseif ( $fieldType == 'Searchtext' ) {
+			if ( $dbType != 'mysql' ) {
+				throw new MWException( "Error: a \"Searchtext\" field can currently only be defined for MySQL databases." );
+			}
+			return 'Mediumtext';
+		} else { // 'String', 'Page', 'Wikitext string', etc.
+			if ( $size == null ) {
+				$size = $wgCargoDefaultStringBytes;
+			}
+			switch ( $dbType ) {
+				case "mysql":
+				case "postgres":
+					// For at least MySQL, there's a limit
+					// on how many total bytes a table's
+					// fields can have, and "Text" and
+					// "Blob" fields don't get added to the
+					// total, so if it's a big piece of
+					// text, just make it a "Text" field.
+					if ( $size > 1000 ) {
+						return 'Text';
+					} else {
+						return "Varchar($size)";
+					}
+				case "sqlite":
+					return 'TEXT';
+			}
+		}
+	}
+
+	public static function createCargoTableOrTables( $cdb, $dbw, $tableName, $tableSchema, $tableSchemaString, $templatePageID ) {
+		$cdb->begin( __METHOD__ );
+		$fieldsInMainTable = [
+			'_ID' => 'Integer',
+			'_pageName' => 'String',
+			'_pageTitle' => 'String',
+			'_pageNamespace' => 'Integer',
+			'_pageID' => 'Integer',
+		];
+
+		$containsFileType = false;
+		foreach ( $tableSchema->mFieldDescriptions as $fieldName => $fieldDescription ) {
+			$isList = $fieldDescription->mIsList;
+			$fieldType = $fieldDescription->mType;
+
+			if ( $isList || $fieldType == 'Coordinates' ) {
+				// No field will be created with this name -
+				// instead, we'll have one called
+				// fieldName + '__full', and a separate table
+				// for holding each value.
+				// The field holding the full list will always
+				// just be text - and it could be long.
+				$fieldsInMainTable[$fieldName . '__full'] = 'Text';
+			} else {
+				$fieldsInMainTable[$fieldName] = $fieldDescription;
+			}
+
+			if ( !$isList && $fieldType == 'Coordinates' ) {
+				$fieldsInMainTable[$fieldName . '__lat'] = 'Float';
+				$fieldsInMainTable[$fieldName . '__lon'] = 'Float';
+			} elseif ( $fieldType == 'Date' || $fieldType == 'Datetime' ||
+					$fieldType == 'Start date' || $fieldType == 'Start datetime' ||
+					$fieldType == 'End date' || $fieldType == 'End datetime' ) {
+				$fieldsInMainTable[$fieldName . '__precision'] = 'Integer';
+			} elseif ( $fieldType == 'File' ) {
+				$containsFileType = true;
+			}
+		}
+
+		self::createTable( $cdb, $tableName, $fieldsInMainTable );
+
+		// Now also create tables for each of the 'list' fields,
+		// if there are any.
+		$fieldTableNames = []; // Names of tables that store data regarding pages
+		$fieldHelperTableNames = []; // Names of tables that store metadata regarding template or fields
+		foreach ( $tableSchema->mFieldDescriptions as $fieldName => $fieldDescription ) {
+			if ( $fieldDescription->mIsList ) {
+				// The double underscore in this table name
+				// should prevent anyone from giving this name
+				// to a "real" table.
+				$fieldTableName = $tableName . '__' . $fieldName;
+				$cdb->dropTable( $fieldTableName, __METHOD__ );
+
+				$fieldsInTable = [ '_rowID' => 'Integer' ];
+				$fieldType = $fieldDescription->mType;
+				if ( $fieldType == 'Coordinates' ) {
+					$fieldsInTable['_lat'] = 'Float';
+					$fieldsInTable['_lon'] = 'Float';
+				} else {
+					$fieldsInTable['_value'] = $fieldType;
+				}
+				if ( $fieldDescription->isDateOrDateTime() ) {
+					$fieldsInTable['_value__precision'] = 'Integer';
+				}
+				$fieldsInTable['_position'] = 'Integer';
+
+				self::createTable( $cdb, $fieldTableName, $fieldsInTable );
+				$fieldTableNames[] = $fieldTableName;
+			}
+			if ( $fieldDescription->mIsHierarchy ) {
+				$fieldHelperTableName = $tableName . '__' . $fieldName . '__hierarchy';
+				$cdb->dropTable( $fieldHelperTableName, __METHOD__ );
+				$fieldType = $fieldDescription->mType;
+				$fieldsInTable = [
+					'_value' => $fieldType,
+					'_left' => 'Integer',
+					'_right' => 'Integer',
+				];
+				self::createTable( $cdb, $fieldHelperTableName, $fieldsInTable, true );
+
+				$fieldHelperTableNames[] = $fieldHelperTableName;
+				// Insert hierarchy information in the __hierarchy table
+				$hierarchyTree = CargoHierarchyTree::newFromWikiText( $fieldDescription->mHierarchyStructure );
+				$hierarchyStructureTableData = $hierarchyTree->generateHierarchyStructureTableData();
+				foreach ( $hierarchyStructureTableData as $entry ) {
+					$cdb->insert( $fieldHelperTableName, $entry, __METHOD__ );
+				}
+			}
+		}
+
+		// And create a helper table holding all the files stored in
+		// this table, if there are any.
+		if ( $containsFileType ) {
+			$fileTableName = $tableName . '___files';
+			$cdb->dropTable( $fileTableName, __METHOD__ );
+			$fieldsInTable = [
+				'_pageName' => 'String',
+				'_pageID' => 'Integer',
+				'_fieldName' => 'String',
+				'_fileName' => 'String'
+			];
+			self::createTable( $cdb, $fileTableName, $fieldsInTable );
+		}
+
+		// End transaction and apply DB changes.
+		$cdb->commit( __METHOD__ );
+
+		// Finally, store all the info in the cargo_tables table.
+		$dbw->insert( 'cargo_tables', [
+			'template_id' => $templatePageID,
+			'main_table' => $tableName,
+			'field_tables' => serialize( $fieldTableNames ),
+			'field_helper_tables' => serialize( $fieldHelperTableNames ),
+			'table_schema' => $tableSchemaString
+		], __METHOD__ );
+	}
+
+	public static function createTable( $cdb, $tableName, $fieldsInTable, $multipleColumnIndex = false ) {
+		global $wgCargoDBRowFormat;
+
+		// Unfortunately, there is not yet a 'CREATE TABLE' wrapper
+		// in the MediaWiki DB API, so we have to call SQL directly.
+		$dbType = $cdb->getType();
+		$sqlTableName = $cdb->tableName( $tableName );
+		$createSQL = "CREATE TABLE $sqlTableName ( ";
+		$firstField = true;
+		foreach ( $fieldsInTable as $fieldName => $fieldDescOrType ) {
+			$fieldOptionsText = '';
+			if ( is_object( $fieldDescOrType ) ) {
+				$fieldType = $fieldDescOrType->mType;
+				$fieldSize = $fieldDescOrType->mSize;
+				$sqlType = self::fieldTypeToSQLType( $fieldType, $dbType, $fieldSize );
+
+				if ( $fieldDescOrType->mIsMandatory ) {
+					$fieldOptionsText .= ' NOT NULL';
+				}
+				if ( $fieldDescOrType->mIsUnique ) {
+					$fieldOptionsText .= ' UNIQUE';
+				}
+			} else {
+				$fieldType = $fieldDescOrType;
+				$sqlType = self::fieldTypeToSQLType( $fieldType, $dbType );
+				if ( $fieldName == '_ID' ) {
+					$fieldOptionsText .= ' PRIMARY KEY';
+				} elseif ( $fieldName == '_rowID' ) {
+					$fieldOptionsText .= ' NOT NULL';
+				}
+			}
+			if ( $firstField ) {
+				$firstField = false;
+			} else {
+				$createSQL .= ', ';
+			}
+			$sqlFieldName = $cdb->addIdentifierQuotes( $fieldName );
+			$createSQL .= "$sqlFieldName $sqlType $fieldOptionsText";
+			if ( $fieldType == 'Searchtext' ) {
+				$createSQL .= ", FULLTEXT KEY $fieldName ( $sqlFieldName )";
+			}
+		}
+
+		$createSQL .= ' )';
+		// Allow for setting a format like COMPRESSED, DYNAMIC etc.
+		if ( $wgCargoDBRowFormat != null ) {
+			$createSQL .= " ROW_FORMAT=$wgCargoDBRowFormat";
+		}
+		$cdb->query( $createSQL, __METHOD__ );
+
+		// Add an index for any field that's not of type Text,
+		// Searchtext or Wikitext.
+		$indexedFields = [];
+		foreach ( $fieldsInTable as $fieldName => $fieldDescOrType ) {
+			// We don't need to index _ID, because it's already
+			// the primary key.
+			if ( $fieldName == '_ID' ) {
+				continue;
+			}
+
+			// @HACK - MySQL does not allow more than 64 keys/
+			// indexes per table. We are indexing most fields -
+			// so if a table has more than 64 fields, there's a
+			// good chance that it will overrun this limit.
+			// So we just stop indexing after the first 60.
+			if ( count( $indexedFields ) >= 60 ) {
+				break;
+			}
+
+			if ( is_object( $fieldDescOrType ) ) {
+				$fieldType = $fieldDescOrType->mType;
+			} else {
+				$fieldType = $fieldDescOrType;
+			}
+			if ( in_array( $fieldType, [ 'Text', 'Searchtext', 'Wikitext' ] ) ) {
+				continue;
+			}
+			$indexedFields[] = $fieldName;
+		}
+
+		if ( $multipleColumnIndex ) {
+			$indexName = "nested_set_$tableName";
+			$sqlFieldNames = array_map(
+				[ $cdb, 'addIdentifierQuotes' ],
+				$indexedFields
+			);
+			$sqlFieldNamesStr = implode( ', ', $sqlFieldNames );
+			$createIndexSQL = "CREATE INDEX $indexName ON " .
+				"$sqlTableName ($sqlFieldNamesStr)";
+			$cdb->query( $createIndexSQL, __METHOD__ );
+		} else {
+			foreach ( $indexedFields as $fieldName ) {
+				$indexName = $fieldName . '_' . $tableName;
+				// MySQL doesn't allow index names with more than 64 characters.
+				$indexName = substr( $indexName, 0, 64 );
+				$sqlFieldName = $cdb->addIdentifierQuotes( $fieldName );
+				$sqlIndexName = $cdb->addIdentifierQuotes( $indexName );
+				$createIndexSQL = "CREATE INDEX $sqlIndexName ON " .
+					"$sqlTableName ($sqlFieldName)";
+				$cdb->query( $createIndexSQL, __METHOD__ );
+			}
+		}
+	}
+
+	public static function specialTableNames() {
+		$specialTableNames = [ '_pageData', '_fileData' ];
+		if ( class_exists( 'FDGanttContent' ) ) {
+			// The Flex Diagrams extension is installed.
+			$specialTableNames[] = '_bpmnData';
+			$specialTableNames[] = '_ganttData';
+		}
+		return $specialTableNames;
+	}
+
+	public static function fullTextMatchSQL( $cdb, $tableName, $fieldName, $searchTerm ) {
+		$fullFieldName = self::escapedFieldName( $cdb, $tableName, $fieldName );
+		$searchTerm = $cdb->addQuotes( $searchTerm );
+		return " MATCH($fullFieldName) AGAINST ($searchTerm IN BOOLEAN MODE) ";
+	}
+
+	/**
+	 * Parses one half of a set of coordinates into a number.
+	 *
+	 * Copied from Miga, also written by Yaron Koren
+	 * (https://github.com/yaronkoren/miga/blob/master/MDVCoordinates.js)
+	 * - though that one is in Javascript.
+	 */
+	public static function coordinatePartToNumber( $coordinateStr ) {
+		$degreesSymbols = [ "\x{00B0}", "d" ];
+		$minutesSymbols = [ "'", "\x{2032}", "\x{00B4}" ];
+		$secondsSymbols = [ '"', "\x{2033}", "\x{00B4}\x{00B4}" ];
+
+		$numDegrees = null;
+		$numMinutes = null;
+		$numSeconds = null;
+
+		foreach ( $degreesSymbols as $degreesSymbol ) {
+			$pattern = '/([\d\.]+)' . $degreesSymbol . '/u';
+			if ( preg_match( $pattern, $coordinateStr, $matches ) ) {
+				$numDegrees = floatval( $matches[1] );
+				break;
+			}
+		}
+		if ( $numDegrees === null ) {
+			throw new MWException( "Error: could not parse degrees in \"$coordinateStr\"." );
+		}
+
+		foreach ( $minutesSymbols as $minutesSymbol ) {
+			$pattern = '/([\d\.]+)' . $minutesSymbol . '/u';
+			if ( preg_match( $pattern, $coordinateStr, $matches ) ) {
+				$numMinutes = floatval( $matches[1] );
+				break;
+			}
+		}
+		if ( $numMinutes === null ) {
+			// This might not be an error - the number of minutes
+			// might just not have been set.
+			$numMinutes = 0;
+		}
+
+		foreach ( $secondsSymbols as $secondsSymbol ) {
+			$pattern = '/(\d+)' . $secondsSymbol . '/u';
+			if ( preg_match( $pattern, $coordinateStr, $matches ) ) {
+				$numSeconds = floatval( $matches[1] );
+				break;
+			}
+		}
+		if ( $numSeconds === null ) {
+			// This might not be an error - the number of seconds
+			// might just not have been set.
+			$numSeconds = 0;
+		}
+
+		return ( $numDegrees + ( $numMinutes / 60 ) + ( $numSeconds / 3600 ) );
+	}
+
+	/**
+	 * Parses a coordinate string in (hopefully) any standard format.
+	 *
+	 * Copied from Miga, also written by Yaron Koren
+	 * (https://github.com/yaronkoren/miga/blob/master/MDVCoordinates.js)
+	 * - though that one is in Javascript.
+	 */
+	public static function parseCoordinatesString( $coordinatesString ) {
+		$coordinatesString = trim( $coordinatesString );
+		if ( $coordinatesString === '' ) {
+			// FIXME: No caller expects this!
+			return;
+		}
+
+		// This is safe to do, right?
+		$coordinatesString = str_replace( [ '[', ']' ], '', $coordinatesString );
+		// See if they're separated by commas.
+		if ( strpos( $coordinatesString, ',' ) > 0 ) {
+			$latAndLonStrings = explode( ',', $coordinatesString );
+		} else {
+			// If there are no commas, the first half, for the
+			// latitude, should end with either 'N' or 'S', so do a
+			// little hack to split up the two halves.
+			$coordinatesString = str_replace( [ 'N', 'S' ], [ 'N,', 'S,' ], $coordinatesString );
+			$latAndLonStrings = explode( ',', $coordinatesString );
+		}
+
+		if ( count( $latAndLonStrings ) != 2 ) {
+			throw new MWException( "Error parsing coordinates string: \"$coordinatesString\"." );
+		}
+		[ $latString, $lonString ] = $latAndLonStrings;
+
+		// Handle strings one at a time.
+		$latIsNegative = false;
+		if ( strpos( $latString, 'S' ) > 0 ) {
+			$latIsNegative = true;
+		}
+		$latString = str_replace( [ 'N', 'S' ], '', $latString );
+		if ( is_numeric( $latString ) ) {
+			$latNum = floatval( $latString );
+		} else {
+			$latNum = self::coordinatePartToNumber( $latString );
+		}
+		if ( $latIsNegative ) {
+			$latNum *= -1;
+		}
+
+		$lonIsNegative = false;
+		if ( strpos( $lonString, 'W' ) > 0 ) {
+			$lonIsNegative = true;
+		}
+		$lonString = str_replace( [ 'E', 'W' ], '', $lonString );
+		if ( is_numeric( $lonString ) ) {
+			$lonNum = floatval( $lonString );
+		} else {
+			$lonNum = self::coordinatePartToNumber( $lonString );
+		}
+		if ( $lonIsNegative ) {
+			$lonNum *= -1;
+		}
+
+		return [ $latNum, $lonNum ];
+	}
+
+	public static function escapedFieldName( $cdb, $tableName, $fieldName ) {
+		if ( is_array( $tableName ) ) {
+			$tableAlias = key( $tableName );
+			return $cdb->addIdentifierQuotes( $tableAlias ) . '.' .
+				$cdb->addIdentifierQuotes( $fieldName );
+		}
+		return $cdb->tableName( $tableName ) . '.' .
+			$cdb->addIdentifierQuotes( $fieldName );
+	}
+
+	public static function joinOfMainAndFieldTable( $cdb, $mainTableName, $fieldTableName ) {
+		return [
+			'LEFT OUTER JOIN',
+			self::escapedFieldName( $cdb, $mainTableName, '_ID' ) .
+				' = ' .
+				self::escapedFieldName( $cdb, $fieldTableName, '_rowID' )
+		];
+	}
+
+	public static function joinOfMainAndParentTable( $cdb, $mainTable, $mainTableField,
+			$parentTable, $parentTableField ) {
+		return [
+			'LEFT OUTER JOIN',
+			self::escapedFieldName( $cdb, $mainTable, $mainTableField ) .
+			' = ' .
+			self::escapedFieldName( $cdb, $parentTable, $parentTableField )
+		];
+	}
+
+	public static function joinOfFieldAndMainTable( $cdb, $fieldTable, $mainTable,
+			$isHierarchy = false, $hierarchyFieldName = null ) {
+		if ( $isHierarchy ) {
+			return [
+				'LEFT OUTER JOIN',
+				self::escapedFieldName( $cdb, $fieldTable, '_value' ) . ' = ' .
+				self::escapedFieldName( $cdb, $mainTable, $hierarchyFieldName ),
+			];
+		} else {
+			return [
+				'LEFT OUTER JOIN',
+				self::escapedFieldName( $cdb, $fieldTable, '_rowID' ) . ' = ' .
+				self::escapedFieldName( $cdb, $mainTable, '_ID' ),
+			];
+		}
+	}
+
+	public static function joinOfSingleFieldAndHierarchyTable( $cdb, $singleFieldTableName, $fieldColumnName, $hierarchyTableName ) {
+		return [
+			'LEFT OUTER JOIN',
+			self::escapedFieldName( $cdb, $singleFieldTableName, $fieldColumnName ) .
+				' = ' .
+				self::escapedFieldName( $cdb, $hierarchyTableName, '_value' )
+		];
+	}
+
+	public static function escapedInsert( $db, $tableName, $fieldValues ) {
+		// Put quotes around the field names - needed for Postgres,
+		// which otherwise lowercases all field names.
+		$quotedFieldValues = [];
+		foreach ( $fieldValues as $fieldName => $fieldValue ) {
+			$quotedFieldName = $db->addIdentifierQuotes( $fieldName );
+			$quotedFieldValues[$quotedFieldName] = $fieldValue;
+		}
+		// Calling tableName() here is necessary, for some reason,
+		// to pass validation (and maybe even to work at all?) for
+		// MW 1.41+.
+		$sqlTableName = $db->tableName( $tableName );
+		$db->insert( $sqlTableName, $quotedFieldValues, __METHOD__ );
+	}
+
+	/**
+	 * @param LinkRenderer $linkRenderer
+	 * @param LinkTarget|Title $title
+	 * @param string|null $msg Must already be HTML escaped
+	 * @param array $attrs link attributes
+	 * @param array $params query parameters
+	 *
+	 * @return string|null HTML link
+	 */
+	public static function makeLink( $linkRenderer, $title, $msg = null, $attrs = [], $params = [] ) {
+		global $wgTitle;
+
+		if ( $title === null ) {
+			return null;
+		} elseif ( $wgTitle !== null && $title->equals( $wgTitle ) ) {
+			// Display bolded text instead of a link.
+			return Linker::makeSelfLinkObj( $title, $msg );
+		} else {
+			$html = ( $msg == null ) ? null : new HtmlArmor( $msg );
+			return $linkRenderer->makeLink( $title, $html, $attrs, $params );
+		}
+	}
+
+	public static function getSpecialPage( $pageName ) {
+		return MediaWikiServices::getInstance()->getSpecialPageFactory()
+			->getPage( $pageName );
+	}
+
+	/**
+	 * Get the wiki's content language.
+	 * @since 2.6
+	 * @return Language
+	 */
+	public static function getContentLang() {
+		return MediaWikiServices::getInstance()->getContentLanguage();
+	}
+
+	public static function logTableAction( $actionName, $tableName, User $user ) {
+		$log = new LogPage( 'cargo' );
+		$ctPage = self::getSpecialPage( 'CargoTables' );
+		$ctTitle = $ctPage->getPageTitle();
+		if ( $actionName == 'deletetable' ) {
+			$logParams = [ $tableName ];
+		} else {
+			$ctURL = $ctTitle->getFullURL();
+			$tableURL = "$ctURL/$tableName";
+			$tableLink = Html::element(
+				'a',
+				[ 'href' => $tableURL ],
+				$tableName
+			);
+			$logParams = [ $tableLink ];
+		}
+		// Every log entry requires an associated title; Cargo table
+		// actions don't involve an actual page, so we just use
+		// Special:CargoTables as the title.
+		$log->addEntry( $actionName, $ctTitle, '', $logParams, $user );
+	}
+
+	public static function validateHierarchyStructure( $hierarchyStructure ) {
+		$hierarchyNodesArray = explode( "\n", $hierarchyStructure );
+		$matches = [];
+		preg_match( '/^([*]*)[^*]*/i', $hierarchyNodesArray[0], $matches );
+		if ( strlen( $matches[1] ) != 1 ) {
+			throw new MWException( "Error: First entry of hierarchy values should start with exact one '*', the entry \"" .
+				$hierarchyNodesArray[0] . "\" has " . strlen( $matches[1] ) . " '*'" );
+		}
+		$level = 0;
+		foreach ( $hierarchyNodesArray as $node ) {
+			if ( !preg_match( '/^([*]*)( *)(.*)/i', $node, $matches ) ) {
+				throw new MWException( "Error: The \"" . $node . "\" entry of hierarchy values does not follow syntax. " .
+					"The entry should be of the form : * entry" );
+			}
+			if ( strlen( $matches[1] ) < 1 ) {
+				throw new MWException( "Error: Each entry of hierarchy values should start with atleast one '*', the entry \"" .
+					$node . "\" has " . strlen( $matches[1] ) . " '*'" );
+			}
+			if ( strlen( $matches[1] ) - $level > 1 ) {
+				throw new MWException( "Error: Level or count of '*' in hierarchy values should be increased only by count of 1, the entry \"" .
+					$node . "\" should have " . ( $level + 1 ) . " or less '*'" );
+			}
+			$level = strlen( $matches[1] );
+			if ( strlen( $matches[3] ) == 0 ) {
+				throw new MWException( "Error: The entry of hierarchy values cannot be empty." );
+			}
+		}
+	}
+
+	public static function validateFieldDescriptionString( $fieldDescriptionStr ) {
+		$hasParameterFormat = preg_match( '/^([^(]*)\s*\((.*)\)$/s', $fieldDescriptionStr, $matches );
+
+		if ( !$hasParameterFormat ) {
+			if ( self::stringContainsParentheses( $fieldDescriptionStr ) ) {
+				throw new MWException( 'Invalid field description - Parentheses do not match: "' . $fieldDescriptionStr . '"' );
+			}
+		} else {
+			if ( count( $matches ) == 3 ) {
+				$extraParamsString = $matches[2];
+				$extraParams = explode( ';', $extraParamsString );
+
+				foreach ( $extraParams as $extraParam ) {
+					$extraParamParts = explode( '=', $extraParam, 2 );
+					$paramKey = strtolower( trim( $extraParamParts[0] ) );
+					$paramValue = isset( $extraParamParts[1] ) ? trim( $extraParamParts[1] ) : '';
+
+					if ( self::stringContainsParentheses( $paramKey ) ) {
+						throw new MWException( 'Invalid field description - Parameter name "' . $paramKey . '" must not include parentheses: "' . $fieldDescriptionStr . '"' );
+					}
+
+					if ( $paramKey == 'allowed values' ) {
+						continue;
+					}
+
+					if ( self::stringContainsParentheses( $paramValue ) ) {
+						throw new MWException( 'Invalid field description - Parameter value "' . $paramValue . '" must not include parentheses: "' . $fieldDescriptionStr . '"' );
+					}
+				}
+			}
+		}
+	}
+
+	public static function globalFields() {
+		return [
+			'_pageID' => [ 'type' => 'Integer', 'isList' => false ],
+			'_pageName' => [ 'type' => 'Page', 'isList' => false ],
+			'_pageTitle' => [ 'type' => 'String', 'isList' => false ],
+			'_pageNamespace' => [ 'type' => 'Integer', 'isList' => false ],
+		];
+	}
+
+	public static function addGlobalFieldsToSchema( $schema ) {
+		foreach ( self::globalFields() as $field => $fieldInfo ) {
+			$fieldDesc = new CargoFieldDescription();
+			$fieldDesc->mType = $fieldInfo["type"];
+			$fieldDesc->mIsList = $fieldInfo["isList"];
+			if ( $fieldInfo["isList"] ) {
+				$fieldDesc->setDelimiter( '|' );
+			}
+			$schema->addField( $field, $fieldDesc );
+		}
+	}
+
+	public static function stringContainsParentheses( $str ) {
+		return substr_count( $str, ')' ) > 0 || substr_count( $str, '(' ) > 0;
+	}
+
+	public static function makeWikiPage( $title ) {
+		return MediaWikiServices::getInstance()->getWikiPageFactory()->newFromTitle( $title );
+	}
+
+	/**
+	 * Replacement for the removed ContentHandler::getContextText().
+	 */
+	public static function getContentText( $content ) {
+		if ( !$content instanceof TextContent ) {
+			return null;
+		}
+		return $content->getText();
+	}
+}

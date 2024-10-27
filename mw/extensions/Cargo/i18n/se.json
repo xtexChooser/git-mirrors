@@ -1,0 +1,23 @@
+{
+	"@metadata": {
+		"authors": [
+			"Kimberli Mäkäräinen (WMNO)",
+			"Yupik"
+		]
+	},
+	"cargo-viewdata-tables": "Tabealla(t):",
+	"cargo-cargotables-header-table": "Tabealla",
+	"cargo-cargotables-header-templates": "Mállet",
+	"cargo-cargotables-action-deletereplacement": "Sihko",
+	"cargo-cargotables-action-delete": "Sihko",
+	"cargo-cargotables-viewtable": "Čájet tabealla: $1",
+	"cargo-cargotables-viewtablelink": "Čájet tabealla",
+	"cargo-drilldown-allpages": "Buot siiddut",
+	"cargo-drilldown-search": "Oza",
+	"cargo-drilldown-filename": "Fiilanamma",
+	"cargo-drilldown-mapformat": "Kárta",
+	"cargo-viewjson": "Čájet JSON",
+	"cargo-purgecache": "Gurre gaskamuittu",
+	"cargo-purgecache-failed": "Gaskamuittu gurren ii lihkostuvvan",
+	"cargo-pageschemas-tablename": "Tabealla namma:"
+}

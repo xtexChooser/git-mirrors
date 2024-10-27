@@ -1,0 +1,45 @@
+{
+	"name": "mediawiki/cargo",
+	"description": "A MediaWiki extension that allows for the storage and querying of data contained within templates.",
+	"type": "mediawiki-extension",
+	"keywords": [
+		"MediaWiki"
+	],
+	"homepage": "https://www.mediawiki.org/wiki/Extension:Cargo",
+	"license": "GPL-2.0-or-later",
+	"authors": [
+		{
+			"name": "Yaron Koren"
+		}
+	],
+	"support": {
+		"issues": "https://phabricator.wikimedia.org/tag/mediawiki-extensions-cargo/",
+		"irc": "irc://irc.libera.chat/mediawiki",
+		"source": "https://phabricator.wikimedia.org/diffusion/ECRG/"
+	},
+	"require-dev": {
+		"mediawiki/mediawiki-codesniffer": "44.0.0",
+		"mediawiki/mediawiki-phan-config": "0.14.0",
+		"mediawiki/minus-x": "1.1.3",
+		"php-parallel-lint/php-console-highlighter": "1.0.0",
+		"php-parallel-lint/php-parallel-lint": "1.4.0"
+	},
+	"scripts": {
+		"test": [
+			"parallel-lint . --exclude vendor --exclude node_modules",
+			"minus-x check .",
+			"@phpcs"
+		],
+		"fix": [
+			"minus-x fix .",
+			"phpcbf"
+		],
+		"phpcs": "phpcs -sp",
+		"phan": "phan -d . --long-progress-bar"
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		}
+	}
+}

@@ -1,0 +1,26 @@
+{
+	"@metadata": {
+		"authors": [
+			"MITO",
+			"Nike",
+			"Silvonen",
+			"Valtlai",
+			"Valtlait",
+			"Veikk0.ma"
+		]
+	},
+	"cargo-logname": "Cargo-loki",
+	"cargo-calendar-datepicker-label": "Mene ajankohtaan:",
+	"cargo-drilldown-allpages": "Kaikki sivut",
+	"cargo-drilldown-allfiles": "Kaikki tiedostot",
+	"cargo-drilldown-or": "tai",
+	"cargo-drilldown-search": "Hae",
+	"cargo-drilldown-filename": "Tiedostonimi",
+	"cargo-drilldown-galleryformat": "Galleria",
+	"cargo-downloadzip": "Lataa ZIP-tiedosto",
+	"cargo-gantt-zoomlevel": "Zoomaustaso:",
+	"cargo-gantt-hours": "Tuntia",
+	"cargo-gantt-days": "Päivää",
+	"cargo-gantt-months": "Kuukautta",
+	"cargo-gantt-years": "Vuotta"
+}
