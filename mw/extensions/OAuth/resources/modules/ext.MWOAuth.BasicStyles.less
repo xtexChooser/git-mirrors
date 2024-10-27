@@ -1,0 +1,66 @@
+@import 'mediawiki.skin.variables.less';
+
+.mw-mwoauthconsumerregistration-body,
+.mw-mwoauthmanageconsumers-body {
+	background-color: @background-color-notice-subtle;
+}
+
+.mw-mwoauthmanageconsumers,
+.mw-mwoauthmanagemygrants,
+.mw-mwoauthconsumerregistration {
+	&-proposed {
+		background-color: @background-color-progressive-subtle;
+	}
+
+	&-rejected {
+		background-color: @background-color-destructive-subtle;
+	}
+
+	&-expired {
+		background-color: @background-color-warning-subtle;
+	}
+
+	&-approved {
+		background-color: @background-color-success-subtle;
+	}
+
+	&-disabled {
+		background-color: @background-color-disabled-subtle;
+	}
+}
+
+.mw-mwoauthmanagemygrants-list-item {
+	margin-bottom: 1em;
+}
+
+.mw-mwoautherror-details {
+	color: @color-disabled;
+	font-size: 0.7em;
+}
+
+span.mw-grantgroup {
+	font-weight: bold;
+}
+
+.mw-htmlform-field-HTMLInfoField .mw-mwoauth-infotable dt,
+.mw-mwoauth-infotable span.mw-grantgroup {
+	font-weight: normal;
+}
+
+/* grant descriptions inside an infotable */
+.mw-mwoauth-infotable dl {
+	margin-top: 0;
+}
+
+dl.mw-mwoauth-infotable dl dd {
+	font-size: 0.9em;
+}
+
+// need extra specificity because of some conflicting OOUI styles
+.mw-htmlform .mw-oauth-form-ignorewarnings-hidden {
+	display: none;
+
+	#oauth-form-with-warnings& {
+		display: block;
+	}
+}

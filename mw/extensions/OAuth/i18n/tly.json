@@ -1,0 +1,16 @@
+{
+	"@metadata": {
+		"authors": [
+			"Patriot Kor",
+			"Patriot Kur",
+			"Гусейн"
+		]
+	},
+	"mwoauthconsumerregistration-main": "Əsosə",
+	"mwoauthconsumerregistration-description": "Təsvir",
+	"mwoauthmanageconsumers-main": "Əsosə",
+	"mwoauthmanageconsumers-description": "Təsvir",
+	"mwoauthlistconsumers-description": "Təsvir",
+	"mwoauthmanagemygrants-description": "Təsvir",
+	"mwoauth-form-button-cancel": "Ləğv karde"
+}

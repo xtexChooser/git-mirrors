@@ -1,0 +1,35 @@
+{
+	"@metadata": {
+		"authors": [
+			"Bada Kaji",
+			"NehalDaveND",
+			"Nirjal stha",
+			"पर्वत सुबेदी",
+			"बडा काजी",
+			"राम प्रसाद जोशी",
+			"सरोज कुमार ढकाल"
+		]
+	},
+	"mwoauth-prefs-managegrants": "जडान गरिएका अनुप्रयाेगहरू",
+	"mwoauth-prefs-managegrantslink": "जडान {{PLURAL:$1|गरिएका $1 एप|गरिएका $1 एपहरू|0=गरिएका एपहरू}} प्रबन्ध गर्नुहोस्",
+	"mwoauth-consumer-granttypes": "निवेदन गरिएको अनुदानको प्रकारः",
+	"mwoauth-consumer-reason": "कारण:",
+	"mwoauth-consumer-email-unconfirmed": "तपाईंको खातामा इमेल ठेगाना प्रमाणित भएको छैन ।",
+	"mwoauthconsumerregistration-main": "मुख्य",
+	"mwoauthconsumerregistration-stage": "स्थिति",
+	"mwoauthconsumerregistration-manage": "व्यवस्थापन गर्नुहाेस्",
+	"mwoauthmanageconsumers-main": "मुख्य",
+	"mwoauthmanageconsumers-description": "विवरण",
+	"mwoauthmanageconsumers-reason": "कारण:",
+	"mwoauthlistconsumers-view": "विवरणहरू",
+	"mwoauthlistconsumers-status": "स्थिति",
+	"mwoauthlistconsumers-navigation": "पथ प्रर्दशन",
+	"mwoauthlistconsumers-update-link": "अद्यावधिक उपभोक्ता",
+	"oauthmanagemygrants": "जडान गरिएका अनुप्रयोगहरू व्यवस्थापन गर्नुहोस्",
+	"mwoauthmanagemygrants-description": "विवरण",
+	"mwoauth-form-description-onewiki": "नमस्ते $1,\n\nतपाईको अनुरोध पूरा गर्नको लागि, ''' $2 ''' लाई '' $4''मा तपाईको तर्फबाट निम्न कार्यहरू गर्न अनुमति चाहिन्छ:\n\n $5",
+	"mwoauth-form-description-allwikis-nogrants": "नमस्ते $1,\n\nतपाईको अनुरोध पूरा गर्नको लागि, ''' $2 ''' लाई तपाईको तर्फबाट यस साइटका सबै परियोजनाहरूमा जानकारी पहुँच गर्न अनुमति चाहिन्छ। तपाईको खातामा कुनै परिवर्तन गरिने छैन।",
+	"mwoauth-form-button-approve": "अनुमति दिनुहोस्",
+	"mwoauth-form-button-cancel": "रद्द गर्नुहोस्",
+	"mwoauth-granttype-normal": "विशेष अनुमति अधिकारको लागि निवेदन गर्नुहोस् ।"
+}
