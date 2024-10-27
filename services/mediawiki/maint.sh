@@ -25,6 +25,17 @@ atre::mediawiki::update() {
 	return
 }
 
+atre::mediawiki::updateall() {
+	atre::mediawiki::update meta
+	readarray -t wikis < <(atre::mediawiki::allwikis)
+	for wiki in "${wikis[@]}"; do
+		[[ "$wiki" != "meta" ]] || continue
+		echo "=== Processing wiki: $wiki"
+		atre::mediawiki::update "$wiki"
+	done
+	return
+}
+
 atre::mediawiki::delwiki() {
 	(($# != 1)) && {
 		echo "usage: atre s mediawiki delwiki <WIKI ID>" >&2
