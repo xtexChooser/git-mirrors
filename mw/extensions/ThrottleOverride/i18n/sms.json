@@ -1,0 +1,14 @@
+{
+	"@metadata": {
+		"authors": [
+			"Yupik"
+		]
+	},
+	"throttleoverride-ipaddress": "IP-addrõs leʹbe IP-addrõõzzi ärvvjoukk",
+	"throttleoverride-types-edit": "Seeid muttâz",
+	"throttleoverride-list-rangestart": "IP-addrõõzzi ärvvjoouk vuõssmõs ärvv",
+	"throttleoverride-list-rangeend": "IP-addrõõzzi ärvvjoouk mââimõs ärvv",
+	"throttleoverride-list-reason": "Mäinn",
+	"throttleoverride-list-search": "Ooʒʒ",
+	"throttleoverride-validation-ipinvalid": "Vââǥǥlaž IP-addrõs leʹbe IP-addrõõzzi ärvvjoukk."
+}
