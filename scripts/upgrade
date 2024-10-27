@@ -81,7 +81,7 @@ git commit --allow-empty \
 # Finalize branch
 git update-ref main tmp-upgrade
 git switch main
-git tag -s -m "Initial tree of $1 branch" "$oldBranch"/init main
+git tag -s -m "Initial tree of $1 branch" "$branch"/init main
 git branch -D tmp-upgrade
 
 echo "Done/remember to check patches manually"
