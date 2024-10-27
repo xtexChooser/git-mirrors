@@ -1,0 +1,60 @@
+{
+	"name": "XensTweaks",
+	"version": "1.1.0",
+	"author": [
+		"[https://twitter.com/jaydenkieran Jayden Bailey]",
+		"TehKittyCat",
+		"xtex",
+		"Xensor V Network",
+		"..."
+	],
+	"url": "https://w.xvnet.eu.org",
+	"descriptionmsg": "XensTweaks-desc",
+	"license-name": "GPL-2.0-or-later",
+	"type": "other",
+	"MessagesDirs": {
+		"XensMessages": [
+			"i18n/xens"
+		]
+	},
+	"requires": {
+		"MediaWiki": ">= 1.41.0"
+	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\XensTweaks\\": "includes/"
+	},
+	"Hooks": {
+		"BeforePageDisplay": "MediaWiki\\Extension\\XensTweaks\\XensTweaksHooks::onBeforePageDisplay",
+		"GetLocalURL::Internal": "MediaWiki\\Extension\\XensTweaks\\XensTweaksHooks::onGetLocalURLInternal",
+		"OpenSearchUrls": "MediaWiki\\Extension\\XensTweaks\\XensTweaksHooks::onOpenSearchUrls",
+		"SkinAddFooterLinks": "MediaWiki\\Extension\\XensTweaks\\XensTweaksHooks::onSkinAddFooterLinks",
+		"TestCanonicalRedirect": "MediaWiki\\Extension\\XensTweaks\\XensTweaksHooks::onTestCanonicalRedirect",
+		"TitleSquidURLs": "MediaWiki\\Extension\\XensTweaks\\XensTweaksHooks::onTitleSquidURLs",
+		"getUserPermissionsErrors": "MediaWiki\\Extension\\XensTweaks\\XensTweaksHooks::ongetUserPermissionsErrors"
+	},
+	"config_prefix": "wgXensTweaks",
+	"config": {
+		"AddFooterLinks": {
+			"value": true
+		},
+		"CentralDB": {
+			"value": "wikimeta"
+		},
+		"EnableSearchboxMetadata": {
+			"value": true
+		},
+		"NoRobots": {
+			"value": false
+		},
+		"ProtectSiteInterface": {
+			"value": true
+		},
+		"MetaSiteVerifications": {
+			"value": {}
+		}
+	},
+	"AvailableRights": [
+		"editinterfacesite"
+	],
+	"manifest_version": 2
+}

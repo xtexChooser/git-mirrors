@@ -1,0 +1,17 @@
+{
+	"@metadata": {
+		"authors": [
+			"xtex",
+			"Codeberg Translate contributors"
+		]
+	},
+	"XensTweaks-desc": "为所有Xens Wiki提供额外的功能",
+	"xens-tos": "服务条款",
+	"xens-tos-url": "https://w.xvnet.eu.org/w/ToS",
+	"group-staff": "操作员",
+	"group-staff-member": "操作员",
+	"grouppage-staff": "meta:xvn:Operators",
+	"group-steward": "监管员",
+	"group-steward-member": "监管员",
+	"grouppage-steward": "meta:Stewards"
+}

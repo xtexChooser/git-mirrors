@@ -1,0 +1,17 @@
+{
+	"@metadata": {
+		"authors": [
+			"xtex",
+			"Codeberg Translate contributors"
+		]
+	},
+	"XensTweaks-desc": "Provides additional functionality for all Xens Wikis",
+	"xens-tos": "Terms of Service",
+	"xens-tos-url": "https://w.xvnet.eu.org/w/ToS",
+	"group-staff": "Operators",
+	"group-staff-member": "Operator",
+	"grouppage-staff": "meta:xvn:Operators",
+	"group-steward": "Stewards",
+	"group-steward-member": "Steward",
+	"grouppage-steward": "meta:Stewards"
+}
