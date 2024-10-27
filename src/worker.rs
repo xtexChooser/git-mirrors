@@ -13,7 +13,7 @@ use windows::Win32::{
 };
 use yjyz_tools::license::{self, LicenseFeatures};
 
-use crate::mythware;
+use crate::{mythware, sec};
 
 #[derive(Educe)]
 #[educe(Default)]
@@ -27,9 +27,11 @@ pub type WorkerStateRef = Arc<RwLock<WorkerState>>;
 
 pub async fn run(state: WorkerStateRef) -> Result<()> {
     let mut delay = 0;
+    let mut runtime_sec_counter = 0;
     loop {
         tokio::time::sleep(Duration::from_millis(delay)).await;
         delay = 300;
+        runtime_sec_counter += 1;
 
         let state = state.read().unwrap();
 
@@ -45,6 +47,18 @@ pub async fn run(state: WorkerStateRef) -> Result<()> {
             if state.mythware_auto_unlock_keyboard && mythware::is_broadcast_on().unwrap_or(false) {
                 delay = cmp::min(delay, 25);
                 mythware::unlock_keyboard()?;
+            }
+        }
+
+        if runtime_sec_counter >= (1000 / delay) {
+            runtime_sec_counter = 0;
+
+            if !license::is_set(LicenseFeatures::NO_SECURITY_CHECK)
+                && !license::is_set(LicenseFeatures::ALLOW_INSECURE)
+            {
+                if let Err(err) = sec::check_environment() {
+                    panic!("unavailable: 5865bf4b-80ff-48ac-b5b0-280caaf267af: {}", err)
+                }
             }
         }
     }
