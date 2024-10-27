@@ -1,36 +1,32 @@
 ARG VERSION
 FROM docker.io/library/php:$VERSION-fpm-alpine
 
-RUN apk add --no-cache \
-	git \
-	imagemagick \
-	rsvg-convert \
-	# Required for SyntaxHighlighting
-	python3 \
-	lua \
-	diffutils
-
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
-RUN install-php-extensions calendar intl mbstring opcache apcu pgsql mysqli luasandbox gd wikidiff2
-RUN rm /usr/local/bin/install-php-extensions
-
-RUN { \
-	echo 'opcache.memory_consumption=128'; \
-	echo 'opcache.interned_strings_buffer=8'; \
-	echo 'opcache.max_accelerated_files=4000'; \
-	echo 'opcache.revalidate_freq=60'; \
-	echo 'opcache.fast_shutdown=1'; \
-	} > $PHP_INI_DIR/conf.d/opcache-recommended.ini
+RUN set -euxo pipefail; \
+	apk add --no-cache \
+		git \
+		imagemagick \
+		rsvg-convert \
+		# Required for SyntaxHighlighting
+		python3 \
+		lua \
+		diffutils; \
+	install-php-extensions calendar intl mbstring opcache apcu pgsql mysqli luasandbox gd wikidiff2; \
+	rm /usr/local/bin/install-php-extensions; \
+	{ \
+		echo 'opcache.memory_consumption=128'; \
+		echo 'opcache.interned_strings_buffer=8'; \
+		echo 'opcache.max_accelerated_files=4000'; \
+		echo 'opcache.revalidate_freq=60'; \
+		echo 'opcache.fast_shutdown=1'; \
+	} > $PHP_INI_DIR/conf.d/opcache-recommended.ini; \
+	mkdir -p /var/www/data;
 
 ADD php-fpm.conf /usr/local/etc/php-fpm.d/zzzz-mw-docker.conf
 ADD php.ini $PHP_INI_DIR/conf.d/mw.ini
 
-# SQLite data directory
-RUN mkdir -p /var/www/data
-
 ENV MW_CONFIG_FILE=/etc/mediawiki/LocalSettings.php
 WORKDIR /opt/mediawiki
-
 ENTRYPOINT [ "php-fpm" ]
 
 LABEL org.opencontainers.image.licenses="PHP-3.01"
