@@ -1,0 +1,28 @@
+/* The submit button at the top is a hack so it
+ * should be hidden but it cannot be hidden via
+ * display: none due to how IE and Safari ignore
+ * hidden inputs */
+.securepoll-default-submit {
+	position: absolute;
+	height: 1px;
+	overflow: hidden;
+	opacity: 0;
+}
+
+/* Add spacing between controls */
+.mw-htmlform-field-HTMLTextField,
+.mw-htmlform-field-HTMLIntField,
+.mw-htmlform-field-HTMLDateTimeField,
+.mw-htmlform-field-HTMLFormFieldCloner,
+.mw-htmlform-field-HTMLSelectField {
+	margin: 1em 0;
+}
+
+.mw-htmlform-cloner-create-button {
+	margin-top: 1em;
+}
+
+.mw-htmlform-cloner-li {
+	list-style: none;
+	margin-top: 1em;
+}

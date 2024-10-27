@@ -1,0 +1,29 @@
+{
+	"@metadata": {
+		"authors": [
+			"Bosogo"
+		]
+	},
+	"securepoll-welcome": "<strong>{{GENDER:$1|Кош келиңиз}} $1 !</strong>",
+	"securepoll-header-timestamp": "Убакыт",
+	"securepoll-strike-reason": "Себеп:",
+	"securepoll-header-action": "Аракет",
+	"securepoll-header-reason": "Себеп",
+	"securepoll-header-admin": "Администратор",
+	"securepoll-translate-title": "$1 которулууда",
+	"securepoll-translate-label-comment": "Себеп:",
+	"securepoll-submit-translate": "Жаңылоо",
+	"securepoll-language-label": "Тилди тандаңыз:",
+	"securepoll-submit-select-lang": "Которуу",
+	"securepoll-subpage-translate": "Которуу",
+	"securepoll-subpage-list": "Тизме",
+	"securepoll-subpage-edit": "Түзөтүү",
+	"securepoll-subpage-archive": "Архивдештирүү",
+	"securepoll-create-label-property_admins": "Администраторлор:",
+	"securepoll-create-label-questions": "== Суроолор ==",
+	"securepoll-create-questions-row-legend": "Суроо",
+	"securepoll-create-label-comment": "Себеп",
+	"securepoll-votereligibility-label-names": "Колдонуучулардын аттары",
+	"securepoll-votereligibility-label-comment": "Себеп",
+	"securepoll-votereligibility-saved": "{{int:securepoll}}: сакталды"
+}

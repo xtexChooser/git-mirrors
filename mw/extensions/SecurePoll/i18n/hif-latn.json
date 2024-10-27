@@ -1,0 +1,10 @@
+{
+	"@metadata": {
+		"authors": [
+			"Karthi.dr"
+		]
+	},
+	"securepoll-header-voter-name": "Naam",
+	"securepoll-strike-reason": "Kaaran:",
+	"securepoll-header-reason": "Kaaran"
+}

@@ -1,0 +1,26 @@
+{
+	"@metadata": {
+		"authors": [
+			"Biŋhai",
+			"Midleading"
+		]
+	},
+	"securepoll": "Douzbiuq Ancienz",
+	"securepoll-desc": "senjgij caez gyahung douzbiuq",
+	"securepoll-invalid-page": "bienj fouzyauq \"<nowiki>$1</nowiki>\"",
+	"securepoll-welcome": "<strong>{{GENDER:$1|Vanhyingz}} $1!</strong>",
+	"securepoll-return": "baema $1",
+	"securepoll-header-timestamp": "Seizgan",
+	"securepoll-header-voter-name": "Mingz",
+	"securepoll-header-id": "ID",
+	"securepoll-header-admin": "guenjleixguenj",
+	"securepoll-translate-title": "Hoiz: $1",
+	"securepoll-submit-translate": "swnggaep",
+	"securepoll-submit-select-lang": "Fanhoiz",
+	"securepoll-header-title": "Mingz",
+	"securepoll-subpage-vote": "Douzbiuq",
+	"securepoll-subpage-translate": "Fanhoiz",
+	"securepoll-subpage-list": "Biuj",
+	"securepoll-subpage-edit": "Gaij",
+	"securepoll-translation-result-error-title": "Loengloek"
+}
