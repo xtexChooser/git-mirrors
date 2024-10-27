@@ -708,7 +708,7 @@ class LST {
 				}
 			} else {
 				// put a red link into the output
-				$output[0] = $parser->preprocess( '{{' . $defaultTemplate . '|%PAGE%=' . $page . '|%TITLE%=' . $title->getText() . '|%DATE%=' . $date . '|%USER%=' . $user . '}}', $parser->getPage(), $parser->getOptions() );
+				$output[0] = self::callParserPreprocess( $parser, '{{' . $defaultTemplate . '|%PAGE%=' . $page . '|%TITLE%=' .	$title->getText() . '|%DATE%=' . $date . '|%USER%=' . $user . '}}', $parser->getPage(), $parser->getOptions() );
 			}
 
 			unset( $title );
@@ -756,8 +756,8 @@ class LST {
 								$argChain .= "|%CATLIST%=$catlist";
 							}
 
-							$argChain .= '|%DATE%=' . $date . '|%USER%=' . $user . '|%ARGS%=' . str_replace( '|', '§', preg_replace( '/[}]+/', '}', preg_replace( '/[{]+/', '{', substr( $invocation, strlen( $template2 ) + 2 ) ) ) ) . '}}';
-							$output[++$n] = $parser->preprocess( $argChain, $parser->getPage(), $parser->getOptions() );
+							$argChain .= '|%DATE%=' . $date . '|%USER%=' . $user . '|%ARGS%=' . str_replace( '|', '§', str_replace( '}', '❵', str_replace( '{', '❴', substr( $invocation, strlen( $template2 ) + 2 ) ) ) ) . '}}';
+							$output[++$n] = self::callParserPreprocess( $parser, $argChain, $parser->getPage(), $parser->getOptions() );
 						}
 						break;
 					}
@@ -890,5 +890,71 @@ class LST {
 	public static function spaceOrUnderscore( $pattern ) {
 		// returns a pettern that matches underscores as well as spaces
 		return str_replace( ' ', '[ _]', $pattern );
+	}
+
+	/**
+	 * Preprocess given text according to the globally-configured method
+	 *
+	 * The default method uses Parser::preprocess() which does the job, but clears the internal cache every time.
+	 * The improved method uses Parser::recursivePreprocess() that saves a decent amount of processing time
+	 * by preserving the internal cache leveraging the repetitive call pattern.
+	 *
+	 * Parser::preprocess() was mainly called from LST::includeTemplate() for the same template(s) with different
+	 * set of arguments for each article found. In the original implementation using Parser::preprocess(),
+	 * the internal cache is cleared at each call and parsing the same template text into template DOM is repeated
+	 * multiple times.
+	 *
+	 * Using Parser::recursivePreprocess() prevents the cache clear, and thus repetitive calls reuse the
+	 * previously generated template DOM which brings a decent performance improvement when called multiple times.
+	 *
+	 * @param Parser $parser
+	 * @param string $text
+	 * @param ?\MediaWiki\Page\PageReference $page
+	 * @param \ParserOptions $options
+	 * @return string
+	 */
+	protected static function callParserPreprocess( Parser $parser, $text, $page, $options ): string {
+		global $wgDplUseRecursivePreprocess;
+		if ( $wgDplUseRecursivePreprocess ) {
+			self::softResetParser( $parser );
+			$parser->setOutputType( OT_PREPROCESS );
+			$text = $parser->recursivePreprocess( $text );
+
+			return $text;
+		} else {
+			return $parser->preprocess( $text, $page, $options );
+		}
+	}
+
+	/**
+	 * Reset Parser's internal counters to avoid kicking in the limits when rendering long lists of results.
+	 */
+	private static function softResetParser( Parser $parser ): void {
+		self::setParserProperties( $parser, [
+			'mStripState' => new \StripState( $parser ),
+			'mIncludeSizes' => [
+				'post-expand' => 0,
+				'arg' => 0,
+			],
+			'mPPNodeCount' => 0,
+			'mHighestExpansionDepth' => 0,
+			'mExpensiveFunctionCount' => 0,
+		] );
+	}
+
+	private static function setParserProperties( Parser $parser, array $properties ): void {
+		static $reflectionCache = [];
+		foreach ( $properties as $property => $value ) {
+			if ( !array_key_exists( $property, $reflectionCache ) ) {
+				try {
+					$reflectionCache[$property] = ( new \ReflectionClass( Parser::class ) )->getProperty( $property );
+				} catch ( \ReflectionException ) {
+					$reflectionCache[$property] = null;
+				}
+			}
+			if ( $reflectionCache[$property] ) {
+				$reflectionCache[$property]->setValue( $parser, $value );
+			}
+		}
 	}
 }

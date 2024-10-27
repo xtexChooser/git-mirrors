@@ -661,7 +661,9 @@ class Hooks {
 	 * @param DatabaseUpdater $updater
 	 */
 	public static function onLoadExtensionSchemaUpdates( DatabaseUpdater $updater ) {
+		/* WGL - This triggers during update.php, which breaks mirror wikis.
 		$updater->addPostDatabaseUpdateMaintenance( CreateTemplate::class );
+		*/
 		$updater->addPostDatabaseUpdateMaintenance( CreateView::class );
 	}
 }

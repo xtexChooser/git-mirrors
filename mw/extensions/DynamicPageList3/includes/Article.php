@@ -247,7 +247,7 @@ class Article {
 			$article->mStartChar = $languageConverter->convert( $contentLanguage->firstChar( $pageTitle ) );
 		}
 
-		$article->mID = intval( $row->page_id );
+		$article->mID = intval( $row->page_id ?? 0 );
 
 		// External link
 		if ( isset( $row->el_to ) ) {

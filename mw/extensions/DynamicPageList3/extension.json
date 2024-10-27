@@ -11,7 +11,7 @@
 	"license-name": "GPL-3.0-or-later",
 	"type": "parserhook",
 	"requires": {
-		"MediaWiki": ">= 1.39.0"
+		"MediaWiki": ">= 1.41.0"
 	},
 	"GroupPermissions": {
 		"sysop": {
@@ -50,6 +50,9 @@
 		]
 	},
 	"config": {
+		"DplUseRecursivePreprocess": {
+			"value": true
+		},
 		"DplSettings": {
 			"value": {
 				"allowedNamespaces": null,
