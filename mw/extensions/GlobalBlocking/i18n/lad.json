@@ -1,0 +1,11 @@
+{
+	"@metadata": {
+		"authors": [
+			"Menachem.Moreira",
+			"Universal Life"
+		]
+	},
+	"globalblocking-block-reason": "Razon:",
+	"globalblocking-unblock-reason": "Razon:",
+	"globalblocking-whitelist-reason": "Razon:"
+}

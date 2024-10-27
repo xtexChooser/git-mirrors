@@ -1,0 +1,17 @@
+{
+	"@metadata": {
+		"authors": [
+			"Demmy"
+		]
+	},
+	"globalblocking-block-reason": "Ìdíẹ̀:",
+	"globalblocking-block-edit-dropdown": "Àtúnṣe àwọn ìdí ìdínà",
+	"globalblocking-block-expiry-selector-other": "Àsìkò míràn:",
+	"globalblocking-search-submit": "Ṣàwárí fún àwọn ìdínà",
+	"globalblocking-list-anononly": "aláìlórúkọ nìkan",
+	"globalblocking-list-unblock": "ṣèyọkúrò",
+	"globalblocking-list-modify": "ṣàtúnṣe",
+	"globalblocking-list-noresults": "Àdírẹ́sì IP tìtọrọ kó jẹ́ dídílọ́nà.",
+	"globalblocking-unblock-reason": "Ìdíẹ̀:",
+	"globalblocking-whitelist-reason": "Ìdíẹ̀:"
+}

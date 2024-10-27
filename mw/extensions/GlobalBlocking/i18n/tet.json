@@ -1,0 +1,10 @@
+{
+	"@metadata": {
+		"authors": [
+			"MF-Warburg"
+		]
+	},
+	"globalblocking-block-expiry-selector-other": "Tempu seluk:",
+	"globalblocking-list-anononly": "ema anónimu de'it",
+	"globalblocking-unblock-reason": "Motivu:"
+}

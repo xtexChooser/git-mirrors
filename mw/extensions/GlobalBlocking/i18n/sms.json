@@ -1,0 +1,12 @@
+{
+	"@metadata": {
+		"authors": [
+			"Yupik"
+		]
+	},
+	"globalblocking-block-reason": "Mäinn:",
+	"globalblocking-list-unblock": "jaukkâd",
+	"globalblocking-list-modify": "muuʹtt",
+	"globalblocking-unblock-reason": "Mäinn:",
+	"globalblocking-whitelist-reason": "Mäinn:"
+}

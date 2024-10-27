@@ -1,0 +1,305 @@
+{
+	"name": "GlobalBlocking",
+	"author": "Andrew Garrett",
+	"url": "https://www.mediawiki.org/wiki/Extension:GlobalBlocking",
+	"descriptionmsg": "globalblocking-desc",
+	"license-name": "GPL-2.0-or-later",
+	"type": "other",
+	"requires": {
+		"MediaWiki": ">= 1.43"
+	},
+	"GroupPermissions": {
+		"steward": {
+			"globalblock": true
+		},
+		"sysop": {
+			"globalblock-whitelist": true
+		}
+	},
+	"GrantPermissions": {
+		"basic": {
+			"globalblock-exempt": true
+		},
+		"globalblock": {
+			"globalblock": true
+		}
+	},
+	"GrantPermissionGroups": {
+		"globalblock": "administration"
+	},
+	"GrantRiskGroups": {
+		"globalblock": "vandalism"
+	},
+	"AvailableRights": [
+		"globalblock",
+		"globalblock-whitelist",
+		"globalblock-exempt"
+	],
+	"SpecialPages": {
+		"GlobalBlock": {
+			"class": "MediaWiki\\Extension\\GlobalBlocking\\Special\\SpecialGlobalBlock",
+			"services": [
+				"BlockUserFactory",
+				"BlockUtils",
+				"GlobalBlocking.GlobalBlockingConnectionProvider",
+				"GlobalBlocking.GlobalBlockManager",
+				"GlobalBlocking.GlobalBlockingLinkBuilder",
+				"CentralIdLookup",
+				"UserNameUtils"
+			]
+		},
+		"GlobalBlockList": {
+			"class": "MediaWiki\\Extension\\GlobalBlocking\\Special\\SpecialGlobalBlockList",
+			"services": [
+				"UserNameUtils",
+				"CommentFormatter",
+				"CentralIdLookup",
+				"GlobalBlocking.GlobalBlockLookup",
+				"GlobalBlocking.GlobalBlockingLinkBuilder",
+				"GlobalBlocking.GlobalBlockingConnectionProvider",
+				"GlobalBlocking.GlobalBlockingGlobalBlockDetailsRenderer"
+			]
+		},
+		"GlobalBlockStatus": {
+			"class": "MediaWiki\\Extension\\GlobalBlocking\\Special\\SpecialGlobalBlockStatus",
+			"services": [
+				"BlockUtils",
+				"UserNameUtils",
+				"GlobalBlocking.GlobalBlockLookup",
+				"GlobalBlocking.GlobalBlockLocalStatusManager",
+				"GlobalBlocking.GlobalBlockLocalStatusLookup",
+				"GlobalBlocking.GlobalBlockingLinkBuilder"
+			]
+		},
+		"RemoveGlobalBlock": {
+			"class": "MediaWiki\\Extension\\GlobalBlocking\\Special\\SpecialRemoveGlobalBlock",
+			"services": [
+				"BlockUtils",
+				"UserNameUtils",
+				"GlobalBlocking.GlobalBlockManager",
+				"GlobalBlocking.GlobalBlockingLinkBuilder"
+			]
+		}
+	},
+	"LogTypes": [
+		"gblblock"
+	],
+	"ActionFilteredLogs": {
+		"gblblock": {
+			"gblock": [
+				"gblock",
+				"gblock2"
+			],
+			"gunblock": [
+				"gunblock"
+			],
+			"modify": [
+				"modify"
+			],
+			"whitelist": [
+				"whitelist"
+			],
+			"dwhitelist": [
+				"dwhitelist"
+			]
+		}
+	},
+	"LogNames": {
+		"gblblock": "globalblocking-logpage"
+	},
+	"LogHeaders": {
+		"gblblock": "globalblocking-logpagetext"
+	},
+	"LogActionsHandlers": {
+		"gblblock/*": {
+			"class": "MediaWiki\\Extension\\GlobalBlocking\\GlobalBlockLogFormatter",
+			"services": [
+				"UserIdentityLookup",
+				"GlobalBlocking.GlobalBlockingLinkBuilder",
+				"GlobalBlocking.GlobalBlockingUserVisibilityLookup"
+			]
+		}
+	},
+	"LogActions": {
+		"gblblock/gunblock": "globalblocking-unblock-logentry"
+	},
+	"APIModules": {
+		"globalblock": {
+			"class": "MediaWiki\\Extension\\GlobalBlocking\\Api\\ApiGlobalBlock",
+			"services": [
+				"BlockUserFactory",
+				"GlobalBlocking.GlobalBlockManager",
+				"GlobalBlocking.GlobalBlockingConnectionProvider"
+			]
+		}
+	},
+	"APIListModules": {
+		"globalblocks": {
+			"class": "MediaWiki\\Extension\\GlobalBlocking\\Api\\ApiQueryGlobalBlocks",
+			"services": [
+				"CentralIdLookup",
+				"GlobalBlocking.GlobalBlockLookup",
+				"GlobalBlocking.GlobalBlockingConnectionProvider"
+			]
+		}
+	},
+	"MessagesDirs": {
+		"GlobalBlocking": [
+			"i18n",
+			"i18n/api"
+		]
+	},
+	"ExtensionMessagesFiles": {
+		"GlobalBlockingAlias": "GlobalBlocking.alias.php"
+	},
+	"ResourceModules": {
+		"ext.globalBlocking": {
+			"localBasePath": "modules/ext.globalBlocking",
+			"remoteExtPath": "GlobalBlocking/modules/ext.globalBlocking",
+			"packageFiles": [
+				"dispatcher.js",
+				"special.globalBlock.js"
+			],
+			"dependencies": [
+				"oojs-ui-core",
+				"oojs-ui-widgets",
+				"mediawiki.util",
+				"mediawiki.widgets",
+				"mediawiki.widgets.UserInputWidget",
+				"mediawiki.htmlform"
+			]
+		},
+		"ext.globalBlocking.styles": {
+			"localBasePath": "modules/ext.globalBlocking.styles",
+			"remoteExtPath": "GlobalBlocking/modules/ext.globalBlocking.styles",
+			"styles": [
+				"special.globalBlock.less"
+			]
+		}
+	},
+	"QUnitTestModule": {
+		"localBasePath": "",
+		"remoteExtPath": "GlobalBlocking",
+		"packageFiles": [
+			"tests/qunit/index.js",
+			"tests/qunit/ext.globalBlocking/special.globalBlock.test.js",
+			"tests/qunit/ext.globalBlocking/cases/checkboxDisabledState.json",
+			"modules/ext.globalBlocking/special.globalBlock.js"
+		],
+		"dependencies": [
+			"mediawiki.qunit-testrunner",
+			"mediawiki.base",
+			"mediawiki.router",
+			"mediawiki.widgets",
+			"mediawiki.widgets.UserInputWidget",
+			"ext.globalBlocking",
+			"sinonjs"
+		]
+	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\GlobalBlocking\\": "includes/",
+		"MediaWiki\\Extension\\GlobalBlocking\\Maintenance\\": "maintenance/"
+	},
+	"AutoloadClasses": {
+		"MediaWiki\\Extension\\GlobalBlocking\\Maintenance\\FixGlobalBlockWhitelist": "maintenance/fixGlobalBlockWhitelist.php",
+		"MediaWiki\\Extension\\GlobalBlocking\\Maintenance\\UpdateAutoBlockParentIdColumn": "maintenance/UpdateAutoBlockParentIdColumn.php"
+	},
+	"Hooks": {
+		"GetUserBlock": "main",
+		"UserIsBlockedGlobally": "main",
+		"OtherBlockLogLink": "main",
+		"SpecialContributionsBeforeMainOutput": "main",
+		"UserMergeAccountFields": "usermerge",
+		"LoadExtensionSchemaUpdates": "schema",
+		"GetBlockErrorMessageKey": "main",
+		"GetLogTypesOnUser": "main",
+		"ContributionsToolLinks": "main",
+		"CentralAuthInfoFields": "centralauth",
+		"SpreadAnyEditBlock": "main"
+	},
+	"HookHandlers": {
+		"main": {
+			"class": "MediaWiki\\Extension\\GlobalBlocking\\GlobalBlockingHooks",
+			"services": [
+				"MainConfig",
+				"CommentFormatter",
+				"CentralIdLookup",
+				"GlobalBlocking.GlobalBlockingLinkBuilder",
+				"GlobalBlocking.GlobalBlockLookup",
+				"UserNameUtils",
+				"GlobalBlocking.GlobalBlockingUserVisibilityLookup",
+				"GlobalBlocking.GlobalBlockManager",
+				"GlobalBlocking.GlobalBlockingGlobalBlockDetailsRenderer",
+				"GlobalBlocking.GlobalBlockingLinkBuilder"
+			]
+		},
+		"usermerge": {
+			"class": "MediaWiki\\Extension\\GlobalBlocking\\UserMergeHooks"
+		},
+		"centralauth": {
+			"class": "MediaWiki\\Extension\\GlobalBlocking\\CentralAuthHooks",
+			"services": [
+				"GlobalBlocking.GlobalBlockLookup",
+				"GlobalBlocking.GlobalBlockingLinkBuilder",
+				"LinkRenderer"
+			]
+		},
+		"schema": {
+			"class": "MediaWiki\\Extension\\GlobalBlocking\\GlobalBlockingSchemaHooks"
+		}
+	},
+	"config": {
+		"ApplyGlobalBlocks": {
+			"value": true
+		},
+		"GlobalBlockingBlockXFF": {
+			"value": true
+		},
+		"GlobalBlockRemoteReasonUrl": {
+			"description": "Full path to api.php to use to expand templates in block reasons",
+			"value": null
+		},
+		"GlobalBlockingCIDRLimit": {
+			"description": "Maximum CIDR range when globally blocking an IP range.",
+			"value": {
+				"IPv4": 16,
+				"IPv6": 19
+			}
+		},
+		"GlobalBlockingAllowedRanges": {
+			"description": "IP ranges that bypass checks and are always allowed",
+			"value": []
+		},
+		"GlobalBlockingCentralWiki": {
+			"description": "The ID of the central wiki where global blocks are performed. Used to provide a link to the global block log which is likely to have entries, instead of the local log which is unlikely to contain entries. If the value is false, then the local log is used.",
+			"value": false
+		},
+		"GlobalBlockingCentralWikiContentLanguage": {
+			"description": "The content language of the central wiki specified in $wgGlobalBlockingCentralWiki. Used to appropriately set the language for reason used for autoblocks. If unset, the content language of the wiki where the autoblock was triggered will be used.",
+			"value": false
+		},
+		"GlobalBlockingAutoblockExpiry": {
+			"description": "The maximum number of seconds that an autoblock can last. If the parent block expires before this maximum, the expiry will the expiry of the parent block. Default 86400 = 1 day.",
+			"value": "86400"
+		},
+		"GlobalBlockingEnableAutoblocks": {
+			"description": "Whether the GlobalBlocking extension should be allowed to create autoblocks. Used as a temporary feature flag while some blockers for releasing this to WMF production are sorted out.",
+			"value": false
+		},
+		"GlobalBlockingMaximumIPsToRetroactivelyAutoblock": {
+			"description": "The number of IP addresses to retroactively globally autoblock when a global block is created with autoblocking enabled.",
+			"value": 1
+		},
+		"GlobalBlockingHideAutoblocksInGlobalBlocksAPIResponse": {
+			"description": "If true, then hide all global autoblocks in the response of the globalblocks API. This is used as a temporary feature flag so that WMF wikis can avoid breaking code which relies on the API, and would break if global autoblocks appear in the results.",
+			"value": false
+		}
+	},
+	"ServiceWiringFiles": [
+		"includes/ServiceWiring.php"
+	],
+	"DatabaseVirtualDomains": [
+		"virtual-globalblocking"
+	],
+	"manifest_version": 2
+}

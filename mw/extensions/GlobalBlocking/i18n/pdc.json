@@ -1,0 +1,12 @@
+{
+	"@metadata": {
+		"authors": [
+			"Xqt"
+		]
+	},
+	"globalblocking-block-reason": "Grund:",
+	"globalblocking-block-expiry-selector-other": "Annere Zeit:",
+	"globalblocking-list-modify": "ennere",
+	"globalblocking-unblock-reason": "Grund:",
+	"globalblocking-whitelist-reason": "Grund:"
+}

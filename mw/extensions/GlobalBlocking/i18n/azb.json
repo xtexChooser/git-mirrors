@@ -1,0 +1,25 @@
+{
+	"@metadata": {
+		"authors": [
+			"Alp Er Tunqa",
+			"Amir a57",
+			"Bir morty"
+		]
+	},
+	"globalblocking-block-reason": "ندن:",
+	"globalblocking-block-edit-dropdown": "باغلاما سبب‌لرینی دییشدیر ائت",
+	"globalblocking-block-expiry": "بیتمه مدتی:",
+	"globalblocking-block-expiry-selector-other": "باشقا واخت",
+	"globalblocking-list-unblock": "سیل",
+	"globalblocking-list-whitelist": "یئرلی وضعیت",
+	"globalblocking-list-modify": "دییشمک",
+	"globalblocking-list-tempblocks": "مووقت بلوکلاری گیزله",
+	"globalblocking-list-noresults": "ایشلتدیگینیز پارامترلر ایله هئچ بیر نتیجه تاپیلمادی.",
+	"globalblocking-unblock-reason": "ندن:",
+	"globalblocking-whitelist-legend": "یئرلی وضعیتی دییشدیر",
+	"globalblocking-whitelist-reason": "ندن:",
+	"globalblocking-whitelist-status": "یئرلی وضعیت",
+	"globalblocking-whitelist-submit": "یئرلی وضعیتی دییشدیر",
+	"globalblocking-logpage": "باشاباش باغلانما ژورنالی",
+	"log-action-filter-gblblock": "باشاباش باغلانما نوعو："
+}
