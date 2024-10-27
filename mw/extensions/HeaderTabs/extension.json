@@ -1,0 +1,59 @@
+{
+	"name": "Header Tabs",
+	"version": "2.3",
+	"author": [
+		"[http://www.sergeychernyshev.com Sergey Chernyshev]",
+		"Yaron Koren",
+		"[https://ofbeaton.com Finlay Beaton]",
+		"Priyanshu Varshney"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:Header_Tabs",
+	"descriptionmsg": "headertabs-desc",
+	"license-name": "GPL-2.0-or-later",
+	"type": "parserhook",
+	"MessagesDirs": {
+		"HeaderTabs": [
+			"i18n"
+		]
+	},
+	"ExtensionMessagesFiles": {
+		"HeaderTabsMagic": "HeaderTabs.i18n.magic.php"
+	},
+	"AutoloadClasses": {
+		"HeaderTabsHooks": "includes/HeaderTabsHooks.php",
+		"HeaderTabs": "includes/HeaderTabs.php"
+	},
+	"ResourceModules": {
+		"ext.headertabs": {
+			"scripts": "js/ext.headertabs.core.js",
+			"styles": "css/ext.headertabs.core.css",
+			"dependencies": [
+				"oojs-ui-core",
+				"oojs-ui-widgets",
+				"oojs-ui-windows"
+			]
+		}
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "resources",
+		"remoteExtPath": "HeaderTabs/resources"
+	},
+	"Hooks": {
+		"ParserFirstCallInit": "HeaderTabsHooks::registerParserFunctions",
+		"ParserAfterTidy": "HeaderTabsHooks::replaceFirstLevelHeaders",
+		"ResourceLoaderGetConfigVars": "HeaderTabsHooks::addConfigVarsToJS",
+		"EditPageGetDiffContent": "HeaderTabsHooks::onEditPageGetDiffContent",
+		"EditPageGetPreviewContent": "HeaderTabsHooks::onEditPageGetPreviewContent"
+	},
+	"config": {
+		"HeaderTabsRenderSingleTab": false,
+		"HeaderTabsAutomaticNamespaces": [],
+		"HeaderTabsDefaultFirstTab": false,
+		"HeaderTabsEditTabLink": true,
+		"HeaderTabsNoTabsInToc": false
+	},
+	"manifest_version": 1,
+	"requires": {
+		"MediaWiki": ">= 1.33"
+	}
+}

@@ -1,0 +1,11 @@
+{
+	"@metadata": {
+		"authors": [
+			"Gomoko",
+			"Verdy p"
+		]
+	},
+	"headertabs-desc": "Ajoute des onglets à la page pour séparer les sections de plus haut niveau",
+	"headertabs-edittab": "modifier",
+	"headertabs-edittab-hint": "Onglet de modification"
+}
