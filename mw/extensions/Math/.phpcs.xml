@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<ruleset>
+	<rule ref="./vendor/mediawiki/mediawiki-codesniffer/MediaWiki">
+		<exclude name="MediaWiki.Commenting.FunctionComment.MissingDocumentationPrivate" />
+		<exclude name="MediaWiki.Commenting.FunctionComment.MissingDocumentationProtected" />
+		<exclude name="MediaWiki.Commenting.FunctionComment.MissingDocumentationPublic" />
+		<exclude name="MediaWiki.WhiteSpace.SpaceBeforeSingleLineComment.NewLineComment" />
+	</rule>
+	<rule ref="Generic.Files.LineLength.TooLong">
+		<exclude-pattern>/src/WikiTexVC/Mhchem/MhchemPatterns.php</exclude-pattern>
+		<exclude-pattern>/src/WikiTexVC/Mhchem/MhchemStateMachines.php</exclude-pattern>
+	</rule>
+	<exclude-pattern>/src/WikiTexVC/Parser.php</exclude-pattern>
+	<exclude-pattern>/src/WikiTexVC/ParserIntent.php</exclude-pattern>
+
+	<file>.</file>
+	<arg name="extensions" value="php" />
+	<arg name="encoding" value="UTF-8" />
+</ruleset>
