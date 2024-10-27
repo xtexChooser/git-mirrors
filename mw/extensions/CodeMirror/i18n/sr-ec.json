@@ -1,0 +1,25 @@
+{
+	"@metadata": {
+		"authors": [
+			"Acamicamacaraca",
+			"BadDog",
+			"Milicevic01",
+			"Obsuser"
+		]
+	},
+	"codemirror-desc": "Омогућава истицање синтаксе у уређивачу викитекста",
+	"codemirror-toggle-label": "Истицање синтаксе",
+	"codemirror-prefs-enable": "Омогући истицање синтаксе за викитекст",
+	"codemirror-find": "Пронађи",
+	"codemirror-next": "Пронађи следеће",
+	"codemirror-previous": "Пронађи претходно",
+	"codemirror-all": "све",
+	"codemirror-match-case": "Пази на величину слова",
+	"codemirror-regexp": "Регекс",
+	"codemirror-replace": "Замени",
+	"codemirror-replace-placeholder": "Замени",
+	"codemirror-replace-all": "Замени све",
+	"codemirror-done": "Готово",
+	"prefs-accessibility": "Приступачност",
+	"prefs-syntax-highlighting": "Истицање синтаксе"
+}

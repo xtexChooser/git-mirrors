@@ -1,0 +1,33 @@
+{
+	"root": true,
+	"extends": [
+		"wikimedia/client",
+		"wikimedia/jquery",
+		"wikimedia/mediawiki"
+	],
+	"parserOptions": {
+		"sourceType": "module"
+	},
+	"env": {
+		"browser": true,
+		"commonjs": true
+	},
+	"globals": {
+		"Tree": "readonly",
+		"ve": "readonly"
+	},
+	"rules": {
+		"es-x/no-array-prototype-includes": "off"
+	},
+	"overrides": [
+		{
+			"files": [
+				"addon/edit/*.js"
+			],
+			"rules": {
+				"computed-property-spacing": [ "error", "never" ],
+				"indent": [ "error", 2 ]
+			}
+		}
+	]
+}
