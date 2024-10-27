@@ -1,0 +1,50 @@
+/**
+ * CSS for styling HTML-formatted JSON Schema objects
+ *
+ * @file
+ * @author Yuri Astrakhan (yurik/at/wikimedia.org)
+ * @author Julien Girault (jgirault/at/wikimedia.org)
+ * @author Volker E. (volker.e/at/wikimedia.org)
+ * @author Munaf Assaf <massaf@wikimedia.org> (adapted from)
+ * @ingroup Extensions
+ */
+@import 'mediawiki.skin.variables.less';
+
+/* Tabular */
+.mw-tabular-default {
+	opacity: 0.3;
+}
+
+.mw-tabular-error {
+	color: @color-error;
+	font-weight: @font-weight-bold;
+}
+
+.mw-tabular caption {
+	/* For stylistic reasons, suppress the caption of the outermost table */
+	display: none;
+}
+
+.mw-tabular table caption {
+	color: @color-base--subtle;
+	display: inline-block;
+	margin-bottom: 0.5em;
+	font-size: 10px;
+	font-style: italic;
+	text-align: left;
+}
+
+.mw-tabular-editnotice {
+	background-color: @background-color-interactive-subtle;
+	color: @color-emphasized;
+	margin: 0.5em 0;
+	padding: 0.5em;
+	border: @border-base;
+	font-size: 95%;
+	vertical-align: middle;
+}
+
+.mw-tabular-editnotice-icon {
+	width: 30px;
+	padding: 1em;
+}

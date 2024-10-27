@@ -1,0 +1,9 @@
+{
+	"@metadata": {
+		"authors": [
+			"Beta16"
+		]
+	},
+	"apihelp-jsonconfig-param-namespace": "Numero namespace del titolo da elaborare.",
+	"apihelp-jsonconfig-param-title": "Titolo da elaborare senza prefisso namespace."
+}

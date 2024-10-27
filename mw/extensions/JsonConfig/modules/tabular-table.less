@@ -1,0 +1,117 @@
+@import 'mediawiki.skin.variables.less';
+
+.mw-tabular {
+	border-collapse: collapse;
+	border-spacing: 0;
+	font-style: normal;
+
+	thead {
+		border: @border-subtle;
+	}
+
+	th,
+	td {
+		padding: 0.5em;
+	}
+
+	th {
+		background-color: @background-color-interactive-subtle;
+		border: @border-width-base inset @border-color-muted;
+		border-left-color: @border-color-subtle;
+		border-right-color: @border-color-subtle;
+		color: @color-inverted;
+		font-weight: @font-weight-normal;
+		font-size: 0.8em;
+	}
+
+	.mw-tabular-row-name th {
+		background-color: @background-color-interactive-subtle;
+		padding: 1em 1.5em;
+		border-color: @border-color-subtle;
+		border-top: @border-width-base @border-style-base @border-color-muted;
+		border-bottom: @border-subtle;
+		color: @color-progressive;
+		font-size: 1em;
+		font-weight: @font-weight-bold;
+
+		&:hover {
+			background-color: @background-color-base;
+			border: @border-width-base @border-style-base @border-color-progressive;
+			color: @color-progressive;
+		}
+
+		&:active {
+			background-color: @background-color-interactive;
+			border: @border-width-base @border-style-base @border-color-progressive--active;
+			color: @color-progressive--active;
+		}
+
+		&:focus {
+			background-color: @color-progressive--focus;
+			border: @border-width-base @border-style-base @border-color-progressive--focus;
+			outline: @outline-base--focus;
+			box-shadow: @box-shadow-inset-small @box-shadow-color-progressive--focus, @box-shadow-inset-medium @box-shadow-color-inverted;
+			color: @color-inverted;
+		}
+
+		&:focus:active {
+			color: @color-inverted;
+		}
+
+		&.headerSortUp,
+		&.headerSortDown {
+			color: @color-progressive--active;
+		}
+	}
+
+	.mw-tabular-row-type th {
+		background-color: @background-color-interactive-subtle;
+		color: @color-subtle;
+		font-family: @font-family-monospace;
+		font-size: 0.8em;
+		font-weight: @font-weight-normal;
+	}
+
+	.mw-tabular-row-key th {
+		background-color: @background-color-interactive-subtle;
+		border-top-color: @color-subtle;
+		color: @color-base;
+		font-family: @font-family-monospace;
+		font-size: 0.9em;
+	}
+
+	td {
+		border: @border-subtle;
+	}
+
+	th[ data-type='string' ],
+	th[ data-type='localized' ] {
+		min-width: 6em;
+	}
+
+	th[ data-type='number' ],
+	th[ data-type='boolean' ] {
+		min-width: 4em;
+		text-align: center;
+	}
+
+	td[ data-type='number' ],
+	td[ data-type='boolean' ] {
+		text-align: center;
+	}
+
+	td[ data-type='localized' ] {
+		font-style: italic;
+	}
+
+	.mw-tabular-value-null {
+		background-color: @background-color-neutral;
+	}
+
+	.mw-tabular-value-info {
+		float: right;
+		font-weight: @font-weight-bold;
+		font-size: 80%;
+		color: @color-success;
+	}
+}
