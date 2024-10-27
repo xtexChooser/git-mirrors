@@ -1,0 +1,11 @@
+{
+	"@metadata": {
+		"authors": [
+			"Alex S.H. Lin",
+			"Anakmalaysia",
+			"Cwlin0416",
+			"Winston Sung"
+		]
+	},
+	"cldr-desc": "可依據 [http://cldr.unicode.org/index/downloads CLDR 資料]辨識當地語言名稱的擴充功能"
+}
