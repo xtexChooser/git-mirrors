@@ -1,0 +1,9 @@
+{
+	"extends": [
+		"wikimedia/jquery"
+	],
+	"globals": {
+		"OO": "readonly",
+		"ve": "readonly"
+	}
+}
