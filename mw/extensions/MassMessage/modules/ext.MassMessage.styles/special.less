@@ -1,0 +1,41 @@
+/*
+ * These styles are loaded as part of ext.MassMessage.styles, and are added to MassMessage list
+ * pages, where they shouldn't do anything. Limit the scope to the special page
+ */
+
+.mw-special-MassMessage #mw-massmessage-form {
+	.mw-massmessage-form-error {
+		margin-top: 8px;
+		margin-left: 12px;
+		margin-right: 12px;
+		min-height: 20px;
+	}
+
+	.mw-htmlform-field-HTMLSubmitField {
+		&,
+		.mw-label,
+		.mw-input {
+			display: inline-block;
+		}
+
+		#mw-massmessage-form-submit-button {
+			margin-right: 5px;
+		}
+	}
+}
+
+.mw-special-EditMassMessageList #mw-massmessage-edit-form {
+	.mw-htmlform-submit-buttons .oo-ui-inputWidget {
+		margin-right: 10px;
+	}
+
+	.mw-htmlform-field-HTMLCheckField {
+		margin-right: 10px;
+
+		&,
+		.mw-label,
+		.mw-input {
+			display: inline-block;
+		}
+	}
+}

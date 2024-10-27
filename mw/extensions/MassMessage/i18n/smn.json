@@ -1,0 +1,19 @@
+{
+	"@metadata": {
+		"authors": [
+			"Seipinne",
+			"Yupik"
+		]
+	},
+	"massmessage-form-submit": "Vuolgât",
+	"massmessage-content-remove": "siho",
+	"massmessage-content-removeyes": "Siho",
+	"massmessage-content-removeno": "Jooskâ",
+	"massmessage-content-addheading": "Lasseet siijđoid",
+	"massmessage-content-addsubmit": "Lasseet siijđo",
+	"massmessage-create-description": "Kuvvim:",
+	"massmessage-create-source": "Käldee:",
+	"massmessage-edit-description": "Kuvvim:",
+	"massmessage-summary-add": "Lasettum [[:$1]]",
+	"massmessage-summary-remove": "[[:$1]] sikkum"
+}

@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": [
+			"Beta16",
+			"Gianfranco"
+		]
+	},
+	"apihelp-editmassmessagelist-summary": "Modifica elenco di consegna per messaggi massivi.",
+	"apihelp-editmassmessagelist-param-spamlist": "Titolo della lista di consegna da aggiornare.",
+	"apihelp-editmassmessagelist-param-add": "Titoli da aggiungere alla lista.",
+	"apihelp-editmassmessagelist-param-remove": "Titoli da rimuovere dall'elenco.",
+	"apihelp-massmessage-param-spamlist": "Pagina contenente l'elenco delle pagine su cui lasciare un messaggio.",
+	"apihelp-massmessage-param-subject": "Oggetto del messaggio.",
+	"apihelp-massmessage-param-message": "Testo del corpo del messaggio."
+}
