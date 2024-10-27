@@ -1,0 +1,16 @@
+{
+	"root": true,
+	"env": {
+		"commonjs": true
+	},
+	"extends": [
+		"wikimedia/client-es6",
+		"wikimedia/jquery",
+		"wikimedia/mediawiki"
+	],
+	"rules": {
+		"no-jquery/no-event-shorthand": "off",
+		"no-jquery/no-global-selector": "off",
+		"no-jquery/no-extend": "warn"
+	}
+}

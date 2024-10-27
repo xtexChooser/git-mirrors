@@ -1,0 +1,296 @@
+/* stylelint-disable no-descending-specificity */
+@import 'mediawiki.skin.variables.less';
+
+.mw-twocolconflict-split-header,
+.mw-twocolconflict-special-your-version-header {
+	margin-top: 20px;
+}
+
+.mw-twocolconflict-split-flex-header {
+	display: flex;
+	margin-bottom: 20px;
+}
+
+.mw-twocolconflict-special-your-version-header,
+.mw-twocolconflict-split-current-version-header,
+.mw-twocolconflict-split-your-version-header {
+	flex: 1;
+	text-align: center;
+
+	.mw-twocolconflict-revision-label {
+		font-weight: bold;
+		padding: 0 5px;
+	}
+}
+
+.mw-twocolconflict-split-current-version-header .mw-twocolconflict-revision-label {
+	background-color: @background-color-content-removed;
+}
+
+.mw-twocolconflict-special-your-version-header .mw-twocolconflict-revision-label,
+.mw-twocolconflict-split-your-version-header .mw-twocolconflict-revision-label {
+	background-color: @background-color-content-added;
+}
+
+.mw-twocolconflict-split-view {
+	display: flex;
+	flex-direction: column;
+}
+
+.mw-twocolconflict-single-row,
+.mw-twocolconflict-split-row {
+	display: flex;
+	margin: 10px 0;
+}
+
+.mw-twocolconflict-split-row {
+	align-items: flex-start;
+
+	&.mw-twocolconflict-no-selection {
+		background-color: @background-color-error-subtle;
+		border: @border-width-thick @border-style-base @border-color-error;
+		border-radius: @border-radius-base;
+		margin: 5px -5px;
+		padding: 3px;
+	}
+}
+
+.mw-twocolconflict-single-column,
+.mw-twocolconflict-split-column {
+	flex: 1;
+	background-color: #fff;
+	color: #000;
+	position: relative;
+	// Same radius as in MediaWiki core's diff.css
+	border-radius: 0.33em;
+	border-width: @border-width-thick @border-width-thick @border-width-thick 6px;
+	border-style: @border-style-base;
+	padding: 5px 40px 5px 20px;
+	min-height: 50px;
+	white-space: pre-line;
+	overflow-wrap: break-word;
+	min-width: 0;
+
+	&.mw-twocolconflict-split-add {
+		border-color: @border-color-content-added;
+	}
+
+	&.mw-twocolconflict-split-delete {
+		border-color: @border-color-content-removed;
+	}
+
+	&.mw-twocolconflict-split-copy {
+		border-color: @border-color-muted;
+		background-color: #fafafa;
+	}
+
+	ins.mw-twocolconflict-diffchange {
+		background-color: @background-color-content-added;
+	}
+
+	del.mw-twocolconflict-diffchange {
+		background-color: @background-color-content-removed;
+	}
+
+	ins.mw-twocolconflict-diffchange,
+	del.mw-twocolconflict-diffchange {
+		text-decoration: @text-decoration-none;
+	}
+
+	&.mw-twocolconflict-split-unselected {
+		color: @color-disabled;
+
+		&.mw-twocolconflict-split-add {
+			border-color: #eaf3ff;
+		}
+
+		&.mw-twocolconflict-split-delete {
+			border-color: #fef6e7;
+		}
+
+		ins.mw-twocolconflict-diffchange {
+			background-color: #eaf3ff;
+		}
+
+		del.mw-twocolconflict-diffchange {
+			background-color: #fef6e7;
+		}
+	}
+
+	.mw-twocolconflict-split-edit-button {
+		position: absolute;
+		top: 0;
+		right: 0;
+	}
+
+	.mw-twocolconflict-split-save-button {
+		display: none;
+		position: absolute;
+		top: 0;
+		right: 0;
+	}
+
+	.mw-twocolconflict-split-reset-button {
+		display: none;
+		position: absolute;
+		top: 30px;
+		right: 0;
+	}
+
+	.mw-twocolconflict-split-reset-diff-text {
+		display: none;
+	}
+
+	.mw-twocolconflict-split-collapse-button,
+	.mw-twocolconflict-split-expand-button {
+		bottom: 0;
+		position: absolute;
+		right: 0;
+	}
+
+	.mw-twocolconflict-split-collapsed {
+		max-height: 80px;
+		overflow: hidden;
+
+		.mw-twocolconflict-split-fade {
+			background-image: linear-gradient( @background-color-transparent, #fafafa );
+			border-radius: @border-radius-base;
+			bottom: 0;
+			height: 50px;
+			left: 0;
+			pointer-events: none; // Allows clicking "through" the element
+			position: absolute;
+			width: @size-full;
+		}
+
+		.mw-twocolconflict-split-collapse-button {
+			display: none;
+		}
+	}
+
+	.mw-twocolconflict-split-expanded {
+		.mw-twocolconflict-split-expand-button {
+			display: none;
+		}
+	}
+
+	.mw-twocolconflict-split-expand-button:last-child {
+		// OOUI default override
+		margin-right: 0.5em;
+	}
+}
+
+.mw-twocolconflict-split-column {
+	&.mw-twocolconflict-split-delete {
+		margin-right: 10px;
+	}
+
+	&.mw-twocolconflict-split-add {
+		margin-left: 10px;
+	}
+}
+
+.mw-twocolconflict-split-selector-label {
+	margin-bottom: -8px;
+	text-align: center;
+
+	span {
+		display: inline-block;
+		line-height: 1.2em;
+		width: 110px;
+	}
+
+	.mw-twocolconflict-no-selection & {
+		color: @color-error;
+	}
+}
+
+.mw-twocolconflict-split-selection {
+	display: flex;
+	margin-top: 10px;
+	margin-left: auto;
+	margin-right: auto;
+	width: 66px;
+
+	> div {
+		flex: 1;
+	}
+
+	.mw-twocolconflict-split-row.mw-twocolconflict-no-selection & > div {
+		.oo-ui-radioInputWidget [ type='radio' ] + span {
+			border-color: @border-color-error;
+		}
+	}
+
+	> div:nth-child( 1 ) {
+		.oo-ui-radioInputWidget.oo-ui-widget-enabled [ type='radio' ]:checked + span,
+		.oo-ui-radioInputWidget.oo-ui-widget-enabled [ type='radio' ]:active + span,
+		.oo-ui-radioInputWidget [ type='radio' ] + span {
+			border-color: #ac6700;
+			background: #fef7e7;
+		}
+	}
+
+	> div:nth-child( 2 ) {
+		text-align: right;
+
+		.oo-ui-radioInputWidget.oo-ui-widget-enabled [ type='radio' ]:checked + span,
+		.oo-ui-radioInputWidget.oo-ui-widget-enabled [ type='radio' ]:active + span,
+		.oo-ui-radioInputWidget [ type='radio' ] + span {
+			border-color: #2c529d;
+			background: #ebf3fe;
+		}
+	}
+}
+
+.mw-twocolconflict-messageWidget.oo-ui-messageWidget:enabled {
+	& + & {
+		margin-top: 16px;
+	}
+}
+
+.mw-twocolconflict-copy-notice {
+	padding: 3em 0;
+
+	p {
+		margin: 1em;
+		font-size: 0.875em;
+	}
+}
+
+.client-nojs {
+	.mw-twocolconflict-split-edit-button,
+	.mw-twocolconflict-split-expand-button {
+		display: none;
+	}
+
+	/* stylelint-disable-next-line selector-max-id */
+	#wpPreviewWidget {
+		display: none;
+	}
+
+	.mw-twocolconflict-split-flex-header {
+		.mw-twocolconflict-split-selection-container {
+			display: none;
+		}
+	}
+
+	.mw-twocolconflict-your-text {
+		display: none;
+	}
+}
+
+.client-js {
+	.mw-twocolconflict-overview {
+		// We hide these messages because JavaScript users have access to an interactive tour:
+		// twocolconflict-split-header-overview
+		// twocolconflict-talk-header-overview
+		display: none;
+	}
+
+	.mw-twocolconflict-your-text {
+		position: absolute;
+		left: -9999px;
+		height: 0;
+	}
+}
