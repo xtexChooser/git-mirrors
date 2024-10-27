@@ -56,5 +56,16 @@ if ($xvMaintScript)
 	$wgUseDatabaseMessages = false;
 
 require_once '/srv/secrets/mw/Secrets.php';
+
+// read only mode
+if (boolval($_SERVER['HTTP_X_XENS_WIKIS_READ_ONLY'] ?? false)) {
+	header('X-Xens-Wikis-Read-Only: true');
+	$wgReadOnly = 'X-Xens-Wikis-Read-Only';
+}
+if (PHP_SAPI === 'cli')
+	$wgReadOnly = null;
+if ($wgReadOnly != null)
+	$wgIgnoreImageErrors = true;
+
 require_once "$xvConfigDirectory/common/GlobalDefaults.php";
 require_once "$xvConfigDirectory/sites/SiteSettings.$xvWikiID.php";
