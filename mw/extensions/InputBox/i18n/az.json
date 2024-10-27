@@ -1,0 +1,20 @@
+{
+	"@metadata": {
+		"authors": [
+			"Cekli829",
+			"NMW03",
+			"Nemoralis",
+			"Toghrul Rahimli",
+			"Vugar 1981",
+			"Wertuose"
+		]
+	},
+	"inputbox-desc": "Əvvəlcədən təyin edilmiş HTML formalarının daxil edilməsinə icazə verir",
+	"inputbox-error-no-type": "Siz yaratmaq üçün giriş qutusunun növünü təyin etməmisiniz.",
+	"inputbox-tryexact": "Tam uyğunluğu sınayın",
+	"inputbox-searchfulltext": "Yaxşı mətni axtar",
+	"inputbox-createarticle": "Məqalə yarat",
+	"inputbox-postcomment": "Yeni bölmə",
+	"inputbox-postcommenttitle": "Yeni bölmə",
+	"inputbox-ns-main": "Əsas"
+}
