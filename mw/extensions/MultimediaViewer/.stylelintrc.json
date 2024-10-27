@@ -1,0 +1,13 @@
+{
+	"extends": [
+		"stylelint-config-wikimedia/mediawiki",
+		"stylelint-config-wikimedia/support-modern"
+	],
+	"reportNeedlessDisables": true,
+	"rules": {
+		"declaration-property-unit-disallowed-list": null,
+		"no-descending-specificity": null,
+		"unit-disallowed-list": null,
+		"selector-class-pattern": null
+	}
+}

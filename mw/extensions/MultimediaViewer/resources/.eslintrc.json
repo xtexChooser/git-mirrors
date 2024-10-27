@@ -1,0 +1,34 @@
+{
+	"root": true,
+	"extends": [
+		"wikimedia/client",
+		"wikimedia/jquery",
+		"wikimedia/mediawiki"
+	],
+	"rules": {
+		"no-var": "error",
+		"max-len": "off",
+		"no-jquery/no-class-state": "off",
+		"no-jquery/no-support": "off",
+		"es-x/no-resizable-and-growable-arraybuffers": "off"
+	},
+	"settings": {
+		"jsdoc": {
+			"preferredTypes": {
+				"Config": "Config",
+				"ImageModel": "ImageModel",
+				"DownloadDialog": "DownloadDialog",
+				"License": "License",
+				"LightboxImage": "LightboxImage",
+				"MultimediaViewer": "MultimediaViewer",
+				"OptionsDialog": "OptionsDialog",
+				"ReuseDialog": "ReuseDialog",
+				"TaskQueue": "TaskQueue",
+				"TaskQueueLightboxImage": "TaskQueueLightboxImage",
+				"Thumbnail": "Thumbnail",
+				"ThumbnailWidth": "ThumbnailWidth",
+				"UiElement": "UiElement"
+			}
+		}
+	}
+}
