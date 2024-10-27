@@ -1,0 +1,71 @@
+{
+	"name": "Description2",
+	"version": "0.4.1",
+	"author": [
+		"[http://danf.ca/mw/ Daniel Friesen]"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:Description2",
+	"descriptionmsg": "description2-desc",
+	"license-name": "GPL-2.0-or-later",
+	"type": "other",
+	"requires": {
+		"MediaWiki": ">= 1.38.0"
+	},
+	"config": {
+		"EnableMetaDescriptionFunctions": false,
+		"DescriptionMaxChars": 300,
+		"DescriptionAlgorithm": "MediaWiki\\Extension\\Description2\\RemexDescriptionProvider",
+		"DescriptionRemoveElements": [
+			"table",
+			"div",
+			"script",
+			"style",
+			"figure",
+			"input",
+			"div.infobox",
+			"div.ambox",
+			"div.dmbox",
+			"ul.gallery",
+			".mw-editsection",
+			"sup.reference",
+			"ul.references",
+			".error",
+			".nomobile",
+			".noprint",
+			".noexcerpt",
+			".sortkey"
+		]
+	},
+	"ConfigRegistry": {
+		"Description2": "GlobalVarConfig::newInstance"
+	},
+	"ServiceWiringFiles": [
+		"includes/ServiceWiring.php"
+	],
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\Description2\\": "includes/"
+	},
+	"ExtensionMessagesFiles": {
+		"Description2Magic": "Description2.i18n.magic.php"
+	},
+	"MessagesDirs": {
+		"Description2": [
+			"i18n"
+		]
+	},
+	"HookHandlers": {
+		"Description2": {
+			"class": "MediaWiki\\Extension\\Description2\\Hooks",
+			"services": [
+				"ConfigFactory",
+				"Description2.DescriptionProvider"
+			]
+		}
+	},
+	"Hooks": {
+		"OutputPageParserOutput": "Description2",
+		"ParserAfterTidy": "Description2",
+		"ParserFirstCallInit": "Description2"
+	},
+	"manifest_version": 1
+}
