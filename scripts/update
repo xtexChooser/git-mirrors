@@ -73,6 +73,7 @@ while read -r repo; do
 		continue
 	fi
 
+	rm -f .git/FETCH_HEAD
 	git fetch "$giturl" "$branch"
 	subtreeCommit="$(git rev-parse FETCH_HEAD)"
 	mergeSubtree "$name" "$subtreePrefix" "$subtreeCommit"
