@@ -11,4 +11,5 @@ curl -SL https://github.com/ACh-K/Cubic-11/raw/refs/heads/main/OFL.txt >Cubic_11
 
 echo Updating Cubic-11 TTF
 curl -SL https://github.com/ACh-K/Cubic-11/raw/refs/heads/main/fonts/ttf/Cubic_11.ttf >Cubic_11.ttf
+rm -f Cubic_11.ttf.xz
 xz -e -9 Cubic_11.ttf
