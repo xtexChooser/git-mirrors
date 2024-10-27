@@ -1,0 +1,123 @@
+.citizen-menu {
+	font-size: var( --font-size-small );
+
+	&__card {
+		--transform-origin-offset-start: var( --space-xs );
+		--transform-origin-offset-end: ~'calc( 100% - var( --space-xs ) )';
+		margin: var( --space-xs );
+		overflow: auto;
+		overscroll-behavior: contain;
+		user-select: none;
+		background-color: var( --color-surface-1 );
+		border: var( --border-width-base ) solid var( --border-color-base );
+		border-radius: var( --border-radius-medium );
+		box-shadow: var( --box-shadow-drop-xx-large );
+		transform: scale( 0 );
+		contain: content;
+
+		> * {
+			opacity: 0;
+		}
+	}
+
+	&__heading {
+		display: block;
+		padding: var( --space-xs ) var( --space-md );
+		margin: 0;
+		font-size: var( --font-size-x-small );
+		font-weight: var( --font-weight-normal );
+		color: var( --color-subtle );
+		letter-spacing: 0.05em;
+	}
+
+	&__content-list {
+		margin: 0;
+		list-style: none;
+	}
+
+	.mw-list-item {
+		line-height: var( --line-height-xx-small );
+
+		a {
+			display: flex;
+			gap: var( --space-sm );
+			align-items: center;
+			padding: var( --space-xs ) var( --space-md );
+			font-weight: var( --font-weight-medium );
+			color: var( --color-emphasized );
+			transition: var( --transition-hover );
+			transition-property: opacity;
+
+			&:hover {
+				background-color: var( --background-color-button-quiet--hover );
+
+				.citizen-ui-icon::before {
+					opacity: var( --opacity-icon-base--hover );
+				}
+			}
+
+			&:active {
+				background-color: var( --background-color-button-quiet--active );
+
+				.citizen-ui-icon::before {
+					opacity: var( --opacity-icon-base--selected );
+				}
+			}
+
+			&:hover,
+			&:focus {
+				text-decoration: none;
+			}
+		}
+	}
+}
+
+// FIXME: This should not be here
+.citizen-ui-icon {
+	display: block;
+	width: var( --size-icon );
+	min-width: var( --size-icon );
+	height: var( --size-icon );
+	min-height: var( --size-icon );
+	contain: strict;
+
+	&::before {
+		display: block;
+		width: 100%;
+		height: 100%;
+		content: '';
+		filter: var( --filter-invert );
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: contain;
+		opacity: var( --opacity-icon-base );
+	}
+}
+
+.mw-portlet {
+	// Hide selected item
+	.selected {
+		.sr-only;
+	}
+
+	// Hide empty menu
+	&-empty {
+		display: none !important;
+	}
+}
+
+// HACK: Restore view button on revision page (#845)
+// There are no good way to target revision page
+.action-view {
+	&:has( .diff ),
+	&:has( .mw-revision ) {
+		#ca-view {
+			position: relative;
+			width: auto;
+			height: auto;
+			overflow: initial;
+			clip-path: unset;
+			white-space: unset;
+		}
+	}
+}

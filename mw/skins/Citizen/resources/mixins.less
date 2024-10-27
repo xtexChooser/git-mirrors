@@ -1,0 +1,180 @@
+/*
+ * Citizen - Mixins
+ * https://starcitizen.tools
+ */
+
+@import 'variables.less';
+
+.citizen-card(@border-radius: true) {
+	background-color: var( --color-surface-1 );
+	border: var( --border-width-base ) solid var( --border-color-base );
+	box-shadow: var( --box-shadow-drop-xx-large );
+
+	& when (@border-radius ) {
+		border-radius: var( --border-radius-medium );
+	}
+}
+
+// Header card popups
+.citizen-header-card(@position ) {
+	position: absolute;
+	right: 0;
+	bottom: 100%;
+	left: 0;
+	max-height: var( --header-card-maxheight );
+
+	@media ( min-width: @min-width-breakpoint-tablet ) {
+		& when (@position =start) {
+			right: unset;
+		}
+
+		& when (@position =end) {
+			left: unset;
+		}
+	}
+
+	@media ( min-width: @min-width-breakpoint-desktop ) {
+		right: unset;
+		left: 100%;
+
+		& when (@position =start) {
+			top: 0;
+			bottom: unset;
+		}
+
+		& when (@position =end) {
+			bottom: 0;
+		}
+	}
+}
+
+.citizen-sticky-header(@bottomBorder: true, @zIndex: true) {
+	position: -webkit-sticky;
+	position: sticky;
+	top: var( --height-sticky-header );
+
+	& when (@bottomBorder ) {
+		box-shadow: 0 1px 0 0 var( --border-color-base );
+	}
+
+	& when (@zIndex ) {
+		z-index: @z-index-sticky;
+	}
+
+	// HACK: Hide overflow
+	// This has an issue if parent has overflow set
+	&::before {
+		position: absolute;
+		top: 0;
+		right: ~'calc( var(--padding-page ) * -1 )';
+		left: ~'calc( var(--padding-page ) * -1 )';
+		z-index: @z-index-bottom;
+		height: 100%;
+		content: '';
+		background-color: var( --color-surface-0 );
+		filter: opacity( 0.9 );
+		-webkit-backdrop-filter: saturate( 50% ) blur( 16px );
+		backdrop-filter: saturate( 50% ) blur( 16px );
+	}
+}
+
+// To hide objects, but keep them accessible for screen-readers
+.sr-only() {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset( 50% );
+	white-space: nowrap;
+}
+
+// Set content to be at the center
+.content-center() {
+	max-width: var( --width-layout );
+	margin-right: auto;
+	margin-left: auto;
+}
+
+.resource-loader-icon() {
+	position: absolute;
+	width: inherit;
+	height: inherit;
+	content: '';
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.resource-loader-menu-icon() {
+	position: absolute;
+	width: @icon-box-size;
+	height: @icon-box-size;
+	content: '';
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.resource-loader-list-icon() {
+	position: relative;
+	flex-shrink: 0;
+	align-self: center;
+	width: @icon-size;
+	height: @icon-size;
+	content: '';
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+}
+
+// Button Styles
+.button-progressive() {
+	color: var( --color-inverted-primary ) !important;
+	background-color: var( --color-progressive );
+
+	.citizen-ui-icon::before {
+		filter: var( --filter-invert-primary );
+		opacity: 1;
+	}
+}
+
+.button-progressive-hover() {
+	background-color: var( --color-progressive--hover );
+}
+
+.button-progressive-active() {
+	background-color: var( --color-progressive--active );
+}
+
+.button-destructive() {
+	color: var( --color-inverted-fixed ) !important;
+	background-color: var( --color-destructive );
+
+	.citizen-ui-icon::before {
+		filter: var( --filter-invert-fixed );
+		opacity: 1;
+	}
+}
+
+.button-destructive-hover() {
+	background-color: var( --color-destructive--hover );
+}
+
+.button-destructive-active() {
+	background-color: var( --color-destructive--active );
+}
+
+// Transform black into given color
+// From https://stackoverflow.com/a/73390109/10624167
+.recolor(@color ) {
+	@r: red(@color ) / 255;
+	@g: green(@color ) / 255;
+	@b: blue(@color ) / 255;
+	@a: alpha(@color );
+
+	// grayscale fallback if SVG from data url is not supported
+	@lightness: lightness(@color );
+	filter: saturate( 0% ) brightness( 0% ) invert( @lightness ) opacity( @a );
+
+	// color filter
+	@svg-filter-id: "recolor";
+	filter: url( ';data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"><filter id="@{svg-filter-id}" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 @{r} 0 0 0 0 @{g} 0 0 0 0 @{b} 0 0 0 @{a} 0"/></filter></svg> #@{svg-filter-id}' );
+}

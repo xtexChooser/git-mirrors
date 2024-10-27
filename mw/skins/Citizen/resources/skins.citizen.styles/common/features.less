@@ -1,0 +1,217 @@
+/**
+ * Dark theme mixin
+ * Dark theme needs a mixin because it is being used by the auto theme as well
+ */
+.theme-dark() {
+	--color-primary__l: 60%;
+
+	--color-surface-0__s: 20%;
+	--color-surface-0__l: 6%;
+
+	--color-surface-1__s: 25%;
+	--color-surface-1__l: 8%;
+
+	--color-surface-2__s: 25%;
+	--color-surface-2__l: 11%;
+
+	--color-surface-3__s: 15%;
+	--color-surface-3__l: 16%;
+
+	--color-surface-4__s: 15%;
+	--color-surface-4__l: 21%;
+
+	--color-destructive__l: 50%;
+	--color-success__l: 35%;
+	--color-warning__l: 60%;
+	--background-color-subtle__s: 85%;
+	--background-color-subtle__l: 10%;
+
+	--color-emphasized: ~'hsl( var( --color-primary__h ), 80%, 95% )';
+	--color-base: ~'hsl( var( --color-primary__h ), 45%, 80% )';
+	--color-subtle: ~'hsl( var( --color-primary__h ), 35%, 65% )';
+
+	--color-syntax-red: @color-syntax-red-dark;
+	--color-syntax-orange: @color-syntax-orange-dark;
+	--color-syntax-yellow: @color-syntax-yellow-dark;
+	--color-syntax-green: @color-syntax-green-dark;
+	--color-syntax-cyan: @color-syntax-cyan-dark;
+	--color-syntax-blue: @color-syntax-blue-dark;
+	--color-syntax-paleblue: @color-syntax-paleblue-dark;
+	--color-syntax-purple: @color-syntax-purple-dark;
+	--color-syntax-brown: @color-syntax-brown-dark;
+	--color-syntax-pink: @color-syntax-pink-dark;
+	--color-syntax-violet: @color-syntax-violet-dark;
+
+	--background-color-button-quiet--hover: rgba( 255, 255, 255, 0.04 );
+	--background-color-button-quiet--active: rgba( 255, 255, 255, 0.08 );
+	--background-color-icon: ~'rgba( 255, 255, 255, var( --opacity-icon-base ) )';
+	--background-color-icon--hover: ~'rgba( 255, 255, 255, var( --opacity-icon-base--hover ) )';
+	--background-color-icon--active: ~'rgba( 255, 255, 255, var( --opacity-icon-base--active ) )';
+
+	--border-color-base: rgba( 255, 255, 255, 0.05 );
+	--border-color-subtle: rgba( 255, 255, 255, 0.02 );
+	--border-color-interactive: rgba( 255, 255, 255, 0.08 );
+
+	--shadow-color: var( --color-primary__h ), 50%, 3%;
+	--shadow-opacity: 0.3;
+
+	--filter-invert: invert( 1 ) hue-rotate( 180deg );
+
+	--font-grade: -25;
+
+	// FIXME: Browsers seem to treat GRAD differently, disabling for now
+	// Dark theme usually have an illusion of thicker fonts
+	// So we have to tune it back
+	// font-variation-settings: 'GRAD' -90;
+
+	color-scheme: dark;
+}
+
+.feature-pure-black() {
+	--color-surface-0__l: 0%;
+	--color-surface-1__s: 20%;
+	--color-surface-1__l: 3%;
+	--color-surface-2__l: 5%;
+	--color-surface-3__l: 8%;
+	--color-surface-4__l: 12%;
+	--color-emphasized: ~'hsl( var( --color-primary__h ), 0%, 95% )';
+	--color-base: ~'hsl( var( --color-primary__h ), 0%, 85% )';
+	--color-subtle: ~'hsl( var( --color-primary__h ), 0%, 65% )';
+	--border-color-base: rgba( 255, 255, 255, 0.07 );
+	--border-color-subtle: rgba( 255, 255, 255, 0.04 );
+	--border-color-interactive: rgba( 255, 255, 255, 0.1 );
+	--shadow-opacity: 0.2;
+}
+
+// T365102 invert class specifically for image related element
+.skin-invert-image img,
+.skin-invert {
+	filter: var( --filter-invert );
+}
+
+.skin-theme-clientpref-night {
+	:root& {
+		.theme-dark();
+	}
+}
+
+.skin-theme-clientpref-os {
+	@media ( prefers-color-scheme: dark ) {
+		:root& {
+			.theme-dark();
+		}
+	}
+}
+
+.citizen-feature-custom-font-size-clientpref-small {
+	:root& {
+		--font-size-base: 0.875rem;
+	}
+}
+
+.citizen-feature-custom-font-size-clientpref-large {
+	:root& {
+		--font-size-base: 1.125rem;
+	}
+}
+
+.citizen-feature-custom-width-clientpref-standard {
+	:root& {
+		--width-layout: 1080px;
+	}
+}
+
+.citizen-feature-custom-width-clientpref-wide {
+	:root& {
+		--width-layout: 1600px;
+	}
+}
+
+.citizen-feature-custom-width-clientpref-full {
+	:root& {
+		--width-layout: 100vw;
+	}
+}
+
+.citizen-feature-pure-black-clientpref-1 {
+	:root.skin-theme-clientpref-night& {
+		.feature-pure-black();
+	}
+
+	@media ( prefers-color-scheme: dark ) {
+		:root.skin-theme-clientpref-os& {
+			.feature-pure-black();
+		}
+	}
+}
+
+.citizen-feature-autohide-navigation-clientpref-1 {
+	@media ( max-width: @max-width-breakpoint-tablet ) {
+		.citizen-header {
+			transition-timing-function: var( --transition-timing-function-ease-out );
+			transition-duration: var( --transition-duration-medium );
+			transition-property: transform;
+		}
+
+		// Hide sticky header on scroll down on smaller screens
+		.citizen-page-header--sticky {
+			.citizen-page-header,
+			.citizen-page-heading {
+				transition-timing-function: var( --transition-timing-function-ease-out );
+				transition-duration: var( --transition-duration-medium );
+			}
+
+			.citizen-page-header {
+				transition-property: transform;
+			}
+
+			.citizen-page-heading {
+				transition-property: opacity;
+			}
+		}
+
+		.citizen-scroll--down {
+			--height-sticky-header: 0 !important;
+
+			.citizen-header {
+				transition-timing-function: var( --transition-timing-function-ease-in );
+				transition-duration: var( --transition-duration-base );
+				transform: translateY( 100% );
+			}
+
+			.citizen-toc {
+				bottom: var( --space-xs );
+			}
+
+			.page-actions {
+				box-shadow: none;
+				opacity: 0;
+				transform: translateY( 250% );
+			}
+
+			&.citizen-page-header--sticky {
+				.citizen-page-header,
+				.citizen-page-heading {
+					transition-timing-function: var( --transition-timing-function-ease-in );
+					transition-duration: var( --transition-duration-base );
+				}
+
+				.citizen-page-header {
+					transform: translateY( -150% );
+				}
+
+				.citizen-page-heading {
+					opacity: 0;
+				}
+			}
+		}
+
+		.citizen-scroll--up {
+			// Page actions needed to have a scroll up handler to avoid clipping issue
+			.page-actions {
+				opacity: 1;
+				transition: opacity var( --transition-duration-medium ) var( --transition-timing-function-ease-out ) var( --transition-duration-medium ), transform var( --transition-duration-medium ) var( --transition-timing-function-ease-out ) var( --transition-duration-medium );
+			}
+		}
+	}
+}

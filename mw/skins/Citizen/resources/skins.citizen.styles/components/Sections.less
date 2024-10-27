@@ -1,0 +1,67 @@
+// Hide indicator when client is noscript
+// FIXME: On rare occasion, indicator can appear without the .citizen-sections-enabled class, not sure why
+.citizen-section-indicator,
+.client-nojs.citizen-sections-enabled .citizen-section-indicator {
+	display: none;
+}
+
+.citizen-section-heading,
+.mw-editsection {
+	--size-icon: 1.125rem;
+}
+
+.citizen-section {
+	&-heading {
+		display: flex;
+		align-items: center;
+
+		.mw-headline {
+			flex-grow: 1;
+		}
+
+		:is( .mw-headline, h1, h2, h3, h4, h5, h6 ) {
+			transition: var( --transition-hover );
+			transition-property: opacity;
+
+			@media ( hover: pointer ) {
+				&:hover {
+					opacity: var( --opacity-icon-base--hover );
+				}
+
+				&:active {
+					opacity: var( --opacity-icon-base--selected );
+				}
+			}
+		}
+
+		&:has( + .citizen-section[ hidden ] ) {
+			.citizen-section-indicator {
+				transform: rotate3d( 1, 0, 0, 180deg );
+			}
+
+			:is( .mw-headline, h1, h2, h3, h4, h5, h6 ) {
+				color: var( --color-subtle );
+			}
+		}
+	}
+}
+
+.citizen-sections-enabled {
+	.citizen-section {
+		&-heading {
+			cursor: pointer;
+			user-select: none;
+		}
+
+		&-indicator {
+			display: block;
+			order: -2;
+			width: var( --size-icon );
+			height: var( --size-icon );
+			margin-right: var( --space-sm );
+			cursor: pointer;
+			transition: var( --transition-hover );
+			transition-property: transform;
+		}
+	}
+}

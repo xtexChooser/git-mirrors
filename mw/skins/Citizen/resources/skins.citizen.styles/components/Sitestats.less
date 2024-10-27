@@ -1,0 +1,25 @@
+.citizen-siteStats {
+	--size-icon: 0.875rem;
+	display: flex;
+	gap: var( --space-md );
+	font-size: var( --font-size-x-small );
+	white-space: nowrap;
+
+	&__item {
+		display: flex;
+		gap: var( --space-xs );
+		align-items: center;
+	}
+
+	.citizen-ui-icon {
+		width: 0.875rem;
+		height: 0.875rem;
+	}
+}
+
+/* Can't display all in one line so let's hide file */
+@media ( max-width: 480px ) {
+	#citizen-siteStats__item--images {
+		display: none;
+	}
+}

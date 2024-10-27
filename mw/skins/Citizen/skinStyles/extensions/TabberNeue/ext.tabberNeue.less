@@ -1,0 +1,49 @@
+/*
+ * Citizen
+ *
+ * SkinStyles for Extension:TabberNeue
+ * Module: ext.tabberNeue
+ * Version: 2.5.0
+ *
+ * Date: 2024-08-31
+*/
+
+.tabber {
+	&__tab {
+		font-weight: var( --font-weight-medium );
+	}
+
+	&__header {
+		&__prev,
+		&__next {
+			&::after {
+				opacity: var( --opacity-icon-base );
+			}
+		}
+	}
+}
+
+@media ( hover: hover ) {
+	.tabber {
+		&__header {
+			&__prev,
+			&__next {
+				&:hover {
+					&::after {
+						opacity: var( --opacity-icon-base--hover );
+					}
+				}
+
+				&:active {
+					&::after {
+						opacity: var( --opacity-icon-base--selected );
+					}
+				}
+
+				&::after {
+					filter: var( --filter-invert );
+				}
+			}
+		}
+	}
+}

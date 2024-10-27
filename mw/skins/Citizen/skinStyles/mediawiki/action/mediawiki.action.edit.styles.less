@@ -1,0 +1,47 @@
+/*
+ * Citizen
+ *
+ * SkinStyles for MediaWiki core
+ * Module: mediawiki.action.edit.styles.less
+ * Version: REL1_39 3baf9e1
+ *
+ * Date: 2022-11-08
+*/
+
+// Needed the specificity
+.skin-citizen {
+	.mw-editform {
+		#wpTextbox1 {
+			padding: 0;
+			padding-bottom: var( --space-lg );
+			background-color: transparent;
+			border: 0;
+
+			&:focus {
+				outline: 0;
+			}
+		}
+
+		.editOptions {
+			padding: var( --space-lg );
+			font-size: var( --font-size-small );
+			color: var( --color-base );
+			background-color: var( --color-surface-2 );
+			border: 0;
+			border-radius: var( --border-radius-large );
+		}
+
+		#editpage-copywarn {
+			margin-top: var( --space-sm );
+			margin-bottom: var( --space-sm );
+			font-size: var( --font-size-x-small );
+			line-height: var( --line-height-xx-small );
+			color: var( --color-subtle );
+		}
+	}
+}
+
+// Disable sticky header
+#citizen-page-header-sticky-sentinel {
+	display: none;
+}

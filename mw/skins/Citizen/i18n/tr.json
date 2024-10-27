@@ -1,0 +1,42 @@
+{
+	"@metadata": {
+		"authors": [
+			"Agaafd",
+			"BaRaN6161 TURK",
+			"JackUKElliott",
+			"Joseph",
+			"Melissadilara",
+			"Mim.saitkilic",
+			"Sadrettin",
+			"SaldırganSincap",
+			"Sayginer",
+			"Toghrul Rahimli"
+		]
+	},
+	"citizen-skin-desc": "Star Citizen Viki için geliştirilmiş duyarlı bir görünüm",
+	"citizen-prefs-talkpage": "[[mw:Skin_talk:Citizen|Tartışma]]",
+	"citizen.css": "/* Buradaki tüm CSS'ler Citizen görünüm  kullanıcıları için yüklenecek */",
+	"citizen.js": "/* Buradaki tüm JavaScript Citizen  görünümü kullanıcıları için yüklenecek */",
+	"citizen-drawer-toggle": "Menüyü değiştir",
+	"citizen-usermenu-toggle": "Kişisel menüyü aç / kapat",
+	"citizen-search-toggle": "Aramayı değiştir",
+	"citizen-sitestats-articles-label": "maddeler",
+	"citizen-sitestats-images-label": "dosyalar",
+	"citizen-sitestats-users-label": "kullanıcılar",
+	"citizen-sitestats-edits-label": "değişiklikler",
+	"citizen-footer-desc": "Bu metni [[MediaWiki:Citizen-footer-desc]] üzerinde düzenleyin",
+	"citizen-footer-tagline": "Bu metni [[MediaWiki:Citizen-footer-tagline]] üzerinde düzenleyin",
+	"citizen-action-addsection": "Konu ekle",
+	"citizen-jumptotop": "Başa dön",
+	"citizen-search-fulltext": "Sayfaların içindeki metni arayın",
+	"citizen-search-mediasearch": "Ortam ara",
+	"citizen-search-editpage": "Sayfayı düzenleyin veya oluşturun",
+	"citizen-search-empty-desc": "Aramaya başlamak için yazın",
+	"citizen-tagline-ns-talk": "{{SUBJECTPAGENAME}} tartışma sayfası",
+	"citizen-tagline-ns-project": "{{SITENAME}} hakkında bilgi",
+	"citizen-tagline-ns-file": "{{SITENAME}} sitesindeki dosya",
+	"citizen-tagline-ns-mediawiki": "MediaWiki arayüz sayfası",
+	"citizen-tagline-ns-template": "Şablon sayfası",
+	"citizen-tagline-ns-help": "Yardım sayfası",
+	"citizen-tagline-ns-category": "Kategori sayfası"
+}

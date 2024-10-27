@@ -1,0 +1,37 @@
+.citizen-keyboard-hint {
+	display: none;
+	gap: var( --space-xs );
+	font-size: var( --font-size-x-small );
+	line-height: 1;
+
+	/* Should have a keyboard */
+	@media ( hover: hover ) and ( pointer: fine ) {
+		display: flex;
+	}
+
+	&-label {
+		color: var( --color-base );
+	}
+
+	&-key {
+		font-size: var( --font-size-x-small );
+		font-weight: var( --font-weight-normal );
+		color: var( --color-subtle );
+		/* stylelint-disable-next-line declaration-property-value-disallowed-list */
+		text-transform: capitalize;
+		letter-spacing: 0.05em;
+	}
+}
+
+/* Align keyhint to the right */
+.citizen-menu .mw-list-item a > span:has( + .citizen-keyboard-hint-key ) {
+	flex-grow: 1;
+}
+
+/*
+ * Hide key hint in main menu for now
+ * It has some wrapping issue with long label text
+ */
+#p-navigation .citizen-keyboard-hint-key {
+	display: none;
+}

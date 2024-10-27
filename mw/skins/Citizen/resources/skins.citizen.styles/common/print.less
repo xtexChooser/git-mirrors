@@ -1,0 +1,90 @@
+@page {
+	margin: 1cm;
+}
+
+:root {
+	--border-color-base: #aaa !important;
+	--border-width-base: 1pt;
+	--border-width-thick: 2pt;
+	--font-size-base: 12pt;
+
+	&.citizen-feature-custom-font-size-clientpref-small {
+		--font-size-base: 11pt;
+	}
+
+	&.citizen-feature-custom-font-size-clientpref-large {
+		--font-size-base: 13pt;
+	}
+}
+
+// Hide unnessecary elements for printing
+.noprint,
+.citizen-header,
+.citizen-sitenotice-container,
+.page-actions,
+#citizen-page-header-sticky-sentinel,
+#citizen-page-header-sticky-placeholder,
+.citizen-page-footer,
+.citizen-page-sidebar,
+#footer-desc,
+#footer-places,
+.citizen-overflow-nav {
+	display: none !important;
+}
+
+a {
+	color: #000;
+	border-bottom: 1pt solid var( --border-color-base );
+}
+
+table,
+img,
+svg {
+	break-inside: avoid;
+}
+
+/* HACK: Move footer to the top */
+.citizen-page-container {
+	display: flex;
+	flex-direction: column;
+}
+
+.citizen-footer {
+	order: -1;
+	padding-top: var( --space-md );
+	padding-bottom: var( --space-md );
+	margin-bottom: var( --space-md );
+	border-bottom: 1pt solid var( --border-color-base );
+}
+
+.citizen-footer__container {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+#footer-tagline {
+	font-size: 9pt;
+}
+
+#firstHeading {
+	margin: 0;
+}
+
+.printfooter {
+	margin-top: 1em;
+	font-size: 9pt;
+	border-top: 1pt solid var( --border-color-base );
+}
+
+.wikitable {
+	margin: 1em 0;
+	border-collapse: collapse;
+	border: 1pt solid var( --border-color-base );
+}
+
+.wikitable th,
+.wikitable td {
+	padding: var( --space-xs ) var( --space-sm );
+	border: 1pt solid var( --border-color-base );
+}
