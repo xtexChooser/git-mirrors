@@ -1,0 +1,25 @@
+{
+	"@metadata": {
+		"authors": [
+			"Crt",
+			"Nike",
+			"Samoasambia",
+			"Vililikku"
+		]
+	},
+	"categorywatch-desc": "Laajennettu tarkkailulistatoiminnallisuus, joka sisältää huomautukset seurattujen luokkien jäsenyysmuutoksista.",
+	"categorywatch-emailsubject": "Tapahtumia, jotka liittyvät tarkkailtuun luokkaan ”$1”",
+	"categorywatch-catmovein": "siirrettiin $1 luokkaan $2 luokkaan $3",
+	"categorywatch-catmoveout": "siirrettiin $1 luokasta $2 luokkaan $3",
+	"categorywatch-catadd": "lisättiin sivu $1 luokkaan $2",
+	"categorywatch-catsub": "poistettiin sivu $1 luokasta $2",
+	"categorywatch-autocat": "Automaattisesti tarkkailee $1",
+	"categorywatch-notification-link": "Luokka: [[:$1]]",
+	"categorywatch-notification-categorywatch-add-header": "[[:$1|$2]] lisätty luokkaan [[:$3|$4]]",
+	"categorywatch-notification-categorywatch-add-summary": "[[:$3|$4]] lisätty luokkaan [[:$5|$6]]",
+	"categorywatch-notification-categorywatch-add-body": "[[User:$1|$1]] lisäsi sivun [[:$3|$3]] luokkaan [[:$4|$4]]",
+	"categorywatch-notification-categorywatch-remove-header": "[[:$1|$2]] poistettu luokasta [[:$3|$4]]",
+	"categorywatch-notification-categorywatch-remove-summary": "[[:$3|$4]] poistettu luokasta [[:$5|$6]]",
+	"categorywatch-notification-categorywatch-remove-body": "[[User:$1|$1]] poisti sivun [[:$3|$3]] luokasta [[:$4|$4]]",
+	"categorywatch-notification-bundle": "$1 muutosta {{GRAMMAR:genitive|{{SITENAME}}}} luokituksessa"
+}

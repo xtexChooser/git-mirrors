@@ -1,0 +1,27 @@
+{
+	"@metadata": {
+		"authors": [
+			"McDutchie"
+		]
+	},
+	"categorywatch-desc": "Extende le functionalitate del observatorio con le notification del modificationes in paginas que pertine al categorias observate",
+	"categorywatch-emailsubject": "Activitate involvente le categoria observate \"$1\"",
+	"categorywatch-catmovein": "displaciava $1 in categoria $2 ex $3",
+	"categorywatch-catmoveout": "displaciava $1 ex le categoria $2 in $3",
+	"categorywatch-catadd": "addeva $1 al categoria $2",
+	"categorywatch-catsub": "retirava $1 del categoria $2",
+	"categorywatch-autocat": "Automaticamente observate per $1",
+	"categorywatch-notification-link": "Categoria: [[:$1]]",
+	"categorywatch-notification-categorywatch-add-header": "[[:$1|$2]] addite a [[:$3|$4]]",
+	"categorywatch-notification-categorywatch-add-summary": "[[:$3|$4]] addite a [[:$5|$6]]",
+	"categorywatch-notification-categorywatch-add-body": "[[User:$1|$1]] ha addite [[:$3|$3]] a [[:$4|$4]]",
+	"categorywatch-notification-categorywatch-remove-header": "[[:$1|$2]] removite de [[:$3|$4]]",
+	"categorywatch-notification-categorywatch-remove-summary": "[[:$3|$4]] removite de [[:$5|$6]]",
+	"categorywatch-notification-categorywatch-remove-body": "[[User:$1|$1]] ha removite [[:$3|$3]] de [[:$4|$4]]",
+	"categorywatch-notification-bundle": "$1 cambiamentos de categorisation sur {{SITENAME}}",
+	"categorywatch-add-title": "Titulo addite a un categoria sub observation",
+	"categorywatch-remove-title": "Titulo removite de un categoria sub observation",
+	"categorywatch-page-watch-pref": "Adder tote le paginas in un categoria a tu observatorio quando tu adde un categoria",
+	"echo-category-title-categorywatch": "Observation de categorias",
+	"echo-pref-tooltip-categorywatch": "Notificar me quando alcuno adde o remove un pagina de un categoria que io observa"
+}

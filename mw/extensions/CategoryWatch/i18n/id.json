@@ -1,0 +1,28 @@
+{
+	"@metadata": {
+		"authors": [
+			"Bennylin",
+			"Daud I.F. Argana"
+		]
+	},
+	"categorywatch-desc": "Memperkaya fungsi pemantauan dengan menambahkan pemberitahuan tentang keanggotaan kategori yang dipantau yang berubah",
+	"categorywatch-emailsubject": "Aktivitas yang berhubungan dengan memantau kategori \"$1\"",
+	"categorywatch-catmovein": "$1 telah dipindahkan ke $2 dari $3",
+	"categorywatch-catmoveout": "$1 telah dipindahkan dari $2 ke $3",
+	"categorywatch-catadd": "$1 telah ditambahkan ke $2",
+	"categorywatch-catsub": "$1 telah disingkirkan dari $2",
+	"categorywatch-autocat": "Otomatis dipantau oleh $1",
+	"categorywatch-notification-link": "Kategori: [[:$1]]",
+	"categorywatch-notification-categorywatch-add-header": "[[:$1|$2]] ditambahkan ke [[:$3|$4]]",
+	"categorywatch-notification-categorywatch-add-summary": "[[:$3|$4]] telah ditambahkan ke [[:$5|$6]]",
+	"categorywatch-notification-categorywatch-add-body": "[[User:$1|$1]] menambahkan [[:$3|$3]] ke [[:$4|$4]]",
+	"categorywatch-notification-categorywatch-remove-header": "[[:$1|$2]] dihapus dari [[:$3|$4]]",
+	"categorywatch-notification-categorywatch-remove-summary": "[[:$3|$4]] telah dihapus dari [[:$5|$6]]",
+	"categorywatch-notification-categorywatch-remove-body": "[[User:$1|$1]] menghapus [[:$3|$3]] dari [[:$4|$4]]",
+	"categorywatch-notification-bundle": "$1 mengubah kategorisasi di {{SITENAME}}",
+	"categorywatch-add-title": "Judul yang ditambahkan ke kategori yang dipantau",
+	"categorywatch-remove-title": "Judul yang dihapus dari kategori yang dipantau",
+	"categorywatch-page-watch-pref": "Tambahkan semua halaman dalam kategori ke daftar pantauan Anda ketika Anda menambahkan sebuah kategori",
+	"echo-category-title-categorywatch": "Pantau kategori",
+	"echo-pref-tooltip-categorywatch": "Beri tahu saya ketika seseorang mengategorikan halaman ke dalam atau ke luar kategori yang saya pantau."
+}

@@ -1,0 +1,27 @@
+{
+	"@metadata": {
+		"authors": [
+			"IJzeren Jan"
+		]
+	},
+	"categorywatch-desc": "Razširjaje funkcionalnost spiska slědovanyh stranic uvědomjenjami o izměnah v členstvu slědovanyh kategorij",
+	"categorywatch-emailsubject": "Aktivnost v svezi s slědovanoju kategorijeju «$1»",
+	"categorywatch-catmovein": "prěnesl stranicu $1 iz kategorije $3 v kategoriju $2",
+	"categorywatch-catmoveout": "prěnesl stranicu $1 iz kategorije $2 v kategoriju $3",
+	"categorywatch-catadd": "dodal stranicu $1 v kategoriju $2",
+	"categorywatch-catsub": "udalil stranicu $1 iz kategorije $2",
+	"categorywatch-autocat": "Avtomatično slědovano koristnikom $1",
+	"categorywatch-notification-link": "Kategorija: [[:$1]]",
+	"categorywatch-notification-categorywatch-add-header": "Stranica [[:$1|$2]] dodana v [[:$3|$4]]",
+	"categorywatch-notification-categorywatch-add-summary": "Stranica [[:$3|$4]] dodana v [[:$5|$6]]",
+	"categorywatch-notification-categorywatch-add-body": "[[User:$1|$1]] dodal stranicu [[:$3|$3]] v kategoriju [[:$4|$4]]",
+	"categorywatch-notification-categorywatch-remove-header": "Stranica [[:$1|$2]] udaljena iz kategorije [[:$3|$4]]",
+	"categorywatch-notification-categorywatch-remove-summary": "Stranica [[:$3|$4]] udaljena iz kategorije [[:$5|$6]]",
+	"categorywatch-notification-categorywatch-remove-body": "[[User:$1|$1]] udalil stranicu [[:$3|$3]] iz kategorije [[:$4|$4]]",
+	"categorywatch-notification-bundle": "$1 izměn v kategorizaciji v projektu {{SITENAME}}",
+	"categorywatch-add-title": "Dodana stranica v slědovanu kategoriju",
+	"categorywatch-remove-title": "Udaljena stranica iz slědovanoj kategorije",
+	"categorywatch-page-watch-pref": "Kogda vy dodavajete kategoriju, dodati v vaš spisok slědovanyh stranic vse stranice ovoj kategorije",
+	"echo-category-title-categorywatch": "Slědovanje kategorij",
+	"echo-pref-tooltip-categorywatch": "Informovati mene, kogda někto dodavaje ili udaljaje stranicu iz slědovanoj mnoju kategorije."
+}
