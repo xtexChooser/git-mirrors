@@ -1,0 +1,870 @@
+<?php
+
+use MediaWiki\Config\Config;
+use MediaWiki\Context\ContextSource;
+use MediaWiki\Context\IContextSource;
+use MediaWiki\Context\RequestContext;
+use MediaWiki\MediaWikiServices;
+use MediaWiki\Utils\UrlUtils;
+use MobileFrontend\Devices\DeviceDetectorService;
+use MobileFrontend\WMFBaseDomainExtractor;
+
+/**
+ * Provide various request-dependant methods to use in mobile context
+ */
+class MobileContext extends ContextSource {
+	public const MODE_BETA = 'beta';
+	public const MODE_STABLE = 'stable';
+	public const OPTIN_COOKIE_NAME = 'optin';
+	public const STOP_MOBILE_REDIRECT_COOKIE_NAME = 'stopMobileRedirect';
+	public const USEFORMAT_COOKIE_NAME = 'mf_useformat';
+	public const USER_MODE_PREFERENCE_NAME = 'mfMode';
+
+	// Keep in sync with https://wikitech.wikimedia.org/wiki/X-Analytics.
+	private const ANALYTICS_HEADER_KEY = 'mf-m';
+	private const ANALYTICS_HEADER_DELIMITER = ',';
+	private const ANALYTICS_HEADER_VALUE_BETA = 'b';
+	private const ANALYTICS_HEADER_VALUE_AMC = 'amc';
+
+	/**
+	 * Saves the testing mode user has opted in: 'beta' or 'stable'
+	 * @var string|null
+	 */
+	protected $mobileMode = null;
+
+	/**
+	 * Save explicitly requested format
+	 * @var string|null
+	 */
+	protected $useFormat = null;
+
+	/**
+	 * Key/value pairs of things to add to X-Analytics response header for analytics
+	 * @var array[]
+	 */
+	protected $analyticsLogItems = [];
+
+	/**
+	 * The memoized result of `MobileContext#isMobileDevice`.
+	 *
+	 * This defaults to `null`, meaning that `MobileContext#isMobileDevice` has
+	 * yet to be called.
+	 *
+	 * @see MobileContext#isMobileDevice
+	 *
+	 * @var bool|null
+	 */
+	private $isMobileDevice = null;
+
+	/**
+	 * Saves requested Mobile action
+	 * @var string|null
+	 */
+	protected $mobileAction = null;
+
+	/**
+	 * Save whether mobile view is explicitly requested
+	 * @var bool
+	 */
+	private $forceMobileView = false;
+
+	/**
+	 * Save whether or not we should display the mobile view
+	 * @var bool|null
+	 */
+	private $mobileView = null;
+
+	/**
+	 * Have we already checked for desktop/mobile view toggling?
+	 * @var bool
+	 */
+	private $toggleViewChecked = false;
+
+	/**
+	 * @var self|null
+	 */
+	private static $instance = null;
+
+	/**
+	 * @var string|null What to switch the view to
+	 */
+	private $viewChange = null;
+
+	/**
+	 * @var string|null Domain to use for the stopMobileRedirect cookie
+	 */
+	public static $mfStopRedirectCookieHost = null;
+
+	/**
+	 * In-process cache for checking whether the current wiki has a mobile URL that's
+	 * different from the desktop one.
+	 * @var bool|null
+	 */
+	private $hasMobileUrl = null;
+
+	/**
+	 * @var Config
+	 */
+	private $config;
+
+	/**
+	 * Returns the actual MobileContext Instance or create a new if no exists
+	 * @deprecated use MediaWikiServices::getInstance()->getService( 'MobileFrontend.Context' );
+	 * @return self
+	 */
+	public static function singleton() {
+		if ( !self::$instance ) {
+			self::$instance = new self(
+				RequestContext::getMain(),
+				MediaWikiServices::getInstance()->getService( 'MobileFrontend.Config' )
+			);
+		}
+		return self::$instance;
+	}
+
+	/**
+	 * Resets the singleton instance.
+	 */
+	public static function resetInstanceForTesting() {
+		self::$instance = null;
+	}
+
+	/**
+	 * @param IContextSource $context
+	 * @param Config $config
+	 */
+	protected function __construct( IContextSource $context, Config $config ) {
+		$this->setContext( $context );
+		$this->config = $config;
+	}
+
+	/**
+	 * Detects whether the UA is sending the request from a device and, if so,
+	 * whether to display the mobile view to that device.
+	 *
+	 * The mobile view will always be displayed to mobile devices. However, it
+	 * will only be displayed to tablet devices if `$wgMFShowMobileViewToTablets`
+	 * is truthy.
+	 *
+	 * @fixme This should be renamed to something more appropriate, e.g.
+	 * `shouldDisplayMobileViewToDevice`.
+	 *
+	 * @see MobileContext::shouldDisplayMobileView
+	 *
+	 * @return bool
+	 */
+	public function isMobileDevice() {
+		if ( $this->isMobileDevice !== null ) {
+			return $this->isMobileDevice;
+		}
+
+		$this->isMobileDevice = false;
+
+		$properties = DeviceDetectorService::factory( $this->config )
+			->detectDeviceProperties( $this->getRequest(), $_SERVER );
+
+		if ( $properties ) {
+			$showMobileViewToTablets = $this->config->get( 'MFShowMobileViewToTablets' );
+
+			$this->isMobileDevice =
+				$properties->isMobileDevice()
+				|| ( $properties->isTabletDevice() && $showMobileViewToTablets );
+		}
+
+		return $this->isMobileDevice;
+	}
+
+	/**
+	 * Save whether mobile view should always be enforced
+	 * @param bool $value should mobile view be enforced?
+	 */
+	public function setForceMobileView( $value ) {
+		$this->forceMobileView = $value;
+	}
+
+	/**
+	 * Sets the value of $this->mobileMode property to the value of the 'optin' cookie.
+	 * If the cookie is not set the value will be an empty string.
+	 */
+	private function loadMobileModeCookie() {
+		$this->mobileMode = $this->getRequest()->getCookie( self::OPTIN_COOKIE_NAME, '' );
+	}
+
+	/**
+	 * Returns the testing mode user has opted in: 'beta' or any other value for stable
+	 * @return string
+	 */
+	private function getMobileMode() {
+		$enableBeta = $this->config->get( 'MFEnableBeta' );
+
+		if ( !$enableBeta ) {
+			return '';
+		}
+		if ( $this->mobileMode === null ) {
+			$mobileAction = $this->getMobileAction();
+			if ( $mobileAction === self::MODE_BETA || $mobileAction === self::MODE_STABLE ) {
+				$this->mobileMode = $mobileAction;
+			} else {
+				$user = $this->getUser();
+				if ( !$user->isRegistered() ) {
+					$this->loadMobileModeCookie();
+				} else {
+					$userOptionManager = MediaWikiServices::getInstance()->getUserOptionsManager();
+					$mode = $userOptionManager->getOption( $user, self::USER_MODE_PREFERENCE_NAME );
+					$this->mobileMode = $mode;
+					// Edge case where preferences are corrupt or the user opted
+					// in before change.
+					if ( $mode === null ) {
+						// Should we set the user option here?
+						$this->loadMobileModeCookie();
+					}
+				}
+			}
+		}
+		return $this->mobileMode;
+	}
+
+	/**
+	 * Sets testing group membership, both cookie and this class variables
+	 *
+	 * WARNING: Does not persist the updated user preference to the database.
+	 * The caller must handle this by calling User::saveSettings() after all
+	 * preference updates associated with this web request are made.
+	 *
+	 * @param string $mode Mode to set
+	 */
+	public function setMobileMode( $mode ) {
+		if ( $mode !== self::MODE_BETA ) {
+			$mode = '';
+		}
+		$services = MediaWikiServices::getInstance();
+		$this->mobileMode = $mode;
+
+		$user = $this->getUser();
+		if ( $user->getId() ) {
+			$userOptionsManager = $services->getUserOptionsManager();
+			$userOptionsManager->setOption(
+				$user,
+				self::USER_MODE_PREFERENCE_NAME,
+				$mode
+			);
+		}
+
+		$this->getRequest()->response()->setCookie( self::OPTIN_COOKIE_NAME, $mode, 0, [
+			'prefix' => '',
+			'domain' => $this->getCookieDomain()
+		] );
+	}
+
+	/**
+	 * Whether user is Beta group member
+	 * @return bool
+	 */
+	public function isBetaGroupMember() {
+		return $this->getMobileMode() === self::MODE_BETA;
+	}
+
+	/**
+	 * Whether the current user is has advanced mobile contributions enabled.
+	 * @return bool
+	 */
+	private static function isAmcUser() {
+		$services = MediaWikiServices::getInstance();
+		/** @var \MobileFrontend\Amc\UserMode $userMode */
+		$userMode = $services->getService( 'MobileFrontend.AMC.UserMode' );
+		return $userMode->isEnabled();
+	}
+
+	/**
+	 * Determine whether or not we should display the mobile view
+	 *
+	 * Step through the hierarchy of what should or should not trigger
+	 * the mobile view.
+	 *
+	 * Primacy is given to the page action - we will never show mobile view
+	 * for page edits or page history. 'userformat' request param is then
+	 * honored, followed by cookie settings, then actual device detection,
+	 * finally falling back on false.
+	 * @return bool
+	 */
+	public function shouldDisplayMobileView() {
+		if ( $this->mobileView !== null ) {
+			return $this->mobileView;
+		}
+		// check if we need to toggle between mobile/desktop view
+		$this->checkToggleView();
+		$this->mobileView = $this->shouldDisplayMobileViewInternal();
+		return $this->mobileView;
+	}
+
+	/**
+	 * Value for shouldDisplayMobileView()
+	 * @return bool
+	 */
+	private function shouldDisplayMobileViewInternal() {
+		// May be overridden programmatically
+		if ( $this->forceMobileView ) {
+			return true;
+		}
+
+		// always display desktop or mobile view if it's explicitly requested
+		$useFormat = $this->getUseFormat();
+		if ( $useFormat == 'desktop' ) {
+			return false;
+		} elseif ( $useFormat == 'mobile' ) {
+			return true;
+		}
+
+		if ( $this->getRequest()->getRawVal( 'mobileformat' ) !== null ) {
+			return true;
+		}
+
+		/**
+		 * If a user is accessing the site from a mobile domain, then we should
+		 * always display the mobile version of the site (otherwise, the cache
+		 * may get polluted). See
+		 * https://phabricator.wikimedia.org/T48473
+		 */
+		if ( $this->usingMobileDomain() ) {
+			return true;
+		}
+
+		// check cookies for what to display
+		$useMobileFormat = $this->getUseFormatCookie();
+		if ( $useMobileFormat == 'true' ) {
+			return true;
+		}
+		$stopMobileRedirect = $this->getStopMobileRedirectCookie();
+		if ( $stopMobileRedirect == 'true' ) {
+			return false;
+		}
+
+		// do device detection
+		if ( $this->isMobileDevice() ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get requested mobile action
+	 * @return string
+	 */
+	public function getMobileAction() {
+		if ( $this->mobileAction === null ) {
+			$this->mobileAction = $this->getRequest()->getRawVal( 'mobileaction' );
+		}
+
+		return $this->mobileAction;
+	}
+
+	/**
+	 * Gets the value of the `useformat` query string parameter.
+	 *
+	 * @return string Typically "desktop" or "mobile"
+	 */
+	private function getUseFormat() {
+		if ( $this->useFormat === null ) {
+			$this->useFormat = $this->getRequest()->getRawVal( 'useformat' );
+		}
+		return $this->useFormat;
+	}
+
+	/**
+	 * Set Cookie to stop automatically redirect to mobile page
+	 * @param int|null $expiry Expire time of cookie
+	 */
+	public function setStopMobileRedirectCookie( $expiry = null ) {
+		$stopMobileRedirectCookieSecureValue =
+			$this->config->get( 'MFStopMobileRedirectCookieSecureValue' );
+
+		$this->getRequest()->response()->setCookie(
+			self::STOP_MOBILE_REDIRECT_COOKIE_NAME,
+			'true',
+			$expiry ?? $this->getUseFormatCookieExpiry(),
+			[
+				'domain' => $this->getStopMobileRedirectCookieDomain(),
+				'prefix' => '',
+				'secure' => (bool)$stopMobileRedirectCookieSecureValue,
+			]
+		);
+	}
+
+	/**
+	 * Remove cookie and continue automatic redirect to mobile page
+	 */
+	public function unsetStopMobileRedirectCookie() {
+		if ( $this->getStopMobileRedirectCookie() === null ) {
+			return;
+		}
+		$expire = $this->getUseFormatCookieExpiry( time(), -3600 );
+		$this->setStopMobileRedirectCookie( $expire );
+	}
+
+	/**
+	 * Read cookie for stop automatic mobile redirect
+	 * @return string
+	 */
+	public function getStopMobileRedirectCookie() {
+		$stopMobileRedirectCookie = $this->getRequest()
+			->getCookie( self::STOP_MOBILE_REDIRECT_COOKIE_NAME, '' );
+
+		return $stopMobileRedirectCookie;
+	}
+
+	/**
+	 * This cookie can determine whether or not a user should see the mobile
+	 * version of a page.
+	 *
+	 * @return string|null
+	 */
+	public function getUseFormatCookie() {
+		$useFormatFromCookie = $this->getRequest()->getCookie( self::USEFORMAT_COOKIE_NAME, '' );
+
+		return $useFormatFromCookie;
+	}
+
+	/**
+	 * Return the base level domain or IP address
+	 *
+	 * @return string|null
+	 */
+	public function getCookieDomain() {
+		$helper = new WMFBaseDomainExtractor();
+		return $helper->getCookieDomain( $this->config->get( 'Server' ) );
+	}
+
+	/**
+	 * Determine the correct domain to use for the stopMobileRedirect cookie
+	 *
+	 * Will use $wgMFStopRedirectCookieHost if it's set, otherwise will use
+	 * result of getCookieDomain()
+	 * @return string|null
+	 */
+	public function getStopMobileRedirectCookieDomain() {
+		$mfStopRedirectCookieHost = $this->config->get( 'MFStopRedirectCookieHost' );
+
+		if ( !$mfStopRedirectCookieHost ) {
+			self::$mfStopRedirectCookieHost = $this->getCookieDomain();
+		} else {
+			self::$mfStopRedirectCookieHost = $mfStopRedirectCookieHost;
+		}
+
+		return self::$mfStopRedirectCookieHost;
+	}
+
+	/**
+	 * Set the mf_useformat cookie
+	 *
+	 * This cookie can determine whether or not a user should see the mobile
+	 * version of pages.
+	 *
+	 * @param string $cookieFormat should user see mobile version of pages?
+	 * @param int|null $expiry Expiration of cookie
+	 */
+	public function setUseFormatCookie( $cookieFormat = 'true', $expiry = null ) {
+		$this->getRequest()->response()->setCookie(
+			self::USEFORMAT_COOKIE_NAME,
+			$cookieFormat,
+			$expiry ?? $this->getUseFormatCookieExpiry(),
+			[
+				'prefix' => '',
+				'httpOnly' => true,
+			]
+		);
+		$stats = MediaWikiServices::getInstance()->getStatsdDataFactory();
+		$stats->updateCount( 'mobile.useformat_' . $cookieFormat . '_cookie_set', 1 );
+	}
+
+	/**
+	 * Remove cookie based saved useformat value
+	 */
+	public function unsetUseFormatCookie() {
+		if ( $this->getUseFormatCookie() === null ) {
+			return;
+		}
+
+		// set expiration date in the past
+		$expire = $this->getUseFormatCookieExpiry( time(), -3600 );
+		$this->setUseFormatCookie( '', $expire );
+	}
+
+	/**
+	 * Get the expiration time for the mf_useformat cookie
+	 *
+	 * @param int|null $startTime The base time (in seconds since Epoch) from which to calculate
+	 * 		cookie expiration. If null, time() is used.
+	 * @param int|null $cookieDuration The time (in seconds) the cookie should last
+	 * @return int The time (in seconds since Epoch) that the cookie should expire
+	 */
+	protected function getUseFormatCookieExpiry( $startTime = null, $cookieDuration = null ) {
+		// use $cookieDuration if it's valid
+		if ( intval( $cookieDuration ) === 0 ) {
+			$cookieDuration = $this->getUseFormatCookieDuration();
+		}
+
+		// use $startTime if it's valid
+		if ( intval( $startTime ) === 0 ) {
+			$startTime = time();
+		}
+
+		$expiry = $startTime + $cookieDuration;
+		return $expiry;
+	}
+
+	/**
+	 * Determine the duration the cookie should last.
+	 *
+	 * If $wgMobileFrontendFormatcookieExpiry has a non-0 value, use that
+	 * for the duration. Otherwise, fall back to $wgCookieExpiration.
+	 *
+	 * @return int The number of seconds for which the cookie should last.
+	 */
+	public function getUseFormatCookieDuration() {
+		$mobileFrontendFormatCookieExpiry =
+			$this->config->get( 'MobileFrontendFormatCookieExpiry' );
+
+		$cookieExpiration = $this->getConfig()->get( 'CookieExpiration' );
+
+		$cookieDuration = ( abs( intval( $mobileFrontendFormatCookieExpiry ) ) > 0 ) ?
+			$mobileFrontendFormatCookieExpiry : $cookieExpiration;
+		return $cookieDuration;
+	}
+
+	/**
+	 * Returns the callback from $wgMobileUrlCallback, which changes
+	 *   a desktop domain into a mobile domain.
+	 * @return callable|null
+	 * @phan-return callable(string):string|null
+	 */
+	private function getMobileUrlCallback(): ?callable {
+		return $this->config->get( 'MobileUrlCallback' );
+	}
+
+	/**
+	 * True if the current wiki has separate mobile and desktop domains (regardless
+	 * of which domain is used by the current request).
+	 * @return bool
+	 */
+	public function hasMobileDomain(): bool {
+		if ( $this->hasMobileUrl === null ) {
+			$mobileUrlCallback = $this->getMobileUrlCallback();
+			if ( $mobileUrlCallback ) {
+				$urlUtils = MediaWikiServices::getInstance()->getUrlUtils();
+				$server = $urlUtils->expand( $this->getConfig()->get( 'Server' ), PROTO_CANONICAL ) ?? '';
+				$host = $urlUtils->parse( $server )['host'] ?? '';
+				$mobileDomain = call_user_func( $mobileUrlCallback, $host );
+				$this->hasMobileUrl = $mobileDomain !== $host;
+			} else {
+				$this->hasMobileUrl = false;
+			}
+		}
+		return $this->hasMobileUrl;
+	}
+
+	/**
+	 * Take a URL and return the equivalent mobile URL (ie. replace the domain with the
+	 * mobile domain).
+	 *
+	 * Typically this is a URL for the current wiki, but it can be anything as long as
+	 * $wgMobileUrlCallback can convert its domain (so e.g. interwiki links can be
+	 * converted). If the domain is already a mobile domain, or not recognized by
+	 * $wgMobileUrlCallback, or the wiki does not use mobile domains and so
+	 * $wgMobileUrlCallback is not set, the URL will be returned unchanged (except
+	 * $forceHttps will still be applied).
+	 *
+	 * @param string $url URL to convert
+	 * @param bool $forceHttps Force HTTPS, even if the original URL used HTTP
+	 * @return string|bool
+	 */
+	public function getMobileUrl( $url, $forceHttps = false ) {
+		$urlUtils = MediaWikiServices::getInstance()->getUrlUtils();
+		$parsedUrl = $urlUtils->parse( $url );
+		// if parsing failed, maybe it's a local Url, try to expand and reparse it - task T107505
+		if ( !$parsedUrl ) {
+			$expandedUrl = $urlUtils->expand( $url, PROTO_CURRENT );
+			if ( $expandedUrl ) {
+				$parsedUrl = $urlUtils->parse( $expandedUrl );
+			}
+			if ( !$expandedUrl || !$parsedUrl ) {
+				return false;
+			}
+		}
+
+		$mobileUrlCallback = $this->getMobileUrlCallback();
+		if ( $mobileUrlCallback ) {
+			$parsedUrl['host'] = call_user_func( $mobileUrlCallback, $parsedUrl['host'] );
+		}
+		if ( $forceHttps ) {
+			$parsedUrl['scheme'] = 'https';
+			$parsedUrl['delimiter'] = '://';
+		}
+
+		$assembleUrl = UrlUtils::assemble( $parsedUrl );
+		return $assembleUrl;
+	}
+
+	/**
+	 * Checks whether the current request is using the mobile domain.
+	 *
+	 * This assumes that some infrastructure outside MediaWiki will set a
+	 * header (specified by $wgMFMobileHeader) on requests which use the
+	 * mobile domain. This means that the traffic routing layer can rewrite
+	 * hostnames to be canonical, so non-MobileFrontend-aware code can still
+	 * work.
+	 *
+	 * @return bool
+	 */
+	public function usingMobileDomain() {
+		$mobileHeader = $this->config->get( 'MFMobileHeader' );
+		return ( $this->hasMobileDomain()
+			&& $mobileHeader
+			&& $this->getRequest()->getHeader( $mobileHeader ) !== false
+		);
+	}
+
+	/**
+	 * Take a URL and return a copy that removes any mobile tokens.
+	 *
+	 * This only works with URLs of the current wiki.
+	 *
+	 * @param string $url representing a page on the mobile domain e.g. `https://en.m.wikipedia.org/`
+	 * @return string (absolute url)
+	 */
+	public function getDesktopUrl( $url ) {
+		$urlUtils = MediaWikiServices::getInstance()->getUrlUtils();
+		$parsedUrl = $urlUtils->parse( $url ) ?? [];
+		$this->updateDesktopUrlHost( $parsedUrl );
+		$this->updateDesktopUrlQuery( $parsedUrl );
+		$desktopUrl = UrlUtils::assemble( $parsedUrl );
+		return $desktopUrl;
+	}
+
+	/**
+	 * Update the host of a given URL to strip out any mobile tokens
+	 * @param array &$parsedUrl Result of parseUrl() or UrlUtils::parse()
+	 */
+	protected function updateDesktopUrlHost( array &$parsedUrl ) {
+		$server = $this->getConfig()->get( 'Server' );
+
+		if ( !$this->hasMobileDomain() ) {
+			return;
+		}
+
+		$urlUtils = MediaWikiServices::getInstance()->getUrlUtils();
+		$parsedWgServer = $urlUtils->parse( $server );
+		$parsedUrl['host'] = $parsedWgServer['host'] ?? '';
+	}
+
+	/**
+	 * Update the query portion of a given URL to remove any 'useformat' params
+	 * @param array &$parsedUrl Result of parseUrl() or UrlUtils::parse()
+	 */
+	protected function updateDesktopUrlQuery( array &$parsedUrl ) {
+		if ( isset( $parsedUrl['query'] ) && strpos( $parsedUrl['query'], 'useformat' ) !== false ) {
+			$query = wfCgiToArray( $parsedUrl['query'] );
+			unset( $query['useformat'] );
+			$parsedUrl['query'] = wfArrayToCgi( $query );
+		}
+	}
+
+	/**
+	 * Toggles view to one specified by the user
+	 *
+	 * If a user has requested a particular view (eg clicked 'Desktop' from
+	 * a mobile page), set the requested view for this particular request
+	 * and set a cookie to keep them on that view for subsequent requests.
+	 *
+	 * @param string $view User requested particular view
+	 */
+	public function toggleView( $view ) {
+		$this->viewChange = $view;
+		if ( !$this->hasMobileDomain() ) {
+			$this->useFormat = $view;
+		}
+	}
+
+	/**
+	 * Performs view change as requested vy toggleView()
+	 */
+	public function doToggling() {
+		// make sure viewChange is set
+		$this->shouldDisplayMobileView();
+
+		if ( !$this->viewChange ) {
+			return;
+		}
+
+		$title = $this->getTitle();
+		if ( !$title ) {
+			return;
+		}
+
+		$query = $this->getRequest()->getQueryValues();
+		unset( $query['mobileaction'] );
+		unset( $query['useformat'] );
+		unset( $query['title'] );
+		$url = $title->getFullURL( $query, false, PROTO_CURRENT );
+
+		if ( $this->viewChange == 'mobile' ) {
+			// unset stopMobileRedirect cookie
+			// @TODO is this necessary with unsetting the cookie via JS?
+			$this->unsetStopMobileRedirectCookie();
+
+			// if no mobile domain support, set mobile cookie
+			if ( !$this->hasMobileDomain() ) {
+				$this->setUseFormatCookie();
+			} else {
+				// else redirect to mobile domain
+				$mobileUrl = $this->getMobileUrl( $url );
+				$this->getOutput()->redirect( $mobileUrl, 301 );
+			}
+		} elseif ( $this->viewChange == 'desktop' ) {
+			// set stopMobileRedirect cookie
+			$this->setStopMobileRedirectCookie();
+			// unset useformat cookie
+			if ( $this->getUseFormatCookie() == "true" ) {
+				$this->unsetUseFormatCookie();
+			}
+
+			if ( $this->hasMobileDomain() ) {
+				// if there is mobile domain support, redirect to desktop domain
+				$desktopUrl = $this->getDesktopUrl( $url );
+				$this->getOutput()->redirect( $desktopUrl, 301 );
+			}
+		}
+	}
+
+	/**
+	 * Determine whether or not we need to toggle the view, and toggle it
+	 */
+	public function checkToggleView() {
+		if ( !$this->toggleViewChecked ) {
+			$this->toggleViewChecked = true;
+			$mobileAction = $this->getMobileAction();
+			if ( $mobileAction == 'toggle_view_desktop' ) {
+				$this->toggleView( 'desktop' );
+			} elseif ( $mobileAction == 'toggle_view_mobile' ) {
+				$this->toggleView( 'mobile' );
+			}
+		}
+	}
+
+	/**
+	 * Determine whether or not a given URL is local
+	 *
+	 * @param string $url URL to check against
+	 * @return bool
+	 */
+	public function isLocalUrl( $url ) {
+		$urlUtils = MediaWikiServices::getInstance()->getUrlUtils();
+		$parsedTargetHost = $urlUtils->parse( $url )['host'] ?? '';
+		$parsedServerHost = $urlUtils->parse( $this->config->get( 'Server' ) )['host'] ?? '';
+		return $parsedTargetHost === $parsedServerHost;
+	}
+
+	/**
+	 * Add key/value pairs for analytics purposes to $this->analyticsLogItems. Pre-existing entries
+	 * are appended to as sets delimited by commas.
+	 * @param string $key for <key> in `X-Analytics: <key>=<value>`
+	 * @param string $val for <value> in `X-Analytics: <key>=<value>`
+	 */
+	public function addAnalyticsLogItem( $key, $val ) {
+		$key = trim( $key );
+		$val = trim( $val );
+		$items = $this->analyticsLogItems[$key] ?? [];
+		if ( !in_array( $val, $items ) ) {
+			$items[] = $val;
+			$this->analyticsLogItems[$key] = $items;
+		}
+	}
+
+	/**
+	 * Read key/value pairs for analytics purposes from $this->analyticsLogItems
+	 * @return array
+	 */
+	public function getAnalyticsLogItems() {
+		return array_map(
+			static function ( $val ) {
+				return implode( self::ANALYTICS_HEADER_DELIMITER, $val );
+			},
+			$this->analyticsLogItems
+		);
+	}
+
+	/**
+	 * Get HTTP header string for X-Analytics
+	 *
+	 * This is made up of key/value pairs and is used for analytics purposes.
+	 *
+	 * @return string|bool
+	 */
+	public function getXAnalyticsHeader() {
+		$response = $this->getRequest()->response();
+		$currentHeader = method_exists( $response, 'getHeader' ) ?
+			(string)$response->getHeader( 'X-Analytics' ) : '';
+		parse_str( preg_replace( '/; */', '&', $currentHeader ), $logItems );
+		$logItems += $this->getAnalyticsLogItems();
+		if ( count( $logItems ) ) {
+			$xanalytics_items = [];
+			foreach ( $logItems as $key => $val ) {
+				$xanalytics_items[] = urlencode( $key ) . "=" . urlencode( $val );
+			}
+			$headerValue = implode( ';', $xanalytics_items );
+			return "X-Analytics: $headerValue";
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Take a key/val pair in string format and add it to $this->analyticsLogItems
+	 *
+	 * @param string $xanalytics_item In the format key=value
+	 */
+	public function addAnalyticsLogItemFromXAnalytics( $xanalytics_item ) {
+		[ $key, $val ] = explode( '=', $xanalytics_item, 2 );
+		$this->addAnalyticsLogItem( urldecode( $key ), urldecode( $val ) );
+	}
+
+	/**
+	 * Adds analytics log items depending on which modes are enabled for the user
+	 *
+	 * Invoked from MobileFrontendHooks::onRequestContextCreateSkin()
+	 *
+	 * Making changes to what this method logs? Make sure you update the
+	 * documentation for the X-Analytics header: https://wikitech.wikimedia.org/wiki/X-Analytics
+	 */
+	public function logMobileMode() {
+		if ( $this->isBetaGroupMember() ) {
+			$this->addAnalyticsLogItem( self::ANALYTICS_HEADER_KEY, self::ANALYTICS_HEADER_VALUE_BETA );
+		}
+		if ( self::isAmcUser() ) {
+			$this->addAnalyticsLogItem( self::ANALYTICS_HEADER_KEY, self::ANALYTICS_HEADER_VALUE_AMC );
+		}
+	}
+
+	/**
+	 * Gets whether Wikibase descriptions should be shown in search results,
+	 * and watchlists; or as taglines on article pages.
+	 * Doesn't take into account whether the wikidata descriptions
+	 * feature has been enabled.
+	 *
+	 * @param string $feature which description to show?
+	 * @param Config $config
+	 * @return bool
+	 * @throws DomainException If `feature` isn't one that shows Wikidata descriptions. See the
+	 *  `wgMFDisplayWikibaseDescriptions` configuration variable for detail
+	 */
+	public function shouldShowWikibaseDescriptions( $feature, Config $config ) {
+		$displayWikibaseDescriptions = $config->get( 'MFDisplayWikibaseDescriptions' );
+		if ( !isset( $displayWikibaseDescriptions[$feature] ) ) {
+			throw new DomainException(
+				"\"{$feature}\" isn't a feature that shows Wikidata descriptions."
+			);
+		}
+
+		return $displayWikibaseDescriptions[$feature];
+	}
+}

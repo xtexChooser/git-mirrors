@@ -1,0 +1,77 @@
+@import 'mediawiki.skin.variables.less';
+
+.block-message {
+	h5 {
+		font-weight: @font-weight-bold;
+		margin: 0;
+		line-height: unit( @size-icon-medium, rem );
+	}
+
+	h6 {
+		margin-bottom: 0.187em;
+	}
+}
+
+.block-message-icon {
+	.cdx-mixin-button-layout-flush( 'top', true, 'large' );
+	float: left;
+	padding: 12px;
+}
+
+.block-message-info {
+	float: left;
+	width: 80%;
+	text-align: left;
+}
+
+.block-message-item {
+	margin-bottom: 1em;
+}
+
+.block-message-data {
+	margin-bottom: 1.875em;
+}
+
+.block-message-buttons {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	padding: 1em;
+	text-align: right;
+	background-color: @background-color-interactive-subtle;
+	box-shadow: 0 -4px 5px -4px @background-color-interactive-subtle;
+
+	a.cdx-button,
+	button.cancel {
+		margin: 0 0.5em 0 0;
+		display: inline-block;
+	}
+}
+
+.block-message-creator {
+	a {
+		color: inherit;
+
+		&:hover {
+			text-decoration: none;
+		}
+	}
+}
+
+.block-message-reason {
+	clear: both;
+	padding: 1em;
+	text-align: left;
+	background-color: @background-color-interactive;
+	margin-bottom: 3em;
+}
+
+.block-message-title {
+	color: @color-destructive;
+}
+
+.drawer {
+	padding-left: 0;
+	padding-right: 0;
+}

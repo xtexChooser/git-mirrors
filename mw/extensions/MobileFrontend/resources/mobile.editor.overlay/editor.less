@@ -1,0 +1,170 @@
+@import 'mediawiki.skin.variables.less';
+@import '../../mobile.less/mobile.variables.less';
+@import 'BlockMessageDetails.less';
+@import 'editor.ve.less';
+@import 'icons.less';
+
+.editor-overlay {
+	box-sizing: border-box;
+
+	// Main editor and edit summary
+	textarea {
+		padding: 0.5em;
+	}
+
+	.overlay-content {
+		max-width: none;
+	}
+
+	&.switching {
+		.overlay-content {
+			opacity: 0.5;
+		}
+	}
+
+	.overlay-header-container {
+		box-shadow: 0 1px 1px rgba( 0, 0, 0, 0.1 );
+	}
+
+	.overlay-header {
+		// The border will only be visible on screens >1000px due to max-width set elsewhere.
+		outline: @border-width-base @border-style-base @border-color-subtle;
+
+		.header-cancel {
+			padding: 0;
+		}
+
+		.oo-ui-toolbar-bar,
+		.oo-ui-toolbar-popups {
+			border-collapse: separate;
+		}
+
+		.oo-ui-toolbar-bar {
+			border: 0;
+			box-shadow: none;
+		}
+	}
+
+	.anonwarning {
+		margin-top: 16px;
+
+		.cdx-message {
+			margin-bottom: 16px;
+		}
+
+		.anonmsg {
+			margin-bottom: 19px;
+		}
+
+		.cdx-button {
+			margin-bottom: 15px;
+		}
+
+		.actions {
+			text-align: center;
+		}
+
+		> p {
+			text-align: center;
+			font-style: italic;
+			font-size: 0.875em;
+		}
+	}
+
+	&-ve .overlay-footer-container + *:not( .ve-mobile-fakeToolbar-container ) {
+		// Any extra messages (e.g. .minerva-anon-talk-message or .anonwarning)
+		// should leave space for the toolbar above the first message.
+		margin-top: 4em;
+	}
+
+	&-editNotices {
+		// Edit notices are designed for desktop and can be quite long, so use the desktop font size
+		// oo-ui-messageDialog-message sets font size to 1.1em so undo that as well
+		font-size: ( 14em / 16 / 1.1 );
+		line-height: 1.6;
+
+		.mw-editnotice {
+			// Images in edit notices are usually supplementary, and cause layout issues on narrow screens
+			img,
+			figure {
+				display: none !important;
+			}
+
+			// Reset some specific styles on common block level containers
+			table,
+			td,
+			th,
+			div {
+				font-size: 100% !important;
+				background: none !important;
+				margin: 0 !important;
+				padding: 0 !important;
+				border: 0 !important;
+			}
+		}
+	}
+
+	&-editNotice:not( :first-child ) {
+		border-top: @border-width-base @border-style-base @border-color-subtle;
+		padding-top: 1em;
+		margin-top: 1em;
+	}
+
+	.preview {
+		display: none;
+	}
+
+	.wikitext-editor {
+		box-sizing: border-box;
+		font-size: inherit;
+		padding: 0;
+		padding-top: 1em;
+
+		&:focus {
+			outline: 0;
+		}
+	}
+
+	.summary-request {
+		font-size: 1.4em;
+		font-weight: bold;
+		margin: 0.5em 0;
+		color: @color-subtle;
+	}
+
+	.buttonBar {
+		.message {
+			color: @color-subtle;
+			margin: 0 0 0.7em;
+			padding: 0 0 0.3em;
+			border-bottom: @border-width-base @border-style-base @border-color-subtle;
+
+			p {
+				display: inline-block;
+				text-align: center;
+				padding-top: 0;
+			}
+		}
+	}
+
+	// Adjust OOUI icon size for VE toolbar and WTE editor switcher mini-toolbar
+	.ve-init-mw-mobileArticleTarget-toolbar,
+	.editor-switcher {
+		.oo-ui-iconElement-icon {
+			background-size: 20px 20px;
+		}
+	}
+
+	.editor-switcher {
+		border-left: @border-width-base @border-style-base @border-color-subtle;
+
+		.oo-ui-toolGroup:last-child {
+			border-right: 0;
+		}
+	}
+
+	// Anon talk message warning is hidden on main namespaces except for in EditorOverlay
+	.minerva-anon-talk-message {
+		display: block;
+	}
+}

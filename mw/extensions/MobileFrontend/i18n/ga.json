@@ -1,0 +1,43 @@
+{
+	"@metadata": {
+		"authors": [
+			"Kscanne",
+			"MinecraftAustralia",
+			"Smirkybec",
+			"Tem",
+			"පසිඳු කාවින්ද"
+		]
+	},
+	"mobile-frontend-clear-search": "Glan",
+	"mobile-frontend-copyright": "Tá an t-ábhar seo ar fáil faoi $1 mura luaitear a mhalairt.",
+	"mobile-frontend-editor-blocked-drawer-help": "Sonraí",
+	"mobile-frontend-editor-cancel": "Cealaigh",
+	"mobile-frontend-editor-continue": "Ar aghaidh",
+	"mobile-frontend-editor-editing": "Eagarthóireacht",
+	"mobile-frontend-editor-publish": "Foilsigh",
+	"mobile-frontend-editor-save": "Sábháil",
+	"mobile-frontend-editor-summary": "Achoimre:",
+	"mf-font-size-name": "Clómhéid",
+	"mf-font-size-small-label": "Beag",
+	"mf-font-size-large-label": "Mór",
+	"mobile-frontend-languages-structured-overlay-all-languages-header": "Teangacha eile",
+	"mobile-frontend-main-menu-settings-heading": "Sainroghanna",
+	"mobile-frontend-media-details": "Sonraí",
+	"mobile-frontend-missing-image": "Íomhá",
+	"mobile-frontend-overlay-close": "Dún",
+	"mobile-frontend-privacy-link-text": "Príobháideacht",
+	"mobile-frontend-save-settings": "Sábháil",
+	"mobile-frontend-terms-text": "Téarmaí Úsáide",
+	"mobile-frontend-view": "Amharc móibíleach",
+	"mobile-frontend-view-desktop": "Leagan deisce",
+	"mobile-frontend-watchlist-cta-button-login": "Logáil isteach",
+	"mobile-frontend-watchlist-cta-button-signup": "Cláraigh",
+	"mobile-frontend-watchlist-filter-articles": "Leathanaigh",
+	"mobile-frontend-watchlist-filter-other": "Eile",
+	"mobile-frontend-watchlist-filter-talk": "Plé",
+	"mobile-frontend-watchlist-more": "tuilleadh",
+	"mobile-frontend-user-page-describe-yourself-editors": "eagarthóirí",
+	"mobile-frontend-loading-message": "Ag lódáil...",
+	"mobile-frontend-mobile-option-MFEnableFontChanger": "Clómhéid",
+	"mobile-frontend-mobile-option-amc-learn-more": "Foghlaim tuilleadh"
+}

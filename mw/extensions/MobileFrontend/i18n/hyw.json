@@ -1,0 +1,27 @@
+{
+	"@metadata": {
+		"authors": [
+			"ArmenBakkalian",
+			"Azniv Stepanian",
+			"Kareyac",
+			"Շահէն"
+		]
+	},
+	"mobile-frontend-copyright": "Բովանդակութիւնը առկայ է $1 ներքոյ, եթէ այլ բան նշուած չէ։",
+	"mobile-frontend-editor-blocked-drawer-action-login": "Մուտք գործել",
+	"mobile-frontend-editor-blocked-drawer-action-ok": "Լաւ",
+	"mobile-frontend-editor-blocked-drawer-body-partial": "Փորձէ ուրիշ էջ խմբագրել:",
+	"mobile-frontend-editor-blocked-drawer-body-login": "Փորձէ՛ մուտք գործել եթէ հաշիւ ունիս:",
+	"mobile-frontend-editor-blocked-drawer-body-login-createaccount": "Փորձէ՛ մուտք գործել կամ հաշիւ ստեղծել:",
+	"mobile-frontend-editor-blocked-drawer-body-link": "Տե՛ս աւելին",
+	"mobile-frontend-editor-blocked-drawer-reason-header": "Պատճառ",
+	"mobile-frontend-editor-blocked-drawer-help": "Տե՛ս մանրամասնութիւնները",
+	"mobile-frontend-editor-cancel": "Չեղարկել",
+	"mobile-frontend-main-menu-settings-heading": "Կարգաւորումներ",
+	"mobile-frontend-terms-text": "Օգտագործման պայմաններ",
+	"mobile-frontend-view": "Բջիջային տեսք",
+	"mobile-frontend-view-desktop": "Սովորական",
+	"mobile-frontend-watchlist-more": "աւելի",
+	"tag-mobile_edit": "Առձեռն խմբագրում",
+	"tag-mobile_web_edit": "Խմբագրում կայքի առձեռն տարբերակէն"
+}

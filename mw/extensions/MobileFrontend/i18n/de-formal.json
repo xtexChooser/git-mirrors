@@ -1,0 +1,13 @@
+{
+	"@metadata": {
+		"authors": [
+			"Kghbln",
+			"Rhirsch",
+			"Tiin",
+			"Zabe"
+		]
+	},
+	"mobile-frontend-editor-cancel": "Abbrechen",
+	"mobile-frontend-opt-in-explain": "Durch die Teilnahme am Beta-Test erhalten Sie Zugriff auf experimentelle Funktionen, die allerdings auch Probleme und Fehler verursachen können.",
+	"mobile-frontend-view": "Mobile Ansicht"
+}

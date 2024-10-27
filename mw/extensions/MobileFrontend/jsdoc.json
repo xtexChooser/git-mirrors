@@ -1,0 +1,38 @@
+{
+	"opts": {
+		"destination": "docs/js",
+		"package": "package.json",
+		"pedantic": false,
+		"readme": "docs/js.md",
+		"recurse": true,
+		"template": "node_modules/jsdoc-wmf-theme"
+	},
+	"plugins": [
+		"node_modules/jsdoc-wmf-theme/plugins/default"
+	],
+	"source": {
+		"include": [ "resources", "src" ]
+	},
+	"templates": {
+		"cleverLinks": true,
+		"default": {
+			"useLongnameInNav": true
+		},
+		"wmf": {
+			"hideSections": [ "Classes", "Events" ],
+			"repository": "https://gerrit.wikimedia.org/g/mediawiki/extensions/MobileFrontend",
+			"linkMap": {
+				"jQuery.Object": "https://api.jquery.com/jQuery",
+				"jQuery.Element": "https://api.jquery.com/jQuery",
+				"Router": "https://doc.wikimedia.org/mediawiki-core/master/js/module-mediawiki.router.html",
+				"mw.Api": "https://doc.wikimedia.org/mediawiki-core/master/js/mw.Api.html",
+				"mw.message": "https://doc.wikimedia.org/mediawiki-core/master/js/mw.html#.message",
+				"mw.util": "https://doc.wikimedia.org/mediawiki-core/master/js/module-mediawiki.util.html"
+			},
+			"maintitle": "MobileFrontend",
+			"siteMap": {
+				"sections": true
+			}
+		}
+	}
+}
