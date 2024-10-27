@@ -1,0 +1,75 @@
+{
+	"name": "GlobalUserPage",
+	"version": "0.11.1",
+	"author": [
+		"Kunal Mehta",
+		"Jack Phoenix"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:GlobalUserPage",
+	"descriptionmsg": "globaluserpage-desc",
+	"license-name": "GPL-3.0-or-later",
+	"type": "other",
+	"requires": {
+		"MediaWiki": ">= 1.43"
+	},
+	"MessagesDirs": {
+		"GlobalUserPage": [
+			"i18n"
+		]
+	},
+	"ExtensionMessagesFiles": {
+		"GlobalUserPageMagic": "GlobalUserPage.i18n.magic.php"
+	},
+	"Hooks": {
+		"TitleIsAlwaysKnown": "main",
+		"ArticleFromTitle": "main",
+		"LinksUpdateComplete": "main",
+		"PageSaveComplete": "main",
+		"ArticleDeleteComplete": "main",
+		"TitleGetEditNotices": "main",
+		"GetDoubleUnderscoreIDs": "main",
+		"WikiPageFactory": "main"
+	},
+	"HookHandlers": {
+		"main": {
+			"class": "MediaWiki\\GlobalUserPage\\Hooks"
+		}
+	},
+	"config": {
+		"GlobalUserPageCacheExpiry": {
+			"value": 604800
+		},
+		"GlobalUserPageAPIUrl": {
+			"value": "https://example.org/w/api.php"
+		},
+		"GlobalUserPageTimeout": {
+			"value": 10
+		},
+		"GlobalUserPageFooterKey": {
+			"value": "globaluserpage-footer"
+		},
+		"GlobalUserPageDBname": {
+			"value": "examplewiki"
+		}
+	},
+	"ResourceModules": {
+		"ext.GlobalUserPage": {
+			"styles": "ext.GlobalUserPage.less"
+		}
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "modules",
+		"remoteExtPath": "GlobalUserPage/modules"
+	},
+	"JobClasses": {
+		"GlobalUserPageLocalJobSubmitJob": "MediaWiki\\GlobalUserPage\\LocalJobSubmitJob",
+		"LocalGlobalUserPageCacheUpdateJob": "MediaWiki\\GlobalUserPage\\LocalCacheUpdateJob"
+	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\GlobalUserPage\\": "includes/"
+	},
+	"ConfigRegistry": {
+		"globaluserpage": "GlobalVarConfig::newInstance"
+	},
+	"manifest_version": 2
+}
