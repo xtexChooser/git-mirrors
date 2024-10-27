@@ -1,7 +1,7 @@
 // #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 #![feature(let_chains)]
 #![feature(path_add_extension)]
-use std::{ffi::c_void, fs, sync::RwLock};
+use std::{cmp, ffi::c_void, fs, sync::RwLock, time::Duration};
 
 use anyhow::Result;
 use educe::Educe;
@@ -153,7 +153,7 @@ impl eframe::App for MainApp {
 
 impl MainApp {
     fn show(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) -> Result<()> {
-        ctx.request_repaint_after_secs(0.3);
+        let mut repaint_after = 300;
         ctx.style_mut(|style| style.url_in_tooltip = true);
         ctx.data_mut(|data| {
             data.get_temp_mut_or_insert_with(Id::new(DATA_WINDOW_HWND), || {
@@ -177,7 +177,7 @@ impl MainApp {
         }
 
         if self.always_on_top {
-            ctx.request_repaint_after_secs(0.04);
+            repaint_after = cmp::min(repaint_after, 40);
             unsafe {
                 let hwnd = HWND(
                     ctx.data(|data| data.get_temp::<usize>(Id::new(DATA_WINDOW_HWND)).unwrap())
@@ -196,11 +196,12 @@ impl MainApp {
             }
 
             if self.mythware.auto_unlock_keyboard && mythware::is_broadcast_on().unwrap_or(false) {
-                ctx.request_repaint_after_secs(0.025);
+                repaint_after = cmp::min(repaint_after, 25);
                 mythware::unlock_keyboard()?;
             }
         }
 
+        ctx.request_repaint_after(Duration::from_millis(repaint_after));
         if let Some(err) = ASYNC_ERROR.write().unwrap().take() {
             return Err(err);
         }
