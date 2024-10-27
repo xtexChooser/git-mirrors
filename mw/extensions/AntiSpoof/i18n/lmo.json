@@ -1,0 +1,25 @@
+{
+	"@metadata": {
+		"authors": [
+			"Amire80",
+			"Salvemm el lombard"
+		]
+	},
+	"antispoof-desc": "El bloca la creazzion de nom de utent con di carater mist e di nom de utent che ingeneren confusion o vun trop compagn de l'alter.",
+	"antispoof-conflict-top": "El nom de l'utent \"$1\" l'è trop compagn de {{PLURAL:$2|chesschì|questi chì}}:",
+	"antispoof-conflict-bottom": "Per piesé, cata foeura un alter nom de utent",
+	"antispoof-name-illegal": "Per minga fa casot, el nom de utent \"$1\" el pò minga vesser drovad: $2. Cata foeura un'alter nom.",
+	"antispoof-badtype": "El nom de utent fornid a l'è minga bon.",
+	"antispoof-empty": "Nanca on nom de utent l'è stat fornid.",
+	"antispoof-prohibited": "El nom de l'utent el pò nò havégh denter el carater \"$1\" perchè l'è proibid.",
+	"antispoof-combining": "I nom di utent i poden minga havégh denter la combinazzinon de carater \"$1\"",
+	"antispoof-unassigned": "I nom di utent i poden minga havégh denter el carater \"$1\" perchè l'è minga conossud.",
+	"antispoof-deprecated": "El nom de l'utent el pò minga havégh denter el carater \"$1\" perchè l'è sconsgiurad",
+	"antispoof-noletters": "El nom de l'utent el gh'ha de havégh denter vun o pussee de carater.",
+	"antispoof-mixedscripts": "El nom de l'utent el po minga havégh denter di carater di sistema de scritura diferent.",
+	"antispoof-tooshort": "El nom de l'utent che t'hee fornid l'è trop curt.",
+	"antispoof-ignore": "Ignora i controi contra di fregadure",
+	"antispoof-ignore-help": "El permet de creà un cunt ai utent che gh'hann di permess assee, anca se 'l so nom l'è compagn de quell d'un'alter cunt che 'l gh'è sgiamò.",
+	"action-override-antispoof": "l'ignora i controi contra di fregadure",
+	"right-override-antispoof": "Ignora i controi contra di fregadure"
+}

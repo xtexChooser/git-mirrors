@@ -1,0 +1,92 @@
+{
+	"name": "AntiSpoof",
+	"author": "Brion Vibber",
+	"url": "https://www.mediawiki.org/wiki/Extension:AntiSpoof",
+	"descriptionmsg": "antispoof-desc",
+	"license-name": "GPL-2.0-or-later",
+	"type": "antispam",
+	"requires": {
+		"MediaWiki": ">= 1.43"
+	},
+	"GroupPermissions": {
+		"sysop": {
+			"override-antispoof": true
+		},
+		"bureaucrat": {
+			"override-antispoof": true
+		}
+	},
+	"AvailableRights": [
+		"override-antispoof"
+	],
+	"GrantPermissions": {
+		"createaccount": {
+			"override-antispoof": true
+		}
+	},
+	"APIModules": {
+		"antispoof": "MediaWiki\\Extension\\AntiSpoof\\ApiAntiSpoof"
+	},
+	"MessagesDirs": {
+		"AntiSpoof": [
+			"i18n",
+			"i18n/api"
+		]
+	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\AntiSpoof\\": "includes/"
+	},
+	"AuthManagerAutoConfig": {
+		"preauth": {
+			"AntiSpoofPreAuthenticationProvider": {
+				"class": "MediaWiki\\Extension\\AntiSpoof\\AntiSpoofPreAuthenticationProvider",
+				"services": [
+					"PermissionManager"
+				]
+			}
+		}
+	},
+	"callback": "MediaWiki\\Extension\\AntiSpoof\\Hooks::onRegistration",
+	"Hooks": {
+		"LoadExtensionSchemaUpdates": "schema",
+		"LocalUserCreated": "main",
+		"RenameUserComplete": "main",
+		"DeleteAccount": "usermerge"
+	},
+	"HookHandlers": {
+		"main": {
+			"class": "MediaWiki\\Extension\\AntiSpoof\\Hooks"
+		},
+		"usermerge": {
+			"class": "MediaWiki\\Extension\\AntiSpoof\\UserMergeHooks"
+		},
+		"schema": {
+			"class": "MediaWiki\\Extension\\AntiSpoof\\SchemaHooks"
+		}
+	},
+	"config": {
+		"AntiSpoofAccounts": {
+			"description": "Whether to stop spoofed accounts from being created. When false, only log.",
+			"value": true,
+			"public": true
+		},
+		"AntiSpoofProhibitedCharacters": {
+			"description": "List of characters prohibited from use in your wiki.",
+			"value": [
+				"̷",
+				"̸",
+				"⁄",
+				"∕",
+				"⎮",
+				"⧶",
+				"⧸",
+				"⫻",
+				"⫽",
+				"／"
+			],
+			"public": true
+		}
+	},
+	"load_composer_autoloader": true,
+	"manifest_version": 2
+}

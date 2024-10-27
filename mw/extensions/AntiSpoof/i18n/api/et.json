@@ -1,0 +1,9 @@
+{
+	"@metadata": {
+		"authors": [
+			"Pikne"
+		]
+	},
+	"apihelp-antispoof-param-username": "Kasutajanimi, mida tüssamisvastase kontrolli vastu kontrollida.",
+	"apihelp-antispoof-example-1": "Kontrolli kasutajanime \"Foo\" tüssamisvastase kontrolli vastu"
+}

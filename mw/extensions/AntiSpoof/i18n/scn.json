@@ -1,0 +1,26 @@
+{
+	"@metadata": {
+		"authors": [
+			"Ajeje Brazorf",
+			"Pippinu",
+			"Santu",
+			"Sarvaturi",
+			"Tonyfroio"
+		]
+	},
+	"antispoof-desc": "Blocca la criazzioni di cunti d'utenti cu nomi fatti d'arfabbeti ammiscati, chi ponnu fari cunfùnniri, o chi s'assimìgghianu troppu assai",
+	"antispoof-conflict-top": "Lu nomu utenti \"$1\" assimigghia troppu assai a {{PLURAL:$2|stu cuntu ca già c'è|sti cunti ca già ci sunnu}}:",
+	"antispoof-conflict-bottom": "Pi favuri scegghi n'àutru nomu utenti.",
+	"antispoof-name-illegal": "Lu nomu utenti \"$1\" nun è cunzintutu, pi scanzari cunfusioni o scancî di pirsuna: $2.\nPi favuri scegghi n'àutru nomu utenti.",
+	"antispoof-badtype": "Tipu di dati erratu",
+	"antispoof-empty": "Stringa vacanti",
+	"antispoof-prohibited": "Cunteni lu caràttiri nta lista nìura $1",
+	"antispoof-combining": "Accumenza cûn caràttiri cumminanti $1",
+	"antispoof-unassigned": "Cunteni lu caràttiri nun assignatu $1",
+	"antispoof-deprecated": "Cunteni lu caràttiri dipricatu $1",
+	"antispoof-noletters": "Li noma utenti s’hannu a cuntiniri unu o cchiù caràttiri",
+	"antispoof-mixedscripts": "Cunteni arfabbeti ammiscati chi nun sunnu cumpatìbbili",
+	"antispoof-tooshort": "Lu nomu nzirutu è troppu curtu",
+	"antispoof-ignore": "Sàuta li cuntrolli contra ô scanciu di pirsuna",
+	"right-override-antispoof": "Sautari li cuntrolli contra ô scanciu di pirsuna"
+}
