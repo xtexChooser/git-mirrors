@@ -1,0 +1,16 @@
+{
+	"@metadata": {
+		"authors": [
+			"Ignatgg",
+			"Yasen igra"
+		]
+	},
+	"cdx-dialog-close-button-label": "Закрити",
+	"cdx-label-optional-flag": "(необов'язково)",
+	"cdx-message-dismiss-button-label": "Закрити",
+	"cdx-table-pager-button-first-page": "Перша сторінка",
+	"cdx-table-pager-button-last-page": "Остання сторінка",
+	"cdx-table-pager-button-next-page": "Наступна сторінка",
+	"cdx-table-pager-button-prev-page": "Попередня сторінка",
+	"cdx-table-pager-items-per-page-current": "{{PLURAL:$1|$1 ряд|$1 ряди|$1 рядів}}"
+}
