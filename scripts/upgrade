@@ -42,9 +42,8 @@ git commit --no-edit -m "$(printf 'tree-wide: upgrade(%s/%s): Upgrade MW branch'
 
 # Initialize mw tree
 headBeforeAdds="$(git rev-parse HEAD)"
-for ((i = 0; i < 5; i++)); do
-	scripts/update || true
-done
+echo "== Please run scripts/update to add subtrees"
+read -rp "Press [Enter] key to continue AFTER FINISHED ADDING ..."
 headAfterAdds="$(git rev-parse HEAD)"
 
 git commit --allow-empty \
