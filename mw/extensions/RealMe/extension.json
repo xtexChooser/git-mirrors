@@ -1,0 +1,45 @@
+{
+	"name": "RealMe",
+	"author": [
+		"Taavi Väänänen"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:RealMe",
+	"descriptionmsg": "realme-desc",
+	"license-name": "GPL-2.0-or-later",
+	"type": "other",
+	"requires": {
+		"MediaWiki": ">= 1.43"
+	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\RealMe\\": "src/"
+	},
+	"config": {
+		"RealMeUserPageUrlLimit": {
+			"description": "The limit for how many RealMe URLs can be configured on a single user page.",
+			"value": 5
+		}
+	},
+	"HookHandlers": {
+		"main": {
+			"class": "MediaWiki\\Extension\\RealMe\\Hooks",
+			"services": [
+				"MainConfig",
+				"UrlUtils",
+				"UserFactory",
+				"UserOptionsLookup"
+			]
+		}
+	},
+	"Hooks": {
+		"BeforePageDisplay": "main",
+		"EditFilterMergedContent": "main",
+		"GetPreferences": "main",
+		"OutputPageParserOutput": "main"
+	},
+	"MessagesDirs": {
+		"RealMe": [
+			"i18n"
+		]
+	},
+	"manifest_version": 2
+}
