@@ -1,0 +1,34 @@
+{
+	"root": true,
+	"env": {
+		"commonjs": true
+	},
+	"extends": [
+		"wikimedia/client-es6",
+		"wikimedia/jquery",
+		"wikimedia/mediawiki"
+	],
+	"rules": {
+		"max-len": "off",
+		"no-jquery/no-global-selector": "off",
+		"no-jquery/no-class-state": "off",
+		"no-mixed-spaces-and-tabs": "warn",
+		"no-jquery/no-extend": "warn",
+		"implicit-arrow-linebreak": "warn"
+	},
+	"settings": {
+		"jsdoc": {
+			"preferredTypes": {
+				"DiffPage": "DiffPage",
+				"Pointer": "Pointer",
+				"PointerLine": "PointerLine",
+				"PointerView": "PointerView",
+				"Revision": "Revision",
+				"RevisionList": "RevisionList",
+				"RevisionListView": "RevisionListView",
+				"Slider": "Slider",
+				"SliderView": "SliderView"
+			}
+		}
+	}
+}
