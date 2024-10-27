@@ -1,6 +1,7 @@
 use std::{
     ffi::c_void,
     sync::{Arc, RwLock},
+    time::Duration,
 };
 
 use anyhow::Result;
@@ -18,14 +19,17 @@ pub async fn run(state: Arc<RwLock<WorkerState>>) -> Result<()> {
     loop {
         let mut delay = 40;
 
-        let state = state.read().unwrap();
+        {
+            let state = state.read().unwrap();
 
-        if let Some(hwnd) = state.always_on_top {
-            unsafe {
-                let hwnd = HWND(hwnd as *mut c_void);
-                SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE)?;
+            if let Some(hwnd) = state.always_on_top {
+                unsafe {
+                    let hwnd = HWND(hwnd as *mut c_void);
+                    SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE)?;
+                }
             }
         }
+
+        tokio::time::sleep(Duration::from_millis(delay)).await;
     }
-    Ok(())
 }
