@@ -64,7 +64,7 @@ git commit --no-edit -m "$(printf 'tree-wide: upgrade(%s/%s): Include downstream
 # Add downstream files back
 git checkout -f "$oldHead" \
 	mw/extensions/XensTweaks \
-	composer.xvmw.json
+	mw/composer.xvmw.json
 git add mw
 git commit --no-edit -m "$(printf 'tree-wide: upgrade(%s/%s): Introduce downstream trees' "$branch" "$count")"
 ((count++)) || true
