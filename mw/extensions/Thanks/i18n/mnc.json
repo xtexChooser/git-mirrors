@@ -1,0 +1,11 @@
+{
+	"@metadata": {
+		"authors": [
+			"Amire80",
+			"Chulsu463",
+			"MiiCii"
+		]
+	},
+	"thanks-thank": "{{GENDER:$1|{{GENDER:$2|banihalambi}}}}",
+	"thanks-thank-tooltip": "Banihalara mejige be ere {{GENDER:$2|baitalasi}} de {{GENDER:$1|benjire}}"
+}
