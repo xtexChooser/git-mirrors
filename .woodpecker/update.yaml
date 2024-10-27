@@ -1,0 +1,18 @@
+clone:
+  - name: git
+    image: woodpeckerci/plugin-git
+    settings:
+      partial: false
+      depth: 0
+steps:
+  - name: update
+    image: alpine
+    secrets: [codeberg_token, ntfy_token]
+    commands:
+      - apk add bash
+      - ./contrib/updater/update.sh || exit 1
+when:
+  - event: cron
+    cron: update
+  - event: manual
+    evaluate: 'TARGET == "update"'

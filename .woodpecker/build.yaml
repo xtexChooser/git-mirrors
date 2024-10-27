@@ -1,0 +1,18 @@
+steps:
+  - name: build
+    image: woodpeckerci/plugin-docker-buildx
+    settings:
+      platforms: linux/amd64
+      repo: codeberg.org/${CI_REPO_OWNER}/x-mediawiki
+      registry: codeberg.org
+      username: ${CI_REPO_OWNER}
+      password:
+        from_secret: codeberg_token
+      dockerfile: contrib/Containerfile
+when:
+  - event: push
+    branch: main
+  - event: cron
+    cron: build
+  - event: manual
+    evaluate: 'TARGET == "build"'

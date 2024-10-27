@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+
+set -e
+
+defaultBranch="$(yq ". | filter(.name == \"core\") | .[0].defaultBranch // .[0].branch" repositories.yaml)"
+echo "Default branch: $defaultBranch"
+
+mergeSubtree() {
+	name="$1"
+	prefix="$2"
+	commit="$3"
+	local added=""
+
+	if [[ -e "$prefix" ]]; then
+		echo "Merging: $name"
+		if ! git merge -Xsubtree="$prefix" --no-edit "$commit"; then
+			echo "Trying to resolve merge conflicts"
+			if [[ -e "$prefix"/.gitmodules ]]; then
+				grep 'path = ' "$prefix"/.gitmodules | cut -d'=' -f2 | awk '{print "'"$prefix"'/" $1}' | while read -r dir; do
+					{
+						if [[ "$(git status "$dir" --short --no-ahead-behind | cut -d' ' -f1)" == "DU" ]]; then
+							# Deleted by us
+							git rm --cached "$dir"
+						else
+							rm -d "$dir"
+							git add "$dir"
+							git rm --cached "$dir~*"
+							rm -d "$dir~*"
+						fi
+					} || true
+				done
+			fi
+			git commit --no-edit
+		fi
+	else
+		echo "Adding: $name"
+		git subtree -P "$prefix" add "$commit"
+		added=y
+	fi
+
+	if [[ -e "$prefix"/.gitmodules ]]; then
+		grep 'path = ' "$prefix"/.gitmodules | cut -d'=' -f2 | awk '{print "'"$prefix"'/" $1}' | while read -r dir; do
+			rm -d "$dir" || true
+			git rm "$dir" || true
+			[[ -z "$added" ]] || git rm -rf "$dir" || true
+		done
+		if ! git diff-index --quiet HEAD --; then
+			git add "$prefix"
+			git commit -m "Remove gitsubmodules in $prefix"
+		fi
+	fi
+	rm -d mw/{extensions,skins}/*~* || true
+}
+
+resumeAt="$1"
+while read -r repo; do
+	name="$(yq '.name' <<<"$repo")"
+	subtreePrefix="$(yq '.prefix // ""' <<<"$repo")"
+	giturl="$(yq '.git // ""' <<<"$repo")"
+	branch="$(yq ".branch // \"$defaultBranch\"" <<<"$repo")"
+
+	if [[ -n "$resumeAt" ]]; then
+		if [[ "$resumeAt" == "$name" ]]; then
+			echo "Continuing previous update"
+			resumeAt=""
+		else
+			echo "Skipping $name"
+			continue
+		fi
+	fi
+
+	if [[ -z "$giturl" ]] || [[ -z "$subtreePrefix" ]]; then
+		continue
+	fi
+
+	rm -f .git/FETCH_HEAD
+	git fetch "$giturl" "$branch"
+	subtreeCommit="$(git rev-parse FETCH_HEAD)"
+	mergeSubtree "$name" "$subtreePrefix" "$subtreeCommit"
+
+	while read -r submodule; do
+		submoduleName="$(yq '.name' <<<"$submodule")"
+		[[ "$submoduleName" != "null" ]] || continue
+		submodulePrefix="$(yq '.prefix' <<<"$submodule")"
+		giturl="$(yq '.git' <<<"$submodule")"
+		submoduleCommit="$(git ls-tree --object-only "$subtreeCommit" "$submodulePrefix")"
+		git fetch "$giturl" "$submoduleCommit"
+
+		mergeSubtree "$submoduleName" "$subtreePrefix/$submodulePrefix" "$submoduleCommit"
+	done <<<"$(yq -o=json -I=0 '(.submodules // [])[]' <<<"$repo")"
+done <<<"$(yq -o=json -I=0 '. | sort_by(.pri // 100) | .[]' repositories.yaml)"
+
+rm -d mw/{extensions,skins}/*~* || true
+
+echo "Done"

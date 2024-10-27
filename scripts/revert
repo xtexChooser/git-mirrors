@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+set -eE
+
+if [[ $# -eq 0 ]]; then
+	echo "Usage: $0 <commits>..." >&2
+	exit 1
+fi
+
+revert() {
+	local basecommit
+	basecommit="$(git rev-parse HEAD)"
+	local reverted=()
+	local commit="$1"
+	local lastsubject=""
+	while true; do
+		git revert --no-edit "$commit"
+		lastsubject="$(git log -1 "$commit" --format='%s')"
+		reverted=("${reverted[@]}" "$commit")
+		commit="$(git log -1 "$commit" --format='%(trailers:key=Reapply,valueonly,separator=)')"
+		if [[ -z "$commit" ]]; then
+			break
+		fi
+	done
+	git reset --soft "$basecommit"
+	if ! git diff-index --quiet HEAD --; then
+		git commit -m "$(printf 'Revert "%s"\n\n%s' "$lastsubject" "$(printf 'Revert: %s\n' "${reverted[@]}")")" --edit
+	fi
+}
+
+while [ $# -ne 0 ]; do
+	case $1 in
+	*)
+		revert "$1"
+		;;
+	esac
+	shift
+done

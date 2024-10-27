@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+set -eE
+trap 'error' ERR
+
+if [[ $# -eq 0 ]]; then
+	echo "Usage: $0 <commits>..." >&2
+	exit 1
+fi
+
+error() {
+	local errExitCode=$?
+	if [[ "$errResetTo" != "" ]]; then
+		echo "Failed to reapply, resetting to $errResetTo" >&2
+		git reset --hard "$errResetTo"
+	fi
+	exit $errExitCode
+}
+
+while [ $# -ne 0 ]; do
+	case $1 in
+	*)
+		errResetTo="$(git rev-parse HEAD)"
+		git revert --no-edit "$1"
+		change="$(git log -1 "$1" --format='%(trailers:key=Change-Id,valueonly,separator=)')"
+		echo "Re-applying change: $change"
+		./scripts/pick --try "$change"
+		newcommit="$(git rev-parse HEAD)"
+		if [[ "$newcommit" == "$errResetTo" ]]; then
+			continue
+		fi
+		git reset --soft "$errResetTo"
+		if ! git diff-index --quiet HEAD --; then
+			git commit -m "$(printf 'Reapply: %s\nReapply: %s' "$(git log -1 --format=%B "$newcommit")" "$1")"
+		fi
+		;;
+	esac
+	shift
+done

@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd mw/extensions/XensTweaks
+composer upgrade
+npm update
+rm -rf node_modules
+git add .
+git commit -m 'XensTweaks: build: Update dependencies'
+
+echo "Done"
