@@ -79,8 +79,8 @@ git commit --allow-empty \
 	--trailer "MW-Upgrade-Steps: $count"
 
 # Finalize branch
-git update-ref main tmp-upgrade
 git switch main
+git reset --hard tmp-upgrade
 git tag -s -m "Initial tree of $1 branch" "$branch"/init HEAD
 git branch -D tmp-upgrade
 
