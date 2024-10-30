@@ -27,11 +27,11 @@
 	--color-surface-0__l: 96%;
 	--color-surface-1__s: 40%;
 	--color-surface-1__l: 94%;
-	--color-surface-2__s: 30%;
+	--color-surface-2__s: 40%;
 	--color-surface-2__l: 92%;
-	--color-surface-3__s: 20%;
+	--color-surface-3__s: 43%;
 	--color-surface-3__l: 90%;
-	--color-surface-4__s: 10%;
+	--color-surface-4__s: 46%;
 	--color-surface-4__l: 88%;
 	--color-surface-0: ~'hsl( var( --color-primary__h ), var( --color-surface-0__s ), var( --color-surface-0__l ) )';
 	--color-surface-1: ~'hsl( var( --color-primary__h ), var( --color-surface-1__s ), var( --color-surface-1__l ) )';
@@ -73,9 +73,9 @@
 	/* Font */
 	// Used as base unit to caluclate font-size
 	--font-size-base: 1rem;
-	--font-family-citizen-base: 'Roboto';
-	--font-family-citizen-serif: 'Roboto Serif';
-	--font-family-citizen-monospace: 'Roboto Mono';
+	--font-family-citizen-base: 'Roboto', 'Roboto-fallback';
+	--font-family-citizen-serif: 'Roboto Serif', 'Roboto Serif-fallback';
+	--font-family-citizen-monospace: 'Roboto Mono', 'Roboto Mono-fallback';
 	--font-family-language-base: '';
 	--font-family-language-serif: '';
 	--font-family-language-monospace: '';
@@ -336,13 +336,13 @@
 	@media ( prefers-contrast: less ) {
 		--font-weight-normal: 300;
 	}
-}
 
-/* CJK languages need increased line-height for readability */
-:lang( ja ),
-:lang( ko ),
-:lang( zh ) {
-	--line-height: 1.75;
+	/* CJK languages need increased line-height for readability */
+	&:lang( ja ),
+	&:lang( ko ),
+	&:lang( zh ) {
+		--line-height: 1.75;
+	}
 }
 
 // TODO: Update with implementation on T376559 when it is finalized
