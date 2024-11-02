@@ -156,7 +156,7 @@ const DATA_WINDOW_HWND: u64 = 0xc4dbc123bb779f78;
 impl eframe::App for MainApp {
     fn update(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
         if let Err(err) = self.show(ctx, frame) {
-            error!("ui error: {err:?}");
+            error!("{err:?}");
             if self.error.is_none() {
                 self.error = Some(err);
                 ctx.request_repaint();
@@ -325,7 +325,7 @@ impl MainApp {
                 egui::Window::new("许可")
                     .open(&mut self.licenses_open)
                     .vscroll(true)
-                    .default_size((250.0, 300.0))
+                    .default_size((400.0, 300.0))
                     .show(ctx, |ui| self.licenses.show(ui))
                     .map(|o| o.inner)
                     .unwrap_or_default()
