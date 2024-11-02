@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+[[ -z "${ATRE_DEBUG:-}" ]] || set -v
+
 atreDir=/srv/atremis
 isDevelEnv=""
 if ! [[ -e "$atreDir" ]]; then
