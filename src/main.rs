@@ -182,13 +182,6 @@ impl MainApp {
             });
         });
 
-        if licenser::LICENSES.read().unwrap().is_empty() {
-            egui::CentralPanel::default()
-                .show(ctx, |ui| self.licenses.show_no_license(ui))
-                .inner?;
-            return Ok(());
-        }
-
         if licenser::is_set(FeatureFlags::MYTHWARE_WINDOWING) {
             if self.mythware.auto_windowing_broadcast
                 && mythware::is_broadcast_fullscreen().unwrap_or(false)
@@ -228,6 +221,11 @@ impl MainApp {
                 if clear_error {
                     self.error = None;
                     ui.ctx().request_repaint();
+                }
+
+                if licenser::LICENSES.read().unwrap().is_empty() {
+                    self.licenses.show_no_license(ui)?;
+                    return Ok(());
                 }
 
                 if licenser::is_set(FeatureFlags::SHOW_SOURCE_LINK) {

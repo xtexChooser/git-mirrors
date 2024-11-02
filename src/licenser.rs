@@ -17,6 +17,8 @@ use yjyz_tools::license::{self, FeatureFlags, LatestLicenseClaims, License};
 #[educe(Default)]
 pub struct LicensesWindow {
     licenser: LicenserWindow,
+    activation: bool,
+    activation_code: String,
 }
 
 impl LicensesWindow {
@@ -46,8 +48,8 @@ impl LicensesWindow {
         }
         Ok(())
     }
+
     pub fn show_no_license(&mut self, ui: &mut egui::Ui) -> Result<()> {
-        ui.heading(format!("YJYZ Tools - {}", env!("CARGO_PKG_VERSION")));
         ui.heading("找不到许可文件");
         ui.label("在此设备上找不到有效的许可文件。");
         Ok(())
@@ -173,5 +175,4 @@ pub fn is_set(flags: FeatureFlags) -> bool {
         .any(|claims| claims.features.contains(flags))
 }
 
-pub fn start_trail() { // @TODO
-}
+pub fn start_trail() {}
