@@ -4,7 +4,9 @@ use anyhow::Result;
 use educe::Educe;
 use egui::{RichText, WidgetText};
 use log::info;
-use yjyz_tools::license::{self, LicenseFeatures};
+use yjyz_tools::license::FeatureFlags;
+
+use crate::licenser;
 
 #[derive(Educe)]
 #[educe(Default)]
@@ -33,7 +35,7 @@ const EMPTY_PASSWORD_MD5: &str = "93b885adfe0da089cdf634904fd59f71";
 const ABC123ATAT_MD5: &str = "6bbe5eaa9b787ca6ae1730ef700eebe7";
 
 pub fn read_psconfig() -> Result<Option<PowerShadowConfig>> {
-    if license::is_set(LicenseFeatures::POWERSHADOW_PASSWORD) {
+    if licenser::is_set(FeatureFlags::POWERSHADOW_PASSWORD) {
         return Ok(None);
     }
     let path = PathBuf::from(r"C:\WINDOWS\system32\PsConfig.set");
@@ -64,7 +66,7 @@ pub struct PowerShadowWindow {}
 impl PowerShadowWindow {
     pub fn show(&mut self, ui: &mut egui::Ui) -> Result<()> {
         if let Some(config) = PSCONFIG.as_ref() {
-            if license::is_set(LicenseFeatures::POWERSHADOW_PASSWORD) {
+            if licenser::is_set(FeatureFlags::POWERSHADOW_PASSWORD) {
                 #[inline]
                 fn show_password(
                     ui: &mut egui::Ui,

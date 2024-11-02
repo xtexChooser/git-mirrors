@@ -13,9 +13,9 @@ use log::info;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use tokio::process::Command;
-use yjyz_tools::license::{self, LicenseFeatures};
+use yjyz_tools::license::FeatureFlags;
 
-use crate::ASYNC_ERROR;
+use crate::{licenser, ASYNC_ERROR};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 pub struct VersionJson {
@@ -113,13 +113,13 @@ pub struct Updater {
 
 impl Updater {
     pub fn should_show(&self) -> bool {
-        if license::is_set(LicenseFeatures::NO_UPDATE) || self.dismissed {
+        if licenser::is_set(FeatureFlags::NO_UPDATE) || self.dismissed {
             return false;
         }
         if UPDATE.read().unwrap().is_some() {
             return true;
         }
-        license::is_set(LicenseFeatures::MUST_UPDATE)
+        licenser::is_set(FeatureFlags::MUST_UPDATE)
     }
 
     pub fn show(&mut self, ui: &mut egui::Ui) -> Result<()> {
@@ -146,7 +146,7 @@ impl Updater {
                         ui.ctx().open_url(OpenUrl::new_tab(&update.download));
                     }
 
-                    if !license::is_set(LicenseFeatures::MUST_UPDATE)
+                    if !licenser::is_set(FeatureFlags::MUST_UPDATE)
                         && ui.button("不更新").clicked()
                     {
                         self.dismissed = true;

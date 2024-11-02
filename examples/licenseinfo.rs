@@ -17,7 +17,7 @@ fn main() -> Result<()> {
     } else {
         println!("- SIGNATURE INVALID")
     }
-    let claims = license.to_claims()?;
+    let claims = license.to_latest_claims()?;
     println!("{:#?}", claims);
 
     Ok(())

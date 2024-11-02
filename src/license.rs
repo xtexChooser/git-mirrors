@@ -1,11 +1,9 @@
 use std::{
     fs,
-    path::{Path, PathBuf},
-    sync::LazyLock,
+    path::Path,
 };
 
 use anyhow::Result;
-use log::{info, warn};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -32,7 +30,7 @@ impl License {
         }
     }
 
-    pub fn to_claims(&self) -> Result<v1::LicenseClaims> {
+    pub fn to_latest_claims(&self) -> Result<LatestLicenseClaims> {
         match self {
             License::V1(license) => license.to_claims(),
         }
@@ -156,84 +154,6 @@ pub mod v1 {
     }
 }
 
-pub use v1::LicenseFeatures;
-
-pub fn find_licenses() -> Vec<PathBuf> {
-    const LICENSE_NAMES: &[&str] = &[
-        ".yjyz-tools.lic",
-        ".license.key",
-        "yjyz-tools.lic",
-        "yjyz-tools.key",
-        "yjyz/yjyz-tools.lic",
-        "yjyz-tools/yjyz-tools.lic",
-        "license.key",
-        "license",
-        "license.bin",
-        "maint/keys/sudo",
-    ];
-
-    let mut dirs = Vec::from([PathBuf::from("."), PathBuf::from("C:\\")]);
-    for disk in sysinfo::Disks::new_with_refreshed_list().list() {
-        dirs.push(disk.mount_point().to_path_buf());
-    }
-    let mut files = Vec::new();
-    for dir in dirs {
-        for name in LICENSE_NAMES {
-            let path = dir.join(name);
-            if path.exists() {
-                files.push(path);
-            }
-        }
-    }
-    files
-}
-
-pub fn load_licenses() -> Vec<v1::LicenseClaims> {
-    let mut licenses = Vec::new();
-    for path in find_licenses() {
-        info!("Loading license from: {}", path.display());
-        match License::from_file(&path) {
-            Ok(license) => {
-                if license.verify() {
-                    match license.to_claims() {
-                        Ok(claims) => {
-                            info!("Loaded license {}", claims.id);
-                            licenses.push(claims);
-                        }
-                        Err(err) => warn!("Failed to upgrade license: {:?}", err),
-                    }
-                } else {
-                    warn!("Unsigned license: {}", path.display())
-                }
-            }
-            Err(err) => {
-                warn!("Malformed license at {}: {:?}", path.display(), err)
-            }
-        }
-    }
-    licenses
-}
-
-pub static LICENSES: LazyLock<Vec<v1::LicenseClaims>> = LazyLock::new(load_licenses);
-pub static IS_SUDOER: LazyLock<bool> = LazyLock::new(|| {
-    LICENSES
-        .iter()
-        .any(|claims| claims.features.contains(v1::LicenseFeatures::SUDOER))
-});
-pub static IS_TRAIL: LazyLock<bool> = LazyLock::new(|| {
-    LICENSES
-        .iter()
-        .all(|claims| claims.features.contains(v1::LicenseFeatures::TRAIL))
-});
-
-pub fn is_set(flags: LicenseFeatures) -> bool {
-    if *IS_SUDOER {
-        return v1::SUDOER_RIGHTS().contains(flags);
-    }
-    if *IS_TRAIL {
-        return v1::TRAIL_RIGHTS().contains(flags);
-    }
-    LICENSES
-        .iter()
-        .any(|claims| claims.features.contains(flags))
-}
+pub use v1::LicenseFeatures as FeatureFlags;
+pub use v1::License as LatestLicense;
+pub use v1::LicenseClaims as LatestLicenseClaims;

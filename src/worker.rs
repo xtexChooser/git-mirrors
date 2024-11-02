@@ -11,9 +11,9 @@ use windows::Win32::{
     Foundation::HWND,
     UI::WindowsAndMessaging::{SetWindowPos, HWND_TOPMOST, SWP_NOMOVE, SWP_NOSIZE},
 };
-use yjyz_tools::license::{self, LicenseFeatures};
+use yjyz_tools::license::FeatureFlags;
 
-use crate::{mythware, sec};
+use crate::{licenser, mythware, sec};
 
 #[derive(Educe)]
 #[educe(Default)]
@@ -43,7 +43,7 @@ pub async fn run(state: WorkerStateRef) -> Result<()> {
             }
         }
 
-        if license::is_set(LicenseFeatures::MYTHWARE_WINDOWING) {
+        if licenser::is_set(FeatureFlags::MYTHWARE_WINDOWING) {
             if state.mythware_auto_unlock_keyboard && mythware::is_broadcast_on().unwrap_or(false) {
                 delay = cmp::min(delay, 25);
                 mythware::unlock_keyboard()?;
@@ -53,8 +53,8 @@ pub async fn run(state: WorkerStateRef) -> Result<()> {
         if runtime_sec_counter >= (1000 / delay) {
             runtime_sec_counter = 0;
 
-            if !license::is_set(LicenseFeatures::NO_SECURITY_CHECK)
-                && !license::is_set(LicenseFeatures::ALLOW_INSECURE)
+            if !licenser::is_set(FeatureFlags::NO_SECURITY_CHECK)
+                && !licenser::is_set(FeatureFlags::ALLOW_INSECURE)
             {
                 if let Err(err) = sec::check_environment() {
                     panic!("unavailable: 5865bf4b-80ff-48ac-b5b0-280caaf267af: {}", err)

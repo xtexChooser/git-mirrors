@@ -10,7 +10,7 @@ use std::{
 use anyhow::Result;
 use educe::Educe;
 use egui::Id;
-use licenser::LicenserWindow;
+use licenser::LicensesWindow;
 use log::{error, info, warn};
 use mythware::MythwareWindow;
 use powershadow::PowerShadowWindow;
@@ -18,7 +18,7 @@ use raw_window_handle::{HasWindowHandle, RawWindowHandle, Win32WindowHandle};
 use updater::Updater;
 use windowsadj::WindowsAdjWindow;
 use worker::{WorkerState, WorkerStateRef};
-use yjyz_tools::license::{self, LicenseFeatures};
+use yjyz_tools::license::FeatureFlags;
 
 mod assets;
 mod licenser;
@@ -41,18 +41,19 @@ async fn main() -> Result<()> {
     }
     env_logger::init();
     log_panics::init();
+    licenser::load_licenses();
 
     if *mythware::SETUP_TYPE == Some(mythware::SetupType::Teacher)
-        && !license::is_set(LicenseFeatures::MYTHWARE_ALLOW_TEACHER)
+        && !licenser::is_set(FeatureFlags::MYTHWARE_ALLOW_TEACHER)
     {
         fs::remove_file(std::env::current_exe()?)?;
         panic!("unavailable: 4f82b84f-481a-426d-8361-795008110549")
     }
 
-    if !license::is_set(LicenseFeatures::NO_SECURITY_CHECK) {
+    if !licenser::is_set(FeatureFlags::NO_SECURITY_CHECK) {
         info!("Invoking runtime safety subsystem");
         if let Err(err) = sec::check_environment() {
-            if license::is_set(LicenseFeatures::ALLOW_INSECURE) {
+            if licenser::is_set(FeatureFlags::ALLOW_INSECURE) {
                 warn!("ins. env.: {}", err.to_string());
             } else {
                 panic!("unavailable: e1c62299-ae2c-4261-88a2-4c2211caedeb: {}", err)
@@ -64,11 +65,7 @@ async fn main() -> Result<()> {
         info!("Bypassing safety check")
     }
 
-    if *license::IS_SUDOER {
-        warn!("Sudoer mode is set");
-    }
-
-    if !license::is_set(LicenseFeatures::NO_UPDATE) {
+    if !licenser::is_set(FeatureFlags::NO_UPDATE) {
         tokio::spawn(async {
             if let Err(err) = updater::check().await {
                 let _ = ASYNC_ERROR.write().unwrap().insert(err);
@@ -136,8 +133,8 @@ struct MainApp {
     powershadow: PowerShadowWindow,
 
     #[educe(Default = false)]
-    licenser_open: bool,
-    licenser: LicenserWindow,
+    licenses_open: bool,
+    licenses: LicensesWindow,
 }
 
 impl MainApp {
@@ -185,16 +182,14 @@ impl MainApp {
             });
         });
 
-        if license::LICENSES.is_empty() {
-            egui::CentralPanel::default().show(ctx, |ui| {
-                ui.heading(format!("YJYZ Tools - {}", env!("CARGO_PKG_VERSION")));
-                ui.heading("找不到许可文件");
-                ui.label("在此设备上找不到有效的许可文件。");
-            });
+        if licenser::LICENSES.read().unwrap().is_empty() {
+            egui::CentralPanel::default()
+                .show(ctx, |ui| self.licenses.show_no_license(ui))
+                .inner?;
             return Ok(());
         }
 
-        if license::is_set(LicenseFeatures::MYTHWARE_WINDOWING) {
+        if licenser::is_set(FeatureFlags::MYTHWARE_WINDOWING) {
             if self.mythware.auto_windowing_broadcast
                 && mythware::is_broadcast_fullscreen().unwrap_or(false)
             {
@@ -235,7 +230,7 @@ impl MainApp {
                     ui.ctx().request_repaint();
                 }
 
-                if license::is_set(LicenseFeatures::SHOW_SOURCE_LINK) {
+                if licenser::is_set(FeatureFlags::SHOW_SOURCE_LINK) {
                     ui.horizontal(|ui| {
                         ui.hyperlink_to("源代码", "https://codeberg.org/xtex/yjyz-tools");
                         if ui.link("开源许可证").clicked() {
@@ -244,12 +239,15 @@ impl MainApp {
                     });
                 }
 
-                if license::is_set(LicenseFeatures::MUST_UPDATE) && self.update.should_show() {
+                if licenser::is_set(FeatureFlags::MUST_UPDATE) && self.update.should_show() {
                     self.update.show(ui)?;
                     return Ok(());
                 }
 
                 egui::menu::bar(ui, |ui| {
+                    if ui.button("许可").clicked() {
+                        self.licenses_open = true;
+                    }
                     if ui.button("极域").clicked() {
                         self.mythware_open = true;
                     }
@@ -258,9 +256,6 @@ impl MainApp {
                     }
                     if ui.button("影子系统").clicked() {
                         self.powershadow_open = true;
-                    }
-                    if *license::IS_SUDOER && ui.button("创建许可").clicked() {
-                        self.licenser_open = true;
                     }
                 });
 
@@ -287,13 +282,6 @@ impl MainApp {
                 if mythware::PASSWORD.read().unwrap().is_some() {
                     self.mythware.show_password(ui, "极域密码：")?;
                 }
-
-                ui.vertical(|ui| {
-                    ui.label("已加载许可文件：");
-                    for claims in license::LICENSES.iter() {
-                        ui.label(format!("- {}", claims.id));
-                    }
-                });
 
                 egui::Window::new("开源许可")
                     .open(&mut self.show_licenses)
@@ -332,11 +320,11 @@ impl MainApp {
                     .unwrap_or_default()
                     .unwrap_or(Ok(()))?;
 
-                egui::Window::new("许可生成")
-                    .open(&mut self.licenser_open)
+                egui::Window::new("许可")
+                    .open(&mut self.licenses_open)
                     .vscroll(true)
                     .default_size((250.0, 300.0))
-                    .show(ctx, |ui| self.licenser.show(ui))
+                    .show(ctx, |ui| self.licenses.show(ui))
                     .map(|o| o.inner)
                     .unwrap_or_default()
                     .unwrap_or(Ok(()))?;

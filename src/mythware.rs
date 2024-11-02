@@ -26,9 +26,9 @@ use windows::{
     },
 };
 use windows_registry::LOCAL_MACHINE;
-use yjyz_tools::license::{self, LicenseFeatures};
+use yjyz_tools::license::FeatureFlags;
 
-use crate::{utils, worker::WorkerStateRef};
+use crate::{licenser, utils, worker::WorkerStateRef};
 
 fn open_eclass_standard() -> Result<windows_registry::Key> {
     Ok(LOCAL_MACHINE
@@ -141,7 +141,7 @@ pub static PASSWORD: LazyLock<RwLock<Option<String>>> = LazyLock::new(|| {
         .inspect_err(|err| info!("Failed to read legacy kind of mythware password: {err}"))
         .ok()
         .map(|s| {
-            if license::is_set(LicenseFeatures::MYTHWARE_PASSWORD) {
+            if licenser::is_set(FeatureFlags::MYTHWARE_PASSWORD) {
                 s
             } else {
                 "（不支持）".to_string()
@@ -226,7 +226,7 @@ pub fn is_broadcast_fullscreen() -> Result<bool> {
 }
 
 pub fn toggle_broadcast_window() -> Result<()> {
-    if !license::is_set(LicenseFeatures::MYTHWARE_WINDOWING) {
+    if !licenser::is_set(FeatureFlags::MYTHWARE_WINDOWING) {
         return Ok(());
     }
     if let Some(hwnd) = find_broadcast_window()? {
@@ -260,7 +260,7 @@ impl From<HHOOK> for UnlockingHook {
 static UNLOCKING_HOOKS: RwLock<Vec<UnlockingHook>> = RwLock::new(Vec::new());
 
 pub fn unlock_keyboard() -> Result<()> {
-    if !license::is_set(LicenseFeatures::MYTHWARE_WINDOWING) {
+    if !licenser::is_set(FeatureFlags::MYTHWARE_WINDOWING) {
         return Ok(());
     }
     unsafe {
@@ -304,7 +304,7 @@ pub struct MythwareWindow {
 
 impl MythwareWindow {
     pub fn show(&mut self, ui: &mut egui::Ui, worker: &WorkerStateRef) -> Result<()> {
-        if license::is_set(LicenseFeatures::MYTHWARE_STOPPING) {
+        if licenser::is_set(FeatureFlags::MYTHWARE_STOPPING) {
             ui.horizontal_wrapped(|ui| {
                 if let Some(pid) = find_studentmain_pid() {
                     if ui.button("关闭极域").clicked() {
@@ -342,14 +342,14 @@ impl MythwareWindow {
         }
         self.show_password(ui, RichText::new("密码：").strong())?;
 
-        if license::is_set(LicenseFeatures::MYTHWARE_PASSWORD) {
+        if licenser::is_set(FeatureFlags::MYTHWARE_PASSWORD) {
             ui.label("超级密码：mythware_super_password");
         }
 
         ui.horizontal_wrapped(|ui| {
             let label = ui.label(RichText::new("屏幕广播：").strong());
             if is_broadcast_on()? {
-                if license::is_set(LicenseFeatures::MYTHWARE_WINDOWING) {
+                if licenser::is_set(FeatureFlags::MYTHWARE_WINDOWING) {
                     if ui
                         .button(if is_broadcast_fullscreen()? {
                             "广播窗口化"
@@ -381,7 +381,7 @@ impl MythwareWindow {
         })
         .inner?;
 
-        if license::is_set(LicenseFeatures::MYTHWARE_SUSPENDING) {
+        if licenser::is_set(FeatureFlags::MYTHWARE_SUSPENDING) {
             if let Some(pid) = find_studentmain_pid() {
                 ui.horizontal_wrapped(|ui| {
                     let label = ui.label(RichText::new("挂起：").strong());
