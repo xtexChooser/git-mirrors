@@ -68,7 +68,7 @@ async fn main() -> Result<()> {
     if !licenser::is_set(FeatureFlags::NO_UPDATE) {
         tokio::spawn(async {
             if let Err(err) = updater::check().await {
-                let _ = ASYNC_ERROR.write().unwrap().insert(err);
+                send_error(err);
             }
         });
     }
@@ -79,7 +79,7 @@ async fn main() -> Result<()> {
         let worker_state = worker_state.clone();
         tokio::spawn(async move {
             if let Err(err) = worker::run(worker_state).await {
-                let _ = ASYNC_ERROR.write().unwrap().insert(err);
+                send_error(err);
             }
         });
     }
@@ -101,6 +101,10 @@ async fn main() -> Result<()> {
 }
 
 static ASYNC_ERROR: RwLock<Option<anyhow::Error>> = RwLock::new(None);
+
+pub fn send_error(err: anyhow::Error) {
+    let _ = ASYNC_ERROR.write().unwrap().insert(err);
+}
 
 #[derive(Educe)]
 #[educe(Default)]
