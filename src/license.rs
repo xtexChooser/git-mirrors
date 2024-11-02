@@ -72,6 +72,7 @@ pub mod v1 {
         #[derive(Debug, Serialize, Deserialize, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
         pub struct LicenseFeatures: u128 {
             const SUDOER = 1 << 0;
+            const TRAIL = 1 << 1;
 
             const NO_TELEMETRY = 1 << 2; //
             const NO_UPDATE = 1 << 3; //
@@ -99,6 +100,12 @@ pub mod v1 {
             | LicenseFeatures::MYTHWARE_STOPPING
             | LicenseFeatures::MYTHWARE_SUSPENDING
             | LicenseFeatures::POWERSHADOW_PASSWORD
+    };
+
+    pub const TRAIL_RIGHTS: &dyn Fn() -> LicenseFeatures = &|| {
+        LicenseFeatures::TRAIL
+            | LicenseFeatures::MYTHWARE_WINDOWING
+            | LicenseFeatures::MYTHWARE_STOPPING
     };
 
     impl LicenseClaims {
@@ -213,10 +220,18 @@ pub static IS_SUDOER: LazyLock<bool> = LazyLock::new(|| {
         .iter()
         .any(|claims| claims.features.contains(v1::LicenseFeatures::SUDOER))
 });
+pub static IS_TRAIL: LazyLock<bool> = LazyLock::new(|| {
+    LICENSES
+        .iter()
+        .all(|claims| claims.features.contains(v1::LicenseFeatures::TRAIL))
+});
 
 pub fn is_set(flags: LicenseFeatures) -> bool {
     if *IS_SUDOER {
         return v1::SUDOER_RIGHTS().contains(flags);
+    }
+    if *IS_TRAIL {
+        return v1::TRAIL_RIGHTS().contains(flags);
     }
     LICENSES
         .iter()
