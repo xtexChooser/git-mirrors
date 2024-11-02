@@ -52,6 +52,13 @@ impl LicensesWindow {
     pub fn show_no_license(&mut self, ui: &mut egui::Ui) -> Result<()> {
         ui.heading("找不到许可文件");
         ui.label("在此设备上找不到有效的许可文件。");
+        ui.horizontal(|ui| {
+            if ui.button("免费试用").clicked() {
+                start_trail();
+            }
+            Ok(()) as anyhow::Result<()>
+        })
+        .inner?;
         Ok(())
     }
 }
