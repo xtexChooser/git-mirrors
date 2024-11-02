@@ -11,13 +11,15 @@ use anyhow::{bail, Result};
 use ed25519_dalek::{pkcs8::DecodePrivateKey, SigningKey};
 use educe::Educe;
 use log::{error, info, warn};
+use tokio::sync::oneshot;
 use yjyz_tools::license::{self, FeatureFlags, LatestLicenseClaims, License};
 
 #[derive(Educe)]
 #[educe(Default)]
 pub struct LicensesWindow {
     licenser: LicenserWindow,
-    activation: bool,
+    activation_result: Option<String>,
+    activation_task: Option<oneshot::Receiver<String>>,
     activation_code: String,
 }
 
@@ -59,6 +61,44 @@ impl LicensesWindow {
             Ok(()) as anyhow::Result<()>
         })
         .inner?;
+        ui.collapsing("使用激活码", |ui| {
+            if let Some(rx) = &mut self.activation_task {
+                ui.label("激活中…");
+                match rx.try_recv() {
+                    Err(oneshot::error::TryRecvError::Empty) => {}
+                    Err(err) => return Err(err.into()),
+                    Ok(result) => {
+                        info!("Got activation result: {}", result);
+                        self.activation_result = Some(result);
+                        self.activation_task = None;
+                        ui.ctx().request_repaint();
+                    }
+                }
+            } else {
+                ui.text_edit_singleline(&mut self.activation_code);
+                if ui.button("激活").clicked() {
+                    let (tx, rx) = oneshot::channel();
+                    self.activation_task = Some(rx);
+
+                    let key = self.activation_code.clone();
+                    tokio::spawn(async {
+                        match do_activation(key).await {
+                            Ok(result) => tx.send(result),
+                            Err(err) => {
+                                error!("Failed to resolve activation code: {:?}", err);
+                                tx.send(err.to_string())
+                            }
+                        }
+                    });
+                }
+                if let Some(result) = &self.activation_result {
+                    ui.label(result);
+                }
+            }
+            Ok(()) as anyhow::Result<()>
+        })
+        .body_returned
+        .unwrap_or(Ok(()))?;
         Ok(())
     }
 }
@@ -180,6 +220,10 @@ pub fn is_set(flags: FeatureFlags) -> bool {
         .unwrap()
         .iter()
         .any(|claims| claims.features.contains(flags))
+}
+
+pub async fn do_activation(key: String) -> Result<String> {
+    Ok("已激活".to_string())
 }
 
 pub fn start_trail() {}
