@@ -116,7 +116,9 @@ function atre::apply {
 function atre::root {
 	atre::assertNonDevel
 	atre::log "Switch to root"
-	sudo --preserve-env=ATREMIS_USER \
+	sudo \
+		--preserve-env=ATREMIS_USER \
+		--preserve-env=ATRE_DEBUG \
 		"$@"
 }
 
