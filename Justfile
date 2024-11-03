@@ -1,5 +1,9 @@
-release:
-    @maint/publish.sh
+release level="patch":
+    @maint/publish.sh {{level}}
+
+alias bc := build-client
+
+default: build-client
 
 build-client:
     @cargo build -p yjyz-tools --target x86_64-pc-windows-gnu

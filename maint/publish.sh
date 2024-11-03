@@ -8,7 +8,7 @@ echo "Creating release ..."
 if [[ "${NOREL:-}" != "" ]]; then
     echo "Skipping releasing ..."
 else
-    cargo release patch -x --no-confirm -p yjyz-tools
+    cargo release "${1:-patch}" -x --no-confirm -p yjyz-tools
 fi
 
 version="$(grep -E '^version = "(.*)"$' Cargo.toml | head -n1 | tail -c+12 | head -c-2)"
