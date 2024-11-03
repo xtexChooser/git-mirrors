@@ -116,10 +116,7 @@ impl Updater {
         if licenser::is_set(FeatureFlags::NO_UPDATE) || self.dismissed {
             return false;
         }
-        if UPDATE.read().unwrap().is_some() {
-            return true;
-        }
-        licenser::is_set(FeatureFlags::MUST_UPDATE)
+        UPDATE.read().unwrap().is_some() || licenser::is_set(FeatureFlags::MUST_UPDATE)
     }
 
     pub fn show(&mut self, ui: &mut egui::Ui) -> Result<()> {
@@ -146,8 +143,7 @@ impl Updater {
                         ui.ctx().open_url(OpenUrl::new_tab(&update.download));
                     }
 
-                    if !licenser::is_set(FeatureFlags::MUST_UPDATE)
-                        && ui.button("不更新").clicked()
+                    if !licenser::is_set(FeatureFlags::MUST_UPDATE) && ui.button("不更新").clicked()
                     {
                         self.dismissed = true;
                     }

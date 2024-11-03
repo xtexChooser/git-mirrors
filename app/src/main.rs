@@ -229,6 +229,9 @@ impl MainApp {
 
                 if licenser::LICENSES.read().unwrap().is_empty() {
                     self.licenses.show_no_license(ui)?;
+                    if self.update.should_show() {
+                        self.update.show(ui)?;
+                    }
                     return Ok(());
                 }
 
