@@ -93,7 +93,7 @@ pub async fn do_update() -> Result<()> {
         fs::write(
             &bat_path,
             format!(
-                "TASKKILL /F /IM {proc_name}\nPING -n 3 127.0.0.1 > NUL\nMOVE {exe_path}.updtmp {exe_path}\nSTART {exe_path}"
+                "TASKKILL /F /IM {proc_name}\nPING -1 3 127.0.0.1 > NUL\nMOVE {exe_path}.updtmp {exe_path}\nSTART {exe_path}"
             ),
         )?;
         _ = Command::new(bat_path)
