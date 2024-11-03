@@ -11,6 +11,7 @@ use anyhow::{bail, Result};
 use ed25519_dalek::{pkcs8::DecodePrivateKey, SigningKey};
 use educe::Educe;
 use log::{error, info, warn};
+use sha2::Digest;
 use yjyz_tools_license::{self, FeatureFlags, LatestLicenseClaims, License};
 
 use crate::utils::AsyncTask;
@@ -212,8 +213,19 @@ pub fn is_set(flags: FeatureFlags) -> bool {
 
 pub async fn do_activation(key: String) -> Result<String> {
     info!("Activating: {}", key);
-    tokio::time::sleep(tokio::time::Duration::from_secs(3)).await;
-    Ok("已激活".to_string())
+    let resp = reqwest::get(format!(
+        "http://xtex.envs.net/yjyz-tools/actkeys/{}",
+        hex::encode(sha2::Sha256::digest(key.as_bytes()))
+    ))
+    .await?;
+    if resp.status().as_u16() == 404 {
+        bail!("无效的激活码")
+    } else {
+        register_license(License::from_bytes(
+            &resp.error_for_status()?.bytes().await?,
+        )?)?;
+        Ok("已激活".to_string())
+    }
 }
 
 pub fn start_trail() {}

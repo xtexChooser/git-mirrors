@@ -32,7 +32,7 @@ cp -vp maint/version.json maint/dist/version_v1.json
 yq -i -I 0 "." maint/dist/version_v1.json
 
 echo "Sending files ..."
-rsync -rvp maint/dist/ envs.net:public_html/yjyz-tools/
+just sync-dist
 
 echo "Commiting to git ..."
 git commit --allow-empty -m "$(printf 'chore: Uploaded prebuilt binaries\n\n%s' "$(sha256sum maint/dist/*.exe)")" -- LICENSE

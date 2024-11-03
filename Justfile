@@ -10,3 +10,7 @@ build-client:
 
 build-client-release:
     @cargo build -p yjyz-tools --target x86_64-pc-windows-gnu --release
+
+alias sd := sync-dist
+sync-dist:
+    @rsync -rvp --delete maint/dist/ envs.net:public_html/yjyz-tools/
