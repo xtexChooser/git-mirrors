@@ -18,7 +18,7 @@ use raw_window_handle::{HasWindowHandle, RawWindowHandle, Win32WindowHandle};
 use updater::Updater;
 use windowsadj::WindowsAdjWindow;
 use worker::{WorkerState, WorkerStateRef};
-use yjyz_tools::license::FeatureFlags;
+use yjyz_tools_license::FeatureFlags;
 
 mod assets;
 mod licenser;

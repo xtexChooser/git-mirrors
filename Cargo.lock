@@ -4300,8 +4300,6 @@ name = "yjyz-tools"
 version = "0.2.15"
 dependencies = [
  "anyhow",
- "bincode",
- "bitflags 2.6.0",
  "cached",
  "cmake",
  "ed25519-dalek",
@@ -4310,25 +4308,38 @@ dependencies = [
  "egui",
  "env_logger",
  "hex",
- "hex-literal",
  "log",
  "log-panics",
  "phf",
- "rand",
  "raw-window-handle",
  "reqwest",
  "serde",
- "serde_bytes",
  "serde_json",
  "sha2",
  "sysinfo",
  "tokio",
- "uuid",
  "windows 0.58.0",
  "windows-registry 0.3.0",
  "windows-targets 0.52.6",
  "winresource",
  "xz2",
+ "yjyz-tools-license",
+]
+
+[[package]]
+name = "yjyz-tools-license"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "bincode",
+ "bitflags 2.6.0",
+ "ed25519-dalek",
+ "hex",
+ "hex-literal",
+ "rand",
+ "serde",
+ "serde_bytes",
+ "uuid",
 ]
 
 [[package]]

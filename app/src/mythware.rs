@@ -26,7 +26,7 @@ use windows::{
     },
 };
 use windows_registry::LOCAL_MACHINE;
-use yjyz_tools::license::FeatureFlags;
+use yjyz_tools_license::FeatureFlags;
 
 use crate::{licenser, utils, worker::WorkerStateRef};
 

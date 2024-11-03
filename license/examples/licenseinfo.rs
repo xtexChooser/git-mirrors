@@ -1,7 +1,7 @@
 use std::env::args;
 
 use anyhow::Result;
-use yjyz_tools::license::License;
+use yjyz_tools_license::License;
 
 fn main() -> Result<()> {
     let path = args()

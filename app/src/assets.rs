@@ -6,7 +6,7 @@ use egui::{FontData, FontFamily};
 pub const CUBIC11_FONT: &[u8] = include_bytes!("assets/Cubic_11.ttf.xz");
 pub const CUBIC11_LICENSE: &str = include_str!("assets/Cubic_11-LICENSE.txt");
 
-pub const LICENSE_STR: &str = include_str!("../LICENSE");
+pub const LICENSE_STR: &str = include_str!("../../LICENSE");
 
 pub fn configure_fonts(ctx: &eframe::egui::Context) -> Result<()> {
     ctx.set_zoom_factor(1.2);

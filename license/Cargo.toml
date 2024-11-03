@@ -1,0 +1,21 @@
+[package]
+name = "yjyz-tools-license"
+version = "0.1.0"
+edition = "2021"
+license = "BSD-3-Clause"
+repository = "https://codeberg.org/xtex/yjyz-tools"
+
+[dependencies]
+anyhow = { workspace = true }
+bincode = "1.3.3"
+bitflags = { version = "2.6.0", features = ["serde", "std"] }
+ed25519-dalek = { version = "2.1.1", features = ["pem"] }
+hex = "0.4.3"
+hex-literal = "0.4.1"
+serde = { version = "1.0.210", features = ["derive"] }
+serde_bytes = "0.11.15"
+uuid = { version = "1.10.0", features = ["serde", "v7"] }
+
+[dev-dependencies]
+rand = "0.8.5"
+ed25519-dalek = { version = "^2", features = ["rand_core"] }

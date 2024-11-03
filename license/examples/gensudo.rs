@@ -2,7 +2,7 @@ use std::fs;
 
 use anyhow::Result;
 use ed25519_dalek::{pkcs8::DecodePrivateKey, SigningKey};
-use yjyz_tools::license::{v1, License};
+use yjyz_tools_license::{v1, License};
 
 fn main() -> Result<()> {
     let mut sign_key = SigningKey::from_pkcs8_pem(&fs::read_to_string("maint/keys/private.pem")?)?;

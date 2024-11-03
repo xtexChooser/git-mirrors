@@ -11,7 +11,7 @@ use windows::Win32::{
     Foundation::HWND,
     UI::WindowsAndMessaging::{SetWindowPos, HWND_TOPMOST, SWP_NOMOVE, SWP_NOSIZE},
 };
-use yjyz_tools::license::FeatureFlags;
+use yjyz_tools_license::FeatureFlags;
 
 use crate::{licenser, mythware, sec};
 

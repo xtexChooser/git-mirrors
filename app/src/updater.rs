@@ -13,7 +13,7 @@ use log::info;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use tokio::process::Command;
-use yjyz_tools::license::FeatureFlags;
+use yjyz_tools_license::FeatureFlags;
 
 use crate::{licenser, ASYNC_ERROR};
 

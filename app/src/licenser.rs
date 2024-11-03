@@ -12,7 +12,7 @@ use ed25519_dalek::{pkcs8::DecodePrivateKey, SigningKey};
 use educe::Educe;
 use log::{error, info, warn};
 use tokio::sync::oneshot;
-use yjyz_tools::license::{self, FeatureFlags, LatestLicenseClaims, License};
+use yjyz_tools_license::{self, FeatureFlags, LatestLicenseClaims, License};
 
 #[derive(Educe)]
 #[educe(Default)]
@@ -63,7 +63,7 @@ impl LicensesWindow {
         .inner?;
         ui.collapsing("使用激活码", |ui| {
             if let Some(rx) = &mut self.activation_task {
-                ui.label("激活中…");
+                ui.label("激活中，请稍候……");
                 match rx.try_recv() {
                     Err(oneshot::error::TryRecvError::Empty) => {}
                     Err(err) => return Err(err.into()),
@@ -208,10 +208,10 @@ pub fn register_license(license: License) -> Result<()> {
 
 pub fn is_set(flags: FeatureFlags) -> bool {
     if IS_SUDOER.load(Ordering::Relaxed) {
-        return license::v1::SUDOER_RIGHTS().contains(flags);
+        return yjyz_tools_license::v1::SUDOER_RIGHTS().contains(flags);
     }
     if HAS_TRAIL.load(Ordering::Relaxed) {
-        if license::v1::TRAIL_RIGHTS().contains(flags) {
+        if yjyz_tools_license::v1::TRAIL_RIGHTS().contains(flags) {
             return true;
         }
     }

@@ -4,7 +4,7 @@ use anyhow::Result;
 use educe::Educe;
 use egui::{RichText, WidgetText};
 use log::info;
-use yjyz_tools::license::FeatureFlags;
+use yjyz_tools_license::FeatureFlags;
 
 use crate::licenser;
 
