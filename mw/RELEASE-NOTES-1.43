@@ -498,6 +498,9 @@ because of Phabricator reports.
 * MediaWikiVersionFetcher, deprecated since 1.42 has been removed.
 * Support for using Skin::addToBodyAttributes() method, which was deprecated
   in 1.35, has been removed. Use OutputPageBodyAttributesHook instead.
+* Skins since 1.39 have not supported rendering content outside the body tag.
+The bodyOnly=false option has now been removed, meaning this is no longer
+supported.
 * …
 
 === Deprecations in 1.43 ===
@@ -1013,6 +1016,8 @@ because of Phabricator reports.
   as JSON, the methods MessageValue::objectParams(), Message::objectParams()
   and Message::objectParam() are deprecated. The UserGroupMembershipParam
   class and the ParamType::OBJECT constant are likewise deprecated.
+* Passing null or boolean values as message parameters, which are converted
+  to strings "" and "1", is deprecated.
 * The Less mixin .column-break-after-avoid() is deprecated. Use just the
   CSS rule `break-after: avoid-column;` instead now.
 * The Less mixins .horizontal-gradient and .vertical-gradient are deprecated.
@@ -1085,6 +1090,12 @@ because of Phabricator reports.
   SpecialBlock::canBlockEmail(), deprecated since 1.36, and
   SpecialBlock::getSuggestedDurations(), deprecated since 1.42, now emit
   deprecation warnings.
+* The following soft deprecated Skin methods will now emit warnings:
+  - Skin::makeSpecialUrl (use SkinComponentUtils::makeSpecialUrl instead)
+  - Skin::makeSpecialUrlSubpage (use SkinComponentUtils::makeSpecialUrlSubpage
+    instead)
+* The SkinFactory::getSkinNames deprecated in 1.37 now emits warnings,
+   use getInstalledSkins instead.
 * …
 
 === Other changes in 1.43 ===
@@ -1115,6 +1126,8 @@ because of Phabricator reports.
 * Image captions are no longer trimmed.
 * 'SpecialPasswordResetOnSubmit' hook handlers can now receive both the
   username and the email provided by the user, instead of only one of them.
+* (T231827, T249976) Searchindex now uses utf8mb4,
+  si_page is marked as PK and si_title can handle longer title values.
 * …
 
 == Compatibility ==
