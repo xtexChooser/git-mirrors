@@ -11,16 +11,16 @@ use anyhow::{bail, Result};
 use ed25519_dalek::{pkcs8::DecodePrivateKey, SigningKey};
 use educe::Educe;
 use log::{error, info, warn};
-use tokio::sync::oneshot;
 use yjyz_tools_license::{self, FeatureFlags, LatestLicenseClaims, License};
+
+use crate::utils::AsyncTask;
 
 #[derive(Educe)]
 #[educe(Default)]
 pub struct LicensesWindow {
     licenser: LicenserWindow,
-    activation_result: Option<String>,
-    activation_task: Option<oneshot::Receiver<String>>,
     activation_code: String,
+    activation_task: AsyncTask<String>,
 }
 
 impl LicensesWindow {
@@ -62,37 +62,25 @@ impl LicensesWindow {
         })
         .inner?;
         ui.collapsing("使用激活码", |ui| {
-            if let Some(rx) = &mut self.activation_task {
+            let state = self.activation_task.state();
+            if state.running() {
                 ui.label("激活中，请稍候……");
-                match rx.try_recv() {
-                    Err(oneshot::error::TryRecvError::Empty) => {}
-                    Err(err) => return Err(err.into()),
-                    Ok(result) => {
-                        info!("Got activation result: {}", result);
-                        self.activation_result = Some(result);
-                        self.activation_task = None;
-                        ui.ctx().request_repaint();
-                    }
-                }
             } else {
                 ui.text_edit_singleline(&mut self.activation_code);
                 if ui.button("激活").clicked() {
-                    let (tx, rx) = oneshot::channel();
-                    self.activation_task = Some(rx);
-
                     let key = self.activation_code.clone();
-                    tokio::spawn(async {
+                    self.activation_task.start(async move {
                         match do_activation(key).await {
-                            Ok(result) => tx.send(result),
+                            Ok(result) => result,
                             Err(err) => {
                                 error!("Failed to resolve activation code: {:?}", err);
-                                tx.send(err.to_string())
+                                err.to_string()
                             }
                         }
                     });
                 }
-                if let Some(result) = &self.activation_result {
-                    ui.label(result);
+                if let Some(result) = state.try_result() {
+                    ui.label(result.as_str());
                 }
             }
             Ok(()) as anyhow::Result<()>
@@ -223,6 +211,8 @@ pub fn is_set(flags: FeatureFlags) -> bool {
 }
 
 pub async fn do_activation(key: String) -> Result<String> {
+    info!("Activating: {}", key);
+    tokio::time::sleep(tokio::time::Duration::from_secs(3)).await;
     Ok("已激活".to_string())
 }
 
