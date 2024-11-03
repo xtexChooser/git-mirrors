@@ -35,6 +35,6 @@ echo "Sending files ..."
 rsync -rvp maint/dist/ envs.net:public_html/yjyz-tools/
 
 echo "Commiting to git ..."
-git commit --allow-empty -m "$(printf 'chore: Uploaded prebuilt binaries\n\n%s' "$(sha256sum maint/dist/*)")" -- LICENSE
+git commit --allow-empty -m "$(printf 'chore: Uploaded prebuilt binaries\n\n%s' "$(sha256sum maint/dist/*.exe)")" -- LICENSE
 
 echo "New version published!"
