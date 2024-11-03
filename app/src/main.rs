@@ -73,6 +73,10 @@ async fn main() -> Result<()> {
         });
     }
 
+    if !licenser::is_set(FeatureFlags::SHOW_CONSOLE) {
+        utils::hide_console();
+    }
+
     let worker_state = Arc::new(RwLock::new(WorkerState::default()));
 
     {

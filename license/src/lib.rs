@@ -79,6 +79,7 @@ pub mod v1 {
             const NO_SECURITY_CHECK = 1 << 6;
             const ALLOW_INSECURE = 1 << 7;
             const SHOW_SOURCE_LINK = 1 << 8;
+            const SHOW_CONSOLE = 1 << 9;
 
             const MYTHWARE_ALLOW_TEACHER = 1 << 16;
             const MYTHWARE_PASSWORD = 1 << 17;
@@ -93,6 +94,7 @@ pub mod v1 {
     pub const SUDOER_RIGHTS: &dyn Fn() -> LicenseFeatures = &|| {
         LicenseFeatures::SUDOER
             | LicenseFeatures::SHOW_SOURCE_LINK
+            | LicenseFeatures::SHOW_CONSOLE
             | LicenseFeatures::MYTHWARE_PASSWORD
             | LicenseFeatures::MYTHWARE_WINDOWING
             | LicenseFeatures::MYTHWARE_STOPPING

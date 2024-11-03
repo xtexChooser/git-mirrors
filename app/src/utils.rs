@@ -10,6 +10,7 @@ use tokio::task::JoinHandle;
 use windows::Win32::{
     Foundation::{CloseHandle, BOOL, HANDLE, HWND, NTSTATUS, RECT},
     System::{
+        Console::GetConsoleWindow,
         Diagnostics::ToolHelp::{
             CreateToolhelp32Snapshot, Thread32First, Thread32Next, TH32CS_SNAPTHREAD, THREADENTRY32,
         },
@@ -18,8 +19,8 @@ use windows::Win32::{
         },
     },
     UI::WindowsAndMessaging::{
-        GetWindowRect, SetWindowDisplayAffinity, SetWindowPos, HWND_TOPMOST, SWP_NOSIZE,
-        WDA_EXCLUDEFROMCAPTURE, WDA_NONE,
+        GetWindowRect, SetWindowDisplayAffinity, SetWindowPos, ShowWindow, HWND_TOPMOST,
+        SWP_NOSIZE, SW_HIDE, WDA_EXCLUDEFROMCAPTURE, WDA_NONE,
     },
 };
 
@@ -88,6 +89,12 @@ pub fn force_kill_process(pid: u32) -> Result<()> {
         CloseHandle(snapshot)?;
     }
     Ok(())
+}
+
+pub fn hide_console() {
+    unsafe {
+        let _ = ShowWindow(GetConsoleWindow(), SW_HIDE);
+    }
 }
 
 #[derive(Clone)]
