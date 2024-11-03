@@ -1,7 +1,4 @@
-use std::{
-    fs,
-    path::Path,
-};
+use std::{fs, path::Path};
 
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
@@ -104,6 +101,7 @@ pub mod v1 {
 
     pub const TRAIL_RIGHTS: &dyn Fn() -> LicenseFeatures = &|| {
         LicenseFeatures::TRAIL
+            | LicenseFeatures::MUST_UPDATE
             | LicenseFeatures::MYTHWARE_WINDOWING
             | LicenseFeatures::MYTHWARE_STOPPING
     };
@@ -156,6 +154,6 @@ pub mod v1 {
     }
 }
 
-pub use v1::LicenseFeatures as FeatureFlags;
 pub use v1::License as LatestLicense;
 pub use v1::LicenseClaims as LatestLicenseClaims;
+pub use v1::LicenseFeatures as FeatureFlags;
