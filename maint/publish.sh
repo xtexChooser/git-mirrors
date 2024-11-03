@@ -11,7 +11,7 @@ else
     cargo release "${1:-patch}" -x --no-confirm -p yjyz-tools
 fi
 
-version="$(grep -E '^version = "(.*)"$' Cargo.toml | head -n1 | tail -c+12 | head -c-2)"
+version="$(grep -E '^version = "(.*)"$' app/Cargo.toml | head -n1 | tail -c+12 | head -c-2)"
 echo "Setting version to $version ..."
 yq -i -I 4 ".version |= \"$version\"" maint/version.json
 
