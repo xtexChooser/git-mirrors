@@ -7,6 +7,7 @@ allow-branch = ["main"]
 pre-release-commit-message = "chore: Release version {{version}}"
 tag-message = "Release {{version}}"
 publish = false
+shared-version = true
 
 [workspace.dependencies]
 anyhow = { version = "1.0.89", features = ["backtrace"] }
