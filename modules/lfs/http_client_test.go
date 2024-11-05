@@ -238,7 +238,7 @@ func TestHTTPClientDownload(t *testing.T) {
 		},
 	}
 
-	defer test.MockVariableValue(&setting.LFSClient.BatchOperationConcurrency, 3)()
+	defer test.MockVariableValue(&setting.LFSClient.BatchOperationConcurrency, 8)()
 	for _, c := range cases {
 		t.Run(c.endpoint, func(t *testing.T) {
 			client := &HTTPClient{
@@ -338,7 +338,7 @@ func TestHTTPClientUpload(t *testing.T) {
 		},
 	}
 
-	defer test.MockVariableValue(&setting.LFSClient.BatchOperationConcurrency, 3)()
+	defer test.MockVariableValue(&setting.LFSClient.BatchOperationConcurrency, 8)()
 	for _, c := range cases {
 		t.Run(c.endpoint, func(t *testing.T) {
 			client := &HTTPClient{
