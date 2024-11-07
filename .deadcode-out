@@ -247,6 +247,9 @@ code.gitea.io/gitea/modules/translation
 	MockLocale.TrSize
 	MockLocale.PrettyNumber
 
+code.gitea.io/gitea/modules/util
+	OptionalArg
+
 code.gitea.io/gitea/modules/util/filebuffer
 	CreateFromReader
 
