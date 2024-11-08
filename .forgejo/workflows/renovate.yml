@@ -8,7 +8,9 @@ name: renovate
 on:
   push:
     branches:
-      - 'renovate/**' # self-test updates
+      - renovate/** # self-test updates
+    paths:
+      - .forgejo/workflows/renovate.yml
   schedule:
     - cron: '0 0/2 * * *'
   workflow_dispatch:
