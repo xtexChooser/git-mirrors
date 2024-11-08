@@ -21,7 +21,7 @@ jobs:
   renovate:
     if: ${{ secrets.RENOVATE_TOKEN != '' }}
 
-    runs-on: docker
+    runs-on: docker-runner-one
     container:
       image: code.forgejo.org/forgejo-contrib/renovate:39.5.0
 
