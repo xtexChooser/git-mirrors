@@ -84,6 +84,12 @@
       "groupName": "postcss"
     },
     {
+      "description": "Group Forgejo go-chi packages",
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "matchPackageNames": ["code.forgejo.org/go-chi/**"],
+      "groupName": "forgejo go-chi packages"
+    },
+    {
       "description": "Split minor and patch updates",
       "matchPackageNames": [
         "containerbase/python-prebuild",
