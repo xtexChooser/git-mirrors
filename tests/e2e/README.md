@@ -77,7 +77,7 @@ and playwright to perform tests on it.
 > (e.g. when only creating new content),
 > or that they restore the initial state for the next browser run.
 
-#### With the playwright UI: 
+#### With the playwright UI:
 
 Playwright ships with an integrated UI mode which allows you to
 run individual tests and to debug them by seeing detailed traces of what playwright does.
@@ -90,7 +90,7 @@ npx playwright test --ui
 #### Running individual tests
 
 ```
-npx playwright test actions.test.e2e.js:9
+npx playwright test actions.test.e2e.ts:9
 ```
 
 First, specify the complete test filename,
@@ -145,7 +145,7 @@ TEST_PGSQL_HOST=localhost:5432 TEST_PGSQL_DBNAME=test TEST_PGSQL_USERNAME=postgr
 
 ### Running individual tests
 
-Example command to run `example.test.e2e.js` test file:
+Example command to run `example.test.e2e.ts` test file:
 
 > **Note**
 > Unlike integration tests, this filtering is at the file level, not function
@@ -212,7 +212,7 @@ Feel free to improve the logic used there if you need more advanced functionalit
 If you can, perform automated accessibility testing using
 [AxeCore](https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/README.md).
 
-Take a look at `shared/forms.js` and some other places for inspiration.
+Take a look at `shared/forms.ts` and some other places for inspiration.
 
 ### List related files coverage
 

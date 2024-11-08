@@ -1,6 +1,5 @@
 // Copyright 2024 The Forgejo Authors. All rights reserved.
 // SPDX-License-Identifier: MIT
-// @ts-check
 
 // @watch start
 // templates/user/auth/**
@@ -9,7 +8,7 @@
 // @watch end
 
 import {expect} from '@playwright/test';
-import {test, create_temp_user} from './utils_e2e.js';
+import {test, create_temp_user} from './utils_e2e.ts';
 
 test('WebAuthn register & login flow', async ({browser, request}, workerInfo) => {
   test.skip(workerInfo.project.name !== 'chromium', 'Uses Chrome protocol');
@@ -31,7 +30,7 @@ test('WebAuthn register & login flow', async ({browser, request}, workerInfo) =>
       transport: 'usb',
       automaticPresenceSimulation: true,
       isUserVerified: true,
-      backupEligibility: true,
+      backupEligibility: true, // TODO: this doesn't seem to be available?!
     },
   });
 

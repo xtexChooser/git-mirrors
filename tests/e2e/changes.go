@@ -29,7 +29,7 @@ func initChangedFiles() {
 	globalPatterns := []string{
 		// meta and config
 		"Makefile",
-		"playwright.config.js",
+		"playwright.config.ts",
 		".forgejo/workflows/testing.yml",
 		"tests/e2e/*.go",
 		"tests/e2e/shared/*",
