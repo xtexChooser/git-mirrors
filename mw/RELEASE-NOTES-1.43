@@ -207,7 +207,7 @@ For notes on 1.42.x and older releases, see HISTORY.
 
 * Updated codex, codex-design-tokens and codex-icons
   from v1.3.6 to v1.14.0.
-* Updated composer/semver from 3.4.0 to 3.4.2.
+* Updated composer/semver from 3.4.0 to 3.4.3.
 * Updated guzzlehttp/guzzle from 7.7.1 to 7.9.2.
 * Updated jquery.i18n from 1.0.7 to 1.0.10.
 * Updated pear/net_smtp from 1.11.1 to 1.12.1.
@@ -219,6 +219,7 @@ For notes on 1.42.x and older releases, see HISTORY.
 * Updated wikimedia/less.php from 4.2.1 to 5.1.1.
 * Updated wikimedia/minify from 2.7.0 to 2.8.0.
 * Updated wikimedia/php-session-serializer from 2.0.1 to 3.0.0.
+* Updated wikimedia/remex-html from 4.1.0 to 4.1.1.
 * Updated wikimedia/shellbox from 4.0.2 to 4.1.1.
 * Updated wikimedia/xmp-reader from 0.9.1 to 0.9.2.
 * Updated vue from 3.3.9 to 3.4.27.
@@ -232,7 +233,7 @@ For notes on 1.42.x and older releases, see HISTORY.
 
 * Updated doctrine/dbal from 3.7.2 to 3.8.4.
 * Updated eslint-config-wikimedia from 0.26.0 to 0.27.0.
-* Updated mediawiki/mediawiki-codesniffer from 43.0.0 to 44.0.0.
+* Updated mediawiki/mediawiki-codesniffer from 43.0.0 to 45.0.0.
 * Updated phpunit/phpunit from 9.6.16 to 9.6.19.
 * Updated seld/jsonlint from 1.10.1 to 1.10.2.
 * …
@@ -501,6 +502,7 @@ because of Phabricator reports.
 * Skins since 1.39 have not supported rendering content outside the body tag.
 The bodyOnly=false option has now been removed, meaning this is no longer
 supported.
+* CentralIdLookup::factoryNonLocal(), deprecated since 1.37, has been removed.
 * …
 
 === Deprecations in 1.43 ===
@@ -838,12 +840,11 @@ supported.
     - RedisBagOStuff
     - WANObjectCache
     - WinCacheBagOStuff
+    - RedisConnectionPool
+    - RedisConnRef
   - Wikimedia\Rdbms:
     - DBAccessObjectUtils
     - IDBAccessObject
-  - Wikimedia\Redis:
-    - RedisConnectionPool
-    - RedisConnRef
   - Wikimedia\Stats:
     - BufferingStatsdDataFactory
     - IBufferingStatsdDataFactory
@@ -950,6 +951,7 @@ supported.
 * User::isBlockedFromEmailuser() and User::canSendEmail(), deprecated since
   1.41, now emit deprecation warnings.
 * wfMergeErrorArrays() has been deprecated.
+* wfArrayDiff2() has been deprecated.
 * User::whoIs() and User::whoIsReal(), have been deprecated.
 * UserCache class and MediaWikiServices::getUserCache(), have been deprecated.
 * JsonUnserializable and related classes have been renamed to JsonDeserializable
