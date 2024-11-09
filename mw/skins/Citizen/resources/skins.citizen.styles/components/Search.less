@@ -18,8 +18,7 @@
 		width: var( --width-search-bar );
 		max-width: ~'calc(100vw - var( --padding-page ) )';
 		max-height: var( --header-card-maxheight );
-		margin-right: auto;
-		margin-left: auto;
+		margin-inline: auto;
 		overflow-y: auto;
 		overscroll-behavior: contain;
 		transform-origin: center var( --transform-origin-offset-start );
@@ -29,6 +28,11 @@
 			max-height: ~'calc( 100vh - ( var( --space-xs ) + @{position-offset-y-desktop} ) * 2 )';
 			overflow-y: auto;
 		}
+	}
+
+	/* So that JS can find the DOM element for the keyboard shortcut */
+	&.citizen-dropdown .citizen-menu__card {
+		content-visibility: visible;
 	}
 
 	.citizen-dropdown-details[ open ] + .citizen-menu__card > .citizen-search__form {
@@ -115,27 +119,6 @@
 		}
 	}
 
-	#searchInput {
-		flex-grow: 1;
-		padding: 0;
-		font-size: inherit;
-		appearance: none;
-		background: transparent; // Cancel default background
-		border: 0; // Cancel default border
-
-		&:focus {
-			outline: 0;
-			// The search suggestion pop-up indicates for focus state
-			// border-color: var( --color-progressive );
-			// box-shadow: inset 0 0 0 1px var( --color-progressive );
-		}
-
-		// Remove browser native clear all button in search field
-		&::-webkit-search-cancel-button {
-			-webkit-appearance: none;
-		}
-	}
-
 	&__footer {
 		bottom: 0;
 		display: flex;
@@ -156,6 +139,27 @@
 			gap: var( --space-md );
 			align-items: center;
 		}
+	}
+}
+
+#searchInput {
+	flex-grow: 1;
+	padding: 0;
+	font-size: inherit;
+	appearance: none;
+	background: transparent; // Cancel default background
+	border: 0; // Cancel default border
+
+	&:focus {
+		outline: 0;
+		// The search suggestion pop-up indicates for focus state
+		// border-color: var( --color-progressive );
+		// box-shadow: inset 0 0 0 1px var( --color-progressive );
+	}
+
+	// Remove browser native clear all button in search field
+	&::-webkit-search-cancel-button {
+		-webkit-appearance: none;
 	}
 }
 
