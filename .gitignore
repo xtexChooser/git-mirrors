@@ -5,3 +5,4 @@
 *.lic
 /maint/version.json
 /maint/dist
+/docs/site

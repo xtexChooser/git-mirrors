@@ -1,0 +1,23 @@
+site_name: YJYZ Tools
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: teal
+    accent: teal
+
+plugins:
+  - search:
+      lang: zh
+  - minify
+
+markdown_extensions:
+  - attr_list
+  - smarty
+  - toc:
+      permalink: true
+  - sane_lists
+
+nav:
+  - Home: index.md
