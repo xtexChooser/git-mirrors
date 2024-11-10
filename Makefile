@@ -660,6 +660,7 @@ generate-ini-pgsql:
 		-e 's|{{REPO_TEST_DIR}}|${REPO_TEST_DIR}|g' \
 		-e 's|{{TEST_LOGGER}}|$(or $(TEST_LOGGER),test$(COMMA)file)|g' \
 		-e 's|{{TEST_TYPE}}|$(or $(TEST_TYPE),integration)|g' \
+		-e 's|{{TEST_STORAGE_TYPE}}|$(or $(TEST_STORAGE_TYPE),minio)|g' \
 			tests/pgsql.ini.tmpl > tests/pgsql.ini
 
 .PHONY: test-pgsql
