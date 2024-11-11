@@ -126,17 +126,16 @@ You can also perform e2e tests using MariaDB/MySQL or PostgreSQL if you want.
 
 Setup a MySQL database inside docker
 ```
-docker run -e "MYSQL_DATABASE=test" -e "MYSQL_ALLOW_EMPTY_PASSWORD=yes" -p 3306:3306 --rm --name mysql mysql:latest #(just ctrl-c to stop db and clean the container)
-docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" --rm --name elasticsearch elasticsearch:7.6.0 #(in a second terminal, just ctrl-c to stop db and clean the container)
+docker run -e "MYSQL_DATABASE=test" -e "MYSQL_ALLOW_EMPTY_PASSWORD=yes" -p 3306:3306 --rm --name mysql mysql:latest #(Ctrl-c to stop the database)
 ```
 Start tests based on the database container
 ```
-TEST_MYSQL_HOST=localhost:3306 TEST_MYSQL_DBNAME=test TEST_MYSQL_USERNAME=root TEST_MYSQL_PASSWORD='' make test-e2e-mysql
+TEST_MYSQL_HOST=localhost:3306 TEST_MYSQL_DBNAME=test?multiStatements=true TEST_MYSQL_USERNAME=root TEST_MYSQL_PASSWORD='' make test-e2e-mysql
 ```
 
 Setup a pgsql database inside docker
 ```
-docker run -e "POSTGRES_DB=test" -p 5432:5432 --rm --name pgsql postgres:latest #(just ctrl-c to stop db and clean the container)
+docker run -e POSTGRES_DB=test -e POSTGRES_PASSWORD=password -p 5432:5432 --rm --name pgsql postgres:latest #(Ctrl-c to stop the database)
 ```
 Start tests based on the database container
 ```

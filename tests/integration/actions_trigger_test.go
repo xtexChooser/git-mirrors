@@ -321,7 +321,7 @@ jobs:
 				require.Eventually(t, func() bool {
 					actionRuns = make([]*actions_model.ActionRun, 0)
 					require.NoError(t, db.GetEngine(db.DefaultContext).Where("repo_id=?", baseRepo.ID).Find(&actionRuns))
-					return assert.Len(t, actionRuns, count)
+					return len(actionRuns) == count
 				}, 30*time.Second, 1*time.Second)
 
 				// verify the expected  ActionRuns were created
