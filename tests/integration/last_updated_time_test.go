@@ -20,7 +20,7 @@ func TestRepoLastUpdatedTime(t *testing.T) {
 	req := NewRequest(t, "GET", "/explore/repos?q=repo1")
 	resp := session.MakeRequest(t, req, http.StatusOK)
 	doc := NewHTMLParser(t, resp.Body)
-	node := doc.doc.Find(".flex-item-body").First()
+	node := doc.doc.Find(".flex-item-main:has(a[href='/user2/repo1']) .flex-item-body").First()
 	{
 		buf := ""
 		findTextNonNested(t, node, &buf)
@@ -28,10 +28,7 @@ func TestRepoLastUpdatedTime(t *testing.T) {
 	}
 
 	// Relative time should be present as a descendent
-	{
-		relativeTime := node.Find("relative-time").Text()
-		assert.True(t, strings.HasPrefix(relativeTime, "19")) // ~1970, might underflow with timezone
-	}
+	assert.Contains(t, node.Find("relative-time").Text(), "2024-11-10")
 }
 
 func TestBranchLastUpdatedTime(t *testing.T) {
