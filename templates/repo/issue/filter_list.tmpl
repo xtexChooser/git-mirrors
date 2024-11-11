@@ -148,7 +148,7 @@
 	<div class="menu">
 		<a rel="nofollow" class="{{if or (eq .SortType "relevance") (not .SortType)}}active {{end}}item" href="?q={{$.Keyword}}&type={{$.ViewType}}&sort=relevency&state={{$.State}}&labels={{.SelectLabels}}&milestone={{$.MilestoneID}}&project={{$.ProjectID}}&assignee={{$.AssigneeID}}&poster={{$.PosterID}}&fuzzy={{$.IsFuzzy}}{{if $.ShowArchivedLabels}}&archived=true{{end}}">{{ctx.Locale.Tr "repo.issues.filter_sort.relevance"}}</a>
 		{{$o := .}}
-		{{range $opt := StringUtils.Make "latest" "oldest" "recentupdate" "mostcomment" "leastcomment" "nearduedate" "farduedate"}}
+		{{range $opt := StringUtils.Make "latest" "oldest" "recentupdate" "leastupdate" "mostcomment" "leastcomment" "nearduedate" "farduedate"}}
 			{{$text := ctx.Locale.Tr (printf "repo.issues.filter_sort.%s" $opt)}}
 			<a rel="nofollow" class="{{if eq $o.SortType $opt}}active {{end}}item" href="?q={{$.Keyword}}&type={{$.ViewType}}&sort={{$opt}}&state={{$.State}}&labels={{$o.SelectLabels}}&milestone={{$.MilestoneID}}&project={{$.ProjectID}}&assignee={{$.AssigneeID}}&poster={{$.PosterID}}&fuzzy={{$.IsFuzzy}}{{if $.ShowArchivedLabels}}&archived=true{{end}}">{{$text}}</a>
 		{{end}}
