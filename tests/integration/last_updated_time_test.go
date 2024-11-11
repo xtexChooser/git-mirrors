@@ -48,7 +48,7 @@ func TestBranchLastUpdatedTime(t *testing.T) {
 	{
 		buf := ""
 		findTextNonNested(t, node, &buf)
-		assert.True(t, strings.Contains(buf, "Updated"))
+		assert.Contains(t, buf, "Updated")
 	}
 
 	{
