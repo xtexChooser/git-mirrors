@@ -1,4 +1,4 @@
-import {expect, test as baseTest} from '@playwright/test';
+import {expect, test as baseTest, type Browser, type BrowserContextOptions, type APIRequestContext, type TestInfo, type Page} from '@playwright/test';
 
 export const test = baseTest.extend({
   context: async ({browser}, use) => {
@@ -6,7 +6,7 @@ export const test = baseTest.extend({
   },
 });
 
-async function test_context(browser, options) {
+async function test_context(browser: Browser, options?: BrowserContextOptions) {
   const context = await browser.newContext(options);
 
   context.on('page', (page) => {
@@ -21,7 +21,7 @@ const LOGIN_PASSWORD = 'password';
 
 // log in user and store session info. This should generally be
 //  run in test.beforeAll(), then the session can be loaded in tests.
-export async function login_user(browser, workerInfo, user) {
+export async function login_user(browser: Browser, workerInfo: TestInfo, user: string) {
   test.setTimeout(60000);
   // Set up a new context
   const context = await test_context(browser);
@@ -47,7 +47,7 @@ export async function login_user(browser, workerInfo, user) {
   return context;
 }
 
-export async function load_logged_in_context(browser, workerInfo, user) {
+export async function load_logged_in_context(browser: Browser, workerInfo: TestInfo, user: string) {
   let context;
   try {
     context = await test_context(browser, {storageState: `${ARTIFACTS_PATH}/state-${user}-${workerInfo.workerIndex}.json`});
@@ -59,12 +59,12 @@ export async function load_logged_in_context(browser, workerInfo, user) {
   return context;
 }
 
-export async function login({browser}, workerInfo) {
+export async function login({browser}: {browser: Browser}, workerInfo: TestInfo) {
   const context = await load_logged_in_context(browser, workerInfo, 'user2');
-  return await context.newPage();
+  return await context?.newPage();
 }
 
-export async function save_visual(page) {
+export async function save_visual(page: Page) {
   // Optionally include visual testing
   if (process.env.VISUAL_TEST) {
     await page.waitForLoadState('networkidle');
@@ -83,7 +83,7 @@ export async function save_visual(page) {
 
 // Create a temporary user and login to that user and store session info.
 // This should ideally run on a per test basis.
-export async function create_temp_user(browser, workerInfo, request) {
+export async function create_temp_user(browser: Browser, workerInfo: TestInfo, request: APIRequestContext) {
   const username = globalThis.crypto.randomUUID();
   const newUser = await request.post(`/api/v1/admin/users`, {
     headers: {

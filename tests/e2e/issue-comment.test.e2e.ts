@@ -1,5 +1,3 @@
-// @ts-check
-
 // @watch start
 // web_src/js/features/comp/**
 // web_src/js/features/repo-**
@@ -7,7 +5,7 @@
 // @watch end
 
 import {expect} from '@playwright/test';
-import {test, login_user, login} from './utils_e2e.js';
+import {test, login_user, login} from './utils_e2e.ts';
 
 test.beforeAll(async ({browser}, workerInfo) => {
   await login_user(browser, workerInfo, 'user2');
