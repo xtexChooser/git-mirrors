@@ -13,7 +13,6 @@ test('Follow actions', async ({browser}, workerInfo) => {
   const page = await context.newPage();
 
   await page.goto('/user1');
-  await page.waitForLoadState('networkidle');
 
   // Check if following and then unfollowing works.
   // This checks that the event listeners of

@@ -37,7 +37,7 @@ export async function login_user(browser: Browser, workerInfo: TestInfo, user: s
   await page.type('input[name=password]', LOGIN_PASSWORD);
   await page.click('form button.ui.primary.button:visible');
 
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState();
 
   expect(page.url(), {message: `Failed to login user ${user}`}).toBe(`${workerInfo.project.use.baseURL}/`);
 
@@ -67,7 +67,7 @@ export async function login({browser}: {browser: Browser}, workerInfo: TestInfo)
 export async function save_visual(page: Page) {
   // Optionally include visual testing
   if (process.env.VISUAL_TEST) {
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     // Mock page/version string
     await page.locator('footer div.ui.left').evaluate((node) => node.innerHTML = 'MOCK');
     await expect(page).toHaveScreenshot({

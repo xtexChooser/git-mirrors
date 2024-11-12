@@ -56,7 +56,7 @@ test('Always focus edit tab first on edit', async ({browser}, workerInfo) => {
   await page.locator('#issue-1 .comment-container a[data-tab-for=markdown-previewer]').click();
   await page.click('#issue-1 .comment-container .save');
 
-  await page.waitForLoadState('networkidle');
+  await page.waitForLoadState();
 
   // Edit again and assert that edit tab should be active (and not preview tab)
   await page.click('#issue-1 .comment-container .context-menu');
