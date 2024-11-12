@@ -20,7 +20,7 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   eslintPluginImportX.flatConfigs.typescript,
   {
-    ignores: ['web_src/js/vendor', 'web_src/fomantic', 'public/assets/js'],
+    ignores: ['web_src/js/vendor', 'web_src/fomantic', 'public/assets/js', 'tests/e2e/reports/'],
   },
   {
     plugins: {
@@ -1112,7 +1112,7 @@ export default tseslint.config(
       ],
     },
   }, {
-    files: ['tests/e2e/**/*.js', 'tests/e2e/**/*.ts'],
+    files: ['tests/e2e/**/*.ts'],
     languageOptions: {
       globals: {
         ...globals.browser,
