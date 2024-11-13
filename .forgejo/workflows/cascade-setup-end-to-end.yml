@@ -45,7 +45,7 @@ jobs:
 
   cascade:
     if: >
-      !startsWith(vars.ROLE, 'forgejo-') && (
+      vars.ROLE == 'forgejo-coding' && (
         github.event_name == 'push' ||
         (
           github.event.action == 'label_updated' && github.event.label.name == 'run-end-to-end-tests'
