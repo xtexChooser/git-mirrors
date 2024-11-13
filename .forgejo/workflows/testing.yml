@@ -10,7 +10,7 @@ on:
 
 jobs:
   backend-checks:
-    if: ${{ !startsWith(vars.ROLE, 'forgejo-') }}
+    if: vars.ROLE == 'forgejo-coding' || vars.ROLE == 'forgejo-testing'
     runs-on: docker
     container:
       image: 'code.forgejo.org/oci/node:20-bookworm'
