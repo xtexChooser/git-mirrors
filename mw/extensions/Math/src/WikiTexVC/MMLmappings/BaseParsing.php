@@ -159,10 +159,14 @@ class BaseParsing {
 		return $mrow->encapsulateRaw( $node->getArg()->renderMML( $passedArgs ) );
 	}
 
-	public static function cancel( $node, $passedArgs, $operatorContent, $name, $notation = null, $smth2 = null ) {
-		$mrow = new MMLmrow();
-		$menclose = new MMLmenclose( "", [ "notation" => $notation ] );
-		return $mrow->encapsulateRaw( $menclose->encapsulateRaw( $node->getArg()->renderMML() ) );
+	public static function cancel( Fun1 $node, $passedArgs, $operatorContent, $name, $notation = '' ): string {
+		$outer = new MMLmenclose( '', [ 'notation' => $notation, 'class' => 'menclose' ] );
+		$bars = '';
+		foreach ( explode( ' ', $notation ) as $element ) {
+			$bars .= ( new MMLmrow( '', [ 'class' => 'menclose-' . $element ] ) )->getEmpty();
+		}
+
+		return $outer->encapsulateRaw( $node->getArg()->renderMML() . $bars );
 	}
 
 	public static function cancelTo( $node, $passedArgs, $operatorContent, $name, $notation = null ) {
@@ -515,34 +519,18 @@ class BaseParsing {
 								   $vspacing = null, $style = null, $cases = null, $numbered = null ) {
 		$resInner = '';
 		$mtr = new MMLmtr();
-		$mtd = new MMLmtd();
-		$tableArgs = [ "columnspacing" => "1em", "rowspacing" => "4pt", 'rowlines' => '' ];
-		$columnInfo = trim( $node->getColumnSpecs()->render(), "{} \n\r\t\v\x00" );
+		$tableArgs = [ "columnspacing" => "1em", "rowspacing" => "4pt" ];
+		$boarder = $node->getBoarder();
 		if ( $align ) {
 			$tableArgs['columnalign'] = $align;
-		} elseif ( $columnInfo ) {
-			$align = '';
-			foreach ( str_split( $columnInfo ) as $chr ) {
-				switch ( $chr ) {
-					case 'r':
-						$align .= 'right ';
-						break;
-					case 'l':
-						$align .= 'left ';
-						break;
-					case 'c':
-						$align .= 'center ';
-						break;
-				}
-			}
-			$tableArgs['columnalign'] = $align;
+		} elseif ( $node->hasColumnInfo() ) {
+			$tableArgs['columnalign'] = $node->getAlignInfo();
 		}
-		$mencloseArgs = [ 'notation' => '' ];
-
-		$lineNumber = 0;
+		$rowNo = 0;
+		$lines = $node->getLines();
 		foreach ( $node as $row ) {
 			$resInner .= $mtr->getStart();
-			$solid = false;
+			$colNo = 0;
 			foreach ( $row  as $cell ) {
 				$usedArg = clone $cell;
 				if ( $usedArg instanceof TexArray &&
@@ -551,42 +539,34 @@ class BaseParsing {
 					$usedArg[0]->getArg() === '\\hline '
 				) {
 					$usedArg->pop();
-					if ( $lineNumber === 0 ) {
-						$mencloseArgs['notation'] .= 'top ';
-					} elseif ( $lineNumber === $node->getLength() - 1 &&
+					if ( $rowNo === $node->getLength() - 1 &&
 						$usedArg->getLength() === 0
 					) {
-						$mencloseArgs['notation'] .= 'bottom ';
 						// remove the started row
 						$resInner = substr( $resInner, 0, -1 * strlen( $mtr->getStart() ) );
 						continue 2;
 					}
-					$solid = true;
 				}
+				$mtdAttributes = [];
+				$texclass = $lines[$rowNo] ? TexClass::TOP : '';
+				$texclass .= $lines[$rowNo + 1] ?? false ? ' ' . TexClass::BOTTOM : '';
+				$texclass .= $boarder[$colNo] ?? false ? ' ' . TexClass::LEFT : '';
+				$texclass .= $boarder[$colNo + 1 ] ?? false ? ' ' . TexClass::RIGHT : '';
+				$texclass = trim( $texclass );
+				if ( $texclass ) {
+					$mtdAttributes['class'] = $texclass;
+				}
+				$mtd = new MMLmtd( '', $mtdAttributes );
+
 				$resInner .= $mtd->encapsulateRaw( $usedArg->renderMML( $passedArgs, [ 'inMatrix'
 					=> true ]
 				) );
-			}
-			if ( $lineNumber > 0 ) {
-				$tableArgs['rowlines'] .= $solid ? 'solid ' : 'none ';
+				$colNo++;
 			}
 			$resInner .= $mtr->getEnd();
-			$lineNumber++;
-		}
-		if ( !str_contains( $tableArgs['rowlines'], 'solid' ) ) {
-			unset( $tableArgs['rowlines'] );
+			$rowNo++;
 		}
 		$mrow = new MMLmrow();
-		if ( $columnInfo ) {
-			// TBD this is just simple check, create a parsing function for hlines when there are more cases
-			if ( str_contains( $columnInfo, "|" ) ) {
-
-				$mencloseArgs['notation'] .= "left right";
-				// it seems this is creted when left and right is solely coming from columninfo
-				$tableArgs = array_merge( $tableArgs, [ "columnlines" => "solid" ] );
-			}
-
-		}
 		$mtable = new MMLmtable( "", $tableArgs );
 		if ( $cases || ( $open != null && $close != null ) ) {
 			$bm = new BaseMethods();
@@ -607,15 +587,9 @@ class BaseParsing {
 				$mmlMoClose = $mmlMoClose->encapsulateRaw( $close );
 			}
 			$resInner = $mmlMoOpen . $mtable->encapsulateRaw( $resInner ) . $mmlMoClose;
-		} else {
-			$resInner = $mtable->encapsulateRaw( $resInner );
+			return $mrow->encapsulateRaw( $resInner );
 		}
-		if ( $mencloseArgs['notation'] ) {
-			$menclose = new MMLmenclose( "", $mencloseArgs );
-			return $mrow->encapsulateRaw( $menclose->encapsulateRaw( $resInner ) );
-
-		}
-		return $mrow->encapsulateRaw( $resInner );
+		return $mtable->encapsulateRaw( $resInner );
 	}
 
 	public static function namedOp( $node, $passedArgs, $operatorContent, $name, $id = null ) {
@@ -818,12 +792,19 @@ class BaseParsing {
 		$state = [];
 
 		// Unicode fixes for the operators
-		if ( $mathvariant == Variants::DOUBLESTRUCK ) {
-			$state = [ "double-struck-literals" => true ];
-		} elseif ( $mathvariant == Variants::CALLIGRAPHIC ) {
-			$state = [ "calligraphic" => true ];
-		} elseif ( $mathvariant == Variants::BOLDCALLIGRAPHIC ) {
-			$state = [ "bold-calligraphic" => true ];
+		switch ( $mathvariant ) {
+			case Variants::DOUBLESTRUCK:
+				$state = [ "double-struck-literals" => true ];
+				break;
+			case Variants::CALLIGRAPHIC:
+				$state = [ "calligraphic" => true ];
+				break;
+			case Variants::BOLDCALLIGRAPHIC:
+				$state = [ "bold-calligraphic" => true ];
+				break;
+			case Variants::FRAKTUR:
+				$state = [ "fraktur" => true ];
+				break;
 		}
 
 		if ( $node instanceof Fun1nb ) {
@@ -953,7 +934,7 @@ class BaseParsing {
 			}
 		}
 		$mrow = new MMLmrow( TexClass::ORD, [] );
-		$opParsed = ( $operatorContent != null && $operatorContent["limits"] )
+		$opParsed = ( $operatorContent["limits"] ?? false )
 			? $operatorContent["limits"]->renderMML( $argsOp ) : "";
 
 		if ( $node instanceof DQ ) {
@@ -963,6 +944,9 @@ class BaseParsing {
 			$munderOver = new MMLmunderover();
 			return $munderOver->encapsulateRaw( $opParsed . $mrow->encapsulateRaw( $node->getDown()->renderMML() )
 				. $mrow->encapsulateRaw( $node->getUp()->renderMML() ) );
+		} elseif ( $name === 'limits' || $name === 'nolimits' ) {
+			// Don't render limits
+			return '';
 		}
 	}
 

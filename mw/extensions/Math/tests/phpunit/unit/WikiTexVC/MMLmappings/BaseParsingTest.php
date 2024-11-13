@@ -67,7 +67,9 @@ class BaseParsingTest extends TestCase {
 			( new Literal( 'a' ) )
 		);
 		$result = BaseParsing::cancel( $node, [], null, 'cancel', 'something' );
-		$this->assertStringContainsString( '<menclose notation="something"><mi>a</mi></menclose>',
+		$this->assertStringContainsString( '<mi>a</mi><mrow class="menclose-something"/>',
+			$result );
+		$this->assertStringContainsString( '<menclose notation="something" class="menclose">',
 			$result );
 	}
 
@@ -149,7 +151,7 @@ class BaseParsingTest extends TestCase {
 				new TexArray( new TexArray( new Literal( '\\hline ' ), new Literal( 'a'
 				) ) ) ) );
 		$result = BaseParsing::matrix( $matrix, [], null, 'matrix', '002A' );
-		$this->assertStringContainsString( 'solid', $result );
+		$this->assertStringContainsString( 'class="mwe-math-matrix-top"', $result );
 		$this->assertStringContainsString( '<mi>a</mi>', $result );
 	}
 
@@ -161,8 +163,8 @@ class BaseParsingTest extends TestCase {
 \\hline
 \\end{array}' )[0];
 		$result = BaseParsing::matrix( $matrix, [], null, 'matrix', '002A' );
-		$this->assertStringContainsString( 'solid none', $result );
-		$this->assertStringContainsString( 'top bottom', $result );
+		$this->assertStringContainsString( 'class="mwe-math-matrix-top"', $result );
+		$this->assertStringContainsString( 'class="mwe-math-matrix-top mwe-math-matrix-bottom"', $result );
 	}
 
 	public function testHandleOperatorName() {
