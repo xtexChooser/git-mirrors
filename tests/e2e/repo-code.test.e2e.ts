@@ -5,11 +5,7 @@
 // @watch end
 
 import {expect} from '@playwright/test';
-import {test, login_user, load_logged_in_context} from './utils_e2e.ts';
-
-test.beforeAll(async ({browser}, workerInfo) => {
-  await login_user(browser, workerInfo, 'user2');
-});
+import {test} from './utils_e2e.ts';
 
 async function assertSelectedLines(page, nums) {
   const pageAssertions = async () => {
@@ -33,10 +29,7 @@ async function assertSelectedLines(page, nums) {
   return pageAssertions();
 }
 
-test('Line Range Selection', async ({browser}, workerInfo) => {
-  const context = await load_logged_in_context(browser, workerInfo, 'user2');
-  const page = await context.newPage();
-
+test('Line Range Selection', async ({page}) => {
   const filePath = '/user2/repo1/src/branch/master/README.md?display=source';
 
   const response = await page.goto(filePath);

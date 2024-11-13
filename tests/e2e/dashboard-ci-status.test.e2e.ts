@@ -15,10 +15,9 @@ test('Correct link and tooltip', async ({browser}, workerInfo) => {
   const response = await page.goto('/?repo-search-query=test_workflows');
   expect(response?.status()).toBe(200);
 
-  await page.waitForLoadState('networkidle');
-
   const repoStatus = page.locator('.dashboard-repos .repo-owner-name-list > li:nth-child(1) > a:nth-child(2)');
-
+  // wait for network activity to cease (so status was loaded in frontend)
+  await page.waitForLoadState('networkidle'); // eslint-disable-line playwright/no-networkidle
   await expect(repoStatus).toHaveAttribute('href', '/user2/test_workflows/actions', {timeout: 10000});
   await expect(repoStatus).toHaveAttribute('data-tooltip-content', 'Failure');
 });

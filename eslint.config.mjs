@@ -1125,7 +1125,8 @@ export default tseslint.config(
       ...playwright.configs['flat/recommended'].rules,
       'playwright/no-conditional-in-test': [0],
       'playwright/no-conditional-expect': [0],
-      'playwright/no-networkidle': [0],
+      // allow grouping helper functions with tests
+      'unicorn/consistent-function-scoping': [0],
 
       'playwright/no-skipped-test': [
         2,

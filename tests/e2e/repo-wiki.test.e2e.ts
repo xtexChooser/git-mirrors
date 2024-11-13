@@ -9,7 +9,6 @@ import {test} from './utils_e2e.ts';
 test(`Search for long titles and test for no overflow`, async ({page}, workerInfo) => {
   test.skip(workerInfo.project.name === 'Mobile Safari', 'Fails as always, see https://codeberg.org/forgejo/forgejo/pulls/5326#issuecomment-2313275');
   await page.goto('/user2/repo1/wiki');
-  await page.waitForLoadState('networkidle');
   await page.getByPlaceholder('Search wiki').fill('spaces');
   await page.getByPlaceholder('Search wiki').click();
   // workaround: HTMX listens on keyup events, playwright's fill only triggers the input event

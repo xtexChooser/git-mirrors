@@ -44,7 +44,6 @@ test('workflow dispatch error: missing inputs', async ({browser}, workerInfo) =>
   const page = await context.newPage();
 
   await page.goto('/user2/test_workflows/actions?workflow=test-dispatch.yml&actor=0&status=0');
-  await page.waitForLoadState('networkidle');
 
   await page.locator('#workflow_dispatch_dropdown>button').click();
 
@@ -55,7 +54,6 @@ test('workflow dispatch error: missing inputs', async ({browser}, workerInfo) =>
   });
 
   await page.locator('#workflow-dispatch-submit').click();
-  await page.waitForLoadState('networkidle');
 
   await expect(page.getByText('Require value for input "String w/o. default".')).toBeVisible();
 });
@@ -68,13 +66,11 @@ test('workflow dispatch success', async ({browser}, workerInfo) => {
   const page = await context.newPage();
 
   await page.goto('/user2/test_workflows/actions?workflow=test-dispatch.yml&actor=0&status=0');
-  await page.waitForLoadState('networkidle');
 
   await page.locator('#workflow_dispatch_dropdown>button').click();
 
   await page.type('input[name="inputs[string2]"]', 'abc');
   await page.locator('#workflow-dispatch-submit').click();
-  await page.waitForLoadState('networkidle');
 
   await expect(page.getByText('Workflow run was successfully requested.')).toBeVisible();
 
@@ -83,7 +79,6 @@ test('workflow dispatch success', async ({browser}, workerInfo) => {
 
 test('workflow dispatch box not available for unauthenticated users', async ({page}) => {
   await page.goto('/user2/test_workflows/actions?workflow=test-dispatch.yml&actor=0&status=0');
-  await page.waitForLoadState('networkidle');
 
   await expect(page.locator('body')).not.toContainText(workflow_trigger_notification_text);
 });
