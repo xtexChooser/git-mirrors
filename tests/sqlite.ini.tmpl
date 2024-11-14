@@ -4,7 +4,8 @@ RUN_MODE = prod
 
 [database]
 DB_TYPE = sqlite3
-PATH    = :memory:
+PATH    = tests/{{TEST_TYPE}}/gitea-{{TEST_TYPE}}-sqlite/gitea.db
+SQLITE_JOURNAL_MODE = MEMORY
 
 [indexer]
 REPO_INDEXER_ENABLED = true
