@@ -135,20 +135,21 @@ jobs:
     needs: [backend-checks, frontend-checks, test-unit]
     container:
       image: 'code.forgejo.org/oci/node:20-bookworm'
+    name: ${{ format('test-remote-cacher ({0})', matrix.cacher.name) }}
     strategy:
       matrix:
         cacher:
-          # redis
-          - image: docker.io/bitnami/redis:7.2
+          - name: redis
+            image: docker.io/bitnami/redis:7.2
             options: --tmpfs /bitnami/redis/data
-          # redict
-          - image: registry.redict.io/redict:7.3.0-scratch
+          - name: redict
+            image: registry.redict.io/redict:7.3.0-scratch
             options: --tmpfs /data
-          # valkey
-          - image: docker.io/bitnami/valkey:7.2
+          - name: valkey
+            image: docker.io/bitnami/valkey:7.2
             options: --tmpfs /bitnami/redis/data
-          # garnet
-          - image: ghcr.io/microsoft/garnet-alpine:1.0.14
+          - name: garnet
+            image: ghcr.io/microsoft/garnet-alpine:1.0.14
             options: --tmpfs /data
     services:
       cacher:
