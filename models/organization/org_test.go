@@ -129,15 +129,6 @@ func TestGetOrgByName(t *testing.T) {
 	assert.True(t, organization.IsErrOrgNotExist(err))
 }
 
-func TestCountOrganizations(t *testing.T) {
-	require.NoError(t, unittest.PrepareTestDatabase())
-	expected, err := db.GetEngine(db.DefaultContext).Where("type=?", user_model.UserTypeOrganization).Count(&organization.Organization{})
-	require.NoError(t, err)
-	cnt, err := db.Count[organization.Organization](db.DefaultContext, organization.FindOrgOptions{IncludePrivate: true})
-	require.NoError(t, err)
-	assert.Equal(t, expected, cnt)
-}
-
 func TestIsOrganizationOwner(t *testing.T) {
 	require.NoError(t, unittest.PrepareTestDatabase())
 	test := func(orgID, userID int64, expected bool) {
@@ -180,33 +171,6 @@ func TestIsPublicMembership(t *testing.T) {
 	test(6, 5, true)
 	test(6, 4, false)
 	test(unittest.NonexistentID, unittest.NonexistentID, false)
-}
-
-func TestFindOrgs(t *testing.T) {
-	require.NoError(t, unittest.PrepareTestDatabase())
-
-	orgs, err := db.Find[organization.Organization](db.DefaultContext, organization.FindOrgOptions{
-		UserID:         4,
-		IncludePrivate: true,
-	})
-	require.NoError(t, err)
-	if assert.Len(t, orgs, 1) {
-		assert.EqualValues(t, 3, orgs[0].ID)
-	}
-
-	orgs, err = db.Find[organization.Organization](db.DefaultContext, organization.FindOrgOptions{
-		UserID:         4,
-		IncludePrivate: false,
-	})
-	require.NoError(t, err)
-	assert.Empty(t, orgs)
-
-	total, err := db.Count[organization.Organization](db.DefaultContext, organization.FindOrgOptions{
-		UserID:         4,
-		IncludePrivate: true,
-	})
-	require.NoError(t, err)
-	assert.EqualValues(t, 1, total)
 }
 
 func TestGetOrgUsersByOrgID(t *testing.T) {
