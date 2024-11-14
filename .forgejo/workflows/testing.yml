@@ -57,13 +57,14 @@ jobs:
     services:
       elasticsearch:
         image: docker.io/bitnami/elasticsearch:7
+        options: --tmpfs /bitnami/elasticsearch/data
         env:
           discovery.type: single-node
           ES_JAVA_OPTS: "-Xms512m -Xmx512m"
       minio:
         image: docker.io/bitnami/minio:2024.8.17
         options: >-
-          --hostname gitea.minio
+          --hostname gitea.minio --tmpfs /bitnami/minio/data
         env:
           MINIO_DOMAIN: minio
           MINIO_ROOT_USER: 123456
@@ -132,16 +133,16 @@ jobs:
         cacher:
           # redis
           - image: docker.io/bitnami/redis:7.2
-            port: 6379
+            options: --tmpfs /bitnami/redis/data
           # redict
           - image: registry.redict.io/redict:7.3.0-scratch
-            port: 6379
+            options: --tmpfs /data
           # valkey
           - image: docker.io/bitnami/valkey:7.2
-            port: 6379
+            options: --tmpfs /bitnami/redis/data
           # garnet
           - image: ghcr.io/microsoft/garnet-alpine:1.0.14
-            port: 6379
+            options: --tmpfs /data
     services:
       cacher:
         image: ${{ matrix.cacher.image }}
@@ -177,6 +178,7 @@ jobs:
           # See also https://codeberg.org/forgejo/forgejo/issues/976
           #
           MYSQL_EXTRA_FLAGS: --innodb-adaptive-flushing=OFF --innodb-buffer-pool-size=4G --innodb-log-buffer-size=128M --innodb-flush-log-at-trx-commit=0 --innodb-flush-log-at-timeout=30 --innodb-flush-method=nosync --innodb-fsync-threshold=1000000000 --disable-log-bin
+        options: --tmpfs /bitnami/mysql/data
     steps:
       - uses: https://code.forgejo.org/actions/checkout@v4
       - uses: ./.forgejo/workflows-composite/setup-env
@@ -202,6 +204,7 @@ jobs:
         env:
           MINIO_ROOT_USER: 123456
           MINIO_ROOT_PASSWORD: 12345678
+        options: --tmpfs /bitnami/minio/data
       ldap:
         image: docker.io/gitea/test-openldap:latest
       pgsql:
@@ -209,6 +212,7 @@ jobs:
         env:
           POSTGRES_DB: test
           POSTGRES_PASSWORD: postgres
+        options: --tmpfs /var/lib/postgresql/data
     steps:
       - uses: https://code.forgejo.org/actions/checkout@v4
       - uses: ./.forgejo/workflows-composite/setup-env
