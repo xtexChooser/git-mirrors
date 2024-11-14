@@ -122,6 +122,13 @@ jobs:
           USE_REPO_TEST_DIR: 1
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
           CHANGED_FILES: ${{steps.changed-files.outputs.all_changed_files}}
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: https://code.forgejo.org/forgejo/upload-artifact@v4
+        with:
+          name: screenshots.zip
+          path: /workspace/forgejo/forgejo/tests/e2e/test-artifacts/*/*.png
+          retention-days: 3
   test-remote-cacher:
     if: vars.ROLE == 'forgejo-coding' || vars.ROLE == 'forgejo-testing'
     runs-on: docker
