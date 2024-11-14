@@ -12,6 +12,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"testing"
 	"time"
@@ -58,6 +59,8 @@ func createSSHUrl(gitPath string, u *url.URL) *url.URL {
 	return &u2
 }
 
+var rootPathRe = regexp.MustCompile("\\[repository\\]\nROOT\\s=\\s.*")
+
 func onGiteaRun[T testing.TB](t T, callback func(T, *url.URL)) {
 	defer tests.PrepareTestEnv(t, 1)()
 	s := http.Server{
@@ -76,7 +79,13 @@ func onGiteaRun[T testing.TB](t T, callback func(T, *url.URL)) {
 	require.NoError(t, err)
 	u.Host = listener.Addr().String()
 
+	// Override repository root in config.
+	conf, err := os.ReadFile(setting.CustomConf)
+	require.NoError(t, err)
+	require.NoError(t, os.WriteFile(setting.CustomConf, rootPathRe.ReplaceAll(conf, []byte("[repository]\nROOT = "+setting.RepoRootPath)), os.ModePerm))
+
 	defer func() {
+		require.NoError(t, os.WriteFile(setting.CustomConf, conf, os.ModePerm))
 		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 		s.Shutdown(ctx)
 		cancel()
