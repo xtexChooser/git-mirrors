@@ -8,8 +8,8 @@ done <<<"$(grep -Eh '^### tiang::' hosts/*.mk)"
 tiang::defineCommand atremis::syncsec
 tiangCommandsUsage+="""
     -ss --syncsec  [FILE]       Copy a secret file to targets
-	-pull                       Run atremis pull
-	-upd                        Run atremis update
+    -pull                       Run atremis pull
+    -upd                        Run atremis update
 """
 atremis::syncsec() {
 	if [[ "$1" == "-ss" || "$1" == "--syncsec" ]]; then
