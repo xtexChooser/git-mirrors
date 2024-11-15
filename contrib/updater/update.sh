@@ -28,7 +28,7 @@ function doUpdate() {
 			-H "Authorization: token $CODEBERG_TOKEN" \
 			-SL --retry 2 \
 			-d "$(jo -- base=main head="bot/update" title="[bot] Merge upstream" \
-				body="$(printf 'Updated-at: %s\nCI-Link: <%s>' "$(date -u)" "$CI_STEP_URL")" \
+				body="$(printf 'CI-Link: <%s>' "$CI_STEP_URL")" \
 				labels="$(jo -a -- -n 239913)")"
 	fi
 }
