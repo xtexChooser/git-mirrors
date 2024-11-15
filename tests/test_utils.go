@@ -201,7 +201,6 @@ func InitTest(requireGitea bool) {
 	if err != nil {
 		log.Fatal("os.ReadDir: %v", err)
 	}
-	fmt.Println(ownerDirs)
 
 	for _, ownerDir := range ownerDirs {
 		if !ownerDir.Type().IsDir() {
