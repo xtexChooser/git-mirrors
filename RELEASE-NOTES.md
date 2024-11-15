@@ -8,7 +8,7 @@ The release notes of each release [are available in the corresponding milestone]
 
 ## 9.0.2
 
-The Forgejo v9.0.2 release notes are [available in the v9.0.2 milestone](https://codeberg.org/forgejo/forgejo/milestone/8610.
+The Forgejo v9.0.2 release notes are [available in the v9.0.2 milestone](https://codeberg.org/forgejo/forgejo/milestone/8610).
 
 ## 9.0.1
 
