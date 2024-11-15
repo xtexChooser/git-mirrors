@@ -83,10 +83,10 @@ func onGiteaRun[T testing.TB](t T, callback func(T, *url.URL)) {
 	// Override repository root in config.
 	conf, err := os.ReadFile(setting.CustomConf)
 	require.NoError(t, err)
-	require.NoError(t, os.WriteFile(setting.CustomConf, rootPathRe.ReplaceAll(conf, []byte("[repository]\nROOT = "+setting.RepoRootPath)), os.ModePerm))
+	require.NoError(t, os.WriteFile(setting.CustomConf, rootPathRe.ReplaceAll(conf, []byte("[repository]\nROOT = "+setting.RepoRootPath)), 0o600))
 
 	defer func() {
-		require.NoError(t, os.WriteFile(setting.CustomConf, conf, os.ModePerm))
+		require.NoError(t, os.WriteFile(setting.CustomConf, conf, 0o600))
 		ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 		s.Shutdown(ctx)
 		cancel()
