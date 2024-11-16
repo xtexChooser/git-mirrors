@@ -106,7 +106,7 @@ var OAuth2 = struct {
 	AccessTokenExpirationTime:   3600,
 	RefreshTokenExpirationTime:  730,
 	InvalidateRefreshTokens:     true,
-	JWTSigningAlgorithm:         "RS256",
+	JWTSigningAlgorithm:         "EdDSA",
 	JWTSigningPrivateKeyFile:    "jwt/private.pem",
 	MaxTokenLength:              math.MaxInt16,
 	DefaultApplications:         []string{"git-credential-oauth", "git-credential-manager", "tea"},
