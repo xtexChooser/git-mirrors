@@ -23,3 +23,5 @@ nav:
   - Home: index.md
 
 remote_branch: pages
+exclude_docs: |
+  !/.domains
