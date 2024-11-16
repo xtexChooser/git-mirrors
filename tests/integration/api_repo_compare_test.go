@@ -45,9 +45,7 @@ func TestAPICompareCommits(t *testing.T) {
 	session := loginUser(t, user.Name)
 	token := getTokenForLoggedInUser(t, session, auth_model.AccessTokenScopeWriteRepository)
 
-	repoName := "repo20"
-
-	req := NewRequestf(t, "GET", "/api/v1/repos/user2/%s/compare/c8e31bc...8babce9", repoName).
+	req := NewRequestf(t, "GET", "/api/v1/repos/user2/repo20/compare/c8e31bc...8babce9").
 		AddTokenAuth(token)
 	resp := MakeRequest(t, req, http.StatusOK)
 
