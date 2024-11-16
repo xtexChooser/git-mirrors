@@ -39,7 +39,7 @@ type AuthorizationToken struct {
 	UID             int64  `xorm:"INDEX"`
 	LookupKey       string `xorm:"INDEX UNIQUE"`
 	HashedValidator string
-	Purpose         AuthorizationPurpose `xorm:"NOT NULL"`
+	Purpose         AuthorizationPurpose `xorm:"NOT NULL DEFAULT 'long_term_authorization'"`
 	Expiry          timeutil.TimeStamp
 }
 

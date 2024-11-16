@@ -8,7 +8,7 @@ import "xorm.io/xorm"
 func AddPurposeToForgejoAuthToken(x *xorm.Engine) error {
 	type ForgejoAuthToken struct {
 		ID      int64  `xorm:"pk autoincr"`
-		Purpose string `xorm:"NOT NULL"`
+		Purpose string `xorm:"NOT NULL DEFAULT 'long_term_authorization'"`
 	}
 	if err := x.Sync(new(ForgejoAuthToken)); err != nil {
 		return err
