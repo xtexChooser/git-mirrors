@@ -21,3 +21,5 @@ markdown_extensions:
 
 nav:
   - Home: index.md
+
+remote_branch: pages
