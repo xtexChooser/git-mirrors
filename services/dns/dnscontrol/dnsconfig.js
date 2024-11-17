@@ -19,6 +19,9 @@ D_EXTEND(
 	/* DnsProvider(DSP_DESEC, 0), */ DnsProvider(DSP_GCORE, 0)
 );
 
+require("converted/xvnetstatus.us.kg.js");
+D_EXTEND("xvnetstatus.us.kg", DnsProvider(DSP_GCORE, 0));
+
 // var domains = getConfiguredDomains();
 // for (i = 0; i < domains.length; i++)
 // 	D_EXTEND(domains[i], DnsProvider(DSP_BIND));
