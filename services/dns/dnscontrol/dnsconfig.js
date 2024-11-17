@@ -20,7 +20,7 @@ D_EXTEND(
 );
 
 require("converted/xvnetstatus.us.kg.js");
-D_EXTEND("xvnetstatus.us.kg", DnsProvider(DSP_GCORE, 0));
+D_EXTEND("xvnetstatus.us.kg", DnsProvider(DSP_DESEC, 0));
 
 // var domains = getConfiguredDomains();
 // for (i = 0; i < domains.length; i++)
