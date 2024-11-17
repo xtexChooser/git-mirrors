@@ -9,4 +9,5 @@ $TTL 3600
 						IN	DNSKEY	257 3 15 whjtMiJP9C86l0oTJUxemuYtQ0RIZePWt6QETC2kkKM=
 _dmarc					IN	TXT		"v=DMARC1; p=quarantine; ruf=mailto:abuse@xvnet0.eu.org,mailto:1ludnqej@duck.com"
 
-@				600		IN	CNAME	p.projectsegfau.lt.
+; Points to p.projectsegfau.lt
+@				600		IN	A		45.145.41.226
