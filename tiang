@@ -184,7 +184,12 @@ function tiang::cmd::target {
 
 function tiang::cmd::remove {
 	[ $# -lt 2 ] && tiang::error "1 parameter is required for --remove"
-	tiangTargets=("${tiangTargets[@]/$2/}")
+	local -a tiangNewTargets
+	for i in "${!tiangTargets[@]}"; do
+		[[ "${tiangTargets[i]}" != "$2" ]] || continue
+		tiangNewTargets+=("${tiangTargets[i]}")
+	done
+	tiangTargets=("${tiangNewTargets[@]}")
 }
 
 function tiang::cmd::include {
