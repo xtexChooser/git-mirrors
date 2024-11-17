@@ -5,13 +5,13 @@ while read -r line; do
 	eval $(tail -c+5 <<<"$line")
 done <<<"$(grep -Eh '^### tiang::' hosts/*.mk)"
 
-tiang::defineCommand atremis::syncsec
+tiang::defineCommand atremis::customCommands
 tiangCommandsUsage+="""
     -ss --syncsec  [FILE]       Copy a secret file to targets
     -pull                       Run atremis pull
     -upd                        Run atremis update
 """
-atremis::syncsec() {
+atremis::customCommands() {
 	if [[ "$1" == "-ss" || "$1" == "--syncsec" ]]; then
 		[ $# -lt 2 ] && tiang::error "1 parameter is required for --syncsec"
 		tiang::runParallelOnTargets tiang::runSCP "../secrets/$2" "/srv/secrets/$2"
