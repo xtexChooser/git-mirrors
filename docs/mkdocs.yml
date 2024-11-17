@@ -8,8 +8,6 @@ theme:
     accent: teal
 
 plugins:
-  - search:
-      lang: zh
   - minify
 
 markdown_extensions:
