@@ -399,6 +399,8 @@ function tiang::main {
 			;;
 		esac
 	done
+	return 0
 }
 
 tiang::main "$@"
+exit "$?"
