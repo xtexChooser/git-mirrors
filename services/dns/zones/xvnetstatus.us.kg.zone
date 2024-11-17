@@ -1,0 +1,12 @@
+$ORIGIN xvnetstatus.us.kg.
+$TTL 3600
+@				43200	IN	SOA		a.ns.xvnet0.eu.org. op.xvnet0.eu.org. 0 1800 900 1209600 3600
+				300		IN	NS		ns1.desec.io.
+				300		IN	NS		ns2.desec.org.
+						; deSEC
+						IN	DNSKEY	257 3 13 YZ7fMroQq5fyNx/3ppqY5g52IRIV5wuraSXHZJeMmUVnuP0Cr1coksgvRAXWDp0DDF2OMb1fEQY2hhq8G+zY5A==
+						; XVNET DNS Authoritative KSK
+						IN	DNSKEY	257 3 15 whjtMiJP9C86l0oTJUxemuYtQ0RIZePWt6QETC2kkKM=
+_dmarc					IN	TXT		"v=DMARC1; p=quarantine; ruf=mailto:abuse@xvnet0.eu.org,mailto:1ludnqej@duck.com"
+
+@				600		IN	CNAME	p.projectsegfau.lt.
