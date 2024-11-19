@@ -128,6 +128,9 @@
 											</form>
 										</div>
 									</div>
+									<div id="commit-notes-add-button" class="item">
+										{{ctx.Locale.Tr "repo.diff.git-notes.add"}}
+									</div>
 								</div>
 							</div>
 						{{end}}
@@ -277,20 +280,20 @@
 				<span class="text grey" id="note-authored-time">{{DateUtils.TimeSince .NoteCommit.Author.When}}</span>
 				{{if or ($.Permission.CanWrite $.UnitTypeCode) (not $.Repository.IsArchived) (not .IsDeleted)}}
 					<div class="ui right">
-						<button id="commit-notes-edit-button" class="ui tiny button yellow" data-modal="#delete-note-modal">{{ctx.Locale.Tr "edit"}}</button>
+						<button id="commit-notes-edit-button" class="ui tiny primary button" data-modal="#delete-note-modal">{{ctx.Locale.Tr "edit"}}</button>
 						<button class="ui tiny button red show-modal" data-modal="#delete-note-modal">{{ctx.Locale.Tr "remove"}}</button>
 					</div>
 					<div class="ui small modal" id="delete-note-modal">
 						<div class="header">
 							{{ctx.Locale.Tr "repo.diff.git-notes.remove-header"}}
 						</div>
-						<p>{{ctx.Locale.Tr "repo.diff.git-notes.remove-body"}}</p>
 						<div class="content">
+							<p>{{ctx.Locale.Tr "repo.diff.git-notes.remove-body"}}</p>
 							<div class="text right actions">
 								<form action="{{.Link}}/notes/remove" method="post">
 									{{.CsrfTokenHtml}}
 									<button type="button" class="ui cancel button">{{ctx.Locale.Tr "settings.cancel"}}</button>
-									<button type="submit" class="ui primary button red" href="{{.Link}}/notes/remove">{{ctx.Locale.Tr "remove"}}</button>
+									<button type="submit" class="ui red button" href="{{.Link}}/notes/remove">{{ctx.Locale.Tr "remove"}}</button>
 								</form>
 							</div>
 						</div>
@@ -316,7 +319,6 @@
 				</div>
 			{{end}}
 		{{else if and ($.Permission.CanWrite $.UnitTypeCode) (not $.Repository.IsArchived) (not .IsDeleted)}}
-			<button id="commit-notes-add-button" class="ui primary button green tw-mt-3">{{ctx.Locale.Tr "repo.diff.git-notes.add"}}</button>
 			<div id="commit-notes-add-area" class="ui tw-mt-3 segment tw-hidden">
 				<form class="ui form" action="{{.Link}}/notes" method="post">
 					{{.CsrfTokenHtml}}
