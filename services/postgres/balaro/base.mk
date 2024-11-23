@@ -1,4 +1,4 @@
-BALARO_VERSION ?= 17.1
+BALARO_VERSION ?= 17.2
 
 $(call x-container-service)
 V_SERVICE	= balaro
