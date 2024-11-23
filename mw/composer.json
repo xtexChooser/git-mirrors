@@ -41,7 +41,7 @@
 		"mck89/peast": "1.16.3",
 		"monolog/monolog": "2.9.3",
 		"oojs/oojs-ui": "0.51.2",
-		"pear/mail": "1.6.0",
+		"pear/mail": "2.0.0",
 		"pear/mail_mime": "1.10.12",
 		"pear/net_smtp": "1.12.1",
 		"php": ">=8.1.0",
@@ -133,9 +133,7 @@
 		"ext-redis": "Enables use of Redis for caching purposes.",
 		"ext-sockets": "Enable CLI concurrent processing, e.g. for rebuildLocalisationCache.php.",
 		"ext-wikidiff2": "Faster text difference engine.",
-		"ext-wincache": "Enables use of WinCache on Windows.",
-		"ext-zlib": "Enable use of GZIP compression, e.g. for SqlBagOStuff (ParserCache), $wgCompressRevisions, or $wgUseFileCache.",
-		"monolog/monolog": "Enable use of MonologSpi ($wgMWLoggerDefaultSpi)."
+		"ext-zlib": "Enable use of GZIP compression, e.g. for SqlBagOStuff (ParserCache), $wgCompressRevisions, or $wgUseFileCache."
 	},
 	"autoload": {
 		"psr-4": {
