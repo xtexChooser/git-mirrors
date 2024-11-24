@@ -15,6 +15,7 @@
 		root * /opt/mediawiki
 		php_fastcgi unix//var/run/mediawiki/php-fpm.sock {
 			env MW_WIKI {args[0]}
+			rewrite /robots.txt /extensions/XensTweaks/entrypoints/robots.php
 		}
 		file_server
 	}
