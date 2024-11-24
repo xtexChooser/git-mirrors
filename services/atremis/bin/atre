@@ -115,11 +115,15 @@ function atre::apply {
 
 function atre::root {
 	atre::assertNonDevel
-	atre::log "Switch to root"
-	sudo \
-		--preserve-env=ATREMIS_USER \
-		--preserve-env=ATRE_DEBUG \
+	if [[ -n "$isRootUser" ]]; then
 		"$@"
+	else
+		atre::log "Switch to root"
+		sudo \
+			--preserve-env=ATREMIS_USER \
+			--preserve-env=ATRE_DEBUG \
+			"$@"
+	fi
 }
 
 function atre::svc {
