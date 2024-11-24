@@ -7,12 +7,12 @@ use MediaWiki\Revision\SlotRecord;
 define( 'MW_NO_SESSION', 1 );
 define( 'MW_ENTRY_POINT', 'robots' );
 
-require dirname( $_SERVER['SCRIPT_FILENAME'] ) . '/includes/WebStart.php';
+require dirname( $_SERVER['SCRIPT_FILENAME'] ) . '/../../../includes/WebStart.php';
 
 wfRobotsMain();
 
 function wfRobotsMain() {
-	global $wgXensTweaksCentralDB, $wgCanonicalServer, $wgXensTweaksNoRobots, $wgNamespaceRobotPolicies;
+	global $wgXensTweaksCentralDB, $wgCanonicalServer, $wgScriptPath, $wgArticlePath, $wgXensTweaksNoRobots, $wgNamespaceRobotPolicies;
 
 	if ( $wgXensTweaksNoRobots ) {
 		header( 'Cache-Control: max-age=300, must-revalidate, s-maxage=300, revalidate-while-stale=300' );
@@ -49,18 +49,19 @@ function wfRobotsMain() {
 	}
 
 	$disallowText = 'User-Agent: *';
+	$articlePath = str_replace( '$1', '', $wgArticlePath );
 	foreach ( $namespaces as $ns ) {
 		$lcns = strtolower( $ns );
 		$disallowText .= <<<DISALLOW
 
-		Disallow: /w/$ns:
-		Disallow: /w/$ns%3A
-		Disallow: /w/$lcns:
-		Disallow: /*?title=$ns:
-		Disallow: /*?title=$ns%3A
-		Disallow: /*?*&title=$ns:
-		Disallow: /*?*&title=$ns%3A
-		DISALLOW;
+        Disallow: $articlePath$ns:
+        Disallow: $articlePath$ns%3A
+        Disallow: $articlePath$lcns:
+        Disallow: $wgScriptPath/*?title=$ns:
+        Disallow: $wgScriptPath/*?title=$ns%3A
+        Disallow: $wgScriptPath/*?*&title=$ns:
+        Disallow: $wgScriptPath/*?*&title=$ns%3A
+        DISALLOW;
 	}
 	if ( $text ) {
 		$text = str_replace( 'User-Agent: *', $disallowText, $text );
@@ -75,7 +76,7 @@ function wfRobotsMain() {
 		header( 'Last-Modified: ' . wfTimestamp( TS_RFC2822, $lastModified ) );
 	}
 
-	$sitemap = "Sitemap: $wgCanonicalServer/images/sitemaps/index.xml";
+	$sitemap = "Sitemap: $wgCanonicalServer$wgScriptPath/sitemap.xml";
 	if ( $text ) {
 		echo $text . "\n\n" . $sitemap;
 	} else {
