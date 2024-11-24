@@ -1,6 +1,6 @@
 {{if .Results}}
 	{{range .Results}}
-		<a class="item tw-max-w-[80vw]" href="{{$.RepoLink}}/wiki/{{.Filename}}">
+		<a class="item tw-max-w-[min(80vw,var(--container-width))]" href="{{$.RepoLink}}/wiki/{{.Filename}}">
 			<b class="tw-block tw-mb-2 tw-whitespace-break-spaces">{{.Title}}</b>
 			{{range .LineCodes}}
 				<p class="tw-my-0 tw-whitespace-break-spaces">{{.}}</p>
