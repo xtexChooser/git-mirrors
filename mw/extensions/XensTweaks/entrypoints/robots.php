@@ -30,6 +30,13 @@ function wfRobotsMain() {
 	$lastModified = $rev ? $rev->getTimestamp() : null;
 	$text = ( $content instanceof TextContent ) ? $content->getText() : '';
 
+	// Replace template strings on imported text
+	$text = str_replace(
+		[ '{articlePath}', '{scriptPath}' ],
+		[ $wgArticlePath, $wgScriptPath ],
+		$text
+	);
+
 	// Disallow noindexed namespaces in robots.txt as well.
 	$contLang = $services->getContentLanguage();
 	$langConverter = $services->getLanguageConverterFactory()->getLanguageConverter( $contLang );
