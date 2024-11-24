@@ -1,6 +1,7 @@
 (mediawiki) {
 	import securitytxt
 	rewrite /sitemap.xml /sitemap/sitemap-index-wiki{args[0]}.xml
+	rewrite /robots.txt /extensions/XensTweaks/entrypoints/robots.php
 	handle /sitemap/* {
 		uri strip_prefix /sitemap
 		root /var/lib/mediawiki/sitemap/{args[0]}
@@ -15,7 +16,6 @@
 		root * /opt/mediawiki
 		php_fastcgi unix//var/run/mediawiki/php-fpm.sock {
 			env MW_WIKI {args[0]}
-			rewrite /robots.txt /extensions/XensTweaks/entrypoints/robots.php
 		}
 		file_server
 	}
