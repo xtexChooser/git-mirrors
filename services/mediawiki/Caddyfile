@@ -1,6 +1,6 @@
 (mediawiki) {
 	import securitytxt
-	redir /sitemap.xml /sitemap/sitemap-index-wiki{args[0]}.xml permanent
+	rewrite /sitemap.xml /sitemap/sitemap-index-wiki{args[0]}.xml
 	handle /sitemap/* {
 		uri strip_prefix /sitemap
 		root /var/lib/mediawiki/sitemap/{args[0]}
