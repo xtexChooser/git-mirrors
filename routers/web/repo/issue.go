@@ -3778,7 +3778,7 @@ func combineRequestReviewComments(issue *issues_model.Issue) {
 			}
 		}
 
-		// Propoagate creation time.
+		// Propagate creation time.
 		prev.CreatedUnix = cur.CreatedUnix
 
 		// Remove the current comment since it has been combined to prev comment
