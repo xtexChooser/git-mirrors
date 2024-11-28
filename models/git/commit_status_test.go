@@ -400,14 +400,14 @@ func TestGetLatestCommitStatusForPairs(t *testing.T) {
 		}, pairs)
 	})
 
-	t.Run("Repo 62 nonexistant sha", func(t *testing.T) {
+	t.Run("Repo 62 non-existent sha", func(t *testing.T) {
 		pairs, err := git_model.GetLatestCommitStatusForPairs(db.DefaultContext, []git_model.RepoSHA{{62, "774f93df12d14931ea93259ae93418da4482fcc"}})
 		require.NoError(t, err)
 
 		assert.EqualValues(t, map[int64][]*git_model.CommitStatus{}, pairs)
 	})
 
-	t.Run("SHA with non existant repo id", func(t *testing.T) {
+	t.Run("SHA with non-existent repo id", func(t *testing.T) {
 		pairs, err := git_model.GetLatestCommitStatusForPairs(db.DefaultContext, []git_model.RepoSHA{{1, "774f93df12d14931ea93259ae93418da4482fcc1"}})
 		require.NoError(t, err)
 
