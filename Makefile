@@ -920,7 +920,7 @@ release-docs: | $(DIST_DIRS) docs
 .PHONY: reproduce-build
 reproduce-build:
 # Start building the Dockerfile with the RELEASE_VERSION tag set. GOPROXY is set
-# for convience, because the default of the Dockerfile is `direct` which can be
+# for convenience, because the default of the Dockerfile is `direct` which can be
 # quite slow.
 	@docker build --build-arg="RELEASE_VERSION=$(RELEASE_VERSION)" --build-arg="GOPROXY=$(shell $(GO) env GOPROXY)" --tag "forgejo-reproducibility" .
 	@id=$$(docker create forgejo-reproducibility); \
