@@ -1146,6 +1146,7 @@ func registerRoutes(m *web.Route) {
 		m.Group("/{type:issues|pulls}", func() {
 			m.Group("/{index}", func() {
 				m.Get("/info", repo.GetIssueInfo)
+				m.Get("/summary-card", repo.GetSummaryCard)
 			})
 		})
 	}, ignSignIn, context.RepoAssignment, context.UnitTypes()) // for "/{username}/{reponame}" which doesn't require authentication
