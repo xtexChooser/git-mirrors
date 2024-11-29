@@ -52,7 +52,7 @@ var (
 	ContextTOTP Context = "totp"
 )
 
-// Derive *the* key for a given context, this is a deterministic function. 
+// Derive *the* key for a given context, this is a deterministic function.
 // The same key will be provided for the same context.
 func DeriveKey(context Context) *Key {
 	if len(prk) == 0 {
