@@ -289,6 +289,12 @@ func GetLatestCommitStatus(ctx context.Context, repoID int64, sha string, listOp
 // GetLatestCommitStatusForPairs returns all statuses with a unique context for a given list of repo-sha pairs
 func GetLatestCommitStatusForPairs(ctx context.Context, repoSHAs []RepoSHA) (map[int64][]*CommitStatus, error) {
 	results := []*CommitStatus{}
+	repoStatuses := make(map[int64][]*CommitStatus)
+
+	if len(repoSHAs) == 0 {
+		// Avoid performing query when there will be no query conditions added.
+		return repoStatuses, nil
+	}
 
 	// Create a disjunction of conditions for each repoID and SHA pair
 	conds := make([]builder.Cond, 0, len(repoSHAs))
@@ -305,8 +311,6 @@ func GetLatestCommitStatusForPairs(ctx context.Context, repoSHAs []RepoSHA) (map
 		return nil, err
 	}
 
-	repoStatuses := make(map[int64][]*CommitStatus)
-
 	// Group the statuses by repo ID
 	for _, status := range results {
 		repoStatuses[status.RepoID] = append(repoStatuses[status.RepoID], status)
@@ -320,6 +324,12 @@ func GetLatestCommitStatusForRepoCommitIDs(ctx context.Context, repoID int64, co
 	type result struct {
 		Index int64
 		SHA   string
+	}
+	repoStatuses := make(map[string][]*CommitStatus)
+
+	if len(commitIDs) == 0 {
+		// Avoid performing query when there will be no `sha` query conditions added.
+		return repoStatuses, nil
 	}
 
 	getBase := func() *xorm.Session {
@@ -339,8 +349,6 @@ func GetLatestCommitStatusForRepoCommitIDs(ctx context.Context, repoID int64, co
 	if err != nil {
 		return nil, err
 	}
-
-	repoStatuses := make(map[string][]*CommitStatus)
 
 	if len(results) > 0 {
 		statuses := make([]*CommitStatus, 0, len(results))
