@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+git describe --long --always | tr -d '\n' > src/version.txt
+podman build --force-rm --squash --tag localhost/home .
+
+systemctl --user restart xtex-home.service
+podman image prune -f
