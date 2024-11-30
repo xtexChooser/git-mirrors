@@ -154,7 +154,7 @@ http://blog.xtexx.eu.org http://xtexblog.exozy.me {
 			connect-src 'self' https://umami.exozy.me;
 			frame-ancestors 'none';
 			form-action 'self';
-			script-src 'self' https://unpkg.com https://umami.exozy.me;
+			script-src 'self' https://unpkg.com https://umami.exozy.me nonce-7e0bfcf7-1564-43e9-a950-95577944deca;
 			style-src 'self' https://unpkg.com;
 			object-src 'none';
 			font-src 'self' https://unpkg.com;
