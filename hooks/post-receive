@@ -2,6 +2,7 @@
 set -euo pipefail
 
 pushd ..
+git submodule update --init --recursive
 hugo --enableGitInfo --minify
 cp -R public /srv/http/xtex1
 rm -rf /srv/http/xtex
