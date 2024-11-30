@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+pushd ..
+hugo --enableGitInfo --minify
+cp -R public /srv/http/xtex1
+rm -rf /srv/http/xtex
+mv /srv/http/xtex1 /srv/http/xtex
+popd
