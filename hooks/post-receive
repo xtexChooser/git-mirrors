@@ -5,7 +5,6 @@ pushd ..
 # shellcheck disable=SC2046
 ( unset $(git rev-parse --local-env-vars); git submodule update --init --recursive )
 hugo --enableGitInfo --minify
-cp -R public /srv/http/xtex1
-rm -rf /srv/http/xtex
-mv /srv/http/xtex1 /srv/http/xtex
+rm -vrf /srv/http/xtex
+mv -v public /srv/http/xtex
 popd
