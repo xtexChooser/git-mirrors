@@ -2,7 +2,8 @@
 set -euo pipefail
 
 pushd ..
-git submodule update --init --recursive
+# shellcheck disable=SC2046
+( unset $(git rev-parse --local-env-vars); git submodule update --init --recursive )
 hugo --enableGitInfo --minify
 cp -R public /srv/http/xtex1
 rm -rf /srv/http/xtex
