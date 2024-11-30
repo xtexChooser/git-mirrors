@@ -157,6 +157,8 @@ http://blog.xtexx.eu.org http://xtexblog.exozy.me {
 			script-src 'self' https://unpkg.com https://umami.exozy.me;
 			style-src 'self' https://unpkg.com;
 			object-src 'none';
+			font-src 'self' https://unpkg.com;
+			img-src 'self' https://z3.ax1x.com/;
 			"
 
 	handle_errors {
