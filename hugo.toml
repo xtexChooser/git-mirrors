@@ -2,7 +2,6 @@ baseURL = 'https://blog.xtexx.eu.org/'
 languageCode = 'zh-cn'
 title = "xtex's Blog"
 theme = 'arc'
-paginate = 30
 copyright = 'Creative Commons Attribution-ShareAlike 4.0 International License'
 enableRobotsTXT = true
 enableGitInfo = true
@@ -52,3 +51,6 @@ post = '/:year/:month/:slugorfilename'
 
 [minify]
 minifyOutput = true
+
+[pagination]
+pagerSize = 30
