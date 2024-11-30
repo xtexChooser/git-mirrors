@@ -14,7 +14,7 @@ hidden: true
 
 hmmmmm，上了七天学，回到家，嗯，电脑坏了，
 
-[<img src="https://z3.ax1x.com/2021/09/19/43j9ud.jpg" alt="珍贵影像" style="zoom: 25%;" />](https://imgtu.com/i/43j9ud)
+[![珍贵影像](https://z3.ax1x.com/2021/09/19/43j9ud.jpg)](https://imgtu.com/i/43j9ud)
 
 然后永远的`0% 完成`
 

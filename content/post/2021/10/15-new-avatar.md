@@ -9,9 +9,9 @@ hidden: true
 
 ^皇帝的^新头像，我自己画的，不错吧（骄傲
 
-旧头像：<img src="https://z3.ax1x.com/2021/10/15/58l2tO.jpg" style="zoom:50%;" />
+旧头像：![58l2tO.jpg](https://z3.ax1x.com/2021/10/15/58l2tO.jpg)
 
-新头像：<img src="https://z3.ax1x.com/2021/10/15/583pxH.png" style="zoom: 15%;" />
+新头像：![583pxH.png](https://z3.ax1x.com/2021/10/15/583pxH.png)
 
 从 350px 变为 2048px，质的提升（
 
