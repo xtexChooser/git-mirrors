@@ -6,6 +6,7 @@ RUN xcaddy build \
 	--with github.com/aksdb/caddy-cgi/v2
 
 FROM docker.io/library/caddy:alpine
+ARG VERSION="local-oci"
 
 COPY --from=bld /usr/bin/caddy /usr/bin/caddy
 RUN apk add --no-cache bash
@@ -19,7 +20,9 @@ LABEL org.opencontainers.image.source="https://codeberg.org/xtex/home"
 
 COPY Caddyfile /etc/caddy/Caddyfile
 COPY src /srv/src
-RUN mkdir /srv/run
+RUN set -euxo pipefail; \
+	echo "${VERSION}" > src/version.txt; \
+	mkdir /srv/run;
 
 ENV PROD true
 ENV UDS_DIR_ADMIN run

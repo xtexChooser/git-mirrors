@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
+cd ..
 
-git describe --long --always | tr -d '\n' > src/version.txt
-podman build --force-rm --squash --tag localhost/home .
+version="$(git describe --long --always | tr -d '\n')"
+podman build --force-rm --squash --tag \
+	--build-arg "VERSION=$version" \
+	localhost/home .
 
 systemctl --user restart xtex-home.service
 podman image prune -f
