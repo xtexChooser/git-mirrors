@@ -7,7 +7,7 @@ podman build \
 	--force-rm \
 	--squash \
 	--build-arg "VERSION=exo+git~$version" \
-	--tag localhost/home \
+	--tag exozy.me/xtex/home \
 	.
 popd
 
