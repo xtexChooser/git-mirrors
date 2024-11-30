@@ -1,3 +1,4 @@
 *.sock
 .vscode-ctags
 /caddy
+/src/version.txt
