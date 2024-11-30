@@ -3,9 +3,12 @@ set -euo pipefail
 version="$(git describe --long --always | tr -d '\n')"
 
 pushd ..
-podman build --force-rm --squash --tag \
-	--build-arg "VERSION=$version" \
-	localhost/home .
+podman build \
+	--force-rm \
+	--squash \
+	--build-arg "VERSION=exo+git~$version" \
+	--tag localhost/home \
+	.
 popd
 
 systemctl --user restart xtex-home.service
