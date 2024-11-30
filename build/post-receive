@@ -2,7 +2,7 @@
 set -euo pipefail
 version="$(git describe --long --always | tr -d '\n')"
 
-pushd "$GIT_WORK_TREE"
+pushd ..
 podman build --force-rm --squash --tag \
 	--build-arg "VERSION=$version" \
 	localhost/home .
