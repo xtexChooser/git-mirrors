@@ -114,7 +114,8 @@ blockquote {
     padding: 15pt 0.6rem 7pt 0.6rem;
 }
 
-blockquote p {
+blockquote p:first-child,
+blockquote p:last-child {
     display: inline;
 }
 
