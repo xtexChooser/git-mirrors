@@ -8,6 +8,7 @@ enableGitInfo = true
 hasCJKLanguage = true
 rssLimit = 30
 timeZone = "Asia/Shanghai"
+buildDrafts = true
 
 [params]
 description = "xtex's personal blog"
