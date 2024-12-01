@@ -6,6 +6,9 @@ if (!defined('MEDIAWIKI')) {
 // set environment locale
 setlocale(LC_ALL, 'en_US.UTF-8');
 
+// set error reporting
+error_reporting(E_ALL);
+
 // config utilities
 $xvConfigDirectory = __DIR__;
 require_once "$xvConfigDirectory/common/ConfigTypes.php";
