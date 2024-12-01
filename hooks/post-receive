@@ -3,7 +3,7 @@ set -euo pipefail
 
 pushd ..
 # shellcheck disable=SC2046
-( unset $(git rev-parse --local-env-vars); git submodule update --init --recursive )
+( unset $(git rev-parse --local-env-vars); git submodule update --init --recursive --force --checkout )
 hugo --enableGitInfo --minify
 rsync -r --force --delete-after public/ /srv/http/xtex/
 popd
