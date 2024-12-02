@@ -31,7 +31,7 @@ test('Register Form', async ({page}, workerInfo) => {
   await expect(page.locator('.secondary-nav span>img.ui.avatar')).toBeVisible();
   await expect(page.locator('.ui.positive.message.flash-success')).toHaveText('Account was successfully created. Welcome!');
 
-  save_visual(page);
+  await save_visual(page);
 });
 
 // eslint-disable-next-line playwright/no-skipped-test
