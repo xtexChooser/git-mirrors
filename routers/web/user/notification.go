@@ -113,7 +113,7 @@ func getNotifications(ctx *context.Context) {
 
 	sess := db.GetEngine(ctx).Table("notification")
 	if setting.Database.Type.IsMySQL() {
-		sess = sess.IndexHint("USE", "JOIN", "IDX_notification_user_id")
+		sess = sess.IndexHint("USE", "", "IDX_notification_user_id")
 	}
 	sess.Where("user_id = ?", ctx.Doer.ID).
 		And("status = ? OR status = ?", status, activities_model.NotificationStatusPinned).
