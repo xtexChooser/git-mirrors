@@ -1,7 +1,7 @@
 #![feature(exact_size_is_empty)]
 #![feature(async_closure)]
 
-use std::{cmp::max, collections::BTreeMap, env, path::PathBuf, sync::Arc};
+use std::{cell::OnceCell, cmp::max, collections::BTreeMap, env, path::PathBuf, sync::Arc};
 
 use anyhow::Result;
 use build_clean::{
@@ -33,7 +33,7 @@ use updater::{check_update, should_update};
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 struct CleanOptions {
-    target: Option<HashMap<&'static PathBuf, CacheTypeRef>>,
+    target: Option<HashMap<PathBuf, CacheTypeRef>>,
     clean_type: bool,
     workers: usize,
 }
@@ -66,7 +66,7 @@ async fn main() -> Result<()> {
         println!(
             "Clean starting, total {}/{} selected caches",
             target.len(),
-            unsafe { ACTION.as_ref() }.unwrap().len()
+            ACTION.lock().get().unwrap().len()
         );
         println!(
             "- Clean Type: {}",
@@ -422,7 +422,7 @@ fn run(siv: &mut Cursive) -> Result<()> {
     Ok(())
 }
 
-static mut ACTION: Option<BTreeMap<PathBuf, bool>> = None;
+static ACTION: Mutex<OnceCell<BTreeMap<PathBuf, bool>>> = Mutex::new(OnceCell::new());
 
 fn show_result(
     siv: &mut Cursive,
@@ -435,14 +435,15 @@ fn show_result(
     let lua = LUA.lock();
     let result0 = result;
     let mut list = LinearLayout::vertical();
-    unsafe {
-        ACTION = Some(
+    ACTION
+        .lock()
+        .set(
             result0
                 .iter()
                 .map(|(path, _)| (path.clone(), default_action))
                 .collect::<BTreeMap<_, _>>(),
-        );
-    }
+        )
+        .unwrap();
     let result = result0.chunk_by(|(_, r1), (_, r2)| r1 == r2);
 
     for result in result {
@@ -462,8 +463,12 @@ fn show_result(
                     .with(|view| {
                         view.set_checked(default_action);
                     })
-                    .on_change(move |_, checked| unsafe {
-                        ACTION.as_mut().unwrap().insert(path.clone(), checked);
+                    .on_change(move |_, checked| {
+                        ACTION
+                            .lock()
+                            .get_mut()
+                            .unwrap()
+                            .insert(path.clone(), checked);
                     }),
             );
         }
@@ -497,12 +502,14 @@ fn run_clean(
     for (path, type_ref) in result.iter() {
         types.insert(path, type_ref);
     }
-    let selected = unsafe { ACTION.as_ref() }
+    let selected = ACTION
+        .lock()
+        .get()
         .unwrap()
         .iter()
         .filter_map(|(k, v)| {
             if *v {
-                Some((k, (*types.get(k).unwrap()).clone()))
+                Some((k.clone(), (*types.get(k).unwrap()).clone()))
             } else {
                 None
             }
