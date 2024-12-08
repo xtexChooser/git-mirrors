@@ -25,6 +25,7 @@ RUN set -euxo pipefail; \
 	mkdir /srv/run;
 
 ENV PROD true
+WORKDIR /srv
 ENV UDS_DIR_ADMIN run
 ENV UDS_DIR run
 ENV BLOG_DIR blog
