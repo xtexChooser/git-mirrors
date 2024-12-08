@@ -15,7 +15,6 @@ push:
 
 deploy:
 	ssh p.projectsegfau.lt -- '\
-		set -euo; \
 		podman image pull codeberg.org/xtex/home; \
 		systemctl --user restart xtex-home; \
 	'
