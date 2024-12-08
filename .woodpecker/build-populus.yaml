@@ -9,7 +9,8 @@ steps:
       environment:
         POSTGRES_PASSWORD: builder
     - name: prepare2
-      image: alpine
+      # FIXME: use image: alpine when Rust 1.83 is available in Alpine main
+      image: docker.io/library/alpine:edge
       commands:
         - ./services/populus/build/prepare2
     - name: build
