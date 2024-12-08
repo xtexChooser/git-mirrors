@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 pub struct CacheTypeRef(pub String);
 
 impl CacheTypeRef {
-    pub fn resolve<'a>(&self, lua: &'a Lua) -> Result<CacheType> {
+    pub fn resolve(&self, lua: &Lua) -> Result<CacheType> {
         Ok((lua.globals().get::<Table>(self.0.as_str())?, self.clone()).into())
     }
 }
