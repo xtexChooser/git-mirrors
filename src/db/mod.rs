@@ -6,18 +6,18 @@ use std::{
 
 use anyhow::{anyhow, Result};
 use mlua::Lua;
-use parking_lot::Mutex;
+use parking_lot::{Mutex, RwLock};
 
 use self::info::CacheTypeRef;
 
 pub mod info;
 
 pub static LUA: Mutex<LazyCell<Lua>> = Mutex::new(LazyCell::new(Lua::new));
-pub static REGISTRY: Mutex<BTreeMap<String, CacheTypeRef>> = Mutex::new(BTreeMap::new());
-pub static IGNORE_DIR_NAMES: Mutex<Vec<String>> = Mutex::new(Vec::new());
+pub static REGISTRY: RwLock<BTreeMap<String, CacheTypeRef>> = RwLock::new(BTreeMap::new());
+pub static IGNORE_DIR_NAMES: RwLock<Vec<String>> = RwLock::new(Vec::new());
 
 pub async fn check_path(path: &Path) -> Result<Option<(CacheTypeRef, PathBuf)>> {
-    let cleaners = REGISTRY.lock();
+    let cleaners = REGISTRY.read();
     let name = &path
         .file_name()
         .ok_or_else(|| anyhow!("{} cant be resolved", path.display()))?

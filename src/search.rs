@@ -26,7 +26,7 @@ pub async fn search(
         result: tokio::sync::Mutex::default(),
     });
     let ignore_dir_names = db::IGNORE_DIR_NAMES
-        .lock()
+        .read()
         .iter()
         .map(|g| Glob::new(g).unwrap().compile_matcher())
         .collect::<Vec<_>>();
