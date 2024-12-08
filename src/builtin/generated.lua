@@ -35,11 +35,11 @@ registry:create({
         return true
     end,
     do_fast_clean = function(path)
-        if fs:exists(fs:side(path, "build")) then
-            fs:rmrf(fs:side(path, "build"))
-        end
         if fs:exists(fs:side(path, ".gradle")) then
             fs:rmrf(fs:side(path, ".gradle"))
+        end
+        if fs:exists(fs:side(path, "build")) then
+            fs:rmrf(fs:side(path, "build"))
         end
     end,
 })
@@ -54,11 +54,11 @@ registry:create({
         return true
     end,
     do_fast_clean = function(path)
-        if fs:exists(fs:side(path, "build")) then
-            fs:rmrf(fs:side(path, "build"))
-        end
         if fs:exists(fs:side(path, ".gradle")) then
             fs:rmrf(fs:side(path, ".gradle"))
+        end
+        if fs:exists(fs:side(path, "build")) then
+            fs:rmrf(fs:side(path, "build"))
         end
     end,
 })
@@ -92,11 +92,11 @@ registry:create({
         return true
     end,
     do_fast_clean = function(path)
-        if fs:exists(fs:side(path, "zig-out")) then
-            fs:rmrf(fs:side(path, "zig-out"))
-        end
         if fs:exists(fs:side(path, "zig-cache")) then
             fs:rmrf(fs:side(path, "zig-cache"))
+        end
+        if fs:exists(fs:side(path, "zig-out")) then
+            fs:rmrf(fs:side(path, "zig-out"))
         end
     end,
 })
