@@ -1,4 +1,4 @@
-#![feature(allocator_api, new_uninit)]
+#![feature(allocator_api)]
 
 pub mod builtin;
 pub mod db;
