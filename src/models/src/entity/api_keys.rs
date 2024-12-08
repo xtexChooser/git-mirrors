@@ -1,10 +1,10 @@
-use crate::app_state::{AppState, DbPool};
-use crate::cache::{Cache, DB};
-use actix_web::web;
+use crate::database::{Cache, DB};
 use chrono::Utc;
 use cryptr::{EncKeys, EncValue};
+use hiqlite::{params, Param};
 use rauthy_api_types::api_keys::ApiKeyResponse;
 use rauthy_common::constants::{API_KEY_LENGTH, CACHE_TTL_APP};
+use rauthy_common::is_hiqlite;
 use rauthy_common::utils::get_rand;
 use rauthy_error::{ErrorResponse, ErrorResponseType};
 use ring::digest;
@@ -23,7 +23,6 @@ pub struct ApiKeyEntity {
 
 impl ApiKeyEntity {
     pub async fn create(
-        db: &DbPool,
         name: String,
         expires: Option<i64>,
         access: Vec<ApiKeyAccess>,
@@ -39,53 +38,90 @@ impl ApiKeyEntity {
         let access_enc = EncValue::encrypt(&access_bytes)?.into_bytes().to_vec();
 
         let enc_key_active = &EncKeys::get_static().enc_key_active;
-
-        query!(
-            r#"INSERT INTO
-            api_keys (name, secret, created, expires, enc_key_id, access)
-            VALUES ($1, $2, $3, $4, $5, $6)"#,
-            name,
-            secret_enc,
-            created,
-            expires,
-            enc_key_active,
-            access_enc,
-        )
-        .execute(db)
-        .await?;
-
         let secret_fmt = format!("{}${}", name, secret_plain);
+
+        if is_hiqlite() {
+            DB::client()
+                .execute(
+                    r#"
+INSERT INTO
+api_keys (name, secret, created, expires, enc_key_id, access)
+VALUES ($1, $2, $3, $4, $5, $6)"#,
+                    params!(
+                        name,
+                        secret_enc,
+                        created,
+                        expires,
+                        enc_key_active.clone(),
+                        access_enc
+                    ),
+                )
+                .await?;
+        } else {
+            query!(
+                r#"
+INSERT INTO
+api_keys (name, secret, created, expires, enc_key_id, access)
+VALUES ($1, $2, $3, $4, $5, $6)"#,
+                name,
+                secret_enc,
+                created,
+                expires,
+                enc_key_active,
+                access_enc,
+            )
+            .execute(DB::conn())
+            .await?;
+        }
+
         Ok(secret_fmt)
     }
 
-    pub async fn delete(data: &web::Data<AppState>, name: &str) -> Result<(), ErrorResponse> {
-        query!("DELETE FROM api_keys WHERE name = $1", name)
-            .execute(&data.db)
-            .await?;
+    pub async fn delete(name: &str) -> Result<(), ErrorResponse> {
+        if is_hiqlite() {
+            DB::client()
+                .execute("DELETE FROM api_keys WHERE name = $1", params!(name))
+                .await?;
+        } else {
+            query!("DELETE FROM api_keys WHERE name = $1", name)
+                .execute(DB::conn())
+                .await?;
+        }
 
         Self::cache_invalidate(name).await?;
         Ok(())
     }
 
-    pub async fn find(data: &web::Data<AppState>, name: &str) -> Result<Self, ErrorResponse> {
-        let res = query_as!(Self, "SELECT * FROM api_keys WHERE name = $1", name)
-            .fetch_one(&data.db)
-            .await?;
+    pub async fn find(name: &str) -> Result<Self, ErrorResponse> {
+        let res = if is_hiqlite() {
+            DB::client()
+                .query_as_one("SELECT * FROM api_keys WHERE name = $1", params!(name))
+                .await?
+        } else {
+            query_as!(Self, "SELECT * FROM api_keys WHERE name = $1", name)
+                .fetch_one(DB::conn())
+                .await?
+        };
+
         Ok(res)
     }
 
-    pub async fn find_all(data: &web::Data<AppState>) -> Result<Vec<Self>, ErrorResponse> {
-        let res = query_as!(Self, "SELECT * FROM api_keys")
-            .fetch_all(&data.db)
-            .await?;
+    pub async fn find_all() -> Result<Vec<Self>, ErrorResponse> {
+        let res = if is_hiqlite() {
+            DB::client()
+                .query_as("SELECT * FROM api_keys", params!())
+                .await?
+        } else {
+            query_as!(Self, "SELECT * FROM api_keys")
+                .fetch_all(DB::conn())
+                .await?
+        };
+
         Ok(res)
     }
 
-    pub async fn generate_secret(
-        data: &web::Data<AppState>,
-        name: &str,
-    ) -> Result<String, ErrorResponse> {
-        let entity = ApiKeyEntity::find(data, name).await?;
+    pub async fn generate_secret(name: &str) -> Result<String, ErrorResponse> {
+        let entity = ApiKeyEntity::find(name).await?;
         let api_key = entity.into_api_key()?;
 
         // generate a new secret
@@ -99,15 +135,29 @@ impl ApiKeyEntity {
 
         let enc_key_active = &EncKeys::get_static().enc_key_active;
 
-        query!(
-            "UPDATE api_keys SET secret = $1, enc_key_id = $2, access = $3 WHERE name = $4",
-            secret_enc,
-            enc_key_active,
-            access_enc,
-            name,
-        )
-        .execute(&data.db)
-        .await?;
+        if is_hiqlite() {
+            DB::client()
+                .execute(
+                    "UPDATE api_keys SET secret = $1, enc_key_id = $2, access = $3 WHERE name = $4",
+                    params!(
+                        secret_enc,
+                        enc_key_active.clone(),
+                        access_enc,
+                        name.to_string()
+                    ),
+                )
+                .await?;
+        } else {
+            query!(
+                "UPDATE api_keys SET secret = $1, enc_key_id = $2, access = $3 WHERE name = $4",
+                secret_enc,
+                enc_key_active,
+                access_enc,
+                name,
+            )
+            .execute(DB::conn())
+            .await?;
+        }
 
         Self::cache_invalidate(name).await?;
 
@@ -117,12 +167,11 @@ impl ApiKeyEntity {
 
     /// Updates the API Key. Does NOT update the secret in any way!
     pub async fn update(
-        data: &web::Data<AppState>,
         name: &str,
         expires: Option<i64>,
         access: Vec<ApiKeyAccess>,
     ) -> Result<(), ErrorResponse> {
-        let entity = ApiKeyEntity::find(data, name).await?;
+        let entity = ApiKeyEntity::find(name).await?;
         let api_key = entity.into_api_key()?;
 
         let secret_enc = EncValue::encrypt(&api_key.secret)?.into_bytes().to_vec();
@@ -132,45 +181,86 @@ impl ApiKeyEntity {
 
         let enc_key_active = &EncKeys::get_static().enc_key_active;
 
-        query!(
-            r#"UPDATE
-            api_keys set secret = $1, expires = $2, enc_key_id = $3, access = $4
-            WHERE name = $5"#,
-            secret_enc,
-            expires,
-            enc_key_active,
-            access_enc,
-            name,
-        )
-        .execute(&data.db)
-        .await?;
+        if is_hiqlite() {
+            DB::client()
+                .execute(
+                    r#"
+UPDATE api_keys
+SET secret = $1, expires = $2, enc_key_id = $3, access = $4
+WHERE name = $5"#,
+                    params!(
+                        secret_enc,
+                        expires,
+                        enc_key_active.clone(),
+                        access_enc,
+                        name.to_string()
+                    ),
+                )
+                .await?;
+        } else {
+            query!(
+                r#"
+UPDATE api_keys
+SET secret = $1, expires = $2, enc_key_id = $3, access = $4
+WHERE name = $5"#,
+                secret_enc,
+                expires,
+                enc_key_active,
+                access_enc,
+                name,
+            )
+            .execute(DB::conn())
+            .await?;
+        }
 
         Self::cache_invalidate(name).await?;
 
         Ok(())
     }
 
-    pub async fn save(&self, data: &web::Data<AppState>) -> Result<(), ErrorResponse> {
-        query!(
-            r#"UPDATE api_keys
-            SET secret = $1, expires = $2, enc_key_id = $3, access = $4
-            WHERE name = $5"#,
-            self.secret,
-            self.expires,
-            self.enc_key_id,
-            self.access,
-            self.name,
-        )
-        .execute(&data.db)
-        .await?;
+    pub async fn save(self) -> Result<(), ErrorResponse> {
+        let name = self.name.clone();
 
-        Self::cache_invalidate(&self.name).await?;
+        if is_hiqlite() {
+            DB::client()
+                .execute(
+                    r#"
+    UPDATE api_keys
+    SET secret = $1, expires = $2, enc_key_id = $3, access = $4
+    WHERE name = $5"#,
+                    params!(
+                        self.secret,
+                        self.expires,
+                        self.enc_key_id,
+                        self.access,
+                        self.name
+                    ),
+                )
+                .await?;
+        } else {
+            query!(
+                r#"
+    UPDATE api_keys
+    SET secret = $1, expires = $2, enc_key_id = $3, access = $4
+    WHERE name = $5"#,
+                self.secret,
+                self.expires,
+                self.enc_key_id,
+                self.access,
+                self.name,
+            )
+            .execute(DB::conn())
+            .await?;
+        }
+
+        Self::cache_invalidate(&name).await?;
 
         Ok(())
     }
 }
 
 impl ApiKeyEntity {
+    #[inline]
     fn cache_idx(name: &str) -> String {
         format!("api_key_{}", name)
     }
@@ -183,10 +273,7 @@ impl ApiKeyEntity {
     }
 
     #[inline(always)]
-    pub async fn api_key_from_token_validated(
-        data: &web::Data<AppState>,
-        token: &str,
-    ) -> Result<ApiKey, ErrorResponse> {
+    pub async fn api_key_from_token_validated(token: &str) -> Result<ApiKey, ErrorResponse> {
         let (name, secret) = token.split_once('$').ok_or_else(|| {
             ErrorResponse::new(ErrorResponseType::BadRequest, "Malformed API-Key")
         })?;
@@ -196,7 +283,7 @@ impl ApiKeyEntity {
         let api_key = if let Some(key) = client.get(Cache::App, &idx).await? {
             key
         } else {
-            let key = Self::find(data, name).await?.into_api_key()?;
+            let key = Self::find(name).await?.into_api_key()?;
             client.put(Cache::App, idx, &key, CACHE_TTL_APP).await?;
             key
         };

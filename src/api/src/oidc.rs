@@ -9,13 +9,14 @@ use rauthy_api_types::oidc::{
     AuthRequest, DeviceAcceptedRequest, DeviceCodeResponse, DeviceGrantRequest,
     DeviceVerifyRequest, DeviceVerifyResponse, JWKSCerts, JWKSPublicKeyCerts, LoginRefreshRequest,
     LoginRequest, LogoutRequest, OAuth2ErrorResponse, OAuth2ErrorTypeResponse, SessionInfoResponse,
-    TokenRequest, TokenValidationRequest,
+    TokenInfo, TokenRequest, TokenValidationRequest,
 };
 use rauthy_api_types::sessions::SessionState;
+use rauthy_api_types::users::{Userinfo, WebauthnLoginResponse};
 use rauthy_common::constants::{
     APPLICATION_JSON, AUTH_HEADERS_ENABLE, AUTH_HEADER_EMAIL, AUTH_HEADER_EMAIL_VERIFIED,
     AUTH_HEADER_FAMILY_NAME, AUTH_HEADER_GIVEN_NAME, AUTH_HEADER_GROUPS, AUTH_HEADER_MFA,
-    AUTH_HEADER_ROLES, AUTH_HEADER_USER, COOKIE_MFA, COOKIE_SESSION_FED_CM,
+    AUTH_HEADER_ROLES, AUTH_HEADER_USER, COOKIE_MFA, COOKIE_SESSION, COOKIE_SESSION_FED_CM,
     DEVICE_GRANT_CODE_LIFETIME, DEVICE_GRANT_POLL_INTERVAL, DEVICE_GRANT_RATE_LIMIT,
     EXPERIMENTAL_FED_CM_ENABLE, GRANT_TYPE_DEVICE_CODE, HEADER_HTML, HEADER_RETRY_NOT_BEFORE,
     OPEN_USER_REG, SESSION_LIFETIME,
@@ -43,6 +44,7 @@ use rauthy_models::templates::{
 };
 use rauthy_models::JwtCommonClaims;
 use rauthy_service::oidc::{authorize, logout, token_info, userinfo, validation};
+use rauthy_service::token_set::TokenSet;
 use rauthy_service::{login_delay, oidc};
 use spow::pow::Pow;
 use std::borrow::Cow;
@@ -71,7 +73,7 @@ pub async fn get_authorize(
     req_data: actix_web_validator::Query<AuthRequest>,
     principal: ReqPrincipal,
 ) -> Result<HttpResponse, ErrorResponse> {
-    let colors = ColorEntity::find(&data, &req_data.client_id)
+    let colors = ColorEntity::find(&req_data.client_id)
         .await
         .unwrap_or_default();
     let lang = Language::try_from(&req).unwrap_or_default();
@@ -116,7 +118,7 @@ pub async fn get_authorize(
     // check if the user needs to do the Webauthn login each time
     let mut action = FrontendAction::None;
     if let Ok(mfa_cookie) = WebauthnCookie::parse_validate(&ApiCookie::from_req(&req, COOKIE_MFA)) {
-        if let Ok(user) = User::find_by_email(&data, mfa_cookie.email.clone()).await {
+        if let Ok(user) = User::find_by_email(mfa_cookie.email.clone()).await {
             // we need to check this, because a user could deactivate MFA in another browser or
             // be deleted while still having existing mfa cookies somewhere else
             if user.has_webauthn_enabled() {
@@ -142,7 +144,7 @@ pub async fn get_authorize(
         return Ok(ErrorHtml::response(body, status));
     }
 
-    let auth_providers_json = AuthProviderTemplate::get_all_json_template(&data).await?;
+    let auth_providers_json = AuthProviderTemplate::get_all_json_template().await?;
     let tpl_data = Some(format!(
         "{}\n{}\n{}",
         client.name.unwrap_or_default(),
@@ -180,7 +182,7 @@ pub async fn get_authorize(
         Session::new(*SESSION_LIFETIME, Some(real_ip_from_req(&req)?))
     };
 
-    if let Err(err) = session.save(&data).await {
+    if let Err(err) = session.save().await {
         let status = err.status_code();
         let body = Error1Html::build(&colors, &lang, status, Some(err.message));
         return Ok(ErrorHtml::response(body, status));
@@ -238,7 +240,7 @@ pub async fn get_authorize(
     request_body = LoginRequest,
     responses(
         (status = 200, description = "Correct credentials, but needs to continue with Webauthn MFA Login", body = WebauthnLoginResponse),
-        (status = 202, description = "Correct credentials and not MFA Login required, adds Location header"),
+        (status = 202, description = "Correct credentials and no MFA Login required, adds Location header"),
         (status = 400, description = "Missing / bad input data", body = ErrorResponse),
         (status = 401, description = "Bad input or CSRF Token error", body = ErrorResponse),
     ),
@@ -336,25 +338,17 @@ pub async fn post_authorize_refresh(
     )
     .await?;
 
-    let auth_step = authorize::post_authorize_refresh(
-        &data,
-        session,
-        client,
-        header_origin,
-        req_data.into_inner(),
-    )
-    .await?;
+    let auth_step =
+        authorize::post_authorize_refresh(session, client, header_origin, req_data.into_inner())
+            .await?;
     map_auth_step(auth_step, &req).await
 }
 
 #[get("/oidc/callback")]
-pub async fn get_callback_html(
-    data: web::Data<AppState>,
-    principal: ReqPrincipal,
-) -> Result<HttpResponse, ErrorResponse> {
+pub async fn get_callback_html(principal: ReqPrincipal) -> Result<HttpResponse, ErrorResponse> {
     // TODO can we even be more strict and request session auth here?
     principal.validate_session_auth_or_init()?;
-    let colors = ColorEntity::find_rauthy(&data).await?;
+    let colors = ColorEntity::find_rauthy().await?;
     let body = CallbackHtml::build(&colors);
     Ok(HttpResponse::Ok().insert_header(HEADER_HTML).body(body))
 }
@@ -369,8 +363,8 @@ pub async fn get_callback_html(
     responses((status = 200, description = "Ok")),
 )]
 #[get("/oidc/certs")]
-pub async fn get_certs(data: web::Data<AppState>) -> Result<HttpResponse, ErrorResponse> {
-    let jwks = JWKS::find_pk(&data).await?;
+pub async fn get_certs() -> Result<HttpResponse, ErrorResponse> {
+    let jwks = JWKS::find_pk().await?;
     let res = JWKSCerts::from(jwks);
     Ok(HttpResponse::Ok()
         .insert_header((
@@ -390,11 +384,8 @@ pub async fn get_certs(data: web::Data<AppState>) -> Result<HttpResponse, ErrorR
     responses((status = 200, description = "Ok")),
 )]
 #[get("/oidc/certs/{kid}")]
-pub async fn get_cert_by_kid(
-    data: web::Data<AppState>,
-    kid: web::Path<String>,
-) -> Result<HttpResponse, ErrorResponse> {
-    let kp = JwkKeyPair::find(&data, kid.into_inner()).await?;
+pub async fn get_cert_by_kid(kid: web::Path<String>) -> Result<HttpResponse, ErrorResponse> {
+    let kp = JwkKeyPair::find(kid.into_inner()).await?;
     let pub_key = JWKSPublicKey::from_key_pair(&kp);
     Ok(HttpResponse::Ok().json(JWKSPublicKeyCerts::from(pub_key)))
 }
@@ -412,7 +403,6 @@ pub async fn get_cert_by_kid(
 )]
 #[post("/oidc/device")]
 pub async fn post_device_auth(
-    data: web::Data<AppState>,
     req: HttpRequest,
     payload: actix_web_validator::Form<DeviceGrantRequest>,
 ) -> HttpResponse {
@@ -465,7 +455,7 @@ pub async fn post_device_auth(
 
     // find and validate the client
     let payload = payload.into_inner();
-    let client = match Client::find(&data, payload.client_id).await {
+    let client = match Client::find(payload.client_id).await {
         Ok(client) => client,
         Err(_) => {
             return HttpResponse::NotFound().json(OAuth2ErrorResponse {
@@ -542,7 +532,7 @@ pub async fn post_device_auth(
     HttpResponse::Ok().json(resp)
 }
 
-/// POST for vertifying an OAuth 2.0 Device Authorization Grant flow
+/// POST for verifying an OAuth 2.0 Device Authorization Grant flow
 #[utoipa::path(
     post,
     path = "/oidc/device/verify",
@@ -592,11 +582,11 @@ pub async fn post_device_verify(
     }
 }
 
-// Logout HTML page
-//
-// Returns an HTML page which can be used for logging the user out. Invalidates the session and deletes
-// all possibly existing refresh tokens from the database. Does an automatic logout if the
-// `id_token_hint` is given.
+/// Logout HTML page
+///
+/// Returns an HTML page which can be used for logging the user out. Invalidates the session and deletes
+/// all possibly existing refresh tokens from the database. Does an automatic logout if the
+/// `id_token_hint` is given.
 #[utoipa::path(
     get,
     path = "/oidc/logout",
@@ -635,9 +625,9 @@ pub async fn get_logout(
         }
     };
 
-    return HttpResponse::build(StatusCode::OK)
+    HttpResponse::build(StatusCode::OK)
         .append_header(HEADER_HTML)
-        .body(body);
+        .body(body)
 }
 
 /// Send the logout confirmation
@@ -656,18 +646,19 @@ pub async fn get_logout(
 )]
 #[post("/oidc/logout")]
 pub async fn post_logout(
-    data: web::Data<AppState>,
     req_data: actix_web_validator::Query<LogoutRequest>,
     principal: ReqPrincipal,
 ) -> Result<HttpResponse, ErrorResponse> {
-    let mut session = principal.get_session()?.clone();
+    let session = principal.get_session()?.clone();
     let cookie_fed_cm = ApiCookie::build_with_same_site(
         COOKIE_SESSION_FED_CM,
         Cow::from(&session.id),
         0,
         SameSite::None,
     );
-    let cookie = session.invalidate(&data).await?;
+    let sid = session.id.clone();
+    let cookie = ApiCookie::build(COOKIE_SESSION, &sid, 0);
+    session.invalidate().await?;
 
     if req_data.post_logout_redirect_uri.is_some() {
         let state = if req_data.state.is_some() {
@@ -687,10 +678,10 @@ pub async fn post_logout(
             .finish());
     }
 
-    return Ok(HttpResponse::build(StatusCode::OK)
+    Ok(HttpResponse::build(StatusCode::OK)
         .cookie(cookie)
         .cookie(cookie_fed_cm)
-        .finish());
+        .finish())
 }
 
 /// Rotate JWKs
@@ -746,7 +737,7 @@ pub async fn post_session(
     req: HttpRequest,
 ) -> Result<HttpResponse, ErrorResponse> {
     let session = Session::new(*SESSION_LIFETIME, real_ip_from_req(&req).ok());
-    session.save(&data).await?;
+    session.save().await?;
     let cookie = session.client_cookie();
 
     let timeout = OffsetDateTime::from_unix_timestamp(session.last_seen)
@@ -964,32 +955,6 @@ pub async fn post_token_introspect(
     }
 }
 
-// // TODO remove?
-// /// DEPRECATED
-// ///
-// /// This is an older endpoint for refreshing tokens manually. This is not being used anymore an will
-// /// be removed soon in favor of the `refresh_token` flow on the [token](post_token) endpoint.
-// #[utoipa::path(
-//     post,
-//     path = "/oidc/token/refresh",
-//     tag = "deprecated",
-//     request_body = RefreshTokenRequest,
-//     responses(
-//         (status = 200, description = "Ok", body = TokenSet),
-//         (status = 401, description = "Unauthorized", body = ErrorResponse),
-//         (status = 404, description = "NotFound", body = ErrorResponse),
-//     ),
-// )]
-// #[post("/oidc/token/refresh")]
-// pub async fn post_refresh_token(
-//     req_data: actix_web_validator::Json<RefreshTokenRequest>,
-//     data: web::Data<AppState>,
-// ) -> Result<HttpResponse, ErrorResponse> {
-//     oidc::validate_refresh_token(None, &req_data.refresh_token, &data)
-//         .await
-//         .map(|token_set| HttpResponse::Ok().json(token_set))
-// }
-
 /// DEPRECATED
 ///
 /// This is an older endpoint for validating tokens manually. This is not being used anymore an will
@@ -1142,7 +1107,7 @@ pub async fn get_well_known(data: web::Data<AppState>) -> Result<HttpResponse, E
         .insert_header((CONTENT_TYPE, APPLICATION_JSON))
         .insert_header((
             header::ACCESS_CONTROL_ALLOW_ORIGIN,
-            HeaderValue::from_str("*").unwrap(),
+            HeaderValue::from_static("*"),
         ))
         .body(wk))
 }

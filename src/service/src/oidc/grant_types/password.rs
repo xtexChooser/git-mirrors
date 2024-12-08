@@ -1,6 +1,7 @@
 use crate::token_set::{AuthCodeFlow, AuthTime, DeviceCodeFlow, DpopFingerprint, TokenSet};
 use actix_web::http::header::{HeaderName, HeaderValue};
 use actix_web::{web, HttpRequest};
+use chrono::Utc;
 use rauthy_api_types::oidc::TokenRequest;
 use rauthy_common::constants::HEADER_DPOP_NONCE;
 use rauthy_common::password_hasher::HashPassword;
@@ -12,7 +13,6 @@ use rauthy_models::entity::clients_dyn::ClientDyn;
 use rauthy_models::entity::dpop_proof::DPoPProof;
 use rauthy_models::entity::users::User;
 use std::str::FromStr;
-use time::OffsetDateTime;
 use tracing::{info, warn};
 
 #[tracing::instrument(skip_all, fields(client_id = req_data.client_id, username = req_data.username))]
@@ -38,7 +38,7 @@ pub async fn grant_type_password(
     let email = req_data.username.as_ref().unwrap();
     let password = req_data.password.unwrap();
 
-    let client = Client::find(data, client_id).await?;
+    let client = Client::find(client_id).await?;
     let header_origin = client.validate_origin(&req, &data.listen_scheme, &data.public_url)?;
     if client.confidential {
         let secret = client_secret.ok_or_else(|| {
@@ -67,13 +67,13 @@ pub async fn grant_type_password(
 
     // This Error must be the same if user does not exist AND passwords do not match to prevent
     // username enumeration
-    let mut user = User::find_by_email(data, String::from(email)).await?;
+    let mut user = User::find_by_email(String::from(email)).await?;
     user.check_enabled()?;
     user.check_expired()?;
 
     match user.validate_password(data, password.clone()).await {
         Ok(_) => {
-            user.last_login = Some(OffsetDateTime::now_utc().unix_timestamp());
+            user.last_login = Some(Utc::now().timestamp());
             user.last_failed_login = None;
             user.failed_login_attempts = None;
 
@@ -86,11 +86,11 @@ pub async fn grant_type_password(
                 user.password = Some(new_hash);
             }
 
-            user.save(data, None, None).await?;
+            user.save(None).await?;
 
             // update timestamp if it is a dynamic client
             if client.is_dynamic() {
-                ClientDyn::update_used(data, &client.id).await?;
+                ClientDyn::update_used(&client.id).await?;
             }
 
             let ts = TokenSet::from_user(
@@ -114,10 +114,10 @@ pub async fn grant_type_password(
                 user.email
             );
 
-            user.last_failed_login = Some(OffsetDateTime::now_utc().unix_timestamp());
+            user.last_failed_login = Some(Utc::now().timestamp());
             user.failed_login_attempts = Some(&user.failed_login_attempts.unwrap_or(0) + 1);
 
-            user.save(data, None, None).await?;
+            user.save(None).await?;
 
             // TODO add expo increasing sleeps after failed login attempts here?
             Err(err)

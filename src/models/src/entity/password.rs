@@ -1,8 +1,8 @@
-use crate::app_state::AppState;
-use crate::cache::{Cache, DB};
+use crate::database::{Cache, DB};
 use actix_web::web;
 use argon2::password_hash::SaltString;
 use argon2::{Algorithm, Argon2, PasswordHasher, Version};
+use hiqlite::{params, Param};
 use rand_core::OsRng;
 use rauthy_api_types::generic::{
     PasswordHashTimesRequest, PasswordPolicyRequest, PasswordPolicyResponse,
@@ -10,6 +10,7 @@ use rauthy_api_types::generic::{
 use rauthy_common::constants::{
     ARGON2ID_M_COST_MIN, ARGON2ID_T_COST_MIN, CACHE_TTL_APP, IDX_PASSWORD_RULES,
 };
+use rauthy_common::is_hiqlite;
 use rauthy_error::ErrorResponse;
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, Row};
@@ -123,16 +124,27 @@ pub struct PasswordPolicy {
 
 // CRUD
 impl PasswordPolicy {
-    pub async fn find(data: &web::Data<AppState>) -> Result<Self, ErrorResponse> {
+    pub async fn find() -> Result<Self, ErrorResponse> {
         let client = DB::client();
         if let Some(slf) = client.get(Cache::App, IDX_PASSWORD_RULES).await? {
             return Ok(slf);
         }
 
-        let res = sqlx::query("SELECT data FROM config WHERE id = 'password_policy'")
-            .fetch_one(&data.db)
-            .await?;
-        let bytes: Vec<u8> = res.get("data");
+        let bytes: Vec<u8> = if is_hiqlite() {
+            DB::client()
+                .query_raw(
+                    "SELECT data FROM config WHERE id = 'password_policy'",
+                    params!(),
+                )
+                .await?
+                .remove(0)
+                .get("data")
+        } else {
+            sqlx::query("SELECT data FROM config WHERE id = 'password_policy'")
+                .fetch_one(DB::conn())
+                .await?
+                .get("data")
+        };
         let policy = bincode::deserialize::<Self>(&bytes)?;
 
         client
@@ -142,15 +154,24 @@ impl PasswordPolicy {
         Ok(policy)
     }
 
-    pub async fn save(&self, data: &web::Data<AppState>) -> Result<(), ErrorResponse> {
-        let slf = bincode::serialize(&self).unwrap();
+    pub async fn save(&self) -> Result<(), ErrorResponse> {
+        let slf = bincode::serialize(&self)?;
 
-        sqlx::query!(
-            "UPDATE config SET data = $1 WHERE id = 'password_policy'",
-            slf
-        )
-        .execute(&data.db)
-        .await?;
+        if is_hiqlite() {
+            DB::client()
+                .execute(
+                    "UPDATE config SET data = $1 WHERE id = 'password_policy'",
+                    params!(),
+                )
+                .await?;
+        } else {
+            sqlx::query!(
+                "UPDATE config SET data = $1 WHERE id = 'password_policy'",
+                slf
+            )
+            .execute(DB::conn())
+            .await?;
+        }
 
         DB::client()
             .put(Cache::App, IDX_PASSWORD_RULES, self, CACHE_TTL_APP)
@@ -196,41 +217,64 @@ pub struct RecentPasswordsEntity {
 }
 
 impl RecentPasswordsEntity {
-    pub async fn create(
-        data: &web::Data<AppState>,
-        user_id: &str,
-        passwords: &String,
-    ) -> Result<(), ErrorResponse> {
-        sqlx::query!(
-            "INSERT INTO recent_passwords (user_id, passwords) VALUES ($1, $2)",
-            user_id,
-            passwords,
-        )
-        .execute(&data.db)
-        .await?;
+    pub async fn create(user_id: &str, passwords: String) -> Result<(), ErrorResponse> {
+        if is_hiqlite() {
+            DB::client()
+                .execute(
+                    "INSERT INTO recent_passwords (user_id, passwords) VALUES ($1, $2)",
+                    params!(user_id, passwords),
+                )
+                .await?;
+        } else {
+            sqlx::query!(
+                "INSERT INTO recent_passwords (user_id, passwords) VALUES ($1, $2)",
+                user_id,
+                passwords,
+            )
+            .execute(DB::conn())
+            .await?;
+        }
 
         Ok(())
     }
 
-    pub async fn find(data: &web::Data<AppState>, user_id: &str) -> Result<Self, ErrorResponse> {
-        let res = sqlx::query_as!(
-            Self,
-            "SELECT * FROM recent_passwords WHERE user_id = $1",
-            user_id,
-        )
-        .fetch_one(&data.db)
-        .await?;
+    pub async fn find(user_id: &str) -> Result<Self, ErrorResponse> {
+        let res = if is_hiqlite() {
+            DB::client()
+                .query_as_one(
+                    "SELECT * FROM recent_passwords WHERE user_id = $1",
+                    params!(user_id),
+                )
+                .await?
+        } else {
+            sqlx::query_as!(
+                Self,
+                "SELECT * FROM recent_passwords WHERE user_id = $1",
+                user_id,
+            )
+            .fetch_one(DB::conn())
+            .await?
+        };
         Ok(res)
     }
 
-    pub async fn save(&self, data: &web::Data<AppState>) -> Result<(), ErrorResponse> {
-        sqlx::query!(
-            "UPDATE recent_passwords SET passwords = $1 WHERE user_id = $2",
-            self.passwords,
-            self.user_id,
-        )
-        .execute(&data.db)
-        .await?;
+    pub async fn save(self) -> Result<(), ErrorResponse> {
+        if is_hiqlite() {
+            DB::client()
+                .execute(
+                    "UPDATE recent_passwords SET passwords = $1 WHERE user_id = $2",
+                    params!(self.passwords, self.user_id),
+                )
+                .await?;
+        } else {
+            sqlx::query!(
+                "UPDATE recent_passwords SET passwords = $1 WHERE user_id = $2",
+                self.passwords,
+                self.user_id,
+            )
+            .execute(DB::conn())
+            .await?;
+        }
         Ok(())
     }
 }

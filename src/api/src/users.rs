@@ -9,20 +9,21 @@ use rauthy_api_types::users::{
     DeviceRequest, DeviceResponse, MfaPurpose, NewUserRegistrationRequest, NewUserRequest,
     PasskeyResponse, PasswordResetRequest, RequestResetRequest, UpdateUserRequest,
     UpdateUserSelfRequest, UserAttrConfigRequest, UserAttrConfigResponse, UserAttrValueResponse,
-    UserAttrValuesResponse, UserAttrValuesUpdateRequest, WebIdRequest, WebIdResponse,
-    WebauthnAuthFinishRequest, WebauthnAuthStartRequest, WebauthnRegFinishRequest,
-    WebauthnRegStartRequest,
+    UserAttrValuesResponse, UserAttrValuesUpdateRequest, UserResponse, WebIdRequest, WebIdResponse,
+    WebauthnAuthFinishRequest, WebauthnAuthStartRequest, WebauthnAuthStartResponse,
+    WebauthnRegFinishRequest, WebauthnRegStartRequest,
 };
 use rauthy_common::constants::{
     COOKIE_MFA, ENABLE_WEB_ID, HEADER_ALLOW_ALL_ORIGINS, HEADER_HTML, HEADER_JSON, OPEN_USER_REG,
     PWD_CSRF_HEADER, PWD_RESET_COOKIE, SSP_THRESHOLD, TEXT_TURTLE, USER_REG_DOMAIN_BLACKLIST,
-    USER_REG_DOMAIN_RESTRICTION,
+    USER_REG_DOMAIN_RESTRICTION, USER_REG_OPEN_REDIRECT,
 };
 use rauthy_common::utils::real_ip_from_req;
 use rauthy_error::{ErrorResponse, ErrorResponseType};
 use rauthy_models::api_cookie::ApiCookie;
 use rauthy_models::app_state::AppState;
 use rauthy_models::entity::api_keys::{AccessGroup, AccessRights};
+use rauthy_models::entity::clients::Client;
 use rauthy_models::entity::colors::ColorEntity;
 use rauthy_models::entity::continuation_token::ContinuationToken;
 use rauthy_models::entity::devices::DeviceEntity;
@@ -32,15 +33,13 @@ use rauthy_models::entity::user_attr::{UserAttrConfigEntity, UserAttrValueEntity
 use rauthy_models::entity::users::User;
 use rauthy_models::entity::users_values::UserValues;
 use rauthy_models::entity::webauthn;
-use rauthy_models::entity::webauthn::PasskeyEntity;
+use rauthy_models::entity::webauthn::{PasskeyEntity, WebauthnAdditionalData};
 use rauthy_models::entity::webids::WebId;
 use rauthy_models::events::event::Event;
 use rauthy_models::language::Language;
 use rauthy_models::templates::{Error1Html, Error3Html, ErrorHtml, UserRegisterHtml};
 use rauthy_service::password_reset;
 use spow::pow::Pow;
-use std::ops::Add;
-use time::OffsetDateTime;
 use tracing::{error, warn};
 
 /// Returns all existing users
@@ -66,13 +65,12 @@ use tracing::{error, warn};
 )]
 #[get("/users")]
 pub async fn get_users(
-    data: web::Data<AppState>,
     principal: ReqPrincipal,
     params: Query<PaginationParams>,
 ) -> Result<HttpResponse, ErrorResponse> {
     principal.validate_api_key_or_admin_session(AccessGroup::Users, AccessRights::Read)?;
 
-    let user_count = User::count(&data).await?;
+    let user_count = User::count().await?;
 
     if user_count >= *SSP_THRESHOLD as i64 || params.page_size.is_some() {
         let page_size = params.page_size.unwrap_or(15) as i64;
@@ -85,7 +83,7 @@ pub async fn get_users(
         };
 
         let (users, continuation_token) =
-            User::find_paginated(&data, continuation_token, page_size, offset, backwards).await?;
+            User::find_paginated(continuation_token, page_size, offset, backwards).await?;
         let x_page_count = (user_count as f64 / page_size as f64).ceil() as u32;
 
         if let Some(token) = continuation_token {
@@ -103,7 +101,7 @@ pub async fn get_users(
                 .json(users))
         }
     } else {
-        let users = User::find_all_simple(&data).await?;
+        let users = User::find_all_simple().await?;
         Ok(HttpResponse::Ok()
             .insert_header(("x-user-count", user_count))
             .json(users))
@@ -167,13 +165,10 @@ pub async fn post_users(
     ),
 )]
 #[get("/users/attr")]
-pub async fn get_cust_attr(
-    data: web::Data<AppState>,
-    principal: ReqPrincipal,
-) -> Result<HttpResponse, ErrorResponse> {
+pub async fn get_cust_attr(principal: ReqPrincipal) -> Result<HttpResponse, ErrorResponse> {
     principal.validate_api_key_or_admin_session(AccessGroup::UserAttributes, AccessRights::Read)?;
 
-    UserAttrConfigEntity::find_all(&data).await.map(|values| {
+    UserAttrConfigEntity::find_all().await.map(|values| {
         HttpResponse::Ok().json(UserAttrConfigResponse {
             values: values.into_iter().map(|v| v.into()).collect(),
         })
@@ -193,14 +188,13 @@ pub async fn get_cust_attr(
 )]
 #[post("/users/attr")]
 pub async fn post_cust_attr(
-    data: web::Data<AppState>,
     principal: ReqPrincipal,
     req_data: Json<UserAttrConfigRequest>,
 ) -> Result<HttpResponse, ErrorResponse> {
     principal
         .validate_api_key_or_admin_session(AccessGroup::UserAttributes, AccessRights::Create)?;
 
-    UserAttrConfigEntity::create(&data, req_data.into_inner())
+    UserAttrConfigEntity::create(req_data.into_inner())
         .await
         .map(|attr| HttpResponse::Ok().json(attr))
 }
@@ -220,7 +214,6 @@ pub async fn post_cust_attr(
 )]
 #[put("/users/attr/{name}")]
 pub async fn put_cust_attr(
-    data: web::Data<AppState>,
     path: web::Path<String>,
     principal: ReqPrincipal,
     req_data: Json<UserAttrConfigRequest>,
@@ -228,7 +221,7 @@ pub async fn put_cust_attr(
     principal
         .validate_api_key_or_admin_session(AccessGroup::UserAttributes, AccessRights::Update)?;
 
-    UserAttrConfigEntity::update(&data, path.into_inner(), req_data.into_inner())
+    UserAttrConfigEntity::update(path.into_inner(), req_data.into_inner())
         .await
         .map(|a| HttpResponse::Ok().json(a))
 }
@@ -246,14 +239,13 @@ pub async fn put_cust_attr(
 )]
 #[delete("/users/attr/{name}")]
 pub async fn delete_cust_attr(
-    data: web::Data<AppState>,
     path: web::Path<String>,
     principal: ReqPrincipal,
 ) -> Result<HttpResponse, ErrorResponse> {
     principal
         .validate_api_key_or_admin_session(AccessGroup::UserAttributes, AccessRights::Delete)?;
 
-    UserAttrConfigEntity::delete(&data, path.into_inner()).await?;
+    UserAttrConfigEntity::delete(path.into_inner()).await?;
     Ok(HttpResponse::Ok().finish())
 }
 
@@ -269,11 +261,8 @@ pub async fn delete_cust_attr(
     ),
 )]
 #[get("/users/register")]
-pub async fn get_users_register(
-    data: web::Data<AppState>,
-    req: HttpRequest,
-) -> Result<HttpResponse, ErrorResponse> {
-    let colors = ColorEntity::find_rauthy(&data).await?;
+pub async fn get_users_register(req: HttpRequest) -> Result<HttpResponse, ErrorResponse> {
+    let colors = ColorEntity::find_rauthy().await?;
     let lang = Language::try_from(&req).unwrap_or_default();
 
     if !*OPEN_USER_REG {
@@ -338,6 +327,23 @@ pub async fn post_users_register(
             }
         }
     }
+    if let Some(redirect_uri) = &req_data.redirect_uri {
+        if !*USER_REG_OPEN_REDIRECT {
+            let mut allow = false;
+            for uri in Client::find_all_client_uris().await? {
+                if uri.starts_with(redirect_uri) {
+                    allow = true;
+                    break;
+                }
+            }
+            if !allow {
+                return Err(ErrorResponse::new(
+                    ErrorResponseType::BadRequest,
+                    "given `redirect_uri` not allowed",
+                ));
+            }
+        }
+    }
 
     // validate the PoW
     let challenge = Pow::validate(&req_data.pow)?;
@@ -371,23 +377,22 @@ pub async fn post_users_register(
 )]
 #[get("/users/{id}")]
 pub async fn get_user_by_id(
-    data: web::Data<AppState>,
     path: web::Path<String>,
     principal: ReqPrincipal,
 ) -> Result<HttpResponse, ErrorResponse> {
-    principal.validate_session_auth()?;
-
     let id = path.into_inner();
+
     // principal must either be an admin or have the same user id
     let api_key_or_admin = principal
         .validate_api_key_or_admin_session(AccessGroup::Users, AccessRights::Read)
         .is_ok();
     if !api_key_or_admin {
+        principal.validate_session_auth()?;
         principal.is_user(&id)?;
     }
 
-    let user = User::find(&data, id).await?;
-    let values = UserValues::find(&data, &user.id).await?;
+    let user = User::find(id).await?;
+    let values = UserValues::find(&user.id).await?;
 
     Ok(HttpResponse::Ok().json(user.into_response(values)))
 }
@@ -404,13 +409,12 @@ pub async fn get_user_by_id(
 )]
 #[get("/users/{id}/attr")]
 pub async fn get_user_attr(
-    data: web::Data<AppState>,
     path: web::Path<String>,
     principal: ReqPrincipal,
 ) -> Result<HttpResponse, ErrorResponse> {
     principal.validate_api_key_or_admin_session(AccessGroup::UserAttributes, AccessRights::Read)?;
 
-    let values = UserAttrValueEntity::find_for_user(&data, &path.into_inner())
+    let values = UserAttrValueEntity::find_for_user(&path.into_inner())
         .await?
         .drain(..)
         .map(UserAttrValueResponse::from)
@@ -432,7 +436,6 @@ pub async fn get_user_attr(
 )]
 #[put("/users/{id}/attr")]
 pub async fn put_user_attr(
-    data: web::Data<AppState>,
     path: web::Path<String>,
     principal: ReqPrincipal,
     req_data: Json<UserAttrValuesUpdateRequest>,
@@ -440,12 +443,11 @@ pub async fn put_user_attr(
     principal
         .validate_api_key_or_admin_session(AccessGroup::UserAttributes, AccessRights::Update)?;
 
-    let values =
-        UserAttrValueEntity::update_for_user(&data, &path.into_inner(), req_data.into_inner())
-            .await?
-            .drain(..)
-            .map(UserAttrValueResponse::from)
-            .collect::<Vec<UserAttrValueResponse>>();
+    let values = UserAttrValueEntity::update_for_user(&path.into_inner(), req_data.into_inner())
+        .await?
+        .drain(..)
+        .map(UserAttrValueResponse::from)
+        .collect::<Vec<UserAttrValueResponse>>();
     Ok(HttpResponse::Ok().json(UserAttrValuesResponse { values }))
 }
 
@@ -462,14 +464,13 @@ pub async fn put_user_attr(
 )]
 #[get("/users/{id}/devices")]
 pub async fn get_user_devices(
-    data: web::Data<AppState>,
     path: web::Path<String>,
     principal: ReqPrincipal,
 ) -> Result<HttpResponse, ErrorResponse> {
     let user_id = path.into_inner();
     principal.validate_user_or_admin(&user_id)?;
 
-    let resp = DeviceEntity::find_for_user(&data, &user_id)
+    let resp = DeviceEntity::find_for_user(&user_id)
         .await?
         .into_iter()
         .map(DeviceResponse::from)
@@ -491,7 +492,6 @@ pub async fn get_user_devices(
 )]
 #[put("/users/{id}/devices")]
 pub async fn put_user_device_name(
-    data: web::Data<AppState>,
     path: web::Path<String>,
     principal: ReqPrincipal,
     payload: actix_web_validator::Json<DeviceRequest>,
@@ -501,7 +501,7 @@ pub async fn put_user_device_name(
 
     let payload = payload.into_inner();
     if let Some(name) = &payload.name {
-        DeviceEntity::update_name(&data, &payload.device_id, &user_id, name).await?;
+        DeviceEntity::update_name(&payload.device_id, &user_id, name).await?;
     }
 
     Ok(HttpResponse::Ok().finish())
@@ -522,7 +522,6 @@ pub async fn put_user_device_name(
 )]
 #[delete("/users/{id}/devices")]
 pub async fn delete_user_device(
-    data: web::Data<AppState>,
     path: web::Path<String>,
     principal: ReqPrincipal,
     payload: actix_web_validator::Json<DeviceRequest>,
@@ -531,7 +530,7 @@ pub async fn delete_user_device(
     principal.validate_user_or_admin(&user_id)?;
 
     let payload = payload.into_inner();
-    let device = DeviceEntity::find(&data, &payload.device_id).await?;
+    let device = DeviceEntity::find(&payload.device_id).await?;
     if device.user_id.as_deref() != Some(&user_id) {
         return Err(ErrorResponse::new(
             ErrorResponseType::Forbidden,
@@ -539,7 +538,7 @@ pub async fn delete_user_device(
         ));
     }
 
-    DeviceEntity::revoke_refresh_tokens(&data, &payload.device_id).await?;
+    DeviceEntity::revoke_refresh_tokens(&payload.device_id).await?;
 
     Ok(HttpResponse::Ok().finish())
 }
@@ -568,7 +567,7 @@ pub async fn get_user_email_confirm(
     match User::confirm_email_address(&data, req, user_id, confirm_id).await {
         Ok(html) => HttpResponse::Ok().insert_header(HEADER_HTML).body(html),
         Err(err) => {
-            let colors = ColorEntity::find_rauthy(&data).await.unwrap_or_default();
+            let colors = ColorEntity::find_rauthy().await.unwrap_or_default();
             let status = err.status_code();
             let body = Error3Html::build(&colors, &lang, status, Some(err.message));
             ErrorHtml::response(body, status)
@@ -592,7 +591,6 @@ pub async fn get_user_email_confirm(
 )]
 #[get("/users/{id}/reset/{reset_id}")]
 pub async fn get_user_password_reset(
-    data: web::Data<AppState>,
     path: web::Path<(String, String)>,
     req: HttpRequest,
 ) -> HttpResponse {
@@ -605,13 +603,13 @@ pub async fn get_user_password_reset(
         .unwrap_or("text/html");
     let no_html = accept == "application/json";
 
-    match password_reset::handle_get_pwd_reset(&data, req, user_id, reset_id, no_html).await {
+    match password_reset::handle_get_pwd_reset(req, user_id, reset_id, no_html).await {
         Ok((content, cookie)) => {
             if no_html {
-                let password_policy = match PasswordPolicy::find(&data).await {
+                let password_policy = match PasswordPolicy::find().await {
                     Ok(policy) => PasswordPolicyResponse::from(policy),
                     Err(err) => {
-                        let colors = ColorEntity::find_rauthy(&data).await.unwrap_or_default();
+                        let colors = ColorEntity::find_rauthy().await.unwrap_or_default();
                         let status = err.status_code();
                         let body = Error3Html::build(&colors, &lang, status, Some(err.message));
                         return ErrorHtml::response(body, status);
@@ -633,7 +631,7 @@ pub async fn get_user_password_reset(
             }
         }
         Err(err) => {
-            let colors = ColorEntity::find_rauthy(&data).await.unwrap_or_default();
+            let colors = ColorEntity::find_rauthy().await.unwrap_or_default();
             let status = err.status_code();
             let body = Error3Html::build(&colors, &lang, status, Some(err.message));
             ErrorHtml::response(body, status)
@@ -708,7 +706,6 @@ pub async fn put_user_password_reset(
 )]
 #[get("/users/{id}/webauthn")]
 pub async fn get_user_webauthn_passkeys(
-    data: web::Data<AppState>,
     id: web::Path<String>,
     principal: ReqPrincipal,
 ) -> Result<HttpResponse, ErrorResponse> {
@@ -723,7 +720,7 @@ pub async fn get_user_webauthn_passkeys(
         principal.is_user(&id)?;
     }
 
-    let pks = PasskeyEntity::find_for_user(&data, &id)
+    let pks = PasskeyEntity::find_for_user(&id)
         .await?
         .into_iter()
         .map(PasskeyResponse::from)
@@ -855,7 +852,6 @@ pub async fn post_webauthn_auth_finish(
 )]
 #[delete("/users/{id}/webauthn/delete/{name}")]
 pub async fn delete_webauthn(
-    data: web::Data<AppState>,
     path: web::Path<(String, String)>,
     principal: ReqPrincipal,
 ) -> Result<HttpResponse, ErrorResponse> {
@@ -878,36 +874,38 @@ pub async fn delete_webauthn(
         warn!("Passkey delete from admin for user {} for key {}", id, name);
     }
 
-    // if we delete a passkey, we must check if this is the last existing one for the user
-    let pks = PasskeyEntity::find_for_user(&data, &id).await?;
-
-    let mut txn = data.db.begin().await?;
-
-    PasskeyEntity::delete_by_id_name(&data, &id, &name, Some(&mut txn)).await?;
-    if pks.len() < 2 {
-        let mut user = User::find(&data, id).await?;
-        user.webauthn_user_id = None;
-
-        // in this case, we need to check against the current password policy, if the password
-        // should expire again
-        let policy = PasswordPolicy::find(&data).await?;
-        if let Some(valid_days) = policy.valid_days {
-            if user.password.is_some() {
-                user.password_expires = Some(
-                    OffsetDateTime::now_utc()
-                        .add(time::Duration::days(valid_days as i64))
-                        .unix_timestamp(),
-                );
-            } else {
-                user.password_expires = None;
-            }
-        }
-
-        user.save(&data, None, Some(&mut txn)).await?;
-        txn.commit().await?;
-    } else {
-        txn.commit().await?;
-    }
+    PasskeyEntity::delete(id, name).await?;
+    // // if we delete a passkey, we must check if this is the last existing one for the user
+    // let pks = PasskeyEntity::find_for_user(&data, &id).await?;
+    //
+    // let mut txn = DB::txn().await?;
+    //
+    // PasskeyEntity::delete_by_id_name(&id, &name, &mut txn).await?;
+    // if pks.len() < 2 {
+    //     let mut user = User::find(&data, id).await?;
+    //     user.webauthn_user_id = None;
+    //
+    //     // in this case, we need to check against the current password policy, if the password
+    //     // should expire again
+    //     let policy = PasswordPolicy::find(&data).await?;
+    //     if let Some(valid_days) = policy.valid_days {
+    //         if user.password.is_some() {
+    //             user.password_expires = Some(
+    //                 OffsetDateTime::now_utc()
+    //                     .add(time::Duration::days(valid_days as i64))
+    //                     .unix_timestamp(),
+    //             );
+    //         } else {
+    //             user.password_expires = None;
+    //         }
+    //     }
+    //
+    //     user.save_txn(&mut txn).await?;
+    //     txn.commit().await?;
+    // } else {
+    //     txn.commit().await?;
+    // }
+    // PasskeyEntity::clear_caches_by_id_name(&id, &name).await?;
 
     // make sure to delete any existing MFA cookie when a key is deleted
     let cookie = ApiCookie::build(COOKIE_MFA, "", 0);
@@ -969,7 +967,8 @@ pub async fn post_webauthn_reg_start(
 /// Finishes the registration process for a new WebAuthn Device for this user
 ///
 /// **Permissions**
-/// - authenticated and logged in user for this very {id}
+/// - authenticated and logged-in user for this very {id}
+/// - valid MagicLink code during password reset
 #[utoipa::path(
     post,
     path = "/users/{id}/webauthn/register/finish",
@@ -1038,8 +1037,8 @@ pub async fn get_user_webid(
     }
 
     let id = id.into_inner();
-    let webid = WebId::find(&data, id).await?;
-    let user = User::find(&data, webid.user_id.clone()).await?;
+    let webid = WebId::find(id).await?;
+    let user = User::find(webid.user_id.clone()).await?;
 
     let resp = WebIdResponse {
         webid: webid.into(),
@@ -1068,7 +1067,6 @@ pub async fn get_user_webid(
 )]
 #[get("/users/{id}/webid/data")]
 pub async fn get_user_webid_data(
-    data: web::Data<AppState>,
     id: web::Path<String>,
     principal: ReqPrincipal,
 ) -> Result<HttpResponse, ErrorResponse> {
@@ -1087,7 +1085,7 @@ pub async fn get_user_webid_data(
     }
 
     // request is valid -> either the user requests own data, or it is an admin
-    let webid = WebId::find(&data, id).await?;
+    let webid = WebId::find(id).await?;
 
     Ok(HttpResponse::Ok().json(webid))
 }
@@ -1107,7 +1105,6 @@ pub async fn get_user_webid_data(
 )]
 #[put("/users/{id}/webid/data")]
 pub async fn put_user_webid_data(
-    data: web::Data<AppState>,
     id: web::Path<String>,
     principal: ReqPrincipal,
     payload: Json<WebIdRequest>,
@@ -1131,7 +1128,7 @@ pub async fn put_user_webid_data(
             )
         })?;
 
-    WebId::upsert(&data, web_id).await?;
+    WebId::upsert(web_id).await?;
 
     Ok(HttpResponse::Ok().finish())
 }
@@ -1167,7 +1164,7 @@ pub async fn post_user_password_request_reset(
     principal.validate_session_auth_or_init()?;
 
     let payload = payload.into_inner();
-    match User::find_by_email(&data, payload.email).await {
+    match User::find_by_email(payload.email).await {
         Ok(user) => user
             .request_password_reset(&data, req, payload.redirect_uri)
             .await
@@ -1195,14 +1192,13 @@ pub async fn post_user_password_request_reset(
 )]
 #[get("/users/email/{email}")]
 pub async fn get_user_by_email(
-    data: web::Data<AppState>,
     path: web::Path<String>,
     principal: ReqPrincipal,
 ) -> Result<HttpResponse, ErrorResponse> {
     principal.validate_api_key_or_admin_session(AccessGroup::Users, AccessRights::Read)?;
 
-    let user = User::find_by_email(&data, path.into_inner()).await?;
-    let values = UserValues::find(&data, &user.id).await?;
+    let user = User::find_by_email(path.into_inner()).await?;
+    let values = UserValues::find(&user.id).await?;
 
     Ok(HttpResponse::Ok().json(user.into_response(values)))
 }
@@ -1301,7 +1297,6 @@ pub async fn put_user_self(
 )]
 #[post("/users/{id}/self/convert_passkey")]
 pub async fn post_user_self_convert_passkey(
-    data: web::Data<AppState>,
     id: web::Path<String>,
     principal: ReqPrincipal,
 ) -> Result<HttpResponse, ErrorResponse> {
@@ -1311,7 +1306,7 @@ pub async fn post_user_self_convert_passkey(
     let id = id.into_inner();
     principal.is_user(&id)?;
 
-    User::convert_to_passkey(&data, id).await?;
+    User::convert_to_passkey(id).await?;
     Ok(HttpResponse::Ok().finish())
 }
 
@@ -1331,13 +1326,12 @@ pub async fn post_user_self_convert_passkey(
 )]
 #[delete("/users/{id}")]
 pub async fn delete_user_by_id(
-    data: web::Data<AppState>,
     path: web::Path<String>,
     principal: ReqPrincipal,
 ) -> Result<HttpResponse, ErrorResponse> {
     principal.validate_api_key_or_admin_session(AccessGroup::Users, AccessRights::Delete)?;
 
-    let user = User::find(&data, path.into_inner()).await?;
-    user.delete(&data).await?;
+    let user = User::find(path.into_inner()).await?;
+    user.delete().await?;
     Ok(HttpResponse::NoContent().finish())
 }

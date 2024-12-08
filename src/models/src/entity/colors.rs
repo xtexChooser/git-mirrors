@@ -1,8 +1,8 @@
-use crate::app_state::AppState;
-use crate::cache::{Cache, DB};
-use actix_web::web;
+use crate::database::{Cache, DB};
+use hiqlite::{params, Param};
 use rauthy_api_types::clients::ColorsRequest;
 use rauthy_common::constants::CACHE_TTL_APP;
+use rauthy_common::is_hiqlite;
 use rauthy_error::ErrorResponse;
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
@@ -16,10 +16,19 @@ pub struct ColorEntity {
 
 // CRUD
 impl ColorEntity {
-    pub async fn delete(data: &web::Data<AppState>, client_id: &str) -> Result<(), ErrorResponse> {
-        sqlx::query!("DELETE FROM colors WHERE client_id = $1", client_id,)
-            .execute(&data.db)
-            .await?;
+    pub async fn delete(client_id: &str) -> Result<(), ErrorResponse> {
+        if is_hiqlite() {
+            DB::client()
+                .execute(
+                    "DELETE FROM colors WHERE client_id = $1",
+                    params!(client_id),
+                )
+                .await?;
+        } else {
+            sqlx::query!("DELETE FROM colors WHERE client_id = $1", client_id,)
+                .execute(DB::conn())
+                .await?;
+        }
 
         DB::client()
             .delete(Cache::App, Self::cache_idx(client_id))
@@ -28,10 +37,7 @@ impl ColorEntity {
         Ok(())
     }
 
-    pub async fn find(
-        data: &web::Data<AppState>,
-        client_id: &str,
-    ) -> Result<Colors, ErrorResponse> {
+    pub async fn find(client_id: &str) -> Result<Colors, ErrorResponse> {
         let idx = Self::cache_idx(client_id);
         let client = DB::client();
 
@@ -39,9 +45,19 @@ impl ColorEntity {
             return Ok(slf);
         }
 
-        let res = sqlx::query_as!(Self, "SELECT * FROM colors WHERE client_id = $1", client_id)
-            .fetch_optional(&data.db)
-            .await?;
+        let res = if is_hiqlite() {
+            client
+                .query_as_one(
+                    "SELECT * FROM colors WHERE client_id = $1",
+                    params!(client_id),
+                )
+                .await
+                .ok()
+        } else {
+            sqlx::query_as!(Self, "SELECT * FROM colors WHERE client_id = $1", client_id)
+                .fetch_optional(DB::conn())
+                .await?
+        };
         let colors = match res {
             None => Colors::default(),
             Some(entity) => entity.colors()?,
@@ -52,32 +68,38 @@ impl ColorEntity {
         Ok(colors)
     }
 
-    pub async fn find_rauthy(data: &web::Data<AppState>) -> Result<Colors, ErrorResponse> {
-        Self::find(data, "rauthy").await
+    pub async fn find_rauthy() -> Result<Colors, ErrorResponse> {
+        Self::find("rauthy").await
     }
 
-    pub async fn update(
-        data: &web::Data<AppState>,
-        client_id: &str,
-        req: ColorsRequest,
-    ) -> Result<(), ErrorResponse> {
+    pub async fn update(client_id: &str, req: ColorsRequest) -> Result<(), ErrorResponse> {
         let cols = Colors::from(req);
         let col_bytes = cols.as_bytes();
 
-        #[cfg(not(feature = "postgres"))]
-        let q = sqlx::query!(
-            "INSERT OR REPLACE INTO colors (client_id, data) values ($1, $2)",
-            client_id,
-            col_bytes,
-        );
-        #[cfg(feature = "postgres")]
-        let q = sqlx::query!(
-            r#"INSERT INTO colors (client_id, data) values ($1, $2)
-                ON CONFLICT(client_id) DO UPDATE SET data = $2"#,
-            client_id,
-            col_bytes,
-        );
-        q.execute(&data.db).await?;
+        if is_hiqlite() {
+            DB::client()
+                .execute(
+                    r#"
+INSERT INTO colors (client_id, data)
+VALUES ($1, $2)
+ON CONFLICT(client_id) DO UPDATE
+SET data = $2"#,
+                    params!(client_id, col_bytes),
+                )
+                .await?;
+        } else {
+            sqlx::query!(
+                r#"
+INSERT INTO colors (client_id, data)
+VALUES ($1, $2)
+ON CONFLICT(client_id) DO UPDATE
+SET data = $2"#,
+                client_id,
+                col_bytes,
+            )
+            .execute(DB::conn())
+            .await?;
+        }
 
         DB::client()
             .put(Cache::App, Self::cache_idx(client_id), &cols, CACHE_TTL_APP)

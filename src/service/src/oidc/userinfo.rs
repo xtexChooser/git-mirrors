@@ -34,7 +34,7 @@ pub async fn get_userinfo(
             "Token without 'sub' - could not extract the Principal",
         )
     })?;
-    let user = User::find(data, uid).await.map_err(|_| {
+    let user = User::find(uid).await.map_err(|_| {
         ErrorResponse::new(
             ErrorResponseType::WWWAuthenticate("user-not-found".to_string()),
             "The user has not been found".to_string(),
@@ -53,7 +53,7 @@ pub async fn get_userinfo(
         // if the token has been issued to a device, make sure it still exists and is valid
         if let Some(device_id) = claims.custom.did {
             // just make sure it still exists
-            DeviceEntity::find(data, &device_id).await.map_err(|_| {
+            DeviceEntity::find(&device_id).await.map_err(|_| {
                 ErrorResponse::new(
                     ErrorResponseType::WWWAuthenticate("user-device-not-found".to_string()),
                     "The user device has not been found".to_string(),
@@ -65,7 +65,7 @@ pub async fn get_userinfo(
         // skip this check if the client is ephemeral
         if !(claims.custom.azp.starts_with("http://") || claims.custom.azp.starts_with("https://"))
         {
-            let client = Client::find(data, claims.custom.azp).await.map_err(|_| {
+            let client = Client::find(claims.custom.azp).await.map_err(|_| {
                 ErrorResponse::new(
                     ErrorResponseType::WWWAuthenticate("client-not-found".to_string()),
                     "The client has not been found".to_string(),
@@ -89,7 +89,7 @@ pub async fn get_userinfo(
     let mut userinfo = Userinfo {
         id: user.id.clone(),
         sub: user.id.clone(),
-        name: format!("{} {}", &user.given_name, &user.family_name),
+        name: user.email_recipient_name(),
         roles,
         mfa_enabled: user.has_webauthn_enabled(),
 
@@ -128,10 +128,10 @@ pub async fn get_userinfo(
     if scope.contains("profile") {
         userinfo.preferred_username = Some(user.email.clone());
         userinfo.given_name = Some(user.given_name.clone());
-        userinfo.family_name = Some(user.family_name.clone());
+        userinfo.family_name = user.family_name.clone();
         userinfo.locale = Some(user.language.to_string());
 
-        user_values = UserValues::find(data, &user.id).await?;
+        user_values = UserValues::find(&user.id).await?;
         user_values_fetched = true;
 
         if let Some(values) = &user_values {
@@ -143,7 +143,7 @@ pub async fn get_userinfo(
 
     if scope.contains("address") {
         if !user_values_fetched {
-            user_values = UserValues::find(data, &user.id).await?;
+            user_values = UserValues::find(&user.id).await?;
             user_values_fetched = true;
         }
 
@@ -154,7 +154,7 @@ pub async fn get_userinfo(
 
     if scope.contains("phone") {
         if !user_values_fetched {
-            user_values = UserValues::find(data, &user.id).await?;
+            user_values = UserValues::find(&user.id).await?;
             // user_values_fetched = true;
         }
 

@@ -1,5 +1,7 @@
-use crate::app_state::DbPool;
+use crate::database::DB;
+use hiqlite::{params, Param};
 use rauthy_common::constants::RAUTHY_VERSION;
+use rauthy_common::is_hiqlite;
 use rauthy_error::ErrorResponse;
 use semver::Version;
 use serde::{Deserialize, Serialize};
@@ -13,23 +15,34 @@ pub struct DbVersion {
 }
 
 impl DbVersion {
-    pub async fn find(db: &DbPool) -> Option<Self> {
-        let res = query!("SELECT data FROM config WHERE id = 'db_version'")
-            .fetch_optional(db)
-            .await
-            .ok()?;
-        match res {
-            Some(res) => {
-                let data = res
-                    .data
-                    .expect("to get 'data' back from the AppVersion query");
-                bincode::deserialize::<Self>(&data).ok()
+    pub async fn find() -> Result<Option<Self>, ErrorResponse> {
+        if is_hiqlite() {
+            let mut rows = DB::client()
+                .query_raw("SELECT data FROM config WHERE id = 'db_version'", params!())
+                .await?;
+            if rows.is_empty() {
+                return Ok(None);
             }
-            None => None,
+            let bytes: Vec<u8> = rows.remove(0).get("data");
+            let version = bincode::deserialize::<Self>(&bytes)?;
+            Ok(Some(version))
+        } else {
+            let res = query!("SELECT data FROM config WHERE id = 'db_version'")
+                .fetch_optional(DB::conn())
+                .await?;
+            match res {
+                Some(record) => {
+                    let data = record
+                        .data
+                        .expect("to get 'data' back from the AppVersion query");
+                    Ok(Some(bincode::deserialize::<Self>(&data)?))
+                }
+                None => Ok(None),
+            }
         }
     }
 
-    pub async fn upsert(db: &DbPool, db_version: Option<Version>) -> Result<(), ErrorResponse> {
+    pub async fn upsert(db_version: Option<Version>) -> Result<(), ErrorResponse> {
         let app_version = Self::app_version();
         if Some(&app_version) != db_version.as_ref() {
             let slf = Self {
@@ -37,49 +50,62 @@ impl DbVersion {
             };
             let data = bincode::serialize(&slf)?;
 
-            #[cfg(not(feature = "postgres"))]
-            let q = query!(
-                "INSERT OR REPLACE INTO config (id, data) VALUES ('db_version', $1)",
-                data,
-            );
-            #[cfg(feature = "postgres")]
-            let q = query!(
-                r#"INSERT INTO config (id, data)
-                VALUES ('db_version', $1)
-                ON CONFLICT(id) DO UPDATE SET data = $1"#,
-                data,
-            );
-            q.execute(db).await?;
+            if is_hiqlite() {
+                DB::client()
+                    .execute(
+                        r#"INSERT INTO config (id, data)
+                        VALUES ('db_version', $1)
+                        ON CONFLICT(id) DO UPDATE SET data = $1"#,
+                        params!(data),
+                    )
+                    .await?;
+            } else {
+                query!(
+                    r#"INSERT INTO config (id, data)
+                    VALUES ('db_version', $1)
+                    ON CONFLICT(id) DO UPDATE SET data = $1"#,
+                    data,
+                )
+                .execute(DB::conn())
+                .await?;
+            }
         }
 
         Ok(())
     }
 
-    pub async fn check_app_version(db: &DbPool) -> Result<Option<Version>, ErrorResponse> {
+    pub async fn check_app_version() -> Result<Option<Version>, ErrorResponse> {
         let app_version = Self::app_version();
         debug!("Current Rauthy Version: {:?}", app_version);
 
         // check DB version for compatibility
-        let db_exists = query!("SELECT id FROM config LIMIT 1")
-            .fetch_one(db)
-            .await
-            .is_ok();
-        let db_version = match Self::find(db).await {
-            None => {
-                debug!(" No Current DB Version found");
-                if db_exists {
-                    Self::is_db_compatible(db, &app_version, None).await?;
-                }
+        // We check the `config` table first instead of db version, because the db version does not
+        // exist in early versions while the `config` does from the very beginning.
+        let db_exists = if is_hiqlite() {
+            DB::client()
+                .query_raw("SELECT id FROM config LIMIT 1", params!())
+                .await
+                .is_ok()
+        } else {
+            query!("SELECT id FROM config LIMIT 1")
+                .fetch_one(DB::conn())
+                .await
+                .is_ok()
+        };
 
+        if !db_exists {
+            return Ok(None);
+        }
+
+        let db_version = match Self::find().await? {
+            None => {
+                debug!("No Current DB Version found");
+                Self::is_db_compatible(&app_version, None).await?;
                 None
             }
             Some(db_version) => {
                 debug!("Current DB Version: {:?}", db_version);
-
-                if db_exists {
-                    Self::is_db_compatible(db, &app_version, Some(&db_version.version)).await?;
-                }
-
+                Self::is_db_compatible(&app_version, Some(&db_version.version)).await?;
                 Some(db_version.version)
             }
         };
@@ -90,13 +116,12 @@ impl DbVersion {
     /// Checks if we can use an existing (possibly older) db with this version of rauthy, or if
     /// the user may need to take action beforehand.
     async fn is_db_compatible(
-        db: &DbPool,
         app_version: &Version,
         db_version: Option<&Version>,
     ) -> Result<(), ErrorResponse> {
         // this check panics on purpose, and it is there to never forget to adjust this
         // version check before doing any major or minor release
-        if app_version.major != 0 || app_version.minor != 26 {
+        if app_version.major != 0 || app_version.minor != 27 {
             panic!(
                 "\nDbVersion::check_app_version needs adjustment for the new RAUTHY_VERSION: {}",
                 RAUTHY_VERSION
@@ -133,18 +158,20 @@ impl DbVersion {
         // which is already checked above
 
         // the passkeys table was introduced with v0.15.0
-        #[cfg(feature = "postgres")]
-        let is_db_v0_15_0 = query!("SELECT * FROM pg_tables WHERE tablename = 'passkeys' LIMIT 1")
-            .fetch_one(db)
-            .await
-            .is_err();
-        #[cfg(not(feature = "postgres"))]
-        let is_db_v0_15_0 = query!(
-            "SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'passkeys' LIMIT 1"
-        )
-        .fetch_one(db)
-        .await
-        .is_err();
+        let is_db_v0_15_0 = if is_hiqlite() {
+            DB::client()
+                .query_raw(
+                    "SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'passkeys' LIMIT 1",
+                    params!(),
+                )
+                .await
+                .is_err()
+        } else {
+            query!("SELECT * FROM pg_tables WHERE tablename = 'passkeys' LIMIT 1")
+                .fetch_one(DB::conn())
+                .await
+                .is_err()
+        };
         if is_db_v0_15_0 {
             panic!(
                 "Your database is Rauthy v0.15.0. You need to upgrade to Rauthy v0.16 first.\n\
@@ -154,18 +181,20 @@ impl DbVersion {
 
         // To check for any DB older than 0.15.0, we check for the existence of the 'clients' table
         // which is there since the very beginning.
-        #[cfg(feature = "postgres")]
-        let is_db_pre_v0_15_0 =
+        let is_db_pre_v0_15_0 = if is_hiqlite() {
+            DB::client()
+                .query_raw(
+                    "SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'clients' LIMIT 1",
+                    params!(),
+                )
+                .await
+                .is_err()
+        } else {
             query!("SELECT * FROM pg_tables WHERE tablename = 'clients' LIMIT 1")
-                .fetch_one(db)
+                .fetch_one(DB::conn())
                 .await
-                .is_err();
-        #[cfg(not(feature = "postgres"))]
-        let is_db_pre_v0_15_0 =
-            query!("SELECT * FROM sqlite_master WHERE type = 'table' AND name = 'clients' LIMIT 1")
-                .fetch_one(db)
-                .await
-                .is_err();
+                .is_err()
+        };
         if is_db_pre_v0_15_0 {
             panic!(
                 "Your database is older than Rauthy v0.15.0. You need to upgrade to Rauthy v0.15 first.\n\

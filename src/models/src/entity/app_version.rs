@@ -1,8 +1,8 @@
-use crate::app_state::AppState;
-use crate::cache::{Cache, DB};
-use actix_web::web;
+use crate::database::{Cache, DB};
 use chrono::Utc;
+use hiqlite::{params, Param};
 use rauthy_common::constants::{CACHE_TTL_APP, IDX_APP_VERSION, RAUTHY_VERSION};
+use rauthy_common::is_hiqlite;
 use rauthy_error::{ErrorResponse, ErrorResponseType};
 use reqwest::header::ACCEPT;
 use serde::{Deserialize, Serialize};
@@ -19,56 +19,63 @@ pub struct LatestAppVersion {
 }
 
 impl LatestAppVersion {
-    pub async fn find(app_state: &web::Data<AppState>) -> Option<Self> {
+    pub async fn find() -> Option<Self> {
         let client = DB::client();
 
         if let Ok(Some(slf)) = client.get(Cache::App, IDX_APP_VERSION).await {
             return Some(slf);
         }
 
-        let res = query!("select data from config where id = 'latest_version'")
-            .fetch_optional(&app_state.db)
-            .await
-            .ok()?;
+        let res = if is_hiqlite() {
+            DB::client()
+                .query_as(
+                    "SELECT data FROM config WHERE id = 'latest_version'",
+                    params!(),
+                )
+                .await
+                .ok()
+        } else {
+            query!("select data from config where id = 'latest_version'")
+                .fetch_optional(DB::conn())
+                .await
+                .ok()?
+                .map(|r| {
+                    r.data
+                        .expect("to get 'data' back from the AppVersion query")
+                })
+        };
 
-        match res {
-            Some(res) => {
-                let data = res
-                    .data
-                    .expect("to get 'data' back from the AppVersion query");
-                if let Ok(slf) = bincode::deserialize::<Self>(&data) {
-                    if let Err(err) = client
-                        .put(Cache::App, IDX_APP_VERSION, &slf, CACHE_TTL_APP)
-                        .await
-                    {
-                        error!("Inserting LatestAppVersion into cache: {:?}", err);
-                    }
-
-                    Some(slf)
-                } else {
-                    None
-                }
-            }
-            None => {
+        if let Some(data) = res {
+            if let Ok(slf) = bincode::deserialize::<Self>(&data) {
                 if let Err(err) = client
-                    .put(
-                        Cache::App,
-                        IDX_APP_VERSION,
-                        &None::<Option<Self>>,
-                        CACHE_TTL_APP,
-                    )
+                    .put(Cache::App, IDX_APP_VERSION, &slf, CACHE_TTL_APP)
                     .await
                 {
                     error!("Inserting LatestAppVersion into cache: {:?}", err);
                 }
 
+                Some(slf)
+            } else {
                 None
             }
+        } else {
+            if let Err(err) = client
+                .put(
+                    Cache::App,
+                    IDX_APP_VERSION,
+                    &None::<Option<Self>>,
+                    CACHE_TTL_APP,
+                )
+                .await
+            {
+                error!("Inserting LatestAppVersion into cache: {:?}", err);
+            }
+
+            None
         }
     }
 
     pub async fn upsert(
-        app_state: &web::Data<AppState>,
         latest_version: semver::Version,
         release_url: String,
     ) -> Result<(), ErrorResponse> {
@@ -79,18 +86,25 @@ impl LatestAppVersion {
         };
         let data = bincode::serialize(&slf)?;
 
-        #[cfg(not(feature = "postgres"))]
-        let q = query!(
-            "insert or replace into config (id, data) values ('latest_version', $1)",
-            data,
-        );
-        #[cfg(feature = "postgres")]
-        let q = query!(
-            r#"insert into config (id, data) values ('latest_version', $1)
-            on conflict(id) do update set data = $1"#,
-            data,
-        );
-        q.execute(&app_state.db).await?;
+        if is_hiqlite() {
+            DB::client()
+                .execute(
+                    r#"
+INSERT INTO config (id, data) VALUES ('latest_version', $1)
+ON CONFLICT(id) DO UPDATE SET data = $1"#,
+                    params!(data),
+                )
+                .await?;
+        } else {
+            query!(
+                r#"
+INSERT INTO config (id, data) VALUES ('latest_version', $1)
+ON CONFLICT(id) DO UPDATE SET data = $1"#,
+                data
+            )
+            .execute(DB::conn())
+            .await?;
+        }
 
         DB::client()
             .put(Cache::App, IDX_APP_VERSION, &slf, CACHE_TTL_APP)
@@ -104,8 +118,7 @@ impl LatestAppVersion {
             .connect_timeout(Duration::from_secs(10))
             .timeout(Duration::from_secs(10))
             .user_agent(format!("Rauthy v{} App Version Checker", RAUTHY_VERSION))
-            .build()
-            .unwrap();
+            .build()?;
 
         let res = client
             .get("https://api.github.com/repos/sebadob/rauthy/releases/latest")

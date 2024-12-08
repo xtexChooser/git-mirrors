@@ -1,4 +1,4 @@
-use crate::cache::{Cache, DB};
+use crate::database::{Cache, DB};
 use crate::entity::jwk::{JWKSPublicKey, JwkKeyPairAlg};
 use actix_web::http::header::{HeaderName, HeaderValue};
 use actix_web::{http, HttpRequest};

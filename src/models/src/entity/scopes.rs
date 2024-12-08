@@ -1,11 +1,13 @@
 use crate::app_state::{AppState, DbTxn};
-use crate::cache::{Cache, DB};
+use crate::database::{Cache, DB};
 use crate::entity::clients::Client;
 use crate::entity::user_attr::UserAttrConfigEntity;
 use crate::entity::well_known::WellKnown;
 use actix_web::web;
+use hiqlite::{params, Param, Params};
 use rauthy_api_types::scopes::{ScopeRequest, ScopeResponse};
 use rauthy_common::constants::{CACHE_TTL_APP, IDX_CLIENTS, IDX_SCOPES};
+use rauthy_common::is_hiqlite;
 use rauthy_common::utils::new_store_id;
 use rauthy_error::{ErrorResponse, ErrorResponseType};
 use serde::{Deserialize, Serialize};
@@ -26,13 +28,17 @@ pub struct Scope {
 
 // CRUD
 impl Scope {
-    // Inserts a new scope into the database
+    pub async fn clear_cache() -> Result<(), ErrorResponse> {
+        DB::client().delete(Cache::App, IDX_SCOPES).await?;
+        Ok(())
+    }
+
     pub async fn create(
         data: &web::Data<AppState>,
         scope_req: ScopeRequest,
     ) -> Result<Self, ErrorResponse> {
         // check for already existing scope
-        let mut scopes = Scope::find_all(data).await?;
+        let mut scopes = Scope::find_all().await?;
         for s in &scopes {
             if s.name == scope_req.scope {
                 return Err(ErrorResponse::new(
@@ -52,7 +58,7 @@ impl Scope {
         }
 
         // check configured custom attributes and clean them up
-        let attrs = UserAttrConfigEntity::find_all_as_set(data).await?;
+        let attrs = UserAttrConfigEntity::find_all_as_set().await?;
         let attr_include_access = Self::clean_up_attrs(scope_req.attr_include_access, &attrs);
         let attr_include_id = Self::clean_up_attrs(scope_req.attr_include_id, &attrs);
 
@@ -62,13 +68,34 @@ impl Scope {
             attr_include_access,
             attr_include_id,
         };
-        sqlx::query!("insert into scopes (id, name, attr_include_access, attr_include_id) values ($1, $2, $3, $4)",
-            new_scope.id,
-            new_scope.name,
-            new_scope.attr_include_access,
-            new_scope.attr_include_id,
-            ).execute(&data.db)
+
+        if is_hiqlite() {
+            DB::client()
+                .execute(
+                    r#"
+INSERT INTO scopes (id, name, attr_include_access, attr_include_id)
+VALUES ($1, $2, $3, $4)"#,
+                    params!(
+                        &new_scope.id,
+                        &new_scope.name,
+                        &new_scope.attr_include_access,
+                        &new_scope.attr_include_id
+                    ),
+                )
+                .await?;
+        } else {
+            sqlx::query!(
+                r#"
+    INSERT INTO scopes (id, name, attr_include_access, attr_include_id)
+    VALUES ($1, $2, $3, $4)"#,
+                new_scope.id,
+                new_scope.name,
+                new_scope.attr_include_access,
+                new_scope.attr_include_id,
+            )
+            .execute(DB::conn())
             .await?;
+        }
 
         scopes.push(new_scope.clone());
         DB::client()
@@ -80,9 +107,8 @@ impl Scope {
         Ok(new_scope)
     }
 
-    // Deletes a scope
     pub async fn delete(data: &web::Data<AppState>, id: &str) -> Result<(), ErrorResponse> {
-        let scope = Scope::find(data, id).await?;
+        let scope = Scope::find(id).await?;
         if scope.name == "openid" {
             return Err(ErrorResponse::new(
                 ErrorResponseType::BadRequest,
@@ -90,41 +116,51 @@ impl Scope {
             ));
         }
 
-        // before deleting a scope, cleanup every client
-        // get all clients with the to-be-deleted-scope assigned
-        let mut clients = vec![];
-        Client::find_all(data)
-            .await?
-            .into_iter()
-            .filter(|c| c.scopes.contains(&scope.name) || c.default_scopes.contains(&scope.name))
-            .for_each(|mut c| {
-                c.delete_scope(&scope.name);
-                clients.push(c);
-            });
+        let mut clients = Client::find_with_scope(&scope.name).await?;
 
-        // no need to evict the cache if no clients are updated
-        let client = DB::client();
-        if !clients.is_empty() {
-            client.delete(Cache::App, IDX_CLIENTS).await?;
+        if is_hiqlite() {
+            let mut txn: Vec<(&str, Params)> = Vec::with_capacity(clients.len() + 1);
+
+            for client in &mut clients {
+                client.delete_scope(&scope.name);
+                client.save_txn_append(&mut txn);
+            }
+            txn.push(("DELETE FROM scopes WHERE id = $1", params!(&scope.id)));
+
+            for res in DB::client().txn(txn).await? {
+                let rows_affected = res?;
+                debug_assert!(rows_affected == 1);
+            }
+        } else {
+            let mut txn = DB::txn().await?;
+
+            for client in &mut clients {
+                client.delete_scope(&scope.name);
+                client.save_txn(&mut txn).await?;
+            }
+            sqlx::query!("DELETE FROM scopes WHERE id = $1", id)
+                .execute(&mut *txn)
+                .await?;
+
+            txn.commit().await?;
         }
 
-        let mut txn = data.db.begin().await?;
-
-        for client in clients {
-            client.save(data, Some(&mut txn)).await?;
-        }
-
-        sqlx::query!("delete from scopes where id = $1", id)
-            .execute(&mut *txn)
-            .await?;
-
-        txn.commit().await?;
-
-        let scopes = Scope::find_all(data)
+        let scopes = Scope::find_all()
             .await?
             .into_iter()
             .filter(|s| s.id != scope.id)
             .collect::<Vec<Scope>>();
+
+        let client = DB::client();
+        // no need to evict the cache if no clients are updated
+        if !clients.is_empty() {
+            client.delete(Cache::App, IDX_CLIENTS).await?;
+        }
+
+        for client in clients {
+            client.save_cache().await?;
+        }
+
         client
             .put(Cache::App, IDX_SCOPES, &scopes, CACHE_TTL_APP)
             .await?;
@@ -134,28 +170,40 @@ impl Scope {
         Ok(())
     }
 
-    // Returns a single scope by id
-    pub async fn find(data: &web::Data<AppState>, id: &str) -> Result<Self, ErrorResponse> {
-        let res = sqlx::query_as!(Self, "SELECT * FROM scopes WHERE id = $1", id)
-            .fetch_one(&data.db)
-            .await?;
+    pub async fn find(id: &str) -> Result<Self, ErrorResponse> {
+        let res = if is_hiqlite() {
+            DB::client()
+                .query_as_one("SELECT * FROM scopes WHERE id = $1", params!(id))
+                .await?
+        } else {
+            sqlx::query_as!(Self, "SELECT * FROM scopes WHERE id = $1", id)
+                .fetch_one(DB::conn())
+                .await?
+        };
+
         Ok(res)
     }
 
-    // Returns all existing scopes
-    pub async fn find_all(data: &web::Data<AppState>) -> Result<Vec<Self>, ErrorResponse> {
+    pub async fn find_all() -> Result<Vec<Self>, ErrorResponse> {
         let client = DB::client();
         if let Some(slf) = client.get(Cache::App, IDX_SCOPES).await? {
             return Ok(slf);
         }
 
-        let res = sqlx::query_as!(Self, "SELECT * FROM scopes")
-            .fetch_all(&data.db)
-            .await?;
+        let res = if is_hiqlite() {
+            DB::client()
+                .query_as("SELECT * FROM scopes", params!())
+                .await?
+        } else {
+            sqlx::query_as!(Self, "SELECT * FROM scopes")
+                .fetch_all(DB::conn())
+                .await?
+        };
 
         client
             .put(Cache::App, IDX_SCOPES, &res, CACHE_TTL_APP)
             .await?;
+
         Ok(res)
     }
 
@@ -165,7 +213,7 @@ impl Scope {
         id: &str,
         scope_req: ScopeRequest,
     ) -> Result<Self, ErrorResponse> {
-        let scope = Scope::find(data, id).await?;
+        let scope = Scope::find(id).await?;
         if scope.name == "openid" {
             return Err(ErrorResponse::new(
                 ErrorResponseType::BadRequest,
@@ -182,42 +230,28 @@ impl Scope {
             ));
         }
 
-        let mut txn = data.db.begin().await?;
-
-        // if the name has changed, we need to update all connected clients
-        let is_name_update = if scope.name != scope_req.scope {
-            // find all clients with the old_name assigned
-            let mut clients = vec![];
-            Client::find_all(data)
+        // we only need to update clients with pre-computed values if the name
+        // has been changed, but can skip them if it's about the attribute mapping
+        let clients = if scope.name != scope_req.scope {
+            let clients = Client::find_with_scope(&scope.name)
                 .await?
                 .into_iter()
-                .filter(|c| {
-                    c.scopes.contains(&scope.name) || c.default_scopes.contains(&scope.name)
-                })
-                .for_each(|mut c| {
+                .map(|mut c| {
                     c.scopes = c.scopes.replace(&scope.name, &scope_req.scope);
                     c.default_scopes = c.default_scopes.replace(&scope.name, &scope_req.scope);
-                    clients.push(c);
-                });
-
-            // no need to evict the cache if no clients are updated
-            if !clients.is_empty() {
-                DB::client().delete(Cache::App, IDX_CLIENTS).await?;
-            }
-
-            // Not awaiting all at once to prevent resource spikes
-            for client in clients {
-                client.save(data, Some(&mut txn)).await?;
-            }
-
-            true
+                    c
+                })
+                .collect::<Vec<_>>();
+            debug!("\n\n{:?}\n", clients);
+            Some(clients)
         } else {
-            false
+            None
         };
+        let is_name_update = clients.is_some();
 
         debug!("scope_req: {:?}", scope_req);
         // check configured custom attributes and clean them up
-        let attrs = UserAttrConfigEntity::find_all_as_set(data).await?;
+        let attrs = UserAttrConfigEntity::find_all_as_set().await?;
         let attr_include_access = Self::clean_up_attrs(scope_req.attr_include_access, &attrs);
         let attr_include_id = Self::clean_up_attrs(scope_req.attr_include_id, &attrs);
         debug!("attr_include_access: {:?}", attr_include_access);
@@ -230,21 +264,63 @@ impl Scope {
             attr_include_id,
         };
 
-        sqlx::query!(
-            r#"UPDATE scopes
-            SET name = $1, attr_include_access = $2, attr_include_id = $3
-            WHERE id = $4"#,
-            new_scope.name,
-            new_scope.attr_include_access,
-            new_scope.attr_include_id,
-            new_scope.id,
-        )
-        .execute(&mut *txn)
-        .await?;
+        if is_hiqlite() {
+            let len = clients.as_ref().map(|c| c.len()).unwrap_or_default() + 1;
+            let mut txn: Vec<(&str, Params)> = Vec::with_capacity(len);
 
-        txn.commit().await?;
+            if let Some(clients) = &clients {
+                for client in clients {
+                    client.save_txn_append(&mut txn);
+                }
+            }
+            txn.push((
+                r#"
+UPDATE scopes
+SET name = $1, attr_include_access = $2, attr_include_id = $3
+WHERE id = $4"#,
+                params!(
+                    &new_scope.name,
+                    &new_scope.attr_include_access,
+                    &new_scope.attr_include_id,
+                    &new_scope.id
+                ),
+            ));
 
-        let scopes = Scope::find_all(data)
+            for res in DB::client().txn(txn).await? {
+                let rows_affected = res?;
+                debug_assert!(rows_affected == 1);
+            }
+        } else {
+            let mut txn = DB::txn().await?;
+
+            if let Some(clients) = &clients {
+                for client in clients {
+                    client.save_txn(&mut txn).await?;
+                }
+            }
+            sqlx::query!(
+                r#"
+UPDATE scopes
+SET name = $1, attr_include_access = $2, attr_include_id = $3
+WHERE id = $4"#,
+                new_scope.name,
+                new_scope.attr_include_access,
+                new_scope.attr_include_id,
+                new_scope.id,
+            )
+            .execute(&mut *txn)
+            .await?;
+
+            txn.commit().await?;
+        }
+
+        if let Some(clients) = clients {
+            for client in clients {
+                client.save_cache().await?;
+            }
+        }
+
+        let scopes = Scope::find_all()
             .await?
             .into_iter()
             .map(|mut s| {
@@ -255,29 +331,31 @@ impl Scope {
             })
             .collect::<Vec<Scope>>();
 
+        let client = DB::client();
         DB::client()
             .put(Cache::App, IDX_SCOPES, &scopes, CACHE_TTL_APP)
             .await?;
 
         if is_name_update {
+            client.delete(Cache::App, IDX_CLIENTS).await?;
             WellKnown::rebuild(data).await?;
         }
 
         Ok(new_scope)
     }
 
-    // Updates a scope
+    /// If you use this in a transactions, you MUST `Scope::clear_cache()` after successful commit!
     pub async fn update_mapping_only(
-        data: &web::Data<AppState>,
         id: &str,
         attr_include_access: Option<String>,
         attr_include_id: Option<String>,
         txn: &mut DbTxn<'_>,
     ) -> Result<(), ErrorResponse> {
         sqlx::query!(
-            r#"UPDATE scopes
-            SET attr_include_access = $1, attr_include_id = $2
-            WHERE id = $3"#,
+            r#"
+    UPDATE scopes
+    SET attr_include_access = $1, attr_include_id = $2
+    WHERE id = $3"#,
             attr_include_access,
             attr_include_id,
             id,
@@ -285,27 +363,28 @@ impl Scope {
         .execute(&mut **txn)
         .await?;
 
-        let scopes = Scope::find_all(data)
-            .await?
-            .into_iter()
-            .map(|mut s| {
-                if s.id == id {
-                    s.attr_include_access.clone_from(&attr_include_access);
-                    s.attr_include_id.clone_from(&attr_include_id);
-                }
-                s
-            })
-            .collect::<Vec<Scope>>();
-
-        DB::client()
-            .put(Cache::App, IDX_SCOPES, &scopes, CACHE_TTL_APP)
-            .await?;
-
         Ok(())
+    }
+
+    /// If you use this in a transactions, you MUST `Scope::clear_cache()` after successful commit!
+    pub fn update_mapping_only_append(
+        id: &str,
+        attr_include_access: Option<String>,
+        attr_include_id: Option<String>,
+        txn: &mut Vec<(&str, Params)>,
+    ) {
+        txn.push((
+            r#"
+    UPDATE scopes
+    SET attr_include_access = $1, attr_include_id = $2
+    WHERE id = $3"#,
+            params!(attr_include_access, attr_include_id, id),
+        ));
     }
 }
 
 impl Scope {
+    #[inline]
     pub fn clean_up_attrs(
         req_attrs: Option<Vec<String>>,
         existing_attrs: &HashSet<String>,
@@ -337,6 +416,7 @@ impl Scope {
     /// Returns `true` if the given scope is not a default OIDC scope.
     /// Note: `groups` is not a default scope, but it will be handled like one for performance
     /// and efficiency reasons.
+    #[inline]
     pub fn is_custom(scope: &str) -> bool {
         scope != "openid" && scope != "profile" && scope != "email" && scope != "groups"
     }

@@ -1,15 +1,17 @@
-use crate::app_state::AppState;
-use crate::cache::{Cache, DB};
+use crate::database::{Cache, DB};
 use actix_web::web;
+use hiqlite::{params, Param, Row};
 use image::imageops::FilterType;
-use image::ImageFormat;
+use image::{EncodableLayout, ImageFormat};
 use jwt_simple::prelude::{Deserialize, Serialize};
 use rauthy_common::constants::{
     CACHE_TTL_APP, CONTENT_TYPE_WEBP, IDX_AUTH_PROVIDER_LOGO, IDX_CLIENT_LOGO,
 };
+use rauthy_common::is_hiqlite;
 use rauthy_error::{ErrorResponse, ErrorResponseType};
 use sqlx::{query, query_as};
 use std::io::Cursor;
+use svg_hush::data_url_filter;
 use tracing::debug;
 
 // The default height a client logo will be resized to
@@ -64,8 +66,10 @@ const RAUTHY_DEFAULT_SVG: &str = r#"<?xml version="1.0" encoding="UTF-8" standal
     </defs>
 </svg>"#;
 
-#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, sqlx::Type)]
 #[serde(rename_all = "lowercase")]
+#[sqlx(type_name = "varchar")]
+#[sqlx(rename_all = "lowercase")]
 pub enum LogoRes {
     Small,
     Medium,
@@ -104,7 +108,7 @@ pub enum LogoType {
     AuthProvider,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, sqlx::FromRow)]
 pub struct Logo {
     pub id: String,
     pub res: LogoRes,
@@ -112,25 +116,47 @@ pub struct Logo {
     pub data: Vec<u8>,
 }
 
+impl<'r> From<hiqlite::Row<'r>> for Logo {
+    fn from(mut row: Row<'r>) -> Self {
+        Self {
+            id: row.get("id"),
+            res: LogoRes::from(row.get::<String>("res")),
+            content_type: row.get("content_type"),
+            data: row.get("data"),
+        }
+    }
+}
+
 impl Logo {
-    pub async fn delete(
-        data: &web::Data<AppState>,
-        id: &str,
-        typ: &LogoType,
-    ) -> Result<(), ErrorResponse> {
+    pub async fn delete(id: &str, typ: &LogoType) -> Result<(), ErrorResponse> {
         match typ {
             LogoType::Client => {
-                query!("DELETE FROM client_logos WHERE client_id = $1", id)
-                    .execute(&data.db)
-                    .await?
+                if is_hiqlite() {
+                    DB::client()
+                        .execute("DELETE FROM client_logos WHERE client_id = $1", params!(id))
+                        .await?;
+                } else {
+                    query!("DELETE FROM client_logos WHERE client_id = $1", id)
+                        .execute(DB::conn())
+                        .await?;
+                }
             }
             LogoType::AuthProvider => {
-                query!(
-                    "DELETE FROM auth_provider_logos WHERE auth_provider_id = $1",
-                    id
-                )
-                .execute(&data.db)
-                .await?
+                if is_hiqlite() {
+                    DB::client()
+                        .execute(
+                            "DELETE FROM auth_provider_logos WHERE auth_provider_id = $1",
+                            params!(id),
+                        )
+                        .await?;
+                } else {
+                    query!(
+                        "DELETE FROM auth_provider_logos WHERE auth_provider_id = $1",
+                        id
+                    )
+                    .execute(DB::conn())
+                    .await?;
+                }
             }
         };
 
@@ -142,7 +168,6 @@ impl Logo {
     }
 
     pub async fn upsert(
-        data: &web::Data<AppState>,
         id: String,
         logo: Vec<u8>,
         content_type: mime::Mime,
@@ -158,10 +183,8 @@ impl Logo {
         // technically not do an upsert, but actually delete + insert.
 
         match content_type.as_ref() {
-            "image/svg+xml" => {
-                Self::upsert_svg(data, id, logo, content_type.to_string(), &typ).await
-            }
-            "image/jpeg" | "image/png" => Self::upsert_jpg_png(data.clone(), id, logo, typ).await,
+            "image/svg+xml" => Self::upsert_svg(id, logo, content_type.to_string(), &typ).await,
+            "image/jpeg" | "image/png" => Self::upsert_jpg_png(id, logo, typ).await,
             _ => Err(ErrorResponse::new(
                 ErrorResponseType::BadRequest,
                 "Invalid mime type for auth provider logo",
@@ -170,31 +193,25 @@ impl Logo {
     }
 
     async fn upsert_svg(
-        data: &web::Data<AppState>,
         id: String,
-        logo: Vec<u8>,
+        mut logo: Vec<u8>,
         content_type: String,
         typ: &LogoType,
     ) -> Result<(), ErrorResponse> {
-        Self::delete(data, &id, typ).await?;
+        Self::delete(&id, typ).await?;
 
         // SVG's don't have a resolution, save them as they are
         let slf = Self {
             id,
             res: LogoRes::Svg,
             content_type,
-            data: logo,
+            data: Self::sanitize_svg(logo.as_mut_slice())?,
         };
-        slf.upsert_self(data, typ, true).await
+        slf.upsert_self(typ, true).await
     }
 
-    async fn upsert_jpg_png(
-        data: web::Data<AppState>,
-        id: String,
-        logo: Vec<u8>,
-        typ: LogoType,
-    ) -> Result<(), ErrorResponse> {
-        Self::delete(&data, &id, &typ).await?;
+    async fn upsert_jpg_png(id: String, logo: Vec<u8>, typ: LogoType) -> Result<(), ErrorResponse> {
+        Self::delete(&id, &typ).await?;
 
         // we will save jpg / png in 2 downscaled and optimized resolutions:
         // - `RES_LATER_USE`px for possible later use
@@ -238,7 +255,7 @@ impl Logo {
                 content_type: CONTENT_TYPE_WEBP.to_string(),
                 data: buf.into_inner(),
             };
-            slf_medium.upsert_self(&data, &typ, false).await?;
+            slf_medium.upsert_self(&typ, false).await?;
 
             let img_small =
                 image_medium.resize_to_fill(size_small, size_small, FilterType::Lanczos3);
@@ -250,7 +267,7 @@ impl Logo {
                 content_type: slf_medium.content_type,
                 data: buf.into_inner(),
             }
-            .upsert_self(&data, &typ, true)
+            .upsert_self(&typ, true)
             .await?;
 
             Ok::<(), ErrorResponse>(())
@@ -262,9 +279,9 @@ impl Logo {
     }
 
     /// Overwrites the logo for the `rauthy` client with the default logo
-    pub async fn upsert_rauthy_default(data: &web::Data<AppState>) -> Result<(), ErrorResponse> {
+    pub async fn upsert_rauthy_default() -> Result<(), ErrorResponse> {
         // make sure to delete any possibly existing webp image before inserting the svg
-        Self::delete(data, "rauthy", &LogoType::Client).await?;
+        Self::delete("rauthy", &LogoType::Client).await?;
 
         Self {
             id: "rauthy".to_string(),
@@ -272,74 +289,72 @@ impl Logo {
             content_type: mime::IMAGE_SVG.to_string(),
             data: RAUTHY_DEFAULT_SVG.as_bytes().to_vec(),
         }
-        .upsert_self(data, &LogoType::Client, true)
+        .upsert_self(&LogoType::Client, true)
         .await
     }
 
-    async fn upsert_self(
-        &self,
-        data: &web::Data<AppState>,
-        typ: &LogoType,
-        with_cache: bool,
-    ) -> Result<(), ErrorResponse> {
+    async fn upsert_self(&self, typ: &LogoType, with_cache: bool) -> Result<(), ErrorResponse> {
         let res = self.res.as_str();
 
-        // SVGs don't have a resolution -> just save one version
-        #[cfg(not(feature = "postgres"))]
-        match typ {
-            LogoType::Client => {
-                query!(
-                    r#"INSERT OR REPLACE INTO
-                    client_logos (client_id, res, content_type, data)
-                    VALUES ($1, $2, $3, $4)"#,
-                    self.id,
-                    res,
-                    self.content_type,
-                    self.data,
-                )
-            }
-            LogoType::AuthProvider => {
-                query!(
-                    r#"INSERT OR REPLACE INTO
-                    auth_provider_logos (auth_provider_id, res, content_type, data)
-                    VALUES ($1, $2, $3, $4)"#,
-                    self.id,
-                    res,
-                    self.content_type,
-                    self.data,
-                )
-            }
-        }
-        .execute(&data.db)
-        .await?;
+        if is_hiqlite() {
+            let sql = match typ {
+                LogoType::Client => {
+                    r#"
+INSERT INTO client_logos (client_id, res, content_type, data)
+VALUES ($1, $2, $3, $4)
+ON CONFLICT(client_id, res) DO UPDATE SET content_type = $3, data = $4"#
+                }
+                LogoType::AuthProvider => {
+                    r#"
+INSERT INTO auth_provider_logos (auth_provider_id, res, content_type, data)
+VALUES ($1, $2, $3, $4)
+ON CONFLICT(auth_provider_id, res) DO UPDATE SET content_type = $3, data = $4"#
+                }
+            };
 
-        #[cfg(feature = "postgres")]
-        match typ {
-            LogoType::Client => {
-                query!(
-                    r#"INSERT INTO client_logos (client_id, res, content_type, data)
-                    VALUES ($1, $2, $3, $4)
-                    ON CONFLICT(client_id, res) DO UPDATE SET content_type = $3, data = $4"#,
-                    self.id,
-                    res,
-                    self.content_type,
-                    self.data,
+            DB::client()
+                .execute(
+                    sql,
+                    params!(
+                        self.id.clone(),
+                        res,
+                        self.content_type.clone(),
+                        self.data.clone()
+                    ),
                 )
+                .await?;
+        } else {
+            match typ {
+                LogoType::Client => {
+                    query!(
+                        r#"
+INSERT INTO client_logos (client_id, res, content_type, data)
+VALUES ($1, $2, $3, $4)
+ON CONFLICT(client_id, res) DO UPDATE
+SET content_type = $3, data = $4"#,
+                        self.id,
+                        res,
+                        self.content_type,
+                        self.data,
+                    )
+                }
+                LogoType::AuthProvider => {
+                    query!(
+                        r#"
+INSERT INTO auth_provider_logos (auth_provider_id, res, content_type, data)
+VALUES ($1, $2, $3, $4)
+ON CONFLICT(auth_provider_id, res) DO UPDATE
+SET content_type = $3, data = $4"#,
+                        self.id,
+                        res,
+                        self.content_type,
+                        self.data,
+                    )
+                }
             }
-            LogoType::AuthProvider => {
-                query!(
-                    r#"INSERT INTO auth_provider_logos (auth_provider_id, res, content_type, data)
-                    VALUES ($1, $2, $3, $4)
-                    ON CONFLICT(auth_provider_id, res) DO UPDATE SET content_type = $3, data = $4"#,
-                    self.id,
-                    res,
-                    self.content_type,
-                    self.data,
-                )
-            }
+            .execute(DB::conn())
+            .await?;
         }
-        .execute(&data.db)
-        .await?;
 
         if with_cache {
             DB::client()
@@ -355,41 +370,58 @@ impl Logo {
         Ok(())
     }
 
-    pub async fn find(
-        data: &web::Data<AppState>,
-        id: &str,
-        res: LogoRes,
-        typ: &LogoType,
-    ) -> Result<Self, ErrorResponse> {
+    pub async fn find(id: &str, res: LogoRes, typ: &LogoType) -> Result<Self, ErrorResponse> {
         let res = res.as_str();
         let res_svg = LogoRes::Svg.as_str();
 
-        let slf = match typ {
-            LogoType::Client => {
-                query_as!(
-                    Self,
-                    r#"SELECT client_id as id, res, content_type, data
-                    FROM client_logos
-                    WHERE client_id = $1 AND (res = $2 OR res = $3)"#,
-                    id,
-                    res,
-                    res_svg,
-                )
-                .fetch_one(&data.db)
+        let slf = if is_hiqlite() {
+            let sql = match typ {
+                LogoType::Client => {
+                    r#"
+SELECT client_id AS id, res, content_type, data
+FROM client_logos
+WHERE client_id = $1 AND (res = $2 OR res = $3)"#
+                }
+                LogoType::AuthProvider => {
+                    r#"
+SELECT auth_provider_id AS id, res, content_type, data
+FROM auth_provider_logos
+WHERE auth_provider_id = $1 AND (res = $2 OR res = $3)"#
+                }
+            };
+            DB::client()
+                .query_map_one(sql, params!(id, res, res_svg))
                 .await?
-            }
-            LogoType::AuthProvider => {
-                query_as!(
-                    Self,
-                    r#"SELECT auth_provider_id as id, res, content_type, data
-                    FROM auth_provider_logos
-                    WHERE auth_provider_id = $1 AND (res = $2 OR res = $3)"#,
-                    id,
-                    res,
-                    res_svg,
-                )
-                .fetch_one(&data.db)
-                .await?
+        } else {
+            match typ {
+                LogoType::Client => {
+                    query_as!(
+                        Self,
+                        r#"
+SELECT client_id AS id, res, content_type, data
+FROM client_logos
+WHERE client_id = $1 AND (res = $2 OR res = $3)"#,
+                        id,
+                        res,
+                        res_svg,
+                    )
+                    .fetch_one(DB::conn())
+                    .await?
+                }
+                LogoType::AuthProvider => {
+                    query_as!(
+                        Self,
+                        r#"
+SELECT auth_provider_id AS id, res, content_type, data
+FROM auth_provider_logos
+WHERE auth_provider_id = $1 AND (res = $2 OR res = $3)"#,
+                        id,
+                        res,
+                        res_svg,
+                    )
+                    .fetch_one(DB::conn())
+                    .await?
+                }
             }
         };
 
@@ -397,17 +429,13 @@ impl Logo {
     }
 
     // special fn because we would only cache the small logos
-    pub async fn find_cached(
-        data: &web::Data<AppState>,
-        id: &str,
-        typ: &LogoType,
-    ) -> Result<Self, ErrorResponse> {
+    pub async fn find_cached(id: &str, typ: &LogoType) -> Result<Self, ErrorResponse> {
         let client = DB::client();
         if let Some(slf) = client.get(Cache::App, Self::cache_idx(typ, id)).await? {
             return Ok(slf);
         }
 
-        let slf = Self::find(data, id, LogoRes::Small, typ).await?;
+        let slf = Self::find(id, LogoRes::Small, typ).await?;
 
         client
             .put(Cache::App, Self::cache_idx(typ, id), &slf, CACHE_TTL_APP)
@@ -424,5 +452,15 @@ impl Logo {
             LogoType::Client => format!("{}_{}", IDX_CLIENT_LOGO, id),
             LogoType::AuthProvider => format!("{}_{}", IDX_AUTH_PROVIDER_LOGO, id),
         }
+    }
+
+    fn sanitize_svg(source: &mut [u8]) -> Result<Vec<u8>, ErrorResponse> {
+        let mut filter = svg_hush::Filter::new();
+        filter.set_data_url_filter(data_url_filter::allow_standard_images);
+
+        let mut sanitized = Vec::with_capacity(source.len());
+        filter.filter(&mut source.as_bytes(), &mut sanitized)?;
+
+        Ok(sanitized)
     }
 }

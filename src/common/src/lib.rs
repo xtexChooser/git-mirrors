@@ -3,7 +3,8 @@
 // needed because the lazy_static! initialization of constants grew quite a bit
 #![recursion_limit = "256"]
 
-use std::str::FromStr;
+use crate::constants::DB_TYPE;
+use std::env;
 
 pub mod constants;
 pub mod password_hasher;
@@ -13,21 +14,48 @@ pub mod utils;
 pub enum DbType {
     Sqlite,
     Postgres,
-    // Mysql,
+    Hiqlite,
 }
 
-impl FromStr for DbType {
-    type Err = ();
+impl DbType {
+    fn from_str(db_url: Option<&str>) -> Self {
+        let use_hiqlite = env::var("HIQLITE")
+            .unwrap_or_else(|_| "true".to_string())
+            .parse::<bool>()
+            .expect("Cannot parse HIQLITE as bool");
 
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let res = if s.starts_with("sqlite:") {
-            Self::Sqlite
-        } else if s.starts_with("postgresql://") {
-            Self::Postgres
+        if use_hiqlite {
+            return DbType::Hiqlite;
+        }
+
+        if let Some(db_url) = db_url {
+            if db_url.starts_with("sqlite:") {
+                panic!(
+                    "SQLite support has been dropped with v0.27.0 - please migrate to Hiqlite:\n\
+                https://github.com/sebadob/rauthy/blob/main/CHANGELOG.md#dropped-sqlx-sqlite-in-favor-of-hiqlite"
+                )
+            } else if db_url.starts_with("postgresql://") {
+                Self::Postgres
+            } else {
+                panic!("You provided an unknown database type, please check the DATABASE_URL");
+            }
         } else {
-            panic!("You provided an unknown database type, please check the DATABASE_URL");
-        };
-
-        Ok(res)
+            panic!("HIQLITE is disabled and no DATABASE_URL given");
+        }
     }
+}
+
+#[inline(always)]
+pub fn is_hiqlite() -> bool {
+    *DB_TYPE == DbType::Hiqlite
+}
+
+#[inline(always)]
+pub fn is_sqlite() -> bool {
+    *DB_TYPE == DbType::Sqlite
+}
+
+#[inline(always)]
+pub fn is_postgres() -> bool {
+    *DB_TYPE == DbType::Postgres
 }

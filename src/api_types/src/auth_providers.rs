@@ -19,7 +19,7 @@ pub enum AuthProviderType {
 #[derive(Debug, Deserialize, Validate, ToSchema)]
 pub struct ProviderRequest {
     /// Validation: `[a-zA-Z0-9À-ÿ-\s]{2,128}]`
-    #[validate(regex(path = "*RE_CLIENT_NAME", code = "[a-zA-Z0-9À-ÿ-\\s]{2,128}"))]
+    #[validate(regex(path = "*RE_CLIENT_NAME", code = "[a-zA-Z0-9À-ſ-\\s]{2,128}"))]
     pub name: String,
     pub typ: AuthProviderType,
     pub enabled: bool,
@@ -168,7 +168,7 @@ pub struct ProviderResponse {
     pub root_pem: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, ToSchema)]
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
 pub struct ProviderLinkedUserResponse {
     pub id: String,
     pub email: String,

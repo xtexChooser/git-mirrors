@@ -1,6 +1,6 @@
 use crate::api_cookie::ApiCookie;
 use crate::app_state::AppState;
-use crate::cache::{Cache, DB};
+use crate::database::{Cache, DB};
 use crate::entity::auth_codes::AuthCode;
 use crate::entity::clients::Client;
 use crate::entity::sessions::Session;
@@ -15,6 +15,7 @@ use actix_web::http::header::HeaderValue;
 use actix_web::{web, HttpRequest};
 use cryptr::utils::secure_random_alnum;
 use cryptr::EncValue;
+use hiqlite::{params, Param, Row};
 use image::EncodableLayout;
 use itertools::Itertools;
 use rauthy_api_types::auth_providers::{
@@ -30,6 +31,7 @@ use rauthy_common::constants::{
     PROVIDER_CALLBACK_URI_ENCODED, PROVIDER_LINK_COOKIE, RAUTHY_VERSION,
     UPSTREAM_AUTH_CALLBACK_TIMEOUT_SECS, WEBAUTHN_REQ_EXP,
 };
+use rauthy_common::is_hiqlite;
 use rauthy_common::utils::{
     base64_decode, base64_encode, base64_url_encode, base64_url_no_pad_decode, get_rand,
     new_store_id,
@@ -192,44 +194,107 @@ pub struct AuthProvider {
     pub root_pem: Option<String>,
 }
 
+impl<'r> From<hiqlite::Row<'r>> for AuthProvider {
+    fn from(mut row: Row<'r>) -> Self {
+        let typ_str: String = row.get("typ");
+        let typ = AuthProviderType::from(typ_str);
+
+        Self {
+            id: row.get("id"),
+            name: row.get("name"),
+            enabled: row.get("enabled"),
+            typ,
+            issuer: row.get("issuer"),
+            authorization_endpoint: row.get("authorization_endpoint"),
+            token_endpoint: row.get("token_endpoint"),
+            userinfo_endpoint: row.get("userinfo_endpoint"),
+            client_id: row.get("client_id"),
+            secret: row.get("secret"),
+            scope: row.get("scope"),
+            admin_claim_path: row.get("admin_claim_path"),
+            admin_claim_value: row.get("admin_claim_value"),
+            mfa_claim_path: row.get("mfa_claim_path"),
+            mfa_claim_value: row.get("mfa_claim_value"),
+            allow_insecure_requests: row.get("allow_insecure_requests"),
+            use_pkce: row.get("use_pkce"),
+            root_pem: row.get("root_pem"),
+        }
+    }
+}
+
 impl AuthProvider {
-    pub async fn create(
-        data: &web::Data<AppState>,
-        payload: ProviderRequest,
-    ) -> Result<Self, ErrorResponse> {
-        let slf = Self::try_from_id_req(new_store_id(), payload)?;
+    pub async fn create(payload: ProviderRequest) -> Result<Self, ErrorResponse> {
+        let mut slf = Self::try_from_id_req(new_store_id(), payload)?;
         let typ = slf.typ.as_str();
 
-        query!(
-            r#"INSERT INTO
-            auth_providers (id, name, enabled, typ, issuer, authorization_endpoint, token_endpoint,
-            userinfo_endpoint, client_id, secret, scope, admin_claim_path, admin_claim_value,
-            mfa_claim_path, mfa_claim_value, allow_insecure_requests, use_pkce, root_pem)
-            VALUES
-            ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)"#,
-            slf.id,
-            slf.name,
-            slf.enabled,
-            typ,
-            slf.issuer,
-            slf.authorization_endpoint,
-            slf.token_endpoint,
-            slf.userinfo_endpoint,
-            slf.client_id,
-            slf.secret,
-            slf.scope,
-            slf.admin_claim_path,
-            slf.admin_claim_value,
-            slf.mfa_claim_path,
-            slf.mfa_claim_value,
-            slf.allow_insecure_requests,
-            slf.use_pkce,
-            slf.root_pem,
-        )
-        .execute(&data.db)
-        .await?;
+        slf = if is_hiqlite() {
+            DB::client()
+                .execute_returning_map_one(
+                    r#"
+INSERT INTO
+auth_providers (id, name, enabled, typ, issuer, authorization_endpoint, token_endpoint,
+userinfo_endpoint, client_id, secret, scope, admin_claim_path, admin_claim_value,
+mfa_claim_path, mfa_claim_value, allow_insecure_requests, use_pkce, root_pem)
+VALUES
+($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
+RETURNING *"#,
+                    params!(
+                        slf.id,
+                        slf.name,
+                        slf.enabled,
+                        typ,
+                        slf.issuer,
+                        slf.authorization_endpoint,
+                        slf.token_endpoint,
+                        slf.userinfo_endpoint,
+                        slf.client_id,
+                        slf.secret,
+                        slf.scope,
+                        slf.admin_claim_path,
+                        slf.admin_claim_value,
+                        slf.mfa_claim_path,
+                        slf.mfa_claim_value,
+                        slf.allow_insecure_requests,
+                        slf.use_pkce,
+                        slf.root_pem
+                    ),
+                )
+                .await?
+        } else {
+            query!(
+                r#"
+INSERT INTO
+auth_providers (id, name, enabled, typ, issuer, authorization_endpoint, token_endpoint,
+userinfo_endpoint, client_id, secret, scope, admin_claim_path, admin_claim_value,
+mfa_claim_path, mfa_claim_value, allow_insecure_requests, use_pkce, root_pem)
+VALUES
+($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)"#,
+                slf.id,
+                slf.name,
+                slf.enabled,
+                typ,
+                slf.issuer,
+                slf.authorization_endpoint,
+                slf.token_endpoint,
+                slf.userinfo_endpoint,
+                slf.client_id,
+                slf.secret,
+                slf.scope,
+                slf.admin_claim_path,
+                slf.admin_claim_value,
+                slf.mfa_claim_path,
+                slf.mfa_claim_value,
+                slf.allow_insecure_requests,
+                slf.use_pkce,
+                slf.root_pem,
+            )
+            .execute(DB::conn())
+            .await?;
 
-        Self::invalidate_cache_all(data).await?;
+            slf
+        };
+
+        Self::invalidate_cache_all().await?;
 
         DB::client()
             .put(Cache::App, Self::cache_idx(&slf.id), &slf, CACHE_TTL_APP)
@@ -238,15 +303,21 @@ impl AuthProvider {
         Ok(slf)
     }
 
-    pub async fn find(data: &web::Data<AppState>, id: &str) -> Result<Self, ErrorResponse> {
+    pub async fn find(id: &str) -> Result<Self, ErrorResponse> {
         let client = DB::client();
         if let Some(slf) = client.get(Cache::App, Self::cache_idx(id)).await? {
             return Ok(slf);
         }
 
-        let slf = query_as!(Self, "SELECT * FROM auth_providers WHERE id = $1", id)
-            .fetch_one(&data.db)
-            .await?;
+        let slf = if is_hiqlite() {
+            client
+                .query_map_one("SELECT * FROM auth_providers WHERE id = $1", params!(id))
+                .await?
+        } else {
+            query_as!(Self, "SELECT * FROM auth_providers WHERE id = $1", id)
+                .fetch_one(DB::conn())
+                .await?
+        };
 
         client
             .put(Cache::App, Self::cache_idx(id), &slf, CACHE_TTL_APP)
@@ -255,15 +326,21 @@ impl AuthProvider {
         Ok(slf)
     }
 
-    pub async fn find_all(data: &web::Data<AppState>) -> Result<Vec<Self>, ErrorResponse> {
+    pub async fn find_all() -> Result<Vec<Self>, ErrorResponse> {
         let client = DB::client();
         if let Some(res) = client.get(Cache::App, Self::cache_idx("all")).await? {
             return Ok(res);
         }
 
-        let res = query_as!(Self, "SELECT * FROM auth_providers")
-            .fetch_all(&data.db)
-            .await?;
+        let res = if is_hiqlite() {
+            client
+                .query_map("SELECT * FROM auth_providers", params!())
+                .await?
+        } else {
+            query_as!(Self, "SELECT * FROM auth_providers")
+                .fetch_all(DB::conn())
+                .await?
+        };
 
         // needed for rendering each single login page -> always cache this
         client
@@ -274,71 +351,117 @@ impl AuthProvider {
     }
 
     pub async fn find_linked_users(
-        data: &web::Data<AppState>,
         id: &str,
     ) -> Result<Vec<ProviderLinkedUserResponse>, ErrorResponse> {
-        let users = query_as!(
-            ProviderLinkedUserResponse,
-            "SELECT id, email FROM users WHERE auth_provider_id = $1",
-            id
-        )
-        .fetch_all(&data.db)
-        .await?;
+        let users = if is_hiqlite() {
+            DB::client()
+                .query_as(
+                    "SELECT id, email FROM users WHERE auth_provider_id = $1",
+                    params!(id),
+                )
+                .await?
+        } else {
+            query_as!(
+                ProviderLinkedUserResponse,
+                "SELECT id, email FROM users WHERE auth_provider_id = $1",
+                id
+            )
+            .fetch_all(DB::conn())
+            .await?
+        };
 
         Ok(users)
     }
 
-    pub async fn delete(data: &web::Data<AppState>, id: &str) -> Result<(), ErrorResponse> {
-        query!("DELETE FROM auth_providers WHERE id = $1", id)
-            .execute(&data.db)
-            .await?;
+    pub async fn delete(id: &str) -> Result<(), ErrorResponse> {
+        if is_hiqlite() {
+            DB::client()
+                .execute("DELETE FROM auth_providers WHERE id = $1", params!(id))
+                .await?;
+        } else {
+            query!("DELETE FROM auth_providers WHERE id = $1", id)
+                .execute(DB::conn())
+                .await?;
+        }
 
-        Self::invalidate_cache_all(data).await?;
+        Self::invalidate_cache_all().await?;
         DB::client().delete(Cache::App, Self::cache_idx(id)).await?;
 
         Ok(())
     }
 
-    pub async fn update(
-        data: &web::Data<AppState>,
-        id: String,
-        payload: ProviderRequest,
-    ) -> Result<(), ErrorResponse> {
-        Self::try_from_id_req(id, payload)?.save(data).await
+    pub async fn update(id: String, payload: ProviderRequest) -> Result<(), ErrorResponse> {
+        Self::try_from_id_req(id, payload)?.save().await
     }
 
-    pub async fn save(&self, data: &web::Data<AppState>) -> Result<(), ErrorResponse> {
+    pub async fn save(&self) -> Result<(), ErrorResponse> {
         let typ = self.typ.as_str();
-        query!(
-            r#"UPDATE auth_providers
-            SET name = $1, enabled = $2, issuer = $3, typ = $4, authorization_endpoint = $5,
-            token_endpoint = $6, userinfo_endpoint = $7, client_id = $8, secret = $9, scope = $10,
-            admin_claim_path = $11, admin_claim_value = $12, mfa_claim_path = $13,
-            mfa_claim_value = $14, allow_insecure_requests = $15, use_pkce = $16, root_pem = $17
-            WHERE id = $18"#,
-            self.name,
-            self.enabled,
-            self.issuer,
-            typ,
-            self.authorization_endpoint,
-            self.token_endpoint,
-            self.userinfo_endpoint,
-            self.client_id,
-            self.secret,
-            self.scope,
-            self.admin_claim_path,
-            self.admin_claim_value,
-            self.mfa_claim_path,
-            self.mfa_claim_value,
-            self.allow_insecure_requests,
-            self.use_pkce,
-            self.root_pem,
-            self.id,
-        )
-        .execute(&data.db)
-        .await?;
 
-        Self::invalidate_cache_all(data).await?;
+        if is_hiqlite() {
+            DB::client()
+                .execute(
+                    r#"
+UPDATE auth_providers
+SET name = $1, enabled = $2, issuer = $3, typ = $4, authorization_endpoint = $5,
+token_endpoint = $6, userinfo_endpoint = $7, client_id = $8, secret = $9, scope = $10,
+admin_claim_path = $11, admin_claim_value = $12, mfa_claim_path = $13, mfa_claim_value = $14,
+allow_insecure_requests = $15, use_pkce = $16, root_pem = $17
+WHERE id = $18"#,
+                    params!(
+                        self.name.clone(),
+                        self.enabled,
+                        self.issuer.clone(),
+                        typ.to_string(),
+                        self.authorization_endpoint.clone(),
+                        self.token_endpoint.clone(),
+                        self.userinfo_endpoint.clone(),
+                        self.client_id.clone(),
+                        self.secret.clone(),
+                        self.scope.clone(),
+                        self.admin_claim_path.clone(),
+                        self.admin_claim_value.clone(),
+                        self.mfa_claim_path.clone(),
+                        self.mfa_claim_value.clone(),
+                        self.allow_insecure_requests,
+                        self.use_pkce,
+                        self.root_pem.clone(),
+                        self.id.clone()
+                    ),
+                )
+                .await?;
+        } else {
+            query!(
+                r#"
+UPDATE auth_providers
+SET name = $1, enabled = $2, issuer = $3, typ = $4, authorization_endpoint = $5,
+token_endpoint = $6, userinfo_endpoint = $7, client_id = $8, secret = $9, scope = $10,
+admin_claim_path = $11, admin_claim_value = $12, mfa_claim_path = $13, mfa_claim_value = $14,
+allow_insecure_requests = $15, use_pkce = $16, root_pem = $17
+WHERE id = $18"#,
+                self.name,
+                self.enabled,
+                self.issuer,
+                typ,
+                self.authorization_endpoint,
+                self.token_endpoint,
+                self.userinfo_endpoint,
+                self.client_id,
+                self.secret,
+                self.scope,
+                self.admin_claim_path,
+                self.admin_claim_value,
+                self.mfa_claim_path,
+                self.mfa_claim_value,
+                self.allow_insecure_requests,
+                self.use_pkce,
+                self.root_pem,
+                self.id,
+            )
+            .execute(DB::conn())
+            .await?;
+        }
+
+        Self::invalidate_cache_all().await?;
         DB::client()
             .put(Cache::App, Self::cache_idx(&self.id), self, CACHE_TTL_APP)
             .await?;
@@ -423,14 +546,14 @@ impl AuthProvider {
         })
     }
 
-    async fn invalidate_cache_all(data: &web::Data<AppState>) -> Result<(), ErrorResponse> {
+    async fn invalidate_cache_all() -> Result<(), ErrorResponse> {
         DB::client()
             .delete(Cache::App, Self::cache_idx("all"))
             .await?;
 
         // Directly update the template cache preemptively.
         // This is needed all the time anyway.
-        AuthProviderTemplate::update_cache(data).await?;
+        AuthProviderTemplate::update_cache().await?;
 
         Ok(())
     }
@@ -636,12 +759,11 @@ impl AuthProviderCallback {
 
 impl AuthProviderCallback {
     /// returns (encrypted cookie, xsrf token, location header, optional allowed origins)
-    pub async fn login_start(
-        data: &web::Data<AppState>,
+    pub async fn login_start<'a>(
         payload: ProviderLoginRequest,
-    ) -> Result<(Cookie, String, HeaderValue), ErrorResponse> {
-        let provider = AuthProvider::find(data, &payload.provider_id).await?;
-        let client = Client::find(data, payload.client_id).await?;
+    ) -> Result<(Cookie<'a>, String, HeaderValue), ErrorResponse> {
+        let provider = AuthProvider::find(&payload.provider_id).await?;
+        let client = Client::find(payload.client_id).await?;
 
         let slf = Self {
             callback_id: secure_random_alnum(32),
@@ -754,7 +876,7 @@ impl AuthProviderCallback {
         debug!("callback pkce verifier is valid");
 
         // request is valid -> fetch token for the user
-        let provider = AuthProvider::find(data, &slf.provider_id).await?;
+        let provider = AuthProvider::find(&slf.provider_id).await?;
         let client = AuthProvider::build_client(
             provider.allow_insecure_requests,
             provider.root_pem.as_deref(),
@@ -819,9 +941,7 @@ impl AuthProviderCallback {
                 if let Some(id_token) = ts.id_token {
                     let claims_bytes = AuthProviderIdClaims::self_as_bytes_from_token(&id_token)?;
                     let claims = AuthProviderIdClaims::try_from(claims_bytes.as_slice())?;
-                    claims
-                        .validate_update_user(data, &provider, &link_cookie)
-                        .await?
+                    claims.validate_update_user(&provider, &link_cookie).await?
                 } else if let Some(access_token) = ts.access_token {
                     // the id_token only exists, if we actually have an OIDC provider.
                     // If we only get an access token, we need to do another request to the
@@ -838,9 +958,7 @@ impl AuthProviderCallback {
 
                     let res_bytes = res.bytes().await?;
                     let claims = AuthProviderIdClaims::try_from(res_bytes.as_bytes())?;
-                    claims
-                        .validate_update_user(data, &provider, &link_cookie)
-                        .await?
+                    claims.validate_update_user(&provider, &link_cookie).await?
                 } else {
                     let err = "Neither `access_token` nor `id_token` existed";
                     error!("{}", err);
@@ -871,7 +989,7 @@ impl AuthProviderCallback {
         }
 
         // validate client values
-        let client = Client::find_maybe_ephemeral(data, slf.req_client_id).await?;
+        let client = Client::find_maybe_ephemeral(slf.req_client_id).await?;
         let force_mfa = client.force_mfa();
         if force_mfa {
             if provider_mfa_login == ProviderMfaLogin::No && !user.has_webauthn_enabled() {
@@ -880,7 +998,7 @@ impl AuthProviderCallback {
                     "MFA is required for this client",
                 ));
             }
-            session.set_mfa(data, true).await?;
+            session.set_mfa(true).await?;
         }
         client.validate_redirect_uri(&slf.req_redirect_uri)?;
         client.validate_code_challenge(&slf.req_code_challenge, &slf.req_code_challenge_method)?;
@@ -959,20 +1077,16 @@ impl AuthProviderCallback {
 pub struct AuthProviderTemplate {
     pub id: String,
     pub name: String,
-    // pub logo: Option<Vec<u8>>,
-    // pub logo_type: Option<String>,
 }
 
 impl AuthProviderTemplate {
-    pub async fn get_all_json_template(
-        data: &web::Data<AppState>,
-    ) -> Result<Option<String>, ErrorResponse> {
+    pub async fn get_all_json_template() -> Result<Option<String>, ErrorResponse> {
         let client = DB::client();
         if let Some(slf) = client.get(Cache::App, IDX_AUTH_PROVIDER_TEMPLATE).await? {
             return Ok(slf);
         }
 
-        let providers = AuthProvider::find_all(data)
+        let providers = AuthProvider::find_all()
             .await?
             .into_iter()
             // We don't want to even show disabled providers
@@ -1003,9 +1117,9 @@ impl AuthProviderTemplate {
         Ok(())
     }
 
-    async fn update_cache(data: &web::Data<AppState>) -> Result<(), ErrorResponse> {
+    async fn update_cache() -> Result<(), ErrorResponse> {
         Self::invalidate_cache().await?;
-        Self::get_all_json_template(data).await?;
+        Self::get_all_json_template().await?;
         Ok(())
     }
 }
@@ -1075,14 +1189,14 @@ impl AuthProviderIdClaims<'_> {
         }
     }
 
-    fn family_name(&self) -> &str {
+    fn family_name(&self) -> Option<&str> {
         if let Some(family_name) = &self.family_name {
-            family_name
+            Some(family_name)
         } else if let Some(name) = &self.name {
             let (_, family_name) = name.split_once(' ').unwrap_or(("N/A", "N/A"));
-            family_name
+            Some(family_name)
         } else {
-            "N/A"
+            None
         }
     }
 
@@ -1107,7 +1221,6 @@ impl AuthProviderIdClaims<'_> {
 
     async fn validate_update_user(
         &self,
-        data: &web::Data<AppState>,
         provider: &AuthProvider,
         link_cookie: &Option<AuthProviderLinkCookie>,
     ) -> Result<(User, ProviderMfaLogin), ErrorResponse> {
@@ -1138,7 +1251,7 @@ impl AuthProviderIdClaims<'_> {
         // Any json number would become a String too, which is what we need for compatibility.
         .to_string();
 
-        let user_opt = match User::find_by_federation(data, &provider.id, &claims_user_id).await {
+        let user_opt = match User::find_by_federation(&provider.id, &claims_user_id).await {
             Ok(user) => {
                 debug!(
                     "found already existing user by federation lookup: {:?}",
@@ -1154,7 +1267,7 @@ impl AuthProviderIdClaims<'_> {
                 // On conflict, the DB would return an error anyway, but the error message is
                 // rather cryptic for a normal user.
                 if let Ok(mut user) =
-                    User::find_by_email(data, self.email.as_ref().unwrap().to_string()).await
+                    User::find_by_email(self.email.as_ref().unwrap().to_string()).await
                 {
                     // TODO check if creating a new link for an existing user is allowed
                     if let Some(link) = link_cookie {
@@ -1307,7 +1420,7 @@ impl AuthProviderIdClaims<'_> {
                 user.last_failed_login = Some(now);
                 user.failed_login_attempts =
                     Some(user.failed_login_attempts.unwrap_or_default() + 1);
-                user.save(data, old_email, None).await?;
+                user.save(old_email).await?;
 
                 return Err(ErrorResponse::new(
                     ErrorResponseType::Forbidden,
@@ -1327,8 +1440,8 @@ impl AuthProviderIdClaims<'_> {
                 user.given_name = given_name.to_string();
             }
             let family_name = self.family_name();
-            if user.family_name.as_str() != family_name {
-                user.family_name = family_name.to_string();
+            if user.family_name.as_deref() != family_name {
+                user.family_name = family_name.map(String::from);
             }
 
             // should this user be a rauthy admin?
@@ -1360,14 +1473,14 @@ impl AuthProviderIdClaims<'_> {
             user.last_failed_login = None;
             user.failed_login_attempts = None;
 
-            user.save(data, old_email, None).await?;
+            user.save(old_email).await?;
             user
         } else {
             // Create a new federated user
             let new_user = User {
                 email: self.email.as_ref().unwrap().to_string(),
                 given_name: self.given_name().to_string(),
-                family_name: self.family_name().to_string(),
+                family_name: self.family_name().map(String::from),
                 roles: should_be_rauthy_admin
                     .map(|should_be_admin| {
                         if should_be_admin {
@@ -1389,12 +1502,12 @@ impl AuthProviderIdClaims<'_> {
                 federation_uid: Some(claims_user_id.to_string()),
                 ..Default::default()
             };
-            User::create_federated(data, new_user).await?
+            User::create_federated(new_user).await?
         };
 
         // check if we got additional values from the token
         let mut found_values = false;
-        let mut user_values = match UserValues::find(data, &user.id).await? {
+        let mut user_values = match UserValues::find(&user.id).await? {
             Some(values) => UserValuesRequest {
                 birthdate: values.birthdate,
                 phone: values.phone,
@@ -1433,7 +1546,7 @@ impl AuthProviderIdClaims<'_> {
             found_values = true;
         }
         if found_values {
-            UserValues::upsert(data, user.id.clone(), user_values).await?;
+            UserValues::upsert(user.id.clone(), user_values).await?;
         }
 
         Ok((user, provider_mfa_login))

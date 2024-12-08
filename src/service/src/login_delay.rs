@@ -3,7 +3,7 @@ use chrono::Utc;
 use rauthy_common::constants::IDX_LOGIN_TIME;
 use rauthy_error::{ErrorResponse, ErrorResponseType};
 use rauthy_models::app_state::AppState;
-use rauthy_models::cache::{Cache, DB};
+use rauthy_models::database::{Cache, DB};
 use rauthy_models::events::event::Event;
 use rauthy_models::events::ip_blacklist_handler::{IpBlacklistReq, IpFailedLoginCheck};
 use rauthy_models::templates::TooManyRequestsHtml;

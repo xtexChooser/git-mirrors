@@ -1,7 +1,7 @@
 use actix_web::web;
 use rauthy_common::constants::RAUTHY_VERSION;
 use rauthy_models::app_state::AppState;
-use rauthy_models::cache::DB;
+use rauthy_models::database::DB;
 use rauthy_models::entity::app_version::LatestAppVersion;
 use rauthy_models::events::event::Event;
 use semver::Version;
@@ -47,9 +47,7 @@ async fn check_app_version(
 
     match LatestAppVersion::lookup().await {
         Ok((latest_version, url)) => {
-            if let Err(err) =
-                LatestAppVersion::upsert(data, latest_version.clone(), url.clone()).await
-            {
+            if let Err(err) = LatestAppVersion::upsert(latest_version.clone(), url.clone()).await {
                 error!("Inserting LatestAppVersion into database: {:?}", err);
             }
 
@@ -65,7 +63,7 @@ async fn check_app_version(
                     info!("A new Rauthy App Version is available: {}", latest_version);
 
                     if let Err(err) =
-                        LatestAppVersion::upsert(data, latest_version.clone(), url.clone()).await
+                        LatestAppVersion::upsert(latest_version.clone(), url.clone()).await
                     {
                         error!("Saving LatestAppVersion into DB: {:?}", err);
                     }

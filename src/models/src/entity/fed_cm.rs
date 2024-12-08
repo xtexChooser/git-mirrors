@@ -35,7 +35,7 @@ pub struct FedCMAccount {
 
 impl FedCMAccount {
     pub fn build(user: User) -> Self {
-        let name = format!("{} {}", user.given_name, user.family_name);
+        let name = user.email_recipient_name();
         let login_hint = format!("login_hint={}", user.email);
 
         Self {
@@ -112,7 +112,7 @@ pub struct FedCMIdPBranding {
 
 impl FedCMIdPBranding {
     async fn new(data: &web::Data<AppState>) -> Result<Self, ErrorResponse> {
-        let colors = ColorEntity::find_rauthy(data).await?;
+        let colors = ColorEntity::find_rauthy().await?;
         let rauthy_icon = FedCMIdPIcon::rauthy_logo(&data.issuer);
 
         Ok(Self {

@@ -1,8 +1,8 @@
-use crate::app_state::AppState;
-use crate::cache::{Cache, DB};
-use actix_web::web;
+use crate::database::{Cache, DB};
+use hiqlite::{params, Param};
 use rauthy_api_types::users::WebIdResponse;
 use rauthy_common::constants::{CACHE_TTL_USER, PUB_URL_WITH_SCHEME};
+use rauthy_common::is_hiqlite;
 use rauthy_error::ErrorResponse;
 use rio_api::formatter::TriplesFormatter;
 use rio_api::model::{Literal, NamedNode, Subject, Term, Triple};
@@ -12,7 +12,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::{query, query_as};
 use std::fmt::Debug;
 
-#[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
+#[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow, utoipa::ToSchema)]
 pub struct WebId {
     pub user_id: String,
     pub expose_email: bool,
@@ -31,25 +31,30 @@ impl WebId {
     }
 
     /// Returns the WebId from the database, if it exists, and a default otherwise.
-    pub async fn find(data: &web::Data<AppState>, user_id: String) -> Result<Self, ErrorResponse> {
+    pub async fn find(user_id: String) -> Result<Self, ErrorResponse> {
         let client = DB::client();
         if let Some(slf) = client.get(Cache::User, Self::cache_idx(&user_id)).await? {
             return Ok(slf);
         }
 
-        let slf = match query_as!(Self, "SELECT * FROM webids WHERE user_id = $1", user_id)
-            .fetch_one(&data.db)
-            .await
-        {
-            Ok(row) => row,
-            Err(_) => {
-                // if there is no custom data available, just return defaults
-                Self {
+        let slf = if is_hiqlite() {
+            client
+                .query_as_one("SELECT * FROM webids WHERE user_id = $1", params!(&user_id))
+                .await
+                .unwrap_or(Self {
                     user_id,
                     custom_triples: None,
                     expose_email: false,
-                }
-            }
+                })
+        } else {
+            query_as!(Self, "SELECT * FROM webids WHERE user_id = $1", user_id)
+                .fetch_one(DB::conn())
+                .await
+                .unwrap_or(Self {
+                    user_id,
+                    custom_triples: None,
+                    expose_email: false,
+                })
         };
 
         client
@@ -64,23 +69,32 @@ impl WebId {
         Ok(slf)
     }
 
-    pub async fn upsert(data: &web::Data<AppState>, web_id: WebId) -> Result<(), ErrorResponse> {
-        #[cfg(not(feature = "postgres"))]
-        let q = query!(
-            "INSERT OR REPLACE INTO webids (user_id, custom_triples, expose_email) VALUES ($1, $2, $3)",
-            web_id.user_id,
-            web_id.custom_triples,
-            web_id.expose_email,
-        );
-        #[cfg(feature = "postgres")]
-        let q = query!(
-            r#"INSERT INTO webids (user_id, custom_triples, expose_email) VALUES ($1, $2, $3)
-            ON CONFLICT(user_id) DO UPDATE SET custom_triples = $2, expose_email = $3"#,
-            web_id.user_id,
-            web_id.custom_triples,
-            web_id.expose_email,
-        );
-        q.execute(&data.db).await?;
+    pub async fn upsert(web_id: WebId) -> Result<(), ErrorResponse> {
+        if is_hiqlite() {
+            DB::client()
+                .execute(
+                    r#"
+INSERT INTO webids (user_id, custom_triples, expose_email)
+VALUES ($1, $2, $3)
+ON CONFLICT(user_id) DO UPDATE
+SET custom_triples = $2, expose_email = $3"#,
+                    params!(&web_id.user_id, &web_id.custom_triples, web_id.expose_email),
+                )
+                .await?;
+        } else {
+            query!(
+                r#"
+    INSERT INTO webids (user_id, custom_triples, expose_email)
+    VALUES ($1, $2, $3)
+    ON CONFLICT(user_id) DO UPDATE
+    SET custom_triples = $2, expose_email = $3"#,
+                web_id.user_id,
+                web_id.custom_triples,
+                web_id.expose_email,
+            )
+            .execute(DB::conn())
+            .await?;
+        }
 
         DB::client()
             .put(
@@ -200,13 +214,13 @@ impl WebId {
                 value: &resp.given_name,
             },
         ))?;
-        formatter.format(&Self::triple(
-            t_user,
-            "http://xmlns.com/foaf/0.1/family_name",
-            Literal::Simple {
-                value: &resp.family_name,
-            },
-        ))?;
+        if let Some(value) = &resp.family_name {
+            formatter.format(&Self::triple(
+                t_user,
+                "http://xmlns.com/foaf/0.1/family_name",
+                Literal::Simple { value },
+            ))?;
+        }
 
         // foaf:mbox
         if webid.expose_email {
@@ -312,7 +326,7 @@ mod tests {
             issuer: "http://localhost:8080/auth/v1".to_string(),
             email: "mail@example.com".to_string(),
             given_name: "Given".to_string(),
-            family_name: "Family".to_string(),
+            family_name: Some("Family".to_string()),
             language: Language::En,
         };
 

@@ -78,7 +78,6 @@ pub const IDX_MFA_LOGIN_REQ: &str = "mfa_login_req_";
 pub const IDX_PASSWORD_RULES: &str = "password_rules_";
 pub const IDX_ROLES: &str = "roles_";
 pub const IDX_SCOPES: &str = "scopes_";
-pub const IDX_SESSION: &str = "session_";
 pub const IDX_SESSIONS: &str = "sessions";
 pub const IDX_USERS: &str = "users_";
 pub const IDX_USER_COUNT: &str = "users_count_total";
@@ -105,8 +104,8 @@ lazy_static! {
 
     pub static ref RAUTHY_ADMIN_ROLE: String = "rauthy_admin".to_string();
 
-    pub static ref DATABASE_URL: String = env::var("DATABASE_URL").expect("DATABASE_URL is not set");
-    pub static ref DB_TYPE: DbType = DbType::from_str(&DATABASE_URL).unwrap();
+    pub static ref DATABASE_URL: Option<String> = env::var("DATABASE_URL").ok();
+    pub static ref DB_TYPE: DbType = DbType::from_str(DATABASE_URL.as_deref());
 
     pub static ref DEV_MODE: bool = env::var("DEV_MODE")
         .unwrap_or_else(|_| String::from("false"))
@@ -130,7 +129,7 @@ lazy_static! {
     pub static ref RE_CHALLENGE: Regex = Regex::new(r"^(plain|S256)$").unwrap();
     pub static ref RE_CITY: Regex = Regex::new(r"^[a-zA-Z0-9À-ÿ-]{0,48}$").unwrap();
     pub static ref RE_CLIENT_ID_EPHEMERAL: Regex = Regex::new(r"^[a-zA-Z0-9,.:/_\-&?=~#!$'()*+%]{2,256}$").unwrap();
-    pub static ref RE_CLIENT_NAME: Regex = Regex::new(r"^[a-zA-Z0-9À-ÿ-\s\x{3041}-\x{3096}\x{30A0}-\x{30FF}\x{3400}-\x{4DB5}\x{4E00}-\x{9FCB}\x{F900}-\x{FA6A}\x{2E80}-\x{2FD5}\x{FF66}-\x{FF9F}\x{FFA1}-\x{FFDC}\x{31F0}-\x{31FF}]{2,128}$").unwrap();
+    pub static ref RE_CLIENT_NAME: Regex = Regex::new(r"^[a-zA-Z0-9À-ſ-\s\x{3041}-\x{3096}\x{30A0}-\x{30FF}\x{3400}-\x{4DB5}\x{4E00}-\x{9FCB}\x{F900}-\x{FA6A}\x{2E80}-\x{2FD5}\x{FF66}-\x{FF9F}\x{FFA1}-\x{FFDC}\x{31F0}-\x{31FF}]{2,128}$").unwrap();
     pub static ref RE_CODE_CHALLENGE: Regex = Regex::new(r"^[a-zA-Z0-9-\._~]{43,128}$").unwrap();
     pub static ref RE_CODE_VERIFIER: Regex = Regex::new(r"^[a-zA-Z0-9-\._~+/=]+$").unwrap();
     pub static ref RE_CONTACT: Regex = Regex::new(r"^[a-zA-Z0-9\+.@/:]{0,48}$").unwrap();
@@ -158,7 +157,7 @@ lazy_static! {
     pub static ref RE_SEARCH: Regex = Regex::new(r"^[a-zA-Z0-9,.:/_\-&?=~#!$'()*+%@]+$").unwrap();
     pub static ref RE_STREET: Regex = Regex::new(r"^[a-zA-Z0-9À-ÿ-.\s]{0,48}$").unwrap();
     pub static ref RE_URI: Regex = Regex::new(r"^[a-zA-Z0-9,.:/_\-&?=~#!$'()*+%]+$").unwrap();
-    pub static ref RE_USER_NAME: Regex = Regex::new(r"^[a-zA-Z0-9À-ÿ-\s\x{3041}-\x{3096}\x{30A0}-\x{30FF}\x{3400}-\x{4DB5}\x{4E00}-\x{9FCB}\x{F900}-\x{FA6A}\x{2E80}-\x{2FD5}\x{FF66}-\x{FF9F}\x{FFA1}-\x{FFDC}\x{31F0}-\x{31FF}]{1,32}$").unwrap();
+    pub static ref RE_USER_NAME: Regex = Regex::new(r"^[a-zA-Z0-9À-ſ-\s\x{3041}-\x{3096}\x{30A0}-\x{30FF}\x{3400}-\x{4DB5}\x{4E00}-\x{9FCB}\x{F900}-\x{FA6A}\x{2E80}-\x{2FD5}\x{FF66}-\x{FF9F}\x{FFA1}-\x{FFDC}\x{31F0}-\x{31FF}]{1,32}$").unwrap();
     pub static ref RE_TOKEN_68: Regex = Regex::new(r"^[a-zA-Z0-9-._~+/]+=*$").unwrap();
     pub static ref RE_TOKEN_ENDPOINT_AUTH_METHOD: Regex = Regex::new(r"^(client_secret_post|client_secret_basic|none)$").unwrap();
 
@@ -390,6 +389,10 @@ lazy_static! {
             })
             .collect()
         );
+    pub static ref USER_REG_OPEN_REDIRECT: bool = env::var("USER_REG_DOMAIN_BLACKLIST")
+        .unwrap_or_else(|_| "false".to_string())
+        .parse::<bool>()
+        .expect("Cannot parse USER_REG_OPEN_REDIRECT to bool");
 
     pub static ref PEER_IP_HEADER_NAME: Option<String> = env::var("PEER_IP_HEADER_NAME").ok();
 

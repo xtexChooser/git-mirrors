@@ -11,8 +11,8 @@ use prometheus::Registry;
 use rauthy_common::constants::{
     APP_START, RAUTHY_VERSION, SWAGGER_UI_EXTERNAL, SWAGGER_UI_INTERNAL,
 };
-use rauthy_common::password_hasher;
 use rauthy_common::utils::UseDummyAddress;
+use rauthy_common::{is_sqlite, password_hasher};
 use rauthy_handlers::openapi::ApiDoc;
 use rauthy_handlers::{
     api_keys, auth_providers, blacklist, clients, events, fed_cm, generic, groups, oidc, roles,
@@ -23,14 +23,13 @@ use rauthy_middlewares::ip_blacklist::RauthyIpBlacklistMiddleware;
 use rauthy_middlewares::logging::RauthyLoggingMiddleware;
 use rauthy_middlewares::principal::RauthyPrincipalMiddleware;
 use rauthy_models::app_state::AppState;
-use rauthy_models::cache::DB;
+use rauthy_models::database::DB;
 use rauthy_models::email::EMail;
 use rauthy_models::events::event::Event;
 use rauthy_models::events::health_watch::watch_health;
 use rauthy_models::events::listener::EventListener;
 use rauthy_models::events::notifier::EventNotifier;
 use rauthy_models::events::{init_event_vars, ip_blacklist_handler};
-use rauthy_models::migration::check_restore_backup;
 use rauthy_models::{email, ListenScheme};
 use spow::pow::Pow;
 use std::error::Error;
@@ -49,25 +48,6 @@ mod tls;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    println!(
-        r#"
-                                          88
-                                    ,d    88
-                                    88    88
-8b,dPPYba, ,adPPYYba, 88       88 MM88MMM 88,dPPYba,  8b       d8
-88P'   "Y8 ""     `Y8 88       88   88    88P'    "8a `8b     d8'
-88         ,adPPPPP88 88       88   88    88       88  `8b   d8'
-88         88,    ,88 "8a,   ,a88   88,   88       88   `8b,d8'
-88         `"8bbdP"Y8  `"YbbdP'Y8   "Y888 88       88     Y88'
-                                                          d8'
-                                                         d8'
-    "#
-    );
-    // This sleep is just a test. On some terminals, the banner gets mixed up with the first other
-    // logs. We don't care about Rauthys startup time being 1ms longer.
-    time::sleep(Duration::from_micros(100)).await;
-
-    // setup logging
     let mut test_mode = false;
     let args: Vec<String> = env::args().collect();
     if args.len() > 1 && args[1] == "test" {
@@ -87,8 +67,27 @@ async fn main() -> Result<(), Box<dyn Error>> {
         dotenvy::dotenv_override().ok();
     }
 
-    let log_level = setup_logging();
+    if !logging::is_log_fmt_json() {
+        println!(
+            r#"
+                                                  88
+                                            ,d    88
+                                            88    88
+        8b,dPPYba, ,adPPYYba, 88       88 MM88MMM 88,dPPYba,  8b       d8
+        88P'   "Y8 ""     `Y8 88       88   88    88P'    "8a `8b     d8'
+        88         ,adPPPPP88 88       88   88    88       88  `8b   d8'
+        88         88,    ,88 "8a,   ,a88   88,   88       88   `8b,d8'
+        88         `"8bbdP"Y8  `"YbbdP'Y8   "Y888 88       88     Y88'
+                                                                  d8'
+                                                                 d8'
+            "#
+        );
+        // On some terminals, the banner gets mixed up
+        // with the first other logs without this short sleep.
+        time::sleep(Duration::from_micros(20)).await;
+    }
 
+    let log_level = setup_logging();
     info!("{} - Starting Rauthy v{}", *APP_START, RAUTHY_VERSION);
     info!("Log Level set to '{}'", log_level);
     if test_mode {
@@ -111,14 +110,41 @@ https://sebadob.github.io/rauthy/getting_started/main.html"#
         }
     }
 
-    // check if a backup should be restored
-    if let Err(err) = check_restore_backup().await {
-        error!("\nError restoring backup:\n\n{}\n", err.message);
-        panic!("{:?}", err);
-    }
+    debug!("Starting the persistence layer");
+    // Keep this check in place until v1.0.0 as info for migrations from older versions.
+    if is_sqlite() {
+        // TODO add link to release notes / migration instruction link after
+        // Hiqlite migration has been finished.
+        panic!(
+            r#"
 
-    debug!("Starting Cache layer");
-    DB::init().await.expect("Error starting the cache layer");
+A direct SQLite connection is not supported anymore. The `DATABASE_URL` is only used for
+Postgres connections. You can migrate your SQLite database to either Postgres or Hiqlite.
+Hiqlite uses SQLite under the hood, but provides a Raft layer on top to make it highly available,
+faster, and more resilient.
+
+You can migrate your existing SQLite database using the `MIGRATE_DB_FROM` config variable:
+
+    # If specified, the currently configured Database will be DELETED and OVERWRITTEN with a
+    # migration from the given database with this variable. Can be used to migrate between
+    # different databases.
+    # !!! USE WITH CARE !!!
+    #MIGRATE_DB_FROM=sqlite:data/rauthy.db
+
+To migrate to Postgres, simply set the `DATABASE_URL` to a Postgres database.
+To migrate to Hiqlite, there are a few new config variables you can set. The most important is
+to set
+
+        HIQLITE=true
+
+Take a look at the changelog for more detailed information:
+https://github.com/sebadob/rauthy/blob/main/CHANGELOG.md#dropped-sqlx-sqlite-in-favor-of-hiqlite
+"#
+        );
+    }
+    DB::init()
+        .await
+        .expect("Error starting the database / cache layer");
 
     // email sending
     debug!("Starting E-Mail handler");
@@ -140,6 +166,11 @@ https://sebadob.github.io/rauthy/getting_started/main.html"#
         .await?,
     );
 
+    debug!("Applying database migrations");
+    DB::migrate(&app_state)
+        .await
+        .expect("Database migration error");
+
     // events listener
     debug!("Starting Events handler");
     init_event_vars().unwrap();
@@ -149,7 +180,6 @@ https://sebadob.github.io/rauthy/getting_started/main.html"#
         tx_events_router,
         rx_events_router,
         rx_events,
-        app_state.db.clone(),
     ));
 
     // spawn password hash limiter
@@ -162,10 +192,7 @@ https://sebadob.github.io/rauthy/getting_started/main.html"#
 
     // spawn health watcher
     debug!("Starting health watch");
-    tokio::spawn(watch_health(
-        app_state.db.clone(),
-        app_state.tx_events.clone(),
-    ));
+    tokio::spawn(watch_health(app_state.tx_events.clone()));
 
     // schedulers
     match env::var("SCHED_DISABLE")
@@ -196,10 +223,7 @@ https://sebadob.github.io/rauthy/getting_started/main.html"#
         } else {
             100_000
         };
-        tokio::spawn(crate::dummy_data::insert_dummy_data(
-            app_state.clone(),
-            amount,
-        ));
+        tokio::spawn(crate::dummy_data::insert_dummy_data(amount));
     }
 
     actix.join().unwrap().unwrap();

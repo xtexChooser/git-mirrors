@@ -1,4 +1,4 @@
-use crate::app_state::DbPool;
+use crate::database::DB;
 use crate::events::{
     EVENT_LEVEL_FAILED_LOGIN, EVENT_LEVEL_FAILED_LOGINS_10, EVENT_LEVEL_FAILED_LOGINS_15,
     EVENT_LEVEL_FAILED_LOGINS_20, EVENT_LEVEL_FAILED_LOGINS_25, EVENT_LEVEL_FAILED_LOGINS_7,
@@ -8,12 +8,16 @@ use crate::events::{
     EVENT_LEVEL_USER_EMAIL_CHANGE, EVENT_LEVEL_USER_PASSWORD_RESET,
 };
 use chrono::{DateTime, Timelike, Utc};
+use hiqlite::{params, Param, Row};
 use rauthy_common::constants::EMAIL_SUB_PREFIX;
+use rauthy_common::is_hiqlite;
 use rauthy_common::utils::{get_local_hostname, get_rand};
 use rauthy_error::{ErrorResponse, ErrorResponseType};
 use rauthy_notify::{Notification, NotificationLevel};
 use serde::{Deserialize, Serialize};
-use sqlx::{query, query_as};
+use sqlx::postgres::PgRow;
+use sqlx::sqlite::SqliteRow;
+use sqlx::{query, query_as, Error, FromRow, Row as SqlxRow};
 use std::fmt::{Display, Formatter};
 use std::net::IpAddr;
 use std::str::FromStr;
@@ -308,6 +312,48 @@ pub struct Event {
     pub text: Option<String>,
 }
 
+impl<'r> From<hiqlite::Row<'r>> for Event {
+    fn from(mut row: Row<'r>) -> Self {
+        Self {
+            id: row.get("id"),
+            timestamp: row.get("timestamp"),
+            level: EventLevel::from(row.get::<i64>("level")),
+            typ: EventType::from(row.get::<i64>("typ")),
+            ip: row.get("ip"),
+            data: row.get("data"),
+            text: row.get("text"),
+        }
+    }
+}
+
+impl<'r> FromRow<'r, PgRow> for Event {
+    fn from_row(row: &'r PgRow) -> Result<Self, Error> {
+        Ok(Self {
+            id: row.get("id"),
+            timestamp: row.get("timestamp"),
+            level: EventLevel::from(row.get::<i16, _>("level")),
+            typ: EventType::from(row.get::<i16, _>("typ")),
+            ip: row.get("ip"),
+            data: row.get("data"),
+            text: row.get("text"),
+        })
+    }
+}
+
+impl<'r> FromRow<'r, SqliteRow> for Event {
+    fn from_row(row: &'r SqliteRow) -> Result<Self, Error> {
+        Ok(Self {
+            id: row.get("id"),
+            timestamp: row.get("timestamp"),
+            level: EventLevel::from(row.get::<i64, _>("level")),
+            typ: EventType::from(row.get::<i64, _>("typ")),
+            ip: row.get("ip"),
+            data: row.get("data"),
+            text: row.get("text"),
+        })
+    }
+}
+
 impl From<&Event> for Notification {
     fn from(value: &Event) -> Self {
         let icon = match value.level {
@@ -393,28 +439,48 @@ impl Display for Event {
 }
 
 impl Event {
-    pub async fn insert(&self, db: &DbPool) -> Result<(), ErrorResponse> {
+    pub async fn insert(&self) -> Result<(), ErrorResponse> {
         let level = self.level.value();
         let typ = self.typ.value();
 
-        query!(
-            r#"INSERT INTO events (id, timestamp, level, typ, ip, data, text)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)"#,
-            self.id,
-            self.timestamp,
-            level,
-            typ,
-            self.ip,
-            self.data,
-            self.text,
-        )
-        .execute(db)
-        .await?;
+        if is_hiqlite() {
+            DB::client()
+                .execute(
+                    r#"
+INSERT INTO events (id, timestamp, level, typ, ip, data, text)
+VALUES ($1, $2, $3, $4, $5, $6, $7)"#,
+                    params!(
+                        &self.id,
+                        self.timestamp,
+                        level,
+                        typ,
+                        &self.ip,
+                        self.data,
+                        &self.text
+                    ),
+                )
+                .await?;
+        } else {
+            query!(
+                r#"
+INSERT INTO events (id, timestamp, level, typ, ip, data, text)
+VALUES ($1, $2, $3, $4, $5, $6, $7)"#,
+                self.id,
+                self.timestamp,
+                level,
+                typ,
+                self.ip,
+                self.data,
+                self.text,
+            )
+            .execute(DB::conn())
+            .await?;
+        }
+
         Ok(())
     }
 
     pub async fn find_all(
-        db: &DbPool,
         mut from: i64,
         mut until: i64,
         level: EventLevel,
@@ -429,43 +495,77 @@ impl Event {
 
         let res = if let Some(typ) = typ {
             let typ = typ.value();
-            query_as!(
-                Self,
-                r#"SELECT * FROM events
-                WHERE timestamp >= $1 AND timestamp <= $2 AND level >= $3 AND typ = $4
-                ORDER BY timestamp DESC"#,
-                from,
-                until,
-                level,
-                typ,
-            )
-            .fetch_all(db)
-            .await
+            if is_hiqlite() {
+                DB::client()
+                    .query_map(
+                        r#"
+SELECT * FROM events
+WHERE timestamp >= $1 AND timestamp <= $2 AND level >= $3 AND typ = $4
+ORDER BY timestamp DESC"#,
+                        params!(from, until, level, typ),
+                    )
+                    .await?
+            } else {
+                query_as!(
+                    Self,
+                    r#"
+SELECT * FROM events
+WHERE timestamp >= $1 AND timestamp <= $2 AND level >= $3 AND typ = $4
+ORDER BY timestamp DESC"#,
+                    from,
+                    until,
+                    level,
+                    typ,
+                )
+                .fetch_all(DB::conn())
+                .await?
+            }
+        } else if is_hiqlite() {
+            DB::client()
+                .query_map(
+                    r#"
+SELECT * FROM events
+WHERE timestamp >= $1 AND timestamp <= $2 AND level >= $3
+ORDER BY timestamp DESC"#,
+                    params!(from, until, level),
+                )
+                .await?
         } else {
             query_as!(
                 Self,
-                r#"SELECT * FROM events
-                WHERE timestamp >= $1 AND timestamp <= $2 AND level >= $3
-                ORDER BY timestamp DESC"#,
+                r#"
+SELECT * FROM events
+WHERE timestamp >= $1 AND timestamp <= $2 AND level >= $3
+ORDER BY timestamp DESC"#,
                 from,
                 until,
                 level,
             )
-            .fetch_all(db)
-            .await
-        }?;
+            .fetch_all(DB::conn())
+            .await?
+        };
 
         Ok(res)
     }
 
-    pub async fn find_latest(db: &DbPool, limit: i64) -> Result<Vec<Self>, ErrorResponse> {
-        let res = query_as!(
-            Self,
-            "SELECT * FROM events ORDER BY timestamp DESC LIMIT $1",
-            limit
-        )
-        .fetch_all(db)
-        .await?;
+    pub async fn find_latest(limit: i64) -> Result<Vec<Self>, ErrorResponse> {
+        let res = if is_hiqlite() {
+            DB::client()
+                .query_map(
+                    "SELECT * FROM events ORDER BY timestamp DESC LIMIT $1",
+                    params!(limit),
+                )
+                .await?
+        } else {
+            query_as!(
+                Self,
+                "SELECT * FROM events ORDER BY timestamp DESC LIMIT $1",
+                limit
+            )
+            .fetch_all(DB::conn())
+            .await?
+        };
+
         Ok(res)
     }
 
