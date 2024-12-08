@@ -9,7 +9,7 @@ use crate::db::{
 pub struct RegistryAccess;
 
 impl UserData for RegistryAccess {
-    fn add_methods<'lua, M: UserDataMethods<'lua, Self>>(methods: &mut M) {
+    fn add_methods<M: UserDataMethods<Self>>(methods: &mut M) {
         methods.add_method_mut("add", |lua, _, reference: CacheTypeRef| {
             let resolved = reference.resolve(lua).unwrap();
             db::REGISTRY
@@ -28,7 +28,7 @@ impl UserData for RegistryAccess {
             Ok(db::REGISTRY.write().keys().cloned().collect::<Vec<_>>())
         });
         methods.add_method_mut("create", |lua, _, table: Table| {
-            let id = format!("REGISTRY_{}", table.get::<_, String>("id")?);
+            let id = format!("REGISTRY_{}", table.get::<String>("id")?);
             let cache_type = CacheType::from((table.clone(), CacheTypeRef(id.clone())));
             lua.globals().set(id.clone(), table)?;
             db::REGISTRY
@@ -41,7 +41,7 @@ impl UserData for RegistryAccess {
             Ok(())
         });
     }
-    fn add_fields<'lua, F: mlua::prelude::LuaUserDataFields<'lua, Self>>(fields: &mut F) {
+    fn add_fields<F: mlua::prelude::LuaUserDataFields<Self>>(fields: &mut F) {
         fields.add_field_method_get("ignore_dir_names", |_, _| {
             Ok(db::IGNORE_DIR_NAMES.write().clone())
         });

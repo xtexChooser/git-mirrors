@@ -3,7 +3,7 @@ use std::{
     path::{self, PathBuf},
 };
 
-use mlua::{prelude::LuaError, FromLua, IntoLua, UserData, UserDataFields, UserDataMethods};
+use mlua::{prelude::LuaError, FromLua, IntoLua, Lua, UserData, UserDataFields, UserDataMethods};
 use owo_colors::{colors::css::DarkGrey, OwoColorize};
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Hash)]
@@ -19,15 +19,14 @@ impl From<LuaPath> for PathBuf {
         val.0
     }
 }
-impl<'lua> FromLua<'lua> for LuaPath {
-    fn from_lua(lua_value: mlua::Value<'lua>, lua: &'lua mlua::Lua) -> mlua::Result<Self> {
+impl FromLua for LuaPath {
+    fn from_lua(lua_value: mlua::Value, lua: &Lua) -> mlua::Result<Self> {
         Ok(LuaPath(String::from_lua(lua_value, lua)?.into()))
     }
 }
-impl<'lua> IntoLua<'lua> for LuaPath {
-    fn into_lua(self, lua: &'lua mlua::Lua) -> mlua::Result<mlua::Value<'lua>> {
-        self
-            .0
+impl IntoLua for LuaPath {
+    fn into_lua(self, lua: &Lua) -> mlua::Result<mlua::Value> {
+        self.0
             .to_str()
             .ok_or(mlua::Error::SafetyError(
                 "non-unicode chars in path".to_string(),
@@ -40,11 +39,11 @@ impl<'lua> IntoLua<'lua> for LuaPath {
 pub struct FsAccess;
 
 impl UserData for FsAccess {
-    fn add_fields<'lua, F: UserDataFields<'lua, Self>>(fields: &mut F) {
+    fn add_fields<F: UserDataFields<Self>>(fields: &mut F) {
         fields.add_field_method_get("separator", |_, _| Ok(path::MAIN_SEPARATOR_STR));
     }
 
-    fn add_methods<'lua, M: UserDataMethods<'lua, Self>>(methods: &mut M) {
+    fn add_methods<M: UserDataMethods<Self>>(methods: &mut M) {
         methods.add_method_mut("absolute", |_, _, path: LuaPath| {
             Ok(LuaPath::from(path::absolute(path.0)?))
         });

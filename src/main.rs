@@ -169,7 +169,8 @@ async fn main() -> Result<()> {
                         r#"│ please update with your package manager or cargo.
 │ if you do not want to get update notifications anymore,
 │       set BUILD_CLEAN_NO_UPDATES environment variables.
-│"#.to_string()
+│"#
+                        .to_string()
                         .fg::<Blue>()
                     )
                     .fg::<Blue>()
