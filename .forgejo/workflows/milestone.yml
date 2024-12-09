@@ -18,7 +18,7 @@ jobs:
     if: vars.ROLE == 'forgejo-coding'
     runs-on: docker
     container:
-      image: 'code.forgejo.org/oci/node:20-bookworm'
+      image: 'code.forgejo.org/oci/ci:1'
     steps:
       - uses: https://code.forgejo.org/forgejo/set-milestone@v1.0.0
         with:
