@@ -5,15 +5,20 @@ package oauth2
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"code.gitea.io/gitea/models/auth"
 	"code.gitea.io/gitea/models/db"
 	user_model "code.gitea.io/gitea/models/user"
 	"code.gitea.io/gitea/modules/log"
+	"code.gitea.io/gitea/modules/util"
 
 	"github.com/markbates/goth"
+	"github.com/markbates/goth/providers/openidConnect"
 	"golang.org/x/oauth2"
+
+	asymkey_model "code.gitea.io/gitea/models/asymkey"
 )
 
 // Sync causes this OAuth2 source to synchronize its users with the db.
@@ -108,7 +113,94 @@ func (source *Source) refresh(ctx context.Context, provider goth.Provider, u *us
 		u.RefreshToken = token.RefreshToken
 	}
 
+	needUserFetch := source.ProvidesSSHKeys()
+
+	if needUserFetch {
+		fetchedUser, err := fetchUser(provider, token)
+		if err != nil {
+			log.Error("fetchUser: %v", err)
+		} else {
+			err = updateSSHKeys(ctx, source, user, &fetchedUser)
+			if err != nil {
+				log.Error("updateSshKeys: %v", err)
+			}
+		}
+	}
+
 	err = user_model.UpdateExternalUserByExternalID(ctx, u)
 
 	return err
+}
+
+func fetchUser(provider goth.Provider, token *oauth2.Token) (goth.User, error) {
+	state, err := util.CryptoRandomString(40)
+	if err != nil {
+		return goth.User{}, err
+	}
+
+	session, err := provider.BeginAuth(state)
+	if err != nil {
+		return goth.User{}, err
+	}
+
+	if s, ok := session.(*openidConnect.Session); ok {
+		s.AccessToken = token.AccessToken
+		s.RefreshToken = token.RefreshToken
+		s.ExpiresAt = token.Expiry
+		s.IDToken = token.Extra("id_token").(string)
+	}
+
+	gothUser, err := provider.FetchUser(session)
+	if err != nil {
+		return goth.User{}, err
+	}
+
+	return gothUser, nil
+}
+
+func updateSSHKeys(
+	ctx context.Context,
+	source *Source,
+	user *user_model.User,
+	fetchedUser *goth.User,
+) error {
+	if source.ProvidesSSHKeys() {
+		sshKeys, err := getSSHKeys(source, fetchedUser)
+		if err != nil {
+			return err
+		}
+
+		if asymkey_model.SynchronizePublicKeys(ctx, user, source.authSource, sshKeys) {
+			err = asymkey_model.RewriteAllPublicKeys(ctx)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+func getSSHKeys(source *Source, gothUser *goth.User) ([]string, error) {
+	key := source.AttributeSSHPublicKey
+	value, exists := gothUser.RawData[key]
+	if !exists {
+		return nil, fmt.Errorf("attribute '%s' not found in user data", key)
+	}
+
+	rawSlice, ok := value.([]interface{})
+	if !ok {
+		return nil, fmt.Errorf("unexpected type for SSH public key, expected []interface{} but got %T", value)
+	}
+
+	sshKeys := make([]string, 0, len(rawSlice))
+	for i, v := range rawSlice {
+		str, ok := v.(string)
+		if !ok {
+			return nil, fmt.Errorf("unexpected element type at index %d in SSH public key array, expected string but got %T", i, v)
+		}
+		sshKeys = append(sshKeys, str)
+	}
+
+	return sshKeys, nil
 }
