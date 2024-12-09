@@ -26,7 +26,7 @@ import (
 
 var (
 	archPkgOrSig = regexp.MustCompile(`^.*\.pkg\.tar\.\w+(\.sig)*$`)
-	archDBOrSig  = regexp.MustCompile(`^.*.db(\.tar\.gz)*(\.sig)*$`)
+	archDBOrSig  = regexp.MustCompile(`^.*.(db|files)(\.tar\.gz)*(\.sig)*$`)
 
 	locker = sync.NewExclusivePool()
 )
@@ -115,6 +115,7 @@ func PushPackage(ctx *context.Context) {
 
 	properties := map[string]string{
 		arch_module.PropertyDescription:  p.Desc(),
+		arch_module.PropertyFiles:        p.Files(),
 		arch_module.PropertyArch:         p.FileMetadata.Arch,
 		arch_module.PropertyDistribution: group,
 	}
