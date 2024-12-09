@@ -6,11 +6,11 @@ name: milestone
 on:
   pull_request_target:
     types:
-      - opened
+      - closed
 
 jobs:
   set:
-    if: vars.ROLE == 'forgejo-coding'
+    if: vars.ROLE == 'forgejo-coding' && github.event.pull_request.merged
     runs-on: docker
     container:
       image: 'code.forgejo.org/oci/ci:1'
