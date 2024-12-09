@@ -1,11 +1,6 @@
 # Copyright 2024 The Forgejo Authors
 # SPDX-License-Identifier: MIT
 #
-# This workflow is triggered on pull_request_target and runs from
-# the forgejo branch so that it does not need to be backported.
-# If it was triggered on pull_request, it would have to exist on all
-# stable branches.
-#
 name: milestone
 
 on:
