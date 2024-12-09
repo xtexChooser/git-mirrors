@@ -59,7 +59,7 @@ func GetRepositoryKey(ctx *context.Context) {
 }
 
 func PushPackage(ctx *context.Context) {
-	group := ctx.Params("group")
+	group := strings.Trim(ctx.Params("*"), "/")
 	releaser := refreshLocker(ctx, group)
 	defer releaser()
 	upload, needToClose, err := ctx.UploadStream()
@@ -183,11 +183,21 @@ func PushPackage(ctx *context.Context) {
 }
 
 func GetPackageOrDB(ctx *context.Context) {
-	var (
-		file  = ctx.Params("file")
-		group = ctx.Params("group")
-		arch  = ctx.Params("arch")
-	)
+	pathGroups := strings.Split(strings.Trim(ctx.Params("*"), "/"), "/")
+	groupLen := len(pathGroups)
+	if groupLen < 2 {
+		ctx.Status(http.StatusNotFound)
+		return
+	}
+	var file, group, arch string
+	if groupLen == 2 {
+		arch = pathGroups[0]
+		file = pathGroups[1]
+	} else {
+		group = strings.Join(pathGroups[:groupLen-2], "/")
+		arch = pathGroups[groupLen-2]
+		file = pathGroups[groupLen-1]
+	}
 	if archPkgOrSig.MatchString(file) {
 		pkg, u, pf, err := arch_service.GetPackageFile(ctx, group, file, ctx.Package.Owner.ID)
 		if err != nil {
@@ -220,12 +230,23 @@ func GetPackageOrDB(ctx *context.Context) {
 }
 
 func RemovePackage(ctx *context.Context) {
-	var (
-		group   = ctx.Params("group")
-		pkg     = ctx.Params("package")
-		ver     = ctx.Params("version")
-		pkgArch = ctx.Params("arch")
-	)
+	pathGroups := strings.Split(strings.Trim(ctx.Params("*"), "/"), "/")
+	groupLen := len(pathGroups)
+	if groupLen < 3 {
+		ctx.Status(http.StatusBadRequest)
+		return
+	}
+	var group, pkg, ver, pkgArch string
+	if groupLen == 3 {
+		pkg = pathGroups[0]
+		ver = pathGroups[1]
+		pkgArch = pathGroups[2]
+	} else {
+		group = strings.Join(pathGroups[:groupLen-3], "/")
+		pkg = pathGroups[groupLen-3]
+		ver = pathGroups[groupLen-2]
+		pkgArch = pathGroups[groupLen-1]
+	}
 	releaser := refreshLocker(ctx, group)
 	defer releaser()
 	pv, err := packages_model.GetVersionByNameAndVersion(
