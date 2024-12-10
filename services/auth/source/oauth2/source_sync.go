@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	asymkey_model "code.gitea.io/gitea/models/asymkey"
 	"code.gitea.io/gitea/models/auth"
 	"code.gitea.io/gitea/models/db"
 	user_model "code.gitea.io/gitea/models/user"
@@ -17,8 +18,6 @@ import (
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/providers/openidConnect"
 	"golang.org/x/oauth2"
-
-	asymkey_model "code.gitea.io/gitea/models/asymkey"
 )
 
 // Sync causes this OAuth2 source to synchronize its users with the db.
@@ -188,7 +187,7 @@ func getSSHKeys(source *Source, gothUser *goth.User) ([]string, error) {
 		return nil, fmt.Errorf("attribute '%s' not found in user data", key)
 	}
 
-	rawSlice, ok := value.([]interface{})
+	rawSlice, ok := value.([]any)
 	if !ok {
 		return nil, fmt.Errorf("unexpected type for SSH public key, expected []interface{} but got %T", value)
 	}
