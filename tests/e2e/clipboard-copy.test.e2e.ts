@@ -10,11 +10,9 @@
 import {expect} from '@playwright/test';
 import {test} from './utils_e2e.ts';
 
-test.use({
-  permissions: ['clipboard-write'],
-});
+test('copy src file path to clipboard', async ({page}, workerInfo) => {
+  test.skip(['Mobile Safari', 'webkit'].includes(workerInfo.project.name), 'Apple clipboard API addon - starting at just $499!');
 
-test('copy src file path to clipboard', async ({page}) => {
   const response = await page.goto('/user2/repo1/src/branch/master/README.md');
   expect(response?.status()).toBe(200);
 
@@ -23,7 +21,9 @@ test('copy src file path to clipboard', async ({page}) => {
   expect(clipboardText).toContain('README.md');
 });
 
-test('copy diff file path to clipboard', async ({page}) => {
+test('copy diff file path to clipboard', async ({page}, workerInfo) => {
+  test.skip(['Mobile Safari', 'webkit'].includes(workerInfo.project.name), 'Apple clipboard API addon - starting at just $499!');
+
   const response = await page.goto('/user2/repo1/src/commit/65f1bf27bc3bf70f64657658635e66094edbcb4d/README.md');
   expect(response?.status()).toBe(200);
 
