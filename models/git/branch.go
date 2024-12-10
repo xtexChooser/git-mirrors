@@ -428,7 +428,7 @@ func FindRecentlyPushedNewBranches(ctx context.Context, repoID, userID int64, ex
 		Where("pusher_id=? AND is_deleted=?", userID, false).
 		And("name <> ?", excludeBranchName).
 		And("repo_id = ?", repoID).
-		And("commit_time >= ?", time.Now().Add(-time.Hour*6).Unix()).
+		And("commit_time >= ?", time.Now().Add(-time.Minute*30).Unix()).
 		NotIn("name", subQuery).
 		OrderBy("branch.commit_time DESC").
 		Limit(2).
