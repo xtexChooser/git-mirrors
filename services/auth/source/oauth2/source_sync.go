@@ -169,6 +169,10 @@ func updateSSHKeys(
 			return err
 		}
 
+		if len(sshKeys) == 0 {
+			return nil
+		}
+
 		if asymkey_model.SynchronizePublicKeys(ctx, user, source.authSource, sshKeys) {
 			err = asymkey_model.RewriteAllPublicKeys(ctx)
 			if err != nil {
