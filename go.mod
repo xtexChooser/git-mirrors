@@ -300,4 +300,4 @@ replace github.com/nektos/act => code.forgejo.org/forgejo/act v1.22.0
 
 replace github.com/mholt/archiver/v3 => code.forgejo.org/forgejo/archiver/v3 v3.5.1
 
-replace github.com/goccy/go-json => github.com/grafana/go-json v0.0.0-20241115232854-f14426c40ff2
+replace github.com/goccy/go-json => github.com/grafana/go-json v0.0.0-20241210211703-a119ee5a0a3b
