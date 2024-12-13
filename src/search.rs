@@ -1,5 +1,6 @@
 use std::{
     fs::DirEntry,
+    io,
     path::{Path, PathBuf},
     sync::Arc,
 };
@@ -179,16 +180,20 @@ impl WorkerContext {
     async fn do_search(&self, ctx: &Arc<Context>, path: PathBuf) -> Result<Vec<PathBuf>> {
         let mut queue = vec![];
 
-        for entry in path.read_dir()? {
-            let entry = entry?;
-            if !ctx.follow_symlink && entry.file_type()?.is_symlink() {
-                continue;
-            }
-            ctx.check_entry(&entry).await?;
-            if entry.metadata()?.is_dir() {
-                let name = entry.file_name().to_string_lossy().to_string();
-                if !self.ignore_dir_names.iter().any(|g| g.is_match(&name)) {
-                    queue.push(entry.path());
+        if let Some(readdir) = ignore_errors(path.read_dir())? {
+            for entry in readdir {
+                let entry = entry?;
+                if !ctx.follow_symlink && entry.file_type()?.is_symlink() {
+                    continue;
+                }
+                ctx.check_entry(&entry).await?;
+                if let Some(metadata) = ignore_errors(entry.metadata())? {
+                    if metadata.is_dir() {
+                        let name = entry.file_name().to_string_lossy().to_string();
+                        if !self.ignore_dir_names.iter().any(|g| g.is_match(&name)) {
+                            queue.push(entry.path());
+                        }
+                    }
                 }
             }
         }
@@ -203,21 +208,44 @@ impl WorkerContext {
         path: &Path,
         timer: &mut u32,
     ) -> Result<()> {
-        for entry in path.read_dir()? {
-            let entry = entry?;
-            if !ctx.follow_symlink && entry.file_type()?.is_symlink() {
-                continue;
-            }
-            ctx.check_entry(&entry).await?;
-            if entry.metadata()?.is_dir() {
-                *timer = timer.overflowing_add(1).0;
-                if *timer as u8 == 0 {
-                    self.share_job(ctx).await?;
+        if let Some(readdir) = ignore_errors(path.read_dir())? {
+            for entry in readdir {
+                let entry = entry?;
+                if !ctx.follow_symlink && entry.file_type()?.is_symlink() {
+                    continue;
                 }
-                self.do_recursive_search(ctx, &entry.path(), timer).await?;
+                ctx.check_entry(&entry).await?;
+                if let Some(metadata) = ignore_errors(entry.metadata())? {
+                    if metadata.is_dir() {
+                        *timer = timer.overflowing_add(1).0;
+                        if *timer as u8 == 0 {
+                            self.share_job(ctx).await?;
+                        }
+                        self.do_recursive_search(ctx, &entry.path(), timer).await?;
+                    }
+                }
             }
         }
 
         Ok(())
+    }
+}
+
+fn ignore_errors<T>(result: io::Result<T>) -> io::Result<Option<T>> {
+    match result {
+        Ok(v) => Ok(Some(v)),
+        Err(err) => {
+            if matches!(
+                err.kind(),
+                std::io::ErrorKind::OutOfMemory
+                    | std::io::ErrorKind::ResourceBusy
+                    | std::io::ErrorKind::ReadOnlyFilesystem
+                    | std::io::ErrorKind::PermissionDenied
+            ) {
+                Ok(None)
+            } else {
+                Err(err)
+            }
+        }
     }
 }
