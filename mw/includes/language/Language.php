@@ -3180,17 +3180,10 @@ class Language implements Bcp47Code {
 			$digitGroupingPattern = $this->digitGroupingPattern();
 			$code = $this->getCode();
 			if ( !( $translateNumerals && $this->langNameUtils->isValidCode( $code ) ) ) {
-				$code = 'C'; // POSIX system default locale
+				$code = locale_get_default(); // POSIX system default locale
 			}
 
-			if ( $digitGroupingPattern ) {
-				$fmt = new NumberFormatter(
-					$code, NumberFormatter::PATTERN_DECIMAL, $digitGroupingPattern
-				);
-			} else {
-				/** @suppress PhanParamTooFew Phan thinks this always requires 3 parameters, that's wrong */
-				$fmt = new NumberFormatter( $code, NumberFormatter::DECIMAL );
-			}
+			$fmt = $this->createNumberFormatter( $code, $digitGroupingPattern );
 
 			// minimumGroupingDigits can be used to suppress groupings below a certain value.
 			// This is used for languages such as Polish, where one would only write the grouping
@@ -4448,6 +4441,38 @@ class Language implements Bcp47Code {
 		return Html::rawElement( 'bdi', [ 'dir' => $this->getDir() ], $page ) .
 			$this->msg( 'word-separator' )->escaped() .
 			$this->msg( 'parentheses' )->rawParams( $details )->escaped();
+	}
+
+	private function createNumberFormatter( string $code, ?string $digitGroupingPattern ): NumberFormatter {
+		$fmt = $this->createNumberFormatterReal( $code, $digitGroupingPattern );
+		if ( !$fmt ) {
+			$fallbacks = $this->getFallbackLanguages();
+			foreach ( $fallbacks as $fallbackCode ) {
+				$fmt = $this->createNumberFormatterReal( $fallbackCode, $digitGroupingPattern );
+				if ( $fmt ) {
+					break;
+				}
+			}
+			if ( !$fmt ) {
+				throw new RuntimeException( 'Could not instance NumberFormatter for ' . $code . ' and all fallbacks' );
+			}
+		}
+		return $fmt;
+	}
+
+	private function createNumberFormatterReal( string $code, ?string $digitGroupingPattern ): ?NumberFormatter {
+		try {
+			if ( $digitGroupingPattern ) {
+				return new NumberFormatter(
+					$code, NumberFormatter::PATTERN_DECIMAL, $digitGroupingPattern
+				);
+			}
+			// @suppress PhanParamTooFew Phan thinks this always requires 3 parameters, that's wrong
+			return new NumberFormatter( $code, NumberFormatter::DECIMAL );
+		} catch ( \ValueError $_ ) {
+			// Value Errors are thrown since php8.4 for invalid locales
+			return null;
+		}
 	}
 
 	/**
