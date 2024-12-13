@@ -40,11 +40,18 @@ or `mailto:xtex_AT_xtexx.eu.org` or `acct:xtex@fe.disroot.org` or `matrix: @xtex
 
 {{</hlist>}}
 
-[exoring](https://ring.exozy.me/):
 {{<hlist>}}
 
-- [prev](https://ring.exozy.me/previous?id=xtex)
+- [exoring](https://ring.exozy.me/): [prev](https://ring.exozy.me/previous?id=xtex)
 - [rand](https://ring.exozy.me/random)
 - [next](https://ring.exozy.me/next?id=xtex)
+
+{{</hlist>}}
+
+{{<hlist>}}
+
+- [envs ring](https://envs.net/ring/): [prev](https://envs.net/ring/?action=prev&me=xtex)
+- [rand](https://envs.net/ring/?action=random&me=xtex)
+- [next](https://envs.net/ring/?action=next&me=xtex)
 
 {{</hlist>}}
