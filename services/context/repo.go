@@ -632,6 +632,8 @@ func RepoAssignment(ctx *Context) context.CancelFunc {
 		ctx.Data["IsStaringRepo"] = repo_model.IsStaring(ctx, ctx.Doer.ID, repo.ID)
 	}
 
+	ctx.Data["OpenGraphImageURL"] = repo.SummaryCardURL()
+
 	if repo.IsFork {
 		RetrieveBaseRepo(ctx, repo)
 		if ctx.Written() {

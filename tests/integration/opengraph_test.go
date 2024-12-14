@@ -97,7 +97,7 @@ func TestOpenGraphProperties(t *testing.T) {
 				"og:title":     "repo49/test/test.txt at master",
 				"og:url":       setting.AppURL + "/user27/repo49/src/branch/master/test/test.txt",
 				"og:type":      "object",
-				"og:image":     setting.AppURL + "assets/img/avatar_default.png",
+				"og:image":     setting.AppURL + "user27/repo49/-/summary-card",
 				"og:site_name": siteName,
 			},
 		},
@@ -108,7 +108,7 @@ func TestOpenGraphProperties(t *testing.T) {
 				"og:title":     "Page With Spaced Name",
 				"og:url":       setting.AppURL + "/user2/repo1/wiki/Page-With-Spaced-Name",
 				"og:type":      "object",
-				"og:image":     setting.AppURL + "avatars/ab53a2911ddf9b4817ac01ddcd3d975f",
+				"og:image":     setting.AppURL + "user2/repo1/-/summary-card",
 				"og:site_name": siteName,
 			},
 		},
@@ -119,7 +119,7 @@ func TestOpenGraphProperties(t *testing.T) {
 				"og:title":     "repo1",
 				"og:url":       setting.AppURL + "user2/repo1",
 				"og:type":      "object",
-				"og:image":     setting.AppURL + "avatars/ab53a2911ddf9b4817ac01ddcd3d975f",
+				"og:image":     setting.AppURL + "user2/repo1/-/summary-card",
 				"og:site_name": siteName,
 			},
 		},
@@ -131,7 +131,7 @@ func TestOpenGraphProperties(t *testing.T) {
 				"og:url":         setting.AppURL + "user27/repo49",
 				"og:description": "A wonderful repository with more than just a README.md",
 				"og:type":        "object",
-				"og:image":       setting.AppURL + "assets/img/avatar_default.png",
+				"og:image":       setting.AppURL + "user27/repo49/-/summary-card",
 				"og:site_name":   siteName,
 			},
 		},
@@ -167,12 +167,20 @@ func TestOpenGraphSummaryCard(t *testing.T) {
 		url  string
 	}{
 		{
+			name: "repo",
+			url:  "/user2/repo1/-/summary-card",
+		},
+		{
 			name: "issue",
 			url:  "/user2/repo1/issues/1/summary-card",
 		},
 		{
 			name: "pull request",
 			url:  "/user2/repo1/pulls/2/summary-card",
+		},
+		{
+			name: "release",
+			url:  "/user2/repo1/releases/summary-card/1",
 		},
 	}
 
