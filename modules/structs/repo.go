@@ -105,6 +105,7 @@ type Repository struct {
 	DefaultDeleteBranchAfterMerge bool             `json:"default_delete_branch_after_merge"`
 	DefaultMergeStyle             string           `json:"default_merge_style"`
 	DefaultAllowMaintainerEdit    bool             `json:"default_allow_maintainer_edit"`
+	DefaultUpdateStyle            string           `json:"default_update_style"`
 	AvatarURL                     string           `json:"avatar_url"`
 	Internal                      bool             `json:"internal"`
 	MirrorInterval                string           `json:"mirror_interval"`
@@ -225,6 +226,8 @@ type EditRepoOption struct {
 	DefaultDeleteBranchAfterMerge *bool `json:"default_delete_branch_after_merge,omitempty"`
 	// set to a merge style to be used by this repository: "merge", "rebase", "rebase-merge", "squash", or "fast-forward-only".
 	DefaultMergeStyle *string `json:"default_merge_style,omitempty"`
+	// set to a update style to be used by this repository: "rebase" or "merge"
+	DefaultUpdateStyle *string `json:"default_update_style,omitempty"`
 	// set to `true` to allow edits from maintainers by default
 	DefaultAllowMaintainerEdit *bool `json:"default_allow_maintainer_edit,omitempty"`
 	// set to `true` to archive this repository.
