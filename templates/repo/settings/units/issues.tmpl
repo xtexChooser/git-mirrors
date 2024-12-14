@@ -41,6 +41,12 @@
 					<label>{{ctx.Locale.Tr "repo.issues.dependency.setting"}}</label>
 				</div>
 			</div>
+			<div class="field">
+				<div class="ui checkbox">
+					<input name="enable_sub_issues" type="checkbox" {{if (.Repository.IsSubIssuesEnabled $.Context)}}checked{{end}}>
+					<label>{{ctx.Locale.Tr "repo.issues.parent_issue.setting"}}</label>
+				</div>
+			</div>
 			<div class="ui checkbox">
 				<input name="enable_close_issues_via_commit_in_any_branch" type="checkbox" {{if .Repository.CloseIssuesViaCommitInAnyBranch}}checked{{end}}>
 				<label>{{ctx.Locale.Tr "repo.settings.admin_enable_close_issues_via_commit_in_any_branch"}}</label>

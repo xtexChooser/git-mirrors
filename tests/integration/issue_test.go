@@ -801,7 +801,7 @@ func TestSearchIssues(t *testing.T) {
 	req = NewRequest(t, "GET", link.String())
 	resp = session.MakeRequest(t, req, http.StatusOK)
 	DecodeJSON(t, resp, &apiIssues)
-	assert.EqualValues(t, "22", resp.Header().Get("X-Total-Count"))
+	assert.EqualValues(t, "24", resp.Header().Get("X-Total-Count"))
 	assert.Len(t, apiIssues, 20)
 
 	query.Add("limit", "5")
@@ -809,7 +809,7 @@ func TestSearchIssues(t *testing.T) {
 	req = NewRequest(t, "GET", link.String())
 	resp = session.MakeRequest(t, req, http.StatusOK)
 	DecodeJSON(t, resp, &apiIssues)
-	assert.EqualValues(t, "22", resp.Header().Get("X-Total-Count"))
+	assert.EqualValues(t, "24", resp.Header().Get("X-Total-Count"))
 	assert.Len(t, apiIssues, 5)
 
 	query = url.Values{"assigned": {"true"}, "state": {"all"}}
@@ -1335,4 +1335,51 @@ func TestIssueCount(t *testing.T) {
 
 	allCount := htmlDoc.doc.Find("a[data-test-name='all-issue-count']").Text()
 	assert.Contains(t, allCount, "2\u00a0All")
+}
+
+func TestParentIssue(t *testing.T) {
+	defer tests.PrepareTestEnv(t)()
+
+	session := loginUser(t, "user2")
+	issue1 := unittest.AssertExistsAndLoadBean(t, &issues_model.Issue{ID: 1})
+	require.NoError(t, issue1.LoadRepo(db.DefaultContext))
+
+	// Test adding
+	req := NewRequestWithValues(t, "POST", fmt.Sprintf("%s/parent_issue/add", issue1.Link()), map[string]string{
+		"_csrf":       GetCSRF(t, session, issue1.Link()),
+		"parentIssue": fmt.Sprintf("%d", 2),
+	})
+	session.MakeRequest(t, req, http.StatusSeeOther)
+
+	newIssue1 := unittest.AssertExistsAndLoadBean(t, &issues_model.Issue{ID: 1})
+	require.Equal(t, int64(2), *newIssue1.ParentIssueID)
+
+	req = NewRequest(t, "GET", issue1.Link())
+	resp := session.MakeRequest(t, req, http.StatusOK)
+	htmlDoc := NewHTMLParser(t, resp.Body)
+	assert.Contains(t, htmlDoc.Find(`.ui.parent-issue`).Text(), "#2 issue2")
+
+	// Test removing
+	req = NewRequestWithValues(t, "POST", fmt.Sprintf("%s/parent_issue/delete", issue1.Link()), map[string]string{
+		"_csrf": GetCSRF(t, session, issue1.Link()),
+	})
+	session.MakeRequest(t, req, http.StatusSeeOther)
+
+	newIssue1 = unittest.AssertExistsAndLoadBean(t, &issues_model.Issue{ID: 1})
+	require.Nil(t, newIssue1.ParentIssueID)
+
+	req = NewRequest(t, "GET", issue1.Link())
+	resp = session.MakeRequest(t, req, http.StatusOK)
+	htmlDoc = NewHTMLParser(t, resp.Body)
+	assert.Contains(t, htmlDoc.Find(`.ui.parent-issue`).Text(), "No parent issue set.")
+
+	// Test adding, without cross-repository write access
+	req = NewRequestWithValues(t, "POST", fmt.Sprintf("%s/parent_issue/add", issue1.Link()), map[string]string{
+		"_csrf":       GetCSRF(t, session, issue1.Link()),
+		"parentIssue": fmt.Sprintf("%d", 13),
+	})
+	session.MakeRequest(t, req, http.StatusSeeOther)
+
+	newIssue1 = unittest.AssertExistsAndLoadBean(t, &issues_model.Issue{ID: 1})
+	require.Nil(t, newIssue1.ParentIssueID)
 }

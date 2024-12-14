@@ -58,3 +58,14 @@ func (repo *Repository) IsDependenciesEnabled(ctx context.Context) bool {
 	}
 	return u.IssuesConfig().EnableDependencies
 }
+
+// IsSubIssuesEnabled returns if sub-issues are enabled and returns the default setting if not set.
+func (repo *Repository) IsSubIssuesEnabled(ctx context.Context) bool {
+	var u *RepoUnit
+	var err error
+	if u, err = repo.GetUnit(ctx, unit.TypeIssues); err != nil {
+		log.Trace("IsSubIssuesEnabled: %v", err)
+		return setting.Service.DefaultEnableSubIssues
+	}
+	return u.IssuesConfig().EnableSubIssues
+}

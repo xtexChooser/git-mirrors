@@ -40,6 +40,9 @@ func toIssue(ctx context.Context, doer *user_model.User, issue *issues_model.Iss
 	if err := issue.LoadAttachments(ctx); err != nil {
 		return &api.Issue{}
 	}
+	if err := issue.LoadParentIssue(ctx); err != nil {
+		return &api.Issue{}
+	}
 
 	apiIssue := &api.Issue{
 		ID:          issue.ID,
@@ -113,6 +116,16 @@ func toIssue(ctx context.Context, doer *user_model.User, issue *issues_model.Iss
 	}
 	if issue.DeadlineUnix != 0 {
 		apiIssue.Deadline = issue.DeadlineUnix.AsTimePtr()
+	}
+	if issue.ParentIssue != nil {
+		if err := issue.ParentIssue.LoadRepo(ctx); err != nil {
+			return &api.Issue{}
+		}
+		apiIssue.ParentIssue = &api.IssueMeta{
+			Index: issue.ParentIssue.Index,
+			Owner: issue.ParentIssue.Repo.OwnerName,
+			Name:  issue.ParentIssue.Repo.Name,
+		}
 	}
 
 	return apiIssue

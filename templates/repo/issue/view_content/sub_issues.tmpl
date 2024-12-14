@@ -1,0 +1,22 @@
+<div class="content sub-issues-container">
+	<div class="ui attached header sub-issues-header tw-flex tw-items-center tw-justify-between" role="heading" aria-level="3">
+		<div class="sub-issues-header-left tw-flex tw-items-center">
+			<span class="text muted-links">
+				{{ctx.Locale.Tr "repo.issues.sub_issues.title"}}
+			</span>
+		</div>
+		<div class="sub-issues-header-right actions tw-flex tw-items-center"></div>
+	</div>
+	<div class="ui attached segment issue-{{.Issue.ID}}-sub-issues sub-issues" role="article">
+		{{$repoID := .Issue.RepoID}}
+		{{range $s := .Issue.SubIssues}}
+			<div class="item{{if $s.IsClosed}} is-closed{{end}} tw-flex tw-items-center tw-justify-between">
+				<div class="item-left tw-flex tw-justify-center tw-flex-col tw-flex-1 gt-ellipsis">
+					<a class="title muted" href="{{$s.Link}}" data-tooltip-content="{{if not (eq $s.RepoID $repoID)}}{{$s.Repo.OwnerName}}/{{$s.Repo.Name}}{{end}}#{{$s.Index}} {{RenderRefIssueTitle $.Context $s.Title}}">
+						{{if not (eq $s.RepoID $repoID)}}{{$s.Repo.OwnerName}}/{{$s.Repo.Name}}{{end}}#{{$s.Index}} {{RenderRefIssueTitle $.Context $s.Title}}
+					</a>
+				</div>
+			</div>
+		{{end}}
+	</div>
+</div>

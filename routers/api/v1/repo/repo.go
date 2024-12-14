@@ -825,6 +825,7 @@ func updateRepoUnits(ctx *context.APIContext, opts api.EditRepoOption) error {
 					EnableTimetracker:                opts.InternalTracker.EnableTimeTracker,
 					AllowOnlyContributorsToTrackTime: opts.InternalTracker.AllowOnlyContributorsToTrackTime,
 					EnableDependencies:               opts.InternalTracker.EnableIssueDependencies,
+					EnableSubIssues:                  opts.InternalTracker.EnableSubIssues,
 				}
 			} else if unit, err := repo.GetUnit(ctx, unit_model.TypeIssues); err != nil {
 				// Unit type doesn't exist so we make a new config file with default values
@@ -832,6 +833,7 @@ func updateRepoUnits(ctx *context.APIContext, opts api.EditRepoOption) error {
 					EnableTimetracker:                true,
 					AllowOnlyContributorsToTrackTime: true,
 					EnableDependencies:               true,
+					EnableSubIssues:                  true,
 				}
 			} else {
 				config = unit.IssuesConfig()

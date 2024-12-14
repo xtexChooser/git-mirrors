@@ -176,6 +176,8 @@
 				<dd>{{if .Service.NoReplyAddress}}{{.Service.NoReplyAddress}}{{else}}-{{end}}</dd>
 				<dt>{{ctx.Locale.Tr "admin.config.default_enable_dependencies"}}</dt>
 				<dd>{{if .Service.DefaultEnableDependencies}}{{svg "octicon-check"}}{{else}}{{svg "octicon-x"}}{{end}}</dd>
+				<dt>{{ctx.Locale.Tr "admin.config.default_enable_sub_issues"}}</dt>
+				<dd>{{if .Service.DefaultEnableSubIssues}}{{svg "octicon-check"}}{{else}}{{svg "octicon-x"}}{{end}}</dd>
 				<div class="divider"></div>
 				<dt>{{ctx.Locale.Tr "admin.config.active_code_lives"}}</dt>
 				<dd>{{.Service.ActiveCodeLives}} {{ctx.Locale.Tr "tool.raw_minutes"}}</dd>

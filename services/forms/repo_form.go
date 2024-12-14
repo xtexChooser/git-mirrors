@@ -196,6 +196,7 @@ type RepoUnitSettingForm struct {
 	EnableTimetracker                     bool
 	AllowOnlyContributorsToTrackTime      bool
 	EnableIssueDependencies               bool
+	EnableSubIssues                       bool
 }
 
 // Validate validates the fields

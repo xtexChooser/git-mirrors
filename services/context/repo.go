@@ -167,6 +167,11 @@ func (r *Repository) CanCreateIssueDependencies(ctx context.Context, user *user_
 	return r.Repository.IsDependenciesEnabled(ctx) && r.Permission.CanWriteIssuesOrPulls(isPull)
 }
 
+// CanUpdateParentIssues returns whether or not a user can modify parent issues.
+func (r *Repository) CanUpdateParentIssues(ctx context.Context, user *user_model.User) bool {
+	return r.Repository.IsSubIssuesEnabled(ctx) && r.Permission.CanWriteIssuesOrPulls(false) && !r.Repository.IsArchived
+}
+
 // GetCommitsCount returns cached commit count for current view
 func (r *Repository) GetCommitsCount() (int64, error) {
 	if r.Commit == nil {

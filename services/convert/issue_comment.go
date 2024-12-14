@@ -67,6 +67,12 @@ func ToTimelineComment(ctx context.Context, repo *repo_model.Repository, c *issu
 		return nil
 	}
 
+	err = c.LoadParentOrSubIssue(ctx)
+	if err != nil {
+		log.Error("LoadParentOrSubIssue: %v", err)
+		return nil
+	}
+
 	if c.Content != "" {
 		if (c.Type == issues_model.CommentTypeAddTimeManual ||
 			c.Type == issues_model.CommentTypeStopTracking ||
@@ -181,6 +187,12 @@ func ToTimelineComment(ctx context.Context, repo *repo_model.Repository, c *issu
 
 	if c.DependentIssue != nil {
 		comment.DependentIssue = ToAPIIssue(ctx, doer, c.DependentIssue)
+	}
+
+	if c.Type == issues_model.CommentTypeAddParentIssue || c.Type == issues_model.CommentTypeRemoveParentIssue {
+		comment.ParentIssue = ToAPIIssue(ctx, doer, c.ParentOrSubIssue)
+	} else if c.Type == issues_model.CommentTypeAddSubIssue || c.Type == issues_model.CommentTypeRemoveSubIssue {
+		comment.SubIssue = ToAPIIssue(ctx, doer, c.ParentOrSubIssue)
 	}
 
 	return comment

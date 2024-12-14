@@ -72,6 +72,11 @@
   text-overflow: ellipsis;
 }
 
+.repository .issue-content-right .ui.list .parent-issue {
+  padding: 0;
+  white-space: nowrap;
+}
+
 .repository .issue-content-right #deadlineForm input {
   width: 12.8rem;
   border-radius: var(--border-radius) 0 0 var(--border-radius);
@@ -2523,6 +2528,19 @@ tbody.commit-list {
   overflow: hidden;
 }
 
+#new-parent-issue-drop-list.ui.selection.dropdown {
+  min-width: 0;
+  width: 100%;
+  border-radius: var(--border-radius) 0 0 var(--border-radius);
+  border-right: 0;
+  white-space: nowrap;
+}
+
+#new-parent-issue-drop-list .text {
+  width: 100%;
+  overflow: hidden;
+}
+
 .tag-code {
   height: 28px;
 }
@@ -2997,4 +3015,21 @@ tbody.commit-list {
 
 #repo-activity-top-authors-chart {
   height: 150px; /* Pre-allocate the height that will be taken up by the chart, to avoid the container 'jumping'. */
+}
+
+.sub-issues-container {
+  border-radius: 4px;
+}
+.sub-issues-container .sub-issues-header {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+.sub-issues .item {
+  padding: 5px;
+}
+.sub-issues .item:not(:first-child) {
+  border-top: var(--color-grey) 1px solid;
+}
+.sub-issues .item.is-closed {
+  text-decoration: line-through;
 }

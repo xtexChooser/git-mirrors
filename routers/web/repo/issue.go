@@ -1485,6 +1485,39 @@ func ViewIssue(ctx *context.Context) {
 		return
 	}
 
+	ctx.Data["CanReadParentIssue"] = true
+	if issue.ParentIssue != nil {
+		if err = issue.ParentIssue.LoadRepo(ctx); err != nil {
+			ctx.ServerError("ParentIssue.LoadRepo", err)
+			return
+		}
+		perm, err := access_model.GetUserRepoPermission(ctx, issue.ParentIssue.Repo, ctx.Doer)
+		if err != nil {
+			ctx.ServerError("GetUserRepoPermission", err)
+			return
+		}
+		if !perm.CanReadIssuesOrPulls(false) {
+			ctx.Data["CanReadParentIssue"] = false
+		}
+	}
+
+	if err = issue_service.FilterSubIssues(ctx, issue, ctx.Doer); err != nil {
+		ctx.ServerError("FilterSubIssues", err)
+		return
+	}
+
+	for _, subIssue := range issue.SubIssues {
+		if err = subIssue.LoadRepo(ctx); err != nil {
+			ctx.ServerError("subIssue.LoadRepo", err)
+			return
+		}
+	}
+
+	if err = filterParentOrSubComments(ctx, issue); err != nil {
+		ctx.ServerError("filterParentOrSubComments", err)
+		return
+	}
+
 	ctx.Data["Title"] = fmt.Sprintf("#%d - %s", issue.Index, emoji.ReplaceAliases(issue.Title))
 
 	iw := new(issues_model.IssueWatch)
@@ -1628,9 +1661,11 @@ func ViewIssue(ctx *context.Context) {
 
 	// Check if the user can use the dependencies
 	ctx.Data["CanCreateIssueDependencies"] = ctx.Repo.CanCreateIssueDependencies(ctx, ctx.Doer, issue.IsPull)
+	ctx.Data["CanUpdateParentIssue"] = ctx.Repo.CanUpdateParentIssues(ctx, ctx.Doer)
 
-	// check if dependencies can be created across repositories
+	// check if dependencies and sub-issues can be created across repositories
 	ctx.Data["AllowCrossRepositoryDependencies"] = setting.Service.AllowCrossRepositoryDependencies
+	ctx.Data["AllowCrossRepositorySubIssues"] = setting.Service.AllowCrossRepositorySubIssues
 
 	if issue.ShowRole, err = roleDescriptor(ctx, repo, issue.Poster, issue, issue.HasOriginalAuthor()); err != nil {
 		ctx.ServerError("roleDescriptor", err)
@@ -1727,6 +1762,13 @@ func ViewIssue(ctx *context.Context) {
 			if err = comment.LoadDepIssueDetails(ctx); err != nil {
 				if !issues_model.IsErrIssueNotExist(err) {
 					ctx.ServerError("LoadDepIssueDetails", err)
+					return
+				}
+			}
+		} else if comment.Type.HasParentOrSubIssue() {
+			if err = comment.LoadParentOrSubIssue(ctx); err != nil {
+				if !issues_model.IsErrIssueNotExist(err) {
+					ctx.ServerError("LoadParentOrSubIssueDetails", err)
 					return
 				}
 			}
@@ -1831,6 +1873,7 @@ func ViewIssue(ctx *context.Context) {
 
 	// Combine multiple label assignments into a single comment
 	combineLabelComments(issue)
+	combineParentOrSubIssuesComments(issue)
 	combineRequestReviewComments(issue)
 
 	getBranchData(ctx, issue)
@@ -3780,6 +3823,34 @@ func filterXRefComments(ctx *context.Context, issue *issues_model.Issue) error {
 	return nil
 }
 
+func filterParentOrSubComments(ctx *context.Context, issue *issues_model.Issue) (err error) {
+	// Remove comments that the user has no permissions to see
+	for i := 0; i < len(issue.Comments); {
+		c := issue.Comments[i]
+		if c.Type.HasParentOrSubIssue() {
+			if err = c.LoadParentOrSubIssue(ctx); err != nil {
+				return err
+			}
+			// no matter if we need the repo, it is used by repo/issue/view template
+			if err = c.ParentOrSubIssue.LoadRepo(ctx); err != nil {
+				return err
+			}
+			if c.ParentOrSubIssue.RepoID != issue.RepoID && c.ParentOrSubIssue.RepoID != 0 {
+				perm, err := access_model.GetUserRepoPermission(ctx, c.ParentOrSubIssue.Repo, ctx.Doer)
+				if err != nil {
+					return err
+				}
+				if !perm.CanReadIssuesOrPulls(false) {
+					issue.Comments = append(issue.Comments[:i], issue.Comments[i+1:]...)
+					continue
+				}
+			}
+		}
+		i++
+	}
+	return nil
+}
+
 // GetIssueAttachments returns attachments for the issue
 func GetIssueAttachments(ctx *context.Context) {
 	issue := GetActionIssue(ctx)
@@ -4073,6 +4144,33 @@ func combineLabelComments(issue *issues_model.Issue) {
 				}
 			}
 		}
+	}
+}
+
+// combineParentOrSubIssuesComments combine the nearby parent-issue or sub-issues comments as one.
+func combineParentOrSubIssuesComments(issue *issues_model.Issue) {
+	var prev, cur *issues_model.Comment
+	for i := 0; i < len(issue.Comments); i++ {
+		cur = issue.Comments[i]
+		if i > 0 {
+			prev = issue.Comments[i-1]
+		} else {
+			continue
+		}
+		if !cur.Type.HasParentOrSubIssue() {
+			continue
+		}
+		// comparing with adding/removing labels, creating new sub-issues generally
+		// takes more time, so its merge time span is longer
+		if cur.CreatedUnix-prev.CreatedUnix >= 300 {
+			continue
+		}
+		if cur.Type != prev.Type {
+			continue
+		}
+		cur.ParentOrSubIssues = append(prev.ParentOrSubIssues, cur.ParentOrSubIssues...)
+		issue.Comments = append(issue.Comments[:i-1], issue.Comments[i:]...)
+		i--
 	}
 }
 

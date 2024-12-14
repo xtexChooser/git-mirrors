@@ -72,6 +72,10 @@
 				</div>
 			</div>
 
+			{{if .Issue.SubIssues}}
+			{{template "repo/issue/view_content/sub_issues" .}}
+			{{end}}
+
 			{{template "repo/issue/view_content/comments" .}}
 			<div id="insert-timeline"></div>
 

@@ -125,38 +125,80 @@ function excludeLabel(item) {
 export function initRepoIssueSidebarList() {
   const repolink = $('#repolink').val();
   const repoId = $('#repoId').val();
-  const crossRepoSearch = $('#crossRepoSearch').val();
   const tp = $('#type').val();
-  let issueSearchUrl = `${appSubUrl}/${repolink}/issues/search?q={query}&type=${tp}`;
-  if (crossRepoSearch === 'true') {
-    issueSearchUrl = `${appSubUrl}/issues/search?q={query}&priority_repo_id=${repoId}&type=${tp}`;
-  }
-  $('#new-dependency-drop-list')
-    .dropdown({
-      apiSettings: {
-        url: issueSearchUrl,
-        onResponse(response) {
-          const filteredResponse = {success: true, results: []};
-          const currIssueId = $('#new-dependency-drop-list').data('issue-id');
-          // Parse the response from the api to work with our dropdown
-          $.each(response, (_i, issue) => {
-            // Don't list current issue in the dependency list.
-            if (issue.id === currIssueId) {
-              return;
-            }
-            filteredResponse.results.push({
-              name: `#${issue.number} ${issueTitleHTML(htmlEscape(issue.title))
-              }<div class="text small tw-break-anywhere">${htmlEscape(issue.repository.full_name)}</div>`,
-              value: issue.id,
+  {
+    const crossRepoSearch = $('#issueDependencyCrossRepoSearch').val();
+    let issueSearchUrl = `${appSubUrl}/${repolink}/issues/search?q={query}&type=${tp}`;
+    if (crossRepoSearch === 'true') {
+      issueSearchUrl = `${appSubUrl}/issues/search?q={query}&priority_repo_id=${repoId}&type=${tp}`;
+    }
+    $('#new-dependency-drop-list')
+      .dropdown({
+        apiSettings: {
+          url: issueSearchUrl,
+          onResponse(response) {
+            const filteredResponse = {success: true, results: []};
+            const currIssueId = $('#new-dependency-drop-list').data('issue-id');
+            // Parse the response from the api to work with our dropdown
+            $.each(response, (_i, issue) => {
+              // Don't list current issue in the dependency list.
+              if (issue.id === currIssueId) {
+                return;
+              }
+              let name = `#${issue.number} ${issueTitleHTML(htmlEscape(issue.title))}`;
+              if (crossRepoSearch) {
+                name += `<div class="text small tw-break-anywhere">${htmlEscape(issue.repository.full_name)}</div>`;
+              }
+              filteredResponse.results.push({
+                name,
+                value: issue.id,
+              });
             });
-          });
-          return filteredResponse;
+            return filteredResponse;
+          },
+          cache: false,
         },
-        cache: false,
-      },
 
-      fullTextSearch: true,
-    });
+        fullTextSearch: true,
+      });
+  }
+
+  {
+    const crossRepoSearch = $('#subIssuesCrossRepoSearch').val();
+    let issueSearchUrl = `${appSubUrl}/${repolink}/issues/search?q={query}&type=${tp}`;
+    if (crossRepoSearch === 'true') {
+      issueSearchUrl = `${appSubUrl}/issues/search?q={query}&priority_repo_id=${repoId}&type=${tp}`;
+    }
+    $('#new-parent-issue-drop-list')
+      .dropdown({
+        apiSettings: {
+          url: issueSearchUrl,
+          onResponse(response) {
+            const filteredResponse = {success: true, results: []};
+            const currIssueId = $('#new-parent-issue-drop-list').data('issue-id');
+            // Parse the response from the api to work with our dropdown
+            $.each(response, (_i, issue) => {
+              // Don't list current issue in the dependency list.
+              if (issue.id === currIssueId) {
+                return;
+              }
+              let name = `#${issue.number} ${issueTitleHTML(htmlEscape(issue.title))}`;
+              if (crossRepoSearch) {
+                name += `<div class="text small tw-break-anywhere">${htmlEscape(issue.repository.full_name)}</div>`;
+              }
+              filteredResponse.results.push({
+                name,
+                value: issue.id,
+              });
+            });
+            return filteredResponse;
+          },
+          cache: false,
+        },
+
+        fullTextSearch: true,
+      });
+  }
 
   $('.menu a.label-filter-item').each(function () {
     $(this).on('click', function (e) {
@@ -726,6 +768,19 @@ export function initRepoIssueAssignMe() {
         return false;
       }
     });
+}
+
+export function initRepoIssueParentIssueDelete() {
+  // Remove Parent Issue
+  $(document).on('click', '.remove-parent-issue-button', (_) => {
+    $('.remove-parent-issue-confirm').modal({
+      closable: false,
+      duration: 200,
+      onApprove: () => {
+        $('#removeParentIssueForm').trigger('submit');
+      },
+    }).modal('show');
+  });
 }
 
 export function initSingleCommentEditor($commentForm) {

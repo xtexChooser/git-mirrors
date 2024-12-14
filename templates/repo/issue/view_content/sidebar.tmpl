@@ -37,14 +37,19 @@
 	<div class="divider"></div>
 	{{template "repo/issue/view_content/sidebar/due_deadline" .}}
 
+	<div class="divider"></div>
+	{{template "repo/issue/view_content/sidebar/reference" .}}
+
 	{{if .Repository.IsDependenciesEnabled $.Context}}
 		<div class="divider"></div>
 
 		{{template "repo/issue/view_content/sidebar/dependencies" .}}
 	{{end}}
 
-	<div class="divider"></div>
-	{{template "repo/issue/view_content/sidebar/reference" .}}
+	{{if and (not .Issue.IsPull) (.Repository.IsSubIssuesEnabled $.Context)}}
+		<div class="divider"></div>
+		{{template "repo/issue/view_content/sidebar/parent_issue" .}}
+	{{end}}
 
 	{{if and .IsRepoAdmin (not .Repository.IsArchived)}}
 		<div class="divider"></div>

@@ -79,7 +79,8 @@ type Issue struct {
 	PullRequest *PullRequestMeta `json:"pull_request"`
 	Repo        *RepositoryMeta  `json:"repository"`
 
-	PinOrder int `json:"pin_order"`
+	PinOrder    int        `json:"pin_order"`
+	ParentIssue *IssueMeta `json:"parent_issue"`
 }
 
 // CreateIssueOption options to create one issue
@@ -114,7 +115,8 @@ type EditIssueOption struct {
 	Deadline       *time.Time `json:"due_date"`
 	RemoveDeadline *bool      `json:"unset_due_date"`
 	// swagger:strfmt date-time
-	Updated *time.Time `json:"updated_at"`
+	Updated     *time.Time `json:"updated_at"`
+	ParentIssue *int64     `json:"parent_issue"`
 }
 
 // EditDeadlineOption options for creating a deadline

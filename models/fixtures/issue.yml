@@ -372,3 +372,37 @@
   created_unix: 1707270422
   updated_unix: 1707270422
   is_locked: false
+
+-
+  id: 23
+  repo_id: 63
+  index: 1
+  poster_id: 40
+  original_author_id: 0
+  name: Test parent issue
+  content: content for issue 1
+  milestone_id: 0
+  priority: 0
+  is_closed: false
+  is_pull: false
+  num_comments: 0
+  created_unix: 1707270422
+  updated_unix: 1707270422
+  is_locked: false
+
+-
+  id: 24
+  repo_id: 63
+  index: 2
+  poster_id: 40
+  original_author_id: 0
+  name: Test sub issue
+  content: content for issue 2
+  milestone_id: 0
+  priority: 0
+  is_closed: false
+  is_pull: false
+  num_comments: 0
+  created_unix: 1707270422
+  updated_unix: 1707270422
+  is_locked: false

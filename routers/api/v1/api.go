@@ -1462,6 +1462,7 @@ func Routes() *web.Route {
 								Delete(reqToken(), reqAdmin(), repo.UnpinIssue)
 							m.Patch("/{position}", reqToken(), reqAdmin(), repo.MoveIssuePin)
 						})
+						m.Get("/sub_issues", repo.ListSubIssues)
 					})
 				}, mustEnableIssuesOrPulls)
 				m.Group("/labels", func() {

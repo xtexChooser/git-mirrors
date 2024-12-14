@@ -12,7 +12,8 @@
 		26 = DELETE_TIME_MANUAL, 27 = REVIEW_REQUEST, 28 = MERGE_PULL_REQUEST,
 		29 = PULL_PUSH_EVENT, 30 = PROJECT_CHANGED, 31 = PROJECT_BOARD_CHANGED
 		32 = DISMISSED_REVIEW, 33 = COMMENT_TYPE_CHANGE_ISSUE_REF, 34 = PR_SCHEDULE_TO_AUTO_MERGE,
-		35 = CANCEL_SCHEDULED_AUTO_MERGE_PR, 36 = PIN_ISSUE, 37 = UNPIN_ISSUE -->
+		35 = CANCEL_SCHEDULED_AUTO_MERGE_PR, 36 = PIN_ISSUE, 37 = UNPIN_ISSUE,
+		38 = ADD_PARENT_ISSUE, 39 = REMOVE_PARENT_ISSUE, 40 = ADD_SUB_ISSUE, 41 = REMOVE_SUB_ISSUE -->
 		{{if eq .Type 0}}
 			<div class="timeline-item comment" id="{{.HashTag}}">
 			{{if .OriginalAuthor}}
@@ -343,7 +344,7 @@
 							<a href="{{.DependentIssue.Link}}">
 								{{$strTitle := RenderRefIssueTitle $.Context .DependentIssue.Title}}
 								{{if eq .DependentIssue.RepoID .Issue.RepoID}}
-									#{{.DependentIssue.Index}} {{$strTitle}}
+									#{{.DependentIssue.Index}} - {{$strTitle}}
 								{{else}}
 									{{.DependentIssue.Repo.FullName}}#{{.DependentIssue.Index}} - {{$strTitle}}
 								{{end}}
@@ -367,7 +368,7 @@
 							<a href="{{.DependentIssue.Link}}">
 								{{$strTitle := RenderRefIssueTitle $.Context .DependentIssue.Title}}
 								{{if eq .DependentIssue.RepoID .Issue.RepoID}}
-									#{{.DependentIssue.Index}} {{$strTitle}}
+									#{{.DependentIssue.Index}} - {{$strTitle}}
 								{{else}}
 									{{.DependentIssue.Repo.FullName}}#{{.DependentIssue.Index}} - {{$strTitle}}
 								{{end}}
@@ -675,6 +676,37 @@
 					{{if eq .Type 36}}{{ctx.Locale.Tr "repo.issues.pin_comment" $createdStr}}
 					{{else}}{{ctx.Locale.Tr "repo.issues.unpin_comment" $createdStr}}{{end}}
 				</span>
+			</div>
+		{{else if or (eq .Type 38) (eq .Type 39) (eq .Type 40) (eq .Type 41)}}
+			<div class="timeline-item event" id="{{.HashTag}}">
+				<span class="badge">{{svg "octicon-list-unordered" 16}}</span>
+				{{template "shared/user/avatarlink" dict "user" .Poster}}
+				<span class="text grey muted-links">
+					{{template "shared/user/authorlink" .Poster}}
+					{{if eq .Type 38}}{{ctx.Locale.Tr "repo.issues.parent_issue.added" $createdStr}}
+					{{else if eq .Type 39}}{{ctx.Locale.Tr "repo.issues.parent_issue.removed" $createdStr}}
+					{{else if eq .Type 40}}{{ctx.Locale.Tr "repo.issues.sub_issue.added" $createdStr}}
+					{{else if eq .Type 41}}{{ctx.Locale.Tr "repo.issues.sub_issue.removed" $createdStr}}
+					{{end}}
+				</span>
+				{{$comment := .}}
+				{{range $subIssue := .ParentOrSubIssues}}
+					<div class="detail flex-text-block">
+						{{if or (eq $comment.Type 38) (eq $comment.Type 40)}}{{svg "octicon-plus"}}
+						{{else}}{{svg "octicon-trash"}}
+						{{end}}
+						<span class="text grey muted-links">
+							<a href="{{$subIssue.Link}}">
+								{{$strTitle := RenderRefIssueTitle $.Context $subIssue.Title}}
+								{{if eq $subIssue.RepoID $comment.Issue.RepoID}}
+									#{{$subIssue.Index}} - {{$strTitle}}
+								{{else}}
+									{{$subIssue.Repo.FullName}}#{{$subIssue.Index}} - {{$strTitle}}
+								{{end}}
+							</a>
+						</span>
+					</div>
+				{{end}}
 			</div>
 		{{end}}
 	{{end}}

@@ -150,6 +150,12 @@ type Issue struct {
 
 	// For view issue page.
 	ShowRole RoleDescriptor `xorm:"-"`
+
+	ParentIssueID       *int64   `xorm:"'parent_id' null index"`
+	ParentIssue         *Issue   `xorm:"-"`
+	isParentIssueLoaded bool     `xorm:"-"`
+	SubIssues           []*Issue `xorm:"-"`
+	isSubIssuesLoaded   bool     `xorm:"-"`
 }
 
 var (
@@ -365,7 +371,15 @@ func (issue *Issue) LoadAttributes(ctx context.Context) (err error) {
 		}
 	}
 
-	return issue.loadReactions(ctx)
+	if err = issue.loadReactions(ctx); err != nil {
+		return err
+	}
+
+	if err = issue.LoadParentIssue(ctx); err != nil {
+		return err
+	}
+
+	return issue.LoadSubIssues(ctx)
 }
 
 func (issue *Issue) ResetAttributesLoaded() {
@@ -373,6 +387,8 @@ func (issue *Issue) ResetAttributesLoaded() {
 	issue.isMilestoneLoaded = false
 	issue.isAttachmentsLoaded = false
 	issue.isAssigneeLoaded = false
+	issue.isParentIssueLoaded = false
+	issue.isSubIssuesLoaded = false
 }
 
 // GetIsRead load the `IsRead` field of the issue

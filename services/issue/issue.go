@@ -304,7 +304,12 @@ func deleteIssue(ctx context.Context, issue *issues_model.Issue) error {
 		&issues_model.Comment{RefIssueID: issue.ID},
 		&issues_model.IssueDependency{DependencyID: issue.ID},
 		&issues_model.Comment{DependentIssueID: issue.ID},
+		&issues_model.Comment{ParentOrSubIssueID: issue.ID},
 	); err != nil {
+		return err
+	}
+
+	if _, err = db.Exec(ctx, "UPDATE `issue` SET parent_id = NULL WHERE parent_id = ?", issue.ID); err != nil {
 		return err
 	}
 
@@ -345,5 +350,30 @@ func SetIssueUpdateDate(ctx context.Context, issue *issues_model.Issue, updated 
 	issue.UpdatedUnix = updatedUnix
 	issue.NoAutoTime = true
 
+	return nil
+}
+
+// FilterSubIssues removes in place sub-issues that the user has no permissions to see
+func FilterSubIssues(ctx context.Context, issue *issues_model.Issue, doer *user_model.User) (err error) {
+	if err = issue.LoadSubIssues(ctx); err != nil {
+		return err
+	}
+	for i := 0; i < len(issue.SubIssues); {
+		subIssue := issue.SubIssues[i]
+		if subIssue.RepoID != issue.RepoID && subIssue.RepoID != 0 {
+			if err = subIssue.LoadRepo(ctx); err != nil {
+				return err
+			}
+			perm, err := access_model.GetUserRepoPermission(ctx, subIssue.Repo, doer)
+			if err != nil {
+				return err
+			}
+			if !perm.CanReadIssuesOrPulls(false) {
+				issue.SubIssues = append(issue.SubIssues[:i], issue.SubIssues[i+1:]...)
+				continue
+			}
+		}
+		i++
+	}
 	return nil
 }

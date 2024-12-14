@@ -198,6 +198,7 @@ func UnitsPost(ctx *context.Context) {
 				EnableTimetracker:                form.EnableTimetracker,
 				AllowOnlyContributorsToTrackTime: form.AllowOnlyContributorsToTrackTime,
 				EnableDependencies:               form.EnableIssueDependencies,
+				EnableSubIssues:                  form.EnableSubIssues,
 			},
 		})
 		deleteUnitTypes = append(deleteUnitTypes, unit_model.TypeExternalTracker)

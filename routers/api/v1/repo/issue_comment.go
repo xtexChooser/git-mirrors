@@ -227,6 +227,21 @@ func isXRefCommentAccessible(ctx stdCtx.Context, user *user_model.User, c *issue
 			return false
 		}
 	}
+	if c.Type.HasParentOrSubIssue() {
+		if err := c.LoadParentOrSubIssue(ctx); err != nil {
+			return false
+		}
+		if err := c.ParentOrSubIssue.LoadRepo(ctx); err != nil {
+			return false
+		}
+		perm, err := access_model.GetUserRepoPermission(ctx, c.ParentOrSubIssue.Repo, user)
+		if err != nil {
+			return false
+		}
+		if !perm.CanReadIssuesOrPulls(false) {
+			return false
+		}
+	}
 	return true
 }
 

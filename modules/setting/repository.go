@@ -95,8 +95,10 @@ var (
 
 		// Issue Setting
 		Issue struct {
-			LockReasons []string
-			MaxPinned   int
+			LockReasons       []string
+			MaxPinned         int
+			MaxSubIssues      int
+			MaxSubIssuesDepth int
 		} `ini:"repository.issue"`
 
 		Release struct {
@@ -239,11 +241,15 @@ var (
 
 		// Issue settings
 		Issue: struct {
-			LockReasons []string
-			MaxPinned   int
+			LockReasons       []string
+			MaxPinned         int
+			MaxSubIssues      int
+			MaxSubIssuesDepth int
 		}{
-			LockReasons: strings.Split("Too heated,Off-topic,Spam,Resolved", ","),
-			MaxPinned:   3,
+			LockReasons:       strings.Split("Too heated,Off-topic,Spam,Resolved", ","),
+			MaxPinned:         3,
+			MaxSubIssues:      100,
+			MaxSubIssuesDepth: 6,
 		},
 
 		Release: struct {

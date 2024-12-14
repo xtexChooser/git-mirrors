@@ -36,6 +36,7 @@ func getRepoEditOptionFromRepo(repo *repo_model.Repository) *api.EditRepoOption 
 			EnableTimeTracker:                config.EnableTimetracker,
 			AllowOnlyContributorsToTrackTime: config.AllowOnlyContributorsToTrackTime,
 			EnableIssueDependencies:          config.EnableDependencies,
+			EnableSubIssues:                  config.EnableSubIssues,
 		}
 	} else if unit, err := repo.GetUnit(db.DefaultContext, unit_model.TypeExternalTracker); err == nil {
 		config := unit.ExternalTrackerConfig()

@@ -83,4 +83,6 @@ type TimelineComment struct {
 	ResolveDoer *User `json:"resolve_doer"`
 
 	DependentIssue *Issue `json:"dependent_issue"`
+	ParentIssue    *Issue `json:"parent_issue"`
+	SubIssue       *Issue `json:"sub_issue"`
 }

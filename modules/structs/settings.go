@@ -12,6 +12,9 @@ type GeneralRepoSettings struct {
 	ForksDisabled        bool `json:"forks_disabled"`
 	TimeTrackingDisabled bool `json:"time_tracking_disabled"`
 	LFSDisabled          bool `json:"lfs_disabled"`
+
+	MaxSubIssuesCount int `json:"max_sub_issues_count"`
+	MaxSubIssuesDepth int `json:"max_sub_issues_depth"`
 }
 
 // GeneralUISettings contains global ui settings exposed by API

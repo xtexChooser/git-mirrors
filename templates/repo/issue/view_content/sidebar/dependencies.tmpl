@@ -19,12 +19,14 @@
 			{{range .BlockingDependencies}}
 				<div class="item dependency{{if .Issue.IsClosed}} is-closed{{end}} tw-flex tw-items-center tw-justify-between">
 					<div class="item-left tw-flex tw-justify-center tw-flex-col tw-flex-1 gt-ellipsis">
-						<a class="title muted" href="{{.Issue.Link}}" data-tooltip-content="#{{.Issue.Index}} {{RenderRefIssueTitle $.Context .Issue.Title}}}">
-							#{{.Issue.Index}} {{RenderRefIssueTitle $.Context .Issue.Title}}}
+						<a class="title muted" href="{{.Issue.Link}}" data-tooltip-content="#{{.Issue.Index}} {{RenderRefIssueTitle $.Context .Issue.Title}}">
+							#{{.Issue.Index}} {{RenderRefIssueTitle $.Context .Issue.Title}}
 						</a>
-						<div class="text small gt-ellipsis" data-tooltip-content="{{.Repository.OwnerName}}/{{.Repository.Name}}">
-							{{.Repository.OwnerName}}/{{.Repository.Name}}
-						</div>
+						{{if not (eq .RepoID .Issue.RepoID)}}
+							<div class="text small gt-ellipsis" data-tooltip-content="{{.Repository.OwnerName}}/{{.Repository.Name}}">
+								{{.Repository.OwnerName}}/{{.Repository.Name}}
+							</div>
+						{{end}}
 					</div>
 					<div class="item-right tw-flex tw-items-center tw-m-1">
 						{{if and $.CanCreateIssueDependencies (not $.Repository.IsArchived)}}
@@ -120,7 +122,7 @@
 </div>
 
 {{if and .CanCreateIssueDependencies (not .Repository.IsArchived)}}
-	<input type="hidden" id="crossRepoSearch" value="{{.AllowCrossRepositoryDependencies}}">
+	<input type="hidden" id="issueDependencyCrossRepoSearch" value="{{.AllowCrossRepositoryDependencies}}">
 
 	<div class="ui g-modal-confirm modal remove-dependency">
 		<div class="header">

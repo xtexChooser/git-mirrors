@@ -114,6 +114,11 @@ const (
 
 	CommentTypePin   // 36 pin Issue
 	CommentTypeUnpin // 37 unpin Issue
+
+	CommentTypeAddParentIssue    // 38 add parent issue
+	CommentTypeRemoveParentIssue // 39 remove parent issue
+	CommentTypeAddSubIssue       // 40 add sub-issue
+	CommentTypeRemoveSubIssue    // 41 remove sub-issue
 )
 
 var commentStrings = []string{
@@ -155,6 +160,10 @@ var commentStrings = []string{
 	"pull_cancel_scheduled_merge",
 	"pin",
 	"unpin",
+	"add_parent_issue",
+	"remove_parent_issue",
+	"add_sub_issue",
+	"remove_sub_issue",
 }
 
 func (t CommentType) String() string {
@@ -189,6 +198,14 @@ func (t CommentType) HasAttachmentSupport() bool {
 func (t CommentType) HasMailReplySupport() bool {
 	switch t {
 	case CommentTypeComment, CommentTypeCode, CommentTypeReview, CommentTypeDismissReview, CommentTypeReopen, CommentTypeClose, CommentTypeMergePull, CommentTypeAssignees:
+		return true
+	}
+	return false
+}
+
+func (t CommentType) HasParentOrSubIssue() bool {
+	switch t {
+	case CommentTypeAddParentIssue, CommentTypeRemoveParentIssue, CommentTypeAddSubIssue, CommentTypeRemoveSubIssue:
 		return true
 	}
 	return false
@@ -267,6 +284,10 @@ type Comment struct {
 	NewRef               string
 	DependentIssueID     int64  `xorm:"index"` // This is used by issue_service.deleteIssue
 	DependentIssue       *Issue `xorm:"-"`
+
+	ParentOrSubIssueID int64    `xorm:"index 'sub_issue_id'"` // This is used by issue_service.deleteIssue
+	ParentOrSubIssue   *Issue   `xorm:"-"`
+	ParentOrSubIssues  []*Issue `xorm:"-"`
 
 	CommitID        int64
 	Line            int64 // - previous line / + proposed line
@@ -791,6 +812,19 @@ func (c *Comment) LoadPushCommits(ctx context.Context) (err error) {
 	return err
 }
 
+// LoadParentOrSubIssue loads parent-issue or sub-issue details
+func (c *Comment) LoadParentOrSubIssue(ctx context.Context) (err error) {
+	if c.ParentOrSubIssueID <= 0 || c.ParentOrSubIssue != nil {
+		return nil
+	}
+	if c.ParentOrSubIssue, err = GetIssueByID(ctx, c.ParentOrSubIssueID); err != nil {
+		return err
+	}
+	c.ParentOrSubIssues = make([]*Issue, 1)
+	c.ParentOrSubIssues[0] = c.ParentOrSubIssue
+	return nil
+}
+
 // CreateComment creates comment with context
 func CreateComment(ctx context.Context, opts *CreateCommentOptions) (_ *Comment, err error) {
 	ctx, committer, err := db.TxContext(ctx)
@@ -806,38 +840,39 @@ func CreateComment(ctx context.Context, opts *CreateCommentOptions) (_ *Comment,
 	}
 
 	comment := &Comment{
-		Type:             opts.Type,
-		PosterID:         opts.Doer.ID,
-		Poster:           opts.Doer,
-		IssueID:          opts.Issue.ID,
-		LabelID:          LabelID,
-		OldMilestoneID:   opts.OldMilestoneID,
-		MilestoneID:      opts.MilestoneID,
-		OldProjectID:     opts.OldProjectID,
-		ProjectID:        opts.ProjectID,
-		TimeID:           opts.TimeID,
-		RemovedAssignee:  opts.RemovedAssignee,
-		AssigneeID:       opts.AssigneeID,
-		AssigneeTeamID:   opts.AssigneeTeamID,
-		CommitID:         opts.CommitID,
-		CommitSHA:        opts.CommitSHA,
-		Line:             opts.LineNum,
-		Content:          opts.Content,
-		OldTitle:         opts.OldTitle,
-		NewTitle:         opts.NewTitle,
-		OldRef:           opts.OldRef,
-		NewRef:           opts.NewRef,
-		DependentIssueID: opts.DependentIssueID,
-		TreePath:         opts.TreePath,
-		ReviewID:         opts.ReviewID,
-		Patch:            opts.Patch,
-		RefRepoID:        opts.RefRepoID,
-		RefIssueID:       opts.RefIssueID,
-		RefCommentID:     opts.RefCommentID,
-		RefAction:        opts.RefAction,
-		RefIsPull:        opts.RefIsPull,
-		IsForcePush:      opts.IsForcePush,
-		Invalidated:      opts.Invalidated,
+		Type:               opts.Type,
+		PosterID:           opts.Doer.ID,
+		Poster:             opts.Doer,
+		IssueID:            opts.Issue.ID,
+		LabelID:            LabelID,
+		OldMilestoneID:     opts.OldMilestoneID,
+		MilestoneID:        opts.MilestoneID,
+		OldProjectID:       opts.OldProjectID,
+		ProjectID:          opts.ProjectID,
+		TimeID:             opts.TimeID,
+		RemovedAssignee:    opts.RemovedAssignee,
+		AssigneeID:         opts.AssigneeID,
+		AssigneeTeamID:     opts.AssigneeTeamID,
+		CommitID:           opts.CommitID,
+		CommitSHA:          opts.CommitSHA,
+		Line:               opts.LineNum,
+		Content:            opts.Content,
+		OldTitle:           opts.OldTitle,
+		NewTitle:           opts.NewTitle,
+		OldRef:             opts.OldRef,
+		NewRef:             opts.NewRef,
+		DependentIssueID:   opts.DependentIssueID,
+		TreePath:           opts.TreePath,
+		ReviewID:           opts.ReviewID,
+		Patch:              opts.Patch,
+		RefRepoID:          opts.RefRepoID,
+		RefIssueID:         opts.RefIssueID,
+		RefCommentID:       opts.RefCommentID,
+		RefAction:          opts.RefAction,
+		RefIsPull:          opts.RefIsPull,
+		IsForcePush:        opts.IsForcePush,
+		Invalidated:        opts.Invalidated,
+		ParentOrSubIssueID: opts.ParentOrSubIssueID,
 	}
 	if opts.Issue.NoAutoTime {
 		// Preload the comment with the Issue containing the forced update
@@ -998,34 +1033,35 @@ type CreateCommentOptions struct {
 	Issue *Issue
 	Label *Label
 
-	DependentIssueID int64
-	OldMilestoneID   int64
-	MilestoneID      int64
-	OldProjectID     int64
-	ProjectID        int64
-	TimeID           int64
-	AssigneeID       int64
-	AssigneeTeamID   int64
-	RemovedAssignee  bool
-	OldTitle         string
-	NewTitle         string
-	OldRef           string
-	NewRef           string
-	CommitID         int64
-	CommitSHA        string
-	Patch            string
-	LineNum          int64
-	TreePath         string
-	ReviewID         int64
-	Content          string
-	Attachments      []string // UUIDs of attachments
-	RefRepoID        int64
-	RefIssueID       int64
-	RefCommentID     int64
-	RefAction        references.XRefAction
-	RefIsPull        bool
-	IsForcePush      bool
-	Invalidated      bool
+	DependentIssueID   int64
+	OldMilestoneID     int64
+	MilestoneID        int64
+	OldProjectID       int64
+	ProjectID          int64
+	TimeID             int64
+	AssigneeID         int64
+	AssigneeTeamID     int64
+	RemovedAssignee    bool
+	OldTitle           string
+	NewTitle           string
+	OldRef             string
+	NewRef             string
+	CommitID           int64
+	CommitSHA          string
+	Patch              string
+	LineNum            int64
+	TreePath           string
+	ReviewID           int64
+	Content            string
+	Attachments        []string // UUIDs of attachments
+	RefRepoID          int64
+	RefIssueID         int64
+	RefCommentID       int64
+	RefAction          references.XRefAction
+	RefIsPull          bool
+	IsForcePush        bool
+	Invalidated        bool
+	ParentOrSubIssueID int64
 }
 
 // GetCommentByID returns the comment by given ID.
@@ -1237,6 +1273,44 @@ func CreateAutoMergeComment(ctx context.Context, typ CommentType, pr *PullReques
 		Issue: pr.Issue,
 	})
 	return comment, err
+}
+
+// Creates sub-issues comment
+func createSubIssueComment(ctx context.Context, doer *user_model.User, parentIssue, subIssue *Issue, add bool) (err error) {
+	if err = subIssue.LoadRepo(ctx); err != nil {
+		return err
+	}
+
+	// Make two comments, one in each issue
+	opts := &CreateCommentOptions{
+		Doer:               doer,
+		Repo:               subIssue.Repo,
+		Issue:              subIssue,
+		ParentOrSubIssueID: parentIssue.ID,
+	}
+	if add {
+		opts.Type = CommentTypeAddParentIssue
+	} else {
+		opts.Type = CommentTypeRemoveParentIssue
+	}
+
+	if _, err = CreateComment(ctx, opts); err != nil {
+		return err
+	}
+
+	opts = &CreateCommentOptions{
+		Doer:               doer,
+		Repo:               subIssue.Repo,
+		Issue:              parentIssue,
+		ParentOrSubIssueID: subIssue.ID,
+	}
+	if add {
+		opts.Type = CommentTypeAddSubIssue
+	} else {
+		opts.Type = CommentTypeRemoveSubIssue
+	}
+	_, err = CreateComment(ctx, opts)
+	return err
 }
 
 // RemapExternalUser ExternalUserRemappable interface

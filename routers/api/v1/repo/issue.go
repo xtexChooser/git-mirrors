@@ -901,6 +901,57 @@ func EditIssue(ctx *context.APIContext) {
 			return
 		}
 	}
+
+	if canWrite && form.ParentIssue != nil {
+		newParentID := *form.ParentIssue
+		var updateErr error
+		if newParentID != 0 {
+			// add parent issue
+			parentIssue, err := issues_model.GetIssueByID(ctx, newParentID)
+			if err != nil {
+				if issues_model.IsErrIssueNotExist(err) {
+					ctx.Error(http.StatusBadRequest, "ParentIssueNotExist", "the referenced parent issue does not exist")
+					return
+				}
+				ctx.Error(http.StatusInternalServerError, "GetIssueByID", err)
+				return
+			}
+			if parentIssue.RepoID != issue.RepoID {
+				if err = parentIssue.LoadRepo(ctx); err != nil {
+					ctx.Error(http.StatusInternalServerError, "parentIssue.LoadRepo", err)
+					return
+				}
+				perm, err := access_model.GetUserRepoPermission(ctx, parentIssue.Repo, ctx.Doer)
+				if err != nil {
+					ctx.Error(http.StatusInternalServerError, "GetUserRepoPermission", err)
+					return
+				}
+				if !perm.CanWriteIssuesOrPulls(false) {
+					ctx.Error(http.StatusUnauthorized, "ParentIssueNotWritable", "you must have write access to the repository of parent issues")
+					return
+				}
+			}
+			updateErr = issue.UpdateParentIssue(ctx, parentIssue, ctx.Doer)
+		} else if issue.ParentIssueID != nil {
+			// remove parent issue
+			updateErr = issue.UpdateParentIssue(ctx, nil, ctx.Doer)
+		}
+		if updateErr != nil {
+			if issues_model.IsErrSubIssuesTooMany(err) {
+				ctx.Error(http.StatusPreconditionFailed, "SubIssuesTooMany", "the number of sub-issues related to this issue has reached the limitation")
+				return
+			} else if issues_model.IsErrSubIssuesTooDeep(err) {
+				ctx.Error(http.StatusPreconditionFailed, "SubIssuesTooDeep", "the depth of sub-issues related to this issue has reached the limitation")
+				return
+			} else if issues_model.IsErrCircularParentIssue(err) {
+				ctx.Error(http.StatusPreconditionFailed, "CircularParentIssue", "cannot add circular parent issue relationship")
+				return
+			}
+			ctx.Error(http.StatusInternalServerError, "UpdateParentIssue", err)
+			return
+		}
+	}
+
 	if form.State != nil {
 		if issue.IsPull {
 			if err := issue.LoadPullRequest(ctx); err != nil {
@@ -1051,4 +1102,68 @@ func UpdateIssueDeadline(ctx *context.APIContext) {
 	}
 
 	ctx.JSON(http.StatusCreated, api.IssueDeadline{Deadline: &deadline})
+}
+
+// ListSubIssues lists sub-issues of a issue
+func ListSubIssues(ctx *context.APIContext) {
+	// swagger:operation GET /repos/{owner}/{repo}/issues/{index}/sub_issues issue issueListSubIssues
+	// ---
+	// summary: List sub-issues of a issue.
+	// produces:
+	// - application/json
+	// parameters:
+	// - name: owner
+	//   in: path
+	//   description: owner of the repo
+	//   type: string
+	//   required: true
+	// - name: repo
+	//   in: path
+	//   description: name of the repo
+	//   type: string
+	//   required: true
+	// - name: index
+	//   in: path
+	//   description: index of the issue to create or update a deadline on
+	//   type: integer
+	//   format: int64
+	//   required: true
+	// responses:
+	//   "201":
+	//     "$ref": "#/responses/IssueList"
+	//   "403":
+	//     "$ref": "#/responses/forbidden"
+	//   "404":
+	//     "$ref": "#/responses/notFound"
+	issue, err := issues_model.GetIssueByIndex(ctx, ctx.Repo.Repository.ID, ctx.ParamsInt64(":index"))
+	if err != nil {
+		if issues_model.IsErrIssueNotExist(err) {
+			ctx.NotFound()
+		} else {
+			ctx.Error(http.StatusInternalServerError, "GetIssueByIndex", err)
+		}
+		return
+	}
+
+	if issue.IsPull {
+		ctx.Error(http.StatusNotFound, "", "Pulls cannot have sub-issues")
+	}
+
+	if !ctx.Repo.CanReadIssuesOrPulls(issue.IsPull) {
+		ctx.Error(http.StatusForbidden, "", "Not repo writer")
+		return
+	}
+
+	if err := issue.LoadSubIssues(ctx); err != nil {
+		ctx.Error(http.StatusInternalServerError, "LoadSubIssues", err)
+		return
+	}
+
+	if err = issue_service.FilterSubIssues(ctx, issue, ctx.Doer); err != nil {
+		ctx.ServerError("FilterSubIssues", err)
+		return
+	}
+
+	ctx.SetTotalCountHeader(int64(len(issue.SubIssues)))
+	ctx.JSON(http.StatusOK, convert.ToAPIIssueList(ctx, ctx.Doer, issue.SubIssues))
 }
