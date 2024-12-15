@@ -231,6 +231,10 @@ func ParseCompareInfo(ctx *context.Context) *common.CompareInfo {
 	if infoPath == "" {
 		infos = []string{baseRepo.DefaultBranch, baseRepo.DefaultBranch}
 	} else {
+		infoPath, isDiff := strings.CutSuffix(infoPath, ".diff")
+		ctx.Data["DownloadDiff"] = isDiff
+		infoPath, isPatch := strings.CutSuffix(infoPath, ".patch")
+		ctx.Data["DownloadPatch"] = isPatch
 		infos = strings.SplitN(infoPath, "...", 2)
 		if len(infos) != 2 {
 			if infos = strings.SplitN(infoPath, "..", 2); len(infos) == 2 {
@@ -715,6 +719,22 @@ func CompareDiff(ctx *context.Context) {
 	}()
 	if ctx.Written() {
 		return
+	}
+
+	if ctx.Data["DownloadDiff"].(bool) {
+		err := git.GetRepoRawDiffForFile(ci.HeadGitRepo, ci.BaseBranch, ci.HeadBranch,git.RawDiffNormal,"", ctx.Resp)
+		if err != nil {
+			ctx.ServerError("GetDiff", err)
+			return
+		}
+	}
+
+	if ctx.Data["DownloadPatch"].(bool) {
+		err := git.GetRepoRawDiffForFile(ci.HeadGitRepo, ci.BaseBranch, ci.HeadBranch,git.RawDiffPatch,"", ctx.Resp)
+		if err != nil {
+			ctx.ServerError("GetPatch", err)
+			return
+		}
 	}
 
 	ctx.Data["PullRequestWorkInProgressPrefixes"] = setting.Repository.PullRequest.WorkInProgressPrefixes
