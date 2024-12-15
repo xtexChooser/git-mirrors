@@ -1,5 +1,4 @@
 baseURL = 'https://blog.xtexx.eu.org/'
-languageCode = 'zh-cn'
 title = "xtex's Blog"
 theme = 'arc'
 copyright = 'Creative Commons Attribution-ShareAlike 4.0 International License'
@@ -9,6 +8,7 @@ hasCJKLanguage = true
 rssLimit = 30
 timeZone = "Asia/Shanghai"
 buildDrafts = true
+defaultContentLanguage = 'zh'
 
 [params]
 description = "xtex's personal blog"
@@ -55,3 +55,10 @@ minifyOutput = true
 
 [pagination]
 pagerSize = 30
+
+[languages]
+[languages.zh]
+languageCode = 'zh'
+languageDirection = 'ltr'
+languageName = 'Simplified Chinese'
+weight = 1
