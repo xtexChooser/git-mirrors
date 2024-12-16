@@ -1,3 +1,12 @@
+// Copyright 2024 The Forgejo Authors. All rights reserved.
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+// @watch start
+// web_src/js/features/contributors.js
+// web_src/js/components/RepoContributors.vue
+// templates/repo/*
+// @watch end
+
 import {expect} from '@playwright/test';
 import {test} from './utils_e2e.ts';
 
