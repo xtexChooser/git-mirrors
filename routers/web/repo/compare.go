@@ -51,6 +51,7 @@ const (
 func setCompareContext(ctx *context.Context, before, head *git.Commit, headOwner, headName string) {
 	ctx.Data["BeforeCommit"] = before
 	ctx.Data["HeadCommit"] = head
+	ctx.Data["SignInLink"] = setting.AppSubURL + "/user/login?redirect_to=" + url.QueryEscape(ctx.Data["Link"].(string))
 
 	ctx.Data["GetBlobByPathForCommit"] = func(commit *git.Commit, path string) *git.Blob {
 		if commit == nil {
