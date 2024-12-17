@@ -19,7 +19,7 @@ const (
 	// UserAgentHeader Add User-Agent for gitea's self-implemented lfs client,
 	// and the version is consistent with the latest version of git lfs can be avoided incompatibilities.
 	// Some lfs servers will check this
-	UserAgentHeader = "git-lfs/3.6.0 (Gitea)"
+	UserAgentHeader = "git-lfs/3.6.0 (Forgejo)"
 )
 
 // BatchRequest contains multiple requests processed in one batch operation.
