@@ -379,6 +379,7 @@ func SingleRelease(ctx *context.Context) {
 	ctx.Data["OpenGraphDescription"] = base.EllipsisString(release.Note, 300)
 	ctx.Data["OpenGraphURL"] = release.HTMLURL()
 	ctx.Data["OpenGraphImageURL"] = release.SummaryCardURL()
+	ctx.Data["OpenGraphImageAltText"] = ctx.Tr("repo.release.summary_card_alt", release.DisplayName(), release.Repo.FullName())
 
 	ctx.HTML(http.StatusOK, tplReleasesList)
 }

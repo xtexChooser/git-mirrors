@@ -25,7 +25,7 @@ import (
 	"code.gitea.io/gitea/services/context"
 )
 
-// drawUser draws a user avator in a summary card
+// drawUser draws a user avatar in a summary card
 func drawUser(ctx *context.Context, card *card.Card, user *user_model.User) error {
 	if user.UseCustomAvatar {
 		posterAvatarPath := user.CustomAvatarRelativePath()
@@ -50,6 +50,7 @@ func drawUser(ctx *context.Context, card *card.Card, user *user_model.User) erro
 // drawRepoIcon draws the repo icon in a summary card
 func drawRepoIcon(ctx *context.Context, card *card.Card, repo *repo_model.Repository) error {
 	repoAvatarPath := repo.CustomAvatarRelativePath()
+
 	if repoAvatarPath != "" {
 		repoAvatarFile, err := storage.RepoAvatars.Open(repoAvatarPath)
 		if err != nil {
@@ -61,21 +62,21 @@ func drawRepoIcon(ctx *context.Context, card *card.Card, repo *repo_model.Reposi
 		}
 		card.DrawImage(repoAvatarImage)
 		return nil
-	} else {
-		// If the repo didn't have an avatar, fallback to the repo owner's avatar for the right-hand-side icon
-		err := repo.LoadOwner(ctx)
+	}
+
+	// If the repo didn't have an avatar, fallback to the repo owner's avatar for the right-hand-side icon
+	err := repo.LoadOwner(ctx)
+	if err != nil {
+		return err
+	}
+	if repo.Owner != nil {
+		err = drawUser(ctx, card, repo.Owner)
 		if err != nil {
 			return err
 		}
-		if repo.Owner != nil {
-			err = drawUser(ctx, card, repo.Owner)
-			if err != nil {
-				return err
-			}
-		}
-
-		return nil
 	}
+
+	return nil
 }
 
 // hexToColor converts a hex color to a go color
@@ -227,7 +228,7 @@ func drawRepoSummaryCard(ctx *context.Context, repo *repo_model.Repository) (*ca
 }
 
 func drawIssueSummaryCard(ctx *context.Context, issue *issue_model.Issue) (*card.Card, error) {
-	width, height := issue.SummaryCardSize()
+	width, height := card.DefaultSize()
 	mainCard, err := card.NewCard(width, height)
 	if err != nil {
 		return nil, err
@@ -397,7 +398,7 @@ func drawReleaseSummaryCard(ctx *context.Context, release *repo_model.Release) (
 	return mainCard, nil
 }
 
-// checkCardCache checks if a card in cahce and serves it
+// checkCardCache checks if a card in cache and serves it
 func checkCardCache(ctx *context.Context, cacheKey string) bool {
 	cache := cache.GetCache()
 	pngData, ok := cache.Get(cacheKey).([]byte)
@@ -414,7 +415,7 @@ func checkCardCache(ctx *context.Context, cacheKey string) bool {
 	return false
 }
 
-// serveCard server a Crad to the user adds it to the cache
+// serveCard server a Card to the user adds it to the cache
 func serveCard(ctx *context.Context, card *card.Card, cacheKey string) {
 	cache := cache.GetCache()
 
