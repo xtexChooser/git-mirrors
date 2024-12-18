@@ -494,7 +494,7 @@ func DrawIssueSummaryCard(ctx *context.Context) {
 }
 
 func DrawReleaseSummaryCard(ctx *context.Context) {
-	release, err := repo_model.GetReleaseForRepoByID(ctx, ctx.Repo.Repository.ID, ctx.ParamsInt64(":releaseID"))
+	release, err := repo_model.GetRelease(ctx, ctx.Repo.Repository.ID, ctx.Params("*"))
 	if err != nil {
 		if repo_model.IsErrReleaseNotExist(err) {
 			ctx.NotFound("", nil)

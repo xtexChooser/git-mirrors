@@ -191,7 +191,7 @@ func (r *Release) Link() string {
 
 // SummaryCardURL returns the absolute URL to an image providing a summary of the release
 func (r *Release) SummaryCardURL() string {
-	return fmt.Sprintf("%s/releases/summary-card/%d", r.Repo.HTMLURL(), r.ID)
+	return fmt.Sprintf("%s/releases/summary-card/%s", r.Repo.HTMLURL(), util.PathEscapeSegments(r.TagName))
 }
 
 // DisplayName retruns the name of the release
