@@ -42,7 +42,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: copy & sign
-        uses: https://code.forgejo.org/forgejo/forgejo-build-publish/publish@v5.2.1
+        uses: https://data.forgejo.org/forgejo/forgejo-build-publish/publish@v5.2.1
         with:
           from-forgejo: ${{ vars.FORGEJO }}
           to-forgejo: ${{ vars.FORGEJO }}
@@ -61,14 +61,14 @@ jobs:
 
       - name: get trigger mirror issue
         id: mirror
-        uses: https://code.forgejo.org/infrastructure/issue-action/get@v1.1.0
+        uses: https://data.forgejo.org/infrastructure/issue-action/get@v1.1.0
         with:
           forgejo: https://code.forgejo.org
           repository: forgejo/forgejo
           labels: mirror-trigger
 
       - name: trigger the mirror
-        uses: https://code.forgejo.org/infrastructure/issue-action/set@v1.1.0
+        uses: https://data.forgejo.org/infrastructure/issue-action/set@v1.1.0
         with:
           forgejo: https://code.forgejo.org
           repository: forgejo/forgejo
@@ -78,7 +78,7 @@ jobs:
           label: trigger
 
       - name: upgrade v*.next.forgejo.org
-        uses: https://code.forgejo.org/infrastructure/next-digest@v1.1.0
+        uses: https://data.forgejo.org/infrastructure/next-digest@v1.1.0
         with:
           url: https://placeholder:${{ secrets.TOKEN_NEXT_DIGEST }}@code.forgejo.org/infrastructure/next-digest
           ref_name: '${{ github.ref_name }}'
