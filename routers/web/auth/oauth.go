@@ -48,6 +48,8 @@ import (
 	"github.com/markbates/goth/providers/openidConnect"
 	"github.com/markbates/goth/providers/zoom"
 	go_oauth2 "golang.org/x/oauth2"
+
+	asymkey_model "code.gitea.io/gitea/models/asymkey"
 )
 
 const (
@@ -1183,8 +1185,62 @@ func updateAvatarIfNeed(ctx *context.Context, url string, u *user_model.User) {
 	}
 }
 
+func getSSHKeys(source *oauth2.Source, gothUser *goth.User) ([]string, error) {
+	key := source.AttributeSSHPublicKey
+	value, exists := gothUser.RawData[key]
+	if !exists {
+		return nil, fmt.Errorf("attribute '%s' not found in user data", key)
+	}
+
+	rawSlice, ok := value.([]any)
+	if !ok {
+		return nil, fmt.Errorf("unexpected type for SSH public key, expected []interface{} but got %T", value)
+	}
+
+	sshKeys := make([]string, 0, len(rawSlice))
+	for i, v := range rawSlice {
+		str, ok := v.(string)
+		if !ok {
+			return nil, fmt.Errorf("unexpected element type at index %d in SSH public key array, expected string but got %T", i, v)
+		}
+		sshKeys = append(sshKeys, str)
+	}
+
+	return sshKeys, nil
+}
+
+func updateSshPubIfNeed(
+	ctx *context.Context,
+	authSource *auth.Source,
+	fetchedUser *goth.User,
+	user *user_model.User,
+) error {
+	oauth2Source := authSource.Cfg.(*oauth2.Source)
+
+	if oauth2Source.ProvidesSSHKeys() {
+		sshKeys, err := getSSHKeys(oauth2Source, fetchedUser)
+		if err != nil {
+			return err
+		}
+
+		if len(sshKeys) == 0 {
+			return nil
+		}
+
+		if asymkey_model.SynchronizePublicKeys(ctx, user, authSource, sshKeys) {
+			err = asymkey_model.RewriteAllPublicKeys(ctx)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
 func handleOAuth2SignIn(ctx *context.Context, source *auth.Source, u *user_model.User, gothUser goth.User) {
 	updateAvatarIfNeed(ctx, gothUser.AvatarURL, u)
+	updateSshPubIfNeed(ctx, source, &gothUser, u)
 
 	needs2FA := false
 	if !source.Cfg.(*oauth2.Source).SkipLocalTwoFA {
