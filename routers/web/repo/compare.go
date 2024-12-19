@@ -232,9 +232,9 @@ func ParseCompareInfo(ctx *context.Context) *common.CompareInfo {
 		infos = []string{baseRepo.DefaultBranch, baseRepo.DefaultBranch}
 	} else {
 		infoPath, isDiff := strings.CutSuffix(infoPath, ".diff")
-		ctx.Data["DownloadDiff"] = isDiff
+		ctx.Data["ComparingDiff"] = isDiff
 		infoPath, isPatch := strings.CutSuffix(infoPath, ".patch")
-		ctx.Data["DownloadPatch"] = isPatch
+		ctx.Data["ComparingPatch"] = isPatch
 		infos = strings.SplitN(infoPath, "...", 2)
 		if len(infos) != 2 {
 			if infos = strings.SplitN(infoPath, "..", 2); len(infos) == 2 {
@@ -721,18 +721,18 @@ func CompareDiff(ctx *context.Context) {
 		return
 	}
 
-	if ctx.Data["DownloadDiff"].(bool) {
+	if ctx.Data["ComparingDiff"].(bool) {
 		err := git.GetRepoRawDiffForFile(ci.HeadGitRepo, ci.BaseBranch, ci.HeadBranch,git.RawDiffNormal,"", ctx.Resp)
 		if err != nil {
-			ctx.ServerError("GetDiff", err)
+			ctx.ServerError("ComparingDiff", err)
 			return
 		}
 	}
 
-	if ctx.Data["DownloadPatch"].(bool) {
+	if ctx.Data["ComparingPatch"].(bool) {
 		err := git.GetRepoRawDiffForFile(ci.HeadGitRepo, ci.BaseBranch, ci.HeadBranch,git.RawDiffPatch,"", ctx.Resp)
 		if err != nil {
-			ctx.ServerError("GetPatch", err)
+			ctx.ServerError("ComparingPatch", err)
 			return
 		}
 	}
@@ -822,7 +822,8 @@ func CompareDiff(ctx *context.Context) {
 	if ci.DirectComparison {
 		separator = ".."
 	}
-	ctx.Data["Title"] = "Comparing " + base.ShortSha(beforeCommitID) + separator + base.ShortSha(afterCommitID)
+	ctx.Data["Comparing"] = base.ShortSha(beforeCommitID) + separator + base.ShortSha(afterCommitID)
+	ctx.Data["Title"] = "Comparing " + ctx.Data["Comparing"].(string)
 
 	ctx.Data["IsDiffCompare"] = true
 	_, templateErrs := setTemplateIfExists(ctx, pullRequestTemplateKey, pullRequestTemplateCandidates)

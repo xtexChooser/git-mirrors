@@ -75,11 +75,11 @@ func TestComparePatchAndDiffMenuEntries(t *testing.T) {
 	req := NewRequest(t, "GET", "/user2/repo-release/compare/v1.0...v2.0")
 	resp := session.MakeRequest(t, req, http.StatusOK)
 	htmlDoc := NewHTMLParser(t, resp.Body)
-	diffOptions := htmlDoc.doc.Find("[data-tooltip-content=\"Diff options\"]")
-
+	downloadOptions := htmlDoc.doc.Find("a.item[download]")
+	
 	var patchDownloadEntryPresent bool
 	var diffDownloadEntryPresent bool
-	diffOptions.Children().Each(func (idx int, c *goquery.Selection) {
+	downloadOptions.Each(func (idx int, c *goquery.Selection) {
 		value, exists := c.Attr("download")
 		if exists && strings.HasSuffix(value, ".patch") {
 			patchDownloadEntryPresent = true
@@ -88,6 +88,7 @@ func TestComparePatchAndDiffMenuEntries(t *testing.T) {
 		if exists && strings.HasSuffix(value, ".diff") {
 			diffDownloadEntryPresent = true
 		}
+		
 	})
 
 	assert.True(t, patchDownloadEntryPresent, "Patch file download entry should be present")
