@@ -722,7 +722,7 @@ func CompareDiff(ctx *context.Context) {
 	}
 
 	if ctx.Data["ComparingDiff"].(bool) {
-		err := git.GetRepoRawDiffForFile(ci.HeadGitRepo, ci.BaseBranch, ci.HeadBranch,git.RawDiffNormal,"", ctx.Resp)
+		err := git.GetRepoRawDiffForFile(ci.HeadGitRepo, ci.BaseBranch, ci.HeadBranch,git.RawDiffNormal, "", ctx.Resp)
 		if err != nil {
 			ctx.ServerError("ComparingDiff", err)
 			return
@@ -730,7 +730,7 @@ func CompareDiff(ctx *context.Context) {
 	}
 
 	if ctx.Data["ComparingPatch"].(bool) {
-		err := git.GetRepoRawDiffForFile(ci.HeadGitRepo, ci.BaseBranch, ci.HeadBranch,git.RawDiffPatch,"", ctx.Resp)
+		err := git.GetRepoRawDiffForFile(ci.HeadGitRepo, ci.BaseBranch, ci.HeadBranch,git.RawDiffPatch, "", ctx.Resp)
 		if err != nil {
 			ctx.ServerError("ComparingPatch", err)
 			return
