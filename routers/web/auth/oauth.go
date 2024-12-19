@@ -17,6 +17,7 @@ import (
 	"sort"
 	"strings"
 
+	asymkey_model "code.gitea.io/gitea/models/asymkey"
 	"code.gitea.io/gitea/models/auth"
 	org_model "code.gitea.io/gitea/models/organization"
 	user_model "code.gitea.io/gitea/models/user"
@@ -48,8 +49,6 @@ import (
 	"github.com/markbates/goth/providers/openidConnect"
 	"github.com/markbates/goth/providers/zoom"
 	go_oauth2 "golang.org/x/oauth2"
-
-	asymkey_model "code.gitea.io/gitea/models/asymkey"
 )
 
 const (
@@ -1209,7 +1208,7 @@ func getSSHKeys(source *oauth2.Source, gothUser *goth.User) ([]string, error) {
 	return sshKeys, nil
 }
 
-func updateSshPubIfNeed(
+func updateSSHPubIfNeed(
 	ctx *context.Context,
 	authSource *auth.Source,
 	fetchedUser *goth.User,
@@ -1240,7 +1239,11 @@ func updateSshPubIfNeed(
 
 func handleOAuth2SignIn(ctx *context.Context, source *auth.Source, u *user_model.User, gothUser goth.User) {
 	updateAvatarIfNeed(ctx, gothUser.AvatarURL, u)
-	updateSshPubIfNeed(ctx, source, &gothUser, u)
+	err := updateSSHPubIfNeed(ctx, source, &gothUser, u)
+	if err != nil {
+		ctx.ServerError("updateSSHPubIfNeed", err)
+		return
+	}
 
 	needs2FA := false
 	if !source.Cfg.(*oauth2.Source).SkipLocalTwoFA {
