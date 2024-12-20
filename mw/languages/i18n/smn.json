@@ -1283,6 +1283,7 @@
 	"contributions-title": "Kevttee $1 nubástusah",
 	"mycontris": "Hammiimeh",
 	"anoncontribs": "Hammiimeh",
+	"contribute": "Uásálist",
 	"contributions-subtitle": "Kevttee {{GENDER:$2|$1}} hammiimeh",
 	"nocontribs": "Taid iävttoid heivvejeijee nubastusah iä kavnum.",
 	"uctop": "uđđâsumos",
@@ -1668,7 +1669,7 @@
 	"feedback-subject": "Fáddá:",
 	"feedback-submit": "Vuolgât",
 	"feedback-thanks-title": "Takkâ!",
-	"searchsuggest-search": "Uusâ {{SITENAME}}:st",
+	"searchsuggest-search": "Uusâ {{SITENAME}}st",
 	"searchsuggest-containing": "Uusâ siijđoid, moh siskeldeh",
 	"api-error-unknown-warning": "Tubdâmettum váruttâs: \"$1\".",
 	"api-error-unknownerror": "Tubdâmettum feilâ: \"$1\".",
@@ -1699,6 +1700,7 @@
 	"mediastatistics-header-audio": "Audio",
 	"mediastatistics-header-video": "Videoh",
 	"mediastatistics-header-total": "Puoh tiätuvuárháh",
+	"special-tab-contribute-short": "Uásálist",
 	"special-characters-group-symbols": "Symboleh",
 	"special-characters-group-greek": "Kreikka",
 	"special-characters-group-cyrillic": "Kyrillâš",
@@ -1757,5 +1759,5 @@
 	"renameuserwarnings": "Váruttâsah:",
 	"renameuser-warning-currentblock": "Taat kevtee lii [$1 tääl estum].",
 	"log-name-renameuser": "Kevtteenoomâi molsom loki",
-	"logentry-renameuser-renameuser": "$1 {{GENDER:$2|uđđâsistnomâttij}} kevttee $4 ({{PLURAL:$6|$6 hammiimid|0=Ij ohtâge hammim|1=1 hammim|2=2 hammim|3=3 hammim|4=4 hammim|5=5 hammim|6=6 hammim}}) noomáin {{GENDER:$7|$5}}"
+	"logentry-renameuser-renameuser": "$1 {{GENDER:$2|uđđâsistnomâttij}} kevttee $4 ({{PLURAL:$6|$6 hammiimid|0=Ij ohtâgin hammim|1=1 hammim|2=2 hammim|3=3 hammim|4=4 hammim|5=5 hammim|6=6 hammim}}) noomáin {{GENDER:$7|$5}}"
 }

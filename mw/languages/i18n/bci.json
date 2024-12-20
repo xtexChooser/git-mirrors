@@ -1,12 +1,13 @@
 {
 	"@metadata": {
 		"authors": [
-			"Kjeanclaude"
+			"Kjeanclaude",
+			"Mahuton"
 		]
 	},
 	"sunday": "Monnin",
 	"monday": "Kissié",
-	"tuesday": "Djôlê",
+	"tuesday": "Jɔlɛ",
 	"wednesday": "Mlan",
 	"thursday": "Wé",
 	"friday": "Ya",
@@ -216,7 +217,6 @@
 	"nstab-project": "Djouman i floua boué",
 	"nstab-image": "Floua",
 	"nstab-mediawiki": "Ngaliê",
-	"nstab-template": "Template",
 	"nstab-help": "Oukalè floua boué",
 	"nstab-category": "Akpassoua",
 	"mainpage-nstab": "Akwaba floua boué",
