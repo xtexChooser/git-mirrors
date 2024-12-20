@@ -87,6 +87,8 @@ final class MMLFullCoverageTest extends MediaWikiUnitTestCase {
 
 		$mml_latexml = self::$FILTERMML ? self::loadXMLandDeleteAttrs( $tc->mml_latexml ) : $tc->mml_latexml;
 		$mathMLtexVC = MMLTestUtil::getMMLwrapped( $resultT["input"] );
+		$this->assertStringNotContainsString( 'merror', $mathMLtexVC,
+			"tc $$tc->tex$: MathML $mathMLtexVC contains error" );
 		$mmlComparator = new MMLComparator();
 		$compRes = $mmlComparator->compareMathML( $tc->mml_mathoid, $mathMLtexVC );
 

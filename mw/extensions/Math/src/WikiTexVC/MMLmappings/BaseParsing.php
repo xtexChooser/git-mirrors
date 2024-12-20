@@ -42,6 +42,7 @@ use MediaWiki\Extension\Math\WikiTexVC\Nodes\Literal;
 use MediaWiki\Extension\Math\WikiTexVC\Nodes\Matrix;
 use MediaWiki\Extension\Math\WikiTexVC\Nodes\TexArray;
 use MediaWiki\Extension\Math\WikiTexVC\Nodes\TexNode;
+use MediaWiki\Extension\Math\WikiTexVC\TexUtil;
 use MediaWiki\Extension\Math\WikiTexVC\TexVC;
 
 /**
@@ -372,9 +373,9 @@ class BaseParsing {
 		if ( !$node instanceof Fun1 ) {
 			return null;
 		}
-		if ( $name == "rlap" ) {
+		if ( trim( $name ) === "\\rlap" ) {
 			$args = [ "width" => "0" ];
-		} elseif ( $name == "llap" ) {
+		} elseif ( trim( $name ) === "\\llap" ) {
 			$args = [ "width" => "0", "lspace" => "-1width" ];
 		} else {
 			return null;
@@ -386,13 +387,13 @@ class BaseParsing {
 
 	public static function macro( $node, $passedArgs, $operatorContent, $name, $macro, $argcount = null, $def = null ) {
 		// Parse the Macro
-		switch ( $name ) {
-			case "mod":
+		switch ( trim( $name ) ) {
+			case "\\mod":
 				$mmlRow = new MMLmrow();
 				$mo = new MMLmo( "", [ "lspace" => "2.5pt", "rspace" => "2.5pt" ] );
 				$inner = $node->getArg() instanceof TexNode ? $node->getArg()->renderMML() : "";
 				return $mmlRow->encapsulateRaw( $mo->encapsulate( "mod" ) . $inner );
-			case "pmod":
+			case "\\pmod":
 				// tbd indicate in mapping that this is composed within php
 				$mmlRow = new MMLmrow();
 				$mspace = new MMLmspace( "", [ "width" => "0.444em" ] );
@@ -404,11 +405,11 @@ class BaseParsing {
 				return $mmlRow->encapsulateRaw( $mspace->encapsulate() .
 					$mo->encapsulate( "(" ) . $mi->encapsulate( "mod" ) .
 					$mspace2->encapsulate() . $inner . $mo->encapsulate( ")" ) );
-			case "varlimsup":
-			case "varliminf":
+			case "\\varlimsup":
+			case "\\varliminf":
 				// hardcoded macro in php (there is also a dynamic mapping which is not completely resolved atm)
 				$mmlRow = new MMLmrow( TexClass::OP );
-				if ( $name === "varlimsup" ) {
+				if ( trim( $name ) === "\\varlimsup" ) {
 					$movu = new MMLmover();
 
 				} else {
@@ -419,7 +420,7 @@ class BaseParsing {
 				return $mmlRow->encapsulateRaw( $movu->encapsulateRaw(
 					$mmlMi->encapsulateRaw( "lim" ) . $mo->encapsulateRaw( "&#x2015;" ) ) );
 
-			case "varinjlim":
+			case "\\varinjlim":
 				$mmlRow = new MMLmrow( TexClass::OP );
 				$mmlMunder = new MMLmunder();
 				$mi = new MMLmi();
@@ -428,7 +429,7 @@ class BaseParsing {
 					$mi->encapsulateRaw( "lim" ) .
 					$mo->encapsulateRaw( "&#x2192;" ) )
 				);
-			case "varprojlim":
+			case "\\varprojlim":
 				$mmlRow = new MMLmrow( TexClass::OP );
 				$mmlMunder = new MMLmunder();
 				$mi = new MMLmi();
@@ -437,7 +438,7 @@ class BaseParsing {
 					$mi->encapsulate( "lim" ) .
 					$mo->encapsulateRaw( "&#x2190;" )
 				) );
-			case "stackrel":
+			case "\\stackrel":
 				// hardcoded macro in php (there is also a dynamic mapping which is not not completely resolved atm)
 				$mmlRow = new MMLmrow();
 				$mmlRowInner = new MMLmrow( TexClass::REL );
@@ -455,7 +456,7 @@ class BaseParsing {
 					);
 				}
 				return $mmlRow->encapsulateRaw( $mmlRowInner->encapsulateRaw( $inner ) );
-			case "bmod":
+			case "\\bmod":
 				$mo = new MMLmo( "", [ "lspace" => Sizes::THICKMATHSPACE, "rspace" => Sizes::THICKMATHSPACE ] );
 				$mmlRow = new MMLmrow( TexClass::ORD );
 				$mspace = new MMLmspace( "", [ "width" => "0.167em" ] );
@@ -463,31 +464,31 @@ class BaseParsing {
 					$mmlRow->encapsulateRaw( $node->getArg()->renderMML() ) : "";
 				return $mmlRow->encapsulateRaw( $mo->encapsulate( "mod" ) .
 					$inner . $mmlRow->encapsulateRaw( $mspace->getEmpty() ) );
-			case "implies":
+			case "\\implies":
 				$mstyle = new MMLmstyle( "", [ "scriptlevel" => "0" ] );
 				$mspace = new MMLmspace( "", [ "width" => "0.278em" ] );
 				$mo = new MMLmo();
 				return $mstyle->encapsulateRaw( $mspace->getEmpty() ) . $mo->encapsulateRaw( "&#x27F9;" ) .
 					$mstyle->encapsulateRaw( $mspace->getEmpty() );
-			case "iff":
+			case "\\iff":
 				$mstyle = new MMLmstyle( "", [ "scriptlevel" => "0" ] );
 				$mspace = new MMLmspace( "", [ "width" => "0.278em" ] );
 				$mo = new MMLmo();
 				return $mstyle->encapsulateRaw( $mspace->getEmpty() ) . $mo->encapsulateRaw( "&#x27FA;" ) .
 					$mstyle->encapsulateRaw( $mspace->getEmpty() );
-			case "tripledash":
+			case "\\tripledash":
 				// Using emdash for rendering here.
 				$mo = new MMLmo();
 				return $mo->encapsulateRaw( "&#x2014;" );
-			case "longrightleftharpoons":
-			case "longLeftrightharpoons":
-			case "longRightleftharpoons":
+			case "\\longrightleftharpoons":
+			case "\\longLeftrightharpoons":
+			case "\\longRightleftharpoons":
 				$texvc = new TexVC();
 				$warnings = [];
 				$checkRes = $texvc->check( $macro, [ "usemhchem" => true, "usemhchemtexified" => true ],
 					$warnings, true );
 				return $checkRes["input"]->renderMML();
-			case "longleftrightarrows":
+			case "\\longleftrightarrows":
 				// The tex-cmds used in makro are not supported, just use a hardcoded mml macro here.
 				$mtext = new MMLmtext();
 				$mrowRel = new MMLmrow( TexClass::REL );
@@ -573,16 +574,14 @@ class BaseParsing {
 			$mmlMoOpen = $bm->checkAndParseDelimiter( $open, $node, [], [],
 				true, TexClass::OPEN );
 			if ( $mmlMoOpen == null ) {
-				$open = MMLutil::inputPreparation( $open );
 				$mmlMoOpen = new MMLmo( TexClass::OPEN, [] );
-				$mmlMoOpen = $mmlMoOpen->encapsulateRaw( $open );
+				$mmlMoOpen = $mmlMoOpen->encapsulateRaw( $open ?? '' );
 			}
 
 			$closeAtts = [ "fence" => "true", "stretchy" => "true", "symmetric" => "true" ];
 			$mmlMoClose = $bm->checkAndParseDelimiter( $close, $node, $closeAtts,
 				null, true, TexClass::CLOSE );
 			if ( $mmlMoOpen == null ) {
-				$close = MMLutil::inputPreparation( $close );
 				$mmlMoClose = new MMLmo( TexClass::CLOSE, $closeAtts );
 				$mmlMoClose = $mmlMoClose->encapsulateRaw( $close );
 			}
@@ -599,7 +598,7 @@ class BaseParsing {
 
 		if ( $node instanceof Literal ) {
 			$mi = new MMLmi( "", $passedArgs );
-			return $mi->encapsulateRaw( $id ?? $name ) . $applyFct;
+			return $mi->encapsulateRaw( $id ?? ltrim( $name, '\\' ) ) . $applyFct;
 		}
 		$mrow = new MMLmrow( TexClass::ORD, [] );
 		$msub = new MMLmsub( "", $passedArgs );
@@ -612,9 +611,9 @@ class BaseParsing {
 		$attributes = [];
 		$start = "";
 		$tail = "";
-		if ( $name === "atop" ) {
+		if ( trim( $name ) === "\\atop" ) {
 			$attributes = [ "linethickness" => "0" ];
-		} elseif ( $name == "choose" ) {
+		} elseif ( trim( $name ) == "\\choose" ) {
 			$mrowAll = new MMLmrow( TexClass::ORD );
 			$mrowOpen = new MMLmrow( TexClass::OPEN );
 			$mrowClose = new MMLmrow( TexClass::CLOSE );
@@ -649,25 +648,25 @@ class BaseParsing {
 		// This is a custom mapping not in js.
 		$mmlText = new MMLmtext( "", $attributes );
 		$mrow = new MMLmrow();
-		switch ( $name ) {
-			case "oint":
+		switch ( trim( $name ) ) {
+			case "\\oint":
 				$mStyle = new MMLmstyle( "", [ "displaystyle" => "true" ] );
 				$mo = new MMLmo();
 				return $mStyle->encapsulateRaw( $mo->encapsulateRaw( MMLutil::uc2xNotation( $uc ) ) );
 			case "\\P":
 				$mo = new MMLmo();
 				return $mo->encapsulateRaw( MMLutil::uc2xNotation( $uc ) );
-			case "oiint":
-			case "oiiint":
-			case "ointctrclockwise":
-			case "varointclockwise":
+			case "\\oiint":
+			case "\\oiiint":
+			case "\\ointctrclockwise":
+			case "\\varointclockwise":
 				$mStyle = new MMLmstyle( "", [ "mathsize" => "2.07em" ] );
 				$mSpace = new MMLmspace( "", [ "width" => Sizes::THINMATHSPACE ] );
 				return $mrow->encapsulateRaw( $mStyle->encapsulateRaw(
 					$mmlText->encapsulateRaw( MMLutil::uc2xNotation( $uc ) )
 					. $mSpace->getEmpty() ) );
 			default:
-				return $mmlText->encapsulate( "not found in OintMethod" );
+				return ( new MMLmerror() )->encapsulate( "not found in OintMethod" );
 
 		}
 	}
@@ -723,11 +722,11 @@ class BaseParsing {
 			return null;
 		}
 
-		if ( $name == "raise" ) {
+		if ( trim( $name ) === "\\raise" ) {
 			$args = [ "height" => MMLutil::addPreOperator( $em, "+" ),
 				"depth" => MMLutil::addPreOperator( $em, "-" ),
 				"voffset" => MMLutil::addPreOperator( $em, "+" ) ];
-		} elseif ( $name == "lower" ) {
+		} elseif ( trim( $name ) === "\\lower" ) {
 			$args = [ "height" => MMLutil::addPreOperator( $em, "-" ),
 				"depth" => MMLutil::addPreOperator( $em, "+" ),
 				"voffset" => MMLutil::addPreOperator( $em, "-" ) ];
@@ -753,30 +752,28 @@ class BaseParsing {
 		return $mrow->encapsulateRaw( $inrow . $arg1 );
 	}
 
-	public static function underOver( $node, $passedArgs, $operatorContent,
+	public static function underOver( Fun1 $node, $passedArgs, $operatorContent,
 									  $name, $operatorId = null, $stack = null, $nonHex = false ) {
 		// tbd verify if stack interpreted correctly ?
 		$texClass = $stack ? TexClass::OP : TexClass::ORD; // ORD or ""
 
 		$mrow = new MMLmrow( $texClass );
-
-		if ( $name[0] === 'o' ) {
+		$fname = $node->getFname();
+		if ( str_starts_with( $fname, '\\over' ) ) {
 			$movun = new MMLmover();
-		} else {
+		} elseif ( str_starts_with( $fname, '\\under' ) ) {
 			$movun = new MMLmunder();
+		} else {
+			// incorrect name, should not happen, prevent erroneous mappings from getting rendered.
+			$merror = new MMLmerror();
+			return $merror->encapsulateRaw(
+				'underOver rendering requires macro to start with either \\under or \\over.' );
 		}
 
 		if ( $operatorId == 2015 ) { // eventually move such cases to mapping
 			$mo = new MMLmo( "", [ "accent" => "true" ] );
 		} else {
 			$mo = new MMLmo();
-		}
-		if ( $node instanceof DQ ) {
-			$mrowI = new MMLmrow();
-			return $movun->encapsulateRaw(
-				$node->getBase()->renderMML( $passedArgs ) .
-				$mrowI->encapsulateRaw( $node->getDown()->renderMML( $passedArgs ) )
-			);
 		}
 
 		$inner = $nonHex ? $operatorId : MMLutil::number2xNotation( $operatorId );
@@ -883,11 +880,11 @@ class BaseParsing {
 				break;
 		}
 
-		if ( in_array( $name, [ "bigl", "Bigl", "biggl", "Biggl" ] ) ) {
+		if ( in_array( $name, [ "\\bigl", "\\Bigl", "\\biggl", "\\Biggl" ] ) ) {
 			$passedArgs = array_merge( $passedArgs, [ Tag::CLASSTAG => TexClass::OPEN ] );
 		}
 
-		if ( in_array( $name, [ "bigr", "Bigr", "biggr", "Biggr" ] ) ) {
+		if ( in_array( $name, [ "\\bigr", "\\Bigr", "\\biggr", "\\Biggr" ] ) ) {
 			$passedArgs = array_merge( $passedArgs, [ Tag::CLASSTAG => TexClass::CLOSE ] );
 		}
 
@@ -896,7 +893,7 @@ class BaseParsing {
 			return $ret;
 		}
 
-		$argPrep = MMLutil::inputPreparation( $node->getArg() );
+		$argPrep = $node->getArg();
 		return $mrowOuter->encapsulateRaw( $mrow->encapsulateRaw( $mo->encapsulateRaw( $argPrep ) ) );
 	}
 
@@ -913,7 +910,7 @@ class BaseParsing {
 		$applyFct = self::getApplyFct( $operatorContent );
 		if ( $node instanceof Literal ) {
 			$mi = new MMLmi();
-			return $mi->encapsulateRaw( $name ) . $applyFct;
+			return $mi->encapsulateRaw( ltrim( $name, '\\' ) ) . $applyFct;
 		}
 		$mrow = new MMLmrow( TexClass::ORD, [] ); // tbd remove mathjax specifics
 		$msub = new MMLmsub();
@@ -1118,43 +1115,45 @@ class BaseParsing {
 	}
 
 	public static function hBox( $node, $passedArgs, $operatorContent, $name, $smth = null ) {
-		switch ( $name ) {
-			case "mbox":
+		switch ( trim( $name ) ) {
+			case "\\mbox":
 				$mo = new MMLmo();
 				$mmlMrow = new MMLmrow();
-				if ( $operatorContent != null && array_key_exists( "foundOC", $operatorContent ) ) {
-					$op = MMLutil::inputPreparation( $operatorContent["foundOC"] );
-					$macro = BaseMappings::getNullaryMacro( $op );
-					if ( !$macro ) {
-						$macro = BaseMappings::getIdentifierByKey( $op );
-					}
-					$input = $macro[0] ?? $operatorContent["foundOC"];
+				if ( isset( $operatorContent['foundOC'] ) ) {
+					$op = $operatorContent['foundOC'];
+					$macro = TexUtil::getInstance()->nullary_macro_in_mbox( $op ) ?
+						/* tested in \MediaWiki\Extension\Math\Tests\WikiTexVC\TexUtilTest::testUnicodeDefined
+						@phan-suppress-next-line PhanTypeSuspiciousStringExpression - false positive */
+						[ '&#x' . TexUtil::getInstance()->unicode_char( $op ) . ';' ] :
+						BaseMappings::getIdentifierByKey( $op );
+					$input = $macro[0] ?? $op;
+					// @phan-suppress-next-line PhanTypeMismatchArgumentNullable - false positive see above
 					return $mmlMrow->encapsulateRaw( $mo->encapsulateRaw( $input ) );
 				} else {
 					$mmlMrow = new MMLmrow();
 					$mtext = new MMLmtext();
 					return $mmlMrow->encapsulateRaw( $mtext->encapsulateRaw( "\mbox" ) );
 				}
-			case "hbox":
+			case "\\hbox":
 				$mmlMrow = new MMLmrow();
 				$mstyle = new MMLmstyle( "", [ "displaystyle" => "false", "scriptlevel" => "0" ] );
 				$mtext = new MMLmtext();
 				$inner = $node->getArg() instanceof TexNode ? $node->getArg()->renderMML() : $node->getArg();
 				return $mmlMrow->encapsulateRaw( $mstyle->encapsulateRaw( $mtext->encapsulateRaw( $inner ) ) );
-			case "text":
+			case "\\text":
 				$mmlMrow = new MMLmrow();
 				$mtext = new MMLmtext();
 				$inner = $node->getArg() instanceof TexNode ? $node->getArg()->renderMML() : $node->getArg();
 				return $mmlMrow->encapsulateRaw( $mtext->encapsulateRaw( $inner ) );
-			case "textbf":
+			case "\\textbf":
 				// no break
-			case "textit":
+			case "\\textit":
 				// no break
-			case "textrm":
+			case "\\textrm":
 				// no break
-			case "textsf":
+			case "\\textsf":
 				// no break
-			case "texttt":
+			case "\\texttt":
 				$mmlMrow = new MMLmrow();
 				$mtext = new MMLmtext( "", MMLParsingUtil::getFontArgs( $name, null, null ) );
 
