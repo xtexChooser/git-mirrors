@@ -9,11 +9,16 @@ RUN tar -xf source.tar.gz
 RUN mv bird-v$VERSION src
 
 WORKDIR /src
-RUN autoreconf; ./configure CC=clang CFLAGS='-O3' LDFLAGS='-flto' \
-	--prefix=/usr/local --sysconfdir=/etc/bird --runstatedir=/var/run/bird \
-	--enable-pthreads --enable-libssh --enable-mpls-kernel
-RUN make -j$(nproc) && make install
-RUN setcap CAP_NET_ADMIN=+eip /usr/local/sbin/bird
+RUN set -euxo pipefail; \
+	autoreconf; ./configure CC=clang CFLAGS='-O3' LDFLAGS='-flto' \
+		--prefix=/usr/local --sysconfdir=/etc/bird --runstatedir=/var/run/bird \
+		--enable-client \
+		--enable-pthreads \
+		--enable-libssh \
+		--enable-mpls-kernel \
+		--with-protocols=all; \
+	make -j$(nproc) && make install; \
+	setcap CAP_NET_ADMIN=+eip /usr/local/sbin/bird
 
 FROM docker.io/library/alpine
 RUN apk add libssh ncurses readline
