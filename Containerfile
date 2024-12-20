@@ -21,7 +21,7 @@ LABEL org.opencontainers.image.source="https://codeberg.org/xtex/home"
 COPY Caddyfile /etc/caddy/Caddyfile
 COPY src /srv/src
 RUN set -euxo pipefail; \
-	echo "${VERSION}" > /srv/src/version.txt; \
+	printf "${VERSION}" > /srv/src/version.txt; \
 	mkdir /srv/run;
 
 ENV PROD true
