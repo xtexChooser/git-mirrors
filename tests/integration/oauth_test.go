@@ -735,13 +735,13 @@ func TestSignInOauthCallbackSyncSSHKeys(t *testing.T) {
 
 	for _, tt := range []struct {
 		name          string
-		rawData       map[string]interface{}
+		rawData       map[string]any
 		parsedKeySets []string
 	}{
 		{
 			name: "Add keys",
-			rawData: map[string]interface{}{
-				"sshpubkey": []interface{}{
+			rawData: map[string]any{
+				"sshpubkey": []any{
 					"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINDRDoephkaFELacrNNe2fqAwedhRB1MKOpLEHlPuczO nocomment",
 				},
 			},
@@ -751,8 +751,8 @@ func TestSignInOauthCallbackSyncSSHKeys(t *testing.T) {
 		},
 		{
 			name: "Update keys",
-			rawData: map[string]interface{}{
-				"sshpubkey": []interface{}{
+			rawData: map[string]any{
+				"sshpubkey": []any{
 					"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMLLMOLFMouSJmzOASKKv178d+7op4utSxcugF9tVVch nocomment",
 					"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGyDh9sg1IGQGa0U363wcGXrDlGBhZI3UHvS7we/0d+T nocomment",
 				},
@@ -764,8 +764,8 @@ func TestSignInOauthCallbackSyncSSHKeys(t *testing.T) {
 		},
 		{
 			name: "Remove keys",
-			rawData: map[string]interface{}{
-				"sshpubkey": []interface{}{},
+			rawData: map[string]any{
+				"sshpubkey": []any{},
 			},
 			parsedKeySets: []string{},
 		},
