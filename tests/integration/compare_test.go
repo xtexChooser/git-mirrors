@@ -76,7 +76,6 @@ func TestComparePatchAndDiffMenuEntries(t *testing.T) {
 	resp := session.MakeRequest(t, req, http.StatusOK)
 	htmlDoc := NewHTMLParser(t, resp.Body)
 	downloadOptions := htmlDoc.doc.Find("a.item[download]")
-
 	var patchDownloadEntryPresent bool
 	var diffDownloadEntryPresent bool
 	downloadOptions.Each(func(idx int, c *goquery.Selection) {
