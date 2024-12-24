@@ -14,6 +14,12 @@
 #  secrets.CASCADE_DESTINATION_TOKEN: <generated from code.forgejo.org/forgejo-ci> scope read:user, write:repository, write:issue
 #  vars.CASCADE_DESTINATION_DOER: forgejo-ci
 #
+#  vars.SKIP_END_TO_END: `true` or `false`
+#    It must be `false` (or absent) so https://code.forgejo.org/forgejo/end-to-end is run
+#    with the newly built release.
+#    It must be set to `true` when a release is missing, for instance because it was
+#    removed and failed to upload.
+#
 on:
   push:
     tags: 'v[0-9]+.[0-9]+.*'
