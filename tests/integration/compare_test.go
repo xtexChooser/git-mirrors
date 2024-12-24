@@ -76,10 +76,10 @@ func TestComparePatchAndDiffMenuEntries(t *testing.T) {
 	resp := session.MakeRequest(t, req, http.StatusOK)
 	htmlDoc := NewHTMLParser(t, resp.Body)
 	downloadOptions := htmlDoc.doc.Find("a.item[download]")
-	
+
 	var patchDownloadEntryPresent bool
 	var diffDownloadEntryPresent bool
-	downloadOptions.Each(func (idx int, c *goquery.Selection) {
+	downloadOptions.Each(func(idx int, c *goquery.Selection) {
 		value, exists := c.Attr("download")
 		if exists && strings.HasSuffix(value, ".patch") {
 			patchDownloadEntryPresent = true
@@ -88,7 +88,6 @@ func TestComparePatchAndDiffMenuEntries(t *testing.T) {
 		if exists && strings.HasSuffix(value, ".diff") {
 			diffDownloadEntryPresent = true
 		}
-		
 	})
 
 	assert.True(t, patchDownloadEntryPresent, "Patch file download entry should be present")
@@ -121,7 +120,7 @@ index 0000000..e69de29`
 	assert.Equal(t, attendedResponse, resp.Body.String())
 	// htmlDoc := NewHTMLParser(t, resp.Body)
 	// downloadOptions := htmlDoc.doc.Find("a.item[download]")
-	
+
 	// var patchDownloadEntryPresent bool
 	// var diffDownloadEntryPresent bool
 	// downloadOptions.Each(func (idx int, c *goquery.Selection) {
@@ -138,7 +137,6 @@ index 0000000..e69de29`
 	// assert.True(t, patchDownloadEntryPresent, "Patch file download entry should be present")
 	// assert.True(t, diffDownloadEntryPresent, "Diff file download entry should be present")
 }
-
 
 // Git commit graph for repo20
 // * 8babce9 (origin/remove-files-b) Add a dummy file
