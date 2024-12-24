@@ -95,6 +95,51 @@ func TestComparePatchAndDiffMenuEntries(t *testing.T) {
 	assert.True(t, diffDownloadEntryPresent, "Diff file download entry should be present")
 }
 
+func TestComparePatchDownload(t *testing.T) {
+	defer tests.PrepareTestEnv(t)()
+
+	session := loginUser(t, "user2")
+	req := NewRequest(t, "GET", "/user2/repo-release/compare/v1.0...v2.0.patch")
+	attendedResponse := `
+	diff --git a/README.md b/README.md
+index 6dfe48a..bc7068d 100644
+--- a/README.md
++++ b/README.md
+@@ -1,3 +1,3 @@
+ # Releases test repo
+ 
+-With a v1.0
++With a v1.0 and a v2.0
+diff --git a/bugfix b/bugfix
+new file mode 100644
+index 0000000..e69de29
+diff --git a/feature b/feature
+new file mode 100644
+index 0000000..e69de29`
+
+	resp := session.MakeRequest(t, req, http.StatusOK)
+	assert.Equal(t, attendedResponse, resp.Body.String())
+	// htmlDoc := NewHTMLParser(t, resp.Body)
+	// downloadOptions := htmlDoc.doc.Find("a.item[download]")
+	
+	// var patchDownloadEntryPresent bool
+	// var diffDownloadEntryPresent bool
+	// downloadOptions.Each(func (idx int, c *goquery.Selection) {
+	// 	value, exists := c.Attr("download")
+	// 	if exists && strings.HasSuffix(value, ".patch") {
+	// 		patchDownloadEntryPresent = true
+	// 	}
+
+	// 	if exists && strings.HasSuffix(value, ".diff") {
+	// 		diffDownloadEntryPresent = true
+	// 	}
+	//})
+
+	// assert.True(t, patchDownloadEntryPresent, "Patch file download entry should be present")
+	// assert.True(t, diffDownloadEntryPresent, "Diff file download entry should be present")
+}
+
+
 // Git commit graph for repo20
 // * 8babce9 (origin/remove-files-b) Add a dummy file
 // * b67e43a Delete test.csv and link_hi
