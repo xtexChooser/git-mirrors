@@ -4,10 +4,6 @@
   user-select: none;
 }
 
-.repository .owner.dropdown {
-  min-width: 40% !important;
-}
-
 .repository .unicode-escaped .escaped-code-point[data-escaped]::before {
   visibility: visible;
   content: attr(data-escaped);
