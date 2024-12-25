@@ -16,56 +16,10 @@
 							<p>{{ctx.Locale.TrN .MaxCreationLimit "repo.form.reach_limit_of_creation_1" "repo.form.reach_limit_of_creation_n" .MaxCreationLimit}}</p>
 						</div>
 					{{end}}
-					<div class="inline required field {{if .Err_Owner}}error{{end}}">
-						<label>{{ctx.Locale.Tr "repo.owner"}}</label>
-						<div class="ui selection owner dropdown">
-							<input type="hidden" id="uid" name="uid" value="{{.ContextUser.ID}}" required>
-							<span class="text truncated-item-container" title="{{.ContextUser.Name}}">
-								{{ctx.AvatarUtils.Avatar .ContextUser 28 "mini"}}
-								<span class="truncated-item-name">{{.ContextUser.ShortName 40}}</span>
-							</span>
-							{{svg "octicon-triangle-down" 14 "dropdown icon"}}
-							<div class="menu">
-								<div class="item truncated-item-container" data-value="{{.SignedUser.ID}}" title="{{.SignedUser.Name}}">
-									{{ctx.AvatarUtils.Avatar .SignedUser 28 "mini"}}
-									<span class="truncated-item-name">{{.SignedUser.ShortName 40}}</span>
-								</div>
-								{{range .Orgs}}
-									<div class="item truncated-item-container" data-value="{{.ID}}" title="{{.Name}}">
-										{{ctx.AvatarUtils.Avatar . 28 "mini"}}
-										<span class="truncated-item-name">{{.ShortName 40}}</span>
-									</div>
-								{{end}}
-							</div>
-						</div>
-						<span class="help">{{ctx.Locale.Tr "repo.owner_helper"}}</span>
-					</div>
+					<fieldset>
+						{{template "repo/create_basic" .}}
+					</fieldset>
 
-					<div class="inline required field {{if .Err_RepoName}}error{{end}}">
-						<label for="repo_name">{{ctx.Locale.Tr "repo.repo_name"}}</label>
-						<input id="repo_name" name="repo_name" value="{{.repo_name}}" autofocus required maxlength="100">
-						<span class="help">{{ctx.Locale.Tr "repo.repo_name_helper"}}</span>
-					</div>
-					<div class="inline field">
-						<label>{{ctx.Locale.Tr "repo.visibility"}}</label>
-						<div class="ui checkbox">
-							<input name="private" type="checkbox"
-								{{if .IsForcedPrivate}}
-									checked disabled
-								{{else}}
-									{{if .private}}checked{{end}}
-								{{end}}>
-							<label>{{ctx.Locale.Tr "repo.visibility_helper"}}</label>
-						</div>
-						{{if .IsForcedPrivate}}
-							<span class="help">{{ctx.Locale.Tr "repo.visibility_helper_forced"}}</span>
-						{{end}}
-						<span class="help">{{ctx.Locale.Tr "repo.visibility_description"}}</span>
-					</div>
-					<div class="inline field {{if .Err_Description}}error{{end}}">
-						<label for="description">{{ctx.Locale.Tr "repo.repo_desc"}}</label>
-						<textarea id="description" rows="2" name="description" placeholder="{{ctx.Locale.Tr "repo.repo_desc_helper"}}" maxlength="2048">{{.description}}</textarea>
-					</div>
 					<div class="inline field">
 						<label>{{ctx.Locale.Tr "repo.template"}}</label>
 						<div id="repo_template_search" class="ui search selection dropdown">
