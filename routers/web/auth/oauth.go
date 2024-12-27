@@ -1188,7 +1188,7 @@ func getSSHKeys(source *oauth2.Source, gothUser *goth.User) ([]string, error) {
 	key := source.AttributeSSHPublicKey
 	value, exists := gothUser.RawData[key]
 	if !exists {
-		return nil, fmt.Errorf("attribute '%s' not found in user data", key)
+		return []string{}, nil
 	}
 
 	rawSlice, ok := value.([]any)
