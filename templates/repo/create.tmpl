@@ -30,68 +30,20 @@
 
 					<div id="non_template">
 						<fieldset>
+							<legend>{{ctx.Locale.Tr "repo.auto_init"}}</legend>
+							{{template "repo/create_init" .}}
+						</fieldset>
+
+						<fieldset>
 							<legend>{{ctx.Locale.Tr "repo.new_advanced"}}</legend>
 							<details><summary>{{ctx.Locale.Tr "repo.new_advanced_expand"}}</summary>
 								{{template "repo/create_advanced" .}}
 							</details>
 						</fieldset>
-
-
-						<div class="inline field">
-							<label>.gitignore</label>
-							<div class="ui multiple search selection dropdown">
-								<input type="hidden" name="gitignores" value="{{.gitignores}}">
-								<div class="default text">{{ctx.Locale.Tr "repo.repo_gitignore_helper"}}</div>
-								<div class="menu">
-									{{range .Gitignores}}
-										<div class="item" data-value="{{.}}">{{.}}</div>
-									{{end}}
-								</div>
-							</div>
-							<span class="help">{{ctx.Locale.Tr "repo.repo_gitignore_helper_desc"}}</span>
-						</div>
-						<div class="inline field">
-							<label>{{ctx.Locale.Tr "repo.license"}}</label>
-							<div class="ui search selection dropdown">
-								<input type="hidden" name="license" value="{{.license}}">
-								<div class="default text">{{ctx.Locale.Tr "repo.license_helper"}}</div>
-								<div class="menu">
-									<div class="item" data-value="">{{ctx.Locale.Tr "repo.license_helper"}}</div>
-									{{range .Licenses}}
-										<div class="item" data-value="{{.}}">{{.}}</div>
-									{{end}}
-								</div>
-							</div>
-							<span class="help">{{ctx.Locale.Tr "repo.license_helper_desc" "https://choosealicense.com/"}}</span>
-						</div>
-
-						<div class="inline field">
-							<label>{{ctx.Locale.Tr "repo.readme"}}</label>
-							<div class="ui selection dropdown">
-								<input type="hidden" name="readme" value="{{.readme}}">
-								<div class="default text">{{ctx.Locale.Tr "repo.readme_helper"}}</div>
-								<div class="menu">
-									{{range .Readmes}}
-										<div class="item" data-value="{{.}}">{{.}}</div>
-									{{end}}
-								</div>
-							</div>
-							<span class="help">{{ctx.Locale.Tr "repo.readme_helper_desc"}}</span>
-						</div>
-						<div class="inline field">
-							<div class="ui checkbox" id="auto-init">
-								<input name="auto_init" type="checkbox" {{if .auto_init}}checked{{end}}>
-								<label>{{ctx.Locale.Tr "repo.auto_init"}}</label>
-							</div>
-						</div>
 					</div>
-					<br>
-					<div class="inline field">
-						<label></label>
-						<button class="ui primary button{{if not .CanCreateRepo}} disabled{{end}}">
-							{{ctx.Locale.Tr "repo.create_repo"}}
-						</button>
-					</div>
+					<button class="ui primary button{{if not .CanCreateRepo}} disabled{{end}}">
+						{{ctx.Locale.Tr "repo.create_repo"}}
+					</button>
 				</div>
 			</form>
 		</div>
