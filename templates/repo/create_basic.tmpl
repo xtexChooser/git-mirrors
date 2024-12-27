@@ -1,5 +1,7 @@
-<label id="repo_owner_label" {{if .Err_Owner}}class="field error"{{end}}>{{ctx.Locale.Tr "repo.owner"}}
+<label id="repo_owner_label" {{if .Err_Owner}}class="field error"{{end}}>
+	{{ctx.Locale.Tr "repo.owner"}}
 	<div class="ui selection required dropdown" aria-labelledby="repo_owner_label">
+		{{/* uid id is used by the repo-template code */}}
 		<input type="hidden" id="uid" name="uid" value="{{.ContextUser.ID}}" required>
 		<span class="text truncated-item-container" title="{{.ContextUser.Name}}">
 			{{ctx.AvatarUtils.Avatar .ContextUser 28 "mini"}}
