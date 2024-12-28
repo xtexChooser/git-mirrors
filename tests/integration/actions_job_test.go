@@ -15,6 +15,7 @@ import (
 	auth_model "code.gitea.io/gitea/models/auth"
 	"code.gitea.io/gitea/models/unittest"
 	user_model "code.gitea.io/gitea/models/user"
+	"code.gitea.io/gitea/modules/setting"
 	api "code.gitea.io/gitea/modules/structs"
 
 	runnerv1 "code.gitea.io/actions-proto-go/runner/v1"
@@ -22,6 +23,9 @@ import (
 )
 
 func TestJobWithNeeds(t *testing.T) {
+	if !setting.Database.Type.IsSQLite3() {
+		t.Skip()
+	}
 	testCases := []struct {
 		treePath         string
 		fileContent      string
@@ -31,7 +35,7 @@ func TestJobWithNeeds(t *testing.T) {
 		{
 			treePath: ".gitea/workflows/job-with-needs.yml",
 			fileContent: `name: job-with-needs
-on: 
+on:
   push:
     paths:
       - '.gitea/workflows/job-with-needs.yml'
@@ -62,7 +66,7 @@ jobs:
 		{
 			treePath: ".gitea/workflows/job-with-needs-fail.yml",
 			fileContent: `name: job-with-needs-fail
-on: 
+on:
   push:
     paths:
       - '.gitea/workflows/job-with-needs-fail.yml'
@@ -90,7 +94,7 @@ jobs:
 		{
 			treePath: ".gitea/workflows/job-with-needs-fail-if.yml",
 			fileContent: `name: job-with-needs-fail-if
-on: 
+on:
   push:
     paths:
       - '.gitea/workflows/job-with-needs-fail-if.yml'
@@ -166,6 +170,9 @@ jobs:
 }
 
 func TestJobNeedsMatrix(t *testing.T) {
+	if !setting.Database.Type.IsSQLite3() {
+		t.Skip()
+	}
 	testCases := []struct {
 		treePath          string
 		fileContent       string
@@ -175,7 +182,7 @@ func TestJobNeedsMatrix(t *testing.T) {
 		{
 			treePath: ".gitea/workflows/jobs-outputs-with-matrix.yml",
 			fileContent: `name: jobs-outputs-with-matrix
-on: 
+on:
   push:
     paths:
       - '.gitea/workflows/jobs-outputs-with-matrix.yml'
@@ -194,7 +201,7 @@ jobs:
         id: gen_output
         run: |
           version="${{ matrix.version }}"
-          echo "output_${version}=${version}" >> "$GITHUB_OUTPUT"          
+          echo "output_${version}=${version}" >> "$GITHUB_OUTPUT"
   job2:
     runs-on: ubuntu-latest
     needs: [job1]
@@ -241,7 +248,7 @@ jobs:
 		{
 			treePath: ".gitea/workflows/jobs-outputs-with-matrix-failure.yml",
 			fileContent: `name: jobs-outputs-with-matrix-failure
-on: 
+on:
   push:
     paths:
       - '.gitea/workflows/jobs-outputs-with-matrix-failure.yml'
@@ -260,7 +267,7 @@ jobs:
         id: gen_output
         run: |
           version="${{ matrix.version }}"
-          echo "output_${version}=${version}" >> "$GITHUB_OUTPUT"          
+          echo "output_${version}=${version}" >> "$GITHUB_OUTPUT"
   job2:
     runs-on: ubuntu-latest
     if: ${{ always() }}

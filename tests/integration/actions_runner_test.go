@@ -19,6 +19,7 @@ import (
 	"code.gitea.io/actions-proto-go/runner/v1/runnerv1connect"
 	"connectrpc.com/connect"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -63,8 +64,8 @@ func (r *mockRunner) doPing(t *testing.T) {
 	resp, err := r.client.pingServiceClient.Ping(context.Background(), connect.NewRequest(&pingv1.PingRequest{
 		Data: "mock-runner",
 	}))
-	assert.NoError(t, err)
-	assert.Equal(t, "Hello, mock-runner!", resp.Msg.Data)
+	require.NoError(t, err)
+	require.Equal(t, "Hello, mock-runner!", resp.Msg.Data)
 }
 
 func (r *mockRunner) doRegister(t *testing.T, name, token string, labels []string) {
@@ -75,11 +76,15 @@ func (r *mockRunner) doRegister(t *testing.T, name, token string, labels []strin
 		Version: "mock-runner-version",
 		Labels:  labels,
 	}))
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	r.client = newMockRunnerClient(resp.Msg.Runner.Uuid, resp.Msg.Runner.Token)
 }
 
 func (r *mockRunner) registerAsRepoRunner(t *testing.T, ownerName, repoName, runnerName string, labels []string) {
+	if !setting.Database.Type.IsSQLite3() {
+		// registering a mock runner when using a database other than SQLite leaves leftovers
+		t.FailNow()
+	}
 	session := loginUser(t, ownerName)
 	token := getTokenForLoggedInUser(t, session, auth_model.AccessTokenScopeWriteRepository)
 	req := NewRequest(t, "GET", fmt.Sprintf("/api/v1/repos/%s/%s/actions/runners/registration-token", ownerName, repoName)).AddTokenAuth(token)
@@ -102,7 +107,7 @@ func (r *mockRunner) fetchTask(t *testing.T, timeout ...time.Duration) *runnerv1
 		resp, err := r.client.runnerServiceClient.FetchTask(context.Background(), connect.NewRequest(&runnerv1.FetchTaskRequest{
 			TasksVersion: 0,
 		}))
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		if resp.Msg.Task != nil {
 			task = resp.Msg.Task
 			break
@@ -128,7 +133,7 @@ func (r *mockRunner) execTask(t *testing.T, task *runnerv1.Task, outcome *mockTa
 			Rows:   []*runnerv1.LogRow{lr},
 			NoMore: idx == len(outcome.logRows)-1,
 		}))
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.EqualValues(t, idx+1, resp.Msg.AckIndex)
 	}
 	sentOutputKeys := make([]string, 0, len(outcome.outputs))
@@ -140,7 +145,7 @@ func (r *mockRunner) execTask(t *testing.T, task *runnerv1.Task, outcome *mockTa
 			},
 			Outputs: map[string]string{outputKey: outputValue},
 		}))
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		sentOutputKeys = append(sentOutputKeys, outputKey)
 		assert.ElementsMatch(t, sentOutputKeys, resp.Msg.SentOutputs)
 	}
@@ -152,6 +157,6 @@ func (r *mockRunner) execTask(t *testing.T, task *runnerv1.Task, outcome *mockTa
 			StoppedAt: timestamppb.Now(),
 		},
 	}))
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, outcome.result, resp.Msg.State.Result)
 }

@@ -21,10 +21,14 @@ import (
 
 	runnerv1 "code.gitea.io/actions-proto-go/runner/v1"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 func TestDownloadTaskLogs(t *testing.T) {
+	if !setting.Database.Type.IsSQLite3() {
+		t.Skip()
+	}
 	now := time.Now()
 	testCases := []struct {
 		treePath    string
@@ -35,7 +39,7 @@ func TestDownloadTaskLogs(t *testing.T) {
 		{
 			treePath: ".gitea/workflows/download-task-logs-zstd.yml",
 			fileContent: `name: download-task-logs-zstd
-on: 
+on:
   push:
     paths:
       - '.gitea/workflows/download-task-logs-zstd.yml'
@@ -67,7 +71,7 @@ jobs:
 		{
 			treePath: ".gitea/workflows/download-task-logs-no-zstd.yml",
 			fileContent: `name: download-task-logs-no-zstd
-on: 
+on:
   push:
     paths:
       - '.gitea/workflows/download-task-logs-no-zstd.yml'
@@ -132,7 +136,7 @@ jobs:
 					logFileName += ".zst"
 				}
 				_, err := storage.Actions.Stat(logFileName)
-				assert.NoError(t, err)
+				require.NoError(t, err)
 
 				// download task logs and check content
 				runIndex := task.Context.GetFields()["run_number"].GetStringValue()
