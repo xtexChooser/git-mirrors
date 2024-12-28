@@ -140,7 +140,7 @@ func (r *Release) LoadArchiveDownloadCount(ctx context.Context) error {
 	return err
 }
 
-// GetTotalDownloadCount returns the summary of all dowlaod count of files attached to the release
+// GetTotalDownloadCount returns the summary of all dowload count of files attached to the release
 func (r *Release) GetTotalDownloadCount(ctx context.Context) (int64, error) {
 	var archiveCount int64
 	if !r.HideArchiveLinks {

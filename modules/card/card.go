@@ -44,7 +44,7 @@ var fontCache = sync.OnceValues(func() (*truetype.Font, error) {
 	return truetype.Parse(goregular.TTF)
 })
 
-// DefaultSize returns the default sie for a card
+// DefaultSize returns the default size for a card
 func DefaultSize() (int, int) {
 	return 1200, 600
 }
