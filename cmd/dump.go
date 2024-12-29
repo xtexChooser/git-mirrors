@@ -160,6 +160,10 @@ It can be used for backup and capture Forgejo server image to send to maintainer
 			Name:  "skip-index",
 			Usage: "Skip bleve index data",
 		},
+		&cli.BoolFlag{
+			Name:  "skip-repo-archives",
+			Usage: "Skip repository archives",
+		},
 		&cli.GenericFlag{
 			Name:  "type",
 			Value: outputTypeEnum,
@@ -358,6 +362,11 @@ func runDump(ctx *cli.Context) error {
 			log.Info("Skipping bleve index data")
 			excludes = append(excludes, setting.Indexer.RepoPath)
 			excludes = append(excludes, setting.Indexer.IssuePath)
+		}
+
+		if ctx.IsSet("skip-repo-archives") && ctx.Bool("skip-repo-archives") {
+			log.Info("Skipping repository archives data")
+			excludes = append(excludes, setting.RepoArchive.Storage.Path)
 		}
 
 		excludes = append(excludes, setting.RepoRootPath)
