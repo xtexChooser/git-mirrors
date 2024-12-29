@@ -35,7 +35,7 @@ jobs:
       )
     runs-on: docker
     container:
-      image: code.forgejo.org/oci/node:20-bookworm
+      image: data.forgejo.org/oci/node:20-bookworm
     steps:
       - uses: actions/checkout@v4
         with:
