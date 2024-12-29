@@ -291,3 +291,43 @@ func TestCompareCodeExpand(t *testing.T) {
 		})
 	})
 }
+
+func TestCompareSignedIn(t *testing.T) {
+	onGiteaRun(t, func(t *testing.T, giteaURL *url.URL) {
+		// Setup the test with a connected user
+		session := loginUser(t, "user1")
+		testRepoFork(t, session, "user2", "repo1", "user1", "repo1")
+		testCreateBranch(t, session, "user1", "repo1", "branch/master", "recent-push", http.StatusSeeOther)
+		testEditFile(t, session, "user1", "repo1", "recent-push", "README.md", "Hello recently!\n")
+
+		newPrSelector := "button.ui.button.primary.show-form"
+
+		t.Run("PR creation button displayed if logged in", func(t *testing.T) {
+			defer tests.PrintCurrentTest(t)()
+
+			req := NewRequest(t, "GET", "/user1/repo1/compare/master...recent-push")
+			resp := session.MakeRequest(t, req, http.StatusOK)
+			htmlDoc := NewHTMLParser(t, resp.Body)
+
+			// Check that the "Sign in" button doesn't show up
+			htmlDoc.AssertElement(t, "a[href='/user/login?redirect_to=%2Fuser1%2Frepo1%2Fcompare%2Fmaster...recent-push']", false)
+
+			// Check that the "New pull request" button shows up
+			htmlDoc.AssertElement(t, newPrSelector, true)
+		})
+
+		t.Run("no PR creation button but display warning", func(t *testing.T) {
+			defer tests.PrintCurrentTest(t)()
+
+			req := NewRequest(t, "GET", "/user1/repo1/compare/master...recent-push")
+			resp := MakeRequest(t, req, http.StatusOK)
+			htmlDoc := NewHTMLParser(t, resp.Body)
+
+			// Check that the "Sign in" button shows up
+			htmlDoc.AssertElement(t, "a[href='/user/login?redirect_to=%2Fuser1%2Frepo1%2Fcompare%2Fmaster...recent-push']", true)
+
+			// Check that the "New pull request" button doesn't show up
+			htmlDoc.AssertElement(t, newPrSelector, false)
+		})
+	})
+}
