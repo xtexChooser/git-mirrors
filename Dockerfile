@@ -98,7 +98,7 @@ ENV GITEA_CUSTOM=/data/gitea
 VOLUME ["/data"]
 
 ENTRYPOINT ["/usr/bin/entrypoint"]
-CMD ["/bin/s6-svscan", "/etc/s6"]
+CMD ["/usr/bin/s6-svscan", "/etc/s6"]
 
 COPY --from=build-env /tmp/local /
 RUN cd /usr/local/bin ; ln -s gitea forgejo
