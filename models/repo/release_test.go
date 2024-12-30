@@ -35,7 +35,7 @@ func TestReleaseLoadRepo(t *testing.T) {
 
 	require.NoError(t, release.LoadRepo(db.DefaultContext))
 
-	assert.Equal(t, int64(1), release.Repo.ID)
+	assert.EqualValues(t, 1, release.Repo.ID)
 }
 
 func TestReleaseDisplayName(t *testing.T) {

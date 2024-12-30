@@ -339,9 +339,5 @@ func (c *Card) DrawExternalImage(url string) {
 
 // DrawRect draws a rect with the given color
 func (c *Card) DrawRect(startX, startY, endX, endY int, color color.Color) {
-	for x := startX; x <= endX; x++ {
-		for y := startY; y <= endY; y++ {
-			c.Img.Set(x, y, color)
-		}
-	}
+	draw.Draw(c.Img, image.Rect(startX, startY, endX, endY), &image.Uniform{color}, image.Point{}, draw.Src)
 }
