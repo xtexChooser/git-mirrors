@@ -229,3 +229,7 @@ if ($xvUseSecurePoll) {
 	$wgGroupPermissions['sysop']['securepoll-create-poll'] = true;
 	$wgGroupPermissions['staff']['securepoll-view-voter-pii'] = true;
 }
+
+if ($xvUseTabberNeue) {
+	xvLoadExtension('TabberNeue');
+}

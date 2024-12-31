@@ -292,3 +292,6 @@ $wgSecurePollSingleTransferableVoteEnabled = true;
 $wgMathValidModes = ['source', 'mathml', 'native', 'mathjax'];
 $wgDefaultUserOptions['math'] = 'mathjax';
 $wgMathEnableFormulaLinks = true;
+
+// TabberNeue
+$xvUseTabberNeue = false;
