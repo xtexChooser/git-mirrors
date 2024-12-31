@@ -68,7 +68,7 @@ class XensTweaksHooks {
 	 */
 	public static function onBeforePageDisplay( OutputPage &$out, Skin &$skin ) {
 		global $wgSitename;
-		global $wgXensTweaksEnableSearchboxMetadata, $wgArticlePath, $wgCanonicalServer;
+		global $wgXensTweaksEnableStructuredData, $wgArticlePath, $wgCanonicalServer;
 
 		$title = $out->getTitle();
 		if ( $title->isMainPage() ) {
@@ -76,20 +76,13 @@ class XensTweaksHooks {
 			$out->addMeta( 'og:title', $wgSitename );
 			$out->addMeta( 'og:type', 'website' );
 
-			/* Structured data for the Google Sitelinks search box. */
-			if ( $wgXensTweaksEnableSearchboxMetadata ) {
-				$targetUrl = $wgCanonicalServer . str_replace( '$1', 'Special:Search', $wgArticlePath );
-				$targetUrl = wfAppendQuery( $targetUrl, 'search={search_term_string}' );
+			/* Structured data for Google etc */
+			if ( $wgXensTweaksEnableStructuredData ) {
 				$structuredData = [
 					'@context'        => 'http://schema.org',
 					'@type'           => 'WebSite',
 					'name'            => $wgSitename,
 					'url'             => $wgCanonicalServer,
-					'potentialAction' => [
-						'@type'       => 'SearchAction',
-						'target'      => $targetUrl,
-						'query-input' => 'required name=search_term_string',
-					],
 				];
 				$out->addHeadItem( 'StructuredData', '<script type="application/ld+json">' . json_encode( $structuredData ) . '</script>' );
 			}

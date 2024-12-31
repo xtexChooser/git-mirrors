@@ -40,7 +40,7 @@
 		"CentralDB": {
 			"value": "wikimeta"
 		},
-		"EnableSearchboxMetadata": {
+		"EnableStructuredData": {
 			"value": true
 		},
 		"NoRobots": {
