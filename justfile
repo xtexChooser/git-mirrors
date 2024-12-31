@@ -63,7 +63,6 @@ setup:
 
     echo "Starting Postgres and Mailcrab containers"
     just backend-start
-    just migrate
 
     cargo build
 
@@ -155,13 +154,14 @@ mailcrab-stop:
 # Starts mailcrab
 postgres-start:
     {{ docker }} run -d \
-      -v {{ invocation_directory() }}/postgres/sql-scripts:/docker-entrypoint-initdb.d \
+      -e POSTGRES_USER=rauthy \
       -e POSTGRES_PASSWORD=123SuperSafe \
+      -e POSTGRES_DB=rauthy \
       --net {{ container_network }} \
       -p 5432:5432 \
       --name {{ container_postgres }} \
       --restart unless-stopped \
-      docker.io/library/postgres:16.2-alpine
+      docker.io/library/postgres:17.2-alpine
 
     sleep 3
     just migrate-postgres
@@ -228,6 +228,9 @@ test-backend-stop:
       kill $(cat {{ file_test_pid }})
       rm {{ file_test_pid }}
     fi
+
+    # we need to sleep 5 seconds because the lockfiles will take 4.5 seconds to be deleted
+    sleep 5
 
 # runs a single test with hiqlite - needs the backend being started manually
 test *test:
@@ -341,11 +344,15 @@ build-docs:
     set -euxo pipefail
     cd book
     mdbook build -d ../docs
+    git add ../docs/*
 
 # Build the final container image.
 build image="ghcr.io/sebadob/rauthy": build-ui
     #!/usr/bin/env bash
     set -euxo pipefail
+
+    # make sure base image is up to date
+    docker pull gcr.io/distroless/cc-debian12:nonroot
 
     mkdir -p out/empty
 

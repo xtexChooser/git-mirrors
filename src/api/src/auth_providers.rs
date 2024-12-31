@@ -29,7 +29,7 @@ use tracing::debug;
     path = "/providers",
     tag = "providers",
     responses(
-        (status = 200, description = "OK", body = ProviderResponse),
+        (status = 200, description = "OK", body = [ProviderResponse]),
         (status = 401, description = "Unauthorized", body = ErrorResponse),
         (status = 403, description = "Forbidden", body = ErrorResponse),
     ),
@@ -264,7 +264,15 @@ pub async fn put_provider(
     if !payload.use_pkce && payload.client_secret.is_none() {
         return Err(ErrorResponse::new(
             ErrorResponseType::BadRequest,
-            "Must at least be a confidential client or use PKCE".to_string(),
+            "Must at least be a confidential client or use PKCE",
+        ));
+    }
+    if payload.client_secret.is_some()
+        && !(payload.client_secret_basic || payload.client_secret_post)
+    {
+        return Err(ErrorResponse::new(
+            ErrorResponseType::BadRequest,
+            "A confidential client must have a least one of 'client_secret_basic | client_secret_post'",
         ));
     }
 
