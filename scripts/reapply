@@ -21,8 +21,9 @@ while [ $# -ne 0 ]; do
 	case $1 in
 	*)
 		errResetTo="$(git rev-parse HEAD)"
-		git revert --no-edit "$1"
-		change="$(git log -1 "$1" --format='%(trailers:key=Change-Id,valueonly,separator=)')"
+		absRef="$(git rev-parse "$1")"
+		git revert --no-edit "$absRef"
+		change="$(git log -1 "$absRef" --format='%(trailers:key=Change-Id,valueonly,separator=)')"
 		echo "Re-applying change: $change"
 		./scripts/pick --try "$change"
 		newcommit="$(git rev-parse HEAD)"
@@ -31,7 +32,7 @@ while [ $# -ne 0 ]; do
 		fi
 		git reset --soft "$errResetTo"
 		if ! git diff-index --quiet HEAD --; then
-			git commit -m "$(printf 'Reapply: %s\nReapply: %s' "$(git log -1 --format=%B "$newcommit")" "$1")"
+			git commit -m "$(printf 'Reapply: %s\nReapply: %s' "$(git log -1 --format=%B "$newcommit")" "$absRef")"
 		fi
 		;;
 	esac
