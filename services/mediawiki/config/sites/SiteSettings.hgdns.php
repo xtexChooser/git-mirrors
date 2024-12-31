@@ -65,6 +65,7 @@ $wgAutoConfirmCount = 0;
 // Misc
 $xvUseCaptcha = false;
 $wgUseSharedUploads = false;
+$xvUseTabberNeue = true;
 
 // Namespaces
 const NS_MEMBER = 3000;
