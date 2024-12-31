@@ -14,14 +14,13 @@ RUN set -euxo pipefail; \
 	apk add --no-cache build-base rust cargo musl-dev just nodejs npm bash \
 		openssl-dev perl make curl sd cmake rust-bindgen clang18-libclang; \
 	export PUB_URL="127.0.0.1:8443"; \
-	export DATABASE_URL="postgresql://rauthy:123SuperSafe@prepare-database/rauthy"; \
+	export DATABASE_URL="postgresql://rauthy:builder@prepare-database/rauthy"; \
 	cd frontend; \
 	npm install; \
 	cd ..; \
 	just build-ui; \
 	cargo build \
-		--release \
-		--features default,postgres;
+		--release;
 
 FROM docker.io/library/alpine
 
