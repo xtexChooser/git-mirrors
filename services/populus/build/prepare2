@@ -9,11 +9,16 @@ cd populus-src
 
 # prepare the database
 export PGPASSWORD=builder
-psql -h prepare-database -U postgres -d postgres -a -f postgres/sql-scripts/init-db.sql
-psql -h prepare-database -U postgres -d rauthy -a -f postgres/sql-scripts/init-rauthy.sql
+psql -h prepare-database -U postgres -d postgres -a <<EOF
+create user rauthy with password 'builder';
+create database rauthy with owner rauthy;
+EOF
+psql -h prepare-database -U postgres -d rauthy -a <<EOF
+create schema rauthy authorization rauthy;
+EOF
 
 # prepare for sqlx offline build
-export DATABASE_URL="postgresql://rauthy:123SuperSafe@prepare-database/rauthy"
+export DATABASE_URL="postgresql://rauthy:builder@prepare-database/rauthy"
 sqlx migrate run --source migrations/postgres
 
 cd ..
