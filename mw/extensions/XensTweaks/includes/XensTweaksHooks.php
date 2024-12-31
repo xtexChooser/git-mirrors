@@ -83,6 +83,7 @@ class XensTweaksHooks {
 				$structuredData = [
 					'@context'        => 'http://schema.org',
 					'@type'           => 'WebSite',
+					'name'            => $wgSitename,
 					'url'             => $wgCanonicalServer,
 					'potentialAction' => [
 						'@type'       => 'SearchAction',
