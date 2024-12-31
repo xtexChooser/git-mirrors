@@ -45,7 +45,6 @@ $xvGlobalExtensions = [
 	'DynamicPageList3',
 	'Echo',
 	'Gadgets',
-	'HeaderTabs',
 	'ImageMap',
 	'InputBox',
 	'Interwiki',
