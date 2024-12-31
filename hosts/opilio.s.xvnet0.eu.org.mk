@@ -28,6 +28,3 @@ $(call load-state, services/mediawiki)
 
 ### tiang::tag opilio mediawiki/cron
 $(call load-state, services/mediawiki/cron)
-
-### tiang::tag opilio populus
-$(call load-state, services/populus)
