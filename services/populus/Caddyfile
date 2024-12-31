@@ -1,8 +1,0 @@
-id.xvnet.eu.org id.xvnet0.eu.org http://id.xvn {
-	import securitytxt
-	reverse_proxy unix//var/run/populus/populus.sock
-}
-
-https://idp.<% $HOSTNAME %> {
-	reverse_proxy unix//var/run/populus/populus.sock
-}
