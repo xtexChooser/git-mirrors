@@ -15,7 +15,6 @@ ntfy					IN	CNAME	opilio.s
 wiki					IN	CNAME	opilio.s
 *.wiki					IN	CNAME	wiki
 dns						IN	AAAA	fd00:443a:ef14:2::2
-id						IN	CNAME	opilio.s
 
 ; Root Nameservers
 a.root.ns				IN	AAAA	fd00:443a:ef14:2::3
