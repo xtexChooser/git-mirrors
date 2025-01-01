@@ -1,0 +1,17 @@
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    - cron: "30 6 * * 6"
+jobs:
+  build:
+    runs-on: codeberg-tiny
+    container:
+      image: data.forgejo.org/oci/alpine:latest
+    steps:
+      - uses: https://code.forgejo.org/actions/checkout@v4
+      - name: Install deps
+        run: apk refresh; apk add -y podman
+      - name: Build
+        run: podman build -t codeberg.org/xens/x-mediawiki -f contrib/Containerfile .
