@@ -61,6 +61,8 @@ xvGrantPermissionsTo('sysop', ['createaccount']);
 xvGrantPermissionsTo('staff', ['createaccount']);
 $wgAutoConfirmAge = 0;
 $wgAutoConfirmCount = 0;
+xvMergeGroup('bureaucrat', 'sysop');
+xvMergeGroup('interface-admin', 'sysop');
 
 // Misc
 $xvUseCaptcha = false;
