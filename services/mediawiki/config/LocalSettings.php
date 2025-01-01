@@ -13,6 +13,7 @@ error_reporting(E_ALL);
 $xvConfigDirectory = __DIR__;
 require_once "$xvConfigDirectory/common/ConfigTypes.php";
 require_once "$xvConfigDirectory/common/ConfigUtils.php";
+require_once "$xvConfigDirectory/common/UserGroupUtils.php";
 
 // read site list
 $xvWikis = xvLoadJson('sites.json');
