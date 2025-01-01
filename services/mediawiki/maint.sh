@@ -76,8 +76,8 @@ atre::mediawiki::addwiki() {
 	else
 		# Creating normal wikis
 		atre::mediawiki::maint meta sql --query "CREATE DATABASE wiki$wiki"
-		atre::mediawiki::maint "$wiki" sql maintenance/tables-generated.sql
-		atre::mediawiki::maint "$wiki" sql maintenance/tables.sql
+		atre::mediawiki::maint "$wiki" sql --noshared maintenance/tables-generated.sql
+		atre::mediawiki::maint "$wiki" sql --noshared maintenance/tables.sql
 		atre::mediawiki::update "$wiki"
 	fi
 
