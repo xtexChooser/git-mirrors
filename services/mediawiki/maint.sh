@@ -57,7 +57,7 @@ atre::mediawiki::addwiki() {
 		return 1
 	}
 	local wiki="$1" domain
-	domain="$(jq -r ".$wiki" /srv/atremis/services/mediawiki/config/sites.json)"
+	domain="$(jq -r ".$wiki.domain" /srv/atremis/services/mediawiki/config/sites.json)"
 	echo "Found domain: $domain"
 	[[ -n "$wiki" ]] || atre::error "Invalid wiki ID"
 	[[ -n "$domain" ]] || atre::error "Invalid wiki domain"
