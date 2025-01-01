@@ -27,3 +27,7 @@ TODO: Needs details
 - [ ] (opt) Create operators accounts and grant staff groups.
 - [ ] Add meta-wiki interwiki.
 - [ ] Grant bureaucrat groups.
+- [ ] (opt) Coordinate DNS records for custom domains.
+- [ ] Run `atre s mediawiki cronjob <WIKI>` to generate initial sitemaps.
+- [ ] (opt) Submit sitemaps to Google and Bing.
+- [ ] Add to uptime checker.
