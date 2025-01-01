@@ -25,6 +25,7 @@ Per previous discussion, the creation of wiki (NAME) is accepted.
 - [ ] (opt) Add new network operators.
 - [ ] (opt) Add new extensions and skins.
 - [ ] Add a issue label on Codeberg.
+- [ ] Add to `scripts/CODEGROUPS`.
 - [ ] Add site configuration code to `services/mediawiki/config/sites/`.
 - [ ] Add site to `services/mediawiki/config/sites.json`.
 - [ ] Add Caddy configuration to `services/mediawiki/Caddyfile`.
