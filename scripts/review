@@ -8,27 +8,33 @@ die() {
 }
 
 topicBranch="$(git rev-parse --abbrev-ref HEAD)"
+topicHead="$(git rev-parse HEAD)"
 [[ "$topicBranch" != "HEAD" ]] || die "You are not on a branch."
 
 baseRef="$(git config branch."$topicBranch".merge)"
 baseRemote="$(git config branch."$topicBranch".remote)"
 baseBranch="$(git rev-parse --abbrev-ref "$baseRef")"
 
-changesCount="$(git log "$baseRemote"/"$baseBranch"...HEAD --oneline | wc -l)"
-((changesCount == 1)) || die "Sending multiple changes are not supported."
+readarray -t topicCommits < <(git log "$baseRemote"/"$baseBranch"..."$topicHead" --format='%H' --reverse)
 
-message="$(git log -1 --format='%s' HEAD)"
-bug="$(git log -1 --format='%(trailers:key=Bug,only,valueonly,separator=%x2C)' HEAD | cut -d',' -f1)"
+for commit in "${topicCommits[@]}"; do
+	abbrevCommit="$(git log -1 --format='%h' "$commit")"
+	subject="$(git log -1 --format='%s' "$commit")"
+	bug="$(git log -1 --format='%(trailers:key=Bug,only,valueonly,separator=%x2C)' "$commit" | cut -d',' -f1)"
+	changeId="$(git log -1 --format='%(trailers:key=Change-Id,only,valueonly,separator=%x2C)' "$commit" | cut -d',' -f1)"
+	[[ -n "$changeId" ]] || die "Change-Id is missing for $commit"
 
-if [[ "$topicBranch" != "$baseBranch" ]]; then
-	topic="$topicBranch"
-elif [[ "$bug" =~ \#[1-9][0-9]* ]]; then
-	topic="issue/$(tail -c+2 <<<"$bug")"
-fi
+	topic="change/$changeId"
 
-echo "$message
-$topicBranch $topic -> $baseRemote/$baseBranch"
+	echo "-----
+[$topicBranch $abbrevCommit] $subject
+-> $baseRemote/$baseBranch
+Bug: ${bug:--}
+Change-Id: $changeId
+-----"
 
-git push "$baseRemote" HEAD:refs/for/"$baseBranch" \
-	-o topic="$topic" \
-	-o title="$message"
+	git push "$baseRemote" "$commit":refs/for/"$baseBranch" \
+		-o topic="$topic" \
+		-o title="$subject" \
+		-o force-push=true || true
+done
