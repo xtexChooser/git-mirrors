@@ -24,8 +24,10 @@ $xvUseEmailConfirmed = true;
 
 // User rights
 $xvRequireEmailConfirmedToEdit = true;
-$wgAddGroups['l-accessor'] = [];
+$wgGroupPermissions['l-accessor'] = ['read', 'autopatrol'];
+$wgGroupPermissions['m-accessor'] = ['read', 'autopatrol'];
 $wgAddGroups['m-accessor'] = ['l-accessor'];
+$wgGroupsAddToSelf['m-accessor'] = ['l-accessor'];
 
 // Namespaces
 const NS_L = 3000;
