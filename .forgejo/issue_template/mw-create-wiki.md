@@ -7,7 +7,7 @@ labels:
   - new
 ---
 
-Per previous discussion, creation of wiki (NAME) is accepted.
+Per previous discussion, the creation of wiki (NAME) is accepted.
 
 ## Site Configuration
 
