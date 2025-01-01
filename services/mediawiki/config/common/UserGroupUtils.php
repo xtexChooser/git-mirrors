@@ -19,9 +19,17 @@ function xvRemoveGroup(string $group)
 function xvMergeGroup(string $from, string $to)
 {
 	foreach (['wgAddGroups', 'wgRemoveGroups', 'wgGroupsAddToSelf', 'wgGroupsRemoveFromSelf'] as $var) {
+		if (!isset($GLOBALS[$var][$from]))
+			continue;
+		if (!isset($GLOBALS[$var][$to]))
+			$GLOBALS[$var][$to] = [];
 		$GLOBALS[$var][$to] += $GLOBALS[$var][$from];
 	}
 	foreach (['wgGroupPermissions', 'wgRevokePermissions'] as $var) {
+		if (!isset($GLOBALS[$var][$from]))
+			continue;
+		if (!isset($GLOBALS[$var][$to]))
+			$GLOBALS[$var][$to] = [];
 		$GLOBALS[$var][$to] += $GLOBALS[$var][$from];
 	}
 	xvRemoveGroup($from);
