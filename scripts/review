@@ -1,0 +1,34 @@
+#!/usr/bin/bash
+# Called from Justfile for sending patches for review
+set -euo pipefail
+
+die() {
+	echo "$*"
+	exit 1
+}
+
+topicBranch="$(git rev-parse --abbrev-ref HEAD)"
+[[ "$topicBranch" != "HEAD" ]] || die "You are not on a branch."
+
+baseRef="$(git config branch."$topicBranch".merge)"
+baseRemote="$(git config branch."$topicBranch".remote)"
+baseBranch="$(git rev-parse --abbrev-ref "$baseRef")"
+
+changesCount="$(git log "$baseRemote"/"$baseBranch"...HEAD --oneline | wc -l)"
+((changesCount == 1)) || die "Sending multiple changes are not supported."
+
+message="$(git log -1 --format='%s' HEAD)"
+bug="$(git log -1 --format='%(trailers:key=Bug,only,valueonly,separator=%x2C)' HEAD | cut -d',' -f1)"
+
+if [[ "$topicBranch" != "$baseBranch" ]]; then
+	topic="$topicBranch"
+elif [[ "$bug" =~ \#[1-9][0-9]* ]]; then
+	topic="issue/$(tail -c+2 <<<"$bug")"
+fi
+
+echo "$message
+$topicBranch $topic -> $baseRemote/$baseBranch"
+
+git push "$baseRemote" HEAD:refs/for/"$baseBranch" \
+	-o topic="$topic" \
+	-o title="$message"
