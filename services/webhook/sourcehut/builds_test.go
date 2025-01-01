@@ -464,4 +464,55 @@ tasks:
     - hello: echo world
 `, string(manifest))
 	})
+
+	t.Run("with ssh source", func(t *testing.T) {
+		repo := &api.Repository{
+			CloneURL: "http://localhost:3000/testdata/repo.git",
+			SSHURL:   "git@localhost:testdata/repo.git",
+		}
+
+		manifest, err := adjustManifest(repo, "58771003157b81abc6bf41df0c5db4147a3e3c83", "refs/heads/main", strings.NewReader(`image: alpine/edge
+sources:
+- git@localhost:testdata/repo.git
+- http://other.example.conm/repo.git
+tasks:
+    - hello: echo world`), ".build.yml")
+
+		require.NoError(t, err)
+		assert.Equal(t, `sources:
+    - git@localhost:testdata/repo.git#58771003157b81abc6bf41df0c5db4147a3e3c83
+    - http://other.example.conm/repo.git
+environment:
+    BUILD_SUBMITTER: forgejo
+    BUILD_SUBMITTER_URL: https://example.forgejo.org/
+    GIT_REF: refs/heads/main
+image: alpine/edge
+tasks:
+    - hello: echo world
+`, string(manifest))
+	})
+
+	t.Run("private without source", func(t *testing.T) {
+		repo := &api.Repository{
+			CloneURL: "http://localhost:3000/testdata/repo.git",
+			SSHURL:   "git@localhost:testdata/repo.git",
+			Private:  true,
+		}
+
+		manifest, err := adjustManifest(repo, "58771003157b81abc6bf41df0c5db4147a3e3c83", "refs/heads/main", strings.NewReader(`image: alpine/edge
+tasks:
+    - hello: echo world`), ".build.yml")
+
+		require.NoError(t, err)
+		assert.Equal(t, `sources:
+    - git@localhost:testdata/repo.git#58771003157b81abc6bf41df0c5db4147a3e3c83
+environment:
+    BUILD_SUBMITTER: forgejo
+    BUILD_SUBMITTER_URL: https://example.forgejo.org/
+    GIT_REF: refs/heads/main
+image: alpine/edge
+tasks:
+    - hello: echo world
+`, string(manifest))
+	})
 }

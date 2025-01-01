@@ -289,16 +289,21 @@ func adjustManifest(repo *api.Repository, commitID, gitRef string, r io.Reader, 
 	manifest.Environment["BUILD_SUBMITTER_URL"] = setting.AppURL
 	manifest.Environment["GIT_REF"] = gitRef
 
-	source := repo.CloneURL + "#" + commitID
 	found := false
 	for i, s := range manifest.Sources {
-		if s == repo.CloneURL {
-			manifest.Sources[i] = source
+		if s == repo.CloneURL || s == repo.SSHURL {
+			manifest.Sources[i] = s + "#" + commitID
 			found = true
 			break
 		}
 	}
 	if !found {
+		source := repo.CloneURL
+		if repo.Private || setting.Repository.DisableHTTPGit {
+			// default to ssh for private repos or when git clone is disabled over http
+			source = repo.SSHURL
+		}
+		source += "#" + commitID
 		manifest.Sources = append(manifest.Sources, source)
 	}
 
