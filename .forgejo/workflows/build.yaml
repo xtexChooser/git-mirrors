@@ -1,6 +1,5 @@
 on:
   push:
-    branches: [main]
   workflow_dispatch:
   schedule:
     - cron: "30 6 * * 6"
@@ -11,7 +10,7 @@ jobs:
       image: docker.io/library/alpine:latest
     steps:
       - name: Install deps
-        run: apk update; apk add --no-cache podman node
+        run: apk update; apk add --no-cache podman nodejs
       - uses: https://code.forgejo.org/actions/checkout@v4
       - name: Build
         run: podman build -t codeberg.org/xens/x-mediawiki -f contrib/Containerfile .
