@@ -13,4 +13,7 @@ jobs:
         run: apk update; apk add --no-cache podman nodejs git
       - uses: https://code.forgejo.org/actions/checkout@v4
       - name: Build
-        run: podman build -t codeberg.org/xens/x-mediawiki -f contrib/Containerfile .
+        run: |
+          echo root:100000:65536 >/etc/subuid
+          echo root:100000:65536 >/etc/subgid
+          podman build -t codeberg.org/xens/x-mediawiki -f contrib/Containerfile .
