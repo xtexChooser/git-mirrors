@@ -10,7 +10,7 @@ jobs:
       image: docker.io/library/alpine:latest
     steps:
       - name: Install deps
-        run: apk update; apk add --no-cache podman nodejs
+        run: apk update; apk add --no-cache podman nodejs git
       - uses: https://code.forgejo.org/actions/checkout@v4
       - name: Build
         run: podman build -t codeberg.org/xens/x-mediawiki -f contrib/Containerfile .
