@@ -11,7 +11,12 @@ Per previous discussion, the creation of wiki (NAME) is accepted.
 
 ## Site Configuration
 
-TODO: Needs details
+- Database name: `wiki(NAME)`
+- Domain: ``
+- Language: ``
+- Skin: ``
+- License: [TODO](TODO)
+- Centralized: Yes
 
 ## Tasks
 
