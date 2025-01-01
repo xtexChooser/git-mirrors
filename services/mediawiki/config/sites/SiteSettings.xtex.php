@@ -4,6 +4,7 @@ $wgMetaNamespace = "K";
 
 $xvTesting = true;
 $xvCentralized = true;
+$xvUseSelfHostedImages = true;
 
 $xvUseLockdown = true;
 
