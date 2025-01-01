@@ -54,10 +54,6 @@ P: ^services/mediawiki/
 S: MW: PHP
 P: ^services/mediawiki/php/
 
-S: MW: global
-P: ^services/mediawiki/config/LocalSettings\.php$
-P: ^services/mediawiki/config/common/
-
 S: MW: meta
 P: ^services/mediawiki/config/sites/SiteSettings\.meta\.php$
 
@@ -66,6 +62,13 @@ P: ^services/mediawiki/config/sites/SiteSettings\.xvnet\.php$
 
 S: MW: hgdns
 P: ^services/mediawiki/config/sites/SiteSettings\.hgdns\.php$
+
+S: MW: xtex
+P: ^services/mediawiki/config/sites/SiteSettings\.xtex\.php$
+
+S: MW: global
+P: ^services/mediawiki/config/LocalSettings\.php$
+P: ^services/mediawiki/config/common/
 
 # HOSTS
 S: Hosts
