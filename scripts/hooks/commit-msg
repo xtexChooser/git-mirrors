@@ -23,6 +23,11 @@ trap 'rm -f "${temp}.1" "${temp}.2"' EXIT
 
 sed -e '/>8/q' "$1" | git stripspace --strip-comments >"${temp}.1"
 
+# skip empty messages
+if [[ "$(wc -l <"${temp}.1")" == 0 ]]; then
+	exit 0
+fi
+
 if git interpret-trailers --parse <"${temp}.1" | grep -q "^Change-Id: .*$"; then
 	exit 0
 fi
