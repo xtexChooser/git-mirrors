@@ -10,8 +10,8 @@ jobs:
     container:
       image: docker.io/library/alpine:latest
     steps:
-      - uses: https://code.forgejo.org/actions/checkout@v4
       - name: Install deps
-        run: apk refresh; apk add -y podman
+        run: apk refresh; apk add -y podman node
+      - uses: https://code.forgejo.org/actions/checkout@v4
       - name: Build
         run: podman build -t codeberg.org/xens/x-mediawiki -f contrib/Containerfile .
