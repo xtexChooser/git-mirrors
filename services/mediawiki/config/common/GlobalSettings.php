@@ -89,6 +89,10 @@ if ($xvUseSelfHostedImages) {
 if ($xvUseEmailConfirmed) {
 	$wgAutopromote['emailconfirmed'] = APCOND_EMAILCONFIRMED;
 	$wgImplicitGroups[] = 'emailconfirmed';
+	if ($xvRequireEmailConfirmedToEdit) {
+		xvRemovePermission('edit', ['*', 'user']);
+		$wgGroupPermissions['emailconfirmed']['edit'] = true;
+	}
 }
 
 if (xvIsExtensionLoaded('BetaFeatures')) {

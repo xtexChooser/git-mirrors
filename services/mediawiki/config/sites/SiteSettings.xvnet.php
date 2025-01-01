@@ -18,8 +18,7 @@ $wgDefaultSkin = $wgDefaultMobileSkin = 'lakeus';
 $wgLocalInterwikis[] = 'xvn';
 
 $xvUseEmailConfirmed = true;
-xvRemovePermission('edit', ['*', 'user']);
-$wgGroupPermissions['emailconfirmed']['edit'] = true;
+$xvRequireEmailConfirmedToEdit = true;
 
 $xvUseCargo = true;
 

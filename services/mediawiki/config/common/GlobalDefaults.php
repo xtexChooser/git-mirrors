@@ -219,6 +219,7 @@ $wgSMTP = [
 $wgEmergencyContact = $xvOpContactEmail;
 $wgPasswordSender = $xvSMTPSender;
 $xvUseEmailConfirmed = false;
+$xvRequireEmailConfirmedToEdit = false;
 
 // Scribunto
 $wgScribuntoDefaultEngine = 'luasandbox';
