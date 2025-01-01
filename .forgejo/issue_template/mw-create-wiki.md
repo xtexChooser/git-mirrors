@@ -12,6 +12,7 @@ Per previous discussion, the creation of wiki (NAME) is accepted.
 ## Site Configuration
 
 - Database name: `wiki(NAME)`
+- Name: ``
 - Domain: ``
 - Language: ``
 - Skin: ``
