@@ -30,4 +30,4 @@ TODO: Needs details
 - [ ] (opt) Coordinate DNS records for custom domains.
 - [ ] Run `atre s mediawiki cronjob <WIKI>` to generate initial sitemaps.
 - [ ] (opt) Submit sitemaps to Google and Bing.
-- [ ] Add to uptime checker.
+- [ ] Add to uptime checker. (@xtex)
