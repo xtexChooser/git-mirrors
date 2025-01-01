@@ -1,0 +1,78 @@
+# MISC FILES
+S: atremis
+P: ^services/atremis/
+
+S: issue-templates
+P: ^\.forgejo/issue_template/
+
+S: CI
+P: ^\.woodpecker/
+
+S: external
+P: ^external/
+
+S: scripts
+P: ^scripts/
+
+S: githooks
+P: ^scripts/hooks
+
+# INFRASTRUCTURE SERVICES
+S: BIND
+P: ^services/bind/
+
+S: BIRD
+P: ^services/bird/
+
+S: Caddy
+P: ^services/caddy/
+
+S: DNS
+P: ^services/dns/
+
+# APPLICATION SERVICES
+S: MariaDB
+P: ^services/mariadb/
+
+S: MariaDB: monto
+P: ^services/mariadb/monto/
+
+S: ntfy
+P: ^services/ntfy
+
+S: Postgres
+P: ^services/postgres/
+
+S: Postgres: balaro
+P: ^services/postgres/balaro/
+
+# WIKIS
+
+S: MW
+P: ^services/mediawiki/
+
+S: MW: PHP
+P: ^services/mediawiki/php/
+
+S: MW: global
+P: ^services/mediawiki/config/LocalSettings\.php$
+P: ^services/mediawiki/config/common/
+
+S: MW: meta
+P: ^services/mediawiki/config/sites/SiteSettings\.meta\.php$
+
+S: MW: xvnet
+P: ^services/mediawiki/config/sites/SiteSettings\.xvnet\.php$
+
+S: MW: hgdns
+P: ^services/mediawiki/config/sites/SiteSettings\.hgdns\.php$
+
+# HOSTS
+S: Hosts
+P: ^hosts
+
+S: opilio
+P: ^hosts/opilio\.s\.xvnet0\.eu\.org\.mk$
+
+S: koit
+P: ^hosts/koit\.s\.xvnet0\.eu\.org\.mk$

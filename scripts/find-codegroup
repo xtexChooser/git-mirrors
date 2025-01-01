@@ -1,0 +1,32 @@
+#!/usr/bin/bash
+set -euo pipefail
+
+declare group="" matched=""
+
+while read -r line; do
+	[[ -n "$line" ]] || continue
+	case "$line" in
+	\#*) ;;
+	'S: '*)
+		group="$(tail -c+4 <<<"$line")"
+		;;
+	'P: '*)
+		if {
+			if [[ -n "${1:-}" ]]; then
+				grep -E "$(tail -c+4 <<<"$line")" "$1" &>/dev/null
+			else
+				git diff-index --name-only --cached HEAD | grep -E "$(tail -c+4 <<<"$line")" &>/dev/null
+			fi
+		}; then
+			matched="$group"
+		fi
+		;;
+	*)
+		echo "find-codegroup: unknown line: $line" >&2
+		exit 1
+		;;
+	esac
+done <scripts/CODEGROUPS
+
+[[ -n "$matched" ]] || exit 0
+echo "$matched"
