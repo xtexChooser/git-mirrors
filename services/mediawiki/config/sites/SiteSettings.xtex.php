@@ -51,3 +51,5 @@ $wgNamespacePermissionLockdown[NS_L]['read'] = ['l-accessor'];
 $wgNamespacePermissionLockdown[NS_L]['edit'] = ['l-accessor'];
 $wgNamespacePermissionLockdown[NS_M]['read'] = ['m-accessor'];
 $wgNamespacePermissionLockdown[NS_M]['edit'] = ['m-accessor'];
+
+require_once "$xvConfigDirectory/common/GlobalSettings.php";
