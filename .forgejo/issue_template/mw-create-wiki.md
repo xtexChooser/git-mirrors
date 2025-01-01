@@ -38,3 +38,5 @@ Per previous discussion, the creation of wiki (NAME) is accepted.
 - [ ] Run `atre s mediawiki cronjob <WIKI>` to generate initial sitemaps.
 - [ ] (opt) Submit sitemaps to Google and Bing.
 - [ ] Add to uptime checker. (@xtex)
+- [ ] Add interwiki to meta-wiki.
+- [ ] (opt) Add link to meta-wiki main page.
