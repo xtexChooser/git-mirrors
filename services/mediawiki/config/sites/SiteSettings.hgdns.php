@@ -5,6 +5,14 @@ $wgLocalInterwikis[] = 'hgdns';
 $xvCentralized = false;
 $xvUseSelfHostedImages = true;
 
+// Extensions
+$xvUseGlobalSkins = false;
+$xvUseCaptcha = false;
+$xvUseTabberNeue = true;
+$xvUseLockdown = true;
+$xvUseContactPage = true;
+require_once "$xvConfigDirectory/common/LoadExtensions.php";
+
 // Localisation
 $wgLanguageCode = 'zh-hans';
 xvMergeInto('wgHiddenPrefs', ['language', 'variant', 'noconvertlink']);
@@ -43,7 +51,6 @@ $wgDefaultUserOptions['watchdefault'] = 0;
 xvMergeInto('wgHiddenPrefs', ['realname']);
 
 // Skin
-$xvUseGlobalSkins = false;
 xvLoadSkin('Citizen');
 $wgDefaultSkin = $wgDefaultMobileSkin = 'Citizen';
 $wgCitizenShowPageTools = 'login';
@@ -65,9 +72,7 @@ xvMergeGroup('bureaucrat', 'sysop');
 xvMergeGroup('interface-admin', 'sysop');
 
 // Misc
-$xvUseCaptcha = false;
 $wgUseSharedUploads = false;
-$xvUseTabberNeue = true;
 
 // Namespaces
 const NS_MEMBER = 3000;
@@ -99,7 +104,6 @@ $wgNamespaceAliases['P'] = NS_PROJECT;
 $wgNamespaceAliases['U'] = NS_USER;
 
 // Lockdown
-$xvUseLockdown = true;
 $wgSpecialPageLockdown['Export'] = ['user'];
 
 $wgNamespacePermissionLockdown[NS_MAIN]['edit'] = ['sysop'];
@@ -122,7 +126,6 @@ xvSetAssocTrues('wgNamespacesToBeSearchedDefault', [
 xvMergeInto('wgFileExtensions', ['pdf']);
 
 // ContactPage
-$xvUseContactPage = true;
 $wgContactConfig['join'] = [
 	'RecipientUser' => 'Xtex',
 	'SenderName' => '',

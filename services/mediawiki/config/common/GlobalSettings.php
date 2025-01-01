@@ -2,14 +2,6 @@
 if ($xvUseDatabaseMonto)
 	require_once "$xvConfigDirectory/common/Database.php";
 
-// global extensions
-if ($xvUseGlobalExtensions)
-	xvLoadExtensions($xvGlobalExtensions);
-
-// global skins
-if ($xvUseGlobalSkins)
-	xvLoadSkins($xvGlobalSkins);
-
 // emergeny locks
 if ($xvEmergAbuse) {
 	xvMergeInto2('wgRateLimits', 'purge', [
@@ -46,18 +38,6 @@ if ($xvCentralized)
 
 // CAPTCHA
 if ($xvUseCaptcha) {
-	xvLoadExtension('ConfirmEdit');
-
-	switch ($xvCaptchaType) {
-		case XvCaptchaType::Turnstile:
-			xvLoadExtension('ConfirmEdit/Turnstile');
-			$wgTurnstileSendRemoteIP = false;
-			break;
-		case XvCaptchaType::Questy:
-			xvLoadExtension('ConfirmEdit/QuestyCaptcha');
-			break;
-	}
-
 	xvSetAssocTrues('wgCaptchaTriggers', [
 		'create',
 		'sendemail',
@@ -103,7 +83,6 @@ if (xvIsExtensionLoaded('BetaFeatures')) {
 }
 
 if ($xvUseVisualEditor) {
-	xvLoadExtension('VisualEditor');
 	$wgVisualEditorEnableWikitext = true;
 	$wgVisualEditorEnableTocWidget = true;
 
@@ -127,7 +106,6 @@ if (xvIsExtensionLoaded('TemplateSandbox')) {
 }
 
 if ($xvUseMobileFrontend) {
-	xvLoadExtension('MobileFrontend');
 	$wgMFSiteStylesRenderBlocking = true;
 }
 
@@ -214,26 +192,9 @@ if ($xvEmergSecLockdown) {
 	xvGrantPermissionsTo('staff', $allRights);
 }
 
-if ($xvUseLockdown) {
-	xvLoadExtension('Lockdown');
-}
-
-if ($xvUseCargo) {
-	xvLoadExtension('Cargo');
-}
-
-if ($xvUseContactPage) {
-	xvLoadExtension('ContactPage');
-}
-
 if ($xvUseSecurePoll) {
-	xvLoadExtension('SecurePoll');
 	$wgSecurePollCreateRemoteScriptPath = $wgServer;
 	$wgGroupPermissions['electionadmin'] = [];
 	$wgGroupPermissions['sysop']['securepoll-create-poll'] = true;
 	$wgGroupPermissions['staff']['securepoll-view-voter-pii'] = true;
-}
-
-if ($xvUseTabberNeue) {
-	xvLoadExtension('TabberNeue');
 }

@@ -2,6 +2,8 @@
 $wgSitename = "Xens Meta";
 $wgMetaNamespace = "Meta";
 
+require_once "$xvConfigDirectory/common/LoadExtensions.php";
+
 $wgLanguageCode = 'en';
 $wgLocaltimezone = 'UTC';
 
