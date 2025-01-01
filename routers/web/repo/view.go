@@ -394,6 +394,10 @@ func renderFile(ctx *context.Context, entry *git.TreeEntry) {
 	ctx.Data["FileName"] = blob.Name()
 	ctx.Data["RawFileLink"] = ctx.Repo.RepoLink + "/raw/" + ctx.Repo.BranchNameSubURL() + "/" + util.PathEscapeSegments(ctx.Repo.TreePath)
 
+	ctx.Data["OpenGraphTitle"] = ctx.Data["Title"]
+	ctx.Data["OpenGraphURL"] = fmt.Sprintf("%s%s", setting.AppURL, ctx.Data["Link"])
+	ctx.Data["OpenGraphNoDescription"] = true
+
 	if entry.IsLink() {
 		_, link, err := entry.FollowLinks()
 		// Errors should be allowed, because this shouldn't
