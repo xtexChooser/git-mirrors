@@ -233,8 +233,11 @@ func ParseCompareInfo(ctx *context.Context) *common.CompareInfo {
 	} else {
 		infoPath, isDiff := strings.CutSuffix(infoPath, ".diff")
 		ctx.Data["ComparingDiff"] = isDiff
-		infoPath, isPatch := strings.CutSuffix(infoPath, ".patch")
-		ctx.Data["ComparingPatch"] = isPatch
+		if !isDiff {
+			var isPatch bool
+			infoPath, isPatch = strings.CutSuffix(infoPath, ".patch")
+			ctx.Data["ComparingPatch"] = isPatch
+		}
 		infos = strings.SplitN(infoPath, "...", 2)
 		if len(infos) != 2 {
 			if infos = strings.SplitN(infoPath, "..", 2); len(infos) == 2 {
@@ -721,7 +724,7 @@ func CompareDiff(ctx *context.Context) {
 		return
 	}
 
-	if ctx.Data["ComparingDiff"].(bool) {
+	if ctx.Data["ComparingDiff"] != nil && ctx.Data["ComparingDiff"].(bool) {
 		err := git.GetRepoRawDiffForFile(ci.HeadGitRepo, ci.BaseBranch, ci.HeadBranch, git.RawDiffNormal, "", ctx.Resp)
 		if err != nil {
 			ctx.ServerError("ComparingDiff", err)
@@ -729,7 +732,7 @@ func CompareDiff(ctx *context.Context) {
 		}
 	}
 
-	if ctx.Data["ComparingPatch"].(bool) {
+	if ctx.Data["ComparingPatch"] != nil && ctx.Data["ComparingPatch"].(bool) {
 		err := git.GetRepoRawDiffForFile(ci.HeadGitRepo, ci.BaseBranch, ci.HeadBranch, git.RawDiffPatch, "", ctx.Resp)
 		if err != nil {
 			ctx.ServerError("ComparingPatch", err)
