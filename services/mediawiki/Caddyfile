@@ -47,3 +47,8 @@ hgdns.ren {
 	tls internal
 	import mediawiki "hgdns"
 }
+
+k.xtexx.eu.org {
+	tls internal
+	import mediawiki "xtex"
+}
