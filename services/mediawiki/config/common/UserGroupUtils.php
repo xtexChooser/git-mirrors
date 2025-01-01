@@ -11,6 +11,8 @@ function xvRemoveGroup(string $group)
 	foreach (['wgAddGroups', 'wgRemoveGroups', 'wgGroupsAddToSelf', 'wgGroupsRemoveFromSelf'] as $var) {
 		unset($GLOBALS[$var][$group]);
 		foreach ($GLOBALS[$var] as $key => &$val) {
+			if ($val == true)
+				continue;
 			$val = array_diff($val, array($group));
 		}
 	}
