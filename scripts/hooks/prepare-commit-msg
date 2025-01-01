@@ -1,0 +1,16 @@
+#!/usr/bin/bash
+set -euo pipefail
+
+die() {
+	echo "$*"
+	exit 1
+}
+
+MSG_FILE="$1"
+SOURCE="${2:-}"
+[ -z "$SOURCE" ] || exit 0
+
+codegroup="$(scripts/find-codegroup)"
+[ -n "$codegroup" ] || exit 0
+prefix="${codegroup}: "
+printf '%s\n%s\n' "$prefix" "$(cat "$MSG_FILE")" >"$MSG_FILE"
