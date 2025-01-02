@@ -23,6 +23,7 @@ import (
 	files_service "code.gitea.io/gitea/services/repository/files"
 	"code.gitea.io/gitea/tests"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -65,6 +66,114 @@ func inspectCompare(t *testing.T, htmlDoc *HTMLDoc, diffCount int, diffChanges [
 		selection = htmlDoc.doc.Find(fmt.Sprintf("[data-new-filename=\"%s\"]", diffChange))
 		assert.Lenf(t, selection.Nodes, 1, "Expected 1 match for [data-new-filename=\"%s\"], found: %v", diffChange, len(selection.Nodes))
 	}
+}
+
+func TestComparePatchAndDiffMenuEntries(t *testing.T) {
+	defer tests.PrepareTestEnv(t)()
+
+	session := loginUser(t, "user2")
+	req := NewRequest(t, "GET", "/user2/repo-release/compare/v1.0...v2.0")
+	resp := session.MakeRequest(t, req, http.StatusOK)
+	htmlDoc := NewHTMLParser(t, resp.Body)
+	downloadOptions := htmlDoc.doc.Find("a.item[download]")
+	var patchDownloadEntryPresent bool
+	var diffDownloadEntryPresent bool
+	downloadOptions.Each(func(idx int, c *goquery.Selection) {
+		value, exists := c.Attr("download")
+		if exists && strings.HasSuffix(value, ".patch") {
+			patchDownloadEntryPresent = true
+		}
+
+		if exists && strings.HasSuffix(value, ".diff") {
+			diffDownloadEntryPresent = true
+		}
+	})
+
+	assert.True(t, patchDownloadEntryPresent, "Patch file download entry should be present")
+	assert.True(t, diffDownloadEntryPresent, "Diff file download entry should be present")
+}
+
+func TestComparePatchDownload(t *testing.T) {
+	defer tests.PrepareTestEnv(t)()
+
+	session := loginUser(t, "user2")
+	req := NewRequest(t, "GET", "/user2/repo-release/compare/v1.0...v2.0.patch")
+	attendedResponse := `From 4380f99290b2b3922733ff82c57afad915ace907 Mon Sep 17 00:00:00 2001
+From: user1 <address1@example.com>
+Date: Mon, 17 Apr 2023 14:39:35 +0200
+Subject: [PATCH 1/3] feature v2
+
+---
+ feature | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 feature
+
+diff --git a/feature b/feature
+new file mode 100644
+index 0000000..e69de29
+
+From 79f9d88f1b054d650f88da0bd658e21f7b0cf6ec Mon Sep 17 00:00:00 2001
+From: user1 <address1@example.com>
+Date: Mon, 17 Apr 2023 14:38:53 +0200
+Subject: [PATCH 2/3] bugfix
+
+---
+ bugfix | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 bugfix
+
+diff --git a/bugfix b/bugfix
+new file mode 100644
+index 0000000..e69de29
+
+From 7197b56fdc75b453f47c9110938cb46a303579fd Mon Sep 17 00:00:00 2001
+From: user1 <address1@example.com>
+Date: Mon, 17 Apr 2023 14:42:34 +0200
+Subject: [PATCH 3/3] readme: v2
+
+---
+ README.md | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/README.md b/README.md
+index 6dfe48a..bc7068d 100644
+--- a/README.md
++++ b/README.md
+@@ -1,3 +1,3 @@
+ # Releases test repo
+ 
+-With a v1.0
++With a v1.0 and a v2.0
+`
+
+	resp := session.MakeRequest(t, req, http.StatusOK)
+	assert.Equal(t, attendedResponse, resp.Body.String())
+}
+
+func TestCompareDiffDownload(t *testing.T) {
+	defer tests.PrepareTestEnv(t)()
+
+	session := loginUser(t, "user2")
+	req := NewRequest(t, "GET", "/user2/repo-release/compare/v1.0...v2.0.diff")
+	attendedResponse := `diff --git a/README.md b/README.md
+index 6dfe48a..bc7068d 100644
+--- a/README.md
++++ b/README.md
+@@ -1,3 +1,3 @@
+ # Releases test repo
+ 
+-With a v1.0
++With a v1.0 and a v2.0
+diff --git a/bugfix b/bugfix
+new file mode 100644
+index 0000000..e69de29
+diff --git a/feature b/feature
+new file mode 100644
+index 0000000..e69de29
+`
+
+	resp := session.MakeRequest(t, req, http.StatusOK)
+	assert.Equal(t, attendedResponse, resp.Body.String())
 }
 
 // Git commit graph for repo20
