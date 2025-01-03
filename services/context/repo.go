@@ -634,6 +634,10 @@ func RepoAssignment(ctx *Context) context.CancelFunc {
 	}
 
 	cardWidth, cardHeight := card.DefaultSize()
+	ctx.Data["OpenGraphTitle"] = repo.Name
+	ctx.Data["OpenGraphURL"] = repo.HTMLURL()
+	ctx.Data["OpenGraphType"] = "object"
+	ctx.Data["OpenGraphDescription"] = repo.Description
 	ctx.Data["OpenGraphImageURL"] = repo.SummaryCardURL()
 	ctx.Data["OpenGraphImageWidth"] = cardWidth
 	ctx.Data["OpenGraphImageHeight"] = cardHeight
