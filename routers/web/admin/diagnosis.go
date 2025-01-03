@@ -6,6 +6,7 @@ package admin
 import (
 	"archive/zip"
 	"fmt"
+	"runtime"
 	"runtime/pprof"
 	"runtime/trace"
 	"time"
@@ -73,5 +74,8 @@ func MonitorDiagnosis(ctx *context.Context) {
 		ctx.ServerError("Failed to create zip file", err)
 		return
 	}
+	// To avoid showing memory that actually can be cleaned, run the garbage
+	// collector.
+	runtime.GC()
 	_ = pprof.Lookup("heap").WriteTo(f, 0)
 }
