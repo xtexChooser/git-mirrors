@@ -259,8 +259,8 @@ class MWExceptionHandler {
 		$file = null,
 		$line = null
 	) {
-		// E_STRICT is deprecated since PHP 8.4.
-		if ( defined( 'E_STRICT' ) && $level == @E_STRICT ) {
+		// E_STRICT is deprecated since PHP 8.4 (T375707).
+		if ( defined( 'E_STRICT' ) && $level == constant( 'E_STRICT' ) ) {
 			$level = E_USER_NOTICE;
 		}
 
