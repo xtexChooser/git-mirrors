@@ -1,7 +1,11 @@
 steps:
     - name: prepare-keys
       image: alpine
-      secrets: [dnscontrol_secrets, ntfy_token]
+      environment:
+        DNSCONTROL_SECRETS:
+          from_secret: dnscontrol_secrets
+        NTFY_TOKEN:
+          from_secret: ntfy_token
       commands:
           - echo "$DNSCONTROL_SECRETS" > services/dns/dnscontrol/.env.sh
           - echo "$NTFY_TOKEN" > services/dns/dnscontrol/ntfytoken.txt
@@ -16,7 +20,9 @@ steps:
           dockerfile: services/dns/dnscontrol/Containerfile
     - name: send-ntfy
       image: alpine
-      secrets: [ntfy_token]
+      environment:
+        NTFY_TOKEN:
+          from_secret: ntfy_token
       when:
           - status: [success, failure]
       commands:

@@ -20,14 +20,17 @@ steps:
           dockerfile: services/mediawiki/php/Containerfile
     - name: mark-latest
       image: alpine
-      secrets: [codeberg_token]
+      environment:
+        CODEBERG_TOKEN:
+          from_secret: codeberg_token
       commands:
           - ./scripts/pkgs/tag-latest.sh "codeberg.org/${CI_REPO_OWNER}/x-mediawiki-php" .woodpecker/build-mediawiki-php.yaml "${VERSION}"
     - name: send-ntfy
       image: alpine
-      secrets: [ntfy_token]
       environment:
-          VERSION: "${VERSION}"
+        NTFY_TOKEN:
+          from_secret: ntfy_token
+        VERSION: "${VERSION}"
       when:
           - status: [success, failure]
       commands:

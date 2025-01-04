@@ -12,7 +12,9 @@ steps:
           dockerfile: services/caddy/Containerfile
     - name: send-ntfy
       image: alpine
-      secrets: [ntfy_token]
+      environment:
+        NTFY_TOKEN:
+          from_secret: ntfy_token
       when:
           - status: [success, failure]
       commands:

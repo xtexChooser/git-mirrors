@@ -1,7 +1,9 @@
 steps:
     - name: prepare-keys
       image: alpine
-      secrets: [dns_zones_ksk]
+      environment:
+        DNS_ZONES_KSK:
+          from_secret: dns_zones_ksk
       commands:
           - echo "$DNS_ZONES_KSK" | sh -
     - name: build
@@ -17,7 +19,9 @@ steps:
           dockerfile: services/dns/Containerfile
     - name: send-ntfy
       image: alpine
-      secrets: [ntfy_token]
+      environment:
+        NTFY_TOKEN:
+          from_secret: ntfy_token
       when:
           - status: [success, failure]
       commands:
