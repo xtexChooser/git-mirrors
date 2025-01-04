@@ -25,21 +25,21 @@ declare( strict_types=1 );
 
 namespace MediaWiki\Skins\Citizen\Hooks;
 
-use ExtensionRegistry;
-use Html;
-use Language;
 use MediaWiki\Hook\BeforePageDisplayHook;
 use MediaWiki\Hook\SidebarBeforeOutputHook;
 use MediaWiki\Hook\SkinBuildSidebarHook;
 use MediaWiki\Hook\SkinEditSectionLinksHook;
+use MediaWiki\Html\Html;
+use MediaWiki\Language\Language;
+use MediaWiki\Output\OutputPage;
+use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\ResourceLoader as RL;
+use MediaWiki\Skin\SkinComponentUtils;
 use MediaWiki\Skins\Citizen\GetConfigTrait;
 use MediaWiki\Skins\Hook\SkinPageReadyConfigHook;
 use MediaWiki\Title\Title;
-use OutputPage;
 use Skin;
 use SkinTemplate;
-use SpecialPage;
 
 /**
  * Hooks to run relating the skin
@@ -111,8 +111,7 @@ class SkinHooks implements
 		$name = empty( $globalToolsId ) ? 'navigation' : preg_replace( '/^p-/', '', $globalToolsId );
 		$bar[$name]['specialpages'] = [
 			'text'  => $skin->msg( 'specialpages' ),
-			// TODO: Replace with SkinComponentUtils on 1.43
-			'href'  => SpecialPage::getTitleFor( 'Specialpages' )->getLocalURL(),
+			'href'  => SkinComponentUtils::makeSpecialUrl( 'Specialpages' ),
 			'title' => $skin->msg( 'tooltip-t-specialpages' ),
 			'icon'  => 'specialPages',
 			'id'    => 't-specialpages',
@@ -122,11 +121,10 @@ class SkinHooks implements
 			$isUploadWizardEnabled = ExtensionRegistry::getInstance()->isLoaded( 'Upload Wizard' );
 			$bar[$name]['upload'] = [
 				'text'  => $skin->msg( 'upload' ),
-				// TODO: Replace with SkinComponentUtils on 1.43
-				'href'  => SpecialPage::getTitleFor( $isUploadWizardEnabled ?
+				'href'  => SkinComponentUtils::makeSpecialUrl( $isUploadWizardEnabled ?
 					'UploadWizard' :
 					'Upload'
-				)->getLocalURL(),
+				),
 				'title' => $skin->msg( 'tooltip-t-upload' ),
 				'icon'  => 'upload',
 				'id'    => 't-upload',
@@ -160,16 +158,16 @@ class SkinHooks implements
 		if ( isset( $result['veeditsection'] ) ) {
 			self::appendClassToItem(
 				$result['veeditsection']['attribs']['class'],
-				'citizen-editsection-icon mw-ui-icon-wikimedia-edit'
+				'citizen-ui-icon mw-ui-icon-wikimedia-edit'
 			);
 			self::appendClassToItem(
 				$result['editsection']['attribs']['class'],
-				'citizen-editsection-icon mw-ui-icon-wikimedia-wikiText'
+				'citizen-ui-icon mw-ui-icon-wikimedia-wikiText'
 			);
 		} elseif ( isset( $result['editsection'] ) ) {
 			self::appendClassToItem(
 				$result['editsection']['attribs']['class'],
-				'citizen-editsection-icon mw-ui-icon-wikimedia-edit'
+				'citizen-ui-icon mw-ui-icon-wikimedia-edit'
 			);
 		}
 	}

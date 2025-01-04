@@ -70,7 +70,7 @@
 
 	// Hide menu labels
 	> .citizen-menu > .citizen-menu__heading {
-		.sr-only;
+		.mixin-citizen-screen-reader-only;
 	}
 }
 
@@ -106,13 +106,6 @@
 
 		&:active {
 			background-color: var( --color-progressive--active );
-		}
-	}
-
-	.citizen-ui-icon {
-		&::before {
-			filter: var( --filter-invert-primary );
-			opacity: 1; // white icon
 		}
 	}
 }

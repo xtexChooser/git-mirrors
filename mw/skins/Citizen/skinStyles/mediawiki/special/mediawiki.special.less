@@ -3,12 +3,21 @@
  *
  * SkinStyles for MediaWiki
  * Module: mediawiki.special
- * Version: REL1_39
+ * Version: REL1_43
  *
- * Date: 2024-02-26
+ * Date: 2025-01-01
 */
 
 @import '../../../resources/variables.less';
+
+/* Special:SpecialPages */
+.mw-specialpagerestricted {
+	font-weight: var( --font-weight-semi-bold );
+}
+
+.mw-specialpagesgroup {
+	clear: none;
+}
 
 /* Special:Version */
 /* MediaWiki License */
@@ -36,6 +45,7 @@
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 		gap: var( --space-xs );
+		border: 0;
 
 		@media ( min-width: @min-width-breakpoint-desktop ) {
 			grid-template-columns: repeat( auto-fit, minmax( 320px, 1fr ) );
@@ -43,10 +53,9 @@
 	}
 
 	tr {
-		display: grid;
-		place-content: center;
+		display: flex;
+		flex-direction: column;
 		padding: var( --space-sm ) var( --space-md );
-		text-align: center;
 		border: var( --border-width-base ) solid var( --border-color-base );
 		border-radius: var( --border-radius-medium );
 	}
@@ -79,6 +88,11 @@
 .citizen-overflow-wrapper:has( #sv-software ) {
 	max-width: none;
 	box-shadow: none;
+}
+
+.mw-installed-software {
+	width: auto;
+	word-break: normal;
 }
 
 // Highlight Citizen skin

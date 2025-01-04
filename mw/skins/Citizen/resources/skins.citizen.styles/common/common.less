@@ -74,6 +74,7 @@ blockquote {
 
 button {
 	font-family: var( --font-family-base );
+	color: var( --color-base );
 }
 
 sup,
@@ -104,7 +105,7 @@ td {
 
 .hidden,
 .sr-only {
-	.sr-only;
+	.mixin-citizen-screen-reader-only;
 }
 
 .nowrap {
@@ -117,6 +118,10 @@ td {
 	cursor: pointer;
 	background: transparent;
 	border: 0;
+}
+
+.citizen-sitenotice-container {
+	background-color: var( --color-surface-2 );
 }
 
 /*
@@ -135,10 +140,6 @@ td {
 	margin-left: 10px;
 	font-size: var( --font-size-small );
 	border-left: var( --border-width-base ) solid var( --border-color-base );
-}
-
-.mw-indicator {
-	filter: var( --filter-invert );
 }
 
 #mw-indicator-mw-helplink a {
