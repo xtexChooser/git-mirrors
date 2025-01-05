@@ -3,4 +3,4 @@ command = lighttpd -D -f /etc/mediawiki/lighttpd.conf
 term-signal = INT
 pid-file = /var/run/mediawiki/lighttpd.pid
 restart = true
-logfile = /var/log/mediawiki/lighttpd.log
+logfile = /var/log/mediawiki/mediawiki-lighttpd.log
