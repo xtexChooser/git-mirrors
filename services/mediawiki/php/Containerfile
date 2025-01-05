@@ -23,6 +23,7 @@ RUN set -euxo pipefail; \
 		echo 'opcache.fast_shutdown=1'; \
 	} > $PHP_INI_DIR/conf.d/opcache-recommended.ini; \
 	mkdir -p /var/www/data; \
+	;
 
 ADD php-fpm.conf /usr/local/etc/php-fpm.d/zzzz-mw-docker.conf
 ADD php.ini $PHP_INI_DIR/conf.d/mw.ini
