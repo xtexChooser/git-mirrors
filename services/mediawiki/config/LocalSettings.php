@@ -25,6 +25,9 @@ if (defined('MW_DB')) {
 } else if ($_SERVER['MW_WIKI'] ?? false) {
 	$xvWikiID = $_SERVER['MW_WIKI'];
 	$xvMaintScript = false;
+} else if ($_SERVER['HTTP_X_XENS_WIKI'] ?? false) {
+	$xvWikiID = $_SERVER['HTTP_X_XENS_WIKI'];
+	$xvMaintScript = false;
 } else {
 	die('Unknown wiki.');
 }
