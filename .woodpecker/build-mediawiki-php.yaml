@@ -41,7 +41,7 @@ when:
           include:
               [
                   ".woodpecker/build-mediawiki-php.yaml",
-                  "services/mediawiki/php/*",
+                  "services/mediawiki/php/**",
               ]
     - event: cron
       cron: build-pkgs
