@@ -11,6 +11,7 @@ V_ARGS		+= --mount=type=bind,src=/srv/atremis/services/mediawiki/config,dst=/etc
 V_ARGS		+= --mount=type=bind,src=/srv/secrets/mw,dst=/srv/secrets/mw,ro=true
 V_ARGS		+= --mount=type=bind,src=/var/run/mediawiki,dst=/var/run/mediawiki
 V_ARGS		+= --mount=type=bind,src=/var/lib/mediawiki,dst=/var/lib/mediawiki
+V_ARGS		+= --mount=type=bind,src=/var/log/atremis,dst=/var/log/atremis
 V_ARGS		+= --mount=type=image,source=codeberg.org/xens/x-mediawiki:latest,destination=/opt/mediawiki
 V_ARGS		+= --label=org.eu.xvnet.x.depimgs=codeberg.org/xens/x-mediawiki:latest
 V_ARGS		+= --memory=128M
