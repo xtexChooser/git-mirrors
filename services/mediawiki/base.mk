@@ -1,11 +1,11 @@
 $(call load-state, services/caddy)
 
 mediawiki-configs-dir := $(STATES_DIR)/services/mediawiki/config
-mediawiki-configs := $(patsubst $(mediawiki-configs-dir)/%,%,$(wildcard $(mediawiki-configs-dir)/*))
+mediawiki-configs := $(wildcard $(mediawiki-configs-dir)/*)
 
 $(call x-container-service)
 V_SERVICE	= mediawiki
-V_DEPS_ORD	+= $(addprefix $(mediawiki-configs-dir)/,$(mediawiki-configs))
+V_DEPS_ORD	+= $(mediawiki-configs)
 V_DEPS_ORD	+= /var/run/mediawiki /var/lib/mediawiki
 V_ARGS		+= --mount=type=bind,src=/srv/atremis/services/mediawiki/config,dst=/etc/mediawiki,ro=true
 V_ARGS		+= --mount=type=bind,src=/srv/secrets/mw,dst=/srv/secrets/mw,ro=true
@@ -28,6 +28,6 @@ $(call add-fs-directory,/var/lib/mediawiki)
 
 $(call stamp)
 V_NAME		= mediawiki-restart
-V_DEPS		+= $(wildcard /srv/atremis/services/mediawiki/config/*)
+V_DEPS		+= $(mediawiki-configs)
 V_POST		= dinit-restart E_SERVICE=mediawiki
 $(call end)
