@@ -12,8 +12,12 @@
 		root /var/lib/mediawiki/images/{args[0]}
 		file_server
 	}
-	reverse_proxy unix//var/run/mediawiki/lighttpd.sock {
-		header_up X-Xens-Wiki "{args[0]}"
+	handle {
+		root * /opt/mediawiki
+		php_fastcgi unix//var/run/mediawiki/php-fpm.sock {
+			env MW_WIKI {args[0]}
+		}
+		file_server
 	}
 }
 
