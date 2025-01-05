@@ -1,0 +1,6 @@
+type = process
+command = php-fpm
+term-signal = QUIT
+pid-file = /var/run/mediawiki/php-fpm.pid
+restart = true
+logfile = /var/log/atremis/mediawiki-php.log

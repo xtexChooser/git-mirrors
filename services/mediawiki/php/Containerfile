@@ -4,6 +4,8 @@ FROM docker.io/library/php:$VERSION-fpm-alpine
 ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 RUN set -euxo pipefail; \
 	apk add --no-cache \
+		lighttpd \
+		dinit \
 		git \
 		imagemagick \
 		rsvg-convert \
@@ -20,14 +22,16 @@ RUN set -euxo pipefail; \
 		echo 'opcache.revalidate_freq=60'; \
 		echo 'opcache.fast_shutdown=1'; \
 	} > $PHP_INI_DIR/conf.d/opcache-recommended.ini; \
-	mkdir -p /var/www/data;
+	mkdir -p /var/www/data; \
 
 ADD php-fpm.conf /usr/local/etc/php-fpm.d/zzzz-mw-docker.conf
 ADD php.ini $PHP_INI_DIR/conf.d/mw.ini
+ADD dinit.d /etc/dinit.d
 
 ENV MW_CONFIG_FILE=/etc/mediawiki/LocalSettings.php
 WORKDIR /opt/mediawiki
-ENTRYPOINT [ "php-fpm" ]
+
+ENTRYPOINT [ "/usr/sbin/dinit", "-s" ]
 
 LABEL org.opencontainers.image.licenses="PHP-3.01"
 LABEL org.opencontainers.image.source="https://codeberg.org/xens/atremis"
