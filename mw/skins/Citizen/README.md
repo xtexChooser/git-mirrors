@@ -59,9 +59,9 @@ Name | Description | Values | Default
 Name | Description | Values | Default
 :--- | :--- | :--- | :---
 `$wgCitizenSearchModule` | Which ResourceLoader module to use for search suggestion | `skins.citizen.search`; `mediawiki.searchSuggest`; string | `skins.citizen.search`
-`$wgCitizenSearchGateway` | Which gateway to use for fetching search suggestion |`mwActionApi`; `mwRestApi`; `smwAskApi`; string | `mwActionApi`
+`$wgCitizenSearchGateway` | Which gateway to use for fetching search suggestion |`mwActionApi`; `mwRestApi`; `smwAskApi`; string | `mwRestApi`
 `$wgCitizenSearchDescriptionSource` | Source of description text on search suggestions (only takes effect if `$wgCitizenSearchGateway` is `mwActionApi`) | `wikidata` - Use description provided by [WikibaseLib](Extension:WikibaseLib) or [ShortDescription](https://www.mediawiki.org/wiki/Extension:ShortDescription); `textextracts` - Use description provided by [TextExtracts](https://www.mediawiki.org/wiki/Extension:TextExtracts); `pagedescription` - Use description provided by [Description2](https://www.mediawiki.org/wiki/Extension:Description2) or any other extension that sets the `description` page property | `textextracts`
-`$wgCitizenMaxSearchResults` | Max number of search suggestions | Integer > 0 | `6`
+`$wgCitizenMaxSearchResults` | Max number of search suggestions | Integer > 0 | `10`
 
 ### Webapp manifest
 Name | Description | Values | Default
@@ -132,9 +132,9 @@ Name | Version
 [ManageWiki](https://www.mediawiki.org/wiki/Extension:ManageWiki) | master `e626a9f`
 [MediaSearch](https://www.mediawiki.org/wiki/Extension:MediaSearch) | REL1_39 `e0aa7bb`
 [MsUpload](https://www.mediawiki.org/wiki/Extension:MsUpload) | REL1_35 `32eb420`
-[MultimediaViewer](https://www.mediawiki.org/wiki/Extension:MultimediaViewer) | REL1_39 `1b97775`
+[MultimediaViewer](https://www.mediawiki.org/wiki/Extension:MultimediaViewer) | REL1_43
 [OAuth](https://www.mediawiki.org/wiki/Extension:OAuth) | REL1_35 `451ed95`
-[Popups](https://www.mediawiki.org/wiki/Extension:Popups) | REL1_39 `a40ebc1`
+[Popups](https://www.mediawiki.org/wiki/Extension:Popups) | REL1_43
 [PortableInfobox](https://www.mediawiki.org/wiki/Extension:PortableInfobox) | 0.6 `16a77dc`
 [RelatedArticles](https://www.mediawiki.org/wiki/Extension:RelatedArticles) | REL1_43
 [ReplaceText](https://www.mediawiki.org/wiki/Extension:ReplaceText) | REL1_39 `af4840a`
@@ -157,7 +157,7 @@ Name | Version
 [Translate](https://www.mediawiki.org/wiki/Extension:Translate) | MLEB 2023.01
 [TwoColConflict](https://www.mediawiki.org/wiki/Extension:TwoColConflict) | REL1_39 5a2a947
 [UniversalLanguageSelector](https://www.mediawiki.org/wiki/Extension:UniversalLanguageSelector) | MLEB 2021.12
-[UploadWizard](https://www.mediawiki.org/wiki/Extension:UploadWizard) | REL1_39 `9cd7a02`
+[UploadWizard](https://www.mediawiki.org/wiki/Extension:UploadWizard) | REL1_43
 [UserProfileV2](https://gitlab.com/telepedia/extensions/userprofilev2) | Main `effb3b1`
 [VEForAll](https://www.mediawiki.org/wiki/Extension:VEForAll) | REL1_39 `0de7158`
 [VisualEditor](https://www.mediawiki.org/wiki/Extension:VisualEditor) | REL1_39 `65d89c9`
