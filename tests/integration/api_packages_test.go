@@ -16,11 +16,13 @@ import (
 	"code.gitea.io/gitea/models/db"
 	packages_model "code.gitea.io/gitea/models/packages"
 	container_model "code.gitea.io/gitea/models/packages/container"
+	repo_model "code.gitea.io/gitea/models/repo"
 	"code.gitea.io/gitea/models/unittest"
 	user_model "code.gitea.io/gitea/models/user"
 	"code.gitea.io/gitea/modules/setting"
 	api "code.gitea.io/gitea/modules/structs"
 	"code.gitea.io/gitea/modules/util"
+	actions_service "code.gitea.io/gitea/services/actions"
 	packages_service "code.gitea.io/gitea/services/packages"
 	packages_cleanup_service "code.gitea.io/gitea/services/packages/cleanup"
 	"code.gitea.io/gitea/tests"
@@ -388,6 +390,91 @@ func TestPackageAccess(t *testing.T) {
 			req := NewRequest(t, "GET", fmt.Sprintf("/api/v1/packages/%s", target.Owner.Name)).
 				AddTokenAuth(tokenReadPackage)
 			MakeRequest(t, req, target.ExpectedStatus)
+		}
+	})
+}
+
+func TestPackageAccessFromActions(t *testing.T) {
+	defer tests.PrepareTestEnv(t)()
+
+	user := unittest.AssertExistsAndLoadBean(t, &user_model.User{ID: 5})
+	repo := unittest.AssertExistsAndLoadBean(t, &repo_model.Repository{ID: 4})
+	actionsUser := user_model.NewActionsUser()
+
+	token, err := actions_service.CreateAuthorizationToken(47, 791, 192)
+	require.NoError(t, err)
+
+	uploadPackage := func(doer, owner *user_model.User, pkg, filename string, expectedStatus int) {
+		url := fmt.Sprintf("/api/packages/%s/generic/%s/1.0/%s.bin", owner.Name, pkg, filename)
+		req := NewRequestWithBody(t, "PUT", url, bytes.NewReader([]byte{1}))
+		if doer != nil {
+			if doer.IsActions() {
+				req.AddTokenAuth(token)
+			} else {
+				req.AddBasicAuth(doer.Name)
+			}
+		}
+		MakeRequest(t, req, expectedStatus)
+	}
+
+	linkRepository := func(owner *user_model.User, pkg string, repo *repo_model.Repository) {
+		p, err := packages_model.GetPackageByName(db.DefaultContext, owner.ID, packages_model.TypeGeneric, pkg)
+		require.NoError(t, err)
+		require.NoError(t, packages_model.SetRepositoryLink(db.DefaultContext, p.ID, repo.ID))
+	}
+
+	downloadPackage := func(doer, owner *user_model.User, pkg, filename string, expectedStatus int) {
+		url := fmt.Sprintf("/api/packages/%s/generic/%s/1.0/%s.bin", owner.Name, pkg, filename)
+		req := NewRequest(t, "GET", url)
+		if doer != nil {
+			if doer.IsActions() {
+				req.AddTokenAuth(token)
+			} else {
+				req.AddBasicAuth(doer.Name)
+			}
+		}
+		MakeRequest(t, req, expectedStatus)
+	}
+
+	type Target struct {
+		Owner          *user_model.User
+		PkgName        string
+		Filename       string
+		ExpectedStatus int
+	}
+
+	uploadPackage(user, user, "pkg1", "test", http.StatusCreated)
+	uploadPackage(user, user, "pkg2", "test", http.StatusCreated)
+	linkRepository(user, "pkg2", repo)
+
+	t.Run("Upload", func(t *testing.T) {
+		defer tests.PrintCurrentTest(t)()
+
+		cases := []Target{
+			// actions cannot create any new packages
+			{actionsUser, "pkg3", "test", http.StatusInternalServerError},
+			{user, "pkg3", "test", http.StatusUnauthorized},
+			// actions can update linked packages
+			{user, "pkg1", "test1", http.StatusUnauthorized},
+			{user, "pkg2", "test1", http.StatusCreated},
+		}
+
+		for _, c := range cases {
+			uploadPackage(actionsUser, c.Owner, c.PkgName, c.Filename, c.ExpectedStatus)
+		}
+	})
+
+	t.Run("Download", func(t *testing.T) {
+		defer tests.PrintCurrentTest(t)()
+
+		cases := []Target{
+			// actions can read linked packages
+			{user, "pkg1", "test", http.StatusOK},
+			{user, "pkg2", "test1", http.StatusOK},
+		}
+
+		for _, c := range cases {
+			downloadPackage(actionsUser, c.Owner, c.PkgName, c.Filename, c.ExpectedStatus)
 		}
 	})
 }

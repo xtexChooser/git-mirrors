@@ -7,11 +7,13 @@ import (
 	"fmt"
 	"net/http"
 
+	actions_model "code.gitea.io/gitea/models/actions"
 	"code.gitea.io/gitea/models/organization"
 	packages_model "code.gitea.io/gitea/models/packages"
 	"code.gitea.io/gitea/models/perm"
 	"code.gitea.io/gitea/models/unit"
 	user_model "code.gitea.io/gitea/models/user"
+	actions_module "code.gitea.io/gitea/modules/actions"
 	"code.gitea.io/gitea/modules/setting"
 	"code.gitea.io/gitea/modules/structs"
 	"code.gitea.io/gitea/modules/templates"
@@ -31,7 +33,7 @@ type packageAssignmentCtx struct {
 }
 
 // PackageAssignment returns a middleware to handle Context.Package assignment
-func PackageAssignment() func(ctx *Context) {
+func PackageAssignment(packageType packages_model.Type) func(ctx *Context) {
 	return func(ctx *Context) {
 		errorFn := func(status int, title string, obj any) {
 			err, ok := obj.(error)
@@ -45,48 +47,62 @@ func PackageAssignment() func(ctx *Context) {
 			}
 		}
 		paCtx := &packageAssignmentCtx{Base: ctx.Base, Doer: ctx.Doer, ContextUser: ctx.ContextUser}
-		ctx.Package = packageAssignment(paCtx, errorFn)
+		ctx.Package = packageAssignment(paCtx, packageType, errorFn)
 	}
 }
 
 // PackageAssignmentAPI returns a middleware to handle Context.Package assignment
-func PackageAssignmentAPI() func(ctx *APIContext) {
+func PackageAssignmentAPI(packageType packages_model.Type) func(ctx *APIContext) {
 	return func(ctx *APIContext) {
 		paCtx := &packageAssignmentCtx{Base: ctx.Base, Doer: ctx.Doer, ContextUser: ctx.ContextUser}
-		ctx.Package = packageAssignment(paCtx, ctx.Error)
+		ctx.Package = packageAssignment(paCtx, packageType, ctx.Error)
 	}
 }
 
-func packageAssignment(ctx *packageAssignmentCtx, errCb func(int, string, any)) *Package {
+func packageAssignment(ctx *packageAssignmentCtx, packageType packages_model.Type, errCb func(int, string, any)) *Package {
 	pkg := &Package{
 		Owner: ctx.ContextUser,
 	}
 	var err error
+
+	isForgejoMgmtAPI := packageType == ""
+	if isForgejoMgmtAPI {
+		// for Forgejo packages management APIs, extract type from params
+		packageType = packages_model.Type(ctx.Params("type"))
+	}
+	name := ctx.Params("name")
+	if name == "" {
+		name = ctx.Params("packagename")
+	}
+	version := ctx.Params("version")
+	if version == "" {
+		version = ctx.Params("packageversion")
+	}
+	if packageType != "" && name != "" && version != "" {
+		pv, err := packages_model.GetVersionByNameAndVersion(ctx, pkg.Owner.ID, packageType, name, version)
+		if err != nil {
+			if err == packages_model.ErrPackageNotExist {
+				if isForgejoMgmtAPI {
+					errCb(http.StatusNotFound, "GetVersionByNameAndVersion", err)
+					return pkg
+				}
+			} else {
+				errCb(http.StatusInternalServerError, "GetVersionByNameAndVersion", err)
+				return pkg
+			}
+		} else {
+			pkg.Descriptor, err = packages_model.GetPackageDescriptor(ctx, pv)
+			if err != nil {
+				errCb(http.StatusInternalServerError, "GetPackageDescriptor", err)
+				return pkg
+			}
+		}
+	}
+
 	pkg.AccessMode, err = determineAccessMode(ctx.Base, pkg, ctx.Doer)
 	if err != nil {
 		errCb(http.StatusInternalServerError, "determineAccessMode", err)
 		return pkg
-	}
-
-	packageType := ctx.Params("type")
-	name := ctx.Params("name")
-	version := ctx.Params("version")
-	if packageType != "" && name != "" && version != "" {
-		pv, err := packages_model.GetVersionByNameAndVersion(ctx, pkg.Owner.ID, packages_model.Type(packageType), name, version)
-		if err != nil {
-			if err == packages_model.ErrPackageNotExist {
-				errCb(http.StatusNotFound, "GetVersionByNameAndVersion", err)
-			} else {
-				errCb(http.StatusInternalServerError, "GetVersionByNameAndVersion", err)
-			}
-			return pkg
-		}
-
-		pkg.Descriptor, err = packages_model.GetPackageDescriptor(ctx, pv)
-		if err != nil {
-			errCb(http.StatusInternalServerError, "GetPackageDescriptor", err)
-			return pkg
-		}
 	}
 
 	return pkg
@@ -101,8 +117,34 @@ func determineAccessMode(ctx *Base, pkg *Package, doer *user_model.User) (perm.A
 		return perm.AccessModeNone, nil
 	}
 
-	// TODO: ActionUser permission check
 	accessMode := perm.AccessModeNone
+
+	if ctx.Data["IsActionsToken"] == true {
+		taskID := ctx.Data["ActionsTaskID"].(int64)
+		task, err := actions_model.GetTaskByID(ctx, taskID)
+		if err != nil {
+			return perm.AccessModeNone, err
+		}
+
+		// if the package is linked to the repository, grant write access
+		// or else fall through to normal checks to avoid Actions accessing
+		// private packages accidentally
+		if pkg.Descriptor != nil && task.Status == actions_model.StatusRunning {
+			repo := pkg.Descriptor.Repository
+			if err = task.LoadJob(ctx); err != nil {
+				return perm.AccessModeNone, err
+			}
+			if err = task.Job.LoadRun(ctx); err != nil {
+				return perm.AccessModeNone, err
+			}
+			if repo != nil && task.RepoID == repo.ID &&
+				task.Job.Run.TriggerEvent != actions_module.GithubEventPullRequest &&
+				task.Job.Run.TriggerEvent != actions_module.GithubEventPullRequestTarget {
+				return perm.AccessModeWrite, err
+			}
+		}
+	}
+
 	if pkg.Owner.IsOrganization() {
 		org := organization.OrgFromUser(pkg.Owner)
 

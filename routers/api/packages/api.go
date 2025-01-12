@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	auth_model "code.gitea.io/gitea/models/auth"
+	packages_model "code.gitea.io/gitea/models/packages"
 	"code.gitea.io/gitea/models/perm"
 	quota_model "code.gitea.io/gitea/models/quota"
 	"code.gitea.io/gitea/modules/log"
@@ -151,13 +152,13 @@ func CommonRoutes() *web.Route {
 					})
 				})
 			})
-		}, reqPackageAccess(perm.AccessModeRead))
+		}, context.PackageAssignment(packages_model.TypeAlpine), reqPackageAccess(perm.AccessModeRead))
 		r.Group("/arch", func() {
 			r.Methods("HEAD,GET", "/repository.key", arch.GetRepositoryKey)
 			r.Methods("HEAD,GET", "*", arch.GetPackageOrDB)
 			r.Methods("PUT", "*", reqPackageAccess(perm.AccessModeWrite), arch.PushPackage)
 			r.Methods("DELETE", "*", reqPackageAccess(perm.AccessModeWrite), arch.RemovePackage)
-		}, reqPackageAccess(perm.AccessModeRead))
+		}, context.PackageAssignment(packages_model.TypeArch), reqPackageAccess(perm.AccessModeRead))
 		r.Group("/cargo", func() {
 			r.Group("/api/v1/crates", func() {
 				r.Get("", cargo.SearchPackages)
@@ -177,7 +178,7 @@ func CommonRoutes() *web.Route {
 			// Use dummy placeholders because these parts are not of interest
 			r.Get("/3/{_}/{package}", cargo.EnumeratePackageVersions)
 			r.Get("/{_}/{__}/{package}", cargo.EnumeratePackageVersions)
-		}, reqPackageAccess(perm.AccessModeRead))
+		}, context.PackageAssignment(packages_model.TypeCargo), reqPackageAccess(perm.AccessModeRead))
 		r.Group("/chef", func() {
 			r.Group("/api/v1", func() {
 				r.Get("/universe", chef.PackagesUniverse)
@@ -196,7 +197,7 @@ func CommonRoutes() *web.Route {
 					})
 				})
 			})
-		}, reqPackageAccess(perm.AccessModeRead))
+		}, context.PackageAssignment(packages_model.TypeChef), reqPackageAccess(perm.AccessModeRead))
 		r.Group("/composer", func() {
 			r.Get("/packages.json", composer.ServiceIndex)
 			r.Get("/search.json", composer.SearchPackages)
@@ -205,7 +206,7 @@ func CommonRoutes() *web.Route {
 			r.Get("/p2/{vendorname}/{projectname}.json", composer.PackageMetadata)
 			r.Get("/files/{package}/{version}/{filename}", composer.DownloadPackageFile)
 			r.Put("", reqPackageAccess(perm.AccessModeWrite), enforcePackagesQuota(), composer.UploadPackage)
-		}, reqPackageAccess(perm.AccessModeRead))
+		}, context.PackageAssignment(packages_model.TypeComposer), reqPackageAccess(perm.AccessModeRead))
 		r.Group("/conan", func() {
 			r.Group("/v1", func() {
 				r.Get("/ping", conan.Ping)
@@ -293,7 +294,7 @@ func CommonRoutes() *web.Route {
 					}, conan.ExtractPathParameters)
 				})
 			})
-		}, reqPackageAccess(perm.AccessModeRead))
+		}, context.PackageAssignment(packages_model.TypeConan), reqPackageAccess(perm.AccessModeRead))
 		r.Group("/conda", func() {
 			var (
 				downloadPattern = regexp.MustCompile(`\A(.+/)?(.+)/((?:[^/]+(?:\.tar\.bz2|\.conda))|(?:current_)?repodata\.json(?:\.bz2)?)\z`)
@@ -330,7 +331,7 @@ func CommonRoutes() *web.Route {
 
 				conda.UploadPackageFile(ctx)
 			})
-		}, reqPackageAccess(perm.AccessModeRead))
+		}, context.PackageAssignment(packages_model.TypeConda), reqPackageAccess(perm.AccessModeRead))
 		r.Group("/cran", func() {
 			r.Group("/src", func() {
 				r.Group("/contrib", func() {
@@ -349,7 +350,7 @@ func CommonRoutes() *web.Route {
 				})
 				r.Put("", reqPackageAccess(perm.AccessModeWrite), enforcePackagesQuota(), cran.UploadBinaryPackageFile)
 			})
-		}, reqPackageAccess(perm.AccessModeRead))
+		}, context.PackageAssignment(packages_model.TypeCran), reqPackageAccess(perm.AccessModeRead))
 		r.Group("/debian", func() {
 			r.Get("/repository.key", debian.GetRepositoryKey)
 			r.Group("/dists/{distribution}", func() {
@@ -367,7 +368,7 @@ func CommonRoutes() *web.Route {
 					r.Delete("/{name}/{version}/{architecture}", debian.DeletePackageFile)
 				}, reqPackageAccess(perm.AccessModeWrite))
 			})
-		}, reqPackageAccess(perm.AccessModeRead))
+		}, context.PackageAssignment(packages_model.TypeDebian), reqPackageAccess(perm.AccessModeRead))
 		r.Group("/go", func() {
 			r.Put("/upload", reqPackageAccess(perm.AccessModeWrite), enforcePackagesQuota(), goproxy.UploadPackage)
 			r.Get("/sumdb/sum.golang.org/supported", func(ctx *context.Context) {
@@ -425,7 +426,7 @@ func CommonRoutes() *web.Route {
 
 				ctx.Status(http.StatusNotFound)
 			})
-		}, reqPackageAccess(perm.AccessModeRead))
+		}, context.PackageAssignment(packages_model.TypeGo), reqPackageAccess(perm.AccessModeRead))
 		r.Group("/generic", func() {
 			r.Group("/{packagename}/{packageversion}", func() {
 				r.Delete("", reqPackageAccess(perm.AccessModeWrite), generic.DeletePackage)
@@ -437,17 +438,17 @@ func CommonRoutes() *web.Route {
 					}, reqPackageAccess(perm.AccessModeWrite))
 				})
 			})
-		}, reqPackageAccess(perm.AccessModeRead))
+		}, context.PackageAssignment(packages_model.TypeGeneric), reqPackageAccess(perm.AccessModeRead))
 		r.Group("/helm", func() {
 			r.Get("/index.yaml", helm.Index)
 			r.Get("/{filename}", helm.DownloadPackageFile)
 			r.Post("/api/charts", reqPackageAccess(perm.AccessModeWrite), enforcePackagesQuota(), helm.UploadPackage)
-		}, reqPackageAccess(perm.AccessModeRead))
+		}, context.PackageAssignment(packages_model.TypeHelm), reqPackageAccess(perm.AccessModeRead))
 		r.Group("/maven", func() {
 			r.Put("/*", reqPackageAccess(perm.AccessModeWrite), enforcePackagesQuota(), maven.UploadPackageFile)
 			r.Get("/*", maven.DownloadPackageFile)
 			r.Head("/*", maven.ProvidePackageFileHeader)
-		}, reqPackageAccess(perm.AccessModeRead))
+		}, context.PackageAssignment(packages_model.TypeMaven), reqPackageAccess(perm.AccessModeRead))
 		r.Group("/nuget", func() {
 			r.Group("", func() { // Needs to be unauthenticated for the NuGet client.
 				r.Get("/", nuget.ServiceIndexV2)
@@ -484,7 +485,7 @@ func CommonRoutes() *web.Route {
 					r.Get("/$count", nuget.SearchServiceV2Count)
 				})
 			}, reqPackageAccess(perm.AccessModeRead))
-		})
+		}, context.PackageAssignment(packages_model.TypeNuGet))
 		r.Group("/npm", func() {
 			r.Group("/@{scope}/{id}", func() {
 				r.Get("", npm.PackageMetadata)
@@ -529,7 +530,7 @@ func CommonRoutes() *web.Route {
 			r.Group("/-/v1/search", func() {
 				r.Get("", npm.PackageSearch)
 			})
-		}, reqPackageAccess(perm.AccessModeRead))
+		}, context.PackageAssignment(packages_model.TypeNpm), reqPackageAccess(perm.AccessModeRead))
 		r.Group("/pub", func() {
 			r.Group("/api/packages", func() {
 				r.Group("/versions/new", func() {
@@ -543,12 +544,12 @@ func CommonRoutes() *web.Route {
 					r.Get("/{version}", pub.PackageVersionMetadata)
 				})
 			})
-		}, reqPackageAccess(perm.AccessModeRead))
+		}, context.PackageAssignment(packages_model.TypePub), reqPackageAccess(perm.AccessModeRead))
 		r.Group("/pypi", func() {
 			r.Post("/", reqPackageAccess(perm.AccessModeWrite), enforcePackagesQuota(), pypi.UploadPackageFile)
 			r.Get("/files/{id}/{version}/{filename}", pypi.DownloadPackageFile)
 			r.Get("/simple/{id}", pypi.PackageMetadata)
-		}, reqPackageAccess(perm.AccessModeRead))
+		}, context.PackageAssignment(packages_model.TypePyPI), reqPackageAccess(perm.AccessModeRead))
 		r.Group("/rpm", func() {
 			r.Group("/repository.key", func() {
 				r.Head("", rpm.GetRepositoryKey)
@@ -623,7 +624,7 @@ func CommonRoutes() *web.Route {
 
 				ctx.Status(http.StatusNotFound)
 			})
-		}, reqPackageAccess(perm.AccessModeRead))
+		}, context.PackageAssignment(packages_model.TypeRpm), reqPackageAccess(perm.AccessModeRead))
 		r.Group("/rubygems", func() {
 			r.Get("/specs.4.8.gz", rubygems.EnumeratePackages)
 			r.Get("/latest_specs.4.8.gz", rubygems.EnumeratePackagesLatest)
@@ -636,7 +637,7 @@ func CommonRoutes() *web.Route {
 				r.Post("/", enforcePackagesQuota(), rubygems.UploadPackageFile)
 				r.Delete("/yank", rubygems.DeletePackage)
 			}, reqPackageAccess(perm.AccessModeWrite))
-		}, reqPackageAccess(perm.AccessModeRead))
+		}, context.PackageAssignment(packages_model.TypeRubyGems), reqPackageAccess(perm.AccessModeRead))
 		r.Group("/swift", func() {
 			r.Group("", func() { // Needs to be unauthenticated.
 				r.Post("", swift.CheckAuthenticate)
@@ -677,7 +678,7 @@ func CommonRoutes() *web.Route {
 				})
 				r.Get("/identifiers", swift.CheckAcceptMediaType(swift.AcceptJSON), swift.LookupPackageIdentifiers)
 			}, reqPackageAccess(perm.AccessModeRead))
-		})
+		}, context.PackageAssignment(packages_model.TypeSwift))
 		r.Group("/vagrant", func() {
 			r.Group("/authenticate", func() {
 				r.Get("", vagrant.CheckAuthenticate)
@@ -690,8 +691,8 @@ func CommonRoutes() *web.Route {
 					r.Put("", reqPackageAccess(perm.AccessModeWrite), enforcePackagesQuota(), vagrant.UploadPackageFile)
 				})
 			})
-		}, reqPackageAccess(perm.AccessModeRead))
-	}, context.UserAssignmentWeb(), context.PackageAssignment())
+		}, context.PackageAssignment(packages_model.TypeVagrant), reqPackageAccess(perm.AccessModeRead))
+	}, context.UserAssignmentWeb())
 
 	return r
 }
@@ -861,7 +862,7 @@ func ContainerRoutes() *web.Route {
 
 			ctx.Status(http.StatusNotFound)
 		})
-	}, container.ReqContainerAccess, context.UserAssignmentWeb(), context.PackageAssignment(), reqPackageAccess(perm.AccessModeRead))
+	}, container.ReqContainerAccess, context.UserAssignmentWeb(), context.PackageAssignment(packages_model.TypeContainer), reqPackageAccess(perm.AccessModeRead))
 
 	return r
 }

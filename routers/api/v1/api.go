@@ -1489,7 +1489,7 @@ func Routes() *web.Route {
 				m.Get("/files", reqToken(), packages.ListPackageFiles)
 			})
 			m.Get("/", reqToken(), packages.ListPackages)
-		}, tokenRequiresScopes(auth_model.AccessTokenScopeCategoryPackage), context.UserAssignmentAPI(), context.PackageAssignmentAPI(), reqPackageAccess(perm.AccessModeRead), checkTokenPublicOnly())
+		}, tokenRequiresScopes(auth_model.AccessTokenScopeCategoryPackage), context.UserAssignmentAPI(), context.PackageAssignmentAPI(""), reqPackageAccess(perm.AccessModeRead), checkTokenPublicOnly())
 
 		// Organizations
 		m.Get("/user/orgs", reqToken(), tokenRequiresScopes(auth_model.AccessTokenScopeCategoryUser, auth_model.AccessTokenScopeCategoryOrganization), org.ListMyOrgs)
