@@ -1,4 +1,4 @@
-# mediawiki-skins-Lakeus 1.3
+# mediawiki-skins-Lakeus 1.4
 
 ## mediawiki-skins-Lakeus master branch
 
@@ -35,8 +35,6 @@ risk!
 
 ### Bug fixes
 
-* Removed duplicate `<h1>` from `#logo-text`.
-* Updated logic and fixed styles of `.mw-portlet-dropdown`.
 * …
 
 ### Action API changes
