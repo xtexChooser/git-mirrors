@@ -7,6 +7,7 @@ $xvCentralized = true;
 $xvUseSelfHostedImages = true;
 
 $xvUseLockdown = true;
+$xvUseTabberNeue = true;
 
 require_once "$xvConfigDirectory/common/LoadExtensions.php";
 
