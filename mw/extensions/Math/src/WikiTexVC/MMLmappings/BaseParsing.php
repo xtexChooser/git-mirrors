@@ -814,6 +814,9 @@ class BaseParsing {
 			case Variants::FRAKTUR:
 				$state = [ "fraktur" => true ];
 				break;
+			case Variants::BOLD:
+				$state = [ "bold" => true ];
+				break;
 		}
 
 		if ( $node instanceof Fun1nb ) {
@@ -953,16 +956,14 @@ class BaseParsing {
 			$munderOver = new MMLmunderover();
 			return $munderOver->encapsulateRaw( $opParsed . $mrow->encapsulateRaw( $node->getDown()->renderMML() )
 				. $mrow->encapsulateRaw( $node->getUp()->renderMML() ) );
-		} elseif ( $name === 'limits' || $name === 'nolimits' ) {
+		} elseif ( preg_match( '/\s*\\\\?(no)?limits\s*/', $name ) ) {
 			// Don't render limits
 			return '';
 		}
 	}
 
 	public static function setFont( $node, $passedArgs, $operatorContent, $name, $variant = null ) {
-		$mrow = new MMLmrow();
-		$args = MMLParsingUtil::getFontArgs( $name, $variant, $passedArgs );
-		return $mrow->encapsulateRaw( $mrow->encapsulateRaw( $node->getArg()->renderMML( $args ) ) );
+		return self::mathFont( $node, $passedArgs, $operatorContent, $name, $variant );
 	}
 
 	public static function sideset( $node, $passedArgs, $operatorContent, $name ) {
