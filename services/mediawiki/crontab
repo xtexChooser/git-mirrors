@@ -1,1 +1,1 @@
-0 4 * * tue,fri root <% $(realpath "$STATES_DIR") %>/atre svc mediawiki cronjob
+0 4 * * * root <% $(realpath "$STATES_DIR") %>/atre svc mediawiki cronjob
