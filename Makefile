@@ -1,7 +1,4 @@
-default: src/gen/about-cmn.html src/gen/about-cmn-noid.html \
-	src/gen/about-eng.html \
-	src/gen/about-ext.html \
-	src/gen/xrd.html src/gen/host-meta.xml src/gen/host-meta.json \
+default: src/gen/xrd.html src/gen/host-meta.xml src/gen/host-meta.json \
 	src/gen/host-webfinger.json
 
 .PHONY: default
@@ -10,14 +7,6 @@ $(shell mkdir -p src/gen)
 
 JSONMIN = jq -c
 JSONFMT = jq --tab
-
-src/gen/%.html: src/doc/%.md
-	@echo "Markdown to HTML: $@"
-	@pandoc --from=markdown --to=html --strip-comments --section-divs --output $@ $<
-
-src/gen/%-noid.html: src/gen/%.html
-	@echo "Remove id fields in HTML: $@"
-	@sed -e 's/\sid=".*"//g' $< > $@
 
 src/gen/xrd.html: src/includes/xrd.txt build/xrd-to-html.txt
 	@echo "Generate HTML XRD"
