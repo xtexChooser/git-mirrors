@@ -57,6 +57,7 @@ http://:8080 http://xtexx.eu.org http://xtexhome.exozy.me {
 	}
 
 	redir /blog/* https://blog.xtexx.eu.org/misc/migration-to-home/ permanent
+	redir /about https://k.xtexx.eu.org/w/User:Xtex permanent
 
 	header Server xtex-home
 	import httpsec
