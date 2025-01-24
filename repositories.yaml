@@ -31,6 +31,10 @@
   kind: extensions
   prefix: mw/extensions/CategoryWatch
   git: https://gerrit.wikimedia.org/r/mediawiki/extensions/CategoryWatch
+- name: Chart
+  kind: extensions
+  prefix: mw/extensions/Chart
+  git: https://gerrit.wikimedia.org/r/mediawiki/extensions/Chart
 - name: CheckUser
   kind: extensions
   prefix: mw/extensions/CheckUser
