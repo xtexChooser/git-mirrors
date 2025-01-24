@@ -1,0 +1,11 @@
+{
+	"@metadata": {
+		"authors": [
+			"Jeeputer"
+		]
+	},
+	"chart-error-chart-definition-not-found": "صفحهٔ توصیف نمودار یافت نشد.",
+	"chart-error-data-source-page-not-found": "صفحهٔ منبع داده‌های جدولی نمودار یافت نشد.",
+	"chart-error-incompatible-chart-definition": "صفحهٔ توصیف با نمودارها سازگار نیست.",
+	"chart-error-rendering-error": "در زمان ارائهٔ نمودار خطایی رخ داد."
+}

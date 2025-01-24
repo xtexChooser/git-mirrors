@@ -1,0 +1,13 @@
+{
+	"name": "chart",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"test": "npm run lint",
+		"lint:i18n": "banana-checker --requireLowerCase=0 i18n/",
+		"lint": "npm -s run lint:i18n"
+	},
+	"devDependencies": {
+		"grunt-banana-checker": "0.13.0"
+	}
+}

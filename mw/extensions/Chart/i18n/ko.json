@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Ykhwong"
+		]
+	},
+	"chart-error-invalid-height": "높이는 100보다 크거나 같은 정수여야 합니다."
+}

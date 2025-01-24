@@ -1,0 +1,65 @@
+{
+	"name": "Chart",
+	"author": [
+		"Brooke Vibber",
+		"Katie Filbert",
+		"Roan Kattouw"
+	],
+	"url": "https://www.mediawiki.org/wiki/Extension:Chart",
+	"descriptionmsg": "chart-desc",
+	"license-name": "GPL-3.0-or-later",
+	"type": "parserhook",
+	"requires": {
+		"MediaWiki": ">= 1.43.0",
+		"extensions": {
+			"JsonConfig": "*"
+		}
+	},
+	"config": {
+		"ChartServiceUrl": {
+			"value": null,
+			"description": "URL to the chart-renderer service. If both ChartCliPath and this setting are set, this setting is used."
+		},
+		"ChartCliPath": {
+			"value": null,
+			"description": "File path to the chart-renderer CLI script. Defaults to 'path/to/extensions/Chart/chart-renderer/cli.js'. If both ChartServiceUrl and this setting are set, this setting is ignored and ChartServiceUrl is used."
+		}
+	},
+	"callback": "MediaWiki\\Extension\\Chart\\Hooks::onRegistration",
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\Chart\\": "src/"
+	},
+	"ServiceWiringFiles": [
+		"src/ServiceWiring.php"
+	],
+	"MessagesDirs": {
+		"Chart": [
+			"i18n"
+		]
+	},
+	"ResourceFileModulePaths": {
+		"localBasePath": "",
+		"remoteExtPath": "Chart"
+	},
+	"ResourceModules": {
+		"ext.chart.styles": {
+			"styles": [
+				"resources/ext.chart.styles/main.less"
+			]
+		}
+	},
+	"ExtensionMessagesFiles": {
+		"ChartMagic": "Chart.i18n.magic.php"
+	},
+	"HookHandlers": {
+		"main": {
+			"class": "MediaWiki\\Extension\\Chart\\Hooks",
+			"services": []
+		}
+	},
+	"Hooks": {
+		"BeforePageDisplay": "main",
+		"ParserFirstCallInit": "main"
+	},
+	"manifest_version": 2
+}
