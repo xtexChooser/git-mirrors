@@ -163,10 +163,11 @@ xvGrantPermissionsTo('staff', [
 	'userrights',
 	'ipblock-exempt',
 	'patrolmarks',
-	'renameuser',
 	'globalblock',
 	'createaccount',
 	'noratelimit',
+	'renameuser',
+	'renameuser-global',
 ]);
 $wgAddGroups['staff'] = true;
 $wgRemoveGroups['staff'] = true;
