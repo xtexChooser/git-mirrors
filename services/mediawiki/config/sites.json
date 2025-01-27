@@ -1,14 +1,18 @@
 {
 	"meta": {
-		"domain": "meta.w.xvnet.eu.org"
+		"domain": "meta.w.xvnet.eu.org",
+		"family": "core"
 	},
 	"xvnet": {
-		"domain": "w.xvnet.eu.org"
+		"domain": "w.xvnet.eu.org",
+		"family": "core"
 	},
 	"hgdns": {
-		"domain": "hgdns.ren"
+		"domain": "hgdns.ren",
+		"family": "hgdns"
 	},
 	"xtex": {
-		"domain": "k.xtexx.eu.org"
+		"domain": "k.xtexx.eu.org",
+		"family": "core"
 	}
 }
