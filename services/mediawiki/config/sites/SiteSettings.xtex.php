@@ -26,8 +26,8 @@ $xvUseEmailConfirmed = true;
 
 // User rights
 $xvRequireEmailConfirmedToEdit = true;
-$wgGroupPermissions['l-accessor'] = ['read', 'autopatrol'];
-$wgGroupPermissions['m-accessor'] = ['read', 'autopatrol'];
+$wgGroupPermissions['l-accessor'] = ['read' => true, 'autopatrol' => true];
+$wgGroupPermissions['m-accessor'] = ['read' => true, 'autopatrol' => true];
 $wgAddGroups['m-accessor'] = ['l-accessor'];
 $wgGroupsAddToSelf['m-accessor'] = ['l-accessor'];
 
