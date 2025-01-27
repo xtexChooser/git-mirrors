@@ -1,8 +1,12 @@
 <?php
 
-$wgLocalDatabases = $wgConf->wikis = array_map(function ($n) {
-	return 'wiki' . $n;
-}, array_keys($xvWikis));
+$wgLocalDatabases = [];
+foreach ($xvWikis as $id => $config) {
+	if ($config['family'] == $xvWikiFamily) {
+		$wgLocalDatabases[] = 'wiki' . $id;
+	}
+}
+$wgConf->wikis = $wgLocalDatabases;
 
 $wgDBtype = 'mysql';
 $wgDBname = 'wiki' . $xvWikiID;

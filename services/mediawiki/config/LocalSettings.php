@@ -32,7 +32,9 @@ if (defined('MW_DB')) {
 	die('Unknown wiki.');
 }
 
-$xvServerName = $xvWikis[$xvWikiID]['domain'];
+$xvWikiConfig = $xvWikis[$xvWikiID];
+$xvServerName = $xvWikiConfig['domain'];
+$xvWikiFamily = $xvWikiConfig['family'];
 $xvHttpHost = $_SERVER['HTTP_HOST'] ?? $xvServerName;
 
 // development mode
