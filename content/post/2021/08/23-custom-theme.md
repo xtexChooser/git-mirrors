@@ -9,7 +9,7 @@ date: 2021-08-23
 
 **本主题已被弃用，见[blog 重构]({{< relref "post/2023/06/11-new-blog" >}})**
 
-[xtexChooser/hexo-theme-flavor on GitHub](https://github.com/xtexChooser/hexo-theme-flavor)
+[xtexChooser/hexo-theme-flavor on GitHub](https://github.com/xtexx/hexo-theme-flavor)
 
 ## 起因
 
@@ -33,7 +33,7 @@ date: 2021-08-23
 
 ## 使用
 
-见[README#use](https://github.com/xtexChooser/hexo-theme-flavor#use)
+见[README#use](https://github.com/xtexx/hexo-theme-flavor#use)
 
 简而言之：
 
