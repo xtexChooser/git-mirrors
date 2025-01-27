@@ -99,7 +99,7 @@ atre::mediawiki::addcargo() {
 	[[ -n "$wiki" ]] || atre::error "Invalid wiki ID"
 	[[ -e /srv/atremis/services/mediawiki/config/sites/SiteSettings."$wiki".php ]] || atre::error "Wiki site settings not found"
 
-	echo "Creating cargo database $wiki, at $domain"
+	echo "Creating cargo database $wiki"
 	atre::publog "MW: $wiki: Creating cargo database" \
 		"MediaWiki-Wiki: $wiki"
 
