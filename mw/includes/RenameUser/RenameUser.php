@@ -145,7 +145,7 @@ class RenameUser {
 		// The wiki triggering a global rename across a wiki family using virtual domains
 		// may not have the same user database as this wiki
 		$expectedName = $this->oldName;
-		if ( !$this->derived && $this->userFactory->isUserTableShared() ) {
+		if ( $this->derived && $this->userFactory->isUserTableShared() ) {
 			$expectedName = $this->newName;
 		}
 		if ( $this->target->getName() !== $expectedName ) {
