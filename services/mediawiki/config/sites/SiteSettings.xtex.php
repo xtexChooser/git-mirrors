@@ -8,6 +8,7 @@ $xvUseSelfHostedImages = true;
 
 $xvUseLockdown = true;
 $xvUseTabberNeue = true;
+$xvUseCargo = true;
 
 require_once "$xvConfigDirectory/common/LoadExtensions.php";
 
