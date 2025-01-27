@@ -7,7 +7,11 @@ clone:
 steps:
   - name: update
     image: alpine
-    secrets: [codeberg_token, ntfy_token]
+    environment:
+      CODEBERG_TOKEN:
+        from_secret: codeberg_token
+      NTFY_TOKEN:
+        from_secret: ntfy_token
     commands:
       - apk add bash
       - ./contrib/updater/update.sh || exit 1
