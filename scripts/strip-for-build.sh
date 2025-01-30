@@ -2,6 +2,11 @@
 
 set -e
 
-rm -rf tests extensions/*/tests skins/*/tests
+rm -vrf -- \
+	tests extensions/*/tests skins/*/tests \
+	**/.phan docs cache images .dockerignore .editorconfig .eslintignore \
+	SECURITY UPGRADE INSTALL HISTORY \
+	CREDITS COPYING RELEASE-NOTES-* **.md \
+	mw-config \
 
 echo "Done"
