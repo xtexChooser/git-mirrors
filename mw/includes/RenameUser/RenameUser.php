@@ -358,6 +358,7 @@ class RenameUser {
 			'reason' => $this->reason,
 			'movePages' => $this->movePages,
 			'suppressRedirect' => $this->suppressRedirect,
+			'derived' => false,
 		];
 		$oldTitle = $this->titleFactory->makeTitle( NS_USER, $this->oldName );
 		$this->logger->info( "Enqueuing a rename job for domain {$database}" );
