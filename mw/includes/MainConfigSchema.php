@@ -57,8 +57,7 @@ use MediaWiki\Password\Pbkdf2PasswordUsingOpenSSL;
 use MediaWiki\Permissions\GrantsInfo;
 use MediaWiki\RCFeed\RedisPubSubFeedEngine;
 use MediaWiki\RCFeed\UDPRCFeedEngine;
-use MediaWiki\RenameUser\Job\RenameUserDerivedJob;
-use MediaWiki\RenameUser\Job\RenameUserTableJob;
+use MediaWiki\RenameUser\RenameUserJob;
 use MediaWiki\Request\WebRequest;
 use MediaWiki\Settings\Source\JsonSchemaTrait;
 use MediaWiki\Site\MediaWikiSite;
@@ -11468,24 +11467,8 @@ class MainConfigSchema {
 				// tell the JobFactory not to include the $page parameter in the constructor call
 				'needsPage' => false
 			],
-			'renameUserTable' => [
-				'class' => RenameUserTableJob::class,
-				'services' => [
-					'MainConfig',
-					'DBLoadBalancerFactory'
-				]
-			],
-			'renameUserDerived' => [
-				'class' => RenameUserDerivedJob::class,
-				'services' => [
-					'RenameUserFactory',
-					'UserFactory'
-				]
-			],
-			// 'renameUser' is a alias for backward compatibility
-			// it should be removed in the future releases
 			'renameUser' => [
-				'class' => RenameUserTableJob::class,
+				'class' => RenameUserJob::class,
 				'services' => [
 					'MainConfig',
 					'DBLoadBalancerFactory'

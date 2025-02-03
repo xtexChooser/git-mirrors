@@ -38,7 +38,7 @@ class RenameuserSQLTest extends MediaWikiIntegrationTestCase {
 		$this->assertFalse( $access->isTableShared( false, 'actor' ) );
 		$this->assertTrue( $access->shouldUpdate( 'user' ) );
 		$this->assertTrue( $access->shouldUpdate( 'actor' ) );
-		$this->assertTrue( $renamer->renameUser()->isGood() );
+		$this->assertTrue( $renamer->rename() );
 
 		$this->newSelectQueryBuilder()
 			->select( 'user_name' )
@@ -79,7 +79,7 @@ class RenameuserSQLTest extends MediaWikiIntegrationTestCase {
 		$user = $this->getMutableTestUser( [ 'sysop', 'bureaucrat' ] )->getUser();
 		$newName = $user->getName() . ' new';
 		$renamer = new RenameuserSQL( $user->getName(), $newName, $user->getId(), $user );
-		$this->assertTrue( $renamer->renameUser()->isGood() );
+		$this->assertTrue( $renamer->rename() );
 
 		$this->newSelectQueryBuilder()
 			->select( 'actor_name' )

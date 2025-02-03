@@ -1221,11 +1221,12 @@ class SpecialPageFactory {
 			'class' => SpecialRenameUser::class,
 			'services' => [
 				'ConnectionProvider',
+				'MovePageFactory',
 				'PermissionManager',
 				'TitleFactory',
 				'UserFactory',
 				'UserNamePrefixSearch',
-				'RenameUserFactory',
+				'UserNameUtils',
 			]
 		],
 		'Revisiondelete' => [

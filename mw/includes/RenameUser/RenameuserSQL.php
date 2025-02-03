@@ -11,13 +11,13 @@ use MediaWiki\MainConfigNames;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Session\SessionManager;
 use MediaWiki\Specials\SpecialLog;
-use MediaWiki\Status\Status;
 use MediaWiki\Title\TitleFactory;
 use MediaWiki\User\User;
 use MediaWiki\User\UserFactory;
 use Psr\Log\LoggerInterface;
 use Wikimedia\Rdbms\IConnectionProvider;
 use Wikimedia\Rdbms\IDBAccessObject;
+use Wikimedia\Rdbms\ILBFactory;
 use Wikimedia\Rdbms\SelectQueryBuilder;
 
 /**
@@ -91,11 +91,11 @@ class RenameuserSQL {
 	/**
 	 * Whether shared tables and virtual domains should be updated
 	 *
-	 * When this is set to true, it is assumed that the shared tables are already updated.
+	 * When this is set to false, it is assumed that the shared tables are already updated.
 	 *
 	 * @var bool
 	 */
-	private $derived = false;
+	private $updateShared = true;
 
 	// B/C constants for tablesJob field
 	public const NAME_COL = 0;
@@ -120,6 +120,9 @@ class RenameuserSQL {
 	/** @var LoggerInterface */
 	private $logger;
 
+	/** @var ILBFactory */
+	private $lbFactory;
+
 	/** @var int */
 	private $updateRowsPerJob;
 
@@ -134,15 +137,16 @@ class RenameuserSQL {
 	 *    'reason' - string, reason for the rename
 	 *    'debugPrefix' - string, prefixed to debug messages
 	 *    'checkIfUserExists' - bool, whether to update the user table
-	 *    'derived' - bool, whether to skip updates to shared tables
+	 *    'updateShared' - bool, whether to update shared tables
 	 */
-	public function __construct( string $old, string $new, int $uid, User $renamer, $options = [] ) {
+	public function __construct( $old, $new, $uid, User $renamer, $options = [] ) {
 		$services = MediaWikiServices::getInstance();
 		$this->hookRunner = new HookRunner( $services->getHookContainer() );
 		$this->dbProvider = $services->getConnectionProvider();
 		$this->userFactory = $services->getUserFactory();
 		$this->jobQueueGroup = $services->getJobQueueGroup();
 		$this->titleFactory = $services->getTitleFactory();
+		$this->lbFactory = $services->getDBLoadBalancerFactory();
 		$this->logger = LoggerFactory::getInstance( 'Renameuser' );
 
 		$config = $services->getMainConfig();
@@ -166,8 +170,8 @@ class RenameuserSQL {
 			$this->reason = $options['reason'];
 		}
 
-		if ( isset( $options['derived'] ) ) {
-			$this->derived = $options['derived'];
+		if ( isset( $options['updateShared'] ) ) {
+			$this->updateShared = $options['updateShared'];
 		}
 
 		$this->tables = []; // Immediate updates
@@ -185,19 +189,9 @@ class RenameuserSQL {
 
 	/**
 	 * Do the rename operation
-	 * @deprecated
 	 * @return bool
 	 */
 	public function rename() {
-		wfDeprecated( __METHOD__, '1.44' );
-		return $this->renameUser()->isOK();
-	}
-
-	/**
-	 * Do the rename operation
-	 * @return Status
-	 */
-	public function renameUser(): Status {
 		$dbw = $this->dbProvider->getPrimaryDatabase();
 		$atomicId = $dbw->startAtomic( __METHOD__, $dbw::ATOMIC_CANCELABLE );
 
@@ -205,15 +199,15 @@ class RenameuserSQL {
 
 		// Make sure the user exists if needed
 		if ( $this->checkIfUserExists ) {
-			// if derived is true and 'user' table is shared,
+			// if updateShared is false and 'user' table is shared,
 			// then 'user.user_name' should already be updated
-			$userRenamed = $this->derived && $this::isTableShared( 'user' );
+			$userRenamed = !$this->updateShared && $this::isTableShared( false, 'user' );
 			$currentName = $userRenamed ? $this->new : $this->old;
 			if ( !$this->lockUserAndGetId( $currentName ) ) {
 				$this->debug( "User $currentName does not exist, bailing out" );
 				$dbw->cancelAtomic( __METHOD__, $atomicId );
 
-				return Status::newFatal( 'renameusererrordoesnotexist', $this->new );
+				return false;
 			}
 		}
 
@@ -223,7 +217,7 @@ class RenameuserSQL {
 		// Rename and touch the user before re-attributing edits to avoid users still being
 		// logged in and making new edits (under the old name) while being renamed.
 		$this->debug( "Starting rename of {$this->old} to {$this->new}" );
-		if ( !$this->derived ) {
+		if ( $this->updateShared ) {
 			$this->debug( "Rename of {$this->old} to {$this->new} will update shared tables" );
 		}
 		if ( $this->shouldUpdate( 'user' ) ) {
@@ -329,7 +323,7 @@ class RenameuserSQL {
 			}
 		}
 
-		/** @var \MediaWiki\RenameUser\Job\RenameUserTableJob[] $jobs */
+		/** @var RenameUserJob[] $jobs */
 		$jobs = []; // jobs for all tables
 		// Construct jobqueue updates...
 		// FIXME: if a bureaucrat renames a user in error, he/she
@@ -386,7 +380,7 @@ class RenameuserSQL {
 				$jobParams['count']++;
 				// Once a job has $wgUpdateRowsPerJob rows, add it to the queue
 				if ( $jobParams['count'] >= $this->updateRowsPerJob ) {
-					$jobs[] = new JobSpecification( 'renameUserTable', $jobParams, [], $oldTitle );
+					$jobs[] = new JobSpecification( 'renameUser', $jobParams, [], $oldTitle );
 					$jobParams['minTimestamp'] = '0';
 					$jobParams['maxTimestamp'] = '0';
 					$jobParams['count'] = 0;
@@ -394,7 +388,7 @@ class RenameuserSQL {
 			}
 			// If there are any job rows left, add it to the queue as one job
 			if ( $jobParams['count'] > 0 ) {
-				$jobs[] = new JobSpecification( 'renameUserTable', $jobParams, [], $oldTitle );
+				$jobs[] = new JobSpecification( 'renameUser', $jobParams, [], $oldTitle );
 			}
 		}
 
@@ -407,7 +401,7 @@ class RenameuserSQL {
 			'4::olduser' => $this->old,
 			'5::newuser' => $this->new,
 			'6::edits' => $contribs,
-			'derived' => $this->derived
+			'updatedSharedTables' => $this->updateShared
 		] );
 		$logid = $logEntry->insert();
 
@@ -442,7 +436,7 @@ class RenameuserSQL {
 
 		$this->debug( "Finished rename from {$this->old} to {$this->new}" );
 
-		return Status::newGood();
+		return true;
 	}
 
 	/**
@@ -464,17 +458,24 @@ class RenameuserSQL {
 	 * @return bool
 	 */
 	private function shouldUpdate( string $table ) {
-		return !$this->derived || !$this::isTableShared( $table );
+		return $this->updateShared || !$this->isTableShared( false, $table );
 	}
 
 	/**
 	 * Check if a table is shared.
 	 *
+	 * @param string|false $domain Domain ID, or false for the local domain
 	 * @param string $table The table name
 	 * @return bool Returns true if the table is shared
 	 */
-	private static function isTableShared( string $table ) {
+	private function isTableShared( $domain, string $table ) {
 		global $wgSharedTables, $wgSharedDB;
-		return $wgSharedDB && in_array( $table, $wgSharedTables, true );
+		if ( $wgSharedDB && in_array( $table, $wgSharedTables, true ) ) {
+			return true;
+		}
+		if ( $domain !== false && $this->lbFactory->isSharedVirtualDomain( $domain ) ) {
+			return true;
+		}
+		return false;
 	}
 }

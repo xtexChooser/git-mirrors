@@ -1,6 +1,6 @@
 <?php
 
-namespace MediaWiki\RenameUser\Job;
+namespace MediaWiki\RenameUser;
 
 use InvalidArgumentException;
 use Job;
@@ -33,7 +33,7 @@ use Wikimedia\Rdbms\ILBFactory;
  *   - userID    : The ID of the user to update
  *   - uidColumn : The *_user_id column
  */
-class RenameUserTableJob extends Job {
+class RenameUserJob extends Job {
 	/** @var int */
 	private $updateRowsPerQuery;
 
@@ -46,7 +46,7 @@ class RenameUserTableJob extends Job {
 		Config $config,
 		ILBFactory $lbFactory
 	) {
-		parent::__construct( 'renameUserTable', $title, $params );
+		parent::__construct( 'renameUser', $title, $params );
 
 		$this->updateRowsPerQuery = $config->get( MainConfigNames::UpdateRowsPerQuery );
 		$this->lbFactory = $lbFactory;
@@ -127,4 +127,4 @@ class RenameUserTableJob extends Job {
 	}
 }
 /** @deprecated class alias since 1.43 */
-class_alias( RenameUserTableJob::class, 'RenameUserJob' );
+class_alias( RenameUserJob::class, 'RenameUserJob' );

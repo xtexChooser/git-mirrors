@@ -6,12 +6,16 @@ use MediaWiki\CommentStore\CommentStore;
 use MediaWiki\Html\Html;
 use MediaWiki\HTMLForm\HTMLForm;
 use MediaWiki\MainConfigNames;
+use MediaWiki\Page\MovePageFactory;
 use MediaWiki\Permissions\PermissionManager;
-use MediaWiki\RenameUser\RenameUserFactory;
+use MediaWiki\RenameUser\RenameuserSQL;
 use MediaWiki\SpecialPage\SpecialPage;
+use MediaWiki\Status\Status;
+use MediaWiki\Title\Title;
 use MediaWiki\Title\TitleFactory;
 use MediaWiki\User\UserFactory;
 use MediaWiki\User\UserNamePrefixSearch;
+use MediaWiki\User\UserNameUtils;
 use OOUI\FieldLayout;
 use OOUI\HtmlSnippet;
 use OOUI\MessageWidget;
@@ -25,36 +29,40 @@ use Wikimedia\Rdbms\IConnectionProvider;
  */
 class SpecialRenameUser extends SpecialPage {
 	private IConnectionProvider $dbConns;
+	private MovePageFactory $movePageFactory;
 	private PermissionManager $permissionManager;
 	private TitleFactory $titleFactory;
 	private UserFactory $userFactory;
 	private UserNamePrefixSearch $userNamePrefixSearch;
-	private RenameUserFactory $renameUserFactory;
+	private UserNameUtils $userNameUtils;
 
 	/**
 	 * @param IConnectionProvider $dbConns
+	 * @param MovePageFactory $movePageFactory
 	 * @param PermissionManager $permissionManager
 	 * @param TitleFactory $titleFactory
 	 * @param UserFactory $userFactory
 	 * @param UserNamePrefixSearch $userNamePrefixSearch
-	 * @param RenameUserFactory $renameUserFactory
+	 * @param UserNameUtils $userNameUtils
 	 */
 	public function __construct(
 		IConnectionProvider $dbConns,
+		MovePageFactory $movePageFactory,
 		PermissionManager $permissionManager,
 		TitleFactory $titleFactory,
 		UserFactory $userFactory,
 		UserNamePrefixSearch $userNamePrefixSearch,
-		RenameUserFactory $renameUserFactory
+		UserNameUtils $userNameUtils
 	) {
 		parent::__construct( 'Renameuser', 'renameuser' );
 
 		$this->dbConns = $dbConns;
+		$this->movePageFactory = $movePageFactory;
 		$this->permissionManager = $permissionManager;
 		$this->titleFactory = $titleFactory;
 		$this->userFactory = $userFactory;
 		$this->userNamePrefixSearch = $userNamePrefixSearch;
-		$this->renameUserFactory = $renameUserFactory;
+		$this->userNameUtils = $userNameUtils;
 	}
 
 	public function doesWrites() {
@@ -144,6 +152,22 @@ class SpecialRenameUser extends SpecialPage {
 			return;
 		}
 
+		// Do not act on temp users
+		if ( $this->userNameUtils->isTemp( $oldName ) ) {
+			$out->addHTML( Html::errorBox(
+				$out->msg( 'renameuser-error-temp-user' )->plaintextParams( $oldName )->parse()
+			) );
+			return;
+		}
+		if ( $this->userNameUtils->isTemp( $newName ) ||
+			$this->userNameUtils->isTempReserved( $newName )
+		) {
+			$out->addHTML( Html::errorBox(
+				$out->msg( 'renameuser-error-temp-user-reserved' )->plaintextParams( $newName )->parse()
+			) );
+			return;
+		}
+
 		// Suppress username validation of old username
 		$oldUser = $this->userFactory->newFromName( $oldName, $this->userFactory::RIGOR_NONE );
 		$newUser = $this->userFactory->newFromName( $newName, $this->userFactory::RIGOR_CREATABLE );
@@ -217,33 +241,39 @@ class SpecialRenameUser extends SpecialPage {
 			return;
 		}
 
-		$rename = $this->renameUserFactory->newRenameUser( $performer, $oldUser, $newName, $reason, [
-			'movePages' => $moveChecked,
-			'suppressRedirect' => $suppressChecked,
-		] );
-		$status = $rename->rename();
-
-		if ( $status->isGood() ) {
-			// Output success message stuff :)
-			$out->addHTML(
-				Html::successBox(
-					$out->msg( 'renameusersuccess' )
-						->params( $oldTitle->getText(), $newTitle->getText() )
-						->parse()
-				)
-			);
-		} else {
-			// Output errors stuff
-			$outHtml = '';
-			foreach ( $status->getMessages() as $msg ) {
-				$outHtml = $outHtml . $out->msg( $msg )->parse() . '<br/>';
-			}
-			if ( $status->isOK() ) {
-				$out->addHTML( Html::warningBox( $outHtml ) );
-			} else {
-				$out->addHTML( Html::errorBox( $outHtml ) );
-			}
+		// Do the heavy lifting...
+		$rename = new RenameuserSQL(
+			$oldTitle->getText(),
+			$newTitle->getText(),
+			$uid,
+			$this->getUser(),
+			[ 'reason' => $reason ]
+		);
+		if ( !$rename->rename() ) {
+			return;
 		}
+
+		// If this user is renaming themself, make sure that MovePage::move()
+		// doesn't make a bunch of null move edits under the old name!
+		if ( $performer->getId() === $uid ) {
+			$performer->setName( $newTitle->getText() );
+		}
+
+		// Move any user pages
+		if ( $moveChecked && $this->permissionManager->userHasRight( $performer, 'move' ) ) {
+			$suppressRedirect = $suppressChecked
+				&& $this->permissionManager->userHasRight( $performer, 'suppressredirect' );
+			$this->movePages( $oldTitle, $newTitle, $suppressRedirect );
+		}
+
+		// Output success message stuff :)
+		$out->addHTML(
+			Html::successBox(
+				$out->msg( 'renameusersuccess' )
+					->params( $oldTitle->getText(), $newTitle->getText() )
+					->parse()
+			)
+		);
 	}
 
 	private function getWarnings( $oldName, $newName ) {
@@ -347,6 +377,92 @@ class SpecialRenameUser extends SpecialPage {
 			->setSubmitTextMsg( 'renameusersubmit' );
 
 		$this->getOutput()->addHTML( $htmlForm->prepareForm()->getHTML( false ) );
+	}
+
+	/**
+	 * Move the specified user page, its associated talk page, and any subpages
+	 *
+	 * @param Title $oldTitle
+	 * @param Title $newTitle
+	 * @param bool $suppressRedirect
+	 * @return void
+	 */
+	private function movePages( Title $oldTitle, Title $newTitle, $suppressRedirect ) {
+		$output = $this->movePageAndSubpages( $oldTitle, $newTitle, $suppressRedirect );
+		$oldTalkTitle = $oldTitle->getTalkPageIfDefined();
+		$newTalkTitle = $newTitle->getTalkPageIfDefined();
+		if ( $oldTalkTitle && $newTalkTitle ) { // always true
+			$output .= $this->movePageAndSubpages( $oldTalkTitle, $newTalkTitle, $suppressRedirect );
+		}
+
+		if ( $output !== '' ) {
+			$this->getOutput()->addHTML( Html::rawElement( 'ul', [], $output ) );
+		}
+	}
+
+	/**
+	 * Move a specified page and its subpages
+	 *
+	 * @param Title $oldTitle
+	 * @param Title $newTitle
+	 * @param bool $suppressRedirect
+	 * @return string
+	 */
+	private function movePageAndSubpages( Title $oldTitle, Title $newTitle, $suppressRedirect ) {
+		$performer = $this->getUser();
+		$logReason = $this->msg(
+			'renameuser-move-log', $oldTitle->getText(), $newTitle->getText()
+		)->inContentLanguage()->text();
+		$movePage = $this->movePageFactory->newMovePage( $oldTitle, $newTitle );
+
+		$output = '';
+		if ( $oldTitle->exists() ) {
+			$status = $movePage->moveIfAllowed( $performer, $logReason, !$suppressRedirect );
+			$output .= $this->getMoveStatusHtml( $status, $oldTitle, $newTitle );
+		}
+
+		$oldLength = strlen( $oldTitle->getText() );
+		$batchStatus = $movePage->moveSubpagesIfAllowed( $performer, $logReason, !$suppressRedirect );
+		foreach ( $batchStatus->getValue() as $titleText => $status ) {
+			$oldSubpageTitle = Title::newFromText( $titleText );
+			$newSubpageTitle = $newTitle->getSubpage(
+				substr( $oldSubpageTitle->getText(), $oldLength + 1 ) );
+			$output .= $this->getMoveStatusHtml( $status, $oldSubpageTitle, $newSubpageTitle );
+		}
+		return $output;
+	}
+
+	private function getMoveStatusHtml( Status $status, Title $oldTitle, Title $newTitle ) {
+		$linkRenderer = $this->getLinkRenderer();
+		if ( $status->hasMessage( 'articleexists' ) || $status->hasMessage( 'redirectexists' ) ) {
+			$link = $linkRenderer->makeKnownLink( $newTitle );
+			return Html::rawElement(
+				'li',
+				[ 'class' => 'mw-renameuser-pe' ],
+				$this->msg( 'renameuser-page-exists' )->rawParams( $link )->escaped()
+			);
+		} else {
+			if ( $status->isOK() ) {
+				// oldPage is not known in case of redirect suppression
+				$oldLink = $linkRenderer->makeLink( $oldTitle, null, [], [ 'redirect' => 'no' ] );
+
+				// newPage is always known because the move was successful
+				$newLink = $linkRenderer->makeKnownLink( $newTitle );
+
+				return Html::rawElement(
+					'li',
+					[ 'class' => 'mw-renameuser-pm' ],
+					$this->msg( 'renameuser-page-moved' )->rawParams( $oldLink, $newLink )->escaped()
+				);
+			} else {
+				$oldLink = $linkRenderer->makeKnownLink( $oldTitle );
+				$newLink = $linkRenderer->makeLink( $newTitle );
+				return Html::rawElement(
+					'li', [ 'class' => 'mw-renameuser-pu' ],
+					$this->msg( 'renameuser-page-unmoved' )->rawParams( $oldLink, $newLink )->escaped()
+				);
+			}
+		}
 	}
 
 	/**
