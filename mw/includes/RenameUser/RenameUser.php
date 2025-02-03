@@ -188,17 +188,11 @@ class RenameUser {
 		}
 
 		// Check global detaching
-		$centralIdLookup = $this->centralIdLookupFactory->getNonLocalLookup();
-		$userCentralAttached = $centralIdLookup && $centralIdLookup->isAttached( $this->target );
-		if ( !$this->forceGlobalDetach && $userCentralAttached ) {
-			return Status::newFatal( 'renameuser-error-global-detaching' );
-		}
-
-		// Check renameuser-global rights when starting a global rename
-		if ( $this->derived
-			&& ( $this->userFactory->isUserTableShared() || $userCentralAttached )
-			&& !$this->permissionManager->userHasRight( $this->performer, 'renameuser-global' ) ) {
-			return Status::newFatal( 'renameuser-error-global-rights' );
+		if ( !$this->forceGlobalDetach ) {
+			$centralIdLookup = $this->centralIdLookupFactory->getNonLocalLookup();
+			if ( $centralIdLookup && $centralIdLookup->isAttached( $this->target ) ) {
+				return Status::newFatal( 'renameuser-error-global-detaching' );
+			}
 		}
 
 		return Status::newGood();

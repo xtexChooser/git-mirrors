@@ -194,7 +194,6 @@ class PermissionManager {
 		'protect',
 		'read',
 		'renameuser',
-		'renameuser-global',
 		'reupload',
 		'reupload-own',
 		'reupload-shared',
